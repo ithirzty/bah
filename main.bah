@@ -1,0 +1,34 @@
+#include "iostream.bah"
+#include "flags.bah"
+
+
+#include "./globals.bah"
+
+#include "./lexer.bah"
+#include "./type.bah"
+#include "./errors.bah"
+#include "./parser.bah"
+
+
+main(args []cpstring) {
+    if len(args) != 2 {
+        panic("Invalid usage of bah.")
+    }
+    
+    fileName = args[1]
+    fm = fileMap{}
+    f = fm.open(fileName)
+    
+    tokens = lexer(f)
+    fm.close()
+
+    if len(tokens) == 0 {
+        panic("File '"+fileName+"' not recognized.")
+    }
+
+    elems = new Elems
+    parseLines(tokens, elems)
+
+    println(OUTPUT)
+
+}

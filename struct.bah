@@ -1,0 +1,64 @@
+#include "iostream.bah"
+#include "string.bah"
+
+#include "./globals.bah"
+
+searchStruct(name cpstring, elems Elems*) cStruct* {
+    n = string(name)
+    n.replace("*", "")
+    name = n.content
+    i=0; for i < len(elems.structs) {
+        s = elems.structs[i]
+        if s.name == name {
+            return s
+        }
+        i++
+    }
+    return null
+}
+
+searchStructMemb(name cpstring, s cStruct*, elems Elems*) structMemb* {
+    println("SEARCHING: "+name)
+    n = string(name)
+    if n.count(".") {
+        rn = string(splitStringBefore(n, "."))
+        name = rn.content
+        n.trimLeft(rn.length+1)
+        membs = n.content
+        memb = searchStructMemb(name, s, elems)
+        if n.length > 0 {
+            s = searchStruct(memb.type, elems)
+            memb = searchStructMemb(n, s, elems)
+        }
+        return memb
+        
+    }
+    members = s.members
+    i=0; for i < len(members) {
+        m = members[i]
+        if m.name == name {
+            return m
+        }
+        i++
+    }
+    return null
+}
+
+declareStructMethods(v variable*, s cStruct*) cpstring {
+    code = ""
+    members = s.members
+    typec = string(v.type)
+    sep = "."
+    if typec.count("*") {
+        sep = "->"
+    }
+    i=0; for i < len(members) {
+        m = members[i]
+        if strlen(m.def) > 0 {
+            code = code + v.name + sep + m.name + " = " + m.def + ";\n"
+        }
+        i++
+    }
+
+    return code
+}

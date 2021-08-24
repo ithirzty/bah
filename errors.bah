@@ -1,0 +1,51 @@
+#include "iostream.bah"
+#include "string.bah"
+
+#include "./lexer.bah"
+
+throwErr(tp ptr, format cpstring) {
+    t Tok* = tp
+    if t.type == TOKEN_TYPE_STR {
+        t.cont = "\"" + t.cont + "\"" 
+    }
+    ffmt = string(format)
+    ffmt.replace("{TOKEN}", "'"+t.cont+"'")
+    format = ffmt.str()
+
+    line = []char
+
+    beg=t.pos; for beg > 0 {
+        c = SOURCE.charAt(beg)
+        if c == <char>10 {
+            beg++
+            break
+        }
+        beg--
+    }
+
+    pos = t.pos - beg
+
+    i=beg; for i < SOURCE.length {
+        c = SOURCE.charAt(i)
+        if c == <char>10 {
+            break
+        }
+        if i == t.pos {
+            errTk = strToArr("\e[1;31m"+t.cont+"\e[1;37m")
+            ii=0; for ii < len(errTk) {
+                line[len(line)] = errTk[ii]
+                ii++
+            }
+            i = i + strlen(t.cont)
+            continue
+        }
+        line[len(line)] = c
+        i++
+    }
+
+    str = arrToStr(line)
+    info = intToStr(t.line)
+    println("\e[1;31m[ERROR]\e[0m Line " + info + ":\n\e[1;37m\t" + str + "\e[0m\n" + format)
+    exit(1)
+
+}

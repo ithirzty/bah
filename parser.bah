@@ -1,0 +1,534 @@
+#include "iostream.bah"
+#include "string.bah"
+
+#include "./lexer.bah"
+#include "./var.bah"
+
+debugLine(line []Tok) {
+    cont = ""
+    i=0; for i < len(line) {
+        t = line[i]
+        cont = cont + " " + t.cont
+        i++
+    }
+    println(cont)
+}
+
+
+#define lineType int
+
+const LINE_TYPE_INCLUDE = <lineType>0
+const LINE_TYPE_DEFINE = <lineType>1
+const LINE_TYPE_CONST = <lineType>2
+const LINE_TYPE_VAR = <lineType>3
+const LINE_TYPE_FN_DECL = <lineType>4
+const LINE_TYPE_FN_CALL = <lineType>5
+const LINE_TYPE_STRUCT = <lineType>6
+
+getLineType(line []Tok) lineType {
+    ft = line[0]
+    if ft.type == TOKEN_TYPE_KEYWORD {
+        if ft.cont == "#include" {
+            return LINE_TYPE_INCLUDE
+        } else if ft.cont == "#define" {
+            return LINE_TYPE_DEFINE
+        } else if ft.cont == "const" {
+            return LINE_TYPE_CONST
+        } else if ft.cont == "struct" {
+            return LINE_TYPE_STRUCT
+        }
+    } else if ft.type == TOKEN_TYPE_VAR {
+        if len(line) == 1 {
+            throwErr(&ft, "Cannot declare var {TOKEN} without a type.")
+        }
+        st = line[1]
+        if st.type == TOKEN_TYPE_ENCL {
+            if st.cont == "(" {
+                lt = line[len(line)-1]
+                if lt.type == TOKEN_TYPE_ENCL {
+                    if lt.cont == "}" {
+                        return LINE_TYPE_FN_DECL
+                    } else {
+                        println("NOPE: '"+lt.cont+"'")
+                    }
+                }
+                return LINE_TYPE_FN_CALL
+            }
+        }
+        return LINE_TYPE_VAR
+    }
+}
+
+
+//Inline parsing
+parseCast(line []Tok, elems Elems*) []Tok {
+    nl = []Tok
+
+    i=0; for i < len(line) {
+        t = line[i]
+        if t.type == TOKEN_TYPE_SYNTAX {
+            if t.cont == "<" {
+                max = i + 3
+                if max < len(line) {
+                    nt = line[i+1]
+                    nnt = line[i+2]
+                    nnnt = line[i+3]
+                    if nt.type == TOKEN_TYPE_VAR {
+                        if nnt.type == TOKEN_TYPE_SYNTAX {
+                            if nnt.cont == ">" {
+                                
+                                nnnt.bahType = nt.cont
+                                cCast = getCType(nt.cont, elems)
+                                cCastStr = cCast.str()
+                                nnnt.cont = "("+cCastStr+")"+nnnt.cont
+                                nl[len(nl)] = nnnt
+                                i = i + 4
+                                continue
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        nl[len(nl)] = t
+
+        i++
+    }
+    return nl
+}
+
+parseOperations(line []Tok, elems Elems*) []Tok {
+    signs = []cpstring{"|", "&", "%", "+", "-", "*", "/"}
+    nl = []Tok{line[0]}
+    i=1; for i < len(line) {
+        t = line[i]
+        if t.type == TOKEN_TYPE_SYNTAX {
+            if inArrayStr(t.cont, signs) {
+                max = i + 1
+                if max >= len(line) {
+                    throwErr(&t, "Cannot use {TOKEN} on nothing.")
+                }
+                pt = nl[len(nl)-1]
+                nt = line[i+1]
+                ptt = getTypeFromToken(&pt, true, elems)
+                ntt = getTypeFromToken(&nt, true, elems)
+                if ptt != ntt {
+                    throwErr(&nt, "Cannot use {TOKEN} ("+ntt+") as "+ptt+".")
+                }
+                t.isValue = true
+                if ptt == "cpstring" {
+                    if t.cont != "+" {
+                        throwErr(&t, "Can only do concatenation (+) on cpstrings, not {TOKEN}.")
+                    }
+                    t.cont = "concatCPSTRING("+pt.cont+","+nt.cont+")"
+                } else {
+                    t.cont = pt.cont + " " + t.cont + " " + nt.cont
+                }
+                t.type = TOKEN_TYPE_VAR
+                t.bahType = ptt
+                t.pos = pt.pos
+                nl[len(nl)-1] = t
+                i = i + 2
+                continue
+            }
+        }
+        nl[len(nl)] = t
+        i++
+    }
+    return nl
+}
+
+parseStructType(line []Tok, elems Elems*) []Tok {
+    nl = []Tok
+
+    i=0; for i < len(line) {
+        t = line[i]
+        if t.type == TOKEN_TYPE_VAR {
+            i++
+            if i < len(line) {
+                nt = line[i]
+                if nt.cont == "{" {
+                    i++
+                    s = searchStruct(t.cont, elems)
+                    if s == null {
+                        throwErr(&t, "Unknown struct name {TOKEN}.")
+                    }
+                    memory = ""
+                    for i < len(line) {
+                        t = line[i]
+                        if t.cont == "}" {
+                            break
+                        }
+                        memory = memory + t.cont + " "
+                        //TODO: setting struct content inside braces
+                        i++
+                    }
+                    t.bahType = s.name
+                    t.cont = "{"+memory+"}"
+                    t.isValue = true
+                    nl[len(nl)] = t
+                    i++
+                    continue
+                    
+                } else {
+                    i--
+                }
+            }
+        }
+        nl[len(nl)] = t
+        i++
+    }
+
+    return nl
+}
+
+parseStructVars(line []Tok, elems Elems*) []Tok {
+    nl = []Tok
+
+    i=0; for i < len(line) {
+        t = line[i]
+        if t.type == TOKEN_TYPE_VAR {
+            i++
+            for i < len(line) {
+                it = line[i]
+                if it.cont != "." {
+                    break
+                }
+                    v = searchVar(t.cont, elems)
+                    if v == null {
+                        throwErr(&t, "Unknown var {TOKEN}.")
+                    }
+                    ct = string(v.type)
+                    sep = "."
+                    if ct.count("*") {
+                        sep = "->"
+                    }
+                    s = searchStruct(v.type, elems)
+                    i++
+                    nt = line[i]
+                    if nt.type != TOKEN_TYPE_VAR {
+                        throwErr(&nt, "Cannot use {TOKEN} as struct member name.")
+                    }
+                    memb = searchStructMemb(nt.cont, s, elems)
+                    if memb == null {
+                        throwErr(&nt, "Unknown struct member {TOKEN}.")
+                    }
+                    t.cont = t.cont + sep + memb.name
+                i++
+            }
+            nl[len(nl)] = t
+            continue
+        }
+
+        nl[len(nl)] = t
+        i++
+    }
+
+    return nl
+}
+
+
+//Parser for every line types
+
+parseVar(l []Tok, elems Elems*) {
+    l = parseStructType(l, elems)
+    isEqual = false
+    currentType = ""
+    ft = l[0]
+    v = searchVar(ft.cont, elems)
+    exists = true
+    if v == null {
+        exists = false
+        v = new variable
+        v.name = ft.cont
+        v.type = ""
+    }
+    code = ""
+    i=1; for i < len(l) {
+        t = l[i]
+        if t.type == TOKEN_TYPE_SYNTAX {
+            if t.cont == "=" {
+                if strlen(currentType) > 0 {
+                    sct = string(currentType)
+                    sct.replace(" ", "")
+                    v.type = sct.str()
+                }
+                isEqual = true
+                i++
+                continue
+            }
+        }
+        if isEqual == false {
+            if t.type != TOKEN_TYPE_VAR {
+                if t.cont != "*" {
+                    throwErr(&t, "Cannot use {TOKEN} as type for a variable.")
+                }
+            }
+            currentType = currentType + " " + t.cont
+        } else {
+            if t.isValue == false {
+                throwErr(&t, "Cannot use {TOKEN} as value in var declaration.")
+            }
+            tp = getTypeFromToken(&t, true, elems)
+            if exists {
+                if tp != v.type {
+                    throwErr(&t, "Cannot use {TOKEN} ("+tp+") as "+v.type+".")
+                }
+            } else {
+                if strlen(v.type) == 0 {
+                    v.type = tp
+                } else {
+                    if tp != v.type {
+                        throwErr(&t, "Cannot use {TOKEN} ("+tp+") as "+v.type+".")
+                    }
+                }
+            }
+            ctc = string(t.cont)
+            if ctc.hasPrefix("{") {
+                max = i + 1
+                if max != len(l) {
+                    throwErr(&l[i+1], "{TOKEN} not expected after struct initialization.")
+                }
+                s = searchStruct(v.type, elems)
+                NEXT_LINE = declareStructMethods(v, s)
+            }
+            code = code + " " + t.cont
+        }
+
+        i++
+    }
+
+    if exists {
+        if strlen(code) == 0 {
+            throwErr(&ft, "Cannot re-declare {TOKEN}.")
+        }
+        if strlen(currentType) > 0 {
+            st = l[1]
+            throwErr(&st, "Cannot change the type of already declared var '"+ft.cont+"' to {TOKEN}.")
+        }
+        code = v.name + " = " + code
+    } else {
+        if strlen(currentType) > 0 {
+            v.type = currentType
+        }
+        if strlen(v.type) == 0 {
+            throwErr(&ft, "Cannot declare {TOKEN} without a type.")
+        }
+        vct = setCType(v, elems)
+        if strlen(code) > 0 {
+            code = vct + " = " + code
+        } else {
+            code = vct
+        }
+    }
+    OUTPUT = OUTPUT + code + ";\n"
+    vars = elems.vars
+    vars[len(vars)] = v
+}
+
+
+parseStruct(l []Tok, elems *Elems) {
+    s = new cStruct
+    if len(l) < 4 {
+        throwErr(&l[len(l)-1], "Cannot declare struct has such, please do 'struct <name> { <memberName>:<memberType> }'.")
+    }
+    nameToken = l[1]
+    if nameToken.type != TOKEN_TYPE_VAR {
+        throwErr(&nameToken, "Cannot use {TOKEN} as struct name.")
+    }
+    os = searchStruct(nameToken.cont, elems)
+    if os != null {
+        throwErr(&nameToken, "Struct {TOKEN} already exists.")
+    }
+    s.name = nameToken.cont
+    members = s.members
+    i = 2
+    st = l[i]
+    if st.type == TOKEN_TYPE_KEYWORD {
+        if st.cont == "extend" {
+            i++
+            extdSNameTk = l[i]
+            i++
+            if extdSNameTk.type != TOKEN_TYPE_VAR {
+                throwErr(&extdSNameTk, "Cannot use {TOKEN} as struct name.")
+            }
+            extdS = searchStruct(extdSNameTk.cont, elems)
+            if extdS == null {
+                throwErr(&extdSNameTk, "Struct {TOKEN} does not exist.")
+            }
+            members = extdS.members
+        } else {
+            throwErr(&st, "Cannot use keyword {TOKEN} in struct declaration.")
+        }
+    }
+    braceTk = l[i]
+    i++
+    if braceTk.cont != "{" {
+        throwErr(&braceTk, "Cannot use {TOKEN} in struct declaration.")
+    }
+    for i < len(l) {
+        t = l[i]
+        max = i + 2
+        if max >= len(l) {
+            if t.type == TOKEN_TYPE_ENCL {
+                if t.cont == "}" {
+                    break
+                }
+            }
+            throwErr(&l[len(l)-1], "Not enough argument in member declaration, ending by {TOKEN}.")
+        }
+        memb = new structMemb
+        if t.type != TOKEN_TYPE_VAR {
+            throwErr(&t, "Cannot use {TOKEN} as member name.")
+        }
+        memb.name = t.cont
+        ii=0; for ii < len(members) {
+            m = members[ii]
+            if m.name == memb.name {
+                throwErr(&t, "Member {TOKEN} has already been declared.")
+            }
+            ii++
+        }
+        i++
+        t = l[i]
+        if t.cont != ":" {
+            throwErr(&t, "Member name should be followed by ':' not {TOKEN}.")
+        }
+        i++
+        t = l[i]
+        if t.type != TOKEN_TYPE_VAR {
+            throwErr(&t, "Cannot use {TOKEN} as member type.")
+        }
+        memb.type = t.cont
+        i++
+        t = l[i]
+        if i < len(l) {
+            if t.cont == "=" {
+                i++
+                t = l[i]
+                if t.isValue == false {
+                    throwErr(&t, "Cannot use {TOKEN} as default value for member.")
+                }
+                tt = getTypeFromToken(&t, true, elems)
+                if tt != memb.type {
+                    throwErr(&t, "Cannot use {TOKEN} ("+tt+") as "+memb.type+" for member.")
+                }
+                memb.def = t.cont
+
+            } else {
+                i--
+            }
+        }
+        members[len(members)] = memb
+        s.members = members
+
+        i++
+    }
+
+
+    structs = elems.structs
+    structs[len(structs)] = s
+
+    code = "struct "+s.name+" {\n"
+    i=0; for i < len(members) {
+        m = members[i]
+        membCType = getCType(m.type, elems)
+        membCTypeStr = membCType.str()
+        code = code + membCTypeStr + " " + m.name +";\n"
+        i++
+    }
+    code += "};\n"
+    OUTPUT += code
+
+}
+
+
+
+//Handling lines
+
+parseLine(line []Tok, elems Elems*) {
+    if len(line) == 0 {
+        return
+    }
+    ltp = getLineType(line)
+    
+    line = parseStructVars(line, elems)
+    line = parseCast(line, elems)
+    line = parseOperations(line, elems)
+
+    if ltp == LINE_TYPE_VAR {
+        parseVar(line, elems)
+    } else if ltp == LINE_TYPE_STRUCT {
+        parseStruct(line, elems)
+    } else {
+        ltps = intToStr(<int>ltp)
+        println("===>"+ltps)
+    }
+
+    if strlen(NEXT_LINE) > 0 {
+        OUTPUT += NEXT_LINE
+        NEXT_LINE = ""
+    }
+
+}
+
+parseLines(tokens []Tok, elems Elems*) {
+    line = []Tok
+    ft = tokens[0]
+    currentLine = ft.line
+    nbEncl = 0
+    i=0; for i < len(tokens) {
+        t = tokens[i]
+        
+        if t.type == TOKEN_TYPE_ENCL {
+            if t.cont == "(" {
+                nbEncl++
+            } else if t.cont == ")" {
+                nbEncl--
+            } else if t.cont == "{" {
+                nbEncl++
+            } else if t.cont == "}" {
+                nbEncl--
+            } else if t.cont == "[" {
+                nbEncl++
+            } else if t.cont == "]" {
+                nbEncl--
+            }
+        }
+
+        if nbEncl == 0 {
+            if t.line != currentLine {
+                if t.type == TOKEN_TYPE_ENCL {
+                    line[len(line)] = t
+                    pt = tokens[i-1]
+                    currentLine = pt.line
+                } else {
+                    currentLine = t.line
+                }
+                //debugLine(line)
+                parseLine(line, elems)
+                clear(line)
+                if t.type == TOKEN_TYPE_ENCL {
+                    i++
+                    continue
+                }
+            }
+        }
+
+        line[len(line)] = t
+        i++
+    }
+
+    if len(line) > 0 {
+        if nbEncl == 0 {
+                parseLine(line, elems)
+                clear(line)
+        } else {
+            ft = line[len(line)-1]
+            throwErr(&ft, "Missing closing token, line ending by {TOKEN}.")
+        }
+    }
+
+}
+

@@ -1,0 +1,29 @@
+#include "iostream.bah"
+#include "string.bah"
+
+SOURCE string
+OUTPUT = ""
+NEXT_LINE = ""
+
+struct variable {
+    name: cpstring = ""
+    type: cpstring = ""
+}
+
+struct structMemb extend variable {
+    def: cpstring = ""
+}
+
+struct cStruct {
+    name: cpstring = ""
+    members: []structMemb*
+    postCode: cpstring = ""
+    print: bool
+    extendedFrom: cpstring = ""
+}
+
+struct Elems {
+    vars: []variable*
+    structs: []cStruct*
+    types: []cpstring
+}

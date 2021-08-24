@@ -1,0 +1,86 @@
+#include "iostream.bah"
+#include "string.bah"
+
+
+
+#include "./errors.bah"
+#include "./lexer.bah"
+#include "./type.bah"
+
+searchVar(name cpstring, elems Elems*) variable* {
+    n = string(name)
+    if n.count(".") {
+        rn = string(splitStringBefore(n, "."))
+        name = rn.content
+        n.trimLeft(rn.length+1)
+        membs = n.content
+        v = searchVar(name, elems)
+        s = searchStruct(v.type, elems)
+        println("==================")
+        memb = searchStructMemb(membs, s, elems)
+        v = new variable
+        v.name = memb.name
+        v.type = memb.type
+        return v
+    }
+
+    i=0; for i < len(elems.vars) {
+        v = elems.vars[i]
+        if v.name == name {
+            return v
+        }
+        i++
+    }
+
+    return null
+
+}
+
+setCType(v variable*, elems Elems*) cpstring {
+        tp = getCType(v.type, elems)
+        t = tp.str()
+        t = t + " " + v.name
+        return t
+}
+
+getTypeFromToken(t Tok*, strict bool, elems Elems*) cpstring {
+    if strlen(t.bahType) > 0 {
+        r = t.bahType
+        return r
+    }
+    if t.type == TOKEN_TYPE_VAR {
+        v = searchVar(t.cont, elems)
+        if v == null {
+            if strict {
+                throwErr(t, "Unknown var {TOKEN}.")
+            } else {
+                return ""
+            }
+        }
+        if strict {
+            if strlen(v.type) == 0 {
+                throwErr(t, "Cannot use {TOKEN} because it does not have any type.")
+            }
+        }
+        r = v.type
+        return r
+    }
+    if t.type == TOKEN_TYPE_FLOAT {
+        return "float"
+    }
+    if t.type == TOKEN_TYPE_INT {
+        return "int"
+    }
+    if t.type == TOKEN_TYPE_STR {
+        return "cpstring"
+    }
+    if t.type == TOKEN_TYPE_CHAR {
+        return "char"
+    }
+    if t.type == TOKEN_TYPE_BOOL {
+        return "bool"
+    }
+    
+    throwErr(t, "Cannot use {TOKEN} as value.")
+
+}

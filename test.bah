@@ -1,0 +1,12 @@
+struct test {
+    a: int = 5
+    b: cpstring
+}
+
+struct b {
+    c: test
+}
+
+a = 4+5
+fads = b{}
+a = fads.bsdf
