@@ -16,7 +16,6 @@ searchVar(name cpstring, elems Elems*) variable* {
         membs = n.content
         v = searchVar(name, elems)
         s = searchStruct(v.type, elems)
-        println("==================")
         memb = searchStructMemb(membs, s, elems)
         v = new variable
         v.name = memb.name

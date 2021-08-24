@@ -18,7 +18,6 @@ searchStruct(name cpstring, elems Elems*) cStruct* {
 }
 
 searchStructMemb(name cpstring, s cStruct*, elems Elems*) structMemb* {
-    println("SEARCHING: "+name)
     n = string(name)
     if n.count(".") {
         rn = string(splitStringBefore(n, "."))

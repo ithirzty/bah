@@ -5,9 +5,6 @@
 
 throwErr(tp ptr, format cpstring) {
     t Tok* = tp
-    if t.type == TOKEN_TYPE_STR {
-        t.cont = "\"" + t.cont + "\"" 
-    }
     ffmt = string(format)
     ffmt.replace("{TOKEN}", "'"+t.cont+"'")
     format = ffmt.str()

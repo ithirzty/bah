@@ -1,12 +1,16 @@
 struct test {
     a: int = 5
     b: cpstring
+    e: test
 }
 
 struct b {
     c: test
+    d: b
 }
 
 a = 4+5
 fads = b{}
-a = fads.bsdf
+a = a + fads.c.a
+arr = []int{5, 543 + 54, 4/5}
+bl = 4 == 8

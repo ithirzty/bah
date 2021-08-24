@@ -97,12 +97,14 @@ lexer(s cpstring) []Tok {
         //token is a string
         if c == <char>34 {
             pos = i
+            memory[0] = c
             i++
             for i < code.length {
                 c = code.charAt(i)
                 if c == <char>34 {
                     pc = code.charAt(i-1) 
                     if pc != <char>92 {
+                        memory[len(memory)] = c
                         break
                     }
                 }

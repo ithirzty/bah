@@ -145,6 +145,12 @@ parseStructType(line []Tok, elems Elems*) []Tok {
     i=0; for i < len(line) {
         t = line[i]
         if t.type == TOKEN_TYPE_VAR {
+            ctbt = string(t.bahType)
+            if ctbt.hasPrefix("[]") {
+                nl[len(nl)] = t
+                i++
+                continue
+            }
             i++
             if i < len(line) {
                 nt = line[i]
@@ -228,6 +234,41 @@ parseStructVars(line []Tok, elems Elems*) []Tok {
     return nl
 }
 
+parseArrayType(line []Tok, elems Elems*) []Tok {
+    nl = []Tok
+
+    i=0; for i < len(line) {
+        t = line[i]
+
+        if t.cont == "[" {
+            i++
+            if i < len(line) {
+                t = line[i]
+                if t.cont == "]" {
+                    i++
+                    if i < len(line) {
+                        t = line[i]
+                        if t.type != TOKEN_TYPE_VAR {
+                            throwErr(&t, "Cannot use {TOKEN} as array type.")
+                        }
+                        arrElem = t.cont
+                        t.bahType = "[]"+arrElem
+                        t.cont = ""
+                        t.isValue = true
+                        nl[len(nl)] = t
+                        i++
+                        continue
+                    }
+                }
+            }
+        }
+
+        nl[len(nl)] = t
+        i++
+    }
+    return nl
+}
+
 
 //Parser for every line types
 
@@ -245,6 +286,7 @@ parseVar(l []Tok, elems Elems*) {
         v.type = ""
     }
     code = ""
+    arrayLength = 0
     i=1; for i < len(l) {
         t = l[i]
         if t.type == TOKEN_TYPE_SYNTAX {
@@ -283,6 +325,68 @@ parseVar(l []Tok, elems Elems*) {
                         throwErr(&t, "Cannot use {TOKEN} ("+tp+") as "+v.type+".")
                     }
                 }
+            }
+            cvt = string(v.type)
+            if cvt.hasPrefix("[]") {
+                arrType = getCType(v.type, elems)
+                arrType.trimRight(1)
+                arrTypeStr = arrType.str()
+                code = "memoryAlloc(sizeof("+arrTypeStr+"))"
+                strArrayLength cpstring
+                arrType.trimLeft(6)
+                arrType.trimRight(1)
+                elemTypeStr = arrType.str()
+
+                max = i + 1
+                if max != len(l) {
+                    i++
+                    nt = l[i]
+                    if nt.cont != "{" {
+                        throwErr(&l[i+1], "{TOKEN} not expected after array initialization.")
+                    }
+                    elemBahType = string(v.type)
+                    elemBahType.trimLeft(2)
+                    elemBahTypeStr = elemBahType.str()
+                    i++
+                    for i < len(l) {
+                        t = l[i]
+                        tt = getTypeFromToken(&t, true, elems)
+                        if tt != elemBahTypeStr {
+                            throwErr(&t, "Cannot use {TOKEN} ("+tt+") as "+elemBahTypeStr)
+                        }
+                        
+                        strArrayLength = intToStr(arrayLength)
+                        arrayLength++
+
+                        NEXT_LINE = NEXT_LINE + v.name + "->data[" + strArrayLength + "] = " + t.cont + ";\n"
+                        i++
+                        t = l[i]
+                        if t.cont != "," {
+                            if t.cont == "}" {
+                                allocLength = arrayLength
+                                if allocLength > 50 {
+                                    modAllocAmm = allocLength % 50
+                                    allocLength = allocLength + modAllocAmm
+                                } else {
+                                    allocLength = 50
+                                }
+                                allocLengthStr = intToStr(allocLength)
+                                NEXT_LINE = v.name + "->data = memoryAlloc(sizeof(" + elemTypeStr + ") * " + allocLengthStr + ");" + NEXT_LINE
+                                break
+                            } else {
+                                throwErr(&t, "Expected ',' got {TOKEN}.")
+                            }
+                        }
+                        i++
+                    }
+                }
+                strArrayLength = intToStr(arrayLength)
+                NEXT_LINE = "
+                " + v.name + "->length = " + strArrayLength + ";
+                " + v.name + "->elemSize = sizeof(" + elemTypeStr + ");
+                " + NEXT_LINE
+
+                break
             }
             ctc = string(t.cont)
             if ctc.hasPrefix("{") {
@@ -447,15 +551,21 @@ parseStruct(l []Tok, elems *Elems) {
 
 //Handling lines
 
+prePross(line []Tok, elems Elems*) []Tok {
+    line = parseArrayType(line, elems)
+    line = parseStructVars(line, elems)
+    line = parseCast(line, elems)
+    line = parseOperations(line, elems)
+    return line
+}
+
 parseLine(line []Tok, elems Elems*) {
     if len(line) == 0 {
         return
     }
     ltp = getLineType(line)
     
-    line = parseStructVars(line, elems)
-    line = parseCast(line, elems)
-    line = parseOperations(line, elems)
+    line = prePross(line, elems)
 
     if ltp == LINE_TYPE_VAR {
         parseVar(line, elems)
