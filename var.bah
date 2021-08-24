@@ -6,9 +6,13 @@
 #include "./errors.bah"
 #include "./lexer.bah"
 #include "./type.bah"
+#include "./fns.bah"
 
 searchVar(name cpstring, elems Elems*) variable* {
     n = string(name)
+    n.replace("&", "")
+    n.replace("*", "")
+    name = n.content
     if n.count(".") {
         rn = string(splitStringBefore(n, "."))
         name = rn.content
@@ -62,8 +66,25 @@ getTypeFromToken(t Tok*, strict bool, elems Elems*) cpstring {
             }
         }
         r = v.type
+        tcc = string(t.cont)
+        if tcc.count("&") {
+            r += "*"
+        }
+
+        nbUnaries = tcc.count("*")
+        if nbUnaries {
+            ct = string(v.type)
+            pointerLevel = ct.count("*")
+            if pointerLevel < nbUnaries {
+                throwErr(t, "Cannot use '*' on {TOKEN} because it is not pointer.")
+            }
+            ct.trimRight(nbUnaries)
+            r = ct.str()
+        }
+        
         return r
     }
+
     if t.type == TOKEN_TYPE_FLOAT {
         return "float"
     }

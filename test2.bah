@@ -1,0 +1,3 @@
+#include "<stdio.h>"
+#include "<gc.h>"
+#define printf(s cpstring)

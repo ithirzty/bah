@@ -42,8 +42,29 @@ struct cStruct {
     extendedFrom: cpstring = ""
 }
 
+struct func {
+    name: cpstring = ""
+    args: []variable*
+    returns: variable*
+    returned: bool
+    isBinding: bool = false
+}
+
 struct Elems {
     vars: []variable*
     structs: []cStruct*
     types: []cpstring
+    fns: []func*
 }
+
+struct compilerStateTag {
+    includes: []cpstring
+    cLibs: []cpstring
+    currentFile: cpstring
+
+}
+
+compilerState compilerStateTag
+
+currentCStruct cStruct*
+

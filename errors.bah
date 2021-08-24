@@ -4,6 +4,10 @@
 #include "./lexer.bah"
 
 throwErr(tp ptr, format cpstring) {
+    fm = fileMap{}
+    fileSrcStr = fm.open(compilerState.currentFile)
+    fileSrc = string(fileSrcStr)
+    fm.close()
     t Tok* = tp
     ffmt = string(format)
     ffmt.replace("{TOKEN}", "'"+t.cont+"'")
@@ -12,7 +16,7 @@ throwErr(tp ptr, format cpstring) {
     line = []char
 
     beg=t.pos; for beg > 0 {
-        c = SOURCE.charAt(beg)
+        c = fileSrc.charAt(beg)
         if c == <char>10 {
             beg++
             break
@@ -22,8 +26,8 @@ throwErr(tp ptr, format cpstring) {
 
     pos = t.pos - beg
 
-    i=beg; for i < SOURCE.length {
-        c = SOURCE.charAt(i)
+    i=beg; for i < fileSrc.length {
+        c = fileSrc.charAt(i)
         if c == <char>10 {
             break
         }
@@ -42,7 +46,7 @@ throwErr(tp ptr, format cpstring) {
 
     str = arrToStr(line)
     info = intToStr(t.line)
-    println("\e[1;31m[ERROR]\e[0m Line " + info + ":\n\e[1;37m\t" + str + "\e[0m\n" + format)
+    println("\e[1;31m[ERROR]\e[0m "+compilerState.currentFile+":" + info + "\n\e[1;37m\t" + str + "\e[0m\n" + format)
     exit(1)
 
 }

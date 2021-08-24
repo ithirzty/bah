@@ -1,18 +1,5 @@
-struct test {
-    a: int = 5
-    b: cpstring = "dsa"
-    e: test
-}
+#include "builtin.bah"
 
-struct b {
-    c: test
-    d: b
-}
-
-a = 4+5
-fads = b{}
-a = a + fads.c.a
-arr = []int{5, 543 + 54, 4/5}
-if "test" != fads.c.b && 3 == 4 {
-
+main() {
+    printf("test"+" "+"bah")
 }

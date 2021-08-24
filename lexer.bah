@@ -15,6 +15,7 @@ const TOKEN_TYPE_KEYWORD = <tokenType>6
 const TOKEN_TYPE_CHAR =    <tokenType>7
 const TOKEN_TYPE_BOOL =    <tokenType>8
 const TOKEN_TYPE_SYNTAX =  <tokenType>10
+const TOKEN_TYPE_FUNC =    <tokenType>11
 
 
 struct Tok {
@@ -82,7 +83,7 @@ lexer(s cpstring) []Tok {
     enclavers = []char{'(', ')', '{', '}', '[', ']'}
     syntaxes = []char{'!', '=', '|', <char>38, '%', '+', '-', '*', '/', ',', '<', '>', ':', <char>59}
                                      //&                                                    //;
-    keywords = []cpstring{"if", "else", "for", "struct", "const", "return", "extend", "new"}
+    keywords = []cpstring{"if", "else", "for", "struct", "const", "return", "extend", "new", "break", "continue", "default", "switch", "case", "while", "typedef", "func"}
     bools = []cpstring{"true", "false"}
     seps = []char{'.'}
 
