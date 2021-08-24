@@ -8,7 +8,7 @@ debugLine(line []Tok) {
     cont = ""
     i=0; for i < len(line) {
         t = line[i]
-        cont = cont + " " + t.cont
+        cont = cont + " '" + t.cont + "'"
         i++
     }
     println(cont)
@@ -758,8 +758,105 @@ parseVar(l []Tok, elems Elems*) {
 }
 
 
+parseFnHeader(prev cpstring, l []Tok, i int*, fn func*, elems Elems*) cpstring {
+    j = *i
+    ft = l[j]
+    if ft.type != TOKEN_TYPE_VAR {
+        throwErr(&ft, "Cannot use {TOKEN} as function name.")
+    }
+    fn.name = prev + ft.cont
+
+    arguments = []variable*
+
+    code = fn.name + "("
+
+
+    j = j + 2
+    
+    t = l[j]
+    if t.cont != ")" {
+
+        for j < len(l) {
+            t = l[j]
+            if t.type != TOKEN_TYPE_VAR {
+                throwErr(&t, "Cannot use {TOKEN} as argument name.")
+            }
+            argName = t.cont
+
+            j++
+            if j >= len(l) {
+                throwErr(&t, "Cannot declare argument {TOKEN} without a type.")
+            }
+            t = l[j]
+            if t.type != TOKEN_TYPE_VAR {
+                throwErr(&t, "Cannot use {TOKEN} as argument type.")
+            }
+            argType = t.cont
+
+            argument = new variable
+            argument.name = argName
+            argument.type = argType
+            arguments[len(arguments)] = argument
+            
+            argCType = setCType(argument, elems)
+            code = code + argCType
+
+            j++
+            t = l[j]
+            if t.cont != "," {
+                if t.cont == ")" {
+                    code += ")"
+                    break
+                } else {
+                    throwErr(&t, "Need a coma before next argument {TOKEN}.")
+                }
+            } else {
+                code += ","
+                
+            }
+
+            j++
+        }
+    } else {
+        code += ")"
+    }
+
+    j++
+
+    returns = new variable
+    returns.type = ""
+    for j < len(l) {
+        t = l[j]
+        if t.cont == "{" {
+            break
+        }
+        returns.type = returns.type + t.cont
+        j++
+    }
+    if strlen(returns.type) {
+        rts = string(returns.type)
+        rts.replace(" ", "")
+        returns.type = rts.content
+    }
+    *i = j
+    returns.name = fn.name
+    fn.returns = returns
+    fn.args = arguments
+
+    fnRetType = getCType(returns.type, elems)
+    fnRetTypeStr = fnRetType.content
+    code = fnRetTypeStr + " " + code
+
+    return code
+}
+
+#cLib "g"
+
 parseStruct(l []Tok, elems *Elems) {
     s = new cStruct
+    structs = elems.structs
+    structs[len(structs)] = s
+    methds = s.methods
     if len(l) < 4 {
         throwErr(&l[len(l)-1], "Cannot declare struct has such, please do 'struct <name> { <memberName>:<memberType> }'.")
     }
@@ -774,6 +871,7 @@ parseStruct(l []Tok, elems *Elems) {
     s.name = nameToken.cont
     members = s.members
     currentCStruct = s
+    allMembs = []cpstring
     i = 2
     st = l[i]
     if st.type == TOKEN_TYPE_KEYWORD {
@@ -798,8 +896,6 @@ parseStruct(l []Tok, elems *Elems) {
     if braceTk.cont != "{" {
         throwErr(&braceTk, "Cannot use {TOKEN} in struct declaration.")
     }
-    
-    
     for i < len(l) {
         t = l[i]
         max = i + 2
@@ -826,7 +922,135 @@ parseStruct(l []Tok, elems *Elems) {
         i++
         t = l[i]
         if t.cont != ":" {
-            throwErr(&t, "Member name should be followed by ':' not {TOKEN}.")
+            if t.cont != "(" {
+                throwErr(&t, "Member name should be followed by ':' not {TOKEN}.")
+            } else {
+                fnPrefix = s.name + "__"
+                fn = new func
+                nl = []Tok
+                j=i-1; for j < len(l) {
+                    t = l[j]
+                    if t.cont == "{" {
+                        break
+                    }
+                    nl[len(nl)] = t
+                    if j == i {
+                        t.type = TOKEN_TYPE_VAR
+                        t.cont = "this"
+                        t.isValue = true
+                        nl[len(nl)] = t
+
+                        t.type = TOKEN_TYPE_VAR
+                        t.cont = s.name+"*"
+                        t.isValue = true
+                        nl[len(nl)] = t
+
+                        nt = l[j+1]
+                        if nt.cont != ")" {
+                            t.type = TOKEN_TYPE_SYNTAX
+                            t.cont = ","
+                            t.isValue = false
+                            nl[len(nl)] = t
+                        }
+                    }
+                    j++
+                }
+                i--
+
+                nli = 0
+
+                code = parseFnHeader(fnPrefix, nl, &nli, fn, elems)
+                i = i + nli
+                i = i - 2
+
+                returns = fn.returns
+                arguments = fn.args
+
+                code += "{\n"
+                
+                fnElems = new Elems
+                append(fnElems.vars, elems.vars)
+                append(fnElems.structs, elems.structs)
+                append(fnElems.types, elems.types)
+                append(fnElems.fns, elems.fns)
+                vs = fnElems.vars
+                j=0; for j < len(arguments) {
+                    a = arguments[j]
+                    vs[len(vs)] = a
+                    j++
+                }
+                fnElems.vars = vs
+
+                fns = elems.fns
+                fns[len(fns)] = fn
+
+                tokens = []Tok
+                nbBraces = 1
+                t = l[i]
+                if t.cont == "{" {
+                    i++
+                }
+                for i < len(l) {
+                    t = l[i]
+                    if t.cont == "{" {
+                        nbBraces++
+                    } else if t.cont == "}" {
+                        nbBraces--
+                    }
+                    if nbBraces == 0 {
+                        break
+                    }
+                    tokens[len(tokens)] = t
+                    i++
+                }
+
+                if len(tokens) == 0 {
+                    code += "};\n"
+                } else {
+                    OOUT = OUTPUT
+                    OUTPUT = ""
+                    parseLines(tokens, fnElems)
+                    code += OUTPUT
+                    OUTPUT = OOUT
+                    code += "};\n"
+                }
+                NEXT_LINE += code
+
+                mfn = new func
+                mfn.args = fn.args
+                mfn.name = fn.name
+                mfn.returns = fn.returns
+
+
+                sfn = string(mfn.name)
+                sfn.trimLeft(strlen(fnPrefix))
+                mfn.name = sfn.content
+
+                methds[len(methds)] = mfn
+                mthdDecl = getCType(fn.returns.type, elems)
+                mthdDecl.append("(*")
+                mthdDecl.append(mfn.name)
+                mthdDecl.append(")(")
+                j=0; for j < len(arguments) {
+                    a = arguments[j]
+                    tp = getCType(a.type, elems)
+                    tp.append(" ")
+                    tp.append(a.name)
+                    max = len(arguments) - 1
+                    if j != max {
+                        tp.append(",")
+                    }
+                    mthdDecl.append(tp)
+                    j++
+                }
+                mthdDecl.append(")")
+                mthdDeclStr = mthdDecl.content
+                allMembs[len(allMembs)] = mthdDeclStr
+
+                i++
+                continue
+
+            }
         }
         i++
         t = l[i]
@@ -854,21 +1078,19 @@ parseStruct(l []Tok, elems *Elems) {
             }
         }
         members[len(members)] = memb
-        s.members = members
-
+        membDecl = getCType(memb.type, elems)
+        membDecl.append(" ")
+        membDecl.append(memb.name)
+        membDeclStr = membDecl.content
+        allMembs[len(allMembs)] = membDeclStr
         i++
     }
-
-
-    structs = elems.structs
-    structs[len(structs)] = s
+    s.members = members
 
     code = "struct "+s.name+" {\n"
-    i=0; for i < len(members) {
-        m = members[i]
-        membCType = getCType(m.type, elems)
-        membCTypeStr = membCType.str()
-        code = code + membCTypeStr + " " + m.name +";\n"
+    i=0; for i < len(allMembs) {
+        m = allMembs[i]
+        code = code + m +";\n"
         i++
     }
     code += "};\n"
@@ -1014,96 +1236,22 @@ prePross(line []Tok, elems Elems*) []Tok {
     return line
 }
 
-
 parseFnDeclare(l []Tok, elems Elems*) {
+    
+    i = 0
     fn = new func
     ft = l[0]
-    fn.name = ft.cont
+    code = parseFnHeader("", l, &i, fn, elems)
     ogFn = searchFunc(fn.name, elems)
     if ogFn != null {
         if ogFn.isBinding == false {
             throwErr(&ft, "Cannot redefine function {TOKEN}.")
         }
     }
+    returns = fn.returns
+    arguments = fn.args
 
-    arguments = []variable*
-
-    code = fn.name + "("
-
-    i=2
-    
-    t = l[i]
-    if t.cont != ")" {
-
-        for i < len(l) {
-            t = l[i]
-            if t.type != TOKEN_TYPE_VAR {
-                throwErr(&t, "Cannot use {TOKEN} as argument name.")
-            }
-            argName = t.cont
-
-            i++
-            if i >= len(l) {
-                throwErr(&t, "Cannot declare argument {TOKEN} without a type.")
-            }
-            t = l[i]
-            if t.type != TOKEN_TYPE_VAR {
-                throwErr(&t, "Cannot use {TOKEN} as argument type.")
-            }
-            argType = t.cont
-
-            argument = new variable
-            argument.name = argName
-            argument.type = argType
-            arguments[len(arguments)] = argument
-            
-            argCType = setCType(argument, elems)
-            code = code + argCType
-
-            i++
-            t = l[i]
-            if t.cont != "," {
-                if t.cont == ")" {
-                    code += ")"
-                    break
-                } else {
-                    throwErr(&t, "Need a coma before next argument {TOKEN}.")
-                }
-            } else {
-                code += ","
-                
-            }
-
-            i++
-        }
-    } else {
-        code += ")"
-    }
-
-    i++
-
-    returns = new variable
-    returns.type = ""
-    for i < len(l) {
-        t = l[i]
-        if t.cont == "{" {
-            break
-        }
-        returns.type = returns.type + t.cont
-        i++
-    }
-    if strlen(returns.type) {
-        rts = string(returns.type)
-        rts.replace(" ", "")
-        returns.type = rts.content
-    }
-    returns.name = fn.name
-    fn.returns = returns
-    fn.args = arguments
-
-    fnRetType = getCType(returns.type, elems)
-    fnRetTypeStr = fnRetType.content
-    code = fnRetTypeStr + " " + code + "{\n"
+    code += "{\n"
     OUTPUT += code
 
     fnElems = new Elems
@@ -1124,7 +1272,6 @@ parseFnDeclare(l []Tok, elems Elems*) {
         j++
     }
 
-    fnElems.vars = vs
 
     if ogFn != null {
         ogFn.isBinding = false
@@ -1162,28 +1309,41 @@ parseLine(line []Tok, elems Elems*) {
     }
     line = parsePointers(line)
     ltp = getLineType(line)
-    
+    parsed = false
+
     if ltp == LINE_TYPE_INCLUDE {
+        parsed = true
         parseInclude(line, elems)
     } else if ltp == LINE_TYPE_DEFINE {
+        parsed = true
         parseDefine(line, elems)
     } else if ltp == LINE_TYPE_CLIB {
+        parsed = true
         parseClib(line)
     } else if ltp == LINE_TYPE_STRUCT {
+        parsed = true
         parseStruct(line, elems)
     } else if ltp != LINE_TYPE_FN_DECL {
         line = prePross(line, elems)
-    }   
+    }
     if ltp == LINE_TYPE_VAR {
+        parsed = true
         parseVar(line, elems)
     } else if ltp == LINE_TYPE_FN_CALL {
         if len(line) > 1 {
             throwErr(&line[len(line)-1], "Not expecting {TOKEN} after function call.")
         }
         ft = line[0]
+        parsed = true
         OUTPUT = OUTPUT + ft.cont + ";\n"
     } else if ltp == LINE_TYPE_FN_DECL {
+        parsed = true
         parseFnDeclare(line, elems)
+    } 
+    
+    if parsed == false {
+        ft = line[0]
+        throwErr(&ft, "{TOKEN} not expected at the bigining of a line.")
     }
 
     if strlen(NEXT_LINE) > 0 {

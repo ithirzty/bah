@@ -32,15 +32,9 @@ struct variable {
 
 struct structMemb extend variable {
     def: cpstring = ""
+    isFn: bool = false
 }
 
-struct cStruct {
-    name: cpstring = ""
-    members: []structMemb*
-    postCode: cpstring = ""
-    print: bool
-    extendedFrom: cpstring = ""
-}
 
 struct func {
     name: cpstring = ""
@@ -48,6 +42,15 @@ struct func {
     returns: variable*
     returned: bool
     isBinding: bool = false
+}
+
+struct cStruct {
+    name: cpstring = ""
+    members: []structMemb*
+    methods: []func*
+    postCode: cpstring = ""
+    print: bool
+    extendedFrom: cpstring = ""
 }
 
 struct Elems {

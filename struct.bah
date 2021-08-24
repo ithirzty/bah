@@ -40,6 +40,18 @@ searchStructMemb(name cpstring, s cStruct*, elems Elems*) structMemb* {
         }
         i++
     }
+    mthds = s.methods
+    i=0; for i < len(mthds) {
+        m = mthds[i]
+        if m.name == name {
+            sm = new structMemb
+            sm.name = m.name
+            sm.type = m.returns.type
+            sm.isFn = true
+            return sm
+        }
+        i++
+    }
     return null
 }
 

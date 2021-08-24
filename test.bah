@@ -1,5 +1,9 @@
-#include "builtin.bah"
-
-main() {
-    printf("test"+" "+"bah")
+struct test {
+    c: int
+    b() {
+        i = 0
+    }
+    a(i int) {
+        i = 1
+    }
 }

@@ -55,6 +55,8 @@ getCType(t cpstring, elems Elems*) string {
         tp.replace("byte", "unsigned char")
     } else if ctp.compare("bool") {
         tp.replace("bool", "int")
+    } else if ctp.compare("char") {
+        //do nothing for now
     } else {
         
         s = searchStruct(ctp, elems)

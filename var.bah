@@ -104,3 +104,5 @@ getTypeFromToken(t Tok*, strict bool, elems Elems*) cpstring {
     throwErr(t, "Cannot use {TOKEN} as value.")
 
 }
+
+
