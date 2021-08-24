@@ -269,6 +269,95 @@ parseArrayType(line []Tok, elems Elems*) []Tok {
     return nl
 }
 
+parseBool(line []Tok, elems Elems*) []Tok {
+    nl = []Tok
+
+    comparators = []cpstring{"==", "!=", ">", "<", "<=", ">="}
+    compSep = []cpstring{"||", "&&"}
+
+    i=0; for i < len(line) {
+        t = line[i]
+
+        if inArrayStr(t.cont, comparators) {
+            if i == 0 {
+                throwErr(&t, "Cannot use {TOKEN} to compare with nothing.")
+            }
+            pt = nl[len(nl)-1]
+            max = i + 1
+            if max >= len(line) {
+                throwErr(&t, "Cannot use {TOKEN} to compare with nothing.")
+            }
+            nt = line[i+1]
+            ptt = getTypeFromToken(&pt, true, elems)
+            ntt = getTypeFromToken(&nt, true, elems)
+            if ptt != ntt {
+                throwErr(&nt, "Cannot compare {TOKEN} ("+ntt+") to "+ptt+".")
+            }
+            if ptt == "cpstring" {
+                if t.cont == "==" {
+                    pt.cont = "(strcmp("+pt.cont+", "+nt.cont+") == 0)"
+                } else if t.cont == "!=" {
+                    pt.cont = "(strcmp("+pt.cont+", "+nt.cont+") != 0)"
+                } else if t.cont == ">" {
+                    pt.cont = "(strlen("+pt.cont+") > srtlen("+nt.cont+"))"
+                } else if t.cont == "<" {
+                    pt.cont = "(strlen("+pt.cont+") < srtlen("+nt.cont+"))"
+                } else if t.cont == ">=" {
+                    pt.cont = "(strlen("+pt.cont+") >= srtlen("+nt.cont+"))"
+                } else if t.cont == "<=" {
+                    pt.cont = "(strlen("+pt.cont+") <= srtlen("+nt.cont+"))"
+                }
+            } else {
+                pt.cont = "(" + pt.cont + t.cont + nt.cont + ")"
+            }
+            pt.bahType = "bool"
+            nl[len(nl)-1] = pt
+            i = i + 2
+            continue
+        }
+
+        nl[len(nl)] = t
+        i++
+    }
+
+
+    clear(line)
+    append(line, nl)
+    clear(nl)
+    i=0; for i < len(line) {
+        t = line[i]
+        if inArrayStr(t.cont, compSep) {
+            if i == 0 {
+                throwErr(&t, "Cannot use {TOKEN} to compare with nothing.")
+            }
+            pt = nl[len(nl)-1]
+            max = i + 1
+            if max >= len(line) {
+                throwErr(&t, "Cannot use {TOKEN} to compare with nothing.")
+            }
+            nt = line[i+1]
+            ptt = getTypeFromToken(&pt, true, elems)
+            ntt = getTypeFromToken(&nt, true, elems)
+            if ptt != "bool" {
+                throwErr(&pt, "Cannot compare {TOKEN} that is not a bool.")
+            }
+            if ntt != "bool" {
+                throwErr(&nt, "Cannot compare {TOKEN} that is not a bool.")
+            }
+            pt.cont = "(" + pt.cont + t.cont + nt.cont + ")"
+            pt.bahType = "bool"
+            nl[len(nl)-1] = pt
+            i = i + 2
+            continue
+
+        }
+
+        nl[len(nl)] = t
+        i++
+    }
+
+    return nl
+}
 
 //Parser for every line types
 
@@ -556,6 +645,7 @@ prePross(line []Tok, elems Elems*) []Tok {
     line = parseStructVars(line, elems)
     line = parseCast(line, elems)
     line = parseOperations(line, elems)
+    line = parseBool(line, elems)
     return line
 }
 

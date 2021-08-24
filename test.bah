@@ -1,6 +1,6 @@
 struct test {
     a: int = 5
-    b: cpstring
+    b: cpstring = "dsa"
     e: test
 }
 
@@ -13,4 +13,6 @@ a = 4+5
 fads = b{}
 a = a + fads.c.a
 arr = []int{5, 543 + 54, 4/5}
-bl = 4 == 8
+if "test" != fads.c.b && 3 == 4 {
+
+}
