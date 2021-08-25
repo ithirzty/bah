@@ -83,8 +83,8 @@ lexer(s cpstring) []Tok {
     enclavers = []char{'(', ')', '{', '}', '[', ']'}
     syntaxes = []char{'!', '=', '|', <char>38, '%', '+', '-', '*', '/', ',', '<', '>', ':', <char>59}
                                      //&                                                    //;
-    keywords = []cpstring{"if", "else", "for", "struct", "const", "return", "extend", "new", "break", "continue", "default", "switch", "case", "while", "typedef", "func"}
-    bools = []cpstring{"true", "false"}
+    keywords = []cpstring{"if", "else", "for", "struct", "const", "return", "extend", "new", "break", "continue", "default", "switch", "case", "while", "typedef", "function"}
+                        //  x                      x        x         x         x       x                             -          -        -       -         -           
     varChars = []char{'_', '-'}
     seps = []char{'.'}
 
@@ -101,6 +101,10 @@ lexer(s cpstring) []Tok {
                         break
                     }
                     i++
+                }
+                max = code.length - 1
+                if i >= max {
+                    break
                 }
             }
         }
@@ -182,6 +186,11 @@ lexer(s cpstring) []Tok {
                 if inArray(c, syntaxes) == false {
                     break
                 }
+                if c != '=' {
+                    if c != '>' {
+                        break
+                    }
+                }
                 memory[len(memory)] = c
                 i++
             }
@@ -199,6 +208,15 @@ lexer(s cpstring) []Tok {
 
                 if isAlphaNumeric(c) == 0 {
                     if inArray(c, varChars) == false {
+                        if c == '>' {
+                            lc = memory[len(memory)-1]
+                            if lc == '-' {
+                                memory[len(memory)-1] = <char>0
+                                i--
+                                break
+                            }
+                        }
+                        
                         break
                     }
                 }
@@ -213,9 +231,10 @@ lexer(s cpstring) []Tok {
             
             if inArrayStr(memstr, keywords) {
                 currentType = TOKEN_TYPE_KEYWORD
-            } else if inArrayStr(memstr, bools) {
-                currentType = TOKEN_TYPE_BOOL
             }
+            // else if inArrayStr(memstr, bools) {
+            //     currentType = TOKEN_TYPE_BOOL
+            // }
 
             tokens[len(tokens)] = makeToken(pos, lineNb, memory, currentType)
 

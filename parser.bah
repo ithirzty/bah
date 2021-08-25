@@ -28,6 +28,8 @@ const LINE_TYPE_CLIB = <lineType>7
 const LINE_TYPE_RETURN = <lineType>8
 const LINE_TYPE_IF = <lineType>9
 const LINE_TYPE_ELSE = <lineType>10
+const LINE_TYPE_MACRO = <lineType>11
+const LINE_TYPE_FOR = <lineType>12
 
 getLineType(line []Tok) lineType {
     ft = line[0]
@@ -48,7 +50,9 @@ getLineType(line []Tok) lineType {
             return LINE_TYPE_IF
         } else if ft.cont == "else" {
             return LINE_TYPE_ELSE
-        } 
+        } else if ft.cont == "#macro" {
+            return LINE_TYPE_MACRO
+        }
     } else if ft.type == TOKEN_TYPE_VAR {
         if len(line) == 1 {
             throwErr(&ft, "Cannot declare var {TOKEN} without a type.")
@@ -73,7 +77,6 @@ getLineType(line []Tok) lineType {
 //Inline parsing
 parseCast(line []Tok, elems Elems*) []Tok {
     nl = []Tok
-
     i=0; for i < len(line) {
         t = line[i]
         if t.type == TOKEN_TYPE_SYNTAX {
@@ -110,6 +113,14 @@ parseCast(line []Tok, elems Elems*) []Tok {
 
 #define parseLines(ts []Tok, elems Elems*)
 includeFile(ccstr cpstring, elems Elems*) bool {
+    includes = compilerState.includes
+    i=0; for i < len(includes) {
+        if includes[i] == ccstr {
+            return true
+        }
+        i++
+    }
+    
     fm = fileMap{}
     fileName = BAH_DIR + ccstr
     f = fm.open(fileName)
@@ -122,6 +133,7 @@ includeFile(ccstr cpstring, elems Elems*) bool {
     }
     oFile = compilerState.currentFile
     compilerState.currentFile = fileName
+    includes[len(includes)] = ccstr
     tokens = lexer(f)
     fm.close()
     if len(tokens) == 0 {
@@ -166,6 +178,16 @@ parseOperations(line []Tok, elems Elems*) []Tok {
                 }
                 pt = nl[len(nl)-1]
                 nt = line[i+1]
+                if t.cont == "-" {
+                    if nt.type == TOKEN_TYPE_INT {
+                        if pt.isValue == false {
+                            nt.cont = t.cont + nt.cont
+                            nl[len(nl)] = nt
+                            i = i + 2
+                            continue
+                        }
+                    }
+                }
                 ptt = getTypeFromToken(&pt, true, elems)
                 ntt = getTypeFromToken(&nt, true, elems)
                 if ptt != ntt {
@@ -505,17 +527,6 @@ parseFnCall(l []Tok, elems Elems*) []Tok {
                     nbPar = 1
                     i++
                     fnName = ot.cont
-                    if fnName == "noCheck" {
-                        t = l[i-1]
-                        i=0;for i < len(l) {
-                            it = l[i]
-                            t.cont = t.cont + " " + it.cont
-                            i++
-                        }
-                        clear(nl)
-                        nl[0] = t
-                        return nl
-                    }
                     fn = searchFunc(fnName, elems)
                     if fn == null {
                         throwErr(&ot, "Unknown function {TOKEN}.")
@@ -564,6 +575,20 @@ parseFnCall(l []Tok, elems Elems*) []Tok {
                         }
                         i++    
                     }
+
+                    if fnName == "noCheck" {
+                        j=0; for j < len(memory) {
+                            t = memory[j]
+                            ot.cont = ot.cont + " " + t.cont
+                            j++
+                        }
+                        ot.cont = ot.cont
+                        ot.type = TOKEN_TYPE_FUNC
+                        ot.bahType = ""
+                        nl[len(nl)] = ot
+                        continue
+                    }
+
 
                     memory = parseFnCall(memory, elems)
                     memory = parseArrayType(memory, elems)
@@ -712,11 +737,18 @@ parseVar(l []Tok, elems Elems*) {
                     throwErr(&t, "Cannot use {TOKEN} ("+tp+") as "+v.type+".")
                 }
             } else {
-                if strlen(v.type) == 0 {
-                    v.type = tp
-                } else {
+                if strlen(currentType) != 0 {
                     if tp != v.type {
-                        throwErr(&t, "Cannot use {TOKEN} ("+tp+") as "+v.type+".")
+                        //TODO: type warning not error
+                        //throwErr(&t, "Cannot use {TOKEN} ("+tp+") as "+v.type+".")
+                    }
+                } else {
+                    if strlen(v.type) == 0 {
+                        v.type = tp
+                    } else {
+                        if tp != v.type {
+                            throwErr(&t, "Cannot use {TOKEN} ("+tp+") as "+v.type+".")
+                        }
                     }
                 }
             }
@@ -810,6 +842,7 @@ parseVar(l []Tok, elems Elems*) {
         if strlen(currentType) > 0 {
             v.type = currentType
         }
+
         vts = string(v.type)
         vts.replace(" ", "")
         v.type = vts.content
@@ -864,6 +897,26 @@ parseFnHeader(prev cpstring, l []Tok, i int*, fn func*, elems Elems*) cpstring {
             }
             argType = t.cont
 
+            j++
+            t = l[j]
+            if t.cont != "," {
+                if t.cont == ")" {
+                    argument = new variable
+                    argument.name = argName
+                    argument.type = argType
+                    arguments[len(arguments)] = argument
+                    
+                    argCType = setCType(argument, elems)
+                    code = code + argCType
+                    code += ")"
+                    break
+                } else {
+                    //throwErr(&t, "Need a coma before next argument {TOKEN}.")
+                    argType = argType + t.cont
+                }
+            } else {
+                code += ","
+            }
             argument = new variable
             argument.name = argName
             argument.type = argType
@@ -871,20 +924,6 @@ parseFnHeader(prev cpstring, l []Tok, i int*, fn func*, elems Elems*) cpstring {
             
             argCType = setCType(argument, elems)
             code = code + argCType
-
-            j++
-            t = l[j]
-            if t.cont != "," {
-                if t.cont == ")" {
-                    code += ")"
-                    break
-                } else {
-                    throwErr(&t, "Need a coma before next argument {TOKEN}.")
-                }
-            } else {
-                code += ","
-                
-            }
 
             j++
         }
@@ -1184,70 +1223,8 @@ parseDefine(l []Tok, elems Elems*) {
     if st.cont == "(" {
         
         fn = new func
-        ft = l[1]
-        fn.name = ft.cont
-        arguments = []variable*
-        i=3
-        
-        t = l[i]
-        if t.cont != ")" {
-
-            for i < len(l) {
-                t = l[i]
-                if t.type != TOKEN_TYPE_VAR {
-                    throwErr(&t, "Cannot use {TOKEN} as argument name.")
-                }
-                argName = t.cont
-
-                i++
-                if i >= len(l) {
-                    throwErr(&t, "Cannot declare argument {TOKEN} without a type.")
-                }
-                t = l[i]
-                if t.type != TOKEN_TYPE_VAR {
-                    throwErr(&t, "Cannot use {TOKEN} as argument type.")
-                }
-                argType = t.cont
-
-                argument = new variable
-                argument.name = argName
-                argument.type = argType
-                arguments[len(arguments)] = argument
-                
-                i++
-                t = l[i]
-                if t.cont != "," {
-                    if t.cont == ")" {
-                        break
-                    } else {
-                        throwErr(&t, "Need a coma before next argument {TOKEN}.")
-                    }
-                }
-
-                i++
-            }
-        }
-
-        i++
-
-        returns = new variable
-        returns.type = ""
-        for i < len(l) {
-            t = l[i]
-            returns.type = returns.type + t.cont
-            i++
-        }
-        if strlen(returns.type) {
-            rts = string(returns.type)
-            rts.replace(" ", "")
-            returns.type = rts.content
-        }
-        returns.name = fn.name
-        fn.returns = returns
-        fn.args = arguments
-
-        fnRetType = getCType(returns.type, elems)
-        fnRetTypeStr = fnRetType.content
+        i = 1
+        code = parseFnHeader("", l, &i, fn, elems)
         fns = elems.fns
         fn.isBinding = true
         fns[len(fns)] = fn
@@ -1304,6 +1281,7 @@ parseClib(line []Tok) {
 }
 
 parseConst(l []Tok, elems Elems*) {
+    l = parseCast(l, elems)
     if len(l) != 4 {
         throwErr(&l[0], "Invalid usage of {TOKEN}, must be 'const <constName> = <constValue>'. ")
     }
@@ -1323,27 +1301,39 @@ parseConst(l []Tok, elems Elems*) {
     v.isConst = true
     v.name = vart.cont
     v.type = getTypeFromToken(&valt, true, elems)
+    vars = elems.vars
+    vars[len(vars)] = v
 
     OUTPUT = OUTPUT + "#define "+v.name+" "+valt.cont+"\n"
 }
 
 parseReturn(l []Tok, elems Elems*) {
-    if len(l) != 2 {
+    if len(l) > 2 {
         throwErr(&l[0], "Invalid usage of {TOKEN}, must be 'return <returnValue>'")
-    }
-    rvt = l[1]
-    if rvt.isValue == false {
-        throwErr(&rvt, "Must be a value, not {TOKEN}.")
     }
     if currentFn == null {
         throwErr(&l[0], "Cannot return a value outside of a function.")
     }
-    tt = getTypeFromToken(&rvt, true, elems)
-    if tt != currentFn.returns.type {
-        throwErr(&rvt, "Cannot return {TOKEN} ("+tt+") as "+currentFn.returns.type+".")
+    rv = ""
+    if len(l) == 1 {
+        if strlen(currentFn.returns.type) != 0 {
+            throwErr(&l[0], "Cannot return nothing as "+currentFn.returns.type+".")
+        }
+    } else {
+        rvt = l[1]
+        if rvt.isValue == false {
+            throwErr(&rvt, "Must be a value, not {TOKEN}.")
+        }
+        rv = rvt.cont
+        tt = getTypeFromToken(&rvt, true, elems)
+        if tt != currentFn.returns.type {
+            throwErr(&rvt, "Cannot return {TOKEN} ("+tt+") as "+currentFn.returns.type+".")
+        }
     }
-    currentFn.returned = true
-    OUTPUT = OUTPUT + "return "+rvt.cont
+    if compilerState.isBranch == false {
+        currentFn.returned = true
+    }
+    OUTPUT = OUTPUT + "return "+rv+";\n"
 }
 
 parseIf(l []Tok, elems Elems*) {
@@ -1352,6 +1342,36 @@ parseIf(l []Tok, elems Elems*) {
         throwErr(&ft, "Invalid usage of {TOKEN}, must be 'if <condition> {<code>}'")
     }
     condt = l[1]
+    if condt.bahType != "bool" {
+        if condt.bahType != "int" {
+            throwErr(&condt, "Cannot use {TOKEN} as condition in if statement.")
+        }
+    }
+    t = l[2]
+    if t.cont != "{" {
+        throwErr(&t, "Expected '{' not {TOKEN} after condtition in if statement.")
+    }
+    tokens = []Tok
+    max = len(l) - 1
+    i=3;for i < max {
+        t = l[i]
+        tokens[len(tokens)] = t
+        i++
+    }
+    OUTPUT = OUTPUT + "if ("+condt.cont+") {\n"
+
+    ifElems = new Elems
+    append(ifElems.vars, elems.vars)
+    append(ifElems.structs, elems.structs)
+    append(ifElems.types, elems.types)
+    append(ifElems.fns, elems.fns)
+
+    compilerState.isBranch = true
+    parseLines(tokens, ifElems)
+    compilerState.isBranch = false
+    OUTPUT = OUTPUT + "}\n"
+
+    
 }
 
 prePross(line []Tok, elems Elems*) []Tok {
@@ -1370,10 +1390,13 @@ parseFnDeclare(l []Tok, elems Elems*) {
     fn = new func
     ft = l[0]
     code = parseFnHeader("", l, &i, fn, elems)
+    fn.line = ft.line
+    fn.file = compilerState.currentFile
     ogFn = searchFunc(fn.name, elems)
     if ogFn != null {
         if ogFn.isBinding == false {
-            throwErr(&ft, "Cannot redefine function {TOKEN}.")
+            lineStr = intToStr(ogFn.line)
+            throwErr(&ft, "Cannot redeclare function {TOKEN}, previous declaration: "+ogFn.file+":"+lineStr+".")
         }
     }
     returns = fn.returns
@@ -1463,10 +1486,11 @@ parseLine(line []Tok, elems Elems*) {
     } else if ltp == LINE_TYPE_CONST {
         parsed = true
         parseConst(line, elems)
+    } else if ltp == LINE_TYPE_MACRO {
+        return
     } else if ltp != LINE_TYPE_FN_DECL {
         line = prePross(line, elems)
     }
-
     if ltp == LINE_TYPE_VAR {
         parsed = true
         parseVar(line, elems)
@@ -1486,6 +1510,8 @@ parseLine(line []Tok, elems Elems*) {
     } else if ltp == LINE_TYPE_IF {
         parsed = true
         parseIf(line, elems)
+    } else if ltp == LINE_TYPE_ELSE {
+        debugLine(line)
     }
     
     if parsed == false {

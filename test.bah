@@ -10,4 +10,7 @@ struct test {
 main() {
     t = new test
     t.add(3)
+    if t.i == 4 {
+        t.add(5)
+    }
 }

@@ -3,8 +3,7 @@
 
 SOURCE string
 OUTPUT = "
-#define true 1
-#define false 0
+#include <gc.h>
 #define noCheck(v) v
 #define array(type)	\
     struct{	\
@@ -45,6 +44,8 @@ struct func {
     returned: bool
     isBinding: bool = false
     from: cpstring = ""
+    file: cpstring = ""
+    line: int = 1
 }
 
 struct cStruct {
@@ -67,6 +68,7 @@ struct compilerStateTag {
     includes: []cpstring
     cLibs: []cpstring
     currentFile: cpstring
+    isBranch: bool = false
 
 }
 

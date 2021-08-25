@@ -4,6 +4,7 @@
 #include "./lexer.bah"
 
 throwErr(tp ptr, format cpstring) {
+    //println(OUTPUT)
     str = ""
     info = ""
     if tp != null {

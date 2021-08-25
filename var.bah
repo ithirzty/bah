@@ -144,7 +144,11 @@ getTypeFromToken(t Tok*, strict bool, elems Elems*) cpstring {
 
 
 searchFunc(name cpstring, elems Elems*) func* {
-    ogName = name
+    if name == "noCheck" {
+        fn = new func
+        fn.name = "noCheck"
+        return fn
+    }
     n = string(name)
     if hasStructSep(n) {
         fnName = splitStructSepAfter(n)
