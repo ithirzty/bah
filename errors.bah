@@ -4,6 +4,9 @@
 #include "./lexer.bah"
 
 throwErr(tp ptr, format cpstring) {
+    str = ""
+    info = ""
+    if tp != null {
     fm = fileMap{}
     fileSrcStr = fm.open(compilerState.currentFile)
     fileSrc = string(fileSrcStr)
@@ -46,6 +49,7 @@ throwErr(tp ptr, format cpstring) {
 
     str = arrToStr(line)
     info = intToStr(t.line)
+    }
     println("\e[1;31m[ERROR]\e[0m "+compilerState.currentFile+":" + info + "\n\e[1;37m\t" + str + "\e[0m\n" + format)
     exit(1)
 

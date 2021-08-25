@@ -9,28 +9,80 @@
 #include "./fns.bah"
 
 searchVar(name cpstring, elems Elems*) variable* {
+    ogName = name
     n = string(name)
     n.replace("&", "")
     n.replace("*", "")
     name = n.content
-    if n.count(".") {
-        rn = string(splitStringBefore(n, "."))
+    if hasStructSep(n) {
+        rn = splitStructSepBefore(n)
         name = rn.content
-        n.trimLeft(rn.length+1)
+        n.trimLeft(rn.length)
+        if n.hasPrefix(".") {
+            n.trimLeft(1)
+        } else {
+            n.trimLeft(2)
+        }
         membs = n.content
         v = searchVar(name, elems)
         s = searchStruct(v.type, elems)
         memb = searchStructMemb(membs, s, elems)
+        if memb == null {
+            return null
+        }
         v = new variable
         v.name = memb.name
         v.type = memb.type
+        v.name = ogName
+
+        r = v.type
+        tcc = string(ogName)
+        if tcc.count("&") {
+            r += "*"
+        }
+        nbUnaries = tcc.count("*")
+        if nbUnaries {
+            ct = string(r)
+            pointerLevel = ct.count("*")
+            if pointerLevel < nbUnaries {
+                throwErr(null, "Cannot use '*' on "+v.name+" because it is not pointer.")
+            }
+            ct.trimRight(nbUnaries)
+            r = ct.str()
+        }
+        v.type = r
+        v.name = ogName
+
         return v
     }
 
     i=0; for i < len(elems.vars) {
         v = elems.vars[i]
         if v.name == name {
-            return v
+
+            nv = new variable
+            nv.type = v.type
+            nv.name = v.name
+            r = nv.type
+            tcc = string(ogName)
+            if tcc.count("&") {
+                r += "*"
+            }
+
+            nbUnaries = tcc.count("*")
+            if nbUnaries {
+                ct = string(r)
+                pointerLevel = ct.count("*")
+                if pointerLevel < nbUnaries {
+                    throwErr(null, "Cannot use '*' on "+v.name+" because it is not pointer.")
+                }
+                ct.trimRight(nbUnaries)
+                r = ct.str()
+            }
+            nv.type = r
+            nv.name = ogName
+
+            return nv
         }
         i++
     }
@@ -65,23 +117,7 @@ getTypeFromToken(t Tok*, strict bool, elems Elems*) cpstring {
                 throwErr(t, "Cannot use {TOKEN} because it does not have any type.")
             }
         }
-        r = v.type
-        tcc = string(t.cont)
-        if tcc.count("&") {
-            r += "*"
-        }
-
-        nbUnaries = tcc.count("*")
-        if nbUnaries {
-            ct = string(v.type)
-            pointerLevel = ct.count("*")
-            if pointerLevel < nbUnaries {
-                throwErr(t, "Cannot use '*' on {TOKEN} because it is not pointer.")
-            }
-            ct.trimRight(nbUnaries)
-            r = ct.str()
-        }
-        
+        r = v.type        
         return r
     }
 
@@ -106,3 +142,33 @@ getTypeFromToken(t Tok*, strict bool, elems Elems*) cpstring {
 }
 
 
+
+searchFunc(name cpstring, elems Elems*) func* {
+    ogName = name
+    n = string(name)
+    if hasStructSep(n) {
+        fnName = splitStructSepAfter(n)
+        n.trimRight(fnName.length)
+        c = n.charAt(n.length-1)
+        if c == '.' {
+            n.trimRight(1)
+        } else {
+            n.trimRight(2)
+        }
+        v = searchVar(n, elems)
+        s = searchStruct(v.type, elems)
+        name = fnName.content
+        name = s.name+"__"+name
+
+    }
+    
+    fns = elems.fns
+    i=0; for i < len(fns) {
+        fn = fns[i]
+        if fn.name == name {
+            return fn
+        }
+        i++
+    }
+    return null
+}

@@ -3,8 +3,49 @@
 
 #include "./globals.bah"
 
+hasStructSep(n string) bool {
+    if n.count(".") {
+        return true
+    }
+    if n.count("->") {
+        return true
+    }
+    return false
+}
+
+splitStructSepBefore(n string) string {
+    
+    if n.count(".") {
+        res = string(splitStringBefore(n, "."))
+        return res
+    }
+    if n.count("->") {
+        res = string(splitStringBefore(n, "->"))
+        return res
+    }
+}
+
+splitStructSepAfter(n string) string {
+    i=n.length; for i > 0 {
+        c = n.charAt(i)
+        if c == '.' {
+            break
+        } else if c == '>' {
+            pc = n.charAt(i-1)
+            if pc == '-' {
+                break
+            }
+        }
+        i--
+    }
+    i++
+    n.trimLeft(i)
+    return n
+}
+
 searchStruct(name cpstring, elems Elems*) cStruct* {
     n = string(name)
+    n.replace("&", "")
     n.replace("*", "")
     name = n.content
     i=0; for i < len(elems.structs) {
@@ -19,10 +60,15 @@ searchStruct(name cpstring, elems Elems*) cStruct* {
 
 searchStructMemb(name cpstring, s cStruct*, elems Elems*) structMemb* {
     n = string(name)
-    if n.count(".") {
-        rn = string(splitStringBefore(n, "."))
+    if hasStructSep(n) {
+        rn = splitStructSepBefore(n)
         name = rn.content
-        n.trimLeft(rn.length+1)
+        n.trimLeft(rn.length)
+        if n.hasPrefix(".") {
+            n.trimLeft(1)
+        } else {
+            n.trimLeft(2)
+        }
         membs = n.content
         memb = searchStructMemb(name, s, elems)
         if n.length > 0 {
@@ -68,6 +114,13 @@ declareStructMethods(v variable*, s cStruct*) cpstring {
         if strlen(m.def) > 0 {
             code = code + v.name + sep + m.name + " = " + m.def + ";\n"
         }
+        i++
+    }
+
+    methods = s.methods
+    i=0; for i < len(methods) {
+        m = methods[i]
+            code = code + v.name + sep + m.name + " = " + s.name + "__" + m.name + ";\n"
         i++
     }
 

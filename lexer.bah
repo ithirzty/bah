@@ -85,11 +85,25 @@ lexer(s cpstring) []Tok {
                                      //&                                                    //;
     keywords = []cpstring{"if", "else", "for", "struct", "const", "return", "extend", "new", "break", "continue", "default", "switch", "case", "while", "typedef", "func"}
     bools = []cpstring{"true", "false"}
+    varChars = []char{'_', '-'}
     seps = []char{'.'}
 
 
     i=0; for i < code.length {
         c = code.charAt(i)
+
+        if c == '/' {
+            nc = code.charAt(i+1)
+            if nc == '/' {
+                for i < code.length {
+                    c = code.charAt(i)
+                    if c == <char>10 {
+                        break
+                    }
+                    i++
+                }
+            }
+        }
 
         if c == <char>10 {
             lineNb++
@@ -176,7 +190,7 @@ lexer(s cpstring) []Tok {
         } else if inArray(c, seps) {
             memory[0] = c
             tokens[len(tokens)] = makeToken(i, lineNb, memory, TOKEN_TYPE_SEP)
-        } else if isAlphaNumeric(c) {
+        } else if isAlphaNumeric(c) || inArray(c, varChars) {
             memory[0] = c
             pos = i
             i++
@@ -184,7 +198,9 @@ lexer(s cpstring) []Tok {
                 c = code.charAt(i)
 
                 if isAlphaNumeric(c) == 0 {
-                    break
+                    if inArray(c, varChars) == false {
+                        break
+                    }
                 }
 
                 memory[len(memory)] = c

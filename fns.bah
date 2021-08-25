@@ -3,14 +3,3 @@
 
 #include "./globals.bah"
 
-searchFunc(name cpstring, elems Elems*) func* {
-    fns = elems.fns
-    i=0; for i < len(fns) {
-        fn = fns[i]
-        if fn.name == name {
-            return fn
-        }
-        i++
-    }
-    return null
-}

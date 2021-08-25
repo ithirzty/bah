@@ -1,9 +1,13 @@
 struct test {
-    c: int
-    b() {
-        i = 0
+    i: int
+    add(nb int) {
+        this.i = this.i + 1
     }
-    a(i int) {
-        i = 1
-    }
+}
+
+#define GC_FREE(a ptr)
+
+main() {
+    t = new test
+    t.add(3)
 }

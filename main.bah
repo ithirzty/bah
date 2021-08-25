@@ -11,6 +11,7 @@ const BAH_DIR = "/opt/bah/"
 #include "./errors.bah"
 #include "./parser.bah"
 
+#cLib "g"
 
 main(args []cpstring) {
     compilerState = compilerStateTag{}
@@ -31,6 +32,9 @@ main(args []cpstring) {
     }
 
     elems = new Elems
+    if includeFile("builtin.bah", elems) == false {
+        panic("Could not find std-libs, please check '"+BAH_DIR+"'")
+    }
     parseLines(tokens, elems)
 
     println(OUTPUT)
