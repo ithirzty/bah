@@ -1,11 +1,10 @@
-#include "iostream.bah"
+#define! printf(s cpstring)
 
 main() {
-    a = string("je suis une tutu")
-    arr = splitString(a, " ")
-    i=0; for i < len(arr) {
-        s = arr[i]
-        println(s.str())
-        i = i + 1
+    a = 'A
+    if a == 'B {
+        printf("yes")
+    } else {
+        printf("nope")
     }
 }

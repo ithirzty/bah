@@ -5,6 +5,7 @@
 
 #define tokenType int
 
+const TOKEN_NO_TYPE =      <tokenType>-1
 const TOKEN_TYPE_INT =     <tokenType>0
 const TOKEN_TYPE_FLOAT =   <tokenType>1
 const TOKEN_TYPE_VAR =     <tokenType>2
@@ -20,7 +21,7 @@ const TOKEN_TYPE_FUNC =    <tokenType>11
 
 struct Tok {
     cont: cpstring = ""
-    type: tokenType = <tokenType>-1
+    type: tokenType = TOKEN_NO_TYPE
     pos: int = 0
     line: int = 1
     bahType: cpstring = ""
@@ -33,7 +34,7 @@ inArray(needle char, arr []char) bool {
         if needle == arr[i] {
             return true
         }
-        i++
+        i = i + 1
     }
     return false
 }
@@ -43,7 +44,7 @@ inArrayStr(needle cpstring, arr []cpstring) bool {
         if needle == arr[i] {
             return true
         }
-        i++
+        i = i + 1
     }
     return false
 }
@@ -71,6 +72,15 @@ makeToken(pos int, lineNb int, cont []char, type tokenType) Tok {
     return t
 }
 
+isMinus(c char, nc char) bool {
+    if c == '-' {
+        if isNumber(nc) {
+            return true
+        }
+    }
+    return false
+}
+
 lexer(s cpstring) []Tok {
     tokens = []Tok
     
@@ -95,7 +105,11 @@ lexer(s cpstring) []Tok {
 
     i=0; for i < code.length {
         c = code.charAt(i)
-
+        nci = i + 1
+        nc char = <char>0
+        if nci < code.length {
+            nc = code.charAt(i+1)
+        }
         if c == '/' {
             nc = code.charAt(i+1)
             if nc == '/' {
@@ -104,7 +118,7 @@ lexer(s cpstring) []Tok {
                     if c == <char>10 {
                         break
                     }
-                    i++
+                    i = i + 1
                 }
                 max = code.length - 1
                 if i >= max {
@@ -121,7 +135,7 @@ lexer(s cpstring) []Tok {
         if c == <char>34 {
             pos = i
             memory[0] = c
-            i++
+            i = i + 1
             for i < code.length {
                 c = code.charAt(i)
                 if c == <char>34 {
@@ -132,14 +146,14 @@ lexer(s cpstring) []Tok {
                     }
                 }
                 memory[len(memory)] = c
-                i++
+                i = i + 1
             }
             tokens[len(tokens)] = makeToken(pos, lineNb, memory, TOKEN_TYPE_STR)
-        } else if isNumber(c) {
+        } else if isNumber(c) || isMinus(c, nc) {
         //token is a number
             memory[0] = c
             pos = i
-            i++
+            i = i + 1
             currentType = TOKEN_TYPE_INT
             for i < code.length {
                 c = code.charAt(i)
@@ -149,13 +163,13 @@ lexer(s cpstring) []Tok {
                     break
                 }
                 memory[len(memory)] = c
-                i++
+                i = i + 1
             }
             i--
             tokens[len(tokens)] = makeToken(pos, lineNb, memory, currentType)
         } else if c == <char>39 {
         //is a character
-            i++
+            i = i + 1
             c = code.charAt(i)
             toInt = intToStr(<int>c)
             memory = strToArr(toInt)
@@ -165,14 +179,14 @@ lexer(s cpstring) []Tok {
         //is a hash keyword
             pos = i
             memory[0] = c
-            i++
+            i = i + 1
             for i < code.length {
                 c = code.charAt(i)
                 if isAlphaNumeric(c) == 0 {
                     break
                 }
                 memory[len(memory)] = c
-                i++
+                i = i + 1
             }
             i--
             memstr = arrAsStr(memory)
@@ -185,7 +199,7 @@ lexer(s cpstring) []Tok {
         //token is a syntax element
             memory[0] = c
             pos = i
-            i++
+            i = i + 1
             for i < code.length {
                 c = code.charAt(i)
                 if inArray(c, syntaxes) == false {
@@ -197,7 +211,7 @@ lexer(s cpstring) []Tok {
                     }
                 }
                 memory[len(memory)] = c
-                i++
+                i = i + 1
             }
             i--
             tokens[len(tokens)] = makeToken(pos, lineNb, memory, TOKEN_TYPE_SYNTAX)
@@ -207,7 +221,7 @@ lexer(s cpstring) []Tok {
         } else if isAlphaNumeric(c) || inArray(c, varChars) {
             memory[0] = c
             pos = i
-            i++
+            i = i + 1
             for i < code.length {
                 c = code.charAt(i)
 
@@ -227,7 +241,7 @@ lexer(s cpstring) []Tok {
                 }
 
                 memory[len(memory)] = c
-                i++
+                i = i + 1
             }
             i--
             currentType = TOKEN_TYPE_VAR
@@ -245,7 +259,7 @@ lexer(s cpstring) []Tok {
 
         }
 
-        i++
+        i = i + 1
     }
 
     return tokens

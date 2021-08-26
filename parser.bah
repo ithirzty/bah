@@ -1358,6 +1358,7 @@ parseStruct(l []Tok, elems *Elems) {
         for i < len(l) {
             t = l[i]
             if t.cont == "=" {
+                i--
                 break
             }
             if t.line != currentLine {
