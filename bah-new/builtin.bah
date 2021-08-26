@@ -1,0 +1,42 @@
+#include "<signal.h>"
+#include "<string.h>"
+#include "memory.bah"
+
+
+#define signal(sig int, hdl ptr)
+
+#macro a++ => a = a + 1
+#macro a += b* => a = a + b
+#macro a-- => a = a - 1
+#macro a -= b* => a = a - b
+
+//#cLib "Wl,-eentry main"
+
+#define strlen(a cpstring) int
+#define strncpy(a cpstring, b cpstring, l int)
+#define strcat(a cpstring, b cpstring)
+
+//Function used by the compiler when concatenating cpstrings.
+//You can use it as a function or do cpstring+cpstring.
+concatCPSTRING(a cpstring, b cpstring) cpstring {
+	lenA = strlen(a)
+	lenB = strlen(b)
+	r cpstring = memoryAlloc(lenA + lenB + 1)
+	strncpy(r,a,lenA)
+	strcat(r,b)
+	return r
+}
+
+//Funcion used by the compiler to declare a cpstring.
+//It allocates memory for the cpstring.
+__STR(a cpstring) cpstring {
+	lenA = strlen(a)
+	r cpstring = memoryAlloc(lenA+1)
+	strncpy(r,a,lenA)
+	return r
+}
+
+const null = <ptr>0
+
+const true = <bool>1
+const false = <bool>0

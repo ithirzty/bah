@@ -81,6 +81,13 @@ isMinus(c char, nc char) bool {
     return false
 }
 
+lexerErr(line int, pos int, msg cpstring) {
+    lineStr = intToStr(line)
+    posStr = intToStr(pos)
+    println("\e[1;31m[LEXER-ERROR]\e[0m "+compilerState.currentFile+":"+lineStr+":"+posStr+"\n\e[0m\n"+msg)
+    exit(1)
+}
+
 lexer(s cpstring) []Tok {
     tokens = []Tok
     
@@ -99,7 +106,7 @@ lexer(s cpstring) []Tok {
                         // x: done
                         //  : not done
                         // -: not planned
-    varChars = []char{'_', '-'}
+    varChars = []char{'_'}
     seps = []char{'.'}
 
 
@@ -128,7 +135,7 @@ lexer(s cpstring) []Tok {
         }
 
         if c == <char>10 {
-            lineNb++
+            lineNb = lineNb + 1
         }
 
         //token is a string
@@ -139,7 +146,7 @@ lexer(s cpstring) []Tok {
             for i < code.length {
                 c = code.charAt(i)
                 if c == <char>34 {
-                    pc = code.charAt(i-1) 
+                    pc = code.charAt(i - 1) 
                     if pc != <char>92 {
                         memory[len(memory)] = c
                         break
@@ -165,14 +172,19 @@ lexer(s cpstring) []Tok {
                 memory[len(memory)] = c
                 i = i + 1
             }
-            i--
+            i = i - 1
             tokens[len(tokens)] = makeToken(pos, lineNb, memory, currentType)
         } else if c == <char>39 {
         //is a character
             i = i + 1
-            c = code.charAt(i)
-            toInt = intToStr(<int>c)
+            n = code.charAt(i)
+            toInt = intToStr(<int>nc)
             memory = strToArr(toInt)
+            i = i + 1
+            c = code.charAt(i)
+            if c != <char>39 {
+                lexerErr(lineNb, i, "Missing closing tag in char declaration.")
+            }
             
             tokens[len(tokens)] = makeToken(i-1, lineNb, memory, TOKEN_TYPE_CHAR)
         } else if c == <char>35 {
@@ -188,7 +200,7 @@ lexer(s cpstring) []Tok {
                 memory[len(memory)] = c
                 i = i + 1
             }
-            i--
+            i = i - 1
             memstr = arrAsStr(memory)
             tokens[len(tokens)] = makeToken(pos, lineNb, memory, TOKEN_TYPE_KEYWORD)
         } else if inArray(c, enclavers) {
@@ -200,12 +212,21 @@ lexer(s cpstring) []Tok {
             memory[0] = c
             pos = i
             i = i + 1
+            fc = c
             for i < code.length {
                 c = code.charAt(i)
                 if inArray(c, syntaxes) == false {
                     break
                 }
-                if c != '=' {
+                if c == '|' {
+                    if fc != c {
+                        break
+                    }
+                } else if c == '&' {
+                    if fc != c {
+                        break
+                    }
+                } else if c != '=' {
                     if c != '>' {
                         break
                     }
@@ -213,7 +234,7 @@ lexer(s cpstring) []Tok {
                 memory[len(memory)] = c
                 i = i + 1
             }
-            i--
+            i = i - 1
             tokens[len(tokens)] = makeToken(pos, lineNb, memory, TOKEN_TYPE_SYNTAX)
         } else if inArray(c, seps) {
             memory[0] = c
@@ -231,7 +252,7 @@ lexer(s cpstring) []Tok {
                             lc = memory[len(memory)-1]
                             if lc == '-' {
                                 memory[len(memory)-1] = <char>0
-                                i--
+                                i = i - 1
                                 break
                             }
                         }
@@ -243,7 +264,7 @@ lexer(s cpstring) []Tok {
                 memory[len(memory)] = c
                 i = i + 1
             }
-            i--
+            i = i - 1
             currentType = TOKEN_TYPE_VAR
             
             memstr = arrAsStr(memory)

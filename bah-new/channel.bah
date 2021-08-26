@@ -1,0 +1,62 @@
+#include "thread.bah"
+#include "queue.bah"
+
+//Wrapper for a channel.
+//A channel is a queue that is thread safe. It can be safely used between different threads.
+//The length of the channel can be capped thanks to the **.cap** field.
+//**The channel will need to be destroyed after its utilization.**
+//*Note: a queue/channel can only take pointers.*
+struct channel {
+    mutex: mutex
+    queue: queue*
+    cap: int = -1
+
+    //To send data to the channel.
+    //This can only send pointers.
+    send(data ptr) {
+        if this.cap != -1 {
+            for this.queue.length >= this.cap {
+            }
+        }
+        this.mutex.lock()
+        this.queue.insert(data)
+
+        this.mutex.unlock()
+    }
+
+    //To receive data (a pointer) from the channel.
+    //Note that this is a blockant operation.
+    //If no data is available the function will pause the execution of the current thread.
+    receive() ptr {
+        for this.queue.length == 0 {
+
+        }
+        this.mutex.lock()
+        data = this.queue.pop()
+        this.mutex.unlock()
+        return data
+    }
+
+    //To destroy a channel after using it. Not destroying it could result in memory leaks.
+    destroy() {
+        this.mutex.destroy()
+    }
+
+    //To get the length of the current channel.
+    //Returns the number of pointers stored inside the channel.
+    len() int {
+        l = this.queue.length
+        return l
+    }
+
+}
+
+//To initiate a channel
+//*Do not use channel{}, this will not initiate the mutex and the queue.*
+channel() channel {
+    c = channel{}
+    c.mutex = mutex()
+    c.queue = new queue
+
+    return c
+}

@@ -192,15 +192,18 @@ parseOperations(line []Tok, elems Elems*) []Tok {
                 pt = nl[len(nl)-1]
                 nt = line[i+1]
                 if t.cont == "-" {
-                    if nt.type == TOKEN_TYPE_INT {
-                        if pt.isValue == false {
-                            nt.cont = t.cont + nt.cont
-                            nl[len(nl)] = nt
-                            i = i + 2
-                            continue
+                    if pt.isValue == false {
+                        if nt.type == TOKEN_TYPE_INT {
+                            if pt.isValue == false {
+                                nt.cont = t.cont + nt.cont
+                                nl[len(nl)] = nt
+                                i = i + 2
+                                continue
+                            }
                         }
                     }
                 }
+                
                 ptt = getTypeFromToken(&pt, true, elems)
                 ntt = getTypeFromToken(&nt, true, elems)
                 if compTypes(ptt, ntt) == false {
@@ -221,6 +224,26 @@ parseOperations(line []Tok, elems Elems*) []Tok {
                 nl[len(nl)-1] = t
                 i = i + 2
                 continue
+            }
+        } 
+        else if t.isValue {
+            cmtc = string(t.cont)
+            if cmtc.hasPrefix("-") {
+                pt = nl[len(nl)-1]
+                if pt.isValue {
+                    ptt = getTypeFromToken(&pt, true, elems)
+                    ntt = getTypeFromToken(&t, true, elems)
+                    if compTypes(ptt, ntt) == false {
+                        throwErr(&t, "Cannot use {TOKEN} ("+ntt+") as "+ptt+".")
+                    }
+                    t.type = TOKEN_TYPE_VAR
+                    t.cont = pt.cont + t.cont
+                    t.bahType = ptt
+                    t.pos = pt.pos
+                    nl[len(nl)-1] = t
+                    i = i + 1
+                    continue
+                }
             }
         }
         nl[len(nl)] = t
@@ -427,10 +450,14 @@ parseBool(line []Tok, elems Elems*) []Tok {
             ptt = getTypeFromToken(&pt, true, elems)
             ntt = getTypeFromToken(&nt, true, elems)
             if ptt != "bool" {
-                throwErr(&pt, "Cannot compare {TOKEN} that is not a bool.")
+                if ptt != "int" {
+                    throwErr(&pt, "Cannot compare {TOKEN} that is not a bool.")
+                }
             }
             if ntt != "bool" {
-                throwErr(&nt, "Cannot compare {TOKEN} that is not a bool.")
+                if ntt != "int" {
+                    throwErr(&nt, "Cannot compare {TOKEN} that is not a bool.")
+                }
             }
             pt.cont = "(" + pt.cont + t.cont + nt.cont + ")"
             pt.bahType = "bool"
@@ -1576,9 +1603,10 @@ parseIf(l []Tok, elems Elems*) {
     append(ifElems.types, elems.types)
     append(ifElems.fns, elems.fns)
 
+    oldIB = compilerState.isBranch
     compilerState.isBranch = true
     parseLines(tokens, ifElems)
-    compilerState.isBranch = false
+    compilerState.isBranch = oldIB
     OUTPUT = OUTPUT + "}\n"
 
 }
@@ -1620,9 +1648,10 @@ parseElse(l []Tok, elems Elems*) {
         append(ifElems.types, elems.types)
         append(ifElems.fns, elems.fns)
 
+        oldIB = compilerState.isBranch
         compilerState.isBranch = true
         parseLines(memory, ifElems)
-        compilerState.isBranch = false
+        compilerState.isBranch = oldIB
         OUTPUT = OUTPUT + "}\n"
     }
 }
@@ -1656,11 +1685,13 @@ parseFor(l []Tok, elems Elems*) {
     append(ifElems.types, elems.types)
     append(ifElems.fns, elems.fns)
 
+    oldIB = compilerState.isBranch
+    oldIF = compilerState.isFor
     compilerState.isBranch = true
     compilerState.isFor = true
     parseLines(tokens, ifElems)
-    compilerState.isFor = false
-    compilerState.isBranch = false
+    compilerState.isFor = oldIF
+    compilerState.isBranch = oldIB
     OUTPUT = OUTPUT + "};\n"
 }
 
@@ -1746,12 +1777,6 @@ parseFnDeclare(l []Tok, elems Elems*) {
     }
     fnElems.vars = vs
     
-    j=0; for j < len(vs) {
-        v = vs[j]
-        j++
-    }
-
-
     if ogFn != null {
         ogFn.isBinding = false
         ogFn = fn

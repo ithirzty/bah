@@ -24,6 +24,7 @@ searchVar(name cpstring, elems Elems*) variable* {
         }
         tamm = n.length - i
         n.trimRight(tamm + 6)
+        name = n.str()
         v = searchVar(n, elems)
         
         vt = string(v.type)
@@ -85,8 +86,10 @@ searchVar(name cpstring, elems Elems*) variable* {
 
     i=0; for i < len(elems.vars) {
         v = elems.vars[i]
+            if v == null {
+                panic("\e[1;31m[INTERNAL COMPILER ERROR]\e[0m\n Please report the bug as 'compiler searching null var'.")    
+            }
         if v.name == name {
-
             nv = new variable
             nv.type = v.type
             nv.name = v.name

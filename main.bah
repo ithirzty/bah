@@ -4,7 +4,7 @@
 #include "exec.bah"
 
 ///////////////////////OS SPECIFIC THINGS////////////////////////
-const BAH_DIR = "/opt/bah/"
+const BAH_DIR = "/opt/bah-new/"
 
 #include "./globals.bah"
 
@@ -12,6 +12,10 @@ const BAH_DIR = "/opt/bah/"
 #include "./type.bah"
 #include "./errors.bah"
 #include "./parser.bah"
+
+
+#cLib "g"
+
 
 main(args []cpstring) {
     compilerState = compilerStateTag{}

@@ -1,0 +1,51 @@
+#include "<stdlib.h>"
+#include "time.bah"
+#include "iostream.bah"
+
+#define srand(i int)
+#define rand() int
+RAND_SEEDED = 0
+
+//Used for seeding the pseudo-random number generator.
+//If two instances of a PRNG have the same seed, they will have the same output.
+seedRandom(i int) {
+    srand(i)
+    RAND_SEEDED = 1
+}
+
+//This generates a pseudo random integer in the range of min and max.
+//*Note: this is not cryptographically safe. This output of this function can be predicted.*
+randomInRange(min int, max int) int {
+    if RAND_SEEDED == 0 {
+        srand(time(0))
+        RAND_SEEDED = 1
+    }
+
+    range = max - min
+    i = rand() % range + 1
+
+    i = i + min
+
+    return i
+}
+
+//Used for generating a random integer.
+//The ouput of this function uses the os specified way of generating a random int.
+//This is slower than the PRNG but cannot be predicted. It does not need to be seeded.
+cryptoRand() int {
+    fs = fileStream{}
+    fs.open("/dev/urandom", "r")
+    c = fs.getChar()
+    fs.close()
+    i = <int>c
+    return i
+}
+
+//Example
+// #include "iostream.bah"
+// #include "rand.bah"
+// main() {
+// i = randomInRange(0, 100)
+// s = intToString(i)
+// println(s)
+// }

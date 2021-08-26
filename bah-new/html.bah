@@ -1,0 +1,22 @@
+#include "iostream.bah"
+#include "string.bah" 
+
+struct htmlElem {
+    name: cpstring
+    attrs: array*
+    children: array*
+}
+
+parseHtmlTag(name cpstring, content cpstring) {
+    println(name)
+}
+
+parseHtml(d cpstring) htmlElem {
+    doc = string(d)
+    
+    html = htmlElem{}
+    
+    
+    
+    return html
+}

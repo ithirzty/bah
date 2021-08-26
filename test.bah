@@ -1,10 +1,16 @@
 #define! printf(s cpstring)
 
+struct Tok {
+    a: int
+}
+
+test() []Tok {
+    a = []Tok
+    te = Tok{}
+    a[len(a)] = te
+    return a
+}
+
 main() {
-    a = 'A
-    if a == 'B {
-        printf("yes")
-    } else {
-        printf("nope")
-    }
+    test()
 }

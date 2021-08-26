@@ -1,0 +1,210 @@
+#include "memory.bah"
+#include "iostream.bah"
+#include "string.bah"
+
+const FLAG_TYPE_CPSTRING = 0
+const FLAG_TYPE_INT = 1
+const FLAG_TYPE_FLOAT = 2
+const FLAG_TYPE_BOOL = 3
+
+//A wrapper for parsing the arguments of the program as flags.
+//A flag is an argument beginning by a '-'.
+//*Note: the -h/-help flag is already defined and should be redefined.*
+struct flag {
+    name: cpstring
+    help: cpstring
+    content: cpstring
+    cont_int: int
+    cont_float: float
+    isSet: int
+    type: int
+}
+
+struct flags {
+    flags: []flag*
+    args: []cpstring
+
+    //To add a flag to be parsed as a cpstring.
+    addString(name cpstring, help cpstring) {
+        f = new flag
+        f.name = name
+        f.help = help
+        f.type = FLAG_TYPE_CPSTRING
+        lf = len(this.flags)
+        this.flags[lf] = f
+    }
+
+    //To add a flag that can either be set or not.
+    //This flag cannot contain any value.
+    addBool(name cpstring, help cpstring) {
+        f = new flag
+        f.name = name
+        f.help = help
+        f.type = FLAG_TYPE_BOOL
+        lf = len(this.flags)
+        this.flags[lf] = f
+    }
+
+    //To add a flag that will be parsed as a int.
+    addInt(name cpstring, help cpstring) {
+        f = new flag
+        f.name = name
+        f.help = help
+        f.type = FLAG_TYPE_INT
+        lf = len(this.flags)
+        this.flags[lf] = f
+    }
+
+    //To add a flag that will be parsed as a float.
+    addFloat(name cpstring, help cpstring) {
+        f = new flag
+        f.name = name
+        f.help = help
+        f.type = FLAG_TYPE_FLOAT
+        lf = len(this.flags)
+        this.flags[lf] = f
+    }    
+
+    //This will invalidate all the flags.
+    //It will print the help message and gracefully exit the program.
+    invalidate() {
+        print("Usage of ")
+        print(this.args[0])
+        println(":")
+        i=0; for i < len(this.flags) {
+            flag = this.flags[i]
+            print("    -")
+            print(flag.name)
+            if flag.type == FLAG_TYPE_CPSTRING {
+                println(" (string)")
+            } else if flag.type == FLAG_TYPE_BOOL {
+                println(" (bool)")
+            } else if flag.type == FLAG_TYPE_INT {
+                println(" (int)")
+            } else if flag.type == FLAG_TYPE_FLOAT {
+                println(" (float)")
+            }
+            print("\t")
+            println(flag.help)
+            i = i + 1
+        }
+        exit(1)
+    }
+
+    //To get the flag as a pointer to the flag.
+    //This should normally not be used.
+    getFlag(name string) flag* {
+        i=0; for i < len(this.flags) {
+            flag = this.flags[i]
+            if name.compare(flag.name) {
+                return flag
+            }
+            i = i + 1
+        }
+        z = new flag
+        z.isSet = 0
+        return z
+    }
+
+    //To get the content of a flag as a cpstring.
+    //This works with all types of flags.
+    //This is how you should get a string flag.
+    get(name cpstring) cpstring {
+        flag = this.getFlag(string(name))
+        ctn = flag.content
+        return ctn
+    }
+
+    //To get the content of a flag as an int.
+    //The requested flag must be of type int.
+    getInt(name cpstring) int {
+        flag = this.getFlag(string(name))
+        if flag.type != FLAG_TYPE_INT {
+            error = "Flag '" + flag.name + "' is not int."
+            panic(error)
+        }
+        ctn = flag.cont_int
+        return ctn
+    }
+
+    //To get the content of a flag as a float.
+    //The requested flag must be of type float.
+    getFloat(name cpstring) float {
+        flag = this.getFlag(string(name))
+        if flag.type != FLAG_TYPE_FLOAT {
+            error = "Flag '" + flag.name + "' is not float."
+            panic(error)
+        }
+        ctn = flag.cont_float
+        return ctn
+    }
+
+    //Returns 1 if a flag has been set by the user.
+    //This is how you should check for a bool flag.
+    isSet(name cpstring) int {
+        flag = this.getFlag(string(name))
+        ctn = flag.isSet
+        return ctn
+    }
+
+    //This will parse the flags with the specified arguments.
+    //The arguments specified should be the arguments passed in your declaration of main, of type []cpstring.
+    parse(args []cpstring) {
+        currentFlag flag*
+        isVal = false
+        this.args = args
+        i=1; for i < len(args) {
+            argName = string(args[i])
+            if isVal == true {
+                    currentFlag.content = argName.str()
+                if currentFlag.type == FLAG_TYPE_INT {
+                    currentFlag.cont_int = atoi(argName.str())
+                } else if currentFlag.type == FLAG_TYPE_FLOAT {
+                    currentFlag.cont_float = strtod(argName.str(), 0)
+                }
+                isVal = false
+            } else {
+                if argName.charAt(0) != '-' {
+                    i = i + 1
+                    continue
+                }
+                argName.trimLeft(1)
+                if argName.compare("help") {
+                    this.invalidate()
+                } else if argName.compare("h") {
+                    this.invalidate()
+                }
+                currentFlag = this.getFlag(argName)
+                if currentFlag == null {
+                    this.invalidate()
+                }
+                currentFlag.isSet = 1
+                if currentFlag.type != FLAG_TYPE_BOOL {
+                    isVal = true
+                }
+            }
+            i = i + 1
+        }
+        if isVal == true {
+            if currentFlag.type != FLAG_TYPE_BOOL {
+                this.invalidate()
+            }
+        }
+    }
+
+}
+
+//Example
+//#include "iostream.bah"
+//#include "flags.bah"
+// main(args []cpstring) {
+//     flags = flags{}
+//     flags.addString("name", "Your name")
+//     flags.parse(args)
+//     if flags.isSet("name") == 0 {
+//         flags.invalidate()
+//     }
+//     print("Your name is: ")
+//     name = flags.get("name")
+//     println(name)
+// }
