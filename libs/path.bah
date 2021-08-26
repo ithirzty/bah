@@ -1,0 +1,28 @@
+#include "<stdlib.h>"
+#include "string.bah"
+
+//Used for getting the absolute path of a file/directory.
+//An absolute path is a path that goes all the way to the root.
+absPath(path cpstring) cpstring {
+    z = <cpstring>0
+    p = realpath(path, z)
+    return p
+}
+
+//To get the working path.
+//The working path is the path to the directory that is defined as **./**.
+getCurrentPath() cpstring {
+    cwd cpstring = memoryAlloc(4096)
+    getcwd(cwd, 4096)
+    return cwd
+}
+
+//Example
+// #include "iostream.bah"
+// #include "path.bah"
+// main() {
+// currentPath = getCurrentPath()
+// println(currentPath)
+// filePath = absPath("./file.txt")
+// println(filePath)
+// }

@@ -1,0 +1,120 @@
+#include "memory.bah"
+
+//An internal structure used to define a single node (element) of the queue.
+struct queueNode {
+    key: int
+    data: ptr
+
+    next: queueNode*
+}
+
+//A wrapper for the queue.
+//A queue is a data-type like an inverted stack.
+//Inserting an element to it will put it on the top as the first element.
+//Popping an element of it will return and remove the last element. 
+//Keys works simillarly to the keys of an array. Each element as a key (index) that starts from 0.
+//*Note: queue can only contain pointers.*
+struct queue {
+    length: int = 0
+    head: queueNode*
+
+    //Used to insert an element at the top of the queue.
+    insert(data ptr) {
+        node = new queueNode
+        node.key = this.length
+        node.data = data
+        node.next = this.head
+        
+        this.length = this.length + 1
+        this.head = node
+    }
+
+    //Used to delete an element mapped to the specified key.
+    delete(key int) {
+        if this.length == 0 {
+            return
+        }
+        current = this.head
+        previous queueNode*
+        for current.key != key {
+            if current.next == 0 {
+                return
+            }
+            previous = current
+            current = current.next
+        }
+        if current == this.head {
+            this.head = current.next
+        } else {
+            previous.next = current.next
+        }
+        this.length = this.length - 1
+    }
+
+    //To get an element by its key.
+    get(key int) ptr {
+        z = 0
+        zp = <ptr>z
+        if this.length == 0 {
+            return zp
+        }
+
+        ptr = this.head
+        for ptr.key != key {
+            if ptr.next == 0 {
+                return zp
+            }
+            ptr = ptr.next
+        }
+
+        data = ptr.data
+        return data
+    }
+
+    //To replace an element at a specified key.
+    set(key int, data ptr) {
+        this.delete(key)
+
+        node = new queueNode
+        node.key = key
+        node.data = data
+        node.next = this.head
+        
+        this.length = this.length + 1
+        this.head = node
+    }
+
+    //To get and remove the last element (at the bottom of the queue).
+    //This will return the oldest element of the queue.
+    //This method does not matter about the key of the element.
+    pop() ptr {
+        lastIndex = this.length - 1
+        data = this.get(lastIndex)
+        this.delete(lastIndex)
+        return data
+    }
+
+    //To clear (remove every element) of the queue.
+    clear() {
+        this.head = <ptr>0
+        this.length = 0
+    }
+
+}
+
+// #macro a[b*]=c* => a.set(b,c)
+// #macro a=[] => a = queue{}
+// #macro a[b*] => a.get(b)
+
+//Example
+// #include "iostream.bah"
+// #include "queue.bah"
+// main() {
+// queue = queue{}
+// queue.insert("a")
+// queue.insert("b")
+// s = queue.pop()
+// println(s) //will print a
+// s = queue.pop()
+// println(s) //will print b
+// }

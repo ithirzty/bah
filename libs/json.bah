@@ -1,0 +1,201 @@
+#include "string.bah"
+#include "iostream.bah"
+
+
+const JSON_TYPE_STRING = 0
+const JSON_TYPE_INT = 1
+const JSON_TYPE_FLOAT = 2
+const JSON_TYPE_ARRAY = 3
+const JSON_TYPE_MAP = 4
+
+//A single element of a json document.
+//This can be a map, an array, an int, a float or a string.
+//If the element is of type array (or map), all of its children will be contained in an array, the .children field.
+struct jsonElement {
+    type: int
+    key: cpstring
+    content: cpstring
+    children: []jsonElement*
+
+    //If the current element is of type map, this method is used to get a children element mapped to this key.
+    map(key cpstring) jsonElement* {
+        l = len(this.children)
+        i=0; for i < l {
+            elem = this.children[i]
+            eKey = string(elem.key)
+            eKey.trimLeft(1)
+            eKey.trimRight(1)
+            if eKey.compare(key) {
+                return elem
+            }
+            i = i + 1
+        }
+        z = <ptr>0
+        return z
+    }
+
+    //To get the current element as a cpstring no matter its type.
+    str() cpstring {
+        ctn = this.content
+        return ctn
+    }
+
+}
+
+//To parse a json document.
+//This will return a pointer to the main element.
+parseJson(a cpstring) jsonElement* {
+    s = string(a)
+    s.trim()
+    
+    jsonElem = new jsonElement
+
+    fc = s.charAt(0)
+    if fc == '[' {
+        jsonElem.type = JSON_TYPE_ARRAY
+    } else if fc == '{' {
+        jsonElem.type = JSON_TYPE_MAP
+    } else if fc == <char>34 {
+        jsonElem.type = JSON_TYPE_STRING
+        s.trimLeft(1)
+        s.trimRight(1)
+        jsonElem.content = s.str()
+    } else if isNumber(fc) {
+        if s.count(".") > 0 {
+            jsonElem.type = JSON_TYPE_FLOAT
+        } else {
+            jsonElem.type = JSON_TYPE_INT
+        }
+        jsonElem.content = s.str()
+    } else {
+        jsonElem.type = JSON_TYPE_STRING
+        jsonElem.content = s.str()
+    }
+
+    if jsonElem.type == JSON_TYPE_ARRAY {
+        s.trimLeft(1)
+        s.trimRight(1)
+        s.trim()
+        currentElem = []char
+        currentBracks = 0
+        currentBraces = 0
+        currentQuotes = 0
+        elemIndex = 0
+        i = 0; for i < s.length {
+            c = s.charAt(i)
+            if c == <char>34 {
+                if currentQuotes == 0 {
+                    currentQuotes = 1
+                } else {
+                    currentQuotes = 0
+                }
+            }else if c == '[' {
+                currentBracks = currentBracks + 1
+            } else if c == ']' {
+                currentBracks = currentBracks - 1
+            } else if c == '{' {
+                currentBraces = currentBraces + 1
+            } else if c == '}' {
+                currentBraces = currentBraces - 1
+            }
+            total = currentBracks + currentBraces + currentQuotes
+            if total > 0 {
+                currentElem[len(currentElem)] = c
+                i = i + 1
+                continue
+            }
+            if c == ',' {
+                jsonElem.children[elemIndex] = parseJson(arrAsStr(currentElem))
+                clear(currentElem)
+                elemIndex = elemIndex + 1
+            } else {
+                if isSpace(c) {
+                    i = i + 1
+                    continue
+                }
+                currentElem[len(currentElem)] = c
+            }
+            i = i + 1
+        }
+        jsonElem.children[elemIndex] = parseJson(arrAsStr(currentElem))
+    } else if jsonElem.type == JSON_TYPE_MAP {
+        s.trimLeft(1)
+        s.trimRight(1)
+        s.trim()
+        currentElem = []char
+        currentKey = []char
+        isVal = 0
+        currentBracks = 0
+        currentBraces = 0
+        currentQuotes = 0
+        elemIndex = 0
+        i = 0; for i < s.length {
+            c = s.charAt(i)
+            if c == <char>34 {
+                if currentQuotes == 0 {
+                    currentQuotes = 1
+                } else {
+                    currentQuotes = 0
+                }
+            }else if c == '[' {
+                currentBracks = currentBracks + 1
+            } else if c == ']' {
+                currentBracks = currentBracks - 1
+            } else if c == '{' {
+                currentBraces = currentBraces + 1
+            } else if c == '}' {
+                currentBraces = currentBraces - 1
+            }
+            total = currentBracks + currentBraces + currentQuotes
+            if total > 0 {
+                if isVal {
+                    currentElem[len(currentElem)] = c
+                } else {
+                    currentKey[len(currentKey)] = c
+                }
+                i = i + 1
+                continue
+            }
+            if c == ':' {
+                isVal = 1
+            }else if c == ',' {
+                elem = parseJson(arrToStr(currentElem))
+                elem.key = arrToStr(currentKey)
+                clear(currentElem)
+                clear(currentKey)
+                isVal = 0
+                jsonElem.children[elemIndex] = elem
+                elemIndex = elemIndex + 1
+            } else {
+                if isSpace(c) {
+                    i = i + 1
+                    continue
+                }
+                if isVal {
+                    currentElem[len(currentElem)] = c
+                } else {
+                    currentKey[len(currentKey)] = c
+                }
+            }
+            i = i + 1
+        }
+        elem = parseJson(arrToStr(currentElem))
+        elem.key = arrToStr(currentKey)
+        jsonElem.children[elemIndex] = elem
+    }
+
+    return jsonElem
+}
+
+//Example
+// #include "iostream.bah"
+// #include "json.bah"
+// main() {
+// unparsed = "[54, {\"key\":[0,1]}, \"element\"]"
+// json = parseJson(unparsed)
+// fiftyfor = json.children[0]
+// println(fiftyfor.content)
+// jsonMap = json.children[1]
+// jsonArray = jsonMap.map("key")
+// println(jsonArray.content)
+// }

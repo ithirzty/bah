@@ -2,9 +2,10 @@
 #include "flags.bah"
 #include "rand.bah"
 #include "exec.bah"
+#include "time.bah"
 
 ///////////////////////OS SPECIFIC THINGS////////////////////////
-const BAH_DIR = "/opt/bah-new/"
+const BAH_DIR = "/opt/bah/"
 
 #include "./globals.bah"
 
@@ -24,6 +25,7 @@ main(args []cpstring) {
     fm = fileMap{}
     f = fm.open(fileName)
     
+    startTime = getTimeUnix()
     tokens = lexer(f)
     fm.close()
 
@@ -65,8 +67,13 @@ main(args []cpstring) {
     }
 
     cmd = command(gccArgs)
-    cmd.run()
+    gccOut = cmd.run()
     removeFile(randFileName)
-    println("Done.")
+    if strlen(gccOut) == 0 {
+        totalTime = getTimeUnix() - startTime
+        println("\e[1;32mDone. ("+intToStr(totalLines)+" lines compiled in "+intToStr(totalTime / 1000000)+"ms)")
+    } else {
+        println("\e[1;31m[GCC-ERROR]\e[0m\nCould not compiled.")
+    }
 
 }

@@ -1,0 +1,51 @@
+#include "iostream.bah"
+#include "string.bah"
+
+//A reflected pointer is a pointer that implements the principle of reflection.
+//The structure contains the pointer (.ptr field) and its type as a string (.type field).
+struct reflectedPointer {
+    type: string
+    ptr: ptr
+
+    //This checks if the type of the reflected pointer is actually a pointer or not.
+    isPointer() int {
+        c = this.type.charAt(this.type.length - 1)
+        if c == '*' {
+            return 1
+        }
+        return 0
+    }
+
+}
+//THIS IS AN INTERNAL FUNCTION, do not use it. **Use the <code>#reflect(ptr)</code> macro instead**.
+//This makes a reflected pointer from a value and a type as a string.
+//If the variable passed to the #reflect() macro is of type ptr, the macro will not guess its type.
+newReflectPointer(val ptr, type cpstring) reflectedPointer {
+    rp = reflectedPointer{}
+    rp.type = string(type)
+    rp.ptr = val
+    return rp
+}
+
+#macro #reflect(ptr) => newReflectPointer(<ptr>ptr, #typeOf ptr)
+
+//Example
+// #include "iostream.bah"
+// #include "reflect.bah"
+// #include "string.bah"
+// printReflected(p reflectedPointer) {
+//     if p.type.compare("int") {
+//         i int = <int>p.ptr
+//         s = intToString(i)
+//         println(s)
+//     } else if p.type.compare("cpstring") {
+//         s cpstring = p.ptr
+//         print(s)
+//     } else {
+//         panic("This type isn't supported by the prinReflected function.")
+//     }
+// }
+// main() {
+//     i = 54
+//     printReflected(#reflect(i))
+// }

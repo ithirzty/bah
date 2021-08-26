@@ -288,5 +288,6 @@ lexer(s cpstring) []Tok {
 
         i = i + 1
     }
+    totalLines = totalLines + lineNb - 1
     return tokens
 }

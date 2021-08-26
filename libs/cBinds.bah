@@ -1,0 +1,30 @@
+#define fopen(path cpstring, mode cpstring) ptr
+#define fgets(buff cpstring, len int, handle ptr) int
+#define fputs(s cpstring, handle ptr)
+#define fclose(handle ptr)
+#define fseek(handle ptr, i int, mode int)
+#define ftell(handle ptr) int
+#define rewind(handle ptr)
+#define getc(handle ptr) char
+#define puts(s cpstring)
+#define strlen(s cpstring) int
+#define exit(code int)
+//#define strdup(s cpstring) cpstring
+//#define free(p ptr)
+#define sizeof(v ptr) int
+//#define malloc(size int) ptr
+#define strcpy(dest cpstring, source cpstring)
+#define strcat(dest cpstring, source cpstring)
+#define strcmp(a cpstring, b cpstring) int
+#define sprintf(buff cpstring, format cpstring, v ptr)
+#define atoi(s cpstring) int
+#define itoa(i int, s cpstring, base int) cpstring
+#define sigaction(sig int, str ptr, m int)
+#define waitpid(m int, s int*, w int) int
+#define fork() int
+#define realpath(path cpstring, buff ptr) cpstring
+#define getcwd(cwd cpstring, s int)
+#define time(t int) int
+#define localtime(t int*) int
+#define strftime(buff cpstring, len int, format cpstring, t int)
+#define sleep(t int)

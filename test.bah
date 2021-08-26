@@ -1,5 +1,0 @@
-#include "iostream.bah"
-
-main() {
-    println("test")
-}
