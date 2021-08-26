@@ -103,29 +103,3 @@ searchStructMemb(name cpstring, s cStruct*, elems Elems*) structMemb* {
     }
     return null
 }
-
-declareStructMethods(v variable*, s cStruct*) cpstring {
-    code = ""
-    members = s.members
-    typec = string(v.type)
-    sep = "."
-    if typec.count("*") {
-        sep = "->"
-    }
-    i=0; for i < len(members) {
-        m = members[i]
-        if strlen(m.def) > 0 {
-            code = code + v.name + sep + m.name + " = " + m.def + ";\n"
-        }
-        i = i + 1
-    }
-
-    methods = s.methods
-    i=0; for i < len(methods) {
-        m = methods[i]
-            code = code + v.name + sep + m.name + " = " + s.name + "__" + m.name + ";\n"
-        i = i + 1
-    }
-
-    return code
-}

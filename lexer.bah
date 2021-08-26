@@ -89,6 +89,7 @@ lexerErr(line int, pos int, msg cpstring) {
 }
 
 lexer(s cpstring) []Tok {
+    println("Lexing")
     tokens = []Tok
     
     code = string(s)

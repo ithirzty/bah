@@ -218,3 +218,41 @@ searchFunc(name cpstring, elems Elems*, inclCurr bool) func* {
 
     return null
 }
+
+declareStructMethods(v variable*, s cStruct*, elems Elems*) cpstring {
+    code = ""
+    members = s.members
+    typec = string(v.type)
+    sep = "."
+    if typec.count("*") {
+        sep = "->"
+    }
+    i=0; for i < len(members) {
+        m = members[i]
+        cmpt = string(m.type)
+        if strlen(m.def) > 0 {
+            code = code + v.name + sep + m.name + " = " + m.def + ";\n"
+        }
+        if cmpt.hasPrefix("[]") == 1 {
+            cmpt.trimLeft(2)
+            cmptstr = cmpt.str()
+            elemCType = getCType(cmptstr, elems)
+            elemCTypeStr = elemCType.str()
+            code = code + v.name + sep + m.name + " = memoryAlloc(sizeof(array("+elemCTypeStr+")));
+            "+v.name+sep+m.name+"->length = 0;
+            "+v.name+sep+m.name+"->data = memoryAlloc(0);
+            "
+        }
+
+        i = i + 1
+    }
+
+    methods = s.methods
+    i=0; for i < len(methods) {
+        m = methods[i]
+            code = code + v.name + sep + m.name + " = " + s.name + "__" + m.name + ";\n"
+        i = i + 1
+    }
+
+    return code
+}

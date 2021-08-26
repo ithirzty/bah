@@ -893,7 +893,7 @@ parseVar(l []Tok, elems Elems*) {
                 vectStr = vect.content
                 code = "memoryAlloc(sizeof("+vectStr+"));\n"
                 v.type = s.name + "*"
-                NEXT_LINE = declareStructMethods(v, s)
+                NEXT_LINE = declareStructMethods(v, s, elems)
                 break
             }
             if t.isValue == false {
@@ -920,7 +920,14 @@ parseVar(l []Tok, elems Elems*) {
                     }
                 }
             }
+            ctc = string(t.cont)
             cvt = string(v.type)
+            if ctc.hasPrefix("{") == 0 {
+                if strlen(t.cont) > 0 {
+                    code = code + " " + t.cont + ";\n"
+                    break
+                }
+            }
             if cvt.hasPrefix("[]") {
                 arrType = getCType(v.type, elems)
                 arrType.trimRight(1)
@@ -981,16 +988,13 @@ parseVar(l []Tok, elems Elems*) {
 
                 break
             }
-            ctc = string(t.cont)
-            if ctc.hasPrefix("{") {
-                isStruct = true
-                max = i + 1
-                if max != len(l) {
-                    throwErr(&l[i+1], "{TOKEN} not expected after struct initialization.")
-                }
-                s = searchStruct(v.type, elems)
-                NEXT_LINE = declareStructMethods(v, s)
+            isStruct = true
+            max = i + 1
+            if max != len(l) {
+                throwErr(&l[i+1], "{TOKEN} not expected after struct initialization.")
             }
+            s = searchStruct(v.type, elems)
+            NEXT_LINE = declareStructMethods(v, s, elems)
             code = code + " " + t.cont + ";\n"
         }
 
@@ -1005,14 +1009,14 @@ parseVar(l []Tok, elems Elems*) {
             st = l[1]
             throwErr(&st, "Cannot change the type of already declared var '"+ft.cont+"' to {TOKEN}.")
         }
-        vct = ""
-        if isStruct == true {
-            vct = setCType(v, elems)
-        }
-        if strlen(vct) {
-            code = vct + " = " + code
-        } else {
+        if isStruct == false {
             code = v.name + " = " + code
+        } else {
+            cmpCode = string(code)
+            cmpCode.trim()
+            if cmpCode.hasPrefix("{") == 0 {
+                code = v.name + " = " + code
+            }
         }
         if v.isArray == true {
             nLength = string(v.name)
