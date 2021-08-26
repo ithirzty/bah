@@ -20,12 +20,12 @@ searchVar(name cpstring, elems Elems*) variable* {
             if c == '[' {
                 break
             }
-            i--
+            i = i - 1
         }
         tamm = n.length - i
         n.trimRight(tamm + 6)
         name = n.str()
-        v = searchVar(n, elems)
+        v = searchVar(name, elems)
         
         vt = string(v.type)
         vt.trimLeft(2)
@@ -57,37 +57,37 @@ searchVar(name cpstring, elems Elems*) variable* {
         if memb == null {
             return null
         }
-        v = new variable
-        v.name = memb.name
-        v.type = memb.type
-        v.name = ogName
+        nv = new variable
+        nv.name = memb.name
+        nv.type = memb.type
+        nv.name = ogName
 
-        r = v.type
+        r = nv.type
         tcc = string(ogName)
         if tcc.count("&") {
-            r += "*"
+            r = r + "*"
         }
         nbUnaries = tcc.count("*")
-        if nbUnaries {
+        if nbUnaries > 0 {
             ct = string(r)
             pointerLevel = ct.count("*")
             if pointerLevel < nbUnaries {
-                throwErr(null, "Cannot use '*' on "+v.name+" because it is not pointer.")
+                throwErr(null, "Cannot use '*' on "+nv.name+" because it is not pointer.")
             }
             ct.trimRight(nbUnaries)
             r = ct.str()
         }
-        v.type = r
-        v.name = ogName
+        nv.type = r
+        nv.name = ogName
 
-        return v
+        return nv
     }
 
 
     i=0; for i < len(elems.vars) {
         v = elems.vars[i]
             if v == null {
-                panic("\e[1;31m[INTERNAL COMPILER ERROR]\e[0m\n Please report the bug as 'compiler searching null var'.")    
+                panic("\e[1;31m[INTERNAL COMPILER ERROR]\e[0m\n Please report the bug as 'compiler searching '"+name+"' resulting in null var'.")    
             }
         if v.name == name {
             nv = new variable
@@ -96,11 +96,11 @@ searchVar(name cpstring, elems Elems*) variable* {
             r = nv.type
             tcc = string(ogName)
             if tcc.count("&") {
-                r += "*"
+                r = r + "*"
             }
 
             nbUnaries = tcc.count("*")
-            if nbUnaries {
+            if nbUnaries > 0 {
                 ct = string(r)
                 pointerLevel = ct.count("*")
                 if pointerLevel < nbUnaries {
@@ -117,7 +117,7 @@ searchVar(name cpstring, elems Elems*) variable* {
         // else {
         //     println(name+" != "+v.name)
         // }
-        i++
+        i = i + 1
     }
 
     return null
@@ -139,13 +139,13 @@ getTypeFromToken(t Tok*, strict bool, elems Elems*) cpstring {
     if t.type == TOKEN_TYPE_VAR {
         v = searchVar(t.cont, elems)
         if v == null {
-            if strict {
+            if strict == true {
                 throwErr(t, "Unknown var {TOKEN}.")
             } else {
                 return ""
             }
         }
-        if strict {
+        if strict == true {
             if strlen(v.type) == 0 {
                 throwErr(t, "Cannot use {TOKEN} because it does not have any type.")
             }
@@ -171,12 +171,13 @@ getTypeFromToken(t Tok*, strict bool, elems Elems*) cpstring {
     }
     
     throwErr(t, "Cannot use {TOKEN} as value.")
+    return ""
 
 }
 
 
 
-searchFunc(name cpstring, elems Elems*) func* {
+searchFunc(name cpstring, elems Elems*, inclCurr bool) func* {
     if name == "noCheck" {
         fn = new func
         fn.name = "noCheck"
@@ -192,7 +193,8 @@ searchFunc(name cpstring, elems Elems*) func* {
         } else {
             n.trimRight(2)
         }
-        v = searchVar(n, elems)
+        name = n.str()
+        v = searchVar(name, elems)
         s = searchStruct(v.type, elems)
         name = fnName.content
         name = s.name+"__"+name
@@ -205,7 +207,14 @@ searchFunc(name cpstring, elems Elems*) func* {
         if fn.name == name {
             return fn
         }
-        i++
+        i = i + 1
     }
+
+    if inclCurr == true {
+        if currentFn.name == name {
+            return currentFn
+        }
+    }
+
     return null
 }

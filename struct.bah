@@ -23,6 +23,8 @@ splitStructSepBefore(n string) string {
         res = string(splitStringBefore(n, "->"))
         return res
     }
+
+    return string("")
 }
 
 splitStructSepAfter(n string) string {
@@ -36,9 +38,9 @@ splitStructSepAfter(n string) string {
                 break
             }
         }
-        i--
+        i = i - 1
     }
-    i++
+    i = i + 1
     n.trimLeft(i)
     return n
 }
@@ -53,7 +55,7 @@ searchStruct(name cpstring, elems Elems*) cStruct* {
         if s.name == name {
             return s
         }
-        i++
+        i = i + 1
     }
     return null
 }
@@ -73,7 +75,8 @@ searchStructMemb(name cpstring, s cStruct*, elems Elems*) structMemb* {
         memb = searchStructMemb(name, s, elems)
         if n.length > 0 {
             s = searchStruct(memb.type, elems)
-            memb = searchStructMemb(n, s, elems)
+            nstr = n.str()
+            memb = searchStructMemb(nstr, s, elems)
         }
         return memb
         
@@ -84,7 +87,7 @@ searchStructMemb(name cpstring, s cStruct*, elems Elems*) structMemb* {
         if m.name == name {
             return m
         }
-        i++
+        i = i + 1
     }
     mthds = s.methods
     i=0; for i < len(mthds) {
@@ -96,7 +99,7 @@ searchStructMemb(name cpstring, s cStruct*, elems Elems*) structMemb* {
             sm.isFn = true
             return sm
         }
-        i++
+        i = i + 1
     }
     return null
 }
@@ -114,14 +117,14 @@ declareStructMethods(v variable*, s cStruct*) cpstring {
         if strlen(m.def) > 0 {
             code = code + v.name + sep + m.name + " = " + m.def + ";\n"
         }
-        i++
+        i = i + 1
     }
 
     methods = s.methods
     i=0; for i < len(methods) {
         m = methods[i]
             code = code + v.name + sep + m.name + " = " + s.name + "__" + m.name + ";\n"
-        i++
+        i = i + 1
     }
 
     return code

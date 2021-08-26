@@ -9,7 +9,7 @@ debugLine(line []Tok) {
     i=0; for i < len(line) {
         t = line[i]
         cont = cont + " '" + t.cont + "'"
-        i++
+        i =i + 1
     }
     println(cont)
 }
@@ -85,6 +85,7 @@ getLineType(line []Tok) lineType {
         }
         return LINE_TYPE_VAR
     }
+    return <lineType>-1
 }
 
 
@@ -120,7 +121,7 @@ parseCast(line []Tok, elems Elems*) []Tok {
 
         nl[len(nl)] = t
 
-        i++
+        i =i + 1
     }
     return nl
 }
@@ -132,7 +133,7 @@ includeFile(ccstr cpstring, elems Elems*) bool {
         if includes[i] == ccstr {
             return true
         }
-        i++
+        i =i + 1
     }
     fm = fileMap{}
     fileName = BAH_DIR + ccstr
@@ -226,11 +227,11 @@ parseOperations(line []Tok, elems Elems*) []Tok {
                 continue
             }
         } 
-        else if t.isValue {
+        else if t.isValue == true {
             cmtc = string(t.cont)
             if cmtc.hasPrefix("-") {
                 pt = nl[len(nl)-1]
-                if pt.isValue {
+                if pt.isValue == true {
                     ptt = getTypeFromToken(&pt, true, elems)
                     ntt = getTypeFromToken(&t, true, elems)
                     if compTypes(ptt, ntt) == false {
@@ -247,7 +248,7 @@ parseOperations(line []Tok, elems Elems*) []Tok {
             }
         }
         nl[len(nl)] = t
-        i++
+        i =i + 1
     }
     return nl
 }
@@ -261,14 +262,14 @@ parseStructType(line []Tok, elems Elems*) []Tok {
             ctbt = string(t.bahType)
             if ctbt.hasPrefix("[]") {
                 nl[len(nl)] = t
-                i++
+                i =i + 1
                 continue
             }
-            i++
+            i =i + 1
             if i < len(line) {
                 nt = line[i]
                 if nt.cont == "{" {
-                    i++
+                    i =i + 1
                     s = searchStruct(t.cont, elems)
                     if s == null {
                         throwErr(&t, "Unknown struct name {TOKEN}.")
@@ -281,22 +282,22 @@ parseStructType(line []Tok, elems Elems*) []Tok {
                         }
                         memory = memory + t.cont + " "
                         //TODO: setting struct content inside braces
-                        i++
+                        i =i + 1
                     }
                     t.bahType = s.name
                     t.cont = "{"+memory+"}"
                     t.isValue = true
                     nl[len(nl)] = t
-                    i++
+                    i =i + 1
                     continue
                     
                 } else {
-                    i--
+                    i =i - 1
                 }
             }
         }
         nl[len(nl)] = t
-        i++
+        i =i + 1
     }
 
     return nl
@@ -308,7 +309,7 @@ parseStructVars(line []Tok, elems Elems*) []Tok {
     i=0; for i < len(line) {
         t = line[i]
         if t.type == TOKEN_TYPE_VAR {
-            i++
+            i =i + 1
             for i < len(line) {
                 it = line[i]
                 if it.cont != "." {
@@ -324,7 +325,7 @@ parseStructVars(line []Tok, elems Elems*) []Tok {
                         sep = "->"
                     }
                     s = searchStruct(v.type, elems)
-                    i++
+                    i =i + 1
                     nt = line[i]
                     if nt.type != TOKEN_TYPE_VAR {
                         throwErr(&nt, "Cannot use {TOKEN} as struct member name.")
@@ -334,14 +335,14 @@ parseStructVars(line []Tok, elems Elems*) []Tok {
                         throwErr(&nt, "Unknown struct member {TOKEN}.")
                     }
                     t.cont = t.cont + sep + memb.name
-                i++
+                i =i + 1
             }
             nl[len(nl)] = t
             continue
         }
 
         nl[len(nl)] = t
-        i++
+        i =i + 1
     }
 
     return nl
@@ -353,11 +354,11 @@ parseArrayType(line []Tok, elems Elems*) []Tok {
     i=0; for i < len(line) {
         t = line[i]
         if t.cont == "[" {
-            i++
+            i =i + 1
             if i < len(line) {
                 t = line[i]
                 if t.cont == "]" {
-                    i++
+                    i =i + 1
                     if i < len(line) {
                         t = line[i]
                         if t.type != TOKEN_TYPE_VAR {
@@ -368,7 +369,7 @@ parseArrayType(line []Tok, elems Elems*) []Tok {
                         t.cont = ""
                         t.isValue = true
                         nl[len(nl)] = t
-                        i++
+                        i =i + 1
                         continue
                     }
                 }
@@ -376,7 +377,7 @@ parseArrayType(line []Tok, elems Elems*) []Tok {
         }
 
         nl[len(nl)] = t
-        i++
+        i =i + 1
     }
     return nl
 }
@@ -429,7 +430,7 @@ parseBool(line []Tok, elems Elems*) []Tok {
         }
 
         nl[len(nl)] = t
-        i++
+        i =i + 1
     }
 
 
@@ -468,7 +469,7 @@ parseBool(line []Tok, elems Elems*) []Tok {
         }
 
         nl[len(nl)] = t
-        i++
+        i =i + 1
     }
 
     return nl
@@ -492,13 +493,13 @@ parsePointers(l []Tok) []Tok {
                         if nt.isValue == false {
                             pt.cont = pt.cont + t.cont
                             nl[len(nl)-1] = pt
-                            i++
+                            i =i + 1
                             continue
                         }
                     } else {
                         pt.cont = pt.cont + t.cont
                         nl[len(nl)-1] = pt
-                        i++
+                        i =i + 1
                         continue
                     }
                 }
@@ -508,26 +509,26 @@ parsePointers(l []Tok) []Tok {
         if inArrayStr(t.cont, ptrOpers) {
             if i > 0 {
                 pt = nl[len(nl)-1]
-                if pt.isValue {
+                if pt.isValue == true {
                     nl[len(nl)] = t
-                    i++
+                    i =i + 1
                     continue            
                 }
             }
-            i++
+            i =i + 1
             if i < len(l) {
                 nt = l[i]
                 if nt.type == TOKEN_TYPE_VAR {
                     nt.cont = t.cont + nt.cont
                     nl[len(nl)] = nt
-                    i++
+                    i =i + 1
                     continue
                 }
             }
         }
 
         nl[len(nl)] = t
-        i++
+        i =i + 1
     }
 
     return nl
@@ -541,7 +542,7 @@ parseArrayVars(l []Tok, elems Elems*) []Tok {
         t = l[i]
 
         if t.type == TOKEN_TYPE_VAR {
-            i++
+            i =i + 1
             if i < len(l) {
                 t = l[i]
                 if t.cont == "[" {
@@ -550,7 +551,7 @@ parseArrayVars(l []Tok, elems Elems*) []Tok {
                 }
             }
         }
-        i++
+        i =i + 1
     }
     if found == false {
         return l
@@ -560,7 +561,7 @@ parseArrayVars(l []Tok, elems Elems*) []Tok {
         t = l[i]
 
         if t.type == TOKEN_TYPE_VAR {
-            i++
+            i =i + 1
             if i < len(l) {
                 nt = l[i]
                 if nt.cont == "[" {
@@ -576,22 +577,22 @@ parseArrayVars(l []Tok, elems Elems*) []Tok {
                     v.type = cvt.str()
 
                     memory = []Tok
-                    i++
+                    i =i + 1
                     nbBracks = 1
                     for i < len(l) {
                         it = l[i]
                         if it.cont == "[" {
-                            nbBracks++
+                            nbBracks =nbBracks + 1
                         } else if it.cont == "]" {
-                            nbBracks--
+                            nbBracks =nbBracks - 1
                             if nbBracks == 0 {
                                 break
                             }
                         }
                         memory[len(memory)] = it
-                        i++
+                        i =i + 1
                     }
-                    i++
+                    i =i + 1
                     if len(memory) == 0 {
                         throwErr(&l[i], "Expected index not {TOKEN}.")
                     }
@@ -600,7 +601,7 @@ parseArrayVars(l []Tok, elems Elems*) []Tok {
                     j=0; for j < len(memory) {
                         mt = memory[j]
                         cont = cont + mt.cont
-                        j++
+                        j =j + 1
                     }
 
                     // memory = parseArrayVars(memory, elems)
@@ -621,6 +622,7 @@ parseArrayVars(l []Tok, elems Elems*) []Tok {
                     // }
 
                     // t.cont = t.cont + "->data[" + mft.cont + "]"
+
                     t.cont = t.cont + "->data[" + cont + "]"
                     t.bahType = v.type
                     nl[len(nl)] = t
@@ -628,11 +630,11 @@ parseArrayVars(l []Tok, elems Elems*) []Tok {
                 }
             }
 
-            i--
+            i =i - 1
         }
 
         nl[len(nl)] = t
-        i++
+        i =i + 1
     }
 
     return nl
@@ -645,7 +647,7 @@ parseFnCall(l []Tok, elems Elems*) []Tok {
     i=0; for i < len(l) {
         t = l[i]
         if t.type == TOKEN_TYPE_VAR {
-            i++
+            i =i + 1
             if i < len(l) {
                 t = l[i]
                 if t.cont == "(" {
@@ -654,7 +656,7 @@ parseFnCall(l []Tok, elems Elems*) []Tok {
                 }
             }
         }
-        i++
+        i =i + 1
     }
 
     if found == false {
@@ -665,14 +667,14 @@ parseFnCall(l []Tok, elems Elems*) []Tok {
         ot = l[i]
 
         if ot.type == TOKEN_TYPE_VAR {
-            i++
+            i =i + 1
             if i < len(l) {
                 nt = l[i]
                 if nt.cont == "(" {
                     nbPar = 1
-                    i++
+                    i =i + 1
                     fnName = ot.cont
-                    fn = searchFunc(fnName, elems)
+                    fn = searchFunc(fnName, elems, true)
                     if fn == null {
                         throwErr(&ot, "Unknown function {TOKEN}.")
                     }
@@ -688,7 +690,8 @@ parseFnCall(l []Tok, elems Elems*) []Tok {
                         } else {
                             varName.trimRight(2)
                         }
-                        v = searchVar(varName, elems)
+                        varNameStr = varName.str()
+                        v = searchVar(varNameStr, elems)
                         vct = string(v.type)
                         if vct.count("*") == 0 {
                             varName.prepend("&")
@@ -717,23 +720,23 @@ parseFnCall(l []Tok, elems Elems*) []Tok {
                     for i < len(l) {
                         t = l[i]
                         if t.cont == "(" {
-                            nbPar++
+                            nbPar =nbPar + 1
                         } else if t.cont == ")" {
-                            nbPar--
+                            nbPar =nbPar - 1
                         }
                         memory[len(memory)] = t
                         if nbPar == 0 {
-                            i++
+                            i =i + 1
                             break
                         }
-                        i++    
+                        i =i + 1    
                     }
 
                     if fnName == "noCheck" {
                         j=0; for j < len(memory) {
                             t = memory[j]
                             ot.cont = ot.cont + " " + t.cont
-                            j++
+                            j =j + 1
                         }
                         ot.cont = ot.cont
                         ot.type = TOKEN_TYPE_FUNC
@@ -768,22 +771,22 @@ parseFnCall(l []Tok, elems Elems*) []Tok {
                                 throwErr(&t, "Cannot use {TOKEN} (" + tt + ") as " + arg.type + " in function call.")
                             }
                             ot.cont = ot.cont + t.cont
-                            j++
+                            j =j + 1
                             t = memory[j]
                             if t.cont != "," {
                                 if t.cont == ")" {
-                                    j++
-                                    paramIndex++
+                                    j =j + 1
+                                    paramIndex =paramIndex + 1
                                     break
                                 } else {
                                     throwErr(&t, "Expected separator between values, not {TOKEN} in function call.")
                                 }
                             } else {
-                                paramIndex++
-                                ot.cont += ","
+                                paramIndex =paramIndex + 1
+                                ot.cont = ot.cont + ","
                             }
 
-                            j++
+                            j =j + 1
                         }
 
                     }
@@ -792,7 +795,7 @@ parseFnCall(l []Tok, elems Elems*) []Tok {
                         ot.cont = fnName
                         throwErr(&ot, "Not enough arguments in function call, ending by {TOKEN}.")
                     }
-                    ot.cont += ")"
+                    ot.cont = ot.cont + ")"
                     ot.type = TOKEN_TYPE_FUNC
                     ot.bahType = fn.returns.type
                     ot.isFunc = true
@@ -800,11 +803,11 @@ parseFnCall(l []Tok, elems Elems*) []Tok {
                     continue
                 }
             }
-            i--
+            i =i - 1
         }
 
         nl[len(nl)] = ot
-        i++
+        i =i + 1
     }
 
     return nl
@@ -815,7 +818,7 @@ parseFnCall(l []Tok, elems Elems*) []Tok {
 
 parseVar(l []Tok, elems Elems*) {
     ft = l[0]
-    if ft.isFunc {
+    if ft.isFunc == true {
         if len(l) > 1 {
             throwErr(&l[len(l)-1], "Not expecting {TOKEN} after function call.")
         }
@@ -826,17 +829,21 @@ parseVar(l []Tok, elems Elems*) {
     }
     l = parseStructType(l, elems)
     isEqual = false
+    isStruct = false
     currentType = ""
     ft = l[0]
     v = searchVar(ft.cont, elems)
     exists = true
+    ogName cpstring
     if v == null {
         exists = false
         v = new variable
         v.name = ft.cont
         v.type = ""
+    } else {
+        ogName = v.name
     }
-    if v.isConst {
+    if v.isConst == true {
         throwErr(&ft, "Cannot set the value of const {TOKEN}.")
     }
     code = ""
@@ -851,7 +858,7 @@ parseVar(l []Tok, elems Elems*) {
                     v.type = sct.str()
                 }
                 isEqual = true
-                i++
+                i =i + 1
                 continue
             }
         }
@@ -864,11 +871,12 @@ parseVar(l []Tok, elems Elems*) {
             currentType = currentType + " " + t.cont
         } else {
             if t.cont == "new" {
+                isStruct = true
                 max = i + 1
                 if max >= len(l) {
                     throwErr(&t, "Cannot initiate {TOKEN} struct without specifying struct name.")
                 }
-                max++
+                max =max + 1
                 if max < len(l) {
                     t = l[i+2]
                     throwErr(&t, "{TOKEN} not expected after initiating new struct.")
@@ -892,7 +900,7 @@ parseVar(l []Tok, elems Elems*) {
                 throwErr(&t, "Cannot use {TOKEN} as value in var declaration.")
             }
             tp = getTypeFromToken(&t, true, elems)
-            if exists {
+            if exists == true {
                 if compTypes(tp, v.type) == false {
                     throwErr(&t, "Cannot use {TOKEN} ("+tp+") as "+v.type+".")
                 }
@@ -924,7 +932,7 @@ parseVar(l []Tok, elems Elems*) {
 
                 max = i + 1
                 if max != len(l) {
-                    i++
+                    i =i + 1
                     nt = l[i]
                     if nt.cont != "{" {
                         throwErr(&l[i+1], "{TOKEN} not expected after array initialization.")
@@ -932,7 +940,7 @@ parseVar(l []Tok, elems Elems*) {
                     elemBahType = string(v.type)
                     elemBahType.trimLeft(2)
                     elemBahTypeStr = elemBahType.str()
-                    i++
+                    i =i + 1
                     for i < len(l) {
                         t = l[i]
                         tt = getTypeFromToken(&t, true, elems)
@@ -941,10 +949,10 @@ parseVar(l []Tok, elems Elems*) {
                         }
                         
                         strArrayLength = intToStr(arrayLength)
-                        arrayLength++
+                        arrayLength =arrayLength + 1
 
                         NEXT_LINE = NEXT_LINE + v.name + "->data[" + strArrayLength + "] = " + t.cont + ";\n"
-                        i++
+                        i =i + 1
                         t = l[i]
                         if t.cont != "," {
                             if t.cont == "}" {
@@ -962,7 +970,7 @@ parseVar(l []Tok, elems Elems*) {
                                 throwErr(&t, "Expected ',' got {TOKEN}.")
                             }
                         }
-                        i++
+                        i =i + 1
                     }
                 }
                 strArrayLength = intToStr(arrayLength)
@@ -975,6 +983,7 @@ parseVar(l []Tok, elems Elems*) {
             }
             ctc = string(t.cont)
             if ctc.hasPrefix("{") {
+                isStruct = true
                 max = i + 1
                 if max != len(l) {
                     throwErr(&l[i+1], "{TOKEN} not expected after struct initialization.")
@@ -985,10 +994,10 @@ parseVar(l []Tok, elems Elems*) {
             code = code + " " + t.cont + ";\n"
         }
 
-        i++
+        i =i + 1
     }
 
-    if exists {
+    if exists == true {
         if strlen(code) == 0 {
             throwErr(&ft, "Cannot re-declare {TOKEN}.")
         }
@@ -996,8 +1005,16 @@ parseVar(l []Tok, elems Elems*) {
             st = l[1]
             throwErr(&st, "Cannot change the type of already declared var '"+ft.cont+"' to {TOKEN}.")
         }
-        code = v.name + " = " + code
-        if v.isArray {
+        vct = ""
+        if isStruct == true {
+            vct = setCType(v, elems)
+        }
+        if strlen(vct) {
+            code = vct + " = " + code
+        } else {
+            code = v.name + " = " + code
+        }
+        if v.isArray == true {
             nLength = string(v.name)
             n = string(v.name)
             i=0; for i < nLength.length {
@@ -1005,7 +1022,7 @@ parseVar(l []Tok, elems Elems*) {
                 if c == '[' {
                     break
                 }
-                i++
+                i =i + 1
             }
             nLength.trimLeft(i+1)
             nLength.trimRight(1)
@@ -1016,7 +1033,7 @@ parseVar(l []Tok, elems Elems*) {
                 if c == '[' {
                     break
                 }
-                i--
+                i =i - 1
             }
             tamm = n.length - i
             
@@ -1058,10 +1075,10 @@ void * newPtr = GC_REALLOC("+nstr+"->data, (nLength+50)*sizeof("+elemTypeStr+"))
         } else {
             code = vct
         }
+        vars = elems.vars
+        vars[len(vars)] = v
     }
     OUTPUT = OUTPUT + code + ";\n"
-    vars = elems.vars
-    vars[len(vars)] = v
 }
 
 
@@ -1090,14 +1107,14 @@ parseFnHeader(prev cpstring, l []Tok, i int*, fn func*, elems Elems*) cpstring {
             }
             argName = t.cont
 
-            j++
+            j =j + 1
             if j >= len(l) {
                 throwErr(&t, "Cannot declare argument {TOKEN} without a type.")
             }
             t = l[j]
             argType = t.cont
 
-            j++
+            j =j + 1
             isComa = false
             for j < len(l) {
                 t = l[j]
@@ -1113,7 +1130,7 @@ parseFnHeader(prev cpstring, l []Tok, i int*, fn func*, elems Elems*) cpstring {
                     isComa = true
                     break
                 }                
-                j++
+                j =j + 1
             }
             argument = new variable
             argument.name = argName
@@ -1122,19 +1139,19 @@ parseFnHeader(prev cpstring, l []Tok, i int*, fn func*, elems Elems*) cpstring {
             
             argCType = setCType(argument, elems)
             code = code + argCType
-            if isComa {
-                code += ","
+            if isComa == true {
+                code = code + ","
             } else {
-                code += ")"
+                code = code + ")"
                 break
             }
-            j++
+            j =j + 1
         }
     } else {
-        code += ")"
+        code = code + ")"
     }
 
-    j++
+    j =j + 1
 
     returns = new variable
     returns.type = ""
@@ -1144,7 +1161,7 @@ parseFnHeader(prev cpstring, l []Tok, i int*, fn func*, elems Elems*) cpstring {
             break
         }
         returns.type = returns.type + t.cont
-        j++
+        j =j + 1
     }
     if strlen(returns.type) {
         rts = string(returns.type)
@@ -1164,7 +1181,7 @@ parseFnHeader(prev cpstring, l []Tok, i int*, fn func*, elems Elems*) cpstring {
 }
 
 
-parseStruct(l []Tok, elems *Elems) {
+parseStruct(l []Tok, elems Elems*) {
     s = new cStruct
     structs = elems.structs
     structs[len(structs)] = s
@@ -1194,9 +1211,9 @@ parseStruct(l []Tok, elems *Elems) {
     st = l[i]
     if st.type == TOKEN_TYPE_KEYWORD {
         if st.cont == "extend" {
-            i++
+            i =i + 1
             extdSNameTk = l[i]
-            i++
+            i =i + 1
             if extdSNameTk.type != TOKEN_TYPE_VAR {
                 throwErr(&extdSNameTk, "Cannot use {TOKEN} as struct name.")
             }
@@ -1204,13 +1221,23 @@ parseStruct(l []Tok, elems *Elems) {
             if extdS == null {
                 throwErr(&extdSNameTk, "Struct {TOKEN} does not exist.")
             }
-            members = extdS.members
+            extdsmbs = extdS.members
+            j=0; for j < len(extdsmbs) {
+                em = extdsmbs[j]
+                membDecl = getCType(em.type, elems)
+                membDecl.append(" ")
+                membDecl.append(em.name)
+                membDeclStr = membDecl.content
+                allMembs[len(allMembs)] = membDeclStr
+                members[len(members)] = em
+                j = j + 1
+            }
         } else {
             throwErr(&st, "Cannot use keyword {TOKEN} in struct declaration.")
         }
     }
     braceTk = l[i]
-    i++
+    i =i + 1
     if braceTk.cont != "{" {
         throwErr(&braceTk, "Cannot use {TOKEN} in struct declaration.")
     }
@@ -1237,9 +1264,9 @@ parseStruct(l []Tok, elems *Elems) {
             if m.name == memb.name {
                 throwErr(&t, "Member {TOKEN} has already been declared.")
             }
-            ii++
+            ii =ii + 1
         }
-        i++
+        i =i + 1
         t = l[i]
         if t.cont != ":" {
             if t.cont != "(" {
@@ -1273,9 +1300,9 @@ parseStruct(l []Tok, elems *Elems) {
                             nl[len(nl)] = t
                         }
                     }
-                    j++
+                    j =j + 1
                 }
-                i--
+                i =i - 1
 
                 nli = 0
 
@@ -1286,7 +1313,7 @@ parseStruct(l []Tok, elems *Elems) {
                 returns = fn.returns
                 arguments = fn.args
                 fn.from = s.name
-                code += "{\n"
+                code = code + "{\n"
                 
                 fnElems = new Elems
                 append(fnElems.vars, elems.vars)
@@ -1297,7 +1324,7 @@ parseStruct(l []Tok, elems *Elems) {
                 j=0; for j < len(arguments) {
                     a = arguments[j]
                     vs[len(vs)] = a
-                    j++
+                    j =j + 1
                 }
                 fnElems.vars = vs
 
@@ -1308,20 +1335,20 @@ parseStruct(l []Tok, elems *Elems) {
                 nbBraces = 1
                 t = l[i]
                 if t.cont == "{" {
-                    i++
+                    i =i + 1
                 }
                 for i < len(l) {
                     t = l[i]
                     if t.cont == "{" {
-                        nbBraces++
+                        nbBraces =nbBraces + 1
                     } else if t.cont == "}" {
-                        nbBraces--
+                        nbBraces =nbBraces - 1
                     }
                     if nbBraces == 0 {
                         break
                     }
                     tokens[len(tokens)] = t
-                    i++
+                    i =i + 1
                 }
 
                 if len(tokens) == 0 {
@@ -1338,8 +1365,7 @@ parseStruct(l []Tok, elems *Elems) {
                     }
                     code = code + OUTPUT + "};\n"
                 }
-                if doesOutput {
-                    //println("======APPENDING=======\n"+code+"===================")
+                if doesOutput == true {
                     nextLine = nextLine + code
                 }
 
@@ -1367,41 +1393,42 @@ parseStruct(l []Tok, elems *Elems) {
                     if j != max {
                         tp.append(",")
                     }
-                    mthdDecl.append(tp)
-                    j++
+                    tpstr = tp.str()
+                    mthdDecl.append(tpstr)
+                    j =j + 1
                 }
                 mthdDecl.append(")")
                 mthdDeclStr = mthdDecl.content
                 allMembs[len(allMembs)] = mthdDeclStr
 
-                i++
+                i =i + 1
                 continue
 
             }
         }
-        i++
+        i =i + 1
         mbmType = ""
         currentLine = t.line
         for i < len(l) {
             t = l[i]
             if t.cont == "=" {
-                i--
+                i =i - 1
                 break
             }
             if t.line != currentLine {
-                i--
+                i =i - 1
                 break
             }
             mbmType = mbmType + t.cont
-            i++
+            i =i + 1
         }
         
         memb.type = mbmType
-        i++
+        i =i + 1
         t = l[i]
         if i < len(l) {
             if t.cont == "=" {
-                i++
+                i =i + 1
                 t = l[i]
                 if t.isValue == false {
                     throwErr(&t, "Cannot use {TOKEN} as default value for member.")
@@ -1413,7 +1440,7 @@ parseStruct(l []Tok, elems *Elems) {
                 memb.def = t.cont
 
             } else {
-                i--
+                i =i - 1
             }
         }
         members[len(members)] = memb
@@ -1422,17 +1449,17 @@ parseStruct(l []Tok, elems *Elems) {
         membDecl.append(memb.name)
         membDeclStr = membDecl.content
         allMembs[len(allMembs)] = membDeclStr
-        i++
+        i =i + 1
     }
     s.members = members
-    if doesOutput {
+    if doesOutput == true {
         OUTPUT = OOUT
         NEXT_LINE = nextLine
         code = "struct "+s.name+" {\n"
         i=0; for i < len(allMembs) {
             m = allMembs[i]
             code = code + m +";\n"
-            i++
+            i =i + 1
         }
         code = code + "};\n"
         OUTPUT = OUTPUT + code
@@ -1465,7 +1492,7 @@ parseDefine(l []Tok, elems Elems*) {
         fn.isBinding = true
         fns[len(fns)] = fn
         // code = fnRetTypeStr + " " + code + ";\n"
-        // OUTPUT += code
+        // OUTPUT = OUTPUT + code
 
     } else {
         if st.type != TOKEN_TYPE_VAR {
@@ -1476,7 +1503,7 @@ parseDefine(l []Tok, elems Elems*) {
         }
         cTypeNewType = getCType(st.cont, elems)
         cTypeNewTypeStr = cTypeNewType.str()
-        if doesOutput {
+        if doesOutput == true {
             OUTPUT = OUTPUT + "typedef " + cTypeNewTypeStr + " " + ft.cont + ";\n"
         }
         tps = elems.types
@@ -1505,15 +1532,15 @@ parseClib(line []Tok) {
                 found = true
                 break               
             }
-            j++
+            j =j + 1
         }
-        if found {
-            i++
+        if found == true {
+            i =i + 1
             continue
         }
         clibs[len(clibs)] = ccstr
 
-        i++
+        i =i + 1
     }
 }
 
@@ -1593,12 +1620,23 @@ parseIf(l []Tok, elems Elems*) {
     i=3;for i < max {
         t = l[i]
         tokens[len(tokens)] = t
-        i++
+        i =i + 1
     }
     OUTPUT = OUTPUT + "if ("+condt.cont+") {\n"
 
     ifElems = new Elems
-    append(ifElems.vars, elems.vars)
+    vsi = []variable*
+    vs = elems.vars
+    i=0; for i < len(vs) {
+        v = vs[i]
+        nv = new variable
+        nv.name = v.name
+        nv.type = v.type
+        nv.isArray = v.isArray
+        vsi[len(vsi)] = nv
+        i = i + 1
+    }
+    ifElems.vars = vsi
     append(ifElems.structs, elems.structs)
     append(ifElems.types, elems.types)
     append(ifElems.fns, elems.fns)
@@ -1626,7 +1664,7 @@ parseElse(l []Tok, elems Elems*) {
         memory = []Tok
         i=1; for i < len(l) {
             memory[len(memory)] = l[i]
-            i++
+            i =i + 1
         }
         parseIf(memory, elems)
         prevLine = LINE_TYPE_IF
@@ -1639,11 +1677,22 @@ parseElse(l []Tok, elems Elems*) {
         max = len(l) - 1
         i=2; for i < max {
             memory[len(memory)] = l[i]
-            i++
+            i =i + 1
         }
-        OUTPUT += "{\n"
+        OUTPUT = OUTPUT + "{\n"
         ifElems = new Elems
-        append(ifElems.vars, elems.vars)
+        vsi = []variable*
+        vs = elems.vars
+        i=0; for i < len(vs) {
+            v = vs[i]
+            nv = new variable
+            nv.name = v.name
+            nv.type = v.type
+            nv.isArray = v.isArray
+            vsi[len(vsi)] = nv
+            i = i + 1
+        }
+        ifElems.vars = vsi
         append(ifElems.structs, elems.structs)
         append(ifElems.types, elems.types)
         append(ifElems.fns, elems.fns)
@@ -1675,12 +1724,24 @@ parseFor(l []Tok, elems Elems*) {
     i=3;for i < max {
         t = l[i]
         tokens[len(tokens)] = t
-        i++
+        i =i + 1
     }
     OUTPUT = OUTPUT + "while ("+condt.cont+") {\n"
 
     ifElems = new Elems
-    append(ifElems.vars, elems.vars)
+    vsi = []variable*
+    vs = elems.vars
+    i=0; for i < len(vs) {
+        v = vs[i]
+        nv = new variable
+        nv.name = v.name
+        nv.type = v.type
+        nv.isArray = v.isArray
+        vsi[len(vsi)] = nv
+        i = i + 1
+    }
+    ifElems.vars = vsi
+    
     append(ifElems.structs, elems.structs)
     append(ifElems.types, elems.types)
     append(ifElems.fns, elems.fns)
@@ -1717,12 +1778,12 @@ prePross(line []Tok, elems Elems*) []Tok {
             }
         }
         fl[len(fl)] = t
-        i++
+        i =i + 1
     }
     sl = []Tok
     for i < len(line) {
         sl[len(sl)] = line[i]
-        i++
+        i =i + 1
     }
 
     fl = parseStructVars(fl, elems)
@@ -1736,7 +1797,7 @@ prePross(line []Tok, elems Elems*) []Tok {
     if len(sl) > 0 {
         i=0; for i < len(sl) {
             fl[len(fl)] = sl[i]
-            i++
+            i =i + 1
         }
     }
 
@@ -1751,7 +1812,7 @@ parseFnDeclare(l []Tok, elems Elems*) {
     code = parseFnHeader("", l, &i, fn, elems)
     fn.line = ft.line
     fn.file = compilerState.currentFile
-    ogFn = searchFunc(fn.name, elems)
+    ogFn = searchFunc(fn.name, elems, false)
     if ogFn != null {
         if ogFn.isBinding == false {
             lineStr = intToStr(ogFn.line)
@@ -1761,11 +1822,22 @@ parseFnDeclare(l []Tok, elems Elems*) {
     returns = fn.returns
     arguments = fn.args
 
-    code += "{\n"
-    OUTPUT += code
+    code = code + "{\n"
+    OUTPUT = OUTPUT + code
 
     fnElems = new Elems
-    append(fnElems.vars, elems.vars)
+    vsi = []variable*
+    vs = elems.vars
+    j=0; for j < len(vs) {
+        v = vs[j]
+        nv = new variable
+        nv.name = v.name
+        nv.type = v.type
+        nv.isArray = v.isArray
+        vsi[len(vsi)] = nv
+        j = j + 1
+    }
+    fnElems.vars = vsi
     append(fnElems.structs, elems.structs)
     append(fnElems.types, elems.types)
     append(fnElems.fns, elems.fns)
@@ -1773,7 +1845,7 @@ parseFnDeclare(l []Tok, elems Elems*) {
     j=0; for j < len(arguments) {
         a = arguments[j]
         vs[len(vs)] = a
-        j++
+        j =j + 1
     }
     fnElems.vars = vs
     
@@ -1786,21 +1858,20 @@ parseFnDeclare(l []Tok, elems Elems*) {
     }
 
     tokens = []Tok
-    i++
+    i =i + 1
     max = len(l)-1
     for i < max {
         t = l[i]
         tokens[len(tokens)] = t
-        i++
+        i =i + 1
     }
 
     if len(tokens) == 0 {
-        OUTPUT += "};\n"
+        OUTPUT = OUTPUT + "};\n"
         return
     }
 
     currentFn = fn
-
     parseLines(tokens, fnElems)
 
     currentFn = null
@@ -1810,7 +1881,7 @@ parseFnDeclare(l []Tok, elems Elems*) {
         }
     }
 
-    OUTPUT += "};\n"
+    OUTPUT = OUTPUT + "};\n"
 }
 
 
@@ -1884,7 +1955,7 @@ parseLine(line []Tok, elems Elems*) {
     }
 
     if strlen(NEXT_LINE) > 0 {
-        OUTPUT += NEXT_LINE
+        OUTPUT = OUTPUT + NEXT_LINE
         NEXT_LINE = ""
     }
     prevLine = ltp
@@ -1904,17 +1975,17 @@ parseLines(tokens []Tok, elems Elems*) {
         
         if t.type == TOKEN_TYPE_ENCL {
             if t.cont == "(" {
-                nbEncl++
+                nbEncl =nbEncl + 1
             } else if t.cont == ")" {
-                nbEncl--
+                nbEncl =nbEncl - 1
             } else if t.cont == "{" {
-                nbEncl++
+                nbEncl =nbEncl + 1
             } else if t.cont == "}" {
-                nbEncl--
+                nbEncl =nbEncl - 1
             } else if t.cont == "[" {
-                nbEncl++
+                nbEncl =nbEncl + 1
             } else if t.cont == "]" {
-                nbEncl--
+                nbEncl =nbEncl - 1
             }
         }
 
@@ -1930,20 +2001,20 @@ parseLines(tokens []Tok, elems Elems*) {
                 parseLine(line, elems)
                 clear(line)
                 if t.type == TOKEN_TYPE_ENCL {
-                    i++
+                    i =i + 1
                     continue
                 }
             } else if t.cont == ";" {
                 currentLine = t.line
                 parseLine(line, elems)
                 clear(line)
-                i++
+                i =i + 1
                 continue
             }
         }
 
         line[len(line)] = t
-        i++
+        i =i + 1
     }
 
     if len(line) > 0 {

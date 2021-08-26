@@ -15,7 +15,8 @@ getCType(t cpstring, elems Elems*) string {
     tp.replace(" ", "")
     if tp.hasPrefix("[]") {
         tp.trimLeft(2)
-        tp = getCType(tp, elems)
+        tpstr = tp.str()
+        tp = getCType(tpstr, elems)
         t = tp.str()
         r = "array("+t+")*"
         return string(r)
@@ -59,7 +60,8 @@ getCType(t cpstring, elems Elems*) string {
         //do nothing for now
     } else {
         
-        s = searchStruct(ctp, elems)
+        ctpstr = ctp.str()
+        s = searchStruct(ctpstr, elems)
         if s != null {
             tp.prepend("struct ")
         } else {
@@ -68,7 +70,7 @@ getCType(t cpstring, elems Elems*) string {
                 if ctp.compare(ct) {
                     return tp
                 }
-                i++
+                i = i + 1
             }
             return string("")
         }

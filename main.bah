@@ -58,7 +58,7 @@ main(args []cpstring) {
     outFileName = string(fileName)
     outFileName.trimRight(4)
     outFileNameStr = outFileName.str()
-    gccArgs = "gcc -w -o "+outFileNameStr
+    gccArgs = "gcc ./"+ randFileName+ " -w -o "+outFileNameStr
     
     cLibs = compilerState.cLibs
 
@@ -67,7 +67,6 @@ main(args []cpstring) {
         gccArgs = gccArgs + " -" + l
         i = i + 1
     }
-    gccArgs = gccArgs +" ./"+ randFileName
 
     cmd = command(gccArgs)
     cmd.run()

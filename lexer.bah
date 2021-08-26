@@ -152,6 +152,9 @@ lexer(s cpstring) []Tok {
                         break
                     }
                 }
+                if c == <char>10 {
+                    memory[len(memory)] = <char>92
+                }
                 memory[len(memory)] = c
                 i = i + 1
             }
@@ -282,6 +285,5 @@ lexer(s cpstring) []Tok {
 
         i = i + 1
     }
-
     return tokens
 }
