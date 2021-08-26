@@ -78,3 +78,16 @@ getCType(t cpstring, elems Elems*) string {
     return tp
 
 }
+
+compTypes(a cpstring, b cpstring) bool {
+    if a == "ptr" {
+        return true
+    }
+    if b == "ptr" {
+        return true
+    }
+    if a == b {
+        return true
+    }
+    return false
+}

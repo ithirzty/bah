@@ -25,6 +25,7 @@ struct Tok {
     line: int = 1
     bahType: cpstring = ""
     isValue: bool = false
+    isFunc: bool = false
 }
 
 inArray(needle char, arr []char) bool {
@@ -84,7 +85,10 @@ lexer(s cpstring) []Tok {
     syntaxes = []char{'!', '=', '|', <char>38, '%', '+', '-', '*', '/', ',', '<', '>', ':', <char>59}
                                      //&                                                    //;
     keywords = []cpstring{"if", "else", "for", "struct", "const", "return", "extend", "new", "break", "continue", "default", "switch", "case", "while", "typedef", "function"}
-                        //  x                      x        x         x         x       x                             -          -        -       -         -           
+                        //  x      x      x        x        x         x         x       x       x          x          -          -        -       -         -           
+                        // x: done
+                        //  : not done
+                        // -: not planned
     varChars = []char{'_', '-'}
     seps = []char{'.'}
 
@@ -171,6 +175,7 @@ lexer(s cpstring) []Tok {
                 i++
             }
             i--
+            memstr = arrAsStr(memory)
             tokens[len(tokens)] = makeToken(pos, lineNb, memory, TOKEN_TYPE_KEYWORD)
         } else if inArray(c, enclavers) {
         //token is enclaver

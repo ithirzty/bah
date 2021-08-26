@@ -13,7 +13,33 @@ searchVar(name cpstring, elems Elems*) variable* {
     n = string(name)
     n.replace("&", "")
     n.replace("*", "")
+    
+    if n.hasSuffix("]") {
+        i=n.length; for i > 0 {
+            c = n.charAt(i)
+            if c == '[' {
+                break
+            }
+            i--
+        }
+        tamm = n.length - i
+        n.trimRight(tamm + 6)
+        v = searchVar(n, elems)
+        
+        vt = string(v.type)
+        vt.trimLeft(2)
+        vtstr = vt.str()
+
+        nv = new variable
+        nv.type = vtstr
+        nv.name = ogName
+        nv.isArray = true
+        return nv
+    }
+    
     name = n.content
+
+
     if hasStructSep(n) {
         rn = splitStructSepBefore(n)
         name = rn.content
@@ -56,6 +82,7 @@ searchVar(name cpstring, elems Elems*) variable* {
         return v
     }
 
+
     i=0; for i < len(elems.vars) {
         v = elems.vars[i]
         if v.name == name {
@@ -84,6 +111,9 @@ searchVar(name cpstring, elems Elems*) variable* {
 
             return nv
         }
+        // else {
+        //     println(name+" != "+v.name)
+        // }
         i++
     }
 

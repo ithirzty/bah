@@ -1,16 +1,11 @@
-struct test {
-    i: int
-    add(nb int) {
-        this.i = this.i + 1
-    }
-}
-
-#define GC_FREE(a ptr)
+#include "iostream.bah"
 
 main() {
-    t = new test
-    t.add(3)
-    if t.i == 4 {
-        t.add(5)
+    a = string("je suis une tutu")
+    arr = splitString(a, " ")
+    i=0; for i < len(arr) {
+        s = arr[i]
+        println(s.str())
+        i = i + 1
     }
 }
