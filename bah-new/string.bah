@@ -183,7 +183,6 @@ struct string {
             if si == needle.length {
                 clear(replcBuff)
                 ii = 0; for ii < repl.length {
-                    a = ii
                     buff[len(buff)] = repl.charAt(ii)
                     ii = ii + 1
                 }

@@ -204,6 +204,9 @@ searchFunc(name cpstring, elems Elems*, inclCurr bool) func* {
     fns = elems.fns
     i=0; for i < len(fns) {
         fn = fns[i]
+        if fn == null {
+                panic("\e[1;31m[INTERNAL COMPILER ERROR]\e[0m\n Please report the bug as 'compiler searching '"+name+"' resulting in null func'.")    
+        }
         if fn.name == name {
             return fn
         }
@@ -240,7 +243,7 @@ declareStructMethods(v variable*, s cStruct*, elems Elems*) cpstring {
             elemCTypeStr = elemCType.str()
             code = code + v.name + sep + m.name + " = memoryAlloc(sizeof(array("+elemCTypeStr+")));
             "+v.name+sep+m.name+"->length = 0;
-            "+v.name+sep+m.name+"->data = memoryAlloc(0);
+            "+v.name+sep+m.name+"->elemSize = sizeof("+elemCTypeStr+");
             "
         }
 

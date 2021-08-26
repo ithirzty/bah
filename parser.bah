@@ -15,6 +15,59 @@ debugLine(line []Tok) {
 }
 
 
+dupElems(elems Elems*) Elems* {
+    nElems = new Elems
+
+    //vars
+    nvs = []variable*
+    vs = elems.vars
+    j=0; for j < len(vs) {
+        v = vs[j]
+        nv = new variable
+        *nv = *v
+        nvs[len(nvs)] = nv
+        j = j + 1
+    }
+    nElems.vars = nvs
+
+    //structs
+    nss = []cStruct*
+    ss = elems.structs
+    j=0; for j < len(ss) {
+        s = ss[j]
+        ns = new cStruct
+        *ns = *s
+        nss[len(nss)] = ns
+        j = j + 1
+    }
+    nElems.structs = nss
+
+    //types
+    nts = []cpstring
+    ts = elems.types
+    j=0; for j < len(ts) {
+        t = ts[j]
+        nt = __STR(t)
+        nts[len(nts)] = nt
+        j = j + 1
+    }
+    nElems.types = nts
+
+    //fns
+    nfs = []func*
+    fs = elems.fns
+    j=0; for j < len(fs) {
+        f = fs[j]
+        nf = new func
+        *nf = *f
+        nfs[len(nfs)] = nf
+        j = j + 1
+    }
+    nElems.fns = nfs
+
+    return nElems
+}
+
 #define lineType int
 
 const LINE_TYPE_INCLUDE = <lineType>0
@@ -406,7 +459,7 @@ parseBool(line []Tok, elems Elems*) []Tok {
             if compTypes(ptt, ntt) == false {
                 throwErr(&nt, "Cannot compare {TOKEN} ("+ntt+") to "+ptt+".")
             }
-            if compTypes(ptt, "cpstring") {
+            if ptt == "cpstring" {
                 if t.cont == "==" {
                     pt.cont = "(strcmp("+pt.cont+", "+nt.cont+") == 0)"
                 } else if t.cont == "!=" {
@@ -957,6 +1010,10 @@ parseVar(l []Tok, elems Elems*) {
                         
                         strArrayLength = intToStr(arrayLength)
                         arrayLength =arrayLength + 1
+
+                        if tt == "cpstring" {
+                            t.cont = "__STR("+t.cont+")"
+                        }
 
                         NEXT_LINE = NEXT_LINE + v.name + "->data[" + strArrayLength + "] = " + t.cont + ";\n"
                         i =i + 1
@@ -1628,22 +1685,7 @@ parseIf(l []Tok, elems Elems*) {
     }
     OUTPUT = OUTPUT + "if ("+condt.cont+") {\n"
 
-    ifElems = new Elems
-    vsi = []variable*
-    vs = elems.vars
-    i=0; for i < len(vs) {
-        v = vs[i]
-        nv = new variable
-        nv.name = v.name
-        nv.type = v.type
-        nv.isArray = v.isArray
-        vsi[len(vsi)] = nv
-        i = i + 1
-    }
-    ifElems.vars = vsi
-    append(ifElems.structs, elems.structs)
-    append(ifElems.types, elems.types)
-    append(ifElems.fns, elems.fns)
+    ifElems = dupElems(elems)
 
     oldIB = compilerState.isBranch
     compilerState.isBranch = true
@@ -1684,22 +1726,7 @@ parseElse(l []Tok, elems Elems*) {
             i =i + 1
         }
         OUTPUT = OUTPUT + "{\n"
-        ifElems = new Elems
-        vsi = []variable*
-        vs = elems.vars
-        i=0; for i < len(vs) {
-            v = vs[i]
-            nv = new variable
-            nv.name = v.name
-            nv.type = v.type
-            nv.isArray = v.isArray
-            vsi[len(vsi)] = nv
-            i = i + 1
-        }
-        ifElems.vars = vsi
-        append(ifElems.structs, elems.structs)
-        append(ifElems.types, elems.types)
-        append(ifElems.fns, elems.fns)
+        ifElems = dupElems(elems)
 
         oldIB = compilerState.isBranch
         compilerState.isBranch = true
@@ -1732,23 +1759,7 @@ parseFor(l []Tok, elems Elems*) {
     }
     OUTPUT = OUTPUT + "while ("+condt.cont+") {\n"
 
-    ifElems = new Elems
-    vsi = []variable*
-    vs = elems.vars
-    i=0; for i < len(vs) {
-        v = vs[i]
-        nv = new variable
-        nv.name = v.name
-        nv.type = v.type
-        nv.isArray = v.isArray
-        vsi[len(vsi)] = nv
-        i = i + 1
-    }
-    ifElems.vars = vsi
-    
-    append(ifElems.structs, elems.structs)
-    append(ifElems.types, elems.types)
-    append(ifElems.fns, elems.fns)
+    ifElems = dupElems(elems)
 
     oldIB = compilerState.isBranch
     oldIF = compilerState.isFor
@@ -1829,22 +1840,8 @@ parseFnDeclare(l []Tok, elems Elems*) {
     code = code + "{\n"
     OUTPUT = OUTPUT + code
 
-    fnElems = new Elems
-    vsi = []variable*
-    vs = elems.vars
-    j=0; for j < len(vs) {
-        v = vs[j]
-        nv = new variable
-        nv.name = v.name
-        nv.type = v.type
-        nv.isArray = v.isArray
-        vsi[len(vsi)] = nv
-        j = j + 1
-    }
-    fnElems.vars = vsi
-    append(fnElems.structs, elems.structs)
-    append(fnElems.types, elems.types)
-    append(fnElems.fns, elems.fns)
+    fnElems = dupElems(elems)
+    
     vs = fnElems.vars
     j=0; for j < len(arguments) {
         a = arguments[j]

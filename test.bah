@@ -1,16 +1,5 @@
-#define! printf(s cpstring)
-
-struct Tok {
-    a: int
-}
-
-test() []Tok {
-    a = []Tok
-    te = Tok{}
-    a[len(a)] = te
-    return a
-}
+#include "iostream.bah"
 
 main() {
-    test()
+    println("test")
 }

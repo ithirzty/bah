@@ -13,10 +13,6 @@ const BAH_DIR = "/opt/bah-new/"
 #include "./errors.bah"
 #include "./parser.bah"
 
-
-#cLib "g"
-
-
 main(args []cpstring) {
     compilerState = compilerStateTag{}
     if len(args) != 2 {
