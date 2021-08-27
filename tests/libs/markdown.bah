@@ -1,0 +1,39 @@
+#include "markdown.bah"
+#include "string.bah"
+
+testMarkdown() bool {
+    const MD_RES = "<p><br>
+<h1>h1</h1><hr>
+<h2>h2</h2><hr>
+<h3>h3</h3>
+<h4>h4</h4>
+<h5>h5</h5>
+<h3>h5</h3>
+<blockquote>quote</blockquote>
+&nbsp;• list1<br>
+<em>this</em> <strong>is</strong> <u>a</u> <a href=\"./test\">test</a><br>
+<img src=\"./test.png\" alt=\"img\"><br>
+<pre class=\"highlight highlight-source-sh\">echo \"my test\"
+</pre>
+</p>"
+
+    const doc = "
+# h1
+## h2
+### h3
+#### h4
+##### h5
+###### h5
+> quote
+- list1
+*this* **is** __a__ [test](./test)
+![img](./test.png)
+```sh
+echo \"my test\"
+```
+"
+
+    md = parseMarkdown(doc)
+    h = md.html()
+    return h == MD_RES
+}

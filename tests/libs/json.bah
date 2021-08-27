@@ -1,0 +1,23 @@
+#include "json.bah"
+
+testJson() bool {
+    const JSON_DATA = "
+    [
+        {
+            \"id\": 2489651045,
+            \"type\": \"user\"
+        },
+        {
+            \"id\": 2489651046,
+            \"type\": \"post\"
+        }
+    ]
+    "
+    json = parseJson(JSON_DATA)
+    fe = json.children[0]
+    id = fe.map("id")
+    if id.content != "2489651045" {
+        return false
+    }
+    return true
+}

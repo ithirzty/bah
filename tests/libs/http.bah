@@ -1,0 +1,18 @@
+// #include "iostream.bah"
+// #include "string.bah"
+// #include "http.bah"
+
+// testHttp() bool {
+//     respTLS = get("https://example.com")
+//     respTTP = get("http://example.com")
+//     if respTLS.body.str() != respTTP.body.str() {
+//         return false
+//     }
+
+//     ctntp = respTLS.getHeader("Content-Type")
+//     if ctntp != "text/html; charset=UTF-8"{
+//         return false
+//     }
+
+//     return true
+// }

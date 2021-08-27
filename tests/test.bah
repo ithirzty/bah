@@ -1,0 +1,44 @@
+#include "iostream.bah"
+#include "string.bah"
+#include "time.bah"
+
+
+test(name cpstring, start int, passed bool) {
+    s cpstring
+    end = getTimeUnix()
+    dur = end - start
+    durStr = intToStr(dur)
+    if passed == true {
+        s = "\e[0;32m✔ " + name
+    } else {
+        s = "\e[0;31m❌ " + name
+    }
+    s = s + " (" + durStr + "ns)"
+    println(s)
+}
+
+#include "./libs/markdown.bah"
+#include "./libs/string.bah"
+// #include "./libs/http.bah"
+#include "./libs/iostream.bah"
+#include "./libs/json.bah"
+
+
+main() {
+    
+    start = getTimeUnix()
+    test("string", start, testString())
+
+    start = getTimeUnix()
+    test("markdown", start, testMarkdown())
+    
+    // start = getTimeUnix()
+    // test("http", start, testHttp())
+    
+    start = getTimeUnix()
+    test("iostream", start, testIostream())
+    
+    start = getTimeUnix()
+    test("json", start, testJson())
+
+}

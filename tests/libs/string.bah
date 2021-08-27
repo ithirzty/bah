@@ -1,0 +1,54 @@
+#include "string.bah"
+
+testString() bool {
+    const STR_RES = "5preTESTpost"
+    s = string("TEST")
+    s.prepend("   pre")
+    s.append("postTRIM")
+    s.trim()
+    s.trimRight(4)
+    s.prepend(intToStr(5))
+
+    if s.compare(STR_RES) == 0 {
+        return false
+    }
+
+    const STR_ARR_RES = "ABCDEFGHIJ"
+    arr = []char
+    i = 65; for i < 75 {
+        arr[len(arr)] = <char>i
+        i = i + 1
+    }
+    
+    str = string(arrAsStr(arr))
+    if str.compare(STR_ARR_RES) == 0 {
+        return false
+    }
+
+    const STR_TOLWR_RES = "abcdefghij"
+    lowStr = toLower(str)
+    if lowStr.compare(STR_TOLWR_RES) == 0 {
+        return false
+    }
+
+    const STR_SPLIT_NB_RES = 5
+    splitTest = string("a b c d e")
+    splitted = splitString(splitTest, " ")
+    if len(splitted) != STR_SPLIT_NB_RES {
+        return false
+    }
+
+    const STR_JOIN_RES = "a-_-b-_-c-_-d-_-e"
+    joined = joinString(splitted, "-_-")
+    if joined.compare(STR_JOIN_RES) == 0 {
+        return false
+    }
+
+    repl = string(splitTest.str())
+    repl.replace(" ", "-_-")
+    if repl.compare(STR_JOIN_RES) == 0 {
+        return false
+    }
+
+    return true
+}
