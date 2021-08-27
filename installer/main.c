@@ -1,8 +1,29 @@
 //COMPILE WITH: 'gcc ././main.c -w  -lgc -DPARALLEL_MARK -lm'
 
+#include <stdio.h>
+#include <execinfo.h>
+#include <signal.h>
+#include <stdlib.h>
+#include <unistd.h>
 #include <gc.h>
+
 #define noCheck(v) v
 #define array(type)	struct{	type *data; long int length; long int elemSize; }
+
+void __CRASH_BAH_HANDLE(int sig) {
+void *array[10];
+size_t size;
+size = backtrace(array, 10);
+char * sigStr = "unknown";
+if (sig == 11) {
+    sigStr = "Seg fault";
+};
+fprintf(stderr, "Program crashed, received signal %s:\n", sigStr);
+backtrace_symbols_fd(array, size, STDERR_FILENO);
+exit(1);
+}
+
+
 int main(int argc, char ** argv) {
 GC_INIT();
 array(char*) * args = GC_MALLOC(sizeof(array(char*)));
@@ -10,6 +31,7 @@ args->data = GC_MALLOC(sizeof(char*)*argc);
 memcpy(args->data, argv, sizeof(char*)*argc);
 args->elemSize = sizeof(char*);
 args->length = argc;
+signal(SIGSEGV, __CRASH_BAH_HANDLE);
 __BAH__main(args);
 };
 #define main(v) __BAH__main(v)
@@ -1605,12 +1627,12 @@ return r;
 };
 #define BAH_DIR "/opt/bah/"
 struct string SOURCE;
-char * OUTPUT =  "\n#include <gc.h>\n#define noCheck(v) v\n#define array(type)	\
+char * OUTPUT =  "\n#include <stdio.h>\n#include <execinfo.h>\n#include <signal.h>\n#include <stdlib.h>\n#include <unistd.h>\n#include <gc.h>\n\n#define noCheck(v) v\n#define array(type)	\
 struct{	\
 type *data; \
 long int length; \
 long int elemSize; \
-}\nint main(int argc, char ** argv) {\nGC_INIT();\narray(char*) * args = GC_MALLOC(sizeof(array(char*)));\nargs->data = GC_MALLOC(sizeof(char*)*argc);\nmemcpy(args->data, argv, sizeof(char*)*argc);\nargs->elemSize = sizeof(char*);\nargs->length = argc;\n__BAH__main(args);\n};\n#define main(v) __BAH__main(v)\n";
+}\n\nvoid __CRASH_BAH_HANDLE(int sig) {\nvoid *array[10];\nsize_t size;\nsize = backtrace(array, 10);\nchar * sigStr = \"unknown\";\nif (sig == 11) {\n    sigStr = \"Seg fault\";\n};\nfprintf(stderr, \"Program crashed, received signal %s:\\n\", sigStr);\nbacktrace_symbols_fd(array, size, STDERR_FILENO);\nexit(1);\n}\n\n\nint main(int argc, char ** argv) {\nGC_INIT();\narray(char*) * args = GC_MALLOC(sizeof(array(char*)));\nargs->data = GC_MALLOC(sizeof(char*)*argc);\nmemcpy(args->data, argv, sizeof(char*)*argc);\nargs->elemSize = sizeof(char*);\nargs->length = argc;\nsignal(SIGSEGV, __CRASH_BAH_HANDLE);\n__BAH__main(args);\n};\n#define main(v) __BAH__main(v)\n";
 ;
 char * NEXT_LINE =  "";
 ;

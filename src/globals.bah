@@ -3,7 +3,13 @@
 
 SOURCE string
 OUTPUT = "
+#include <stdio.h>
+#include <execinfo.h>
+#include <signal.h>
+#include <stdlib.h>
+#include <unistd.h>
 #include <gc.h>
+
 #define noCheck(v) v
 #define array(type)	\
 struct{	\
@@ -11,6 +17,21 @@ type *data; \
 long int length; \
 long int elemSize; \
 }
+
+void __CRASH_BAH_HANDLE(int sig) {
+void *array[10];
+size_t size;
+size = backtrace(array, 10);
+char * sigStr = \"unknown\";
+if (sig == 11) {
+    sigStr = \"Seg fault\";
+};
+fprintf(stderr, \"Program crashed, received signal %s:\\n\", sigStr);
+backtrace_symbols_fd(array, size, STDERR_FILENO);
+exit(1);
+}
+
+
 int main(int argc, char ** argv) {
 GC_INIT();
 array(char*) * args = GC_MALLOC(sizeof(array(char*)));
@@ -18,6 +39,7 @@ args->data = GC_MALLOC(sizeof(char*)*argc);
 memcpy(args->data, argv, sizeof(char*)*argc);
 args->elemSize = sizeof(char*);
 args->length = argc;
+signal(SIGSEGV, __CRASH_BAH_HANDLE);
 __BAH__main(args);
 };
 #define main(v) __BAH__main(v)
