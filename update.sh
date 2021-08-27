@@ -1,7 +1,9 @@
 #!/bin/bash
 
 # Check if any update is available
+{
 git fetch
+} &> /dev/null
 HEADHASH=$(git rev-parse HEAD)
 UPSTREAMHASH=$(git rev-parse main@{upstream})
 if [ "$HEADHASH" == "$UPSTREAMHASH" ]
