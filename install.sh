@@ -46,14 +46,16 @@ echo "│Creating bah directory and creating bah std-libs│"
 echo "╰────────────────────────────────────────────────╯"
 {
 sudo mkdir /opt/bah
-sudo cp ./a.out /opt/bah
+sudo cp ./a.out /opt/bah/bah
 sudo cp -s /opt/bah/bah /bin/bah
-chmod +x /bin/bah
+sudo chmod 777 /opt/bah
+sudo chmod +x /bin/bah
 rm ./a.out
 
 # Moving std-libs
 cp ./libs/linux_amd64/* /opt/bah/
 cp ./libs/common/* /opt/bah/
+sudo chmod 777 /opt/bah/*
 } &> /dev/null
 echo -e "\033[1;32m╭─────────────────────────────────────────────────────────────╮"
 echo              "│                            Done!                            │"
