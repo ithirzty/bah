@@ -1,0 +1,388 @@
+#include "iostream.bah"
+#include "string.bah"
+
+//An internal function used to append the array of chars b to the array a.
+appendCharArr(a []char, b []char) {
+    offset = len(a)
+    lenB = len(b)
+    i=0; for i < lenB {
+        a[offset+i] = b[i]
+        i = i + 1
+    }
+}
+
+//An internal structure to define a single line of markdown by its type.
+struct markdownLine {
+    line: string*
+    type: int = 0
+    rel: string
+}
+
+//A wrapper for the markdown parser.
+struct markdown {
+
+    lines: []markdownLine*
+
+    //To retreive the document as lines without transpilling it to any other language.
+    //This is mainly for debugging/verbose purposes.
+    str() cpstring {
+        s = ""
+        i=0;for i < len(this.lines) {
+            mdl = this.lines[i]
+            si = intToStr(i)
+            l = mdl.line.str()
+            s = s + si + ": " + l + "\n"
+            i++
+        }
+
+        return s
+    }
+
+    //To transpille your markdown document as a html document.
+    //This will return a cpstring containning your markdown document as html code.
+    html() cpstring {
+        html = "<p>"
+
+        i=0;for i < len(this.lines) {
+            mdl = this.lines[i]
+            l = mdl.line.str()
+
+            if mdl.type == 1 {
+                html = html + "<h1>"+l+"</h1><hr>"
+            } else if mdl.type == 2 {
+                html = html + "<h2>"+l+"</h2><hr>"
+            } else if mdl.type == 3 {
+                html = html + "<h3>"+l+"</h3>"
+            } else if mdl.type == 4 {
+                html = html + "<h4>"+l+"</h4>"
+            } else if mdl.type == 5 {
+                html = html + "<h5>"+l+"</h5>"
+            } else if mdl.type == 6 {
+                html = html + "<h3>"+l+"</h3>"
+            } else if mdl.type == 7 {
+                html = html + "&nbsp;• "+l+"<br>"
+            } else if mdl.type == 8 {
+                html = html + "\t"+l
+            } else if mdl.type == 9 {
+                html = html + "<blockquote>"+l+"</blockquote>"
+            } else if mdl.type == 10 {
+                rel = mdl.rel.str()
+                html = html + "<pre class=\"highlight highlight-source-"+rel+"\">"+l+"</pre>"
+            } else {
+                html = html + l + "<br>"
+            }
+
+            html += "\n"
+
+            i++
+        }
+        html += "</p>"
+        return html
+    }
+
+}
+
+//An internal function to parse every inline element of a line.
+//Inline elements are syntax features that do not impact the entire line.
+//For instance, the bold delimiter is an inline feature, the hastag at the biginning of a line is not.
+parseMarkdownInline(l string) string {
+    if l.length == 0 {
+        return l
+    }
+    nl = []char
+    
+    
+
+    isBold = 0
+    isItal = 0
+    isUline = 0
+
+    isImage = 0
+
+    isLink = 0
+    linkName = []char
+    linkUrl = []char
+
+    i=0;for i<l.length {
+        c = l.charAt(i)
+
+        //link
+        if isLink == 1 {
+            if c == ']' {
+                isLink = 2
+            } else {
+                linkName[len(linkName)] = c
+            }
+            i++
+            continue
+        }
+        if isLink == 2 {
+            if c == '(' {
+                isLink = 3
+            }
+            i++
+            continue
+        }
+        if isLink == 3 {
+            if c == ')' {
+                if isImage {
+                    appendCharArr(nl, strToArr("<img src=\""))
+                    appendCharArr(nl, linkUrl)
+                    appendCharArr(nl, strToArr("\" alt=\""))
+                    appendCharArr(nl, linkName)
+                    appendCharArr(nl, strToArr("\">"))
+                    // nl.append("<img src=\"")
+                    // nl.append(arrAsStr(linkUrl))
+                    // nl.append("\" alt=\"")
+                    // nl.append(arrAsStr(linkName))
+                    // nl.append("\">")
+
+                    isImage = 0
+                } else {
+                    appendCharArr(nl, strToArr("<a href=\""))
+                    appendCharArr(nl, linkUrl)
+                    appendCharArr(nl, strToArr("\">"))
+                    appendCharArr(nl, linkName)
+                    appendCharArr(nl, strToArr("</a>"))
+                    // nl.append("<a href=\"")
+                    // nl.append(arrAsStr(linkUrl))
+                    // nl.append("\">")
+                    // nl.append(arrAsStr(linkName))
+                    // nl.append("</a>")
+                }
+                isLink = 0
+                clear(linkName)
+                clear(linkUrl)
+            } else {
+                linkUrl[len(linkUrl)] = c
+            }
+            i++
+            continue
+        }
+        if c == '[' {
+            validateState = 0
+            ii=i;for ii<l.length {
+                vc = l.charAt(ii)
+                if validateState == 0 {
+                    if vc == ']' {
+                        validateState = 1
+                    }
+                } else if validateState == 1 {
+                    if vc == '(' {
+                        validateState = 2
+                        ii++
+                        continue
+                    }
+                    if isSpace(vc) == 0 {
+                        validateState = 0
+                    }
+                } else if validateState == 2 {
+                    if vc == ')' {
+                        validateState = 3
+                        break
+                    }
+                }
+                ii++
+            }
+            if validateState == 3 {
+                isLink = 1
+                i++
+                continue
+            } else if isImage {
+                isImage = 0
+                nl[len(nl)] = '!'
+                // nl.append("!")
+            }
+        }
+
+        if c == '!' {
+            nc = l.charAt(i+1)
+            if nc == '[' {
+                isImage = 1
+            }
+            i++
+            continue
+        }
+
+        //bold
+        if c == '*' {
+            if l.charAt(i+1) == '*' {
+            if isBold {
+                appendCharArr(nl, strToArr("</strong>"))
+                // nl.append("</strong>")
+                isBold = 0
+            } else {
+                appendCharArr(nl, strToArr("<strong>"))
+                // nl.append("<strong>")
+                isBold = 1
+            }
+            i += 2
+            continue
+            } else {
+        //italic
+                if isItal {
+                    appendCharArr(nl, strToArr("</em>"))
+                    // nl.append("</em>")
+                    isItal = 0
+                } else {
+                    appendCharArr(nl, strToArr("<em>"))
+                    // nl.append("<em>")
+                    isItal = 1
+                }
+                i++
+                continue
+            }
+        }
+
+        //underlining
+        if c == '_' {
+            if l.charAt(i+1) == '_' {
+                if isUline {
+                    appendCharArr(nl, strToArr("</u>"))
+                    // nl.append("</u>")
+                    isUline = 0
+                } else {
+                    appendCharArr(nl, strToArr("<u>"))
+                    // nl.append("<u>")
+                    isUline = 1
+                }
+                i += 2
+                continue
+            }
+        }
+
+        
+        // nl.append(charToString(c))
+        nl[len(nl)] = c
+        i++
+    }
+
+    r = string(arrToStr(nl))
+
+    return r
+}
+
+//To parse a markdown document.
+//This will return a markdown structure that can be then transpilled into html.
+parseMarkdown(a cpstring) markdown {
+    md = string(a)
+    lines = splitString(md, "\n")
+    m = markdown{}
+    
+    i = 0; for i < len(lines) {
+        l = lines[i]
+        nl = new string
+
+        ml = new markdownLine
+        if l.count("```") > 0 {
+            starts = 1
+            lineParts = splitString(l, "```")
+            if len(lineParts) > 0 {
+                ml.rel = lineParts[1]
+            } else {
+                ml.rel = string("")
+            }
+            ml.type = 10
+            nl.set("")
+            i=i+1;for i < len(lines) {
+                ll = lines[i]
+                if ll.count("```") > 0 {
+                    break
+                }
+
+                ll.append("\n")
+                nl.append(ll)
+
+                i = i + 1
+            }
+
+            ml.line = nl
+            m.lines[len(m.lines)] = ml
+            i = i + 1
+            continue
+        }
+
+        l.trim()
+        l = parseMarkdownInline(l)
+        
+         if l.hasPrefix("# ") {
+            ml.type = 1
+            nl.set(l)
+            nl.trimLeft(2)
+        } else if l.hasPrefix("## ") {
+            ml.type = 2
+            nl.set(l)
+            nl.trimLeft(3)
+        } else if l.hasPrefix("### ") {
+            ml.type = 3
+            nl.set(l)
+            nl.trimLeft(4)
+
+        } else if l.hasPrefix("#### ") {
+            ml.type = 4
+            nl.set(l)
+            nl.trimLeft(5)
+
+        } else if l.hasPrefix("##### ") {
+            ml.type = 5
+            nl.set(l)
+            nl.trimLeft(6)
+
+        } else if l.hasPrefix("###### ") {
+            ml.type = 6
+            nl.set(l)
+            nl.trimLeft(7)
+
+        } else if l.hasPrefix("- ") {
+            ml.type = 7
+            nl.set(l)
+            nl.trimLeft(2)
+        } else if l.hasPrefix("> ") {
+            ml.type = 9
+            nl.set(l)
+            nl.trimLeft(2)
+        } else {
+
+            if l.length > 0 {
+                fc=l.charAt(0); if isNumber(fc) {
+                    ml.type = 8
+                }
+            }
+                nl.set(l)
+            }
+        
+        ml.line = nl
+        m.lines[len(m.lines)] = ml
+        
+        i++
+    }
+
+
+    return m
+}
+
+//This escapes every character that the markdown parser could take as markdown code.
+//It is not meant to be ran on your main markdown document but rather on some parts that you dont want to be taken as markdown.
+escapeMarkdownHTML(s string*) {
+    s.replace("*", "&ast;")
+    s.replace(">", "&gt;")
+    s.replace("<", "&lt;")
+    s.replace("__", "&lowbar;&lowbar;")
+    s.replace("-", "&minus;")
+    s.replace("#", "&num;")
+}
+
+//Example
+// #include "iostream.bah"
+// #include "markdown.bah"
+// main() {
+// article = "# How to write Bah code?
+//
+// > It's not that hard
+//
+// Simply **smash** your keyboard
+// "
+// md = parseMarkdown(article)
+// htmlCode = md.html()
+// println(htmlCode)
+// }

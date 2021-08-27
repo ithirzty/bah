@@ -1,0 +1,54 @@
+#include "iostream.bah"
+#include "string.bah"
+
+#define popen(cmd cpstring, type cpstring) FILE*
+#define pclose(hndl FILE*)
+
+//A wrapper for executting command.
+//This is will return the output of the command.
+struct command {
+    command: cpstring 
+
+    //To run the command.
+    //This returns a cpstring containning the output of the command.
+    run() cpstring {
+        handle = popen(this.command, "r")
+        if handle == null {
+            return ""
+        }
+        buff cpstring = memoryAlloc(1025)
+        res = string("")
+        more = 1;for more == 1 {
+            more = fgets(buff, 1024, handle)
+            res.append(buff)
+        }
+        pclose(handle)
+        return res.str()
+    }
+
+}
+
+//To initiate a command.
+//You must specify the command as a cpstring.
+command(s cpstring) command {
+    cmd = command{}
+    cmd.command = s
+    return cmd
+}
+
+#define execvp(cmd cpstring, args ptr) int
+
+//Exec will execute a binary/command with the specified arguments passed to it.
+//Note that this will take the current proccess.
+exec(s cpstring, args []cpstring) int {
+    r int
+    nArgs = []cpstring
+    nArgs[0] = s
+    i=0;for i < len(args) {
+        nArgs[i+1] = args[i]
+        i = i + 1
+    }
+    nArgs[i+2] = <cpstring>0
+    noCheck(r = execvp(s, nArgs->data))
+    return r
+}

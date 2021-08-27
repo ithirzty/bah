@@ -1,0 +1,542 @@
+#include "<string.h>"
+#include "<math.h>"
+
+#include "memory.bah"
+
+#include "cBinds.bah"
+#cLib "lm"
+
+#define strncpy(dest cpstring, src cpstring, size int)
+#define memcpy(dest ptr, src ptr, size int)
+#define sscanf(str cpstring, format cpstring, dest ptr)
+#define strtol(str cpstring, endptr ptr, base int) int
+#define strtod(str cpstring, endptr int) float
+#define memset(str ptr*, w int, s int)
+
+//Used for converting a char into a cpstring of length 1.
+charToString(c char) cpstring {
+    s cpstring = memoryAlloc(2)
+    strncpy(s,<cpstring>&c, 1)
+    return s
+}
+
+//Used to know if a char is upper-cased, will return 1 if true.
+isUpper(c char) int {
+    if c > <char>64 {
+        if c < <char>91 {
+            return 1
+        }
+    }
+    return 0
+}
+
+//Used to know if a char is lower-cased, will return 1 if true.
+isLower(c char) int {
+    if c > <char>96 {
+        if c < <char>123 {
+            return 1
+        }
+    }
+    return 0
+}
+
+//Used to know if a char is a letter, will return 1 if true.
+isLetter(s char) int {
+    if isUpper(s) {
+        return 1
+    }
+    if isLower(s) {
+        return 1
+    }
+    return 0
+}
+
+//Used to know if a char is a number, will return 1 if true.
+isNumber(c char) int {
+    if c > <char>47 {
+        if c < <char>58 {
+            return 1
+        }
+    }
+    return 0
+}
+
+//Used to know if a char is alphanumeric, will return 1 if true.
+//Alphanumeric means letter or number.
+isAlphaNumeric(s char) int {
+    if isLetter(s) {
+        return 1
+    }
+    if isNumber(s) {
+        return 1
+    }
+    return 0
+}
+
+//Used to know if a char is a space / new line character, will return 1 if true.
+isSpace(c char) int {
+    if c == <char>32 {
+        return 1
+    }
+    if c == <char>9 {
+        return 1
+    }
+    if c == <char>10 {
+        return 1
+    }
+    if c == <char>11 {
+        return 1
+    }
+    if c == <char>13 {
+        return 1
+    }
+
+    return 0
+}
+
+//A string wrapper to make string manipulation easier.
+struct string {
+    content: cpstring
+    length: int
+
+    //Sets the string value to the specified cpstring.
+    set(s cpstring) {
+        this.length = strlen(s)
+        this.content = <cpstring>memoryAlloc(this.length+1)
+        strcpy(this.content, s)
+    }
+
+    //Appends the specified cpstring to the string.
+    append(s cpstring) {
+        this.length = this.length + strlen(s)
+        tmpS cpstring = <cpstring>memoryRealloc(<ptr>this.content, this.length)
+        if <int>tmpS == 0 {
+            tmpS = <cpstring>memoryAlloc(this.length)
+            strncpy(tmpS, this.content, this.length)
+        }
+        strcat(tmpS, s)
+        this.content = tmpS
+    }
+    
+    //Prepends the specified cpstring to the string.
+    prepend(s cpstring) {
+        tmpS cpstring = memoryAlloc(this.length+1)
+        strcpy(tmpS, this.content)
+        this.length = this.length + strlen(s)
+        this.content = <cpstring>memoryAlloc(this.length+1)
+        strcpy(this.content, s)
+        strcat(this.content, tmpS)
+    }
+
+    //Returns the char at the specified position of the string.
+    charAt(i int) char {
+        c = <char>0
+        if i < this.length {
+            noCheck(c = this->content[i])
+            return c
+        }
+        return c
+    }
+
+    //Used to know if the content of the string is the same as the specified cpstring, returns 1 if true.
+    compare(s cpstring) int {
+        r int = strcmp(this.content, s)
+        if r == 0 {
+            return 1
+        }
+        return 0
+    }
+
+    //Used for getting the content of the string as a cpstring.
+    str() cpstring {
+        r = this.content
+        return r
+    }
+
+    //Used to replace a substring by another.
+    replace(nd cpstring, rl cpstring) {
+        needle = string{}
+        needle.set(nd)
+        repl = string{}
+        repl.set(rl)
+        i = 0
+        si = 0
+        replcBuff = []char
+        buff = []char
+        for i < this.length {
+            
+            c = this.charAt(i)
+            rc = needle.charAt(si)
+            
+            if c == rc {
+                si = si + 1
+                replcBuff[len(replcBuff)] = c
+            } else {
+                if len(replcBuff) > 0 {
+                    si = 0
+                    append(buff, replcBuff)
+                    clear(replcBuff)
+                }
+                buff[len(buff)] = c
+            }
+
+            if si == needle.length {
+                clear(replcBuff)
+                ii = 0; for ii < repl.length {
+                    a = ii
+                    buff[len(buff)] = repl.charAt(ii)
+                    ii = ii + 1
+                }
+                si = 0
+            }
+
+            i = i + 1
+        }
+        r = ""
+        noCheck(r = buff->data)
+        if len(replcBuff) > 0 {
+            replbuffStr cpstring
+            noCheck(replbuffStr = replcBuff->data)
+            r = r + replbuffStr
+        }
+        this.set(r)
+    }
+
+    //Used to count the number of substring(s).
+    count(need cpstring) int {
+        i = 0
+        count = 0
+        needle = string{}
+        needle.set(need)
+        countIndex = 0
+        for i < this.length {
+            c = this.charAt(i)
+            sc = needle.charAt(countIndex)
+            if c == sc {
+                countIndex = countIndex + 1
+            } else {
+                countIndex = 0
+            }
+            if countIndex == needle.length {
+                count = count + 1
+                countIndex = 0
+            }
+            i = i + 1
+        }
+        return count
+    }
+
+    //Used to know if the string as a specified prefix, returns 1 if true.
+    hasPrefix(need cpstring) int {
+        i = 0
+        needle = string{}
+        needle.set(need)
+        if this.length < needle.length {
+            return 0
+        }
+        for i < needle.length {
+            c = this.charAt(i)
+            sc = needle.charAt(i)
+            if c != sc {
+                return 0
+            }
+            i = i + 1
+        }
+        return 1
+    }
+
+    //Used to know if the string as a specified suffix, returns 1 if true.
+    hasSuffix(need cpstring) int {
+        needle = string{}
+        needle.set(need)
+        if this.length < needle.length {
+            return 0
+        }
+        i =  this.length - needle.length
+        needleIndex = 0
+        for i < this.length {
+            c = this.charAt(i)
+            sc = needle.charAt(needleIndex)
+            if c != sc {
+                return 0
+            }
+            needleIndex = needleIndex + 1
+            i = i + 1
+        }
+        
+        return 1
+
+    }
+
+    //Used for trimming spaces at the beginning of the string.
+    trim() {
+        if this.length == 0 {
+            return
+        }
+        fc = this.charAt(0)
+        if isSpace(fc) == 0 {
+            return
+        }
+        i = 0
+        for i < this.length {
+            c = this.charAt(i)
+            if isSpace(c) == 0 {
+                break
+            }
+                i = i + 1
+        }
+        if i > 0 {
+            this.length = this.length - i
+            tmpS cpstring = memoryAlloc(this.length+1)
+            memcpy(tmpS, noCheck(this.content+i), this.length+1)
+            this.content = tmpS
+        }
+    }
+
+    //Used to trim a specified number of charcaters from the beginning of the string.
+    trimLeft(s int) {
+        nSize = this.length - s
+        tmpS = memoryAlloc(nSize)
+        memcpy(tmpS, noCheck(this.content+s), nSize)
+        this.content = tmpS
+        this.length = nSize
+    }
+
+    //Used to trim a specified number of charcaters from the end of the string.
+    trimRight(s int) {
+        nSize = this.length - s
+        tmpS = memoryAlloc(nSize)
+        memcpy(tmpS, this.content, nSize)
+        this.content = tmpS
+        this.length = nSize
+    }
+
+}
+
+//Used to make a string wrapper from a specified cpstring.
+string(s cpstring) string {
+    a = string{}
+    a.content = <cpstring>0
+    a.length = 0
+    a.set(s)
+    return a
+}
+
+//Used to convert an array of characters to a cpstring.
+arrToStr(arr []char) cpstring {
+    strLen = len(arr)
+    str cpstring = memoryAlloc(strLen+1)
+    noCheck(memcpy(str, arr->data, strLen))
+    return str
+}
+
+//Used to convert a cpstring into an array of characters.
+strToArr(str cpstring) []char {
+    strLen = strlen(str)
+    arr = []char
+    noCheck(arr->data = memoryAlloc(strLen+1))
+    noCheck(memcpy(arr->data, str, strLen))
+    noCheck(arr->length = strLen)
+    
+    return arr
+}
+
+//Used to get a pointer to an array data as a cpstring.
+//Unlike arrToStr, this does not copy the content of the array to a cpstring.
+//This is faster but changing the content of the returnend cpstring will change the content of the array.
+//You can see this operation as linkning the same data through two different interfaces, the only difference between these two interfaces are their type.
+arrAsStr(arr []char) cpstring {
+    r = ""
+    noCheck(r = arr->data)
+    return r
+}
+
+//Used to convert an integer into a string.
+//*It returns a string, not a cpstring*
+intToString(i int) string {
+    buff cpstring = memoryAlloc(65)
+    ptri = <ptr>i
+    sprintf(buff, "%d", ptri)
+    r = string(buff)
+    return r
+}
+
+//Converts an int into a cpstring.
+//This is faster than intToString.
+intToStr(i int) cpstring {
+    buff cpstring = memoryAlloc(65)
+    sprintf(buff, "%ld", <ptr>i)
+    return buff
+}
+
+
+//Used to convert a string into an integer.
+//*It takes a string, not a cpstring*
+stringToInt(s string) int {
+    i int = atoi(s.content)
+    return i
+    //i = s.length - 1
+    //j = 0
+    //ri = 0
+    //for i >= 0 {
+    //    c = s.charAt(i)
+    //    if isNumber(c) == 0 {
+    //        return 0-1
+    //    }
+    //    mult int = pow(10, j)
+    //    c = c - 48
+    //    c = c * mult
+    //    ri = ri + c
+    //    i = i - 1
+    //    j = j + 1
+    //}
+    //return ri
+}
+
+//Used for splitting a string into multiple substrings delimited by the specified delimiter.
+splitString(s string, sp cpstring) []string {
+    sep = string(sp)
+    res = []string
+    sepBuffer = string("")
+    sepIndex = 0
+    i = 0
+    replcBuff = string("")
+    tmpString = []char
+
+
+    for i < s.length {
+        c = s.charAt(i)
+        sepc = sep.charAt(sepIndex)
+        
+            if c == sepc {
+                sepIndex = sepIndex + 1
+                replcBuff.append(charToString(c))
+            } else {
+                if sepIndex > 0 {
+                    sepIndex = 0
+                    replcBuff.append(charToString(c))
+                    ii=0;for ii < replcBuff.length {
+                    tmpString[len(tmpString)] = replcBuff.charAt(ii)
+                    ii = ii + 1 
+                    }
+                    replcBuff.set("")
+                } else {
+                    tmpString[len(tmpString)] = c
+                }
+            }
+            if sepIndex == sep.length {
+                replcBuff.set("")
+                elem = new string
+                elem.set(arrToStr(tmpString))
+                lenRes = len(res)
+                res[lenRes] = *elem
+                clear(tmpString)
+                sepIndex = 0
+            }
+
+    
+        i = i + 1
+    }
+
+    if replcBuff.length > 0 {
+        ii=0;for ii < replcBuff.length {
+            tmpString[len(tmpString)] = replcBuff.charAt(ii)
+            ii = ii + 1 
+        }
+    }
+
+
+    if len(tmpString) > 0 {
+        elem = new string
+        elem.set(arrToStr(tmpString))
+        lenRes = len(res)
+        res[lenRes] = *elem
+    }
+
+    return res
+}
+
+//Used for joinning an array of strings with a specified separator into a string.
+joinString(a []string, sep cpstring) string {
+    i = 0
+    s = string("")
+    max = len(a) - 1
+    for i < len(a) {
+        e = a[i]
+        if e.length == 0 {
+            i = i + 1
+            continue
+        }
+        tmpS = string(e.str())
+        if i != max {
+            tmpS.append(sep)
+        }
+        s.append(tmpS.str())
+        i = i + 1
+    }
+    return s
+}
+
+//Used to get the content of a string before a certain delimiter.
+splitStringBefore(s string, sp cpstring) cpstring {
+    sep = string(sp)
+    if sep.length >= s.length {
+        return ""
+    }
+    sepIndex = 0
+    foundIndex = 0
+    i=0;for i < s.length {
+        c = s.charAt(i)
+        sc = sep.charAt(sepIndex)
+        if c == sc {
+            if sepIndex == 0 {
+                foundIndex = i - 1
+            }
+            sepIndex = sepIndex + 1
+            if sepIndex == sep.length {
+                max = s.length - foundIndex - 1
+                s.trimRight(max)
+                return s.str()
+            }
+        } else {
+            foundIndex = 0
+            sepIndex = 0
+        }
+
+        i = i + 1
+    }
+
+    return ""
+
+}
+
+//Used to lower-case a string.
+toLower(s string) string {
+    ns = []char
+    i=0;for i < s.length {
+        c = s.charAt(i)
+        if isUpper(c) {
+            c = c + <char>32
+        }
+        ns[len(ns)] = c
+        i = i + 1
+    }
+    return string(arrToStr(ns))
+}
+
+//Example
+//#include "iostream.bah"
+//#include "string.bah"
+//
+// main() {
+//     a = string("I code in ")
+//     a.append("Bah")
+//
+//     println(a)
+//
+//     age = 16
+//     b = intToString(age)
+//     b.prepend("I'm ")
+//     b.append(" years old")
+//     println(b)
+// }

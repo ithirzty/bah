@@ -1,0 +1,84 @@
+#include "iostream.bah"
+#include "string.bah"
+
+SOURCE string
+OUTPUT = "
+#include <gc.h>
+#define noCheck(v) v
+#define array(type)	\
+struct{	\
+type *data; \
+long int length; \
+long int elemSize; \
+}
+int main(int argc, char ** argv) {
+GC_INIT();
+array(char*) * args = GC_MALLOC(sizeof(array(char*)));
+args->data = GC_MALLOC(sizeof(char*)*argc);
+memcpy(args->data, argv, sizeof(char*)*argc);
+args->elemSize = sizeof(char*);
+args->length = argc;
+__BAH__main(args);
+};
+#define main(v) __BAH__main(v)
+"
+NEXT_LINE = ""
+
+struct variable {
+    name: cpstring = ""
+    type: cpstring = ""
+    isConst: bool = false
+    isArray: bool = false
+}
+
+struct structMemb extend variable {
+    def: cpstring = ""
+    isFn: bool = false
+    from: cpstring = ""
+}
+
+
+struct func {
+    name: cpstring = ""
+    args: []variable*
+    returns: variable*
+    returned: bool
+    isBinding: bool = false
+    from: cpstring = ""
+    file: cpstring = ""
+    line: int = 1
+}
+
+struct cStruct {
+    name: cpstring = ""
+    members: []structMemb*
+    methods: []func*
+    postCode: cpstring = ""
+    print: bool
+    extendedFrom: cpstring = ""
+}
+
+struct Elems {
+    vars: []variable*
+    structs: []cStruct*
+    types: []cpstring
+    fns: []func*
+}
+
+struct compilerStateTag {
+    includes: []cpstring
+    cLibs: []cpstring
+    currentFile: cpstring
+    isBranch: bool = false
+    isFor: bool = false
+}
+
+compilerState compilerStateTag
+
+currentCStruct cStruct*
+
+threadCount = 0
+
+currentFn func*
+
+totalLines = 0

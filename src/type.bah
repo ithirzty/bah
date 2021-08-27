@@ -1,0 +1,95 @@
+#include "iostream.bah"
+#include "string.bah"
+
+#include "./lexer.bah"
+#include "./struct.bah"
+
+
+getCType(t cpstring, elems Elems*) string {
+    if strlen(t) == 0 {
+        return string("void")
+    }
+
+
+    tp = string(t)
+    tp.replace(" ", "")
+    if tp.hasPrefix("[]") {
+        tp.trimLeft(2)
+        tpstr = tp.str()
+        tp = getCType(tpstr, elems)
+        t = tp.str()
+        r = "array("+t+")*"
+        return string(r)
+    }
+    
+    ctp = tp
+    ctp.replace("*", "")
+    
+
+    if ctp.compare("int") {
+        tp.replace("int", "long int")
+    } else if ctp.compare("int32") {
+        tp.replace("int32", "int")
+    } else if ctp.compare("uint32") {
+        tp.replace("uint32", "unsigned int")
+    } else if ctp.compare("uint") {
+        tp.replace("uint", "unsigned long int")
+    } else if ctp.compare("float32") {
+        tp.replace("float32", "float")
+    } else if ctp.compare("ufloat32") {
+        tp.replace("ufloat32", "unsigned float")
+    } else if ctp.compare("ufloat") {
+        tp.replace("ufloat", "unsigned double")
+    } else if ctp.compare("float") {
+        tp.replace("float", "double")
+    } else if ctp.compare("long") {
+        tp.replace("long", "long long")
+    } else if ctp.compare("ulong") {
+        tp.replace("ulong", "unsigned long long")
+    } else if ctp.compare("cpstring") {
+        tp.replace("cpstring", "char *")
+    } else if ctp.compare("ptr") {
+        tp.replace("ptr", "void *")
+    } else if ctp.compare("ushort") {
+        tp.replace("ushort", "unsigned short")
+    } else if ctp.compare("byte") {
+        tp.replace("byte", "unsigned char")
+    } else if ctp.compare("bool") {
+        tp.replace("bool", "int")
+    } else if ctp.compare("char") {
+        //do nothing for now
+    } else {
+        
+        ctpstr = ctp.str()
+        s = searchStruct(ctpstr, elems)
+        if s != null {
+            tp.prepend("struct ")
+        } else {
+            i=0; for i < len(elems.types) {
+                ct = elems.types[i]
+                if ctp.compare(ct) {
+                    return tp
+                }
+                i = i + 1
+            }
+            return string("")
+        }
+
+    }
+
+    return tp
+
+}
+
+compTypes(a cpstring, b cpstring) bool {
+    if a == "ptr" {
+        return true
+    }
+    if b == "ptr" {
+        return true
+    }
+    if a == b {
+        return true
+    }
+    return false
+}

@@ -1,0 +1,105 @@
+#include "iostream.bah"
+#include "string.bah"
+
+#include "./globals.bah"
+
+hasStructSep(n string) bool {
+    if n.count(".") {
+        return true
+    }
+    if n.count("->") {
+        return true
+    }
+    return false
+}
+
+splitStructSepBefore(n string) string {
+    
+    if n.count(".") {
+        res = string(splitStringBefore(n, "."))
+        return res
+    }
+    if n.count("->") {
+        res = string(splitStringBefore(n, "->"))
+        return res
+    }
+
+    return string("")
+}
+
+splitStructSepAfter(n string) string {
+    i=n.length; for i > 0 {
+        c = n.charAt(i)
+        if c == '.' {
+            break
+        } else if c == '>' {
+            pc = n.charAt(i-1)
+            if pc == '-' {
+                break
+            }
+        }
+        i = i - 1
+    }
+    i = i + 1
+    n.trimLeft(i)
+    return n
+}
+
+searchStruct(name cpstring, elems Elems*) cStruct* {
+    n = string(name)
+    n.replace("&", "")
+    n.replace("*", "")
+    name = n.content
+    i=0; for i < len(elems.structs) {
+        s = elems.structs[i]
+        if s.name == name {
+            return s
+        }
+        i = i + 1
+    }
+    return null
+}
+
+searchStructMemb(name cpstring, s cStruct*, elems Elems*) structMemb* {
+    n = string(name)
+    if hasStructSep(n) {
+        rn = splitStructSepBefore(n)
+        name = rn.content
+        n.trimLeft(rn.length)
+        if n.hasPrefix(".") {
+            n.trimLeft(1)
+        } else {
+            n.trimLeft(2)
+        }
+        membs = n.content
+        memb = searchStructMemb(name, s, elems)
+        if n.length > 0 {
+            s = searchStruct(memb.type, elems)
+            nstr = n.str()
+            memb = searchStructMemb(nstr, s, elems)
+        }
+        return memb
+        
+    }
+    members = s.members
+    i=0; for i < len(members) {
+        m = members[i]
+        if m.name == name {
+            return m
+        }
+        i = i + 1
+    }
+    mthds = s.methods
+    i=0; for i < len(mthds) {
+        m = mthds[i]
+        if m.name == name {
+            sm = new structMemb
+            sm.name = m.name
+            sm.type = m.returns.type
+            sm.isFn = true
+            return sm
+        }
+        i = i + 1
+    }
+    return null
+}

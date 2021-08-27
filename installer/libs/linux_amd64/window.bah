@@ -1,0 +1,590 @@
+#include "<stdio.h>"
+#include "<stdlib.h>"
+#include "<X11/Xlib.h>"
+
+#include "string.bah"
+#include "iostream.bah"
+#include "memory.bah"
+
+#cLib "lX11"
+
+#define! Display struct
+#define! Window int
+#define! GC struct
+#define! XEvent ptr
+
+#define! XColor ptr
+#define! Colormap ptr
+
+#define! Font struct
+
+struct! XFontStruct {
+    fid: Font
+}
+#define! KeySym int
+
+#define XOpenDisplay(d int) Display*
+#define DefaultScreen(d Display*) int
+#define XCreateSimpleWindow(d Display*, p Window, x int, y int, w int, h int, bw int, b uint, bg uint) Window
+#define RootWindow(d Display*, s int) Window
+#define BlackPixel(d Display*, s int) uint
+#define WhitePixel(d Display*, s int) uint
+#define XSelectInput(d Display*,w Window,e int)
+#define XMapWindow(d Display*, w Window)
+#define XNextEvent(d Display*, e XEvent*)
+#define XCloseDisplay(d Display*)
+#define XClearArea(d Display*, w Window ,x int, y int, w int, h int, c int)
+#define DefaultGC(d Display*, s int) GC
+#define XFillRectangle(d Display*, w Window, gc GC, x int, y int, w int, h int)
+#define XDrawString(d Display*, w Window, gc GC, x int, y int, s cpstring, l int)
+#define XDefaultColormap(d Display*,s int) Colormap
+#define XAllocColor(d Display*,cmap Colormap,cc XColor*) int
+#define XSetForeground(d Display*,gc GC,p uint)
+#define XSetBackground(d Display*,gc GC,p uint)
+#define XCreateGC(d Display*,w Window,ma int,mb int)
+#define XFlush(d Display*)
+#define XGetGeometry(d Display*, w Window, rw int, x int, y int, w int*, h int*, bw int, d int)
+#define XLoadQueryFont(d Display*, name cpstring) XFontStruct*
+#define XSetFont(d Display*, gc GC, f Font)
+#define XTextWidth(f XFontStruct*, s cpstring, l int) int
+#define XFreeFont(d Display*, f XFontStruct*)
+#define XDrawLine(d Display*, w Window, gc GC, x1 int, y1 int, x2 int, y2 int)
+#define XDrawArc(d Display*, w Window, gc GC, x int, y int, w int, h int, a1 int, a2 int)
+#define XFillArc(d Display*, w Window, gc GC, x int, y int, w int, h int, a1 int, a2 int)
+#define XLookupString(evt XEvent*, buff cpstring, len int, key KeySym*, status int)
+keysym KeySym = <KeySym>418
+
+struct winEvent {
+    type: int
+    key: int
+    btn: int
+    clickX: int
+    clickY: int
+    keyCode: char
+}
+
+const WIN_EVENT_DRAW = 12
+const WIN_EVENT_KEYPRESS = 2
+const WIN_EVENT_CLICK = 4
+const WIN_EVENT_CREATE = -1
+const WIN_EVENT_MOUSE = 6
+
+struct evtTp {
+    draw:int = 12
+    keyPress:int = 2
+    click: int = 4
+    create: int = -1
+}
+
+struct mask {
+    exposure:    int = 32768
+    keypress:    int = 1
+    keyrealease: int = 2
+    ptrmotion:   int = 64
+    btnmotion:   int = 8192
+    btnpress:    int = 4
+    btnrealease: int = 8
+
+}
+
+struct color {
+    r: int
+    g: int
+    b: int
+
+    set(r int, g int, b int) {
+        if r < 0 {
+            println("bad color: negative red")
+            return
+        }
+        if g < 0 {
+            println("bad color: negative green")
+            return
+        }
+        if b < 0 {
+            println("bad color: negative blue")
+            return
+        }
+        if r > 255 {
+            println("bad color: red over 255")
+            return
+        }
+        if g > 255 {
+            println("bad color: green over 255")
+            return
+        }
+        if b > 255 {
+            println("bad color: blue over 255")
+            return
+        }
+
+        this.r = r
+        this.g = g
+        this.b = b
+    }
+
+}
+
+struct style {
+    color: color
+    thickness: int
+    font: cpstring
+}
+
+NEW_STYLE_STRUCT() style {
+    s = style{}
+    s.color = color{}
+    return s
+}
+
+struct graphicElemStyle {
+    background: style = NEW_STYLE_STRUCT()
+    border: style = NEW_STYLE_STRUCT()
+    text: style = NEW_STYLE_STRUCT()
+}
+
+NEW_ELEM_STYLE_STRUCT() graphicElemStyle {
+    ges = graphicElemStyle{}
+    return ges
+}
+
+struct graphicElem extend graphicElemStyle {  
+    id: int  
+    x: int
+    y: int
+    width: int
+    height: int
+
+    isHovered: int
+
+    hover: graphicElemStyle = NEW_ELEM_STYLE_STRUCT()
+
+    type: int
+    content: cpstring = <cpstring>0
+
+    handle(app ptr) {
+
+    }
+
+    setText(t cpstring) {
+        this.content = memoryAlloc(strlen(t)+1)
+        strcpy(this.content, t)
+    }
+
+}
+
+struct graphicApp {
+    d: Display*
+    w: Window
+    s: int
+    cmap: Colormap
+    color: XColor
+    gc: GC
+
+    lastR: int
+    lastG: int
+    lastB: int
+
+    exit: int = 0
+
+    windowWidth: int
+    windowHeight: int
+
+    currentFont: XFontStruct*
+
+    currentElemId: int
+    focusElem: graphicElem*
+
+    elems: []graphicElem*
+    
+    handle(type ptr) {
+
+    }
+
+    destroy() {
+        this.exit = 1
+    }
+
+    clear() {
+        XFlush(this.d)
+        XClearArea(this.d,this.w,0,0,this.windowWidth,this.windowHeight,1)
+    }
+
+    fillRect(x int, y int, w int, h int) {
+        XFillRectangle(this.d, this.w, this.gc, x, y, w, h)
+    }
+
+    drawLine(x1 int, y1 int, x2 int, y2 int) {
+        XDrawLine(this.d, this.w, this.gc, x1, y1, x2, y2)
+    }
+
+    drawArc(x int, y int, w int, h int, a1 int, a2 int) {
+        XDrawArc(this.d, this.w, this.gc, x, y, w, h, a1 * 64, a2 * 64)
+    }
+
+    text(x int, y int, text cpstring) {
+        XDrawString(this.d, this.w, this.gc, x, y, text, strlen(text))
+    }
+
+    setFont(name cpstring) {
+
+        if this.currentFont != 0 {
+            XFreeFont(this.d, this.currentFont)
+        }
+
+        font = XLoadQueryFont(this.d, name)
+        if font != 0 {
+            this.currentFont = font
+            //XSetFont(this.d, this.gc, font.fid)
+        } else {
+            error = string("window: cannot find font ")
+            error.append(name)
+            panic(error.content)
+        }
+    }
+
+    setColor(r int, g int, b int) {
+        if this.lastR == r {
+            if this.lastB == b {
+                if this.lastG = g {
+                    return
+                }
+            }
+        }
+        if r == 0 {
+            r = 1
+        }
+        if g == 0 {
+            g = 1
+        }
+        if b == 0 {
+            b = 1
+        }
+        noCheck(this->color.flags = DoRed | DoGreen | DoBlue)
+        noCheck(this->color.red = r * 257)
+        noCheck(this->color.green = g * 257)
+        noCheck(this->color.blue = b * 257)
+        this.lastR = r
+        this.lastG = g
+        this.lastB = b
+        if XAllocColor(this.d,this.cmap,&this.color) ==0 {
+           println("window: Color allocation failed.")
+        }
+        p uint 
+        noCheck(p = this->color.pixel)
+        XSetForeground(this.d,this.gc,p)
+    }
+
+    //ui elems
+
+    button(name cpstring, x int, y int, w int, hdl ptr) graphicElem* {
+        this.currentElemId = this.currentElemId + 1 
+        elem = new graphicElem
+        elem.id = this.currentElemId
+        elem.setText(name)
+        elem.x = x
+        elem.y = y
+        elem.width = w
+        elem.height = 20
+        elem.type = 0
+        elem.handle = hdl
+
+        elem.background.color.set(200,200,200)
+        elem.hover.background.color.set(220,220,220)
+
+        elem.text.color.set(0,0,0)
+        elem.hover.text.color.set(0,0,0)
+
+        le = len(this.elems)
+        this.elems[le] = elem
+        return elem
+    }
+
+    input(name cpstring, x int, y int, w int, h int, hdl ptr) graphicElem* {
+        this.currentElemId = this.currentElemId + 1 
+        elem = new graphicElem
+        elem.id = this.currentElemId
+        elem.setText(name)
+        elem.x = x
+        elem.y = y
+        elem.width = w
+        elem.height = h
+        elem.type = 1
+        elem.handle = hdl
+
+        elem.background.color.set(255,255,255)
+        elem.hover.background.color.set(220,220,220)
+
+        elem.text.color.set(50,50,50)
+        elem.hover.text.color.set(50,50,50)
+
+        elem.border.color.set(0,0,0)
+        elem.hover.border.color.set(50,50,50)
+
+        le = len(this.elems)
+        this.elems[le] = elem
+        return elem
+    }
+
+
+    drawElems() {
+        i=0; for i < len(this.elems) {
+            ptr = this.elems[i]
+            textWidth = XTextWidth(this.currentFont, ptr.content, strlen(ptr.content))
+            if ptr.type == 0 {
+                //draw button
+                    padd = 10
+                if textWidth < ptr.width {
+                    padd = ptr.width - textWidth
+                    padd = padd / 2
+                } else {
+                    ptr.width = textWidth + 20
+                }
+
+                r int
+                g int
+                b int
+
+                if ptr.isHovered {
+                    r = ptr.hover.background.color.r
+                    g = ptr.hover.background.color.g
+                    b = ptr.hover.background.color.b
+                } else {
+                    r = ptr.background.color.r
+                    g = ptr.background.color.g
+                    b = ptr.background.color.b
+                }
+                this.setColor(r,g,b)
+                
+                borderRadius = 14
+                hbr = borderRadius / 2
+                
+                ogc = this.gc
+                p uint
+                noCheck(p = this->color.pixel)
+                XSetForeground(this.d,this.gc,p)
+                //top left
+                XFillArc(this.d, this.w, this.gc, ptr.x, ptr.y, borderRadius, borderRadius, 90 * 64, 90 * 64)
+                //top right
+                XFillArc(this.d, this.w, this.gc, ptr.x+ptr.width-borderRadius, ptr.y, borderRadius, borderRadius, 0 * 64, 90 * 64)
+                //bottom right
+                XFillArc(this.d, this.w, this.gc, ptr.x+ptr.width-borderRadius, ptr.y+ptr.height-borderRadius, borderRadius, borderRadius, -90 * 64, 90 * 64)
+                //bottom left
+                XFillArc(this.d, this.w, this.gc, ptr.x, ptr.y+ptr.height-borderRadius, borderRadius, borderRadius, -180 * 64, 90 * 64)
+                this.gc = ogc
+
+
+                this.fillRect(ptr.x,ptr.y+hbr,ptr.width,ptr.height-borderRadius)
+                this.fillRect(ptr.x+hbr,ptr.y,ptr.width-borderRadius,ptr.height)
+                
+
+                if ptr.isHovered {
+                    r = ptr.hover.text.color.r
+                    g = ptr.hover.text.color.g
+                    b = ptr.hover.text.color.b
+                } else {
+                    r = ptr.text.color.r
+                    g = ptr.text.color.g
+                    b = ptr.text.color.b
+                }
+                this.setColor(r,g,b)
+                
+                this.text(ptr.x+padd,ptr.y+15,ptr.content)
+            }else if ptr.type == 1 {
+                //draw text input
+                text = string(ptr.content)
+                for textWidth >= ptr.width {
+                    text.trimLeft(1)
+                    textWidth = XTextWidth(this.currentFont, text, text.length)
+                }
+
+                r int
+                g int
+                b int
+
+                if ptr.isHovered {
+                    r = ptr.hover.background.color.r
+                    g = ptr.hover.background.color.g
+                    b = ptr.hover.background.color.b
+                } else {
+                    r = ptr.background.color.r
+                    g = ptr.background.color.g
+                    b = ptr.background.color.b
+                }
+                this.setColor(r,g,b)
+
+                this.fillRect(ptr.x,ptr.y,ptr.width,ptr.height)
+
+                if ptr.isHovered {
+                    r = ptr.hover.border.color.r
+                    g = ptr.hover.border.color.g
+                    b = ptr.hover.border.color.b
+                } else {
+                    r = ptr.border.color.r
+                    g = ptr.border.color.g
+                    b = ptr.border.color.b
+                }
+                this.setColor(r,g,b)
+                this.drawLine(ptr.x, ptr.y, ptr.x+ptr.width-1, ptr.y)
+                this.drawLine(ptr.x, ptr.y, ptr.x, ptr.y+ptr.height-1)
+                this.drawLine(ptr.x, ptr.y+ptr.height-1, ptr.x+ptr.width-1, ptr.y+ptr.height-1)
+                this.drawLine(ptr.x+ptr.width-1, ptr.y, ptr.x+ptr.width-1, ptr.y+ptr.height-1)
+
+                if ptr.isHovered {
+                    r = ptr.hover.text.color.r
+                    g = ptr.hover.text.color.g
+                    b = ptr.hover.text.color.b
+                } else {
+                    r = ptr.text.color.r
+                    g = ptr.text.color.g
+                    b = ptr.text.color.b
+                }
+                this.setColor(r,g,b)
+                if ptr == this.focusElem {
+                    text.append("|")
+                }
+                this.text(ptr.x+5,ptr.y+ptr.height/2+4,text)
+            }
+
+            i = i + 1
+        }
+    }
+
+    clickElems(x int, y int) {
+        found = 0
+        i=0; for i < len(this.elems) {
+            ptr = this.elems[i]
+            maxX = ptr.x + ptr.width
+            maxY = ptr.y + ptr.height
+            if x >= ptr.x {
+                if x <= maxX {
+                    if y >= ptr.y {
+                        if y <= maxY {
+                            found = 1
+                            this.focusElem = ptr
+                            if ptr.type == 0 {
+                                ptr.handle(this)
+                            }
+                        }
+                    }
+                }
+            }
+            i = i + 1
+        }
+        if found == 0 {
+            this.focusElem = <ptr>0
+        }
+        this.clear()
+    }
+
+    keyPressElems(key char) {
+        if this.focusElem == 0 {
+            return
+        }
+        if this.focusElem.type != 1 {
+            return
+        }
+        // s = intToString(<int>key)
+        // println(s)
+        text = string(this.focusElem.content)
+        if key == <char>8 {
+            if text.length > 0 {
+                text.trimRight(1)
+            }
+        } else if key == <char>13 {
+            this.focusElem.handle(this)
+        } else {
+            text.append(charToString(key))
+        }
+        this.focusElem.setText(text)
+        this.clear()
+    }
+
+    hoverElems(x int, y int) {
+        changed = 0
+        i=0; for i < len(this.elems) {
+            ptr = this.elems[i]
+            maxX = ptr.x + ptr.width
+            maxY = ptr.y + ptr.height
+            colliding = 0
+            if x >= ptr.x {
+                if x <= maxX {
+                    if y >= ptr.y {
+                        if y <= maxY {
+                            colliding = 1
+                            if ptr.isHovered == 0 {
+                                changed = 1
+                                ptr.isHovered = 1
+                            }
+                        }
+                    }
+                }
+            }
+            if colliding == 0 {
+                if ptr.isHovered == 1 {
+                    changed = 1
+                    ptr.isHovered = 0
+                }
+            }
+            if changed {
+                this.clear()
+            }
+            i = i + 1
+        }
+    }
+
+    window(x int, y int, w int, h int) {
+        this.windowWidth = w
+        this.windowHeight = h
+        this.d = XOpenDisplay(0)
+        if this.d == 0 {
+            println("window: error openning display")
+            exit(1)
+        }
+        m = mask{}
+        this.s = DefaultScreen(this.d)
+        this.cmap = XDefaultColormap(this.d,this.s)
+        this.w = XCreateSimpleWindow(this.d, RootWindow(this.d,this.s), x, y, w, h, 1, BlackPixel(this.d,this.s), WhitePixel(this.d,this.s))
+        this.gc = XCreateGC(this.d,this.w,0,0)
+        XSelectInput(this.d,this.w,m.exposure + m.keypress + m.ptrmotion + m.btnpress)
+        XMapWindow(this.d,this.w)
+        e XEvent
+        //XFlush(this.d)
+        createEvt = new winEvent
+        createEvt.type = WIN_EVENT_CREATE
+        this.setFont("*")
+        this.handle(createEvt)
+        for this.exit == 0 {
+
+            XNextEvent(this.d,&e)
+            evt = new winEvent
+            noCheck(evt->type = e.type)
+            noCheck(evt->clickX = e.xbutton.x)
+            noCheck(evt->clickY = e.xbutton.y)
+            noCheck(evt->keyCode = e.xkey.keycode)
+            
+
+            if evt.type == WIN_EVENT_DRAW {
+                this.drawElems()
+            } else if evt.type == WIN_EVENT_CLICK {
+                this.clickElems(evt.clickX, evt.clickY)
+            } else if evt.type == WIN_EVENT_KEYPRESS {
+                text cpstring = memoryAlloc(10)
+                key KeySym
+                XLookupString(&e, text, 10, &key, 0)
+                stext = string(text)
+                evt.keyCode = stext.charAt(0)
+                this.keyPressElems(evt.keyCode)
+            } else if evt.type == WIN_EVENT_MOUSE {
+                this.hoverElems(evt.clickX, evt.clickY)
+            }
+
+            this.handle(evt)
+            //XFlush(this.d)
+            //XFlush(this.d)
+            
+        }
+        XCloseDisplay(this.d)
+    }
+
+}

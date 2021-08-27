@@ -1,0 +1,261 @@
+#include "iostream.bah"
+#include "string.bah"
+
+
+
+#include "./errors.bah"
+#include "./lexer.bah"
+#include "./type.bah"
+#include "./fns.bah"
+
+searchVar(name cpstring, elems Elems*) variable* {
+    ogName = name
+    n = string(name)
+    n.replace("&", "")
+    n.replace("*", "")
+    
+    if n.hasSuffix("]") {
+        i=n.length; for i > 0 {
+            c = n.charAt(i)
+            if c == '[' {
+                break
+            }
+            i = i - 1
+        }
+        tamm = n.length - i
+        n.trimRight(tamm + 6)
+        name = n.str()
+        v = searchVar(name, elems)
+        
+        vt = string(v.type)
+        vt.trimLeft(2)
+        vtstr = vt.str()
+
+        nv = new variable
+        nv.type = vtstr
+        nv.name = ogName
+        nv.isArray = true
+        return nv
+    }
+    
+    name = n.content
+
+
+    if hasStructSep(n) {
+        rn = splitStructSepBefore(n)
+        name = rn.content
+        n.trimLeft(rn.length)
+        if n.hasPrefix(".") {
+            n.trimLeft(1)
+        } else {
+            n.trimLeft(2)
+        }
+        membs = n.content
+        v = searchVar(name, elems)
+        s = searchStruct(v.type, elems)
+        memb = searchStructMemb(membs, s, elems)
+        if memb == null {
+            return null
+        }
+        nv = new variable
+        nv.name = memb.name
+        nv.type = memb.type
+        nv.name = ogName
+
+        r = nv.type
+        tcc = string(ogName)
+        if tcc.count("&") {
+            r = r + "*"
+        }
+        nbUnaries = tcc.count("*")
+        if nbUnaries > 0 {
+            ct = string(r)
+            pointerLevel = ct.count("*")
+            if pointerLevel < nbUnaries {
+                throwErr(null, "Cannot use '*' on "+nv.name+" because it is not pointer.")
+            }
+            ct.trimRight(nbUnaries)
+            r = ct.str()
+        }
+        nv.type = r
+        nv.name = ogName
+
+        return nv
+    }
+
+
+    i=0; for i < len(elems.vars) {
+        v = elems.vars[i]
+            if v == null {
+                panic("\e[1;31m[INTERNAL COMPILER ERROR]\e[0m\n Please report the bug as 'compiler searching '"+name+"' resulting in null var'.")    
+            }
+        if v.name == name {
+            nv = new variable
+            nv.type = v.type
+            nv.name = v.name
+            r = nv.type
+            tcc = string(ogName)
+            if tcc.count("&") {
+                r = r + "*"
+            }
+
+            nbUnaries = tcc.count("*")
+            if nbUnaries > 0 {
+                ct = string(r)
+                pointerLevel = ct.count("*")
+                if pointerLevel < nbUnaries {
+                    throwErr(null, "Cannot use '*' on "+v.name+" because it is not pointer.")
+                }
+                ct.trimRight(nbUnaries)
+                r = ct.str()
+            }
+            nv.type = r
+            nv.name = ogName
+
+            return nv
+        }
+        // else {
+        //     println(name+" != "+v.name)
+        // }
+        i = i + 1
+    }
+
+    return null
+
+}
+
+setCType(v variable*, elems Elems*) cpstring {
+        tp = getCType(v.type, elems)
+        t = tp.str()
+        t = t + " " + v.name
+        return t
+}
+
+getTypeFromToken(t Tok*, strict bool, elems Elems*) cpstring {
+    if strlen(t.bahType) > 0 {
+        r = t.bahType
+        return r
+    }
+    if t.type == TOKEN_TYPE_VAR {
+        v = searchVar(t.cont, elems)
+        if v == null {
+            if strict == true {
+                throwErr(t, "Unknown var {TOKEN}.")
+            } else {
+                return ""
+            }
+        }
+        if strict == true {
+            if strlen(v.type) == 0 {
+                throwErr(t, "Cannot use {TOKEN} because it does not have any type.")
+            }
+        }
+        r = v.type        
+        return r
+    }
+
+    if t.type == TOKEN_TYPE_FLOAT {
+        return "float"
+    }
+    if t.type == TOKEN_TYPE_INT {
+        return "int"
+    }
+    if t.type == TOKEN_TYPE_STR {
+        return "cpstring"
+    }
+    if t.type == TOKEN_TYPE_CHAR {
+        return "char"
+    }
+    if t.type == TOKEN_TYPE_BOOL {
+        return "bool"
+    }
+    
+    throwErr(t, "Cannot use {TOKEN} as value.")
+    return ""
+
+}
+
+
+
+searchFunc(name cpstring, elems Elems*, inclCurr bool) func* {
+    if name == "noCheck" {
+        fn = new func
+        fn.name = "noCheck"
+        return fn
+    }
+    n = string(name)
+    if hasStructSep(n) {
+        fnName = splitStructSepAfter(n)
+        n.trimRight(fnName.length)
+        c = n.charAt(n.length-1)
+        if c == '.' {
+            n.trimRight(1)
+        } else {
+            n.trimRight(2)
+        }
+        name = n.str()
+        v = searchVar(name, elems)
+        s = searchStruct(v.type, elems)
+        name = fnName.content
+        name = s.name+"__"+name
+
+    }
+    
+    fns = elems.fns
+    i=0; for i < len(fns) {
+        fn = fns[i]
+        if fn == null {
+                panic("\e[1;31m[INTERNAL COMPILER ERROR]\e[0m\n Please report the bug as 'compiler searching '"+name+"' resulting in null func'.")    
+        }
+        if fn.name == name {
+            return fn
+        }
+        i = i + 1
+    }
+
+    if inclCurr == true {
+        if currentFn.name == name {
+            return currentFn
+        }
+    }
+
+    return null
+}
+
+declareStructMethods(v variable*, s cStruct*, elems Elems*) cpstring {
+    code = ""
+    members = s.members
+    typec = string(v.type)
+    sep = "."
+    if typec.count("*") {
+        sep = "->"
+    }
+    i=0; for i < len(members) {
+        m = members[i]
+        cmpt = string(m.type)
+        if strlen(m.def) > 0 {
+            code = code + v.name + sep + m.name + " = " + m.def + ";\n"
+        }
+        if cmpt.hasPrefix("[]") == 1 {
+            cmpt.trimLeft(2)
+            cmptstr = cmpt.str()
+            elemCType = getCType(cmptstr, elems)
+            elemCTypeStr = elemCType.str()
+            code = code + v.name + sep + m.name + " = memoryAlloc(sizeof(array("+elemCTypeStr+")));
+            "+v.name+sep+m.name+"->length = 0;
+            "+v.name+sep+m.name+"->elemSize = sizeof("+elemCTypeStr+");
+            "
+        }
+
+        i = i + 1
+    }
+
+    methods = s.methods
+    i=0; for i < len(methods) {
+        m = methods[i]
+            code = code + v.name + sep + m.name + " = " + s.name + "__" + m.name + ";\n"
+        i = i + 1
+    }
+
+    return code
+}

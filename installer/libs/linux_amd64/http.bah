@@ -1,0 +1,781 @@
+#include "<unistd.h>"
+#include "<signal.h>"
+#include "<sys/types.h>"
+#include "<sys/socket.h>"
+#include "<netinet/in.h>"
+#include "<netdb.h>"
+#include "<openssl/ssl.h>"
+#include "<openssl/err.h>"
+#include "<openssl/bio.h>"
+
+#include "cBinds.bah"
+
+#include "iostream.bah"
+#include "string.bah"
+#include "exec.bah"
+
+#define! socklen_t uint
+#define! pid_t int
+#define! sigset_t int32
+
+struct! in_addr {
+    s_addr: uint
+}
+
+struct! hostent {
+    h_name: cpstring
+    h_aliases: cpstring
+    h_addrtype: int32
+    h_length: int32
+    h_addr: uint*
+    h_addr_list: cpstring
+}
+
+struct! sigaction {
+    sa_handler: ptr
+    sa_sigation: ptr
+    sa_mask: sigset_t
+    sa_flags: int32
+    sa_restorer: ptr
+}
+
+struct! sockaddr_in {
+    sin_family: int
+    sin_port: uint
+    sin_addr: in_addr
+    sin_zero: []char
+}
+
+struct http_url {
+    path: string
+    host: string
+    proto: string
+}
+
+#define socket(a int, b int, c int) int
+#define gethostbyname(h cpstring) hostent*
+#define htons(p int) uint
+#define connect(sockfd int, ser_addr sockaddr_in*, s int) int
+#define send(sockfd int, msg cpstring, msglen int, c int) int
+#define recv(sockfd int, buff cpstring, bufflen int, c int) int
+#define close(sockfd int)
+#define htonl(inaddrt int) uint
+#define bind(sockfd int, ser_addr sockaddr_in*, s int) int
+#define listen(sockfd int, s int) int
+#define memset(str ptr*, w int, s int)
+#define accept(sockfd int, cliaddr sockaddr_in*, clilen int*) int
+
+//Used for parsing an URL.
+parseUrl(cps cpstring) http_url {    
+    u = new http_url
+    s = string(cps)
+    
+    //get protocol
+    i = 0
+    max = s.length - 1
+    hasProto = 0
+    for i<s.length {
+        c = s.charAt(i)
+        if c == ':' {
+            hasProto = 1
+            break
+        }
+        i = i + 1
+    }
+    if hasProto {
+    proto = string("")
+    i = 0
+    for s.charAt(i) != ':' {
+        c = s.charAt(i)
+        proto.append(charToString(c))       
+        i = i + 1
+    }
+    i = i + 1
+    u.proto = proto
+    } else {
+        u.proto = string("http")
+        i = 0
+    }
+    for s.charAt(i) == '/' {
+        if i == max {
+            break
+        }
+        i = i + 1
+    }
+
+    //get host
+    hn = string("")
+    for s.charAt(i) != '/' {
+        c = s.charAt(i)
+        hn.append(charToString(c))
+        if i == max {
+            break
+        }
+        i = i + 1
+    }
+    u.host = hn
+
+    if i == max {
+        u.path = string("/")
+        return *u
+    }
+
+    path = string("")
+    for i<=max {
+        c = s.charAt(i)
+        path.append(charToString(c))
+        i = i + 1
+    }
+    u.path = path
+
+    return *u
+}
+
+
+//web server
+
+sigchld_handler(signo int) {
+    status int
+    pid int
+    pid = waitpid(-1, &status, 1)
+    for pid > 0 {
+        pid = waitpid(-1, &status, 1)
+    }
+}
+
+//A wrapper for a http web server.
+struct http_server {
+    port: int
+    running: int = 1
+    sockfd:int = -1
+
+    //The handle to pass when receiving connections.
+    handle(connfd int) int {
+        return -1
+    }
+
+    //To start the server.
+    listenAndServe() {
+        port = this.port
+        servaddr sockaddr_in
+        cliaddr sockaddr_in
+        sa sigaction
+
+        sockfd int = socket(2, 1, 0)
+        this.sockfd = sockfd
+
+        if sockfd < 0 {
+            panic("http: error opening socket")
+        }
+
+        servaddr.sin_family = 2
+        saddr = in_addr{}
+        saddr.s_addr = htonl(0)
+        servaddr.sin_addr = saddr
+        servaddr.sin_port = htons(port)
+
+        isBind = bind(sockfd, &servaddr, 16)
+        if isBind != 0 {
+            close(sockfd)
+            err = string("http: failed to bind port: ")
+            p = intToString(port)
+            err.append(p.content)
+            panic(err.content)
+        }
+
+        isListening = listen(sockfd,1024)
+
+        if isListening < 0 {
+            close(sockfd)
+            panic("http: failed to start listening")
+        }
+        memset(&sa, 0, 152)
+        sa.sa_handler = &sigchld_handler
+        sigaction(17, &sa, 0)
+        for this.running {
+            clilen = 16
+            connfd = accept(sockfd, &cliaddr, &clilen)
+            
+            if connfd < 0 {
+                continue
+            }
+
+            childpid = fork()
+            if childpid < 0 {
+                println("http: failed to fork client handler")
+                close(connfd)
+                continue
+            }
+
+            if childpid == 0 {
+                close(sockfd)
+                code = this.handle(connfd)
+                exit(code)
+            }
+
+            close(connfd)
+
+        }
+
+            close(sockfd)
+
+    }
+
+    //To stop the server.
+    stop() {
+        if this.sockfd == -1 {
+            println("cannot stop http_server, not running")
+            return
+        }
+        this.running = 0
+        close(this.sockfd)
+    }
+
+}
+
+//To send a cpstring through the specified socket.
+http_send(connfd int, s cpstring) {
+    send(connfd, s, strlen(s), 0)
+}
+
+//To receive from a specified socket.
+http_receive(connfd int) cpstring {
+    buffer cpstring = memoryAlloc(1024)
+    recv(connfd,buffer,1024,0)
+    return buffer
+}
+
+//A wrapper for requests.
+//When receiving a connection, you will be able to retreive the passed headers, path... from the client.
+struct http_request {
+    connfd: int
+    request: cpstring
+    headersIndex: int
+    cookies: cpstring
+    method: cpstring
+    path: cpstring
+
+    //Get a header by name.
+    getHeader(name cpstring) cpstring {
+        nameMemory = string("")
+        valueMemory = string("")
+        isValue = 0
+        found = 0
+        req = string(this.request)
+        i = this.headersIndex
+
+        for i < req.length {
+            c = req.charAt(i)
+            if found == 0 {
+                if isValue {
+                if c == <char>10 {
+                    isValue = 0
+                }
+                } else {
+                    if c == ':' {
+                        isValue = 1
+                        if strcmp(name, nameMemory.content) == 0 {
+                            found = 1
+                        } else {
+                            nameMemory.set("")
+                        }
+                    } else {
+                        cs = charToString(c)
+                        nameMemory.append(cs)
+                    }
+                }
+            } else {
+                if c == <char>13 {
+                    break
+                }
+                cs = charToString(c)
+                valueMemory.append(cs)
+            }
+            i = i + 1
+        }
+
+        r = valueMemory.str()
+
+        return r
+    }
+}
+
+//Used for parsing the request
+http_request(connfd int) http_request {
+    r = http_request{}
+    r.connfd = connfd
+    reqcps = http_receive(connfd)
+    req = string(reqcps)
+    i = 0
+    //parse method (GET, POST, PUT, DELETE...)
+    method = string("")
+    for i < req.length {
+        c = req.charAt(i)
+        if c == ' ' {
+            break
+        }
+        cs = charToString(c)
+        method.append(cs)
+        i = i + 1
+    }
+    r.method = method.str()
+
+    //parse path (/)
+    path = string("")
+    i = i + 1
+    for i < req.length {
+        c = req.charAt(i)
+        if c == ' ' {
+            break
+        }
+        cs = charToString(c)
+        path.append(cs)
+        i = i + 1
+    }
+    r.path = path.str()
+
+    //trim rest of request (HTTP/1.1)
+    for i < req.length {
+        c = req.charAt(i)
+        i = i + 1
+        if c == <char>10 {
+            break
+        }
+    }
+    r.headersIndex = i    
+    r.request = reqcps
+
+
+    return r
+}
+
+//HTTP code 200 means everything is ok
+const HTTP_OK = 200
+//HTTP code 404 means file not found
+const HTTP_NOT_FOUND = 404
+//HTTP code 400 means that you deny access to this request
+const HTTP_FORBIDDEN = 400
+//HTTP code 500 means that the server encountered an internal error
+const HTTP_ERROR = 500
+//HTTP code 301 means a permanent redirection
+const HTTP_REDIRECT = 301
+
+//A wrapper for HTTP responses. You will be able to set/retreive the headers sent/receive.
+//You will encounter this when doing a request or sending a response to the client.
+struct http_response {
+    connfd: int
+    headers: []string*
+    code: int = HTTP_OK
+    body: string*
+
+    //Send the response.
+    //*Use it only when sending response to the client from a http_server*.
+    send() {
+        s = string("HTTP/1.0 ")
+        if this.code == HTTP_OK {
+            s.append("200 OK")
+        } else if this.code == HTTP_NOT_FOUND {
+            s.append("404 Not Found")
+        } else if this.code == HTTP_FORBIDDEN {
+            s.append("400 Bad Request")
+        } else if this.code == HTTP_ERROR {
+            s.append("500 Internal Server Error")
+        } else if this.code == HTTP_REDIRECT {
+            s.append("301 Moved Permanently")
+        } else {
+            codeString = intToString(this.code)
+            s.append(codeString)
+        }
+        s.append("\r\n")
+        
+        i = 0
+        
+        for i < len(this.headers) {
+            e = this.headers[i]
+            s.append(e.content)
+            s.append("\r\n")
+            i = i + 1
+        }
+        
+        s.append("\r\n")
+
+        body = this.body
+        s.append(body.content)
+        http_send(this.connfd, s.content)
+
+    }
+
+    //To set a header by name.
+    setHeader(name cpstring, value cpstring) {
+        
+        h = new string
+        h.set(name)
+        h.append(": ")
+        h.append(value)
+
+        lhs = len(this.headers)
+        this.headers[lhs] = h
+    }
+
+    //To get the value of a header by name.
+    getHeader(name cpstring) cpstring {
+        headerName = string(name)
+        headerName = toLower(headerName)
+        headerName.append(":")
+        i=0;for i < len(this.headers) {
+            currentHeader = this.headers[i]
+            if currentHeader.hasPrefix(headerName) {
+                header = string(currentHeader)
+                space = 0
+                c = header.charAt(headerName.length)
+                if isSpace(c) {
+                    space = 1
+                }
+                header.trimLeft(headerName.length+space)
+                return header.str()
+            }
+            i=i+1
+        }
+
+        return ""
+
+    }
+
+    //To append to the body of the response.
+    write(content cpstring) {
+        body = this.body
+        body.append(content)
+    }
+
+}
+
+//To build a HTTP response.
+//You will need to populate it before sending it to the client.
+http_response(connfd int) http_response {
+    resp = http_response{}
+    resp.connfd = connfd
+
+    resp.setHeader("Server", "bah-http-framework")
+    resp.setHeader("Connection", "close")
+
+    body = new string
+    body.set("")
+    resp.body = body
+
+    return resp
+}
+
+
+
+
+//making requests
+
+//SSL - TLS (https)
+
+#cLib "lssl" "lcrypto"
+
+#define! BIO int
+#define! SSL int
+#define! SSL_CTX int
+
+#define SSL_library_init()
+#define SSLv23_client_method() int
+#define SSL_CTX_new(m int) SSL_CTX*
+#define BIO_new_ssl_connect(ctx SSL_CTX*) BIO*
+#define BIO_set_conn_hostname(bio BIO*, h cpstring)
+#define BIO_do_connect(bio BIO*) int
+#define BIO_write(bio BIO*, cont cpstring, size int) int
+#define BIO_should_retry(bio BIO*) int
+#define BIO_read(bio BIO*, buff cpstring, size int) int
+#define BIO_free_all(bio BIO*)
+#define SSL_CTX_free(ctx SSL_CTX*)
+#define BIO_get_ssl(bio BIO*, ssl SSL*)
+#define SSL_set_mode(ssl SSL*, mode int)
+
+//Used for making TLS requests.
+//*This is an internal function, you should know what you're doing if you decide to use it.*
+makeRawHttpsRequest(host cpstring, message cpstring) cpstring {
+    
+    SSL_library_init()
+    ssl SSL*
+    ctx = SSL_CTX_new(SSLv23_client_method())
+
+    if ctx == 0 {
+        panic("http: cannot initialize ssl context")
+    }
+
+    bio = BIO_new_ssl_connect(ctx)
+
+    BIO_get_ssl(bio, &ssl)
+    SSL_set_mode(ssl, 4)
+
+    BIO_set_conn_hostname(bio, host)
+    if BIO_do_connect(bio) <= 0 {
+        panic("http: error connecting through ssl")
+    }
+
+    success = BIO_write(bio, message, strlen(message))
+
+    if success <= 0 {
+        if BIO_should_retry(bio) == 0 {
+            panic("http: failed sending request")
+        }
+    }
+
+    buff cpstring = memoryAlloc(1025)
+    resp = string("")
+    for 1 {
+        memset(buff, 0, 1025)
+        size = BIO_read(bio, buff, 1025)
+        if size <= 0 {
+            break
+        }
+        resp.append(buff)
+    }
+    BIO_free_all(bio)
+    SSL_CTX_free(ctx)
+    return resp.str()
+
+}
+
+//Used for making any request.
+//Method is either http or https. The arguments (args) are the variables to pass (can be post or get variable) formatted as: name=value.
+makeRawRequest(method cpstring, u http_url, args []cpstring) http_response {
+    proto = u.proto
+    host = u.host
+    path = u.path
+    
+    serv_addr sockaddr_in
+    portno = 80
+    response = string("")
+    
+    message = string(" ")
+    message.prepend(method)
+    message.append(path)
+    serialArgs = string("?")
+    largs = len(args)
+    max = largs - 1
+    i = 0; for i < largs {
+        serialArgs.append(args[i])
+        if i < max {
+            serialArgs.append("&")
+        }
+        i = i + 1
+    }
+    if largs > 0 {
+        message.append(serialArgs)
+    }
+    message.append(" HTTP/1.0\r\nHost: ")
+    
+    if proto.compare("https") {
+        host.append(":443")
+    }
+    
+    message.append(host)
+    message.append("\r\nConnection: close\r\n\r\n")
+    
+
+    if proto.compare("https") {
+
+        resp = makeRawHttpsRequest(host, message)
+        response.set(resp)
+
+    } else {
+
+        sockfd = socket(2, 1, 0)
+        if sockfd < 0 {
+            panic("http: error opening socket")
+        }
+
+        server hostent* = gethostbyname(host.content)
+        if server == 0 {
+            panic("http: error resolving host")
+        }
+
+        serv_addr.sin_port = htons(portno)
+        serv_addr.sin_family = 2
+        ha = server.h_addr
+        saddr = in_addr{}
+        saddr.s_addr = *ha
+        serv_addr.sin_addr = saddr
+        
+        
+        canConnect = connect(sockfd,&serv_addr,16)
+        if canConnect < 0 {
+            panic("error: error connecting socket")
+        }
+
+        isSend = send(sockfd, message.content, message.length, 0)
+
+        if isSend <= 0 {
+            panic("http: error sending trought socket")
+        }
+
+        buffer cpstring = memoryAlloc(1025)
+        nDataLength = recv(sockfd,buffer,1024,0)
+        for nDataLength > 0 {
+            response.append(buffer)
+            if nDataLength < 1024 {
+                trimAmm = 1024 - nDataLength
+                response.trimRight(trimAmm)
+            }
+            nDataLength = recv(sockfd,buffer,1024,0)
+        }
+
+        close(sockfd)
+
+    }
+
+    resp = http_response{}
+    resp.body = new string
+
+    lines = splitString(response, "\r\n")
+    if len(lines) == 0 {
+        return resp
+    }
+
+
+    i = 0 
+    head = lines[0]
+    for i < head.length {
+        c = head.charAt(i)
+        if c == ' ' {
+            i = i + 1
+            break
+        }
+        i = i + 1
+    }
+
+    httpCode = string("")
+    for i < head.length {
+        c = head.charAt(i)
+        httpCode.append(charToString(c))
+        if c == ' ' {
+            break
+        }
+        i = i + 1
+    }
+    httpCodeInt = stringToInt(httpCode)
+    resp.code = httpCodeInt
+    
+    isBody = 0
+    
+    max = len(lines) - 1
+    body = string("")
+    i = 1; for i < len(lines) {
+
+        line = lines[i]
+        if isBody {
+            s = string(line)
+            if i < max {
+                s.append("\r\n")
+            }
+            body.append(s)
+            i = i + 1
+            continue
+        }
+        if i > 0 {
+            pl = lines[i-1]
+            if strlen(pl) == 0 {
+                isBody = 1
+                line.trimLeft(2)
+                continue
+            }
+        }
+
+        header = new string
+        headerName = string(splitStringBefore(line, ":"))
+        if headerName.length > 0 {
+            headerName = toLower(headerName)
+            line.trimLeft(headerName.length)
+            line.prepend(headerName)
+        }
+        header.set(line)
+        lrh = len(resp.headers)
+        resp.headers[lrh] = header
+
+        i = i + 1
+    }
+
+    transferEncoding = resp.getHeader("Transfer-Encoding")
+    if strcmp(transferEncoding, "chunked") == 0 {
+        
+        resp.body.set("")
+        
+        for 1 {
+            chunkLen = splitStringBefore(body, "\r\n")
+            if strcmp(chunkLen, "0") == 0 {
+                break
+            }
+            l = strtol(chunkLen, noCheck(0), 16)
+            l = l
+            body.trimLeft(strlen(chunkLen)+2)
+            chunk cpstring = memoryAlloc(l+1)
+            memcpy(chunk, body.content, l)
+            resp.body.append(chunk)
+            body.trimLeft(l+2)
+        }
+
+    } else {
+        resp.body.set(body)
+    }
+
+
+    return resp
+
+}
+
+//Used for making simple get request.
+get(url cpstring) http_response {
+    args = []cpstring
+    r = makeRawRequest("GET", parseUrl(url), args)
+    return r
+}
+
+//Used for making simple post request with variables (args) formatted as name=value.
+post(url cpstring, args string) http_response {
+    r = makeRawRequest("POST", parseUrl(url), args)
+    return r
+}
+
+//Checks if a port is available.
+//*Note: this command is very slow.*
+isPortAvailable(port int) int {
+    cmdS = intToString(port)
+    cmdS.prepend("netstat -antu | grep :")
+    cmd = command(cmdS)
+    s = cmd.run()
+    if strlen(s) > 0 {
+        return 0
+    }
+    return 1
+}
+
+//Example
+// #include "http.bah"
+//
+//
+// server(serv http_server*, connfd int) int {
+//
+//     request = http_request(connfd)
+//     response = http_response(connfd)
+//
+//     response.setHeader("Content-Type", "text/html")
+//
+//     response.write("Current path:")
+//     response.write(request.path)
+//
+//     response.write("\nIt works!")
+//     response.send()
+//
+//     return 0
+// }
+//
+// main() {
+//  
+//     s = http_server{}
+//     s.port = 8080
+//     s.handle = &server
+//     s.listenAndServe()
+//
+// }
