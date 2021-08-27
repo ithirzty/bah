@@ -1,5 +1,0 @@
-#include "iostream.bah"
-#include "string.bah"
-
-#include "./globals.bah"
-
