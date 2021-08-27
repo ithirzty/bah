@@ -2,15 +2,15 @@
 
 #cLib "lpthread"
 
-#define GC_pthread_create(id int*, attr ptr, func ptr, args ptr)
-#define GC_pthread_join(id int, ret ptr)
+#define! GC_pthread_create(id int*, attr ptr, func ptr, args ptr)
+#define! GC_pthread_join(id int, ret ptr)
 
 #define! pthread_mutex_t int
 
-#define pthread_mutex_init(lock pthread_mutex_t*, m int)
-#define pthread_mutex_lock(lock pthread_mutex_t*)
-#define pthread_mutex_unlock(lock pthread_mutex_t*)
-#define pthread_mutex_destroy(lock pthread_mutex_t*)
+#define! pthread_mutex_init(lock pthread_mutex_t*, m int)
+#define! pthread_mutex_lock(lock pthread_mutex_t*)
+#define! pthread_mutex_unlock(lock pthread_mutex_t*)
+#define! pthread_mutex_destroy(lock pthread_mutex_t*)
 
 //This structure implements a mutex.
 //A mutex is a thread safe lock.
@@ -47,9 +47,7 @@ struct thread {
     
     //This will need to ne set by the user.
     //The specified function will be the entry point for the thread.
-    handle(id int) {
-
-    }
+    handle: function(int)
 
     //This will launch the thread.
     create() {

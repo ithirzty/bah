@@ -143,10 +143,6 @@ sigchld_handler(signo int) {
     }
 }
 
-default_http_server_handler(serv http_server*, connfd int) {
-
-}
-
 //A wrapper for a http web server.
 struct http_server {
     port: int
@@ -154,7 +150,7 @@ struct http_server {
     sockfd:int = -1
 
     //The handle to pass when receiving connections.
-    handle: default_http_server_handler
+    handle: function(http_server*, int)
 
     //To start the server.
     listenAndServe() {
@@ -211,9 +207,8 @@ struct http_server {
 
             if childpid == 0 {
                 close(sockfd)
-                hndl = this.handle
-                code = hndl(connfd)
-                exit(code)
+                this.handle(connfd)
+                exit(0)
             }
 
             close(connfd)

@@ -116,7 +116,7 @@ return np;
 #define PROT_READ 1
 #define PROT_WRITE 2
 #define MAP_SHARED 1
-#define MAP_ANONYMOUS 2
+#define MAP_ANONYMOUS 32
 void * sharedMemory(long int size){
 if ((size==0)) {
 size =  4096;
