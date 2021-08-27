@@ -3,10 +3,10 @@
 
 #cLib "lgc" "DPARALLEL_MARK"
 
-#define GC_INIT()
-#define GC_MALLOC(s int) ptr
-#define GC_REALLOC(p ptr, s int) ptr
-#define GC_FREE(a ptr)
+#define! GC_INIT()
+#define! GC_MALLOC(s int) ptr
+#define! GC_REALLOC(p ptr, s int) ptr
+#define! GC_FREE(a ptr)
 
 const SIZE_OF_INT = 8
 const SIZE_OF_CHAR = 1
@@ -98,7 +98,7 @@ memoryRealloc(p ptr, s int) ptr {
     return np
 }
 
-#define mmap(addr int, ps int, prot int, flags int, fd int, offset int) ptr
+#define! mmap(addr int, ps int, prot int, flags int, fd int, offset int) ptr
 
 const PROT_READ = 1
 const PROT_WRITE = 2

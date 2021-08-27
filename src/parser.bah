@@ -587,6 +587,8 @@ parsePointers(l []Tok) []Tok {
     return nl
 }
 
+#define prePross(line []Tok, elems Elems*) []Tok
+
 parseArrayVars(l []Tok, elems Elems*) []Tok {
     nl = []Tok
 
@@ -650,31 +652,14 @@ parseArrayVars(l []Tok, elems Elems*) []Tok {
                         throwErr(&l[i], "Expected index not {TOKEN}.")
                     }
 
+                    memory = prePross(memory, elems)
+
                     cont = ""
                     j=0; for j < len(memory) {
                         mt = memory[j]
                         cont = cont + mt.cont
                         j =j + 1
                     }
-
-                    // memory = parseArrayVars(memory, elems)
-                    // memory = parseStructVars(memory, elems)
-                    // memory = parseFnCall(memory, elems)
-                    // memory = parseArrayType(memory, elems)
-                    // memory = parseCast(memory, elems)
-                    // memory = parseOperations(memory, elems)
-                    // memory = parseBool(memory, elems)
-
-                    // if len(memory) != 1 {
-                    //     throwErr(&l[i+1], "Expected ']' not {TOKEN}.") 
-                    // }
-                    // mft = memory[0]
-                    // mt = getTypeFromToken(&mft, true, elems)
-                    // if mt != "int" {
-                    //     throwErr(&mft, "Cannot use {TOKEN} as index (int).")
-                    // }
-
-                    // t.cont = t.cont + "->data[" + mft.cont + "]"
 
                     t.cont = t.cont + "->data[" + cont + "]"
                     t.bahType = v.type
@@ -800,13 +785,7 @@ parseFnCall(l []Tok, elems Elems*) []Tok {
                     }
 
 
-                    memory = parseArrayVars(memory, elems)
-                    memory = parseStructVars(memory, elems)
-                    memory = parseFnCall(memory, elems)
-                    memory = parseArrayType(memory, elems)
-                    memory = parseCast(memory, elems)
-                    memory = parseOperations(memory, elems)
-                    memory = parseBool(memory, elems)
+                    memory = prePross(memory, elems)
 
                     //debugLine(memory)
                     ft = memory[0]
@@ -1146,6 +1125,7 @@ void * newPtr = GC_REALLOC("+nstr+"->data, (nLength+50)*sizeof("+elemTypeStr+"))
 parseFnHeader(prev cpstring, l []Tok, i int*, fn func*, elems Elems*) cpstring {
     j = *i
     ft = l[j]
+    tpdf = ""
     if ft.type != TOKEN_TYPE_VAR {
         throwErr(&ft, "Cannot use {TOKEN} as function name.")
     }
@@ -1193,13 +1173,27 @@ parseFnHeader(prev cpstring, l []Tok, i int*, fn func*, elems Elems*) cpstring {
                 }                
                 j =j + 1
             }
+
             argument = new variable
             argument.name = argName
             argument.type = argType
             arguments[len(arguments)] = argument
             
-            argCType = setCType(argument, elems)
-            code = code + argCType
+            argCType = getCType(argType, elems)
+
+            cfrt = string(argType)
+            newArgType = argCType.str()
+            if cfrt.hasPrefix("[]") == 1 {
+                cfrt.trimLeft(2)
+                newArgType = "__BAH_ARR_TYPE_" + cfrt.str()
+                csatd = compilerState.arrTypesDecl
+                if inArrayStr(newArgType, csatd) == false {
+                    csatd[len(csatd)] = newArgType
+                    tpdf = tpdf + "typedef " + argCType.str() + " " + newArgType + ";\n"
+                }
+            }
+
+            code = code + newArgType + " " + argName
             if isComa == true {
                 code = code + ","
             } else {
@@ -1235,12 +1229,25 @@ parseFnHeader(prev cpstring, l []Tok, i int*, fn func*, elems Elems*) cpstring {
     fn.args = arguments
 
     fnRetType = getCType(returns.type, elems)
-    fnRetTypeStr = fnRetType.content
-    code = fnRetTypeStr + " " + code
+    newFnRetType = fnRetType.str()
+
+    cfrt = string(returns.type)
+    if cfrt.hasPrefix("[]") == 1 {
+        cfrt.trimLeft(2)
+        newFnRetType = "__BAH_ARR_TYPE_" + cfrt.str()
+        csatd = compilerState.arrTypesDecl
+        if inArrayStr(newFnRetType, csatd) == false {
+            csatd[len(csatd)] = newFnRetType
+            tpdf = tpdf + "typedef " + fnRetType.str() + " " + newFnRetType + ";\n"
+        }
+    }
+    code = tpdf + newFnRetType + " " + code
+
 
     return code
 }
 
+#cLib "g"
 
 parseStruct(l []Tok, elems Elems*) {
     s = new cStruct
@@ -1552,8 +1559,9 @@ parseDefine(l []Tok, elems Elems*) {
         fns = elems.fns
         fn.isBinding = true
         fns[len(fns)] = fn
-        // code = fnRetTypeStr + " " + code + ";\n"
-        // OUTPUT = OUTPUT + code
+        if doesOutput == true {
+            OUTPUT = OUTPUT + code+";\n"
+        }
 
     } else {
         if st.type != TOKEN_TYPE_VAR {

@@ -1,8 +1,8 @@
 #include "iostream.bah"
 #include "string.bah"
 
-#define popen(cmd cpstring, type cpstring) FILE*
-#define pclose(hndl FILE*)
+#define! popen(cmd cpstring, type cpstring) FILE*
+#define! pclose(hndl FILE*)
 
 //A wrapper for executting command.
 //This is will return the output of the command.
@@ -36,7 +36,7 @@ command(s cpstring) command {
     return cmd
 }
 
-#define execvp(cmd cpstring, args ptr) int
+#define! execvp(cmd cpstring, args ptr) int
 
 //Exec will execute a binary/command with the specified arguments passed to it.
 //Note that this will take the current proccess.

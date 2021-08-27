@@ -36,7 +36,7 @@ struct! timespec {
     tv_nsec: int
 }
 
-#define timespec_get(ts timespec*, mode int)
+#define! timespec_get(ts timespec*, mode int)
 
 //Returns the current timestamp in nanoseconds.
 //One nano second looks like this: 0000000000000000001.

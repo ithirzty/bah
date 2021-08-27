@@ -1,4 +1,4 @@
-//COMPILE WITH: 'gcc ././main.c -w  -lgc -DPARALLEL_MARK -lm'
+//COMPILE WITH: 'gcc ././main.c -w  -lgc -DPARALLEL_MARK -lm -g'
 
 #include <stdio.h>
 #include <execinfo.h>
@@ -601,7 +601,8 @@ a.length =  0;
 a.set(&a,s);
 return a;
 };
-char * arrToStr(array(char)* arr){
+typedef array(char)* __BAH_ARR_TYPE_char;
+char * arrToStr(__BAH_ARR_TYPE_char arr){
 long int strLen =  len(arr);
 ;
 char * str =  memoryAlloc(strLen + 1);
@@ -609,7 +610,7 @@ char * str =  memoryAlloc(strLen + 1);
 noCheck( memcpy ( str , arr -> data , strLen ) );
 return str;
 };
-array(char)* strToArr(char * str){
+__BAH_ARR_TYPE_char strToArr(char * str){
 long int strLen =  strlen(str);
 ;
 array(char)* arr = memoryAlloc(sizeof(array(char)));;
@@ -621,7 +622,7 @@ noCheck( memcpy ( arr -> data , str , strLen ) );
 noCheck( arr -> length = strLen );
 return arr;
 };
-char * arrAsStr(array(char)* arr){
+char * arrAsStr(__BAH_ARR_TYPE_char arr){
 char * r =  "";
 ;
 noCheck( r = arr -> data );
@@ -648,7 +649,8 @@ long int i =  atoi(s.content);
 ;
 return i;
 };
-array(struct string)* splitString(struct string s,char * sp){
+typedef array(struct string)* __BAH_ARR_TYPE_string;
+__BAH_ARR_TYPE_string splitString(struct string s,char * sp){
 struct string sep =  string(sp);
 ;
 array(struct string)* res = memoryAlloc(sizeof(array(struct string)));;
@@ -835,7 +837,7 @@ res->data[lenRes] =  *elem;
 }
 return res;
 };
-struct string joinString(array(struct string)* a,char * sep){
+struct string joinString(__BAH_ARR_TYPE_string a,char * sep){
 long int i =  0;
 ;
 struct string s =  string("");
@@ -1103,7 +1105,8 @@ return 1;
 void fileMap__close(struct fileMap* this){
 close(this->handle);
 };
-array(char *)* listFiles(char * dir){
+typedef array(char *)* __BAH_ARR_TYPE_cpstring;
+__BAH_ARR_TYPE_cpstring listFiles(char * dir){
 array(char *)* files = memoryAlloc(sizeof(array(char *)));;
 
 files->length = 0;
@@ -1392,7 +1395,7 @@ long int ctn =  flag->isSet;
 ;
 return ctn;
 };
-void flags__parse(struct flags* this,array(char *)* args){
+void flags__parse(struct flags* this,__BAH_ARR_TYPE_cpstring args){
 struct flag* currentFlag;
 int isVal =  false;
 ;
@@ -1559,7 +1562,7 @@ cmd.command =  s;
 ;
 return cmd;
 };
-long int exec(char * s,array(char *)* args){
+long int exec(char * s,__BAH_ARR_TYPE_cpstring args){
 long int r;
 array(char *)* nArgs = memoryAlloc(sizeof(array(char *)));;
 
@@ -1587,17 +1590,17 @@ long int i =  0;
 while ((i<len(args))) {
 
 {
-long nLength = i+1;
+long nLength = i + 1;
 if (nArgs->length < nLength+1) {
 if ((nLength+1) % 50 == 0 || nLength == 0) {
 void * newPtr = GC_REALLOC(nArgs->data, (nLength+50)*sizeof(char *));
 nArgs->data = newPtr;
 }
-nArgs->data[i+1] =  args->data[i];
+nArgs->data[i + 1] =  args->data[i];
 
 nArgs->length = nLength+1;
 } else {
-nArgs->data[i+1] =  args->data[i];
+nArgs->data[i + 1] =  args->data[i];
 
 };
 };
@@ -1607,17 +1610,17 @@ i =  i + 1;
 };
 
 {
-long nLength = i+2;
+long nLength = i + 2;
 if (nArgs->length < nLength+1) {
 if ((nLength+1) % 50 == 0 || nLength == 0) {
 void * newPtr = GC_REALLOC(nArgs->data, (nLength+50)*sizeof(char *));
 nArgs->data = newPtr;
 }
-nArgs->data[i+2] =  (char *)0;
+nArgs->data[i + 2] =  (char *)0;
 
 nArgs->length = nLength+1;
 } else {
-nArgs->data[i+2] =  (char *)0;
+nArgs->data[i + 2] =  (char *)0;
 
 };
 };
@@ -1681,6 +1684,7 @@ array(char *)* cLibs;
 char * currentFile;
 int isBranch;
 int isFor;
+array(char *)* arrTypesDecl;
 };
 struct compilerStateTag compilerState;
 struct cStruct* currentCStruct;
@@ -1711,7 +1715,7 @@ char * bahType;
 int isValue;
 int isFunc;
 };
-int inArray(char needle,array(char)* arr){
+int inArray(char needle,__BAH_ARR_TYPE_char arr){
 long int i =  0;
 ;
 while ((i<len(arr))) {
@@ -1723,7 +1727,7 @@ i =  i + 1;
 };
 return false;
 };
-int inArrayStr(char * needle,array(char *)* arr){
+int inArrayStr(char * needle,__BAH_ARR_TYPE_cpstring arr){
 long int i =  0;
 ;
 while ((i<len(arr))) {
@@ -1735,7 +1739,7 @@ i =  i + 1;
 };
 return false;
 };
-struct Tok makeToken(long int pos,long int lineNb,array(char)* cont,tokenType type){
+struct Tok makeToken(long int pos,long int lineNb,__BAH_ARR_TYPE_char cont,tokenType type){
 struct Tok t =  {};
 ;
 t.cont = "";
@@ -1796,7 +1800,8 @@ char * posStr =  intToStr(pos);
 println(concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING("\e[1;31m[LEXER-ERROR]\e[0m ",compilerState.currentFile),":"),lineStr),":"),posStr),"\n\e[0m\n"),msg));
 exit(1);
 };
-array(struct Tok)* lexer(char * s){
+typedef array(struct Tok)* __BAH_ARR_TYPE_Tok;
+__BAH_ARR_TYPE_Tok lexer(char * s){
 array(struct Tok)* tokens = memoryAlloc(sizeof(array(struct Tok)));;
 
 tokens->length = 0;
@@ -3145,7 +3150,7 @@ i =  i + 1;
 };
 return code;
 };
-void debugLine(array(struct Tok)* line){
+void debugLine(__BAH_ARR_TYPE_Tok line){
 char * cont =  "";
 ;
 long int i =  0;
@@ -3361,7 +3366,7 @@ typedef long int lineType;
 #define LINE_TYPE_FOR_OPERATOR (lineType)13
 lineType prevLine =  (lineType)-1;
 ;
-lineType getLineType(array(struct Tok)* line){
+lineType getLineType(__BAH_ARR_TYPE_Tok line){
 struct Tok ft =  line->data[0];
 ;
 if ((ft.type==TOKEN_TYPE_FUNC)) {
@@ -3427,7 +3432,7 @@ return LINE_TYPE_VAR;
 }
 return (lineType)-1;
 };
-array(struct Tok)* parseCast(array(struct Tok)* line,struct Elems* elems){
+__BAH_ARR_TYPE_Tok parseCast(__BAH_ARR_TYPE_Tok line,struct Elems* elems){
 array(struct Tok)* nl = memoryAlloc(sizeof(array(struct Tok)));;
 
 nl->length = 0;
@@ -3442,11 +3447,11 @@ if ((strcmp(t.cont, "<") == 0)) {
 long int max =  i + 3;
 ;
 if ((max<len(line))) {
-struct Tok nt =  line->data[i+1];
+struct Tok nt =  line->data[i + 1];
 ;
-struct Tok nnt =  line->data[i+2];
+struct Tok nnt =  line->data[i + 2];
 ;
-struct Tok nnnt =  line->data[i+3];
+struct Tok nnnt =  line->data[i + 3];
 ;
 if ((nt.type==TOKEN_TYPE_VAR)) {
 if ((nnt.type==TOKEN_TYPE_SYNTAX)) {
@@ -3507,6 +3512,7 @@ i =  i + 1;
 };
 return nl;
 };
+void parseLines(__BAH_ARR_TYPE_Tok ts,struct Elems* elems);
 int includeFile(char * ccstr,struct Elems* elems){
 array(char *)* includes =  compilerState.includes;
 ;
@@ -3569,7 +3575,7 @@ compilerState.currentFile =  oFile;
 ;
 return true;
 };
-void parseInclude(array(struct Tok)* l,struct Elems* elems){
+void parseInclude(__BAH_ARR_TYPE_Tok l,struct Elems* elems){
 if ((len(l)>2)) {
 throwErr(&l->data[len(l)-1],"Invalid usage of include, ending by {TOKEN}.");
 }
@@ -3594,7 +3600,7 @@ throwErr(&strt,"Could not find file {TOKEN}.");
 }
 }
 };
-array(struct Tok)* parseOperations(array(struct Tok)* line,struct Elems* elems){
+__BAH_ARR_TYPE_Tok parseOperations(__BAH_ARR_TYPE_Tok line,struct Elems* elems){
 array(char *)* signs = memoryAlloc(sizeof(array(char *)));;
 
 signs->length = 7;
@@ -3625,7 +3631,7 @@ throwErr(&t,"Cannot use {TOKEN} on nothing.");
 }
 struct Tok pt =  nl->data[len(nl)-1];
 ;
-struct Tok nt =  line->data[i+1];
+struct Tok nt =  line->data[i + 1];
 ;
 if ((strcmp(t.cont, "-") == 0)) {
 if ((pt.isValue==false)) {
@@ -3772,7 +3778,7 @@ i =  i + 1;
 };
 return nl;
 };
-array(struct Tok)* parseStructType(array(struct Tok)* line,struct Elems* elems){
+__BAH_ARR_TYPE_Tok parseStructType(__BAH_ARR_TYPE_Tok line,struct Elems* elems){
 array(struct Tok)* nl = memoryAlloc(sizeof(array(struct Tok)));;
 
 nl->length = 0;
@@ -3888,7 +3894,7 @@ i =  i + 1;
 };
 return nl;
 };
-array(struct Tok)* parseStructVars(array(struct Tok)* line,struct Elems* elems){
+__BAH_ARR_TYPE_Tok parseStructVars(__BAH_ARR_TYPE_Tok line,struct Elems* elems){
 array(struct Tok)* nl = memoryAlloc(sizeof(array(struct Tok)));;
 
 nl->length = 0;
@@ -3980,7 +3986,7 @@ i =  i + 1;
 };
 return nl;
 };
-array(struct Tok)* parseArrayType(array(struct Tok)* line,struct Elems* elems){
+__BAH_ARR_TYPE_Tok parseArrayType(__BAH_ARR_TYPE_Tok line,struct Elems* elems){
 array(struct Tok)* nl = memoryAlloc(sizeof(array(struct Tok)));;
 
 nl->length = 0;
@@ -4059,7 +4065,7 @@ i =  i + 1;
 };
 return nl;
 };
-array(struct Tok)* parseBool(array(struct Tok)* line,struct Elems* elems){
+__BAH_ARR_TYPE_Tok parseBool(__BAH_ARR_TYPE_Tok line,struct Elems* elems){
 array(struct Tok)* nl = memoryAlloc(sizeof(array(struct Tok)));;
 
 nl->length = 0;
@@ -4096,7 +4102,7 @@ long int max =  i + 1;
 if ((max>=len(line))) {
 throwErr(&t,"Cannot use {TOKEN} to compare with nothing.");
 }
-struct Tok nt =  line->data[i+1];
+struct Tok nt =  line->data[i + 1];
 ;
 char * ptt =  getTypeFromToken(&pt,true,elems);
 ;
@@ -4196,7 +4202,7 @@ long int max =  i + 1;
 if ((max>=len(line))) {
 throwErr(&t,"Cannot use {TOKEN} to compare with nothing.");
 }
-struct Tok nt =  line->data[i+1];
+struct Tok nt =  line->data[i + 1];
 ;
 char * ptt =  getTypeFromToken(&pt,true,elems);
 ;
@@ -4259,7 +4265,7 @@ i =  i + 1;
 };
 return nl;
 };
-array(struct Tok)* parsePointers(array(struct Tok)* l){
+__BAH_ARR_TYPE_Tok parsePointers(__BAH_ARR_TYPE_Tok l){
 array(struct Tok)* nl = memoryAlloc(sizeof(array(struct Tok)));;
 
 nl->length = 0;
@@ -4283,7 +4289,7 @@ if ((pt.type==TOKEN_TYPE_VAR)) {
 long int max =  i + 1;
 ;
 if ((max<len(l))) {
-struct Tok nt =  l->data[i+1];
+struct Tok nt =  l->data[i + 1];
 ;
 if ((nt.isValue==false)) {
 pt.cont =  concatCPSTRING(pt.cont,t.cont);
@@ -4417,7 +4423,8 @@ i =  i + 1;
 };
 return nl;
 };
-array(struct Tok)* parseArrayVars(array(struct Tok)* l,struct Elems* elems){
+__BAH_ARR_TYPE_Tok prePross(__BAH_ARR_TYPE_Tok line,struct Elems* elems);
+__BAH_ARR_TYPE_Tok parseArrayVars(__BAH_ARR_TYPE_Tok l,struct Elems* elems){
 array(struct Tok)* nl = memoryAlloc(sizeof(array(struct Tok)));;
 
 nl->length = 0;
@@ -4520,6 +4527,8 @@ i =  i + 1;
 if ((len(memory)==0)) {
 throwErr(&l->data[i],"Expected index not {TOKEN}.");
 }
+memory =  prePross(memory,elems);
+;
 char * cont =  "";
 ;
 long int j =  0;
@@ -4581,7 +4590,7 @@ i =  i + 1;
 };
 return nl;
 };
-array(struct Tok)* parseFnCall(array(struct Tok)* l,struct Elems* elems){
+__BAH_ARR_TYPE_Tok parseFnCall(__BAH_ARR_TYPE_Tok l,struct Elems* elems){
 array(struct Tok)* nl = memoryAlloc(sizeof(array(struct Tok)));;
 
 nl->length = 0;
@@ -4817,19 +4826,7 @@ nl->data[len(nl)] =  ot;
 ;
 continue;
 }
-memory =  parseArrayVars(memory,elems);
-;
-memory =  parseStructVars(memory,elems);
-;
-memory =  parseFnCall(memory,elems);
-;
-memory =  parseArrayType(memory,elems);
-;
-memory =  parseCast(memory,elems);
-;
-memory =  parseOperations(memory,elems);
-;
-memory =  parseBool(memory,elems);
+memory =  prePross(memory,elems);
 ;
 struct Tok ft =  memory->data[0];
 ;
@@ -4935,7 +4932,7 @@ i =  i + 1;
 };
 return nl;
 };
-void parseVar(array(struct Tok)* l,struct Elems* elems){
+void parseVar(__BAH_ARR_TYPE_Tok l,struct Elems* elems){
 struct Tok ft =  l->data[0];
 ;
 if ((ft.isFunc==true)) {
@@ -5032,11 +5029,11 @@ throwErr(&t,"Cannot initiate {TOKEN} struct without specifying struct name.");
 max =  max + 1;
 ;
 if ((max<len(l))) {
-t =  l->data[i+2];
+t =  l->data[i + 2];
 ;
 throwErr(&t,"{TOKEN} not expected after initiating new struct.");
 }
-t =  l->data[i+1];
+t =  l->data[i + 1];
 ;
 if ((t.type!=TOKEN_TYPE_VAR)) {
 throwErr(&t,"Cannot use {TOKEN} as a struct name.");
@@ -5116,7 +5113,7 @@ i =  i + 1;
 struct Tok nt =  l->data[i];
 ;
 if ((strcmp(nt.cont, "{") != 0)) {
-throwErr(&l->data[i+1],"{TOKEN} not expected after array initialization.");
+throwErr(&l->data[i + 1],"{TOKEN} not expected after array initialization.");
 }
 struct string elemBahType =  string(v->type);
 ;
@@ -5186,7 +5183,7 @@ isStruct =  true;
 long int max =  i + 1;
 ;
 if ((max!=len(l))) {
-throwErr(&l->data[i+1],"{TOKEN} not expected after struct initialization.");
+throwErr(&l->data[i + 1],"{TOKEN} not expected after struct initialization.");
 }
 struct cStruct* s =  searchStruct(v->type,elems);
 ;
@@ -5310,10 +5307,12 @@ vars->data[len(vars)] =  v;
 OUTPUT =  concatCPSTRING(concatCPSTRING(OUTPUT,code),";\n");
 ;
 };
-char * parseFnHeader(char * prev,array(struct Tok)* l,long int* i,struct func* fn,struct Elems* elems){
+char * parseFnHeader(char * prev,__BAH_ARR_TYPE_Tok l,long int* i,struct func* fn,struct Elems* elems){
 long int j =  *i;
 ;
 struct Tok ft =  l->data[j];
+;
+char * tpdf =  "";
 ;
 if ((ft.type!=TOKEN_TYPE_VAR)) {
 throwErr(&ft,"Cannot use {TOKEN} as function name.");
@@ -5401,9 +5400,41 @@ arguments->data[len(arguments)] =  argument;
 };
 };
 ;
-char * argCType =  setCType(argument,elems);
+struct string argCType =  getCType(argType,elems);
 ;
-code =  concatCPSTRING(code,argCType);
+struct string cfrt =  string(argType);
+;
+char * newArgType =  argCType.str(&argCType);
+;
+if ((cfrt.hasPrefix(&cfrt,"[]")==1)) {
+cfrt.trimLeft(&cfrt,2);
+newArgType =  concatCPSTRING("__BAH_ARR_TYPE_",cfrt.str(&cfrt));
+;
+array(char *)* csatd =  compilerState.arrTypesDecl;
+;
+if ((inArrayStr(newArgType,csatd)==false)) {
+
+{
+long nLength = len(csatd);
+if (csatd->length < nLength+1) {
+if ((nLength+1) % 50 == 0 || nLength == 0) {
+void * newPtr = GC_REALLOC(csatd->data, (nLength+50)*sizeof(char *));
+csatd->data = newPtr;
+}
+csatd->data[len(csatd)] =  newArgType;
+
+csatd->length = nLength+1;
+} else {
+csatd->data[len(csatd)] =  newArgType;
+
+};
+};
+;
+tpdf =  concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING(tpdf,"typedef "),argCType.str(&argCType))," "),newArgType),";\n");
+;
+}
+}
+code =  concatCPSTRING(concatCPSTRING(concatCPSTRING(code,newArgType)," "),argName);
 ;
 if ((isComa==true)) {
 code =  concatCPSTRING(code,",");
@@ -5460,13 +5491,43 @@ fn->args =  arguments;
 ;
 struct string fnRetType =  getCType(returns->type,elems);
 ;
-char * fnRetTypeStr =  fnRetType.content;
+char * newFnRetType =  fnRetType.str(&fnRetType);
 ;
-code =  concatCPSTRING(concatCPSTRING(fnRetTypeStr," "),code);
+struct string cfrt =  string(returns->type);
+;
+if ((cfrt.hasPrefix(&cfrt,"[]")==1)) {
+cfrt.trimLeft(&cfrt,2);
+newFnRetType =  concatCPSTRING("__BAH_ARR_TYPE_",cfrt.str(&cfrt));
+;
+array(char *)* csatd =  compilerState.arrTypesDecl;
+;
+if ((inArrayStr(newFnRetType,csatd)==false)) {
+
+{
+long nLength = len(csatd);
+if (csatd->length < nLength+1) {
+if ((nLength+1) % 50 == 0 || nLength == 0) {
+void * newPtr = GC_REALLOC(csatd->data, (nLength+50)*sizeof(char *));
+csatd->data = newPtr;
+}
+csatd->data[len(csatd)] =  newFnRetType;
+
+csatd->length = nLength+1;
+} else {
+csatd->data[len(csatd)] =  newFnRetType;
+
+};
+};
+;
+tpdf =  concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING(tpdf,"typedef "),fnRetType.str(&fnRetType))," "),newFnRetType),";\n");
+;
+}
+}
+code =  concatCPSTRING(concatCPSTRING(concatCPSTRING(tpdf,newFnRetType)," "),code);
 ;
 return code;
 };
-void parseStruct(array(struct Tok)* l,struct Elems* elems){
+void parseStruct(__BAH_ARR_TYPE_Tok l,struct Elems* elems){
 struct cStruct* s = memoryAlloc(sizeof(struct cStruct));
 ;
 s->name = "";
@@ -5753,7 +5814,7 @@ nl->data[len(nl)] =  t;
 };
 };
 ;
-struct Tok nt =  l->data[j+1];
+struct Tok nt =  l->data[j + 1];
 ;
 if ((strcmp(nt.cont, ")") != 0)) {
 t.type =  TOKEN_TYPE_SYNTAX;
@@ -6146,7 +6207,7 @@ OUTPUT =  concatCPSTRING(OUTPUT,code);
 ;
 }
 };
-void parseDefine(array(struct Tok)* l,struct Elems* elems){
+void parseDefine(__BAH_ARR_TYPE_Tok l,struct Elems* elems){
 if ((len(l)<3)) {
 throwErr(&l->data[len(l)-1],"Invalid usage of define, cannot end on {TOKEN}.");
 }
@@ -6202,6 +6263,10 @@ fns->data[len(fns)] =  fn;
 };
 };
 ;
+if ((doesOutput==true)) {
+OUTPUT =  concatCPSTRING(concatCPSTRING(OUTPUT,code),";\n");
+;
+}
 }
 else {
 if ((st.type!=TOKEN_TYPE_VAR)) {
@@ -6239,7 +6304,7 @@ tps->data[len(tps)] =  ft.cont;
 ;
 }
 };
-void parseClib(array(struct Tok)* line){
+void parseClib(__BAH_ARR_TYPE_Tok line){
 array(char *)* clibs =  compilerState.cLibs;
 ;
 long int i =  1;
@@ -6297,7 +6362,7 @@ i =  i + 1;
 ;
 };
 };
-void parseConst(array(struct Tok)* l,struct Elems* elems){
+void parseConst(__BAH_ARR_TYPE_Tok l,struct Elems* elems){
 l =  parseCast(l,elems);
 ;
 if ((len(l)!=4)) {
@@ -6352,7 +6417,7 @@ vars->data[len(vars)] =  v;
 OUTPUT =  concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING(OUTPUT,"#define "),v->name)," "),valt.cont),"\n");
 ;
 };
-void parseReturn(array(struct Tok)* l,struct Elems* elems){
+void parseReturn(__BAH_ARR_TYPE_Tok l,struct Elems* elems){
 if ((len(l)>2)) {
 throwErr(&l->data[0],"Invalid usage of {TOKEN}, must be 'return <returnValue>'");
 }
@@ -6387,7 +6452,7 @@ currentFn->returned =  true;
 OUTPUT =  concatCPSTRING(concatCPSTRING(concatCPSTRING(OUTPUT,"return "),rv),";\n");
 ;
 };
-void parseIf(array(struct Tok)* l,struct Elems* elems){
+void parseIf(__BAH_ARR_TYPE_Tok l,struct Elems* elems){
 if ((len(l)<4)) {
 struct Tok ft =  l->data[0];
 ;
@@ -6450,7 +6515,7 @@ compilerState.isBranch =  oldIB;
 OUTPUT =  concatCPSTRING(OUTPUT,"}\n");
 ;
 };
-void parseElse(array(struct Tok)* l,struct Elems* elems){
+void parseElse(__BAH_ARR_TYPE_Tok l,struct Elems* elems){
 if ((prevLine!=LINE_TYPE_IF)) {
 if ((prevLine!=LINE_TYPE_ELSE)) {
 throwErr(&l->data[0],"Can only use {TOKEN} after 'if' statement.");
@@ -6543,7 +6608,7 @@ OUTPUT =  concatCPSTRING(OUTPUT,"}\n");
 ;
 }
 };
-void parseFor(array(struct Tok)* l,struct Elems* elems){
+void parseFor(__BAH_ARR_TYPE_Tok l,struct Elems* elems){
 if ((len(l)<4)) {
 throwErr(&l->data[0],"Invalid usage of {TOKEN}.");
 }
@@ -6610,7 +6675,7 @@ compilerState.isBranch =  oldIB;
 OUTPUT =  concatCPSTRING(OUTPUT,"};\n");
 ;
 };
-void parseForOp(array(struct Tok)* l){
+void parseForOp(__BAH_ARR_TYPE_Tok l){
 struct Tok ft =  l->data[0];
 ;
 if ((compilerState.isFor==false)) {
@@ -6622,7 +6687,7 @@ throwErr(&ft,"Nothing expected after {TOKEN}.");
 OUTPUT =  concatCPSTRING(concatCPSTRING(OUTPUT,ft.cont),";\n");
 ;
 };
-array(struct Tok)* prePross(array(struct Tok)* line,struct Elems* elems){
+__BAH_ARR_TYPE_Tok prePross(__BAH_ARR_TYPE_Tok line,struct Elems* elems){
 array(struct Tok)* fl = memoryAlloc(sizeof(array(struct Tok)));;
 
 fl->length = 0;
@@ -6633,7 +6698,7 @@ while ((i<len(line))) {
 struct Tok t =  line->data[i];
 ;
 if ((strcmp(t.cont, "{") == 0)) {
-struct Tok nt =  line->data[i+1];
+struct Tok nt =  line->data[i + 1];
 ;
 if ((nt.line!=t.line)) {
 break;
@@ -6725,7 +6790,7 @@ i =  i + 1;
 }
 return fl;
 };
-void parseFnDeclare(array(struct Tok)* l,struct Elems* elems){
+void parseFnDeclare(__BAH_ARR_TYPE_Tok l,struct Elems* elems){
 long int i =  0;
 ;
 struct func* fn = memoryAlloc(sizeof(struct func));
@@ -6870,7 +6935,7 @@ throwErr(&l->data[len(l)-1],concatCPSTRING(concatCPSTRING("Function '",fn->name)
 OUTPUT =  concatCPSTRING(OUTPUT,"};\n");
 ;
 };
-void parseLine(array(struct Tok)* line,struct Elems* elems){
+void parseLine(__BAH_ARR_TYPE_Tok line,struct Elems* elems){
 if ((len(line)==0)) {
 return ;
 }
@@ -6972,7 +7037,7 @@ NEXT_LINE =  "";
 prevLine =  ltp;
 ;
 };
-void parseLines(array(struct Tok)* tokens,struct Elems* elems){
+void parseLines(__BAH_ARR_TYPE_Tok tokens,struct Elems* elems){
 if ((len(tokens)==0)) {
 return ;
 }
@@ -7096,7 +7161,7 @@ throwErr(&ft,"Missing closing token, line ending by {TOKEN}.");
 }
 }
 };
-void main(array(char *)* args){
+void main(__BAH_ARR_TYPE_cpstring args){
 struct flags flags =  {};
 ;
 flags.flags = memoryAlloc(sizeof(array(struct flag*)));
@@ -7129,7 +7194,10 @@ compilerState.includes = memoryAlloc(sizeof(array(char *)));
             compilerState.cLibs->elemSize = sizeof(char *);
             compilerState.isBranch = false;
 compilerState.isFor = false;
-char * fileName =  args->data[1];
+compilerState.arrTypesDecl = memoryAlloc(sizeof(array(char *)));
+            compilerState.arrTypesDecl->length = 0;
+            compilerState.arrTypesDecl->elemSize = sizeof(char *);
+            char * fileName =  args->data[1];
 ;
 compilerState.currentFile =  fileName;
 ;

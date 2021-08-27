@@ -2,8 +2,8 @@
 #include "time.bah"
 #include "iostream.bah"
 
-#define srand(i int)
-#define rand() int
+#define! srand(i int)
+#define! rand() int
 RAND_SEEDED = 0
 
 //Used for seeding the pseudo-random number generator.

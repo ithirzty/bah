@@ -21,7 +21,7 @@ stdinput(len int) cpstring {
     return buff
 }
 
-#define write(fd int, t cpstring, l int)
+#define! write(fd int, t cpstring, l int)
 
 //Prints text to the terminal.
 print(s cpstring) {
@@ -140,9 +140,9 @@ struct fileStream {
 struct! stat {
     st_size: int
 }
-#define open(fn cpstring, flags int, mode int) int
-#define close(fd int)
-#define fstat(fd int, fs stat*)
+#define! open(fn cpstring, flags int, mode int) int
+#define! close(fd int)
+#define! fstat(fd int, fs stat*)
 
 //A wrapper to make file direct operation, wihtout needing to write file on changes.
 //**This is way faster than the fileStream** but every modification made to the returned string will be directly made to the file.
@@ -179,9 +179,9 @@ struct! dirent {
     d_name: cpstring
 }
 
-#define opendir(path cpstring) DIR*
-#define closedir(d DIR*)
-#define readdir(d DIR*) dirent*
+#define! opendir(path cpstring) DIR*
+#define! closedir(d DIR*)
+#define! readdir(d DIR*) dirent*
 
 //Returns a list of all files found inside the specified directory.
 listFiles(dir cpstring) []cpstring {
@@ -205,7 +205,7 @@ listFiles(dir cpstring) []cpstring {
     return files
 }
 
-#define access(fn cpstring, m int) int
+#define! access(fn cpstring, m int) int
 
 //Checks if a file exists.
 fileExists(path cpstring) int {
@@ -216,7 +216,7 @@ fileExists(path cpstring) int {
     return 0
 }
 
-#define remove(fn cpstring) int
+#define! remove(fn cpstring) int
 
 removeFile(name cpstring) bool {
     if remove(name) == 0 {

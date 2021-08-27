@@ -93,6 +93,7 @@ struct compilerStateTag {
     currentFile: cpstring
     isBranch: bool = false
     isFor: bool = false
+    arrTypesDecl: []cpstring
 }
 
 compilerState compilerStateTag
