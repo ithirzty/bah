@@ -60,5 +60,5 @@ sudo chmod 777 /opt/bah/*
 echo -e "\033[1;32m╭─────────────────────────────────────────────────────────────╮"
 echo              "│                            Done!                            │"
 echo              "│             Bah is now installed on your system.            │"
-echo              "│To test if the installation was successful, execute 'bah -h'.│"
+echo              "│To test if the installation was successful, execute 'bah -v'.│"
 echo              "╰─────────────────────────────────────────────────────────────╯"

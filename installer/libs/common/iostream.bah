@@ -218,6 +218,7 @@ fileExists(path cpstring) int {
 
 #define! remove(fn cpstring) int
 
+//Removes a file. 'name' should be the file name, returns true if the file was deleted.
 removeFile(name cpstring) bool {
     if remove(name) == 0 {
         return true

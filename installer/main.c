@@ -1629,6 +1629,7 @@ noCheck( r = execvp ( s , nArgs -> data ) );
 return r;
 };
 #define BAH_DIR "/opt/bah/"
+#define BAH_VERSION "v1.0 (build 8)"
 struct string SOURCE;
 char * OUTPUT =  "\n#include <stdio.h>\n#include <execinfo.h>\n#include <signal.h>\n#include <stdlib.h>\n#include <unistd.h>\n#include <gc.h>\n\n#define noCheck(v) v\n#define array(type)	\
 struct{	\
@@ -1708,6 +1709,7 @@ typedef long int tokenType;
 #define TOKEN_TYPE_FUNC (tokenType)11
 struct Tok {
 char * cont;
+char * ogCont;
 tokenType type;
 long int pos;
 long int line;
@@ -1750,6 +1752,8 @@ t.bahType = "";
 t.isValue = false;
 t.isFunc = false;
 t.cont =  arrToStr(cont);
+;
+t.ogCont =  t.cont;
 ;
 clear(cont);
 t.pos =  pos;
@@ -2731,7 +2735,7 @@ struct Tok* t =  tp;
 ;
 struct string ffmt =  string(format);
 ;
-ffmt.replace(&ffmt,"{TOKEN}",concatCPSTRING(concatCPSTRING("'",t->cont),"'"));
+ffmt.replace(&ffmt,"{TOKEN}",concatCPSTRING(concatCPSTRING("'",t->ogCont),"'"));
 format =  ffmt.str(&ffmt);
 ;
 array(char)* line = memoryAlloc(sizeof(array(char)));;
@@ -2762,7 +2766,7 @@ if ((c==(char)10)) {
 break;
 }
 if ((i==t->pos)) {
-array(char)* errTk =  strToArr(concatCPSTRING(concatCPSTRING("\e[1;31m",t->cont),"\e[1;37m"));
+array(char)* errTk =  strToArr(concatCPSTRING(concatCPSTRING("\e[1;31m",t->ogCont),"\e[1;37m"));
 ;
 long int ii =  0;
 ;
@@ -2787,7 +2791,7 @@ line->data[len(line)] =  errTk->data[ii];
 ii =  ii + 1;
 ;
 };
-i =  i + strlen(t->cont);
+i =  i + strlen(t->ogCont);
 ;
 continue;
 }
@@ -3882,6 +3886,8 @@ t.type =  TOKEN_TYPE_VAR;
 t.bahType =  ptt;
 ;
 t.pos =  pt.pos;
+;
+t.ogCont =  pt.cont;
 ;
 
 {
@@ -7471,7 +7477,12 @@ flags.isSet = flags__isSet;
 flags.parse = flags__parse;
 flags.addString(&flags,"o","Name of the file to output.");
 flags.addBool(&flags,"c","Translate bah file to C instead of compiling it.");
+flags.addBool(&flags,"v","Show version of the compiler.");
 flags.parse(&flags,args);
+if ((flags.isSet(&flags,"v")==1)) {
+println(concatCPSTRING(concatCPSTRING("Bah compiler version: ",BAH_VERSION),".\n© Alois Laurent Boe"));
+return ;
+}
  {};
 ;
 compilerState.includes = memoryAlloc(sizeof(array(char *)));
@@ -7626,5 +7637,5 @@ fs.close(&fs);
 }
 long int totalTime =  getTimeUnix() - startTime;
 ;
-println(concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING("\e[1;32mDone. (",intToStr(totalLines))," lines compiled in "),intToStr(totalTime / 1000000)),"ms)"));
+println(concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING("\e[1;32mDone. (",intToStr(totalLines))," lines compiled in "),intToStr(totalTime / 1000000)),"ms)\e[0m"));
 };

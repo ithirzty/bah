@@ -6,7 +6,8 @@
 
 ///////////////////////OS SPECIFIC THINGS////////////////////////
 const BAH_DIR = "/opt/bah/"
-
+//////////////////////BUILD SPECIFIC THINGS//////////////////////
+const BAH_VERSION = "v1.0 (build 8)"
 #include "./globals.bah"
 
 #include "./lexer.bah"
@@ -18,8 +19,13 @@ main(args []cpstring) {
     flags = flags{}
     flags.addString("o", "Name of the file to output.")
     flags.addBool("c", "Translate bah file to C instead of compiling it.")
+    flags.addBool("v", "Show version of the compiler.")
     flags.parse(args)
 
+    if flags.isSet("v") == 1 {
+        println("Bah compiler version: "+BAH_VERSION+".\n© Alois Laurent Boe")
+        return
+    }
 
     compilerState = compilerStateTag{}
     
