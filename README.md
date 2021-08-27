@@ -1,4 +1,4 @@
-# [Bah-lang](https://bah-lamg.xyz)
+# [Bah-lang](https://bah-lang.xyz)
 
 ## Installation
 > Bah supports only linux for the moment.
