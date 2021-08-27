@@ -14,7 +14,7 @@ throwErr(tp ptr, format cpstring) {
     fm.close()
     t Tok* = tp
     ffmt = string(format)
-    ffmt.replace("{TOKEN}", "'"+t.cont+"'")
+    ffmt.replace("{TOKEN}", "'"+t.ogCont+"'")
     format = ffmt.str()
 
     line = []char
@@ -36,12 +36,12 @@ throwErr(tp ptr, format cpstring) {
             break
         }
         if i == t.pos {
-            errTk = strToArr("\e[1;31m"+t.cont+"\e[1;37m")
+            errTk = strToArr("\e[1;31m"+t.ogCont+"\e[1;37m")
             ii=0; for ii < len(errTk) {
                 line[len(line)] = errTk[ii]
                 ii =ii + 1
             }
-            i = i + strlen(t.cont)
+            i = i + strlen(t.ogCont)
             continue
         }
         line[len(line)] = c

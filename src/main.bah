@@ -102,6 +102,6 @@ main(args []cpstring) {
     }
 
     totalTime = getTimeUnix() - startTime
-    println("\e[1;32mDone. ("+intToStr(totalLines)+" lines compiled in "+intToStr(totalTime / 1000000)+"ms)")
+    println("\e[1;32mDone. ("+intToStr(totalLines)+" lines compiled in "+intToStr(totalTime / 1000000)+"ms)\e[0m")
 
 }

@@ -21,6 +21,7 @@ const TOKEN_TYPE_FUNC =    <tokenType>11
 
 struct Tok {
     cont: cpstring = ""
+    ogCont: cpstring
     type: tokenType = TOKEN_NO_TYPE
     pos: int = 0
     line: int = 1
@@ -52,6 +53,7 @@ inArrayStr(needle cpstring, arr []cpstring) bool {
 makeToken(pos int, lineNb int, cont []char, type tokenType) Tok {
     t = Tok{}
     t.cont = arrToStr(cont)
+    t.ogCont = t.cont
     clear(cont)
     t.pos = pos
     t.line = lineNb

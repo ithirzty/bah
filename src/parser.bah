@@ -275,6 +275,7 @@ parseOperations(line []Tok, elems Elems*) []Tok {
                 t.type = TOKEN_TYPE_VAR
                 t.bahType = ptt
                 t.pos = pt.pos
+                t.ogCont = pt.cont
                 nl[len(nl)-1] = t
                 i = i + 2
                 continue
