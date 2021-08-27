@@ -927,7 +927,7 @@ parseVar(l []Tok, elems Elems*) {
                 }
                 vect = getCType(s.name, elems)
                 vectStr = vect.content
-                code = "memoryAlloc(sizeof("+vectStr+"));\n"
+                code = "memoryAlloc(sizeof("+vectStr+"))"
                 v.type = s.name + "*"
                 NEXT_LINE = declareStructMethods(v, s, elems)
                 break
@@ -960,7 +960,7 @@ parseVar(l []Tok, elems Elems*) {
             cvt = string(v.type)
             if ctc.hasPrefix("{") == 0 {
                 if strlen(t.cont) > 0 {
-                    code = code + " " + t.cont + ";\n"
+                    code = code + " " + t.cont
                     break
                 }
             }
@@ -968,7 +968,7 @@ parseVar(l []Tok, elems Elems*) {
                 arrType = getCType(v.type, elems)
                 arrType.trimRight(1)
                 arrTypeStr = arrType.str()
-                code = "memoryAlloc(sizeof("+arrTypeStr+"));"
+                code = "memoryAlloc(sizeof("+arrTypeStr+"))"
                 arrType.trimLeft(6)
                 arrType.trimRight(1)
                 elemTypeStr = arrType.str()
@@ -1035,7 +1035,7 @@ parseVar(l []Tok, elems Elems*) {
             }
             s = searchStruct(v.type, elems)
             NEXT_LINE = declareStructMethods(v, s, elems)
-            code = code + " " + t.cont + ";\n"
+            code = code + " " + t.cont
         }
 
         i =i + 1
@@ -1093,13 +1093,12 @@ if ((nLength+1) % 50 == 0 || nLength == 0) {
 void * newPtr = GC_REALLOC("+nstr+"->data, (nLength+50)*sizeof("+elemTypeStr+"));
 "+nstr+"->data = newPtr;
 }
-"+code+"
+"+code+";
 "+nstr+"->length = nLength+1;
 } else {
-"+code+"
+"+code+";
 };
-};
-"
+}"
 
         }
     } else {
