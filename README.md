@@ -7,7 +7,7 @@ To install bah on your machine, get the terminal warmed up 🔥 , stretch your f
 ```sh
 git clone https://github.com/ithirzty/bah
 cd ./bah
-./install.sh
+sudo ./install.sh
 ```
 
 ## Usage
