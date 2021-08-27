@@ -29,4 +29,3 @@ cp /opt/bah/time.bah ./libs/common/
 cp /opt/bah/http.bah ./libs/linux_amd64/
 cp /opt/bah/rand.bah ./libs/linux_amd64/
 cp /opt/bah/window.bah ./libs/linux_amd64/
-cp /opt/bah/bah ./libs/linux_amd64/
