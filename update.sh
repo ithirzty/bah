@@ -3,12 +3,13 @@
 # Check if any update is available
 git fetch
 HEADHASH=$(git rev-parse HEAD)
-UPSTREAMHASH=$(git rev-parse master@{upstream})
+UPSTREAMHASH=$(git rev-parse main@{upstream})
 if [ "$HEADHASH" == "$UPSTREAMHASH" ]
 then
     echo -e "\033[1;32m╭────────────────────────╮"
     echo              "│Everything is up to date│"
-    echo              "╰────────────────────────╯\033[0m"
+    echo              "╰────────────────────────╯"
+    echo -e "\033[0m"
     exit 0
 fi
 
