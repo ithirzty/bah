@@ -10,6 +10,13 @@ cd ./bah
 sudo ./install.sh
 ```
 
+## Updating
+To update, execute the following:
+```sh
+./update.sh
+```
+If the repository is updated, this script will pull the main branch and install everything.
+
 ## Usage
 Files containing bah code have the `.bah` extenstion.
 - To compile your program, use `bah myFile.bah`.

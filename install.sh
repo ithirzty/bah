@@ -56,6 +56,11 @@ rm ./a.out
 cp ./libs/linux_amd64/* /opt/bah/
 cp ./libs/common/* /opt/bah/
 sudo chmod 777 /opt/bah/*
+
+# Making the update script executable
+cd ../
+sudo chmod +x ./update.sh
+
 } &> /dev/null
 echo -e "\033[1;32m╭─────────────────────────────────────────────────────────────╮"
 echo              "│                            Done!                            │"
