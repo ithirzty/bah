@@ -19,7 +19,7 @@ test(name cpstring, start int, passed bool) {
 
 #include "./libs/markdown.bah"
 #include "./libs/string.bah"
-// #include "./libs/http.bah"
+#include "./libs/http.bah"
 #include "./libs/iostream.bah"
 #include "./libs/json.bah"
 
@@ -31,8 +31,8 @@ main() {
     start = getTimeUnix()
     test("markdown", start, testMarkdown())
     
-    // start = getTimeUnix()
-    // test("http", start, testHttp())
+    start = getTimeUnix()
+    test("http", start, testHttp())
     
     start = getTimeUnix()
     test("iostream", start, testIostream())

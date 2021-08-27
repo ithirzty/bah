@@ -2985,6 +2985,43 @@ return nv;
 i =  i + 1;
 ;
 };
+i =  0;
+;
+while ((i<len(elems->fns))) {
+struct func* fn =  elems->fns->data[i];
+;
+if ((strcmp(fn->name, name) == 0)) {
+struct variable* nv = memoryAlloc(sizeof(struct variable));
+;
+nv->name = "";
+nv->type = "";
+nv->isConst = false;
+nv->isArray = false;
+nv->name =  name;
+;
+nv->type =  "function(";
+;
+long int j =  0;
+;
+while ((j<len(fn->args))) {
+struct variable* arg =  fn->args->data[j];
+;
+nv->type =  concatCPSTRING(nv->type,arg->type);
+;
+j =  j + 1;
+;
+if ((j<len(fn->args))) {
+nv->type =  concatCPSTRING(nv->type,",");
+;
+}
+};
+nv->type =  concatCPSTRING(concatCPSTRING(nv->type,")"),fn->returns->type);
+;
+return nv;
+}
+i =  i + 1;
+;
+};
 return null;
 };
 char * setCType(struct variable* v,struct Elems* elems){
@@ -3039,6 +3076,127 @@ return "bool";
 }
 throwErr(t,"Cannot use {TOKEN} as value.");
 return "";
+};
+struct func* parseFnType(struct string cvt){
+struct func* nf = memoryAlloc(sizeof(struct func));
+;
+nf->name = "";
+nf->args = memoryAlloc(sizeof(array(struct variable*)));
+            nf->args->length = 0;
+            nf->args->elemSize = sizeof(struct variable*);
+            nf->isBinding = false;
+nf->from = "";
+nf->file = "";
+nf->line = 1;
+cvt.trimLeft(&cvt,9);
+array(char)* memory = memoryAlloc(sizeof(array(char)));;
+
+memory->length = 0;
+memory->elemSize = sizeof(char);
+long int j =  0;
+;
+while ((j<cvt.length)) {
+char c =  cvt.charAt(&cvt,j);
+;
+if ((c==41)) {
+break;
+}
+struct variable* arg = memoryAlloc(sizeof(struct variable));
+;
+arg->name = "";
+arg->type = "";
+arg->isConst = false;
+arg->isArray = false;
+arg->name =  concatCPSTRING("arg_",intToStr(len(nf->args)));
+;
+while ((j<cvt.length)) {
+c =  cvt.charAt(&cvt,j);
+;
+if (((c==44)||(c==41))) {
+break;
+}
+
+{
+long nLength = len(memory);
+if (memory->length < nLength+1) {
+if ((nLength+1) % 50 == 0 || nLength == 0) {
+void * newPtr = GC_REALLOC(memory->data, (nLength+50)*sizeof(char));
+memory->data = newPtr;
+}
+memory->data[len(memory)] =  c;
+
+memory->length = nLength+1;
+} else {
+memory->data[len(memory)] =  c;
+
+};
+};
+;
+j =  j + 1;
+;
+};
+arg->type =  arrToStr(memory);
+;
+clear(memory);
+
+{
+long nLength = len(nf->args);
+if (nf->args->length < nLength+1) {
+if ((nLength+1) % 50 == 0 || nLength == 0) {
+void * newPtr = GC_REALLOC(nf->args->data, (nLength+50)*sizeof(struct variable*));
+nf->args->data = newPtr;
+}
+nf->args->data[len(nf->args)] =  arg;
+
+nf->args->length = nLength+1;
+} else {
+nf->args->data[len(nf->args)] =  arg;
+
+};
+};
+;
+if ((c==41)) {
+break;
+}
+j =  j + 1;
+;
+};
+j =  j + 1;
+;
+while ((j<cvt.length)) {
+char c =  cvt.charAt(&cvt,j);
+;
+
+{
+long nLength = len(memory);
+if (memory->length < nLength+1) {
+if ((nLength+1) % 50 == 0 || nLength == 0) {
+void * newPtr = GC_REALLOC(memory->data, (nLength+50)*sizeof(char));
+memory->data = newPtr;
+}
+memory->data[len(memory)] =  c;
+
+memory->length = nLength+1;
+} else {
+memory->data[len(memory)] =  c;
+
+};
+};
+;
+j =  j + 1;
+;
+};
+nf->returns = memoryAlloc(sizeof(struct variable));
+;
+nf->returns->name = "";
+nf->returns->type = "";
+nf->returns->isConst = false;
+nf->returns->isArray = false;
+nf->returns->name =  "_return";
+;
+nf->returns->type =  arrToStr(memory);
+;
+return nf;
 };
 struct func* searchFunc(char * name,struct Elems* elems,int inclCurr){
 if ((strcmp(name, "noCheck") == 0)) {
@@ -3102,6 +3260,40 @@ if ((strcmp(currentFn->name, name) == 0)) {
 return currentFn;
 }
 }
+i =  0;
+;
+while ((i<len(elems->vars))) {
+struct variable* v =  elems->vars->data[i];
+;
+if ((strcmp(v->name, name) == 0)) {
+struct func* nf = memoryAlloc(sizeof(struct func));
+;
+nf->name = "";
+nf->args = memoryAlloc(sizeof(array(struct variable*)));
+            nf->args->length = 0;
+            nf->args->elemSize = sizeof(struct variable*);
+            nf->isBinding = false;
+nf->from = "";
+nf->file = "";
+nf->line = 1;
+nf->name =  name;
+;
+struct string cvt =  string(v->type);
+;
+if ((cvt.hasPrefix(&cvt,"function(")==0)) {
+return null;
+}
+struct func* pfn =  parseFnType(cvt);
+;
+nf->returns =  pfn->returns;
+;
+nf->args =  pfn->args;
+;
+return nf;
+}
+i =  i + 1;
+;
+};
 return null;
 };
 char * declareStructMethods(struct variable* v,struct cStruct* s,struct Elems* elems){
@@ -5283,8 +5475,37 @@ v->type =  vts.content;
 if ((strlen(v->type)==0)) {
 throwErr(&ft,"Cannot declare {TOKEN} without a type.");
 }
-char * vct =  setCType(v,elems);
+char * vct;
+if (vts.hasPrefix(&vts,"function(")) {
+struct func* tmpfn =  parseFnType(vts);
 ;
+struct string tmpfnRetCType =  getCType(tmpfn->returns->type,elems);
+;
+char * tmpfnArgsCType =  "";
+;
+long int j =  0;
+;
+while ((j<len(tmpfn->args))) {
+struct variable* arg =  tmpfn->args->data[j];
+;
+struct string ct =  getCType(arg->type,elems);
+;
+tmpfnArgsCType =  concatCPSTRING(tmpfnArgsCType,ct.str(&ct));
+;
+j =  j + 1;
+;
+if ((j<len(tmpfn->args))) {
+tmpfnArgsCType =  concatCPSTRING(tmpfnArgsCType,",");
+;
+}
+};
+vct =  concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING(tmpfnRetCType.str(&tmpfnRetCType)," (*"),v->name),")("),tmpfnArgsCType),")");
+;
+}
+else {
+vct =  setCType(v,elems);
+;
+}
 if ((strlen(code)>0)) {
 code =  concatCPSTRING(concatCPSTRING(vct," = "),code);
 ;

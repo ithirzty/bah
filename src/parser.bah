@@ -1112,7 +1112,26 @@ void * newPtr = GC_REALLOC("+nstr+"->data, (nLength+50)*sizeof("+elemTypeStr+"))
         if strlen(v.type) == 0 {
             throwErr(&ft, "Cannot declare {TOKEN} without a type.")
         }
-        vct = setCType(v, elems)
+        vct cpstring
+        if vts.hasPrefix("function(") {
+            tmpfn = parseFnType(vts)
+            tmpfnRetCType = getCType(tmpfn.returns.type, elems)
+
+            tmpfnArgsCType = ""
+            j=0; for j < len(tmpfn.args) {
+                arg = tmpfn.args[j]
+                ct = getCType(arg.type, elems)
+                tmpfnArgsCType = tmpfnArgsCType + ct.str()
+                j = j + 1
+                if j < len(tmpfn.args) {
+                    tmpfnArgsCType = tmpfnArgsCType + ","
+                }
+            }
+
+            vct = tmpfnRetCType.str() + " (*"+v.name+")("+tmpfnArgsCType+")"
+        } else {
+            vct = setCType(v, elems)
+        }
         if strlen(code) > 0 {
             code = vct + " = " + code
         } else {

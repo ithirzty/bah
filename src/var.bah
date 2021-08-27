@@ -126,6 +126,28 @@ searchVar(name cpstring, elems Elems*) variable* {
         i = i + 1
     }
 
+    i=0; for i < len(elems.fns) {
+        fn = elems.fns[i]
+        if fn.name == name {
+            nv = new variable
+            nv.name = name
+            nv.type = "function("
+            j=0; for j < len(fn.args) {
+                arg = fn.args[j]
+                nv.type = nv.type + arg.type
+                j = j + 1
+                if j < len(fn.args) {
+                    nv.type = nv.type + ","
+                }
+            }
+            nv.type = nv.type + ")" + fn.returns.type
+            return nv
+        }
+        i = i + 1
+    }
+
+
+
     return null
 
 }
@@ -181,6 +203,44 @@ getTypeFromToken(t Tok*, strict bool, elems Elems*) cpstring {
 
 }
 
+parseFnType(cvt string) func* {
+    nf = new func
+    cvt.trimLeft(9)
+    memory = []char
+    j=0; for j < cvt.length {
+        c = cvt.charAt(j)
+        if c == ')' {
+            break
+        }
+        arg = new variable
+        arg.name = "arg_"+intToStr(len(nf.args))
+        for j < cvt.length {
+            c = cvt.charAt(j)
+            if c == ',' || c == ')' {
+                break
+            }
+            memory[len(memory)] = c
+            j = j + 1
+        }
+        arg.type = arrToStr(memory)
+        clear(memory)
+        nf.args[len(nf.args)] = arg
+        if c == ')' {
+            break
+        }
+        j = j + 1
+    }
+    j = j + 1
+    for j < cvt.length {
+        c = cvt.charAt(j)
+        memory[len(memory)] = c
+        j = j + 1
+    }
+    nf.returns = new variable
+    nf.returns.name = "_return"
+    nf.returns.type = arrToStr(memory)
+    return nf
+}
 
 
 searchFunc(name cpstring, elems Elems*, inclCurr bool) func* {
@@ -223,6 +283,23 @@ searchFunc(name cpstring, elems Elems*, inclCurr bool) func* {
         if currentFn.name == name {
             return currentFn
         }
+    }
+
+    i=0; for i < len(elems.vars) {
+        v = elems.vars[i]
+        if v.name == name {
+            nf = new func
+            nf.name = name
+            cvt = string(v.type)
+            if cvt.hasPrefix("function(") == 0 {
+                return null
+            }
+            pfn = parseFnType(cvt)
+            nf.returns = pfn.returns
+            nf.args = pfn.args
+            return nf
+        }
+        i = i + 1
     }
 
     return null
