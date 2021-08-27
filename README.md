@@ -2,6 +2,7 @@
 
 ## Installation
 > Bah supports only linux for the moment.
+
 To install bah on your machine, get the terminal warmed up 🔥 , stretch your fingers up 🏋‍♂ and paste this 😎:
 ```sh
 git clone https://github.com/ithirzty/bah
