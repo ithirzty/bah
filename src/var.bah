@@ -52,7 +52,13 @@ searchVar(name cpstring, elems Elems*) variable* {
         }
         membs = n.content
         v = searchVar(name, elems)
+        if v == null {
+            return null
+        }
         s = searchStruct(v.type, elems)
+        if s == null {
+            return null   
+        }
         memb = searchStructMemb(membs, s, elems)
         if memb == null {
             return null

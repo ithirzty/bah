@@ -730,6 +730,9 @@ parseFnCall(l []Tok, elems Elems*) []Tok {
                         }
                         varNameStr = varName.str()
                         v = searchVar(varNameStr, elems)
+                        if v == null {
+                            throwErr(&ot, "Cannot use {TOKEN} as a struct.")
+                        }
                         vct = string(v.type)
                         if vct.count("*") == 0 {
                             varName.prepend("&")
@@ -1246,8 +1249,6 @@ parseFnHeader(prev cpstring, l []Tok, i int*, fn func*, elems Elems*) cpstring {
 
     return code
 }
-
-#cLib "g"
 
 parseStruct(l []Tok, elems Elems*) {
     s = new cStruct

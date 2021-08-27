@@ -1,4 +1,4 @@
-//COMPILE WITH: 'gcc ././main.c -w  -lgc -DPARALLEL_MARK -lm -g'
+//COMPILE WITH: 'gcc ././main.c -w  -lgc -DPARALLEL_MARK -lm'
 
 #include <stdio.h>
 #include <execinfo.h>
@@ -2882,8 +2882,14 @@ char * membs =  n.content;
 ;
 struct variable* v =  searchVar(name,elems);
 ;
+if ((v==null)) {
+return null;
+}
 struct cStruct* s =  searchStruct(v->type,elems);
 ;
+if ((s==null)) {
+return null;
+}
 struct structMemb* memb =  searchStructMemb(membs,s,elems);
 ;
 if ((memb==null)) {
@@ -4666,6 +4672,9 @@ char * varNameStr =  varName.str(&varName);
 ;
 struct variable* v =  searchVar(varNameStr,elems);
 ;
+if ((v==null)) {
+throwErr(&ot,"Cannot use {TOKEN} as a struct.");
+}
 struct string vct =  string(v->type);
 ;
 if ((vct.count(&vct,"*")==0)) {
