@@ -1338,7 +1338,7 @@ noCheck( r = execvp ( s , nArgs -> data ) );
 return r;
 };
 #define BAH_DIR "/opt/bah/"
-#define BAH_VERSION "v1.0 (build 8)"
+#define BAH_VERSION "v1.0 (build 9)"
 struct string SOURCE;
 char * OUTPUT =  "\n#include <stdio.h>\n#include <execinfo.h>\n#include <signal.h>\n#include <stdlib.h>\n#include <unistd.h>\n#include <gc.h>\n\n#define noCheck(v) v\n#define array(type)	\
 struct{	\

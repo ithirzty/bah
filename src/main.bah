@@ -7,7 +7,7 @@
 ///////////////////////OS SPECIFIC THINGS////////////////////////
 const BAH_DIR = "/opt/bah/"
 //////////////////////BUILD SPECIFIC THINGS//////////////////////
-const BAH_VERSION = "v1.0 (build 8)"
+const BAH_VERSION = "v1.0 (build 9)"
 #include "./globals.bah"
 
 #include "./lexer.bah"
