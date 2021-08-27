@@ -1898,8 +1898,22 @@ parseFnDeclare(l []Tok, elems Elems*) {
             throwErr(&ft, "Cannot redeclare function {TOKEN}, previous declaration: "+ogFn.file+":"+lineStr+".")
         }
     }
-    returns = fn.returns
-    arguments = fn.args
+
+    if fn.name == "main" {
+        compilerState.haveEntryPoint = true
+        if compTypes(fn.returns.type, "int") == false {
+            throwErr(&ft, "{TOKEN} function should return 'int'.")
+        }
+        if len(fn.args) != 1 {
+            throwErr(&ft, "{TOKEN} function should take one []cpstring argument. Should be: 
+            'main(args []cpstring) int'")
+        }
+        fa = fn.args[0]
+        if compTypes(fa.type, "[]cpstring") == false {
+            throwErr(&ft, "{TOKEN} function should take []cpstring as argument. Should be: 
+            'main(args []cpstring) int'")
+        }
+    }
 
     code = code + "{\n"
     OUTPUT = OUTPUT + code
@@ -1907,8 +1921,8 @@ parseFnDeclare(l []Tok, elems Elems*) {
     fnElems = dupElems(elems)
     
     vs = fnElems.vars
-    j=0; for j < len(arguments) {
-        a = arguments[j]
+    j=0; for j < len(fn.args) {
+        a = fn.args[j]
         vs[len(vs)] = a
         j =j + 1
     }

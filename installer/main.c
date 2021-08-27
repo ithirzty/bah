@@ -23,6 +23,9 @@ backtrace_symbols_fd(array, size, STDERR_FILENO);
 exit(1);
 }
 
+typedef array(char*)* __BAH_ARR_TYPE_cpstring;
+
+long int __BAH__main(__BAH_ARR_TYPE_cpstring);
 
 int main(int argc, char ** argv) {
 GC_INIT();
@@ -32,7 +35,7 @@ memcpy(args->data, argv, sizeof(char*)*argc);
 args->elemSize = sizeof(char*);
 args->length = argc;
 signal(SIGSEGV, __CRASH_BAH_HANDLE);
-__BAH__main(args);
+return __BAH__main((__BAH_ARR_TYPE_cpstring)args);
 };
 #define main(v) __BAH__main(v)
 #include <signal.h>
@@ -921,7 +924,6 @@ return 1;
 void fileMap__close(struct fileMap* this){
 close(this->handle);
 };
-typedef array(char *)* __BAH_ARR_TYPE_cpstring;
 __BAH_ARR_TYPE_cpstring listFiles(char * dir){
 array(char *)* files = memoryAlloc(sizeof(array(char *)));
 
@@ -1338,14 +1340,14 @@ noCheck( r = execvp ( s , nArgs -> data ) );
 return r;
 };
 #define BAH_DIR "/opt/bah/"
-#define BAH_VERSION "v1.0 (build 9)"
+#define BAH_VERSION "v1.0 (build 10)"
 struct string SOURCE;
 char * OUTPUT =  "\n#include <stdio.h>\n#include <execinfo.h>\n#include <signal.h>\n#include <stdlib.h>\n#include <unistd.h>\n#include <gc.h>\n\n#define noCheck(v) v\n#define array(type)	\
 struct{	\
 type *data; \
 long int length; \
 long int elemSize; \
-}\n\nvoid __CRASH_BAH_HANDLE(int sig) {\nvoid *array[10];\nsize_t size;\nsize = backtrace(array, 10);\nchar * sigStr = \"unknown\";\nif (sig == 11) {\n    sigStr = \"Seg fault\";\n};\nfprintf(stderr, \"Program crashed, received signal %s:\\n\", sigStr);\nbacktrace_symbols_fd(array, size, STDERR_FILENO);\nexit(1);\n}\n\n\nint main(int argc, char ** argv) {\nGC_INIT();\narray(char*) * args = GC_MALLOC(sizeof(array(char*)));\nargs->data = GC_MALLOC(sizeof(char*)*argc);\nmemcpy(args->data, argv, sizeof(char*)*argc);\nargs->elemSize = sizeof(char*);\nargs->length = argc;\nsignal(SIGSEGV, __CRASH_BAH_HANDLE);\n__BAH__main(args);\n};\n#define main(v) __BAH__main(v)\n";
+}\n\nvoid __CRASH_BAH_HANDLE(int sig) {\nvoid *array[10];\nsize_t size;\nsize = backtrace(array, 10);\nchar * sigStr = \"unknown\";\nif (sig == 11) {\n    sigStr = \"Seg fault\";\n};\nfprintf(stderr, \"Program crashed, received signal %s:\\n\", sigStr);\nbacktrace_symbols_fd(array, size, STDERR_FILENO);\nexit(1);\n}\n\ntypedef array(char*)* __BAH_ARR_TYPE_cpstring;\n\nlong int __BAH__main(__BAH_ARR_TYPE_cpstring);\n\nint main(int argc, char ** argv) {\nGC_INIT();\narray(char*) * args = GC_MALLOC(sizeof(array(char*)));\nargs->data = GC_MALLOC(sizeof(char*)*argc);\nmemcpy(args->data, argv, sizeof(char*)*argc);\nargs->elemSize = sizeof(char*);\nargs->length = argc;\nsignal(SIGSEGV, __CRASH_BAH_HANDLE);\nreturn __BAH__main((__BAH_ARR_TYPE_cpstring)args);\n};\n#define main(v) __BAH__main(v)\n";
 char * NEXT_LINE =  "";
 struct variable {
 char * name;
@@ -1393,6 +1395,7 @@ char * currentFile;
 int isBranch;
 int isFor;
 array(char *)* arrTypesDecl;
+int haveEntryPoint;
 };
 struct compilerStateTag compilerState;
 struct cStruct* currentCStruct;
@@ -5577,15 +5580,26 @@ char * lineStr =  intToStr(ogFn->line);
 throwErr(&ft,concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING("Cannot redeclare function {TOKEN}, previous declaration: ",ogFn->file),":"),lineStr),"."));
 }
 }
-struct variable* returns =  fn->returns;
-array(struct variable*)* arguments =  fn->args;
+if ((strcmp(fn->name, "main") == 0)) {
+compilerState.haveEntryPoint =  true;
+if ((compTypes(fn->returns->type,"int")==false)) {
+throwErr(&ft,"{TOKEN} function should return 'int'.");
+}
+if ((len(fn->args)!=1)) {
+throwErr(&ft,"{TOKEN} function should take one []cpstring argument. Should be: \n            'main(args []cpstring) int'");
+}
+struct variable* fa =  fn->args->data[0];
+if ((compTypes(fa->type,"[]cpstring")==false)) {
+throwErr(&ft,"{TOKEN} function should take []cpstring as argument. Should be: \n            'main(args []cpstring) int'");
+}
+}
 code =  concatCPSTRING(code,"{\n");
 OUTPUT =  concatCPSTRING(OUTPUT,code);
 struct Elems* fnElems =  dupElems(elems);
 array(struct variable*)* vs =  fnElems->vars;
 long int j =  0;
-while ((j<len(arguments))) {
-struct variable* a =  arguments->data[j];
+while ((j<len(fn->args))) {
+struct variable* a =  fn->args->data[j];
 
 {
 long nLength = len(vs);
@@ -5840,7 +5854,7 @@ throwErr(&ft,"Missing closing token, line ending by {TOKEN}.");
 }
 }
 };
-void main(__BAH_ARR_TYPE_cpstring args){
+long int main(__BAH_ARR_TYPE_cpstring args){
 struct flags flags =  {};
 flags.flags = memoryAlloc(sizeof(array(struct flag*)));
             flags.flags->length = 0;
@@ -5865,7 +5879,7 @@ flags.addBool(&flags,"v","Show version of the compiler.");
 flags.parse(&flags,args);
 if ((flags.isSet(&flags,"v")==1)) {
 println(concatCPSTRING(concatCPSTRING("Bah compiler version: ",BAH_VERSION),".\n© Alois Laurent Boe"));
-return ;
+return 0;
 }
  {};
 compilerState.includes = memoryAlloc(sizeof(array(char *)));
@@ -5879,7 +5893,22 @@ compilerState.isFor = false;
 compilerState.arrTypesDecl = memoryAlloc(sizeof(array(char *)));
             compilerState.arrTypesDecl->length = 0;
             compilerState.arrTypesDecl->elemSize = sizeof(char *);
-            char * fileName =  args->data[1];
+            compilerState.haveEntryPoint = false;
+
+{
+long nLength = 0;
+if (compilerState.arrTypesDecl->length < nLength+1) {
+if ((nLength+1) % 50 == 0 || nLength == 0) {
+void * newPtr = GC_REALLOC(compilerState.arrTypesDecl->data, (nLength+50)*sizeof(char *));
+compilerState.arrTypesDecl->data = newPtr;
+}
+compilerState.arrTypesDecl->data[0] =  "__BAH_ARR_TYPE_cpstring";
+compilerState.arrTypesDecl->length = nLength+1;
+} else {
+compilerState.arrTypesDecl->data[0] =  "__BAH_ARR_TYPE_cpstring";
+};
+};
+char * fileName =  args->data[1];
 compilerState.currentFile =  fileName;
 struct fileMap fm =  {};
 fm.open = fileMap__open;
@@ -5985,4 +6014,5 @@ fs.close(&fs);
 }
 long int totalTime =  getTimeUnix() - startTime;
 println(concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING("\e[1;32mDone. (",intToStr(totalLines))," lines compiled in "),intToStr(totalTime / 1000000)),"ms)\e[0m"));
+return 0;
 };

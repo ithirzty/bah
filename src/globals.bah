@@ -31,6 +31,9 @@ backtrace_symbols_fd(array, size, STDERR_FILENO);
 exit(1);
 }
 
+typedef array(char*)* __BAH_ARR_TYPE_cpstring;
+
+long int __BAH__main(__BAH_ARR_TYPE_cpstring);
 
 int main(int argc, char ** argv) {
 GC_INIT();
@@ -40,7 +43,7 @@ memcpy(args->data, argv, sizeof(char*)*argc);
 args->elemSize = sizeof(char*);
 args->length = argc;
 signal(SIGSEGV, __CRASH_BAH_HANDLE);
-__BAH__main(args);
+return __BAH__main((__BAH_ARR_TYPE_cpstring)args);
 };
 #define main(v) __BAH__main(v)
 "
@@ -94,6 +97,7 @@ struct compilerStateTag {
     isBranch: bool = false
     isFor: bool = false
     arrTypesDecl: []cpstring
+    haveEntryPoint: bool = false
 }
 
 compilerState compilerStateTag

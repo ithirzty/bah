@@ -7,7 +7,7 @@
 ///////////////////////OS SPECIFIC THINGS////////////////////////
 const BAH_DIR = "/opt/bah/"
 //////////////////////BUILD SPECIFIC THINGS//////////////////////
-const BAH_VERSION = "v1.0 (build 9)"
+const BAH_VERSION = "v1.0 (build 10)"
 #include "./globals.bah"
 
 #include "./lexer.bah"
@@ -15,7 +15,7 @@ const BAH_VERSION = "v1.0 (build 9)"
 #include "./errors.bah"
 #include "./parser.bah"
 
-main(args []cpstring) {
+main(args []cpstring) int {
     flags = flags{}
     flags.addString("o", "Name of the file to output.")
     flags.addBool("c", "Translate bah file to C instead of compiling it.")
@@ -24,10 +24,11 @@ main(args []cpstring) {
 
     if flags.isSet("v") == 1 {
         println("Bah compiler version: "+BAH_VERSION+".\n© Alois Laurent Boe")
-        return
+        return 0
     }
 
     compilerState = compilerStateTag{}
+    compilerState.arrTypesDecl[0] = "__BAH_ARR_TYPE_cpstring"
     
     fileName = args[1]
     compilerState.currentFile = fileName
@@ -109,5 +110,5 @@ main(args []cpstring) {
 
     totalTime = getTimeUnix() - startTime
     println("\e[1;32mDone. ("+intToStr(totalLines)+" lines compiled in "+intToStr(totalTime / 1000000)+"ms)\e[0m")
-
+    return 0
 }
