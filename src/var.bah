@@ -244,6 +244,7 @@ parseFnType(cvt string) func* {
 
 
 searchFunc(name cpstring, elems Elems*, inclCurr bool) func* {
+    ogName = name
     if name == "noCheck" {
         fn = new func
         fn.name = "noCheck"
@@ -285,24 +286,20 @@ searchFunc(name cpstring, elems Elems*, inclCurr bool) func* {
         }
     }
 
-    i=0; for i < len(elems.vars) {
-        v = elems.vars[i]
-        if v.name == name {
-            nf = new func
-            nf.name = name
-            cvt = string(v.type)
-            if cvt.hasPrefix("function(") == 0 {
-                return null
-            }
-            pfn = parseFnType(cvt)
-            nf.returns = pfn.returns
-            nf.args = pfn.args
-            return nf
-        }
-        i = i + 1
+    v = searchVar(ogName, elems)
+    if v == null {
+        return null
     }
-
-    return null
+    nf = new func
+    nf.name = ogName
+    cvt = string(v.type)
+    if cvt.hasPrefix("function(") == 0 {
+        return null
+    }
+    pfn = parseFnType(cvt)
+    nf.returns = pfn.returns
+    nf.args = pfn.args
+    return nf
 }
 
 declareStructMethods(v variable*, s cStruct*, elems Elems*) cpstring {

@@ -1312,10 +1312,28 @@ parseStruct(l []Tok, elems Elems*) {
             extdsmbs = extdS.members
             j=0; for j < len(extdsmbs) {
                 em = extdsmbs[j]
-                membDecl = getCType(em.type, elems)
-                membDecl.append(" ")
-                membDecl.append(em.name)
-                membDeclStr = membDecl.content
+                cemt = string(em.type)
+                membDeclStr cpstring
+                if cemt.hasPrefix("function(") == 1 {
+                    tmpfn = parseFnType(cemt)
+                    tmpfnRetCType = getCType(tmpfn.returns.type, elems)
+                    tmpfnArgsCType = ""
+                    j=0; for j < len(tmpfn.args) {
+                        arg = tmpfn.args[j]
+                        ct = getCType(arg.type, elems)
+                        tmpfnArgsCType = tmpfnArgsCType + ct.str()
+                        j = j + 1
+                        if j < len(tmpfn.args) {
+                            tmpfnArgsCType = tmpfnArgsCType + ","
+                        }
+                    }
+                    membDeclStr = tmpfnRetCType.str() + " (*"+em.name+")("+tmpfnArgsCType+")"
+                } else {
+                    membDecl = getCType(em.type, elems)
+                    membDecl.append(" ")
+                    membDecl.append(em.name)
+                    membDeclStr = membDecl.content
+                }
                 allMembs[len(allMembs)] = membDeclStr
                 members[len(members)] = em
                 j = j + 1
@@ -1532,10 +1550,28 @@ parseStruct(l []Tok, elems Elems*) {
             }
         }
         members[len(members)] = memb
-        membDecl = getCType(memb.type, elems)
-        membDecl.append(" ")
-        membDecl.append(memb.name)
-        membDeclStr = membDecl.content
+        membDeclStr cpstring
+        cmt = string(memb.type)
+        if cmt.hasPrefix("function(") == 1 {
+            tmpfn = parseFnType(cmt)
+            tmpfnRetCType = getCType(tmpfn.returns.type, elems)
+            tmpfnArgsCType = ""
+            j=0; for j < len(tmpfn.args) {
+                arg = tmpfn.args[j]
+                ct = getCType(arg.type, elems)
+                tmpfnArgsCType = tmpfnArgsCType + ct.str()
+                j = j + 1
+                if j < len(tmpfn.args) {
+                    tmpfnArgsCType = tmpfnArgsCType + ","
+                }
+            }
+            membDeclStr = tmpfnRetCType.str() + " (*"+memb.name+")("+tmpfnArgsCType+")"
+        } else {
+            membDecl = getCType(memb.type, elems)
+            membDecl.append(" ")
+            membDecl.append(memb.name)
+            membDeclStr = membDecl.content
+        }
         allMembs[len(allMembs)] = membDeclStr
         i =i + 1
     }

@@ -3199,6 +3199,8 @@ nf->returns->type =  arrToStr(memory);
 return nf;
 };
 struct func* searchFunc(char * name,struct Elems* elems,int inclCurr){
+char * ogName =  name;
+;
 if ((strcmp(name, "noCheck") == 0)) {
 struct func* fn = memoryAlloc(sizeof(struct func));
 ;
@@ -3260,12 +3262,11 @@ if ((strcmp(currentFn->name, name) == 0)) {
 return currentFn;
 }
 }
-i =  0;
+struct variable* v =  searchVar(ogName,elems);
 ;
-while ((i<len(elems->vars))) {
-struct variable* v =  elems->vars->data[i];
-;
-if ((strcmp(v->name, name) == 0)) {
+if ((v==null)) {
+return null;
+}
 struct func* nf = memoryAlloc(sizeof(struct func));
 ;
 nf->name = "";
@@ -3276,7 +3277,7 @@ nf->args = memoryAlloc(sizeof(array(struct variable*)));
 nf->from = "";
 nf->file = "";
 nf->line = 1;
-nf->name =  name;
+nf->name =  ogName;
 ;
 struct string cvt =  string(v->type);
 ;
@@ -3290,11 +3291,6 @@ nf->returns =  pfn->returns;
 nf->args =  pfn->args;
 ;
 return nf;
-}
-i =  i + 1;
-;
-};
-return null;
 };
 char * declareStructMethods(struct variable* v,struct cStruct* s,struct Elems* elems){
 char * code =  "";
@@ -5850,12 +5846,43 @@ long int j =  0;
 while ((j<len(extdsmbs))) {
 struct structMemb* em =  extdsmbs->data[j];
 ;
+struct string cemt =  string(em->type);
+;
+char * membDeclStr;
+if ((cemt.hasPrefix(&cemt,"function(")==1)) {
+struct func* tmpfn =  parseFnType(cemt);
+;
+struct string tmpfnRetCType =  getCType(tmpfn->returns->type,elems);
+;
+char * tmpfnArgsCType =  "";
+;
+j =  0;
+;
+while ((j<len(tmpfn->args))) {
+struct variable* arg =  tmpfn->args->data[j];
+;
+struct string ct =  getCType(arg->type,elems);
+;
+tmpfnArgsCType =  concatCPSTRING(tmpfnArgsCType,ct.str(&ct));
+;
+j =  j + 1;
+;
+if ((j<len(tmpfn->args))) {
+tmpfnArgsCType =  concatCPSTRING(tmpfnArgsCType,",");
+;
+}
+};
+membDeclStr =  concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING(tmpfnRetCType.str(&tmpfnRetCType)," (*"),em->name),")("),tmpfnArgsCType),")");
+;
+}
+else {
 struct string membDecl =  getCType(em->type,elems);
 ;
 membDecl.append(&membDecl," ");
 membDecl.append(&membDecl,em->name);
-char * membDeclStr =  membDecl.content;
+membDeclStr =  membDecl.content;
 ;
+}
 
 {
 long nLength = len(allMembs);
@@ -6386,12 +6413,43 @@ members->data[len(members)] =  memb;
 };
 };
 ;
+char * membDeclStr;
+struct string cmt =  string(memb->type);
+;
+if ((cmt.hasPrefix(&cmt,"function(")==1)) {
+struct func* tmpfn =  parseFnType(cmt);
+;
+struct string tmpfnRetCType =  getCType(tmpfn->returns->type,elems);
+;
+char * tmpfnArgsCType =  "";
+;
+long int j =  0;
+;
+while ((j<len(tmpfn->args))) {
+struct variable* arg =  tmpfn->args->data[j];
+;
+struct string ct =  getCType(arg->type,elems);
+;
+tmpfnArgsCType =  concatCPSTRING(tmpfnArgsCType,ct.str(&ct));
+;
+j =  j + 1;
+;
+if ((j<len(tmpfn->args))) {
+tmpfnArgsCType =  concatCPSTRING(tmpfnArgsCType,",");
+;
+}
+};
+membDeclStr =  concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING(tmpfnRetCType.str(&tmpfnRetCType)," (*"),memb->name),")("),tmpfnArgsCType),")");
+;
+}
+else {
 struct string membDecl =  getCType(memb->type,elems);
 ;
 membDecl.append(&membDecl," ");
 membDecl.append(&membDecl,memb->name);
-char * membDeclStr =  membDecl.content;
+membDeclStr =  membDecl.content;
 ;
+}
 
 {
 long nLength = len(allMembs);
