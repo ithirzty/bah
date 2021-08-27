@@ -148,7 +148,7 @@ parseJson(a cpstring) jsonElement* {
             }
             total = currentBracks + currentBraces + currentQuotes
             if total > 0 {
-                if isVal {
+                if isVal == 1 {
                     currentElem[len(currentElem)] = c
                 } else {
                     currentKey[len(currentKey)] = c
@@ -171,7 +171,7 @@ parseJson(a cpstring) jsonElement* {
                     i = i + 1
                     continue
                 }
-                if isVal {
+                if isVal == 1 {
                     currentElem[len(currentElem)] = c
                 } else {
                     currentKey[len(currentKey)] = c

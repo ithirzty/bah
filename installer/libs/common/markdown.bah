@@ -32,7 +32,7 @@ struct markdown {
             si = intToStr(i)
             l = mdl.line.str()
             s = s + si + ": " + l + "\n"
-            i++
+            i = i + 1
         }
 
         return s
@@ -72,11 +72,11 @@ struct markdown {
                 html = html + l + "<br>"
             }
 
-            html += "\n"
+            html = html + "\n"
 
-            i++
+            i = i + 1
         }
-        html += "</p>"
+        html = html + "</p>"
         return html
     }
 
@@ -113,19 +113,19 @@ parseMarkdownInline(l string) string {
             } else {
                 linkName[len(linkName)] = c
             }
-            i++
+            i = i + 1
             continue
         }
         if isLink == 2 {
             if c == '(' {
                 isLink = 3
             }
-            i++
+            i = i + 1
             continue
         }
         if isLink == 3 {
             if c == ')' {
-                if isImage {
+                if isImage == 1 {
                     appendCharArr(nl, strToArr("<img src=\""))
                     appendCharArr(nl, linkUrl)
                     appendCharArr(nl, strToArr("\" alt=\""))
@@ -156,7 +156,7 @@ parseMarkdownInline(l string) string {
             } else {
                 linkUrl[len(linkUrl)] = c
             }
-            i++
+            i = i + 1
             continue
         }
         if c == '[' {
@@ -170,7 +170,7 @@ parseMarkdownInline(l string) string {
                 } else if validateState == 1 {
                     if vc == '(' {
                         validateState = 2
-                        ii++
+                        ii = ii + 1
                         continue
                     }
                     if isSpace(vc) == 0 {
@@ -182,13 +182,13 @@ parseMarkdownInline(l string) string {
                         break
                     }
                 }
-                ii++
+                ii = ii + 1
             }
             if validateState == 3 {
                 isLink = 1
-                i++
+                i = i + 1
                 continue
-            } else if isImage {
+            } else if isImage == 1 {
                 isImage = 0
                 nl[len(nl)] = '!'
                 // nl.append("!")
@@ -200,14 +200,14 @@ parseMarkdownInline(l string) string {
             if nc == '[' {
                 isImage = 1
             }
-            i++
+            i = i + 1
             continue
         }
 
         //bold
         if c == '*' {
             if l.charAt(i+1) == '*' {
-            if isBold {
+            if isBold == 1 {
                 appendCharArr(nl, strToArr("</strong>"))
                 // nl.append("</strong>")
                 isBold = 0
@@ -216,11 +216,11 @@ parseMarkdownInline(l string) string {
                 // nl.append("<strong>")
                 isBold = 1
             }
-            i += 2
+            i = i + 2
             continue
             } else {
         //italic
-                if isItal {
+                if isItal == 1 {
                     appendCharArr(nl, strToArr("</em>"))
                     // nl.append("</em>")
                     isItal = 0
@@ -229,7 +229,7 @@ parseMarkdownInline(l string) string {
                     // nl.append("<em>")
                     isItal = 1
                 }
-                i++
+                i = i + 1
                 continue
             }
         }
@@ -237,7 +237,7 @@ parseMarkdownInline(l string) string {
         //underlining
         if c == '_' {
             if l.charAt(i+1) == '_' {
-                if isUline {
+                if isUline == 1 {
                     appendCharArr(nl, strToArr("</u>"))
                     // nl.append("</u>")
                     isUline = 0
@@ -246,7 +246,7 @@ parseMarkdownInline(l string) string {
                     // nl.append("<u>")
                     isUline = 1
                 }
-                i += 2
+                i = i + 2
                 continue
             }
         }
@@ -254,7 +254,7 @@ parseMarkdownInline(l string) string {
         
         // nl.append(charToString(c))
         nl[len(nl)] = c
-        i++
+        i = i + 1
     }
 
     r = string(arrToStr(nl))
@@ -291,7 +291,7 @@ parseMarkdown(a cpstring) markdown {
                 }
 
                 ll.append("\n")
-                nl.append(ll)
+                nl.append(ll.str())
 
                 i = i + 1
             }
@@ -307,39 +307,39 @@ parseMarkdown(a cpstring) markdown {
         
          if l.hasPrefix("# ") {
             ml.type = 1
-            nl.set(l)
+            nl.set(l.str())
             nl.trimLeft(2)
         } else if l.hasPrefix("## ") {
             ml.type = 2
-            nl.set(l)
+            nl.set(l.str())
             nl.trimLeft(3)
         } else if l.hasPrefix("### ") {
             ml.type = 3
-            nl.set(l)
+            nl.set(l.str())
             nl.trimLeft(4)
 
         } else if l.hasPrefix("#### ") {
             ml.type = 4
-            nl.set(l)
+            nl.set(l.str())
             nl.trimLeft(5)
 
         } else if l.hasPrefix("##### ") {
             ml.type = 5
-            nl.set(l)
+            nl.set(l.str())
             nl.trimLeft(6)
 
         } else if l.hasPrefix("###### ") {
             ml.type = 6
-            nl.set(l)
+            nl.set(l.str())
             nl.trimLeft(7)
 
         } else if l.hasPrefix("- ") {
             ml.type = 7
-            nl.set(l)
+            nl.set(l.str())
             nl.trimLeft(2)
         } else if l.hasPrefix("> ") {
             ml.type = 9
-            nl.set(l)
+            nl.set(l.str())
             nl.trimLeft(2)
         } else {
 
@@ -348,13 +348,13 @@ parseMarkdown(a cpstring) markdown {
                     ml.type = 8
                 }
             }
-                nl.set(l)
+                nl.set(l.str())
             }
         
         ml.line = nl
         m.lines[len(m.lines)] = ml
         
-        i++
+        i = i + 1
     }
 
 

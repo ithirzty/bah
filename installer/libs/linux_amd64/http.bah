@@ -52,18 +52,18 @@ struct http_url {
     proto: string
 }
 
-#define socket(a int, b int, c int) int
-#define gethostbyname(h cpstring) hostent*
-#define htons(p int) uint
-#define connect(sockfd int, ser_addr sockaddr_in*, s int) int
-#define send(sockfd int, msg cpstring, msglen int, c int) int
-#define recv(sockfd int, buff cpstring, bufflen int, c int) int
-#define close(sockfd int)
-#define htonl(inaddrt int) uint
-#define bind(sockfd int, ser_addr sockaddr_in*, s int) int
-#define listen(sockfd int, s int) int
-#define memset(str ptr*, w int, s int)
-#define accept(sockfd int, cliaddr sockaddr_in*, clilen int*) int
+#define! socket(a int, b int, c int) int
+#define! gethostbyname(h cpstring) hostent*
+#define! htons(p int) uint
+#define! connect(sockfd int, ser_addr sockaddr_in*, s int) int
+#define! send(sockfd int, msg cpstring, msglen int, c int) int
+#define! recv(sockfd int, buff cpstring, bufflen int, c int) int
+#define! close(sockfd int)
+#define! htonl(inaddrt int) uint
+#define! bind(sockfd int, ser_addr sockaddr_in*, s int) int
+#define! listen(sockfd int, s int) int
+#define! memset(str ptr*, w int, s int)
+#define! accept(sockfd int, cliaddr sockaddr_in*, clilen int*) int
 
 //Used for parsing an URL.
 parseUrl(cps cpstring) http_url {    
@@ -82,7 +82,7 @@ parseUrl(cps cpstring) http_url {
         }
         i = i + 1
     }
-    if hasProto {
+    if hasProto == 1 {
     proto = string("")
     i = 0
     for s.charAt(i) != ':' {
@@ -189,7 +189,7 @@ struct http_server {
             close(sockfd)
             panic("http: failed to start listening")
         }
-        memset(&sa, 0, 152)
+        memset(<ptr>&sa, 0, 152)
         sa.sa_handler = &sigchld_handler
         sigaction(17, &sa, 0)
         for this.running {
