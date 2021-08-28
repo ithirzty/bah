@@ -15,6 +15,8 @@ befor installing it. Dont worry this is simple, simply run:
 sudo ./linux_compile_install.sh
 ```
 
+[![installation tutorial](https://i9.ytimg.com/vi/druJwBluvLc/mqdefault.jpg?sqp=CMyzpokG&rs=AOn4CLDa29d7a6ZVtodjDIzfLJmd0lakPw)](https://youtu.be/druJwBluvLc)
+
 ## Updating
 To update, execute the following:
 ```sh
