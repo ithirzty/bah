@@ -17,13 +17,13 @@ struct command {
             return ""
         }
         buff cpstring = memoryAlloc(1025)
-        res = string("")
+        res = ""
         more = 1;for more == 1 {
             more = fgets(buff, 1024, handle)
-            res.append(buff)
+            res = res + buff
         }
         pclose(handle)
-        return res.str()
+        return res
     }
 
 }

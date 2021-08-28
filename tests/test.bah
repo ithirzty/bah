@@ -18,15 +18,15 @@ test(name cpstring, start int, passed bool) {
 }
 
 #include "./libs/markdown.bah"
-#include "./libs/string.bah"
+// #include "./libs/string.bah"
 #include "./libs/http.bah"
 #include "./libs/iostream.bah"
 #include "./libs/json.bah"
 
 
-main() {
-    start = getTimeUnix()
-    test("string", start, testString())
+main(args []cpstring) int {
+    // start = getTimeUnix()
+    // test("string", start, testString())
 
     start = getTimeUnix()
     test("markdown", start, testMarkdown())
@@ -40,4 +40,5 @@ main() {
     start = getTimeUnix()
     test("json", start, testJson())
 
+    return 0
 }

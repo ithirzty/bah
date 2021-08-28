@@ -7,13 +7,18 @@ To install bah on your machine, get the terminal warmed up 🔥 , stretch your f
 ```sh
 git clone https://github.com/ithirzty/bah
 cd ./bah
-sudo ./install.sh
+sudo ./linux_install.sh
+```
+If the installation fails for whatever reason, you will need to recompile the Bah compiler
+befor installing it. Dont worry this is simple, simply run:
+```sh
+sudo ./linux_compile_install.sh
 ```
 
 ## Updating
 To update, execute the following:
 ```sh
-./update.sh
+./linux_update.sh
 ```
 If the repository is updated, this script will pull the main branch and install everything.
 
