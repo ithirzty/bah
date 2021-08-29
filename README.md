@@ -1,9 +1,11 @@
 # [Bah-lang](https://bah-lang.xyz)
 
 ## Installation
-> Bah supports only linux for the moment.
+> Bah supports only linux and windows for the moment.
+Note that windows releases may be delayed compared to linux releases.
 
 To install bah on your machine, get the terminal warmed up 🔥 , stretch your fingers up 🏋‍♂ and paste this 😎:
+### Linux
 ```sh
 git clone https://github.com/ithirzty/bah
 cd ./bah
@@ -14,6 +16,19 @@ befor installing it. Dont worry this is simple, simply run:
 ```sh
 sudo ./linux_compile_install.sh
 ```
+
+### Windows
+```bat
+git clone https://github.com/ithirzty/bah
+cd ./bah
+.\windows_install.bat
+```
+If the installation fails for whatever reason, you will need to recompile the Bah compiler
+befor installing it. Dont worry this is simple, simply run:
+```bat
+.\windows_compile_install.bat
+```
+
 
 [![installation tutorial](https://i9.ytimg.com/vi/druJwBluvLc/mqdefault.jpg?sqp=CMyzpokG&rs=AOn4CLDa29d7a6ZVtodjDIzfLJmd0lakPw)](https://youtu.be/druJwBluvLc)
 
