@@ -24,10 +24,11 @@ cp /opt/bah/regex.bah ./libs/common/
 cp /opt/bah/string.bah ./libs/common/
 cp /opt/bah/thread.bah ./libs/common/
 cp /opt/bah/time.bah ./libs/common/
+cp /opt/bah/rope.bah ./libs/common/
 #linux specific libs
 cp /opt/bah/http.bah ./libs/linux/
 cp /opt/bah/rand.bah ./libs/linux/
 cp /opt/bah/window.bah ./libs/linux/
 cp /opt/bah/memory.bah ./libs/linux/
 #static libs
-cp /opt/bah/libs/* ./libs/linux/libs/
+cp -r /opt/bah/libs/* ./libs/linux/libs/

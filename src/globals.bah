@@ -2,31 +2,7 @@
 #include "string.bah"
 
 SOURCE string
-OUTPUT = "
-#include <gc.h>
-
-#define noCheck(v) v
-#define array(type)	\
-struct{	\
-type *data; \
-long int length; \
-long int elemSize; \
-}
-
-typedef array(char*)* __BAH_ARR_TYPE_cpstring;
-long int __BAH__main(__BAH_ARR_TYPE_cpstring);
-
-int main(int argc, char ** argv) {
-GC_INIT();
-array(char*) * args = GC_MALLOC(sizeof(array(char*)));
-args->data = GC_MALLOC(sizeof(char*)*argc);
-memcpy(args->data, argv, sizeof(char*)*argc);
-args->elemSize = sizeof(char*);
-args->length = argc;
-return __BAH__main((__BAH_ARR_TYPE_cpstring)args);
-};
-#define main(v) __BAH__main(v)
-"
+OUTPUT rope*
 NEXT_LINE = ""
 
 struct variable {

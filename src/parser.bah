@@ -224,7 +224,7 @@ parseInclude(l []Tok, elems Elems*) {
     cc.trimRight(1)
     ccstr = cc.str()
     if cc.hasPrefix("<") {
-        OUTPUT = OUTPUT + "#include "+ccstr+"\n"
+        OUTPUT = concatenateRopes(OUTPUT, rope("#include "+ccstr+"\n"))
     } else {
         if includeFile(ccstr, elems) == false {
             throwErr(&strt, "Could not find file {TOKEN}.")
@@ -860,7 +860,7 @@ parseVar(l []Tok, elems Elems*) {
         }
         ft = l[0]
         parsed = true
-        OUTPUT = OUTPUT + ft.cont + ";\n"
+        OUTPUT = concatenateRopes(OUTPUT, rope(ft.cont + ";\n"))
         return
     }
     l = parseStructType(l, elems)
@@ -1140,7 +1140,7 @@ void * newPtr = GC_REALLOC("+nstr+"->data, (nLength+50)*sizeof("+elemTypeStr+"))
         vars = elems.vars
         vars[len(vars)] = v
     }
-    OUTPUT = OUTPUT + code + ";\n"
+    OUTPUT = concatenateRopes(OUTPUT, rope(code + ";\n"))
 }
 
 
@@ -1347,7 +1347,7 @@ parseStruct(l []Tok, elems Elems*) {
     if braceTk.cont != "{" {
         throwErr(&braceTk, "Cannot use {TOKEN} in struct declaration.")
     }
-    OOUT = __STR(OUTPUT)
+    OOUT = OUTPUT.toStr()
     nextLine = ""
     for i < len(l) {
         t = l[i]
@@ -1421,18 +1421,11 @@ parseStruct(l []Tok, elems Elems*) {
                 fn.from = s.name
                 code = code + "{\n"
                 
-                fnElems = new Elems
-                append(fnElems.vars, elems.vars)
-                append(fnElems.structs, elems.structs)
-                append(fnElems.types, elems.types)
-                append(fnElems.fns, elems.fns)
-                vs = fnElems.vars
+                fnElems = dupElems(elems)
                 j=0; for j < len(arguments) {
-                    a = arguments[j]
-                    vs[len(vs)] = a
+                    fnElems.vars[len(fnElems.vars)] = arguments[j]
                     j =j + 1
                 }
-                fnElems.vars = vs
 
                 fns = elems.fns
                 fns[len(fns)] = fn
@@ -1457,23 +1450,6 @@ parseStruct(l []Tok, elems Elems*) {
                     i =i + 1
                 }
 
-                if len(tokens) == 0 {
-                    code = code + "};\n"
-                } else {
-                    OUTPUT = ""
-                    currentFn = fn
-                    parseLines(tokens, fnElems)
-                    currentFn = null
-                    if strlen(fn.returns.type) > 0 {
-                        if fn.returned == false {
-                            throwErr(&l[len(l)-1], "Function '"+fn.name+"' is not returned.")
-                        }
-                    }
-                    code = code + OUTPUT + "};\n"
-                }
-                if doesOutput == true {
-                    nextLine = nextLine + code
-                }
 
                 mfn = new func
                 mfn.args = fn.args
@@ -1486,6 +1462,25 @@ parseStruct(l []Tok, elems Elems*) {
                 mfn.name = sfn.content
 
                 methds[len(methds)] = mfn
+
+                if len(tokens) == 0 {
+                    code = code + "};\n"
+                } else {
+                    OUTPUT = rope("")
+                    currentFn = fn
+                    parseLines(tokens, fnElems)
+                    currentFn = null
+                    if strlen(fn.returns.type) > 0 {
+                        if fn.returned == false {
+                            throwErr(&l[len(l)-1], "Function '"+fn.name+"' is not returned.")
+                        }
+                    }
+                    code = code + OUTPUT.toStr() + "};\n"
+                }
+                if doesOutput == true {
+                    nextLine = nextLine + code
+                }
+
                 mthdDecl = getCType(fn.returns.type, elems)
                 mthdDecl.append("(*")
                 mthdDecl.append(mfn.name)
@@ -1577,7 +1572,7 @@ parseStruct(l []Tok, elems Elems*) {
     }
     s.members = members
     if doesOutput == true {
-        OUTPUT = OOUT
+        OUTPUT = rope(OOUT)
         NEXT_LINE = nextLine
         code = "struct "+s.name+" {\n"
         i=0; for i < len(allMembs) {
@@ -1586,7 +1581,7 @@ parseStruct(l []Tok, elems Elems*) {
             i =i + 1
         }
         code = code + "};\n"
-        OUTPUT = OUTPUT + code
+        OUTPUT = concatenateRopes(OUTPUT, rope(code))
     }
 
 }
@@ -1616,7 +1611,7 @@ parseDefine(l []Tok, elems Elems*) {
         fn.isBinding = true
         fns[len(fns)] = fn
         if doesOutput == true {
-            OUTPUT = OUTPUT + code+";\n"
+            OUTPUT = concatenateRopes(OUTPUT, rope(code+";\n"))
         }
 
     } else {
@@ -1629,7 +1624,7 @@ parseDefine(l []Tok, elems Elems*) {
         cTypeNewType = getCType(st.cont, elems)
         cTypeNewTypeStr = cTypeNewType.str()
         if doesOutput == true {
-            OUTPUT = OUTPUT + "typedef " + cTypeNewTypeStr + " " + ft.cont + ";\n"
+            OUTPUT = concatenateRopes(OUTPUT, rope("typedef " + cTypeNewTypeStr + " " + ft.cont + ";\n"))
         }
         tps = elems.types
         tps[len(tps)] = ft.cont
@@ -1693,7 +1688,7 @@ parseConst(l []Tok, elems Elems*) {
     vars = elems.vars
     vars[len(vars)] = v
 
-    OUTPUT = OUTPUT + "#define "+v.name+" "+valt.cont+"\n"
+    OUTPUT = concatenateRopes(OUTPUT, rope("#define "+v.name+" "+valt.cont+"\n"))
 }
 
 parseReturn(l []Tok, elems Elems*) {
@@ -1722,7 +1717,7 @@ parseReturn(l []Tok, elems Elems*) {
     if compilerState.isBranch == false {
         currentFn.returned = true
     }
-    OUTPUT = OUTPUT + "return "+rv+";\n"
+    OUTPUT = concatenateRopes(OUTPUT, rope("return "+rv+";\n"))
 }
 
 parseIf(l []Tok, elems Elems*) {
@@ -1747,7 +1742,7 @@ parseIf(l []Tok, elems Elems*) {
         tokens[len(tokens)] = t
         i =i + 1
     }
-    OUTPUT = OUTPUT + "if ("+condt.cont+") {\n"
+    OUTPUT = concatenateRopes(OUTPUT, rope("if ("+condt.cont+") {\n"))
 
     ifElems = dupElems(elems)
 
@@ -1755,7 +1750,7 @@ parseIf(l []Tok, elems Elems*) {
     compilerState.isBranch = true
     parseLines(tokens, ifElems)
     compilerState.isBranch = oldIB
-    OUTPUT = OUTPUT + "}\n"
+    OUTPUT = concatenateRopes(OUTPUT, rope("}\n"))
 
 }
 
@@ -1769,7 +1764,7 @@ parseElse(l []Tok, elems Elems*) {
         throwErr(&l[0], "Incalid usage of {TOKEN}, must be 'else {<code>}'.")
     }
     ft = l[1]
-    OUTPUT = OUTPUT + "else "
+    OUTPUT = concatenateRopes(OUTPUT, rope("else "))
     if ft.cont == "if" {
         memory = []Tok
         i=1; for i < len(l) {
@@ -1789,14 +1784,14 @@ parseElse(l []Tok, elems Elems*) {
             memory[len(memory)] = l[i]
             i =i + 1
         }
-        OUTPUT = OUTPUT + "{\n"
+        OUTPUT = concatenateRopes(OUTPUT, rope("{\n"))
         ifElems = dupElems(elems)
 
         oldIB = compilerState.isBranch
         compilerState.isBranch = true
         parseLines(memory, ifElems)
         compilerState.isBranch = oldIB
-        OUTPUT = OUTPUT + "}\n"
+        OUTPUT = concatenateRopes(OUTPUT, rope("}\n"))
     }
 }
 
@@ -1821,7 +1816,7 @@ parseFor(l []Tok, elems Elems*) {
         tokens[len(tokens)] = t
         i =i + 1
     }
-    OUTPUT = OUTPUT + "while ("+condt.cont+") {\n"
+    OUTPUT = concatenateRopes(OUTPUT, rope("while ("+condt.cont+") {\n"))
 
     ifElems = dupElems(elems)
 
@@ -1832,7 +1827,7 @@ parseFor(l []Tok, elems Elems*) {
     parseLines(tokens, ifElems)
     compilerState.isFor = oldIF
     compilerState.isBranch = oldIB
-    OUTPUT = OUTPUT + "};\n"
+    OUTPUT = concatenateRopes(OUTPUT, rope("};\n"))
 }
 
 parseForOp(l []Tok) {
@@ -1843,7 +1838,7 @@ parseForOp(l []Tok) {
     if len(l) != 1 {
         throwErr(&ft, "Nothing expected after {TOKEN}.")
     }
-    OUTPUT = OUTPUT + ft.cont + ";\n"
+    OUTPUT = concatenateRopes(OUTPUT, rope(ft.cont + ";\n"))
 }
 
 prePross(line []Tok, elems Elems*) []Tok {
@@ -1916,7 +1911,7 @@ parseFnDeclare(l []Tok, elems Elems*) {
     }
 
     code = code + "{\n"
-    OUTPUT = OUTPUT + code
+    OUTPUT = concatenateRopes(OUTPUT, rope(code))
 
     fnElems = dupElems(elems)
     
@@ -1946,7 +1941,7 @@ parseFnDeclare(l []Tok, elems Elems*) {
     }
 
     if len(tokens) == 0 {
-        OUTPUT = OUTPUT + "};\n"
+        OUTPUT = concatenateRopes(OUTPUT, rope("};\n"))
         return
     }
 
@@ -1960,7 +1955,7 @@ parseFnDeclare(l []Tok, elems Elems*) {
         }
     }
 
-    OUTPUT = OUTPUT + "};\n"
+    OUTPUT = concatenateRopes(OUTPUT, rope("};\n"))
 }
 
 
@@ -2007,7 +2002,7 @@ parseLine(line []Tok, elems Elems*) {
         }
         ft = line[0]
         parsed = true
-        OUTPUT = OUTPUT + ft.cont + ";\n"
+        OUTPUT = concatenateRopes(OUTPUT, rope(ft.cont + ";\n"))
     } else if ltp == LINE_TYPE_FN_DECL {
         parsed = true
         parseFnDeclare(line, elems)
@@ -2034,7 +2029,7 @@ parseLine(line []Tok, elems Elems*) {
     }
 
     if strlen(NEXT_LINE) > 0 {
-        OUTPUT = OUTPUT + NEXT_LINE
+        OUTPUT = concatenateRopes(OUTPUT, rope(NEXT_LINE))
         NEXT_LINE = ""
     }
     prevLine = ltp

@@ -1,0 +1,100 @@
+const ROPE_LEAF_LEN = 50
+
+cpstringCharAt(s cpstring, i int) char {
+    c = <char>0
+    noCheck(c = s[i])
+    return c
+}
+
+struct rope {
+    left: rope*
+    right: rope*
+    parent: rope*
+    str: cpstring
+    lCount: int
+    len: int
+    totalLen: int
+
+    getParent() rope* {
+        if this.parent == null {
+            return this
+        }
+        return this.parent.getParent()
+    }
+
+    addStr(s cpstring*) {
+        if this.left == null && this.right == null {
+            strcat(*s, this.str)
+            return
+        }
+        this.left.addStr(s)
+        this.right.addStr(s)
+    }
+
+    toStr() cpstring {
+        if this.left == null && this.right == null {
+            return this.str
+        }
+        
+        s cpstring = memoryAlloc(this.totalLen + 1)
+        this.left.addStr(&s)
+        this.right.addStr(&s)
+
+        return s
+    }
+
+}
+
+createRopeStructure(par rope*, a cpstring, l int, r int) rope* {
+    tmp = new rope
+    
+    tmp.left = null
+    tmp.right = null
+    
+    tmp.parent = par
+
+    if r - l > ROPE_LEAF_LEN {
+        tmp.str = null
+        tmp.lCount = r - l
+        tmp.lCount = tmp.lCount / 2
+        node = tmp
+        m = l + r
+        m = m / 2
+        node.left = createRopeStructure(node, a, l, m)
+        node.right = createRopeStructure(node, a, m+1, r)
+    } else {
+        node = tmp
+        tmp.lCount = r - l
+        j = 0
+        i = l
+        arr cpstring = memoryAlloc(ROPE_LEAF_LEN+1)
+        for i <= r {
+            noCheck(arr[j] = a[i])
+            j = j + 1
+            i = i + 1
+        }
+        tmp.str = arr
+    }
+    return tmp
+}
+
+rope(a cpstring) rope* {
+    n1 = strlen(a)
+    r = createRopeStructure(null, a, 0, n1-1)
+    r.totalLen = n1
+    r.len = n1
+    return r
+}
+
+concatenateRopes(root1 rope*, root2 rope*) rope* {
+    n1 = root1.len
+    tmp = new rope
+    tmp.parent = null
+    tmp.left = root1
+    tmp.right = root2
+    root2.parent = tmp
+    root1.parent = root2.parent
+    tmp.totalLen = root1.totalLen + root2.totalLen
+    tmp.str = null
+    return tmp
+}

@@ -3,6 +3,7 @@
 #include "rand.bah"
 #include "exec.bah"
 #include "time.bah"
+#include "rope.bah"
 
 ///////////////////////OS SPECIFIC THINGS////////////////////////
 const BAH_DIR = "/opt/bah/"
@@ -26,6 +27,34 @@ main(args []cpstring) int {
         println("Bah compiler version: "+BAH_VERSION+".\n© Alois Laurent Boe")
         return 0
     }
+
+
+    OUTPUT = rope("
+#include \""+BAH_DIR+"libs/include/gc.h\"
+
+#define noCheck(v) v
+#define array(type)	\
+struct{	\
+type *data; \
+long int length; \
+long int elemSize; \
+}
+
+typedef array(char*)* __BAH_ARR_TYPE_cpstring;
+long int __BAH__main(__BAH_ARR_TYPE_cpstring);
+
+int main(int argc, char ** argv) {
+GC_INIT();
+array(char*) * args = GC_MALLOC(sizeof(array(char*)));
+args->data = GC_MALLOC(sizeof(char*)*argc);
+memcpy(args->data, argv, sizeof(char*)*argc);
+args->elemSize = sizeof(char*);
+args->length = argc;
+return __BAH__main((__BAH_ARR_TYPE_cpstring)args);
+};
+#define main(v) __BAH__main(v)
+")
+
 
     compilerState = compilerStateTag{}
     compilerState.arrTypesDecl[0] = "__BAH_ARR_TYPE_cpstring"
@@ -69,7 +98,7 @@ main(args []cpstring) int {
 
         fs = fileStream{}
         fs.open(randFileName, "w")
-        fs.writeFile(OUTPUT)
+        fs.writeFile(OUTPUT.toStr())
         fs.close()
 
         gccArgs = "gcc "+ randFileName+ " -w -o "+fileName
@@ -101,10 +130,10 @@ main(args []cpstring) int {
             gccArgs = gccArgs + " -" + l
             i = i + 1
         }
-        OUTPUT = "//COMPILE WITH: '"+gccArgs+"'\n"+OUTPUT
+        OUTPUT = concatenateRopes(rope("//COMPILE WITH: '"+gccArgs+"'\n"), OUTPUT)
         fs = fileStream{}
         fs.open(fileName, "w")
-        fs.writeFile(OUTPUT)
+        fs.writeFile(OUTPUT.toStr())
         fs.close()
     }
 
