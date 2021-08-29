@@ -1421,7 +1421,7 @@ tmp->str =  null;
 return tmp;
 };
 #define BAH_DIR "/opt/bah/"
-#define BAH_VERSION "v1.0 (build 11)"
+#define BAH_VERSION "v1.0 (build 12)"
 struct string SOURCE;
 struct rope* OUTPUT;
 char * NEXT_LINE =  "";
