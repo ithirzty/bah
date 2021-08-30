@@ -18,6 +18,7 @@ sudo ./linux_compile_install.sh
 ```
 
 ### Windows
+**Please make sure that you have [mingw gcc](https://sourceforge.net/projects/mingw/) installed.**
 ```bat
 git clone https://github.com/ithirzty/bah
 cd ./bah
