@@ -31,7 +31,7 @@ befor installing it. Dont worry this is simple, simply run:
 ```
 
 
-[![installation tutorial](https://i9.ytimg.com/vi/druJwBluvLc/mqdefault.jpg?sqp=CMyzpokG&rs=AOn4CLDa29d7a6ZVtodjDIzfLJmd0lakPw)](https://youtu.be/druJwBluvLc)
+[![installation tutorial](./extra/install_thumb.jpg)](https://youtu.be/druJwBluvLc)
 
 ## Updating
 To update, execute the following:
