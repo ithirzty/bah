@@ -1441,7 +1441,7 @@ r->len =  n1;
 return r;
 };
 #define BAH_DIR "/opt/bah/"
-#define BAH_VERSION "v1.0 (build 13)"
+#define BAH_VERSION "v1.0 (build 14)"
 struct string SOURCE;
 struct rope* OUTPUT;
 char * NEXT_LINE =  "";
@@ -5972,10 +5972,14 @@ flags.parse = flags__parse;
 flags.addString(&flags,"o","Name of the file to output.");
 flags.addBool(&flags,"c","Translate bah file to C instead of compiling it.");
 flags.addBool(&flags,"v","Show version of the compiler.");
+flags.addBool(&flags,"l","Compile as a library.");
 flags.parse(&flags,args);
 if ((flags.isSet(&flags,"v")==1)) {
 println(concatCPSTRING(concatCPSTRING("Bah compiler version: ",BAH_VERSION),".\n© Alois Laurent Boe"));
 return 0;
+}
+if (((flags.isSet(&flags,"c")==1)&&(flags.isSet(&flags,"l")==1))) {
+panic("Cannot use -c (to translate to C code) and -l (to compile as a library) at the same time.");
 }
 OUTPUT =  rope(concatCPSTRING(concatCPSTRING("\n#include \"",BAH_DIR),"libs/include/gc.h\"\n\n#define noCheck(v) v\n#define array(type)	\
 struct{	\
@@ -6072,6 +6076,9 @@ fs.open(&fs,randFileName,"w");
 fs.writeFile(&fs,OUTPUT->toStr(OUTPUT));
 fs.close(&fs);
 char * gccArgs =  concatCPSTRING(concatCPSTRING(concatCPSTRING("gcc ",randFileName)," -w -o "),fileName);
+if ((flags.isSet(&flags,"l")==1)) {
+gccArgs =  concatCPSTRING(gccArgs," -c");
+}
 array(char *)* cLibs =  compilerState.cLibs;
 i =  0;
 while ((i<len(cLibs))) {
@@ -6085,6 +6092,10 @@ removeFile(randFileName);
 if ((strlen(gccOut)>0)) {
 println("\e[1;31m[GCC-ERROR]\e[0m\nCould not compiled.");
 exit(1);
+}
+if ((flags.isSet(&flags,"l")==1)) {
+cmd =  command(concatCPSTRING(concatCPSTRING(concatCPSTRING("ar rcs ",fileName),".a "),fileName));
+cmd.run(&cmd);
 }
 }
 else {
