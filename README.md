@@ -49,7 +49,7 @@ Files containing bah code have the `.bah` extenstion.
 
 ### Hello, world!
 ```c
-#include "iostream.bah" //includes the library containing 'prinln'
+#include "iostream.bah" //includes the library containing 'println'
 main(args []cpstring) int //declare the main (the entry-point to the program)
 {
     println("Hello, world!") //print "Hello, world!" + a new line
