@@ -4,7 +4,6 @@
 
 #define noCheck(v) v
 #define array(type)	struct{	type *data; long int length; long int elemSize; }
-
 typedef array(char*)* __BAH_ARR_TYPE_cpstring;
 long int __BAH__main(__BAH_ARR_TYPE_cpstring);
 
@@ -1441,7 +1440,7 @@ r->len =  n1;
 return r;
 };
 #define BAH_DIR "/opt/bah/"
-#define BAH_VERSION "v1.0 (build 14)"
+#define BAH_VERSION "v1.0 (build 15)"
 struct string SOURCE;
 struct rope* OUTPUT;
 char * NEXT_LINE =  "";
@@ -5986,7 +5985,10 @@ struct{	\
 type *data; \
 long int length; \
 long int elemSize; \
-}\n\ntypedef array(char*)* __BAH_ARR_TYPE_cpstring;\nlong int __BAH__main(__BAH_ARR_TYPE_cpstring);\n\nint main(int argc, char ** argv) {\nGC_INIT();\narray(char*) * args = GC_MALLOC(sizeof(array(char*)));\nargs->data = GC_MALLOC(sizeof(char*)*argc);\nmemcpy(args->data, argv, sizeof(char*)*argc);\nargs->elemSize = sizeof(char*);\nargs->length = argc;\nreturn __BAH__main((__BAH_ARR_TYPE_cpstring)args);\n};\n#define main(v) __BAH__main(v)\n"));
+}\ntypedef array(char*)* __BAH_ARR_TYPE_cpstring;\nlong int __BAH__main(__BAH_ARR_TYPE_cpstring);\n"));
+if ((flags.isSet(&flags,"l")==0)) {
+OUTPUT =  OUTPUT->add(OUTPUT, rope("\nint main(int argc, char ** argv) {\nGC_INIT();\narray(char*) * args = GC_MALLOC(sizeof(array(char*)));\nargs->data = GC_MALLOC(sizeof(char*)*argc);\nmemcpy(args->data, argv, sizeof(char*)*argc);\nargs->elemSize = sizeof(char*);\nargs->length = argc;\nreturn __BAH__main((__BAH_ARR_TYPE_cpstring)args);\n};\n#define main(v) __BAH__main(v)\n"));
+}
  {};
 compilerState.includes = memoryAlloc(sizeof(array(char *)));
             compilerState.includes->length = 0;

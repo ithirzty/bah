@@ -8,7 +8,7 @@
 ///////////////////////OS SPECIFIC THINGS////////////////////////
 const BAH_DIR = "/opt/bah/"
 //////////////////////BUILD SPECIFIC THINGS//////////////////////
-const BAH_VERSION = "v1.0 (build 14)"
+const BAH_VERSION = "v1.0 (build 15)"
 #include "./globals.bah"
 
 #include "./lexer.bah"
@@ -33,7 +33,6 @@ main(args []cpstring) int {
         panic("Cannot use -c (to translate to C code) and -l (to compile as a library) at the same time.")
     }
 
-
     OUTPUT = rope("
 #include \""+BAH_DIR+"libs/include/gc.h\"
 
@@ -44,10 +43,13 @@ type *data; \
 long int length; \
 long int elemSize; \
 }
-
 typedef array(char*)* __BAH_ARR_TYPE_cpstring;
 long int __BAH__main(__BAH_ARR_TYPE_cpstring);
+")
 
+    if flags.isSet("l") == 0 {
+
+    OUTPUT = OUTPUT + rope("
 int main(int argc, char ** argv) {
 GC_INIT();
 array(char*) * args = GC_MALLOC(sizeof(array(char*)));
@@ -59,6 +61,7 @@ return __BAH__main((__BAH_ARR_TYPE_cpstring)args);
 };
 #define main(v) __BAH__main(v)
 ")
+    }
 
 
     compilerState = compilerStateTag{}
