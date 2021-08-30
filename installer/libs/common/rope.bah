@@ -43,6 +43,18 @@ struct rope {
         return s
     }
 
+    add(root2 rope*) rope* {
+        n1 = this.len
+        tmp = new rope
+        tmp.parent = null
+        tmp.left = this
+        tmp.right = root2
+        root2.parent = tmp
+        this.parent = root2.parent
+        tmp.totalLen = this.totalLen + root2.totalLen
+        tmp.str = null
+        return tmp
+    }
 }
 
 createRopeStructure(par rope*, a cpstring, l int, r int) rope* {
@@ -78,14 +90,6 @@ createRopeStructure(par rope*, a cpstring, l int, r int) rope* {
     return tmp
 }
 
-rope(a cpstring) rope* {
-    n1 = strlen(a)
-    r = createRopeStructure(null, a, 0, n1-1)
-    r.totalLen = n1
-    r.len = n1
-    return r
-}
-
 concatenateRopes(root1 rope*, root2 rope*) rope* {
     n1 = root1.len
     tmp = new rope
@@ -98,3 +102,12 @@ concatenateRopes(root1 rope*, root2 rope*) rope* {
     tmp.str = null
     return tmp
 }
+
+rope(a cpstring) rope* {
+    n1 = strlen(a)
+    r = createRopeStructure(null, a, 0, n1-1)
+    r.totalLen = n1
+    r.len = n1
+    return r
+}
+

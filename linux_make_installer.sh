@@ -14,7 +14,6 @@ cp /opt/bah/cBinds.bah ./libs/common/
 cp /opt/bah/channel.bah ./libs/common/
 cp /opt/bah/exec.bah ./libs/common/
 cp /opt/bah/flags.bah ./libs/common/
-cp /opt/bah/iostream.bah ./libs/common/
 cp /opt/bah/json.bah ./libs/common/
 cp /opt/bah/markdown.bah ./libs/common/
 cp /opt/bah/path.bah ./libs/common/
@@ -23,9 +22,10 @@ cp /opt/bah/reflect.bah ./libs/common/
 cp /opt/bah/regex.bah ./libs/common/
 cp /opt/bah/string.bah ./libs/common/
 cp /opt/bah/thread.bah ./libs/common/
-cp /opt/bah/time.bah ./libs/common/
 cp /opt/bah/rope.bah ./libs/common/
 #linux specific libs
+cp /opt/bah/iostream.bah ./libs/linux/
+cp /opt/bah/time.bah ./libs/linux/
 cp /opt/bah/http.bah ./libs/linux/
 cp /opt/bah/rand.bah ./libs/linux/
 cp /opt/bah/window.bah ./libs/linux/
