@@ -1,0 +1,126 @@
+#include "</opt/bah/libs/include/gc.h>"
+#include "<sys/mman.h>"
+
+#cLib "w /opt/bah/libs/libgc.a" "lpthread"
+
+#define! GC_INIT()
+#define! GC_MALLOC(s int) ptr
+#define! GC_REALLOC(p ptr, s int) ptr
+#define! GC_FREE(a ptr)
+
+const SIZE_OF_INT = 8
+const SIZE_OF_CHAR = 1
+const SIZE_OF_INT32 = 4
+const SIZE_OF_FLOAT32 = 4
+const SIZE_OF_FLOAT = 8
+
+
+//Will return the length of an array.
+//This only works on arrays.
+len(a ptr) int {
+    i = 0
+    noCheck(array(void*) * arr = a)
+    noCheck(i = arr->length)
+    return i
+}
+
+
+//Used for allocating memory (malloc in c). You must specify the size of the block to allocate.
+//Will return a pointer to the allocated block. The memory is garbage collected.
+//The allocated memory cannot be shared by multiple processes. Use the sharedMemory() function instead.
+memoryAlloc(s int) ptr {
+    p = GC_MALLOC(s)
+    return p
+}
+
+//Destroy will force to free a pointer.
+destroy(a ptr) {
+    GC_FREE(a)
+}
+
+//Clear will remove the content of an array.
+clear(a ptr) {
+    noCheck(array(void*) * arr = a)
+    noCheck(destroy(arr->data))
+    noCheck(arr->data = memoryAlloc(sizeof(0)))
+    noCheck(arr->length = 0)
+}
+
+//Append will add the array b to the array a.
+//Note: doesn't work with []char.
+append(a ptr, b ptr) {
+    noCheck(array(void*) * arrA = a)
+    noCheck(array(void*) * arrB = b)
+    lenA = 0
+    lenB = 0
+    realSizeA = 0
+    realSizeB = 0
+    noCheck(lenA = len(arrA))
+    noCheck(lenB = len(arrB))
+
+    if lenB == 0 {
+        return
+    }
+
+    if lenA == 0 {
+        noCheck(arrA->data = arrB->data)
+        noCheck(arrA->length = arrB->length)
+        return
+    }
+
+    noCheck(realSizeA = lenA * arrA->elemSize)
+    noCheck(realSizeB = lenB * arrB->elemSize)
+
+
+    buff = memoryAlloc(realSizeA + realSizeB+32)
+    noCheck(memcpy(buff, arrA->data, realSizeA))
+    noCheck(memcpy(buff+lenA, arrB->data, realSizeB))
+    noCheck(arrA->length = lenA + lenB)
+    noCheck(arrA->data = buff)
+}
+
+copy(a ptr, b ptr) {
+    noCheck(array(void*) * arrA = a)
+    noCheck(array(void*) * arrB = b)
+    lenB = 0
+    realSizeB = 0
+    noCheck(lenB = len(arrB))
+    noCheck(realSizeB = lenB * arrB->elemSize)
+    noCheck(arrA->data = memoryAlloc(realSizeB))
+    noCheck(memcpy(arrA->data, arrB->data, realSizeB))
+    noCheck(arrA->length = arrB->length)
+}
+
+//Will realloc memory to a specified pointer.
+//*The data contained in the block of memory is not necessarly preserved.*
+memoryRealloc(p ptr, s int) ptr {
+    np = GC_REALLOC(p,s)
+    return np
+}
+
+#define! mmap(addr int, ps int, prot int, flags int, fd int, offset int) ptr
+
+const PROT_READ = 1
+const PROT_WRITE = 2
+const PROT_READWRITE = 3
+const MAP_SHARED = 1
+const MAP_ANONYMOUS = 32
+
+//Will allocate a page of shared memory and returns a pointer to it.
+//The size should be an multiple of 4096. A size of 0 will set the page size to the default (4096).
+//Shared memory can be shared between two processes (after the use of fork()).
+sharedMemory(size int) ptr {
+    if size == 0 {
+        size = 4096
+    }
+    r = mmap(0, size, PROT_READ + PROT_WRITE, MAP_SHARED + MAP_ANONYMOUS, -1, 0)
+    return r
+}
+
+//Example
+// #include "string.bah"
+// #include "memory.bah"
+// main() {
+//     a cpstring = memoryAlloc(30)
+//     strcpy(a, "Hi!")
+// }
