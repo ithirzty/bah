@@ -1,5 +1,13 @@
 #!/bin/bash
 
+if ! command -v apt &> /dev/null
+then
+  echo "╭───────────────────────────────╮"
+  echo "│Installing dependencies (clang)│"
+  echo "╰───────────────────────────────╯"
+  xcode-select --install
+fi
+
 echo "╭────────────────────────────────────────────────╮"
 echo "│Creating bah directory and creating bah std-libs│"
 echo "╰────────────────────────────────────────────────╯"
