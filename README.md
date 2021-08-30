@@ -1,8 +1,7 @@
 # [Bah-lang](https://bah-lang.xyz)
 
 ## Installation
-> Bah supports only linux and windows for the moment.
-Note that windows releases may be delayed compared to linux releases.
+> Note that Windows and MacOS (darwin) releases may be delayed compared to Linux releases.
 
 To install bah on your machine, get the terminal warmed up 🔥 , stretch your fingers up 🏋‍♂ and paste this 😎:
 ### Linux
@@ -28,6 +27,18 @@ If the installation fails for whatever reason, you will need to recompile the Ba
 befor installing it. Dont worry this is simple, simply run:
 ```bat
 .\windows_compile_install.bat
+```
+
+### MacOS (darwin)
+```bat
+git clone https://github.com/ithirzty/bah
+cd ./bah
+.\darwin_install.bat
+```
+If the installation fails for whatever reason, you will need to recompile the Bah compiler
+befor installing it. Dont worry this is simple, simply run:
+```bat
+.\darwin_compile_install.bat
 ```
 
 
