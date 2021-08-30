@@ -46,6 +46,7 @@ Files containing bah code have the `.bah` extenstion.
 - To translate your program as C code, use `bah myFile.bah -c`.
 - To set an output name to your program, use the `bah myFile.bah -o myCompiledProgram`.
 - To get the current installed version, use `bah -v`.
+- To compile as a static library, use `bah myFile.bah -l`.
 
 ### Hello, world!
 ```c

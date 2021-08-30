@@ -8,7 +8,7 @@
 ///////////////////////OS SPECIFIC THINGS////////////////////////
 const BAH_DIR = "/opt/bah/"
 //////////////////////BUILD SPECIFIC THINGS//////////////////////
-const BAH_VERSION = "v1.0 (build 13)"
+const BAH_VERSION = "v1.0 (build 14)"
 #include "./globals.bah"
 
 #include "./lexer.bah"
@@ -21,11 +21,16 @@ main(args []cpstring) int {
     flags.addString("o", "Name of the file to output.")
     flags.addBool("c", "Translate bah file to C instead of compiling it.")
     flags.addBool("v", "Show version of the compiler.")
+    flags.addBool("l", "Compile as a library.")
     flags.parse(args)
 
     if flags.isSet("v") == 1 {
         println("Bah compiler version: "+BAH_VERSION+".\n© Alois Laurent Boe")
         return 0
+    }
+
+    if flags.isSet("c") == 1 && flags.isSet("l") == 1 {
+        panic("Cannot use -c (to translate to C code) and -l (to compile as a library) at the same time.")
     }
 
 
@@ -103,6 +108,10 @@ return __BAH__main((__BAH_ARR_TYPE_cpstring)args);
 
         gccArgs = "gcc "+ randFileName+ " -w -o "+fileName
         
+        if flags.isSet("l") == 1 {
+            gccArgs = gccArgs + " -c"
+        }
+
         cLibs = compilerState.cLibs
 
         i=0;for i < len(cLibs) {
@@ -118,6 +127,12 @@ return __BAH__main((__BAH_ARR_TYPE_cpstring)args);
             println("\e[1;31m[GCC-ERROR]\e[0m\nCould not compiled.")
             exit(1)
         }
+
+        if flags.isSet("l") == 1 {
+            cmd = command("ar rcs "+fileName+".a "+fileName)
+            cmd.run()
+        }
+
     } else {
         if flags.isSet("o") == 0 {
             fileName = fileName + ".c"
