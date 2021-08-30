@@ -45,6 +45,17 @@ Files containing bah code have the `.bah` extenstion.
 - To compile your program, use `bah myFile.bah`.
 - To translate your program as C code, use `bah myFile.bah -c`.
 - To set an output name to your program, use the `bah myFile.bah -o myCompiledProgram`.
+- To get the current installed version, use `bah -v`.
+
+### Hello, world!
+```c
+#include "iostream.bah" //includes the library containing 'prinln'
+main(args []cpstring) int //declare the main (the entry-point to the program)
+{
+    println("Hello, world!") //print "Hello, world!" + a new line
+    return 0 //exit the program with '0' meaning that it executed without error
+}
+```
 
 ## Why?
 Bah is a really fast language that is low level enough for most cases while being really simple.
