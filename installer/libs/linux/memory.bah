@@ -1,4 +1,4 @@
-#include "<gc.h>"
+#include "</opt/bah/libs/include/gc.h>"
 #include "<sys/mman.h>"
 
 #cLib "static" "w /opt/bah/libs/libgc.a" "lpthread"

@@ -19,7 +19,7 @@ return __BAH__main((__BAH_ARR_TYPE_cpstring)args);
 #define main(v) __BAH__main(v)
 #include <signal.h>
 #include <string.h>
-#include <gc.h>
+#include </opt/bah/libs/include/gc.h>
 #include <sys/mman.h>
 #define SIZE_OF_INT 8
 #define SIZE_OF_CHAR 1
