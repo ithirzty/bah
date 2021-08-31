@@ -1,5 +1,11 @@
 #include "<signal.h>"
 #include "<string.h>"
+
+const null = <ptr>0
+
+const true = <bool>1
+const false = <bool>0
+
 #include "memory.bah"
 
 
@@ -35,8 +41,3 @@ __STR(a cpstring) cpstring {
 	strncpy(r,a,lenA)
 	return r
 }
-
-const null = <ptr>0
-
-const true = <bool>1
-const false = <bool>0
