@@ -80,4 +80,4 @@ As well as being easy to learn, you can create
 
 ## Extras
 Here is how fast bah v1.0 (build 15) compiles itself on a ThinkPad x220 (a 16 years old machine)
-![compilation times](extras/bah_comp_time.png)
+![compilation times](extra/bah_comp_time.png)
