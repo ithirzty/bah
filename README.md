@@ -77,3 +77,7 @@ As well as being easy to learn, you can create
 - web apps (the documentation of bah is wrapped up in a [web app](https://github.com/ithirzty/bah-website)),
 - and many more.
 > You did something awesome in bah? Add it to the list!
+
+## Extras
+Here is how fast bah v1.0 (build 15) compiles itself on a ThinkPad x220 (a 16 years old machine)
+![compilation times](extras/bah_comp_time.png)
