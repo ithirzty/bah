@@ -1,11 +1,5 @@
 const ROPE_LEAF_LEN = 50
 
-cpstringCharAt(s cpstring, i int) char {
-    c = <char>0
-    noCheck(c = s[i])
-    return c
-}
-
 struct rope {
     left: rope*
     right: rope*

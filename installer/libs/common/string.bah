@@ -13,6 +13,12 @@
 #define! strtod(str cpstring, endptr int) float
 #define! memset(str ptr*, w int, s int)
 
+cpstringCharAt(s cpstring, i int) char {
+    c = <char>0
+    noCheck(c = s[i])
+    return c
+}
+
 //Used for converting a char into a cpstring of length 1.
 charToString(c char) cpstring {
     s cpstring = memoryAlloc(2)
@@ -229,14 +235,13 @@ struct string {
     //Used to know if the string as a specified prefix, returns 1 if true.
     hasPrefix(need cpstring) int {
         i = 0
-        needle = string{}
-        needle.set(need)
-        if this.length < needle.length {
+        nl = strlen(need)
+        if this.length < nl {
             return 0
         }
-        for i < needle.length {
+        for i < nl {
             c = this.charAt(i)
-            sc = needle.charAt(i)
+            sc = cpstringCharAt(need, i)
             if c != sc {
                 return 0
             }
@@ -247,16 +252,15 @@ struct string {
 
     //Used to know if the string as a specified suffix, returns 1 if true.
     hasSuffix(need cpstring) int {
-        needle = string{}
-        needle.set(need)
-        if this.length < needle.length {
+        nl = strlen(need)
+        if this.length < nl {
             return 0
         }
-        i =  this.length - needle.length
+        i =  this.length - nl
         needleIndex = 0
         for i < this.length {
             c = this.charAt(i)
-            sc = needle.charAt(needleIndex)
+            sc = cpstringCharAt(need, needleIndex)
             if c != sc {
                 return 0
             }
@@ -540,3 +544,22 @@ toLower(s string) string {
 //     b.append(" years old")
 //     println(b)
 // }
+
+
+strHasPrefix(s cpstring, need cpstring) bool {
+    i = 0
+    nl = strlen(need)
+    sl = strlen(s)
+    if sl < nl {
+        return false
+    }
+    for i < nl {
+        c = cpstringCharAt(s, i)
+        sc = cpstringCharAt(need, i)
+        if c != sc {
+            return false
+        }
+        i = i + 1
+    }
+    return true
+}

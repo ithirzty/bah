@@ -19,6 +19,9 @@ return __BAH__main((__BAH_ARR_TYPE_cpstring)args);
 #define main(v) __BAH__main(v)
 #include <signal.h>
 #include <string.h>
+#define null (void *)0
+#define true (int)1
+#define false (int)0
 #include </opt/bah/libs/include/gc.h>
 #include <sys/mman.h>
 #define SIZE_OF_INT 8
@@ -111,9 +114,6 @@ char * r =  memoryAlloc(lenA + 1);
 strncpy(r,a,lenA);
 return r;
 };
-#define null (void *)0
-#define true (int)1
-#define false (int)0
 #include <stdlib.h>
 #include <stdio.h>
 #include <dirent.h>
@@ -123,6 +123,11 @@ return r;
 #include <fcntl.h>
 #include <string.h>
 #include <math.h>
+char cpstringCharAt(char * s,long int i){
+char c =  (char)0;
+noCheck( c = s [ i ] );
+return c;
+};
 char * charToString(char c){
 char * s =  memoryAlloc(2);
 strncpy(s,(char *)&c,1);
@@ -384,23 +389,13 @@ return count;
 };
 long int string__hasPrefix(struct string* this,char * need){
 long int i =  0;
-struct string needle =  {};
-needle.set = string__set;
-needle.append = string__append;
-needle.prepend = string__prepend;
-needle.charAt = string__charAt;
-needle.compare = string__compare;
-needle.str = string__str;
-needle.replace = string__replace;
-needle.count = string__count;
-needle.hasPrefix = string__hasPrefix;
-needle.set(&needle,need);
-if ((this->length<needle.length)) {
+long int nl =  strlen(need);
+if ((this->length<nl)) {
 return 0;
 }
-while ((i<needle.length)) {
+while ((i<nl)) {
 char c =  this->charAt(this,i);
-char sc =  needle.charAt(&needle,i);
+char sc =  cpstringCharAt(need,i);
 if ((c!=sc)) {
 return 0;
 }
@@ -409,26 +404,15 @@ i =  i + 1;
 return 1;
 };
 long int string__hasSuffix(struct string* this,char * need){
-struct string needle =  {};
-needle.set = string__set;
-needle.append = string__append;
-needle.prepend = string__prepend;
-needle.charAt = string__charAt;
-needle.compare = string__compare;
-needle.str = string__str;
-needle.replace = string__replace;
-needle.count = string__count;
-needle.hasPrefix = string__hasPrefix;
-needle.hasSuffix = string__hasSuffix;
-needle.set(&needle,need);
-if ((this->length<needle.length)) {
+long int nl =  strlen(need);
+if ((this->length<nl)) {
 return 0;
 }
-long int i =  this->length - needle.length;
+long int i =  this->length - nl;
 long int needleIndex =  0;
 while ((i<this->length)) {
 char c =  this->charAt(this,i);
-char sc =  needle.charAt(&needle,needleIndex);
+char sc =  cpstringCharAt(need,needleIndex);
 if ((c!=sc)) {
 return 0;
 }
@@ -764,6 +748,23 @@ ns->data[len(ns)] =  c;
 i =  i + 1;
 };
 return string(arrToStr(ns));
+};
+int strHasPrefix(char * s,char * need){
+long int i =  0;
+long int nl =  strlen(need);
+long int sl =  strlen(s);
+if ((sl<nl)) {
+return false;
+}
+while ((i<nl)) {
+char c =  cpstringCharAt(s,i);
+char sc =  cpstringCharAt(need,i);
+if ((c!=sc)) {
+return false;
+}
+i =  i + 1;
+};
+return true;
 };
 char * stdinput(long int len){
 char * buff =  memoryAlloc(len);
@@ -1325,11 +1326,6 @@ noCheck( r = execvp ( s , nArgs -> data ) );
 return r;
 };
 #define ROPE_LEAF_LEN 50
-char cpstringCharAt(char * s,long int i){
-char c =  (char)0;
-noCheck( c = s [ i ] );
-return c;
-};
 struct rope {
 struct rope* left;
 struct rope* right;
@@ -1440,8 +1436,7 @@ r->len =  n1;
 return r;
 };
 #define BAH_DIR "/opt/bah/"
-#define BAH_VERSION "v1.0 (build 15)"
-struct string SOURCE;
+#define BAH_VERSION "v1.0 (build 16)"
 struct rope* OUTPUT;
 char * NEXT_LINE =  "";
 struct variable {
@@ -1595,8 +1590,7 @@ array(struct Tok)* tokens = memoryAlloc(sizeof(array(struct Tok)));
 
 tokens->length = 0;
 tokens->elemSize = sizeof(struct Tok);
-struct string code =  string(s);
-SOURCE =  code;
+long int codeLength =  strlen(s);
 array(char)* memory = memoryAlloc(sizeof(array(char)));
 
 memory->length = 0;
@@ -1661,24 +1655,24 @@ seps->length = 1;
 seps->elemSize = sizeof(char);
 seps->data = memoryAlloc(sizeof(char) * 50);seps->data[0] = 46;
 long int i =  0;
-while ((i<code.length)) {
-char c =  code.charAt(&code,i);
+while ((i<codeLength)) {
+char c =  cpstringCharAt(s,i);
 long int nci =  i + 1;
 char nc =  (char)0;
-if ((nci<code.length)) {
-nc =  code.charAt(&code,i + 1);
+if ((nci<codeLength)) {
+nc =  cpstringCharAt(s,i + 1);
 }
 if ((c==47)) {
-nc =  code.charAt(&code,i + 1);
+nc =  cpstringCharAt(s,i + 1);
 if ((nc==47)) {
-while ((i<code.length)) {
-c =  code.charAt(&code,i);
+while ((i<codeLength)) {
+c =  cpstringCharAt(s,i);
 if ((c==(char)10)) {
 break;
 }
 i =  i + 1;
 };
-long int max =  code.length - 1;
+long int max =  codeLength - 1;
 if ((i>=max)) {
 break;
 }
@@ -1704,9 +1698,9 @@ memory->data[0] =  c;
 };
 };
 i =  i + 1;
-while ((i<code.length)) {
-c =  code.charAt(&code,i);
-char pc =  code.charAt(&code,i - 1);
+while ((i<codeLength)) {
+c =  cpstringCharAt(s,i);
+char pc =  cpstringCharAt(s,i - 1);
 if ((c==(char)34)) {
 if ((pc!=(char)92)) {
 
@@ -1794,8 +1788,8 @@ memory->data[0] =  c;
 long int pos =  i;
 i =  i + 1;
 tokenType currentType =  TOKEN_TYPE_INT;
-while ((i<code.length)) {
-c =  code.charAt(&code,i);
+while ((i<codeLength)) {
+c =  cpstringCharAt(s,i);
 if ((c==(char)46)) {
 currentType =  TOKEN_TYPE_FLOAT;
 }
@@ -1836,11 +1830,11 @@ tokens->data[len(tokens)] =  makeToken(pos,lineNb,memory,currentType);
 }
 else if ((c==(char)39)) {
 i =  i + 1;
-char n =  code.charAt(&code,i);
+char n =  cpstringCharAt(s,i);
 char * toInt =  intToStr((long int)nc);
 memory =  strToArr(toInt);
 i =  i + 1;
-c =  code.charAt(&code,i);
+c =  cpstringCharAt(s,i);
 if ((c!=(char)39)) {
 lexerErr(lineNb,i,"Missing closing tag in char declaration.");
 }
@@ -1876,8 +1870,8 @@ memory->data[0] =  c;
 };
 };
 i =  i + 1;
-while ((i<code.length)) {
-c =  code.charAt(&code,i);
+while ((i<codeLength)) {
+c =  cpstringCharAt(s,i);
 if ((isAlphaNumeric(c)==0)) {
 break;
 }
@@ -1962,8 +1956,8 @@ memory->data[0] =  c;
 long int pos =  i;
 i =  i + 1;
 char fc =  c;
-while ((i<code.length)) {
-c =  code.charAt(&code,i);
+while ((i<codeLength)) {
+c =  cpstringCharAt(s,i);
 if ((inArray(c,syntaxes)==false)) {
 break;
 }
@@ -2061,8 +2055,8 @@ memory->data[0] =  c;
 };
 long int pos =  i;
 i =  i + 1;
-while ((i<code.length)) {
-c =  code.charAt(&code,i);
+while ((i<codeLength)) {
+c =  cpstringCharAt(s,i);
 if ((isAlphaNumeric(c)==0)) {
 if ((inArray(c,varChars)==false)) {
 if ((c==62)) {

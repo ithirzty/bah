@@ -1,7 +1,6 @@
 #include "iostream.bah"
 #include "string.bah"
 
-SOURCE string
 OUTPUT rope*
 NEXT_LINE = ""
 
