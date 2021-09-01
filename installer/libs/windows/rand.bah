@@ -18,7 +18,7 @@ seedRandom(i int) {
 //*Note: this is not cryptographically safe. This output of this function can be predicted.*
 randomInRange(min int, max int) int {
     if RAND_SEEDED == 0 {
-        srand(time(0))
+        srand(time(0)+getTimeUnix())
         RAND_SEEDED = 1
     }
 

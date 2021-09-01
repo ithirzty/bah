@@ -135,6 +135,11 @@ return r;
 #include <fcntl.h>
 #include <string.h>
 #include <math.h>
+char cpstringCharAt(char * s,long int i){
+char c =  (char)0;
+noCheck( c = s [ i ] );
+return c;
+};
 char * charToString(char c){
 char * s =  memoryAlloc(2);
 strncpy(s,(char *)&c,1);
@@ -396,23 +401,13 @@ return count;
 };
 long int string__hasPrefix(struct string* this,char * need){
 long int i =  0;
-struct string needle =  {};
-needle.set = string__set;
-needle.append = string__append;
-needle.prepend = string__prepend;
-needle.charAt = string__charAt;
-needle.compare = string__compare;
-needle.str = string__str;
-needle.replace = string__replace;
-needle.count = string__count;
-needle.hasPrefix = string__hasPrefix;
-needle.set(&needle,need);
-if ((this->length<needle.length)) {
+long int nl =  strlen(need);
+if ((this->length<nl)) {
 return 0;
 }
-while ((i<needle.length)) {
+while ((i<nl)) {
 char c =  this->charAt(this,i);
-char sc =  needle.charAt(&needle,i);
+char sc =  cpstringCharAt(need,i);
 if ((c!=sc)) {
 return 0;
 }
@@ -421,26 +416,15 @@ i =  i + 1;
 return 1;
 };
 long int string__hasSuffix(struct string* this,char * need){
-struct string needle =  {};
-needle.set = string__set;
-needle.append = string__append;
-needle.prepend = string__prepend;
-needle.charAt = string__charAt;
-needle.compare = string__compare;
-needle.str = string__str;
-needle.replace = string__replace;
-needle.count = string__count;
-needle.hasPrefix = string__hasPrefix;
-needle.hasSuffix = string__hasSuffix;
-needle.set(&needle,need);
-if ((this->length<needle.length)) {
+long int nl =  strlen(need);
+if ((this->length<nl)) {
 return 0;
 }
-long int i =  this->length - needle.length;
+long int i =  this->length - nl;
 long int needleIndex =  0;
 while ((i<this->length)) {
 char c =  this->charAt(this,i);
-char sc =  needle.charAt(&needle,needleIndex);
+char sc =  cpstringCharAt(need,needleIndex);
 if ((c!=sc)) {
 return 0;
 }
@@ -776,6 +760,23 @@ ns->data[len(ns)] =  c;
 i =  i + 1;
 };
 return string(arrToStr(ns));
+};
+int strHasPrefix(char * s,char * need){
+long int i =  0;
+long int nl =  strlen(need);
+long int sl =  strlen(s);
+if ((sl<nl)) {
+return false;
+}
+while ((i<nl)) {
+char c =  cpstringCharAt(s,i);
+char sc =  cpstringCharAt(need,i);
+if ((c!=sc)) {
+return false;
+}
+i =  i + 1;
+};
+return true;
 };
 char * stdinput(long int len){
 char * buff =  memoryAlloc(len);
@@ -1235,7 +1236,10 @@ long int r =  nt - this->timestamp;
 return r;
 };
 long int getTimeUnix(){
-return clock();
+struct timespec ts =  {};
+long int s =  clock_gettime(noCheck( CLOCK_REALTIME ),&ts);
+s =  ts.tv_sec * 1000000000 + ts.tv_nsec;
+return s;
 };
 long int RAND_SEEDED =  0;
 void seedRandom(long int i){
@@ -1244,7 +1248,7 @@ RAND_SEEDED =  1;
 };
 long int randomInRange(long int min,long int max){
 if ((RAND_SEEDED==0)) {
-srand(time(0));
+srand(time(0) + getTimeUnix());
 RAND_SEEDED =  1;
 }
 long int range =  max - min;
@@ -1339,11 +1343,6 @@ noCheck( r = execvp ( s , nArgs -> data ) );
 return r;
 };
 #define ROPE_LEAF_LEN 50
-char cpstringCharAt(char * s,long int i){
-char c =  (char)0;
-noCheck( c = s [ i ] );
-return c;
-};
 struct rope {
 struct rope* left;
 struct rope* right;
@@ -1355,6 +1354,7 @@ long int totalLen;
 struct rope*(*getParent)(struct rope* this);
 void(*addStr)(struct rope* this,char ** s);
 char *(*toStr)(struct rope* this);
+struct rope*(*add)(struct rope* this,struct rope* root2);
 };
 struct rope* rope__getParent(struct rope* this){
 if ((this->parent==null)) {
@@ -1379,11 +1379,28 @@ this->left->addStr(this->left,&s);
 this->right->addStr(this->right,&s);
 return s;
 };
+struct rope* rope__add(struct rope* this,struct rope* root2){
+long int n1 =  this->len;
+struct rope* tmp = memoryAlloc(sizeof(struct rope));
+tmp->getParent = rope__getParent;
+tmp->addStr = rope__addStr;
+tmp->toStr = rope__toStr;
+tmp->add = rope__add;
+tmp->parent =  null;
+tmp->left =  this;
+tmp->right =  root2;
+root2->parent =  tmp;
+this->parent =  root2->parent;
+tmp->totalLen =  this->totalLen + root2->totalLen;
+tmp->str =  null;
+return tmp;
+};
 struct rope* createRopeStructure(struct rope* par,char * a,long int l,long int r){
 struct rope* tmp = memoryAlloc(sizeof(struct rope));
 tmp->getParent = rope__getParent;
 tmp->addStr = rope__addStr;
 tmp->toStr = rope__toStr;
+tmp->add = rope__add;
 tmp->left =  null;
 tmp->right =  null;
 tmp->parent =  par;
@@ -1412,19 +1429,13 @@ tmp->str =  arr;
 }
 return tmp;
 };
-struct rope* rope(char * a){
-long int n1 =  strlen(a);
-struct rope* r =  createRopeStructure(null,a,0,n1-1);
-r->totalLen =  n1;
-r->len =  n1;
-return r;
-};
 struct rope* concatenateRopes(struct rope* root1,struct rope* root2){
 long int n1 =  root1->len;
 struct rope* tmp = memoryAlloc(sizeof(struct rope));
 tmp->getParent = rope__getParent;
 tmp->addStr = rope__addStr;
 tmp->toStr = rope__toStr;
+tmp->add = rope__add;
 tmp->parent =  null;
 tmp->left =  root1;
 tmp->right =  root2;
@@ -1434,9 +1445,15 @@ tmp->totalLen =  root1->totalLen + root2->totalLen;
 tmp->str =  null;
 return tmp;
 };
+struct rope* rope(char * a){
+long int n1 =  strlen(a);
+struct rope* r =  createRopeStructure(null,a,0,n1-1);
+r->totalLen =  n1;
+r->len =  n1;
+return r;
+};
 #define BAH_DIR "C:/Bah/"
-#define BAH_VERSION "v1.0 (build 12)"
-struct string SOURCE;
+#define BAH_VERSION "v1.0 (build 16)"
 struct rope* OUTPUT;
 char * NEXT_LINE =  "";
 struct variable {
@@ -1590,8 +1607,7 @@ array(struct Tok)* tokens = memoryAlloc(sizeof(array(struct Tok)));
 
 tokens->length = 0;
 tokens->elemSize = sizeof(struct Tok);
-struct string code =  string(s);
-SOURCE =  code;
+long int codeLength =  strlen(s);
 array(char)* memory = memoryAlloc(sizeof(array(char)));
 
 memory->length = 0;
@@ -1656,24 +1672,24 @@ seps->length = 1;
 seps->elemSize = sizeof(char);
 seps->data = memoryAlloc(sizeof(char) * 50);seps->data[0] = 46;
 long int i =  0;
-while ((i<code.length)) {
-char c =  code.charAt(&code,i);
+while ((i<codeLength)) {
+char c =  cpstringCharAt(s,i);
 long int nci =  i + 1;
 char nc =  (char)0;
-if ((nci<code.length)) {
-nc =  code.charAt(&code,i + 1);
+if ((nci<codeLength)) {
+nc =  cpstringCharAt(s,i + 1);
 }
 if ((c==47)) {
-nc =  code.charAt(&code,i + 1);
+nc =  cpstringCharAt(s,i + 1);
 if ((nc==47)) {
-while ((i<code.length)) {
-c =  code.charAt(&code,i);
+while ((i<codeLength)) {
+c =  cpstringCharAt(s,i);
 if ((c==(char)10)) {
 break;
 }
 i =  i + 1;
 };
-long int max =  code.length - 1;
+long int max =  codeLength - 1;
 if ((i>=max)) {
 break;
 }
@@ -1699,9 +1715,9 @@ memory->data[0] =  c;
 };
 };
 i =  i + 1;
-while ((i<code.length)) {
-c =  code.charAt(&code,i);
-char pc =  code.charAt(&code,i - 1);
+while ((i<codeLength)) {
+c =  cpstringCharAt(s,i);
+char pc =  cpstringCharAt(s,i - 1);
 if ((c==(char)34)) {
 if ((pc!=(char)92)) {
 
@@ -1789,8 +1805,8 @@ memory->data[0] =  c;
 long int pos =  i;
 i =  i + 1;
 tokenType currentType =  TOKEN_TYPE_INT;
-while ((i<code.length)) {
-c =  code.charAt(&code,i);
+while ((i<codeLength)) {
+c =  cpstringCharAt(s,i);
 if ((c==(char)46)) {
 currentType =  TOKEN_TYPE_FLOAT;
 }
@@ -1831,11 +1847,11 @@ tokens->data[len(tokens)] =  makeToken(pos,lineNb,memory,currentType);
 }
 else if ((c==(char)39)) {
 i =  i + 1;
-char n =  code.charAt(&code,i);
+char n =  cpstringCharAt(s,i);
 char * toInt =  intToStr((long int)nc);
 memory =  strToArr(toInt);
 i =  i + 1;
-c =  code.charAt(&code,i);
+c =  cpstringCharAt(s,i);
 if ((c!=(char)39)) {
 lexerErr(lineNb,i,"Missing closing tag in char declaration.");
 }
@@ -1871,8 +1887,8 @@ memory->data[0] =  c;
 };
 };
 i =  i + 1;
-while ((i<code.length)) {
-c =  code.charAt(&code,i);
+while ((i<codeLength)) {
+c =  cpstringCharAt(s,i);
 if ((isAlphaNumeric(c)==0)) {
 break;
 }
@@ -1957,8 +1973,8 @@ memory->data[0] =  c;
 long int pos =  i;
 i =  i + 1;
 char fc =  c;
-while ((i<code.length)) {
-c =  code.charAt(&code,i);
+while ((i<codeLength)) {
+c =  cpstringCharAt(s,i);
 if ((inArray(c,syntaxes)==false)) {
 break;
 }
@@ -2056,8 +2072,8 @@ memory->data[0] =  c;
 };
 long int pos =  i;
 i =  i + 1;
-while ((i<code.length)) {
-c =  code.charAt(&code,i);
+while ((i<codeLength)) {
+c =  cpstringCharAt(s,i);
 if ((isAlphaNumeric(c)==0)) {
 if ((inArray(c,varChars)==false)) {
 if ((c==62)) {
@@ -3156,7 +3172,7 @@ cc.trimLeft(&cc,1);
 cc.trimRight(&cc,1);
 char * ccstr =  cc.str(&cc);
 if (cc.hasPrefix(&cc,"<")) {
-OUTPUT =  concatenateRopes(OUTPUT,rope(concatCPSTRING(concatCPSTRING("#include ",ccstr),"\n")));
+OUTPUT =  OUTPUT->add(OUTPUT, rope(concatCPSTRING(concatCPSTRING("#include ",ccstr),"\n")));
 }
 else {
 if ((includeFile(ccstr,elems)==false)) {
@@ -3230,7 +3246,26 @@ throwErr(&t,"Can only do concatenation (+) on cpstrings, not {TOKEN}.");
 t.cont =  concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING("concatCPSTRING(",pt.cont),","),nt.cont),")");
 }
 else {
+struct cStruct* s =  searchStruct(ptt,elems);
+if ((s!=null)) {
+struct structMemb* addMthd =  searchStructMemb("add",s,elems);
+if ((((strcmp(t.cont, "+") == 0)&&(addMthd!=null))&&(addMthd->isFn==true))) {
+char * sep =  ".";
+char * amp =  "&";
+struct string cpt =  string(ptt);
+if ((cpt.count(&cpt,"*")>0)) {
+sep =  "->";
+amp =  "";
+}
+t.cont =  concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING(pt.cont,sep),"add("),amp),pt.cont),", "),nt.cont),")");
+}
+else {
+throwErr(&pt,concatCPSTRING(concatCPSTRING("Undefined operation on {TOKEN} (",ptt),")."));
+}
+}
+else {
 t.cont =  concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING(pt.cont," "),t.cont)," "),nt.cont);
+}
 }
 t.type =  TOKEN_TYPE_VAR;
 t.bahType =  ptt;
@@ -4206,7 +4241,7 @@ throwErr(&l->data[len(l)-1],"Not expecting {TOKEN} after function call.");
 }
 ft =  l->data[0];
 int parsed =  true;
-OUTPUT =  concatenateRopes(OUTPUT,rope(concatCPSTRING(ft.cont,";\n")));
+OUTPUT =  OUTPUT->add(OUTPUT, rope(concatCPSTRING(ft.cont,";\n")));
 return ;
 }
 l =  parseStructType(l,elems);
@@ -4487,7 +4522,7 @@ vars->data[len(vars)] =  v;
 };
 };
 }
-OUTPUT =  concatenateRopes(OUTPUT,rope(concatCPSTRING(code,";\n")));
+OUTPUT =  OUTPUT->add(OUTPUT, rope(concatCPSTRING(code,";\n")));
 };
 char * parseFnHeader(char * prev,__BAH_ARR_TYPE_Tok l,long int* i,struct func* fn,struct Elems* elems){
 long int j =  *i;
@@ -4781,7 +4816,7 @@ i =  i + 1;
 if ((strcmp(braceTk.cont, "{") != 0)) {
 throwErr(&braceTk,"Cannot use {TOKEN} in struct declaration.");
 }
-char * OOUT =  OUTPUT->toStr(OUTPUT);
+struct rope* OOUT =  OUTPUT;
 char * nextLine =  "";
 while ((i<len(l))) {
 struct Tok t =  l->data[i];
@@ -4915,13 +4950,13 @@ j =  j + 1;
 };
 i =  i - 1;
 long int nli =  0;
-char * code =  parseFnHeader(fnPrefix,nl,&nli,fn,elems);
+struct rope* code =  rope(parseFnHeader(fnPrefix,nl,&nli,fn,elems));
 i =  i + nli;
 i =  i - 2;
 struct variable* returns =  fn->returns;
 array(struct variable*)* arguments =  fn->args;
 fn->from =  s->name;
-code =  concatCPSTRING(code,"{\n");
+code =  code->add(code, rope("{\n"));
 struct Elems* fnElems =  dupElems(elems);
 j =  0;
 while ((j<len(arguments))) {
@@ -5022,7 +5057,7 @@ methds->data[len(methds)] =  mfn;
 };
 };
 if ((len(tokens)==0)) {
-code =  concatCPSTRING(code,"};\n");
+code =  code->add(code, rope("};\n"));
 }
 else {
 OUTPUT =  rope("");
@@ -5034,10 +5069,10 @@ if ((fn->returned==false)) {
 throwErr(&l->data[len(l)-1],concatCPSTRING(concatCPSTRING("Function '",fn->name),"' is not returned."));
 }
 }
-code =  concatCPSTRING(concatCPSTRING(code,OUTPUT->toStr(OUTPUT)),"};\n");
+code =  code->add(code, OUTPUT)->add(code->add(code, OUTPUT), rope("};\n"));
 }
 if ((doesOutput==true)) {
-nextLine =  concatCPSTRING(nextLine,code);
+nextLine =  concatCPSTRING(nextLine,code->toStr(code));
 }
 struct string mthdDecl =  getCType(fn->returns->type,elems);
 mthdDecl.append(&mthdDecl,"(*");
@@ -5169,17 +5204,17 @@ i =  i + 1;
 };
 s->members =  members;
 if ((doesOutput==true)) {
-OUTPUT =  rope(OOUT);
+OUTPUT =  OOUT;
 NEXT_LINE =  nextLine;
-char * code =  concatCPSTRING(concatCPSTRING("struct ",s->name)," {\n");
+struct rope* code =  rope(concatCPSTRING(concatCPSTRING("struct ",s->name)," {\n"));
 i =  0;
 while ((i<len(allMembs))) {
 char * m =  allMembs->data[i];
-code =  concatCPSTRING(concatCPSTRING(code,m),";\n");
+code =  code->add(code, rope(concatCPSTRING(m,";\n")));
 i =  i + 1;
 };
-code =  concatCPSTRING(code,"};\n");
-OUTPUT =  concatenateRopes(OUTPUT,rope(code));
+code =  code->add(code, rope("};\n"));
+OUTPUT =  OUTPUT->add(OUTPUT, code);
 }
 };
 void parseDefine(__BAH_ARR_TYPE_Tok l,struct Elems* elems){
@@ -5224,7 +5259,7 @@ fns->data[len(fns)] =  fn;
 };
 };
 if ((doesOutput==true)) {
-OUTPUT =  concatenateRopes(OUTPUT,rope(concatCPSTRING(code,";\n")));
+OUTPUT =  OUTPUT->add(OUTPUT, rope(concatCPSTRING(code,";\n")));
 }
 }
 else {
@@ -5237,7 +5272,7 @@ throwErr(&ft,"Cannot use {TOKEN} as new type name.");
 struct string cTypeNewType =  getCType(st.cont,elems);
 char * cTypeNewTypeStr =  cTypeNewType.str(&cTypeNewType);
 if ((doesOutput==true)) {
-OUTPUT =  concatenateRopes(OUTPUT,rope(concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING("typedef ",cTypeNewTypeStr)," "),ft.cont),";\n")));
+OUTPUT =  OUTPUT->add(OUTPUT, rope(concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING("typedef ",cTypeNewTypeStr)," "),ft.cont),";\n")));
 }
 array(char *)* tps =  elems->types;
 
@@ -5339,7 +5374,7 @@ vars->length = nLength+1;
 vars->data[len(vars)] =  v;
 };
 };
-OUTPUT =  concatenateRopes(OUTPUT,rope(concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING("#define ",v->name)," "),valt.cont),"\n")));
+OUTPUT =  OUTPUT->add(OUTPUT, rope(concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING("#define ",v->name)," "),valt.cont),"\n")));
 };
 void parseReturn(__BAH_ARR_TYPE_Tok l,struct Elems* elems){
 if ((len(l)>2)) {
@@ -5368,7 +5403,7 @@ throwErr(&rvt,concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING("Canno
 if ((compilerState.isBranch==false)) {
 currentFn->returned =  true;
 }
-OUTPUT =  concatenateRopes(OUTPUT,rope(concatCPSTRING(concatCPSTRING("return ",rv),";\n")));
+OUTPUT =  OUTPUT->add(OUTPUT, rope(concatCPSTRING(concatCPSTRING("return ",rv),";\n")));
 };
 void parseIf(__BAH_ARR_TYPE_Tok l,struct Elems* elems){
 if ((len(l)<4)) {
@@ -5409,13 +5444,13 @@ tokens->data[len(tokens)] =  t;
 };
 i =  i + 1;
 };
-OUTPUT =  concatenateRopes(OUTPUT,rope(concatCPSTRING(concatCPSTRING("if (",condt.cont),") {\n")));
+OUTPUT =  OUTPUT->add(OUTPUT, rope(concatCPSTRING(concatCPSTRING("if (",condt.cont),") {\n")));
 struct Elems* ifElems =  dupElems(elems);
 int oldIB =  compilerState.isBranch;
 compilerState.isBranch =  true;
 parseLines(tokens,ifElems);
 compilerState.isBranch =  oldIB;
-OUTPUT =  concatenateRopes(OUTPUT,rope("}\n"));
+OUTPUT =  OUTPUT->add(OUTPUT, rope("}\n"));
 };
 void parseElse(__BAH_ARR_TYPE_Tok l,struct Elems* elems){
 if ((prevLine!=LINE_TYPE_IF)) {
@@ -5427,7 +5462,7 @@ if ((len(l)<3)) {
 throwErr(&l->data[0],"Incalid usage of {TOKEN}, must be 'else {<code>}'.");
 }
 struct Tok ft =  l->data[1];
-OUTPUT =  concatenateRopes(OUTPUT,rope("else "));
+OUTPUT =  OUTPUT->add(OUTPUT, rope("else "));
 if ((strcmp(ft.cont, "if") == 0)) {
 array(struct Tok)* memory = memoryAlloc(sizeof(array(struct Tok)));
 
@@ -5481,13 +5516,13 @@ memory->data[len(memory)] =  l->data[i];
 };
 i =  i + 1;
 };
-OUTPUT =  concatenateRopes(OUTPUT,rope("{\n"));
+OUTPUT =  OUTPUT->add(OUTPUT, rope("{\n"));
 struct Elems* ifElems =  dupElems(elems);
 int oldIB =  compilerState.isBranch;
 compilerState.isBranch =  true;
 parseLines(memory,ifElems);
 compilerState.isBranch =  oldIB;
-OUTPUT =  concatenateRopes(OUTPUT,rope("}\n"));
+OUTPUT =  OUTPUT->add(OUTPUT, rope("}\n"));
 }
 };
 void parseFor(__BAH_ARR_TYPE_Tok l,struct Elems* elems){
@@ -5528,7 +5563,7 @@ tokens->data[len(tokens)] =  t;
 };
 i =  i + 1;
 };
-OUTPUT =  concatenateRopes(OUTPUT,rope(concatCPSTRING(concatCPSTRING("while (",condt.cont),") {\n")));
+OUTPUT =  OUTPUT->add(OUTPUT, rope(concatCPSTRING(concatCPSTRING("while (",condt.cont),") {\n")));
 struct Elems* ifElems =  dupElems(elems);
 int oldIB =  compilerState.isBranch;
 int oldIF =  compilerState.isFor;
@@ -5537,7 +5572,7 @@ compilerState.isFor =  true;
 parseLines(tokens,ifElems);
 compilerState.isFor =  oldIF;
 compilerState.isBranch =  oldIB;
-OUTPUT =  concatenateRopes(OUTPUT,rope("};\n"));
+OUTPUT =  OUTPUT->add(OUTPUT, rope("};\n"));
 };
 void parseForOp(__BAH_ARR_TYPE_Tok l){
 struct Tok ft =  l->data[0];
@@ -5547,7 +5582,7 @@ throwErr(&ft,"Cannot {TOKEN} outside of for statement.");
 if ((len(l)!=1)) {
 throwErr(&ft,"Nothing expected after {TOKEN}.");
 }
-OUTPUT =  concatenateRopes(OUTPUT,rope(concatCPSTRING(ft.cont,";\n")));
+OUTPUT =  OUTPUT->add(OUTPUT, rope(concatCPSTRING(ft.cont,";\n")));
 };
 __BAH_ARR_TYPE_Tok prePross(__BAH_ARR_TYPE_Tok line,struct Elems* elems){
 array(struct Tok)* fl = memoryAlloc(sizeof(array(struct Tok)));
@@ -5665,7 +5700,7 @@ throwErr(&ft,"{TOKEN} function should take []cpstring as argument. Should be: \n
 }
 }
 code =  concatCPSTRING(code,"{\n");
-OUTPUT =  concatenateRopes(OUTPUT,rope(code));
+OUTPUT =  OUTPUT->add(OUTPUT, rope(code));
 struct Elems* fnElems =  dupElems(elems);
 array(struct variable*)* vs =  fnElems->vars;
 long int j =  0;
@@ -5734,7 +5769,7 @@ tokens->data[len(tokens)] =  t;
 i =  i + 1;
 };
 if ((len(tokens)==0)) {
-OUTPUT =  concatenateRopes(OUTPUT,rope("};\n"));
+OUTPUT =  OUTPUT->add(OUTPUT, rope("};\n"));
 return ;
 }
 currentFn =  fn;
@@ -5745,7 +5780,7 @@ if ((fn->returned==false)) {
 throwErr(&l->data[len(l)-1],concatCPSTRING(concatCPSTRING("Function '",fn->name),"' is not returned."));
 }
 }
-OUTPUT =  concatenateRopes(OUTPUT,rope("};\n"));
+OUTPUT =  OUTPUT->add(OUTPUT, rope("};\n"));
 };
 void parseLine(__BAH_ARR_TYPE_Tok line,struct Elems* elems){
 if ((len(line)==0)) {
@@ -5790,7 +5825,7 @@ throwErr(&line->data[len(line)-1],"Not expecting {TOKEN} after function call.");
 }
 struct Tok ft =  line->data[0];
 parsed =  true;
-OUTPUT =  concatenateRopes(OUTPUT,rope(concatCPSTRING(ft.cont,";\n")));
+OUTPUT =  OUTPUT->add(OUTPUT, rope(concatCPSTRING(ft.cont,";\n")));
 }
 else if ((ltp==LINE_TYPE_FN_DECL)) {
 parsed =  true;
@@ -5821,7 +5856,7 @@ struct Tok ft =  line->data[0];
 throwErr(&ft,"{TOKEN} not expected.");
 }
 if ((strlen(NEXT_LINE)>0)) {
-OUTPUT =  concatenateRopes(OUTPUT,rope(NEXT_LINE));
+OUTPUT =  OUTPUT->add(OUTPUT, rope(NEXT_LINE));
 NEXT_LINE =  "";
 }
 prevLine =  ltp;

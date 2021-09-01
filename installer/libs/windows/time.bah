@@ -36,12 +36,15 @@ struct! timespec {
     tv_nsec: int
 }
 
-#define! clock() int
+#define! clock_gettime(w int, t timespec*) int
 
 //Returns the current timestamp in nanoseconds.
 //One nano second looks like this: 0000000000000000001.
 getTimeUnix() int {
-    return clock()
+    ts = timespec{}
+    s = clock_gettime(noCheck(CLOCK_REALTIME), &ts)
+    s = ts.tv_sec * 1000000000 + ts.tv_nsec
+    return s
 }
 
 //Example
