@@ -1220,7 +1220,7 @@ RAND_SEEDED =  1;
 };
 long int randomInRange(long int min,long int max){
 if ((RAND_SEEDED==0)) {
-srand(time(0));
+srand(time(0) + getTimeUnix());
 RAND_SEEDED =  1;
 }
 long int range =  max - min;

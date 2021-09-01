@@ -22,11 +22,22 @@ struct jsonElement {
         l = len(this.children)
         i=0; for i < l {
             elem = this.children[i]
-            eKey = string(elem.key)
-            eKey.trimLeft(1)
-            eKey.trimRight(1)
-            if eKey.compare(key) {
-                return elem
+            fc = cpstringCharAt(elem.key,0)
+            if fc == <char>34 {
+                nk = []char
+                lk = strlen(elem.key)
+                j=1; for j < lk - 1 {
+                    c = cpstringCharAt(elem.key, j)
+                    nk[j-1] = c
+                    j = j + 1
+                }
+                if arrAsStr(nk) == key {
+                    return elem
+                }
+            } else {
+                if elem.key == key {
+                    return elem
+                }
             }
             i = i + 1
         }
@@ -44,45 +55,69 @@ struct jsonElement {
 
 //To parse a json document.
 //This will return a pointer to the main element.
-parseJson(a cpstring) jsonElement* {
-    s = string(a)
-    s.trim()
+parseJson(s cpstring) jsonElement* {
     
     jsonElem = new jsonElement
+    lenS = strlen(s)
 
-    fc = s.charAt(0)
+    i=0; for i < lenS {
+        if isSpace(cpstringCharAt(s, i)) == 0 {
+            break
+        }
+        i = i + 1
+    }
+
+    fc = cpstringCharAt(s, i)
     if fc == '[' {
         jsonElem.type = JSON_TYPE_ARRAY
     } else if fc == '{' {
         jsonElem.type = JSON_TYPE_MAP
     } else if fc == <char>34 {
         jsonElem.type = JSON_TYPE_STRING
-        s.trimLeft(1)
-        s.trimRight(1)
-        jsonElem.content = s.str()
+        ns = []char
+        i = i + 1
+        for i < lenS - 1 {
+            ns[len(ns)] = cpstringCharAt(s,i)
+            i = i + 1
+        }
+        jsonElem.content = arrToStr(ns)
     } else if isNumber(fc) {
-        if s.count(".") > 0 {
+        isFloat = false
+        for i < lenS {
+            if cpstringCharAt(s,i) == '.' {
+                isFloat = true
+                break
+            }
+            i = i + 1
+        }
+
+        if isFloat == true {
             jsonElem.type = JSON_TYPE_FLOAT
         } else {
             jsonElem.type = JSON_TYPE_INT
         }
-        jsonElem.content = s.str()
+        jsonElem.content = s
     } else {
         jsonElem.type = JSON_TYPE_STRING
-        jsonElem.content = s.str()
+        jsonElem.content = s
     }
 
     if jsonElem.type == JSON_TYPE_ARRAY {
-        s.trimLeft(1)
-        s.trimRight(1)
-        s.trim()
+        i = i + 1
+        for i < lenS - 1 {
+            c = cpstringCharAt(s, i)
+            if isSpace(c) == 0 {
+                break
+            }
+            i = i + 1
+        }
         currentElem = []char
         currentBracks = 0
         currentBraces = 0
         currentQuotes = 0
         elemIndex = 0
-        i = 0; for i < s.length {
-            c = s.charAt(i)
+        for i < lenS - 1 {
+            c = cpstringCharAt(s, i)
             if c == <char>34 {
                 if currentQuotes == 0 {
                     currentQuotes = 1
@@ -119,9 +154,14 @@ parseJson(a cpstring) jsonElement* {
         }
         jsonElem.children[elemIndex] = parseJson(arrAsStr(currentElem))
     } else if jsonElem.type == JSON_TYPE_MAP {
-        s.trimLeft(1)
-        s.trimRight(1)
-        s.trim()
+        i = i + 1
+        for i < lenS - 1 {
+            c = cpstringCharAt(s, i)
+            if isSpace(c) == 0 {
+                break
+            }
+            i = i + 1
+        }
         currentElem = []char
         currentKey = []char
         isVal = 0
@@ -129,8 +169,8 @@ parseJson(a cpstring) jsonElement* {
         currentBraces = 0
         currentQuotes = 0
         elemIndex = 0
-        i = 0; for i < s.length {
-            c = s.charAt(i)
+        for i < lenS-1 {
+            c = cpstringCharAt(s,i)
             if c == <char>34 {
                 if currentQuotes == 0 {
                     currentQuotes = 1

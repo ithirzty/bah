@@ -15,9 +15,10 @@ seedRandom(i int) {
 
 //This generates a pseudo random integer in the range of min and max.
 //*Note: this is not cryptographically safe. This output of this function can be predicted.*
+//*Note: `max` should not be equal to `0`.*
 randomInRange(min int, max int) int {
     if RAND_SEEDED == 0 {
-        srand(time(0))
+        srand(time(0)+getTimeUnix())
         RAND_SEEDED = 1
     }
 
