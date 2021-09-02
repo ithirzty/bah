@@ -9,6 +9,8 @@ struct rope {
     len: int
     totalLen: int
 
+    //Used to get the parent of the node.
+    //*Note: this is an internal function.*
     getParent() rope* {
         if this.parent == null {
             return this
@@ -16,6 +18,8 @@ struct rope {
         return this.parent.getParent()
     }
 
+    //Used to add the content of the node to a specified cpstring.
+    //*Note: this is an internal function.*
     addStr(s cpstring*) {
         if this.left == null && this.right == null {
             strcat(*s, this.str)
@@ -25,6 +29,7 @@ struct rope {
         this.right.addStr(s)
     }
 
+    //Used to get the rope as a cpstring.
     toStr() cpstring {
         if this.left == null && this.right == null {
             return this.str
@@ -37,6 +42,8 @@ struct rope {
         return s
     }
 
+    //Used for concatenation.
+    //This is the method that will be called when doing `a + b`.
     add(root2 rope*) rope* {
         n1 = this.len
         tmp = new rope
@@ -51,6 +58,11 @@ struct rope {
     }
 }
 
+//This is used to initiate a new node.
+//a: the content of the node
+//l: the left offset
+//r: the right offset
+//*Note: this is an internal function.*
 createRopeStructure(par rope*, a cpstring, l int, r int) rope* {
     tmp = new rope
     
@@ -84,6 +96,7 @@ createRopeStructure(par rope*, a cpstring, l int, r int) rope* {
     return tmp
 }
 
+//Old way of concatenating ropes by specifying in order the ropes to concatenate.
 concatenateRopes(root1 rope*, root2 rope*) rope* {
     n1 = root1.len
     tmp = new rope
@@ -97,6 +110,7 @@ concatenateRopes(root1 rope*, root2 rope*) rope* {
     return tmp
 }
 
+//Used to initiate a rope with a cpstring.
 rope(a cpstring) rope* {
     n1 = strlen(a)
     r = createRopeStructure(null, a, 0, n1-1)
@@ -105,3 +119,14 @@ rope(a cpstring) rope* {
     return r
 }
 
+
+//Example
+// main(args []cpstring) int {
+//     a = rope("This is a test: ") //Initiates rope a
+//     b = rope("I'm a substring.") //Initiates rope b
+//     i=0; for i < 99999 { //Iterates from 0 to 99998 (executes the following code 99999 times)
+//         a = a + b //Concatenates b to a
+//         i = i + 1 //Increments i by 1
+//     }
+//     println(a.toStr()) //Converts a to a cpstring and prints it
+// }

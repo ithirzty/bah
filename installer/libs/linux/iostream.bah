@@ -21,17 +21,17 @@ stdinput(len int) cpstring {
     return buff
 }
 
-#define! write(fd int, t cpstring, l int)
+#define! write(fd FILE*, t cpstring, l int)
 
 //Prints text to the terminal.
 print(s cpstring) {
-    write(1, s, strlen(s))
+    write(<ptr>1, s, strlen(s))
 }
 
 //Prints text to the terminal and adds a line return at the end.
 println(s cpstring) {
-    write(1, s, strlen(s))
-    write(1, "\n", 1)
+    write(<ptr>1, s, strlen(s))
+    write(<ptr>1, "\n", 1)
 }
 
 //Print an error to the terminal and exits the program.

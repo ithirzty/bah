@@ -2,27 +2,37 @@
 #include "string.bah"
 
 #define! popen(cmd cpstring, type cpstring) FILE*
-#define! pclose(hndl FILE*)
+#define! pclose(hndl FILE*) int
 
 //A wrapper for executting command.
 //This is will return the output of the command.
+//If you dont want stderr, set `.error = false`.
+//The exit status code of the executed command is stored in `.status`.
 struct command {
-    command: cpstring 
+    command: cpstring
+    error: bool = true
+    status: int = 0
+
+    handle: FILE*
 
     //To run the command.
     //This returns a cpstring containning the output of the command.
     run() cpstring {
-        handle = popen(this.command, "r")
-        if handle == null {
+        cm = this.command
+        if this.error == false {
+            cm = cm + " 2>/dev/null"
+        }
+        this.handle = popen(cm, "w")
+        if this.handle == null {
             return ""
         }
         buff cpstring = memoryAlloc(1025)
         res = ""
         more = 1;for more == 1 {
-            more = fgets(buff, 1024, handle)
+            more = fgets(buff, 1024, this.handle)
             res = res + buff
         }
-        pclose(handle)
+        this.status = pclose(this.handle)
         return res
     }
 

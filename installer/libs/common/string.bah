@@ -205,7 +205,9 @@ struct string {
             noCheck(replbuffStr = replcBuff->data)
             r = r + replbuffStr
         }
-        this.set(r)
+        if <ptr>r != null {
+            this.set(r)
+        }
     }
 
     //Used to count the number of substring(s).

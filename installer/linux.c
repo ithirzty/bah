@@ -354,7 +354,9 @@ char * replbuffStr;
 noCheck( replbuffStr = replcBuff -> data );
 r =  concatCPSTRING(r,replbuffStr);
 }
+if (((void *)r!=null)) {
 this->set(this,r);
+}
 };
 long int string__count(struct string* this,char * need){
 long int i =  0;
@@ -772,11 +774,11 @@ fgets(buff,len,noCheck( stdin ));
 return buff;
 };
 void print(char * s){
-write(1,s,strlen(s));
+write((void *)1,s,strlen(s));
 };
 void println(char * s){
-write(1,s,strlen(s));
-write(1,"\n",1);
+write((void *)1,s,strlen(s));
+write((void *)1,"\n",1);
 };
 void panic(char * e){
 if (strlen(e)) {
@@ -1247,25 +1249,34 @@ return i;
 };
 struct command {
 char * command;
+int error;
+long int status;
+FILE* handle;
 char *(*run)(struct command* this);
 };
 char * command__run(struct command* this){
-FILE* handle =  popen(this->command,"r");
-if ((handle==null)) {
+char * cm =  this->command;
+if ((this->error==false)) {
+cm =  concatCPSTRING(cm," 2>/dev/null");
+}
+this->handle =  popen(cm,"w");
+if ((this->handle==null)) {
 return "";
 }
 char * buff =  memoryAlloc(1025);
 char * res =  "";
 long int more =  1;
 while ((more==1)) {
-more =  fgets(buff,1024,handle);
+more =  fgets(buff,1024,this->handle);
 res =  concatCPSTRING(res,buff);
 };
-pclose(handle);
+this->status =  pclose(this->handle);
 return res;
 };
 struct command command(char * s){
 struct command cmd =  {};
+cmd.error = true;
+cmd.status = 0;
 cmd.run = command__run;
 cmd.command =  s;
 return cmd;

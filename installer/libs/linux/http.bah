@@ -752,7 +752,7 @@ isPortAvailable(port int) int {
 // #include "http.bah"
 //
 //
-// server(serv http_server*, connfd int) int {
+// server(serv http_server*, connfd int) {
 //
 //     request = http_request(connfd)
 //     response = http_response(connfd)
@@ -765,14 +765,13 @@ isPortAvailable(port int) int {
 //     response.write("\nIt works!")
 //     response.send()
 //
-//     return 0
 // }
 //
 // main() {
 //  
 //     s = http_server{}
 //     s.port = 8080
-//     s.handle = &server
+//     s.handle = server
 //     s.listenAndServe()
 //
 // }
