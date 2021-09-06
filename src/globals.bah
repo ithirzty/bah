@@ -9,12 +9,12 @@ struct variable {
     type: cpstring = ""
     isConst: bool = false
     isArray: bool = false
+    from: cpstring = ""
 }
 
 struct structMemb extend variable {
     def: cpstring = ""
     isFn: bool = false
-    from: cpstring = ""
 }
 
 

@@ -21,7 +21,7 @@ const TOKEN_TYPE_FUNC =    <tokenType>11
 
 struct Tok {
     cont: cpstring = ""
-    ogCont: cpstring
+    ogCont: cpstring = ""
     type: tokenType = TOKEN_NO_TYPE
     pos: int = 0
     line: int = 1

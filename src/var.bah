@@ -64,6 +64,7 @@ searchVar(name cpstring, elems Elems*) variable* {
             return null
         }
         nv = new variable
+        nv.from = memb.from
         nv.name = memb.name
         nv.type = memb.type
         nv.name = ogName
@@ -263,8 +264,9 @@ searchFunc(name cpstring, elems Elems*, inclCurr bool) func* {
         name = n.str()
         v = searchVar(name, elems)
         s = searchStruct(v.type, elems)
+        memb = searchStructMemb(fnName.str(), s, elems)
         name = fnName.content
-        name = s.name+"__"+name
+        name = memb.from+"__"+name
 
     }
     
@@ -328,6 +330,16 @@ declareStructMethods(v variable*, s cStruct*, elems Elems*) cpstring {
         }
 
         i = i + 1
+    }
+
+    if strlen(s.extendedFrom) > 0 {
+        es = searchStruct(s.extendedFrom, elems)
+        println(s.name+" is extended with "+intToStr(len(es.methods)))
+        i=0; for i < len(es.methods) {
+            m = es.methods[i]
+            code = code + v.name + sep + m.name + " = " + es.name + "__" + m.name + ";\n"
+            i = i + 1
+        }
     }
 
     methods = s.methods

@@ -290,59 +290,82 @@ http_receive(connfd int) cpstring {
     return buffer
 }
 
-//A wrapper for requests.
-//When receiving a connection, you will be able to retreive the passed headers, path... from the client.
-struct http_request {
+
+//HTTP code 200 means everything is ok
+const HTTP_OK = 200
+//HTTP code 404 means file not found
+const HTTP_NOT_FOUND = 404
+//HTTP code 400 means that you deny access to this request
+const HTTP_FORBIDDEN = 400
+//HTTP code 500 means that the server encountered an internal error
+const HTTP_ERROR = 500
+//HTTP code 301 means a permanent redirection
+const HTTP_REDIRECT = 301
+//HTTP code 206 means content can be seeked up in a range
+const HTTP_PARTIAL_CONTENT = 206
+
+
+
+struct http_transport {
     connfd: int
-    request: cpstring
-    headersIndex: int
-    cookies: cpstring
+    headers: []string*
+    code: int = HTTP_OK
+    body: string*
+    url: http_url*
     method: cpstring
     path: cpstring
 
-    //Get a header by name.
-    getHeader(name cpstring) cpstring {
-        nameMemory = string("")
-        valueMemory = string("")
-        isValue = 0
-        found = 0
-        req = string(this.request)
-        i = this.headersIndex
+        //To set a header by name.
+    setHeader(name cpstring, value cpstring) {
+        
+        h = new string
+        h.set(name)
+        h.append(": ")
+        h.append(value)
 
-        for i < req.length {
-            c = req.charAt(i)
-            if found == 0 {
-                if isValue == 1 {
-                if c == <char>10 {
-                    isValue = 0
+        lhs = len(this.headers)
+        this.headers[lhs] = h
+    }
+
+    //To get the value of a header by name.
+    getHeader(name cpstring) cpstring {
+        headerName = string(name)
+        headerName = toLower(headerName)
+        headerName.append(":")
+        i=0;for i < len(this.headers) {
+            currentHeader = this.headers[i]
+            if currentHeader.hasPrefix(headerName.str()) {
+                header = string(currentHeader.str())
+                space = 0
+                c = header.charAt(headerName.length)
+                if isSpace(c) {
+                    space = 1
                 }
-                } else {
-                    if c == ':' {
-                        isValue = 1
-                        if strcmp(name, nameMemory.content) == 0 {
-                            found = 1
-                        } else {
-                            nameMemory.set("")
-                        }
-                    } else {
-                        cs = charToString(c)
-                        nameMemory.append(cs)
-                    }
-                }
-            } else {
-                if c == <char>13 {
-                    break
-                }
-                cs = charToString(c)
-                valueMemory.append(cs)
+                header.trimLeft(headerName.length+space)
+                return header.str()
             }
-            i = i + 1
+            i=i+1
         }
 
-        r = valueMemory.str()
+        return ""
 
-        return r
     }
+
+    //To append to the body of the response.
+    write(content cpstring) {
+        body = this.body
+        body.append(content)
+    }
+
+}
+
+
+
+
+//A wrapper for requests.
+//When receiving a connection, you will be able to retreive the passed headers, path... from the client.
+struct http_request extend http_transport {
+    request: cpstring
 }
 
 openSocket(host cpstring, port int) int {
@@ -409,40 +432,44 @@ http_request(connfd int) http_request {
     //trim rest of request (HTTP/1.1)
     for i < req.length {
         c = req.charAt(i)
-        i = i + 1
         if c == <char>10 {
             break
         }
+        i = i + 1
     }
-    r.headersIndex = i    
-    r.request = reqcps
+    
+    req.trimLeft(i)
+    lines = splitString(req, "\r\n")
 
+    isBody = false
+
+    i=0; for i < len(lines) {
+        l = lines[i]
+        if isBody == true {
+            r.body.append(l.str() + "\r\n")
+        } else if l.length == 0 {
+            isBody = true
+        } else {
+            headerName = splitStringBefore(l, ":")
+            headerCont = string(l.str())
+            headerCont.trimLeft(strlen(headerName) + 1)
+            headerCont.trim()
+            r.setHeader(headerName, headerCont)
+        }
+        
+        i = i + 1
+    }
+
+
+    r.request = reqcps
 
     return r
 }
 
-//HTTP code 200 means everything is ok
-const HTTP_OK = 200
-//HTTP code 404 means file not found
-const HTTP_NOT_FOUND = 404
-//HTTP code 400 means that you deny access to this request
-const HTTP_FORBIDDEN = 400
-//HTTP code 500 means that the server encountered an internal error
-const HTTP_ERROR = 500
-//HTTP code 301 means a permanent redirection
-const HTTP_REDIRECT = 301
-//HTTP code 206 means content can be seeked up in a range
-const HTTP_PARTIAL_CONTENT = 206
-
 //A wrapper for HTTP responses. You will be able to set/retreive the headers sent/receive.
 //You will encounter this when doing a request or sending a response to the client.
-struct http_response {
-    connfd: int
-    headers: []string*
-    code: int = HTTP_OK
-    body: string*
+struct http_response extend http_transport {
     headersSent: bool = false
-
     //Send the response.
     //*Use it only when sending response to the client from a http_server*.
     send() {
@@ -488,47 +515,6 @@ struct http_response {
 
     }
 
-    //To set a header by name.
-    setHeader(name cpstring, value cpstring) {
-        
-        h = new string
-        h.set(name)
-        h.append(": ")
-        h.append(value)
-
-        lhs = len(this.headers)
-        this.headers[lhs] = h
-    }
-
-    //To get the value of a header by name.
-    getHeader(name cpstring) cpstring {
-        headerName = string(name)
-        headerName = toLower(headerName)
-        headerName.append(":")
-        i=0;for i < len(this.headers) {
-            currentHeader = this.headers[i]
-            if currentHeader.hasPrefix(headerName.str()) {
-                header = string(currentHeader.str())
-                space = 0
-                c = header.charAt(headerName.length)
-                if isSpace(c) {
-                    space = 1
-                }
-                header.trimLeft(headerName.length+space)
-                return header.str()
-            }
-            i=i+1
-        }
-
-        return ""
-
-    }
-
-    //To append to the body of the response.
-    write(content cpstring) {
-        body = this.body
-        body.append(content)
-    }
 
 }
 
@@ -594,7 +580,6 @@ makeRawHttpsRequest(host cpstring, message cpstring) cpstring {
     SSL_set_mode(ssl, 4)
 
     BIO_set_conn_hostname(bio, host)
-    println("connecting to '"+host+"' with '"+message+"'")
     if BIO_do_connect(bio) <= 0 {
         panic("http: error connecting through ssl")
     }

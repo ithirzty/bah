@@ -95,11 +95,20 @@ searchStructMemb(name cpstring, s cStruct*, elems Elems*) structMemb* {
         if m.name == name {
             sm = new structMemb
             sm.name = m.name
+            sm.from = m.from
             sm.type = m.returns.type
             sm.isFn = true
             return sm
         }
         i = i + 1
     }
-    return null
+
+    if strlen(s.extendedFrom) == 0 {
+        return null
+    }
+
+    es = searchStruct(s.extendedFrom, elems)
+    
+    
+    return searchStructMemb(name, es, elems)
 }

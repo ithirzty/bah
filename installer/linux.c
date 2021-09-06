@@ -1480,7 +1480,7 @@ r->len =  n1;
 return r;
 };
 #define BAH_DIR "/opt/bah/"
-#define BAH_VERSION "v1.0 (build 18)"
+#define BAH_VERSION "v1.0 (build 19)"
 struct rope* OUTPUT;
 char * NEXT_LINE =  "";
 struct variable {
@@ -1488,15 +1488,16 @@ char * name;
 char * type;
 int isConst;
 int isArray;
+char * from;
 };
 struct structMemb {
 char * name;
 char * type;
 int isConst;
 int isArray;
+char * from;
 char * def;
 int isFn;
-char * from;
 };
 struct func {
 char * name;
@@ -2263,17 +2264,22 @@ sm->name = "";
 sm->type = "";
 sm->isConst = false;
 sm->isArray = false;
+sm->from = "";
 sm->def = "";
 sm->isFn = false;
-sm->from = "";
 sm->name =  m->name;
+sm->from =  m->from;
 sm->type =  m->returns->type;
 sm->isFn =  true;
 return sm;
 }
 i =  i + 1;
 };
+if ((strlen(s->extendedFrom)==0)) {
 return null;
+}
+struct cStruct* es =  searchStruct(s->extendedFrom,elems);
+return searchStructMemb(name,es,elems);
 };
 struct string getCType(char * t,struct Elems* elems){
 if ((strlen(t)==0)) {
@@ -2476,6 +2482,7 @@ nv->name = "";
 nv->type = "";
 nv->isConst = false;
 nv->isArray = false;
+nv->from = "";
 nv->type =  vtstr;
 nv->name =  ogName;
 nv->isArray =  true;
@@ -2510,6 +2517,8 @@ nv->name = "";
 nv->type = "";
 nv->isConst = false;
 nv->isArray = false;
+nv->from = "";
+nv->from =  memb->from;
 nv->name =  memb->name;
 nv->type =  memb->type;
 nv->name =  ogName;
@@ -2544,6 +2553,7 @@ nv->name = "";
 nv->type = "";
 nv->isConst = false;
 nv->isArray = false;
+nv->from = "";
 nv->type =  v->type;
 nv->name =  v->name;
 char * r =  nv->type;
@@ -2576,6 +2586,7 @@ nv->name = "";
 nv->type = "";
 nv->isConst = false;
 nv->isArray = false;
+nv->from = "";
 nv->name =  name;
 nv->type =  "function(";
 long int j =  0;
@@ -2667,6 +2678,7 @@ arg->name = "";
 arg->type = "";
 arg->isConst = false;
 arg->isArray = false;
+arg->from = "";
 arg->name =  concatCPSTRING("arg_",intToStr(len(nf->args)));
 while ((j<cvt.length)) {
 c =  cvt.charAt(&cvt,j);
@@ -2734,6 +2746,7 @@ nf->returns->name = "";
 nf->returns->type = "";
 nf->returns->isConst = false;
 nf->returns->isArray = false;
+nf->returns->from = "";
 nf->returns->name =  "_return";
 nf->returns->type =  arrToStr(memory);
 return nf;
@@ -2767,8 +2780,9 @@ n.trimRight(&n,2);
 name =  n.str(&n);
 struct variable* v =  searchVar(name,elems);
 struct cStruct* s =  searchStruct(v->type,elems);
+struct structMemb* memb =  searchStructMemb(fnName.str(&fnName),s,elems);
 name =  fnName.content;
-name =  concatCPSTRING(concatCPSTRING(s->name,"__"),name);
+name =  concatCPSTRING(concatCPSTRING(memb->from,"__"),name);
 }
 array(struct func*)* fns =  elems->fns;
 long int i =  0;
@@ -2838,7 +2852,7 @@ array(struct func*)* methods =  s->methods;
 i =  0;
 while ((i<len(methods))) {
 struct func* m =  methods->data[i];
-code =  concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING(code,v->name),sep),m->name)," = "),s->name),"__"),m->name),";\n");
+code =  concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING(code,v->name),sep),m->name)," = "),m->from),"__"),m->name),";\n");
 i =  i + 1;
 };
 return code;
@@ -2880,6 +2894,7 @@ nv->name = "";
 nv->type = "";
 nv->isConst = false;
 nv->isArray = false;
+nv->from = "";
 *nv =  *v;
 
 {
@@ -4286,6 +4301,7 @@ v->name = "";
 v->type = "";
 v->isConst = false;
 v->isArray = false;
+v->from = "";
 v->name =  ft.cont;
 v->type =  "";
 }
@@ -4603,6 +4619,7 @@ argument->name = "";
 argument->type = "";
 argument->isConst = false;
 argument->isArray = false;
+argument->from = "";
 argument->name =  argName;
 argument->type =  argType;
 
@@ -4664,6 +4681,7 @@ returns->name = "";
 returns->type = "";
 returns->isConst = false;
 returns->isArray = false;
+returns->from = "";
 returns->type =  "";
 while ((j<len(l))) {
 t =  l->data[j];
@@ -4772,6 +4790,7 @@ if ((extdSNameTk.type!=TOKEN_TYPE_VAR)) {
 throwErr(&extdSNameTk,"Cannot use {TOKEN} as struct name.");
 }
 struct cStruct* extdS =  searchStruct(extdSNameTk.cont,elems);
+s->extendedFrom =  extdS->name;
 if ((extdS==null)) {
 throwErr(&extdSNameTk,"Struct {TOKEN} does not exist.");
 }
@@ -4861,9 +4880,9 @@ memb->name = "";
 memb->type = "";
 memb->isConst = false;
 memb->isArray = false;
+memb->from = "";
 memb->def = "";
 memb->isFn = false;
-memb->from = "";
 if ((t.type!=TOKEN_TYPE_VAR)) {
 throwErr(&t,"Cannot use {TOKEN} as member name.");
 }
@@ -5066,6 +5085,7 @@ mfn->line = 1;
 mfn->args =  fn->args;
 mfn->name =  fn->name;
 mfn->returns =  fn->returns;
+mfn->from =  s->name;
 struct string sfn =  string(mfn->name);
 sfn.trimLeft(&sfn,strlen(fnPrefix));
 mfn->name =  sfn.content;
@@ -5383,6 +5403,7 @@ v->name = "";
 v->type = "";
 v->isConst = false;
 v->isArray = false;
+v->from = "";
 v->isConst =  true;
 v->name =  vart.cont;
 v->type =  getTypeFromToken(&valt,true,elems);

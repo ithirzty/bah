@@ -736,7 +736,10 @@ parseFnCall(l []Tok, elems Elems*) []Tok {
                     }
                     varName = string("")
                     fnStr = string(fnName)
+                    arg1 variable*
                     if hasStructSep(fnStr) {
+                        arg1 = fn.args[0]
+                        fnarg1t = getCType(arg1.type, elems)
                         varName = fnStr
                         realFn = splitStructSepAfter(fnStr)
                         varName.trimRight(realFn.length)
@@ -755,6 +758,8 @@ parseFnCall(l []Tok, elems Elems*) []Tok {
                         if vct.count("*") == 0 {
                             varName.prepend("&")
                         }
+                        varName.prepend("("+fnarg1t.str()+")")
+
                     }
                     ot.cont = fnName+"("
                     fnArgs = fn.args
@@ -763,6 +768,7 @@ parseFnCall(l []Tok, elems Elems*) []Tok {
                     if varName.length > 0 {
                         tk = Tok{}
                         tk.cont = varName.str()
+                        tk.bahType = arg1.type
                         tk.type = TOKEN_TYPE_VAR
                         tk.isValue = true
                         memory[len(memory)] = tk
@@ -1323,6 +1329,7 @@ parseStruct(l []Tok, elems Elems*) {
                 throwErr(&extdSNameTk, "Cannot use {TOKEN} as struct name.")
             }
             extdS = searchStruct(extdSNameTk.cont, elems)
+            s.extendedFrom = extdS.name
             if extdS == null {
                 throwErr(&extdSNameTk, "Struct {TOKEN} does not exist.")
             }
@@ -1354,6 +1361,32 @@ parseStruct(l []Tok, elems Elems*) {
                 allMembs[len(allMembs)] = membDeclStr
                 members[len(members)] = em
                 j = j + 1
+            }
+            k=0; for k < len(extdS.methods) {
+                emt = extdS.methods[k]
+
+                mthdDecl = getCType(emt.returns.type, elems)
+                mthdDecl.append("(*")
+                mthdDecl.append(emt.name)
+                mthdDecl.append(")(")
+                j=0; for j < len(emt.args) {
+                    a = emt.args[j]
+                    tp = getCType(a.type, elems)
+                    tp.append(" ")
+                    tp.append(a.name)
+                    max = len(emt.args) - 1
+                    if j != max {
+                        tp.append(",")
+                    }
+                    tpstr = tp.str()
+                    mthdDecl.append(tpstr)
+                    j =j + 1
+                }
+                mthdDecl.append(")")
+                mthdDeclStr = mthdDecl.content
+                allMembs[len(allMembs)] = mthdDeclStr
+
+                k = k + 1
             }
         } else {
             throwErr(&st, "Cannot use keyword {TOKEN} in struct declaration.")
@@ -1472,6 +1505,7 @@ parseStruct(l []Tok, elems Elems*) {
                 mfn.args = fn.args
                 mfn.name = fn.name
                 mfn.returns = fn.returns
+                mfn.from = s.name
 
 
                 sfn = string(mfn.name)

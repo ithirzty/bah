@@ -8,13 +8,15 @@
 ///////////////////////OS SPECIFIC THINGS////////////////////////
 const BAH_DIR = "/opt/bah/"
 //////////////////////BUILD SPECIFIC THINGS//////////////////////
-const BAH_VERSION = "v1.0 (build 18)"
+const BAH_VERSION = "v1.0 (build 19)"
 #include "./globals.bah"
 
 #include "./lexer.bah"
 #include "./type.bah"
 #include "./errors.bah"
 #include "./parser.bah"
+
+#cLib "g"
 
 main(args []cpstring) int {
     flags = flags{}
