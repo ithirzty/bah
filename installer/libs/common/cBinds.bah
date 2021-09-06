@@ -1,5 +1,5 @@
 #define! fopen(path cpstring, mode cpstring) ptr
-#define! fgets(buff cpstring, len int, handle ptr) int
+#define! fgets(buff cpstring, len int, handle ptr) cpstring
 #define! fputs(s cpstring, handle ptr)
 #define! fclose(handle ptr)
 #define! fseek(handle ptr, i int, mode int)

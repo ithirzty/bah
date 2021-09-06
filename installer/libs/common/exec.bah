@@ -21,14 +21,17 @@ struct command {
         cm = this.command
         if this.error == false {
             cm = cm + " 2>/dev/null"
+        } else {
+            cm = cm + " 2>&1"
         }
-        this.handle = popen(cm, "w")
+        this.handle = popen(cm, "r")
         if this.handle == null {
             return ""
         }
         buff cpstring = memoryAlloc(1025)
         res = ""
-        more = 1;for more == 1 {
+        more = "";for <ptr>more != null {
+            memset(buff, 0, 1025)
             more = fgets(buff, 1024, this.handle)
             res = res + buff
         }

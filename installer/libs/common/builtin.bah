@@ -8,8 +8,11 @@ const false = <bool>0
 
 #include "memory.bah"
 
+#cLib "lm"
 
 #define! signal(sig int, hdl ptr)
+
+#define! sizeof(a ptr) int
 
 #macro a++ => a = a + 1
 #macro a += b* => a = a + b

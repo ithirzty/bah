@@ -50,6 +50,7 @@ struct http_url {
     path: string
     host: string
     proto: string
+    port: string
 }
 
 #define! socket(a int, b int, c int) int
@@ -64,6 +65,7 @@ struct http_url {
 #define! listen(sockfd int, s int) int
 #define! memset(str ptr, w int, s int)
 #define! accept(sockfd int, cliaddr sockaddr_in*, clilen int*) int
+#define! shutdown(fd int, flags int)
 
 //Used for parsing an URL.
 parseUrl(cps cpstring) http_url {    
@@ -105,7 +107,7 @@ parseUrl(cps cpstring) http_url {
 
     //get host
     hn = string("")
-    for s.charAt(i) != '/' {
+    for s.charAt(i) != '/' && s.charAt(i) != ':' {
         c = s.charAt(i)
         hn.append(charToString(c))
         if i == max {
@@ -114,6 +116,26 @@ parseUrl(cps cpstring) http_url {
         i = i + 1
     }
     u.host = hn
+
+
+    if i == max {
+        u.path = string("/")
+        return *u
+    }
+    
+    port = string("")
+    if s.charAt(i) == ':' {
+        i = i + 1
+        for i < s.length {
+            c = s.charAt(i)
+            if c == '/' {
+                break
+            }
+            port.append(charToString(c))
+            i = i + 1
+        }
+    }
+    u.port = port
 
     if i == max {
         u.path = string("/")
@@ -131,6 +153,10 @@ parseUrl(cps cpstring) http_url {
     return *u
 }
 
+//Used for closing a socket.
+closeSocket(sockfd int) {
+    shutdown(sockfd, noCheck(SHUT_RDWR))
+}
 
 //web server
 
@@ -143,27 +169,55 @@ sigchld_handler(signo int) {
     }
 }
 
+//A type difinning http server erros.
+#define http_serverError int
+
+const HTTP_SERVER_NO_ERROR = <http_serverError>0
+const HTTP_SERVER_SOCKET_ERROR = <http_serverError>1
+const HTTP_SERVER_BIND_ERROR = <http_serverError>2
+const HTTP_SERVER_LISTEN_ERROR = <http_serverError>3
+
+
+
 //A wrapper for a http web server.
 struct http_server {
     port: int
     running: int = 1
     sockfd:int = -1
+    error: http_serverError = HTTP_SERVER_NO_ERROR
 
-    //The handle to pass when receiving connections.
+    //Event lisstener for when receiving connections.
     handle: function(http_server*, int)
+    
+    //Event listener for when server started successfully.
+    done: function(http_server*)
+
+    //To stop the server.
+    stop() {
+        if this.sockfd == -1 {
+            println("cannot stop http_server, not running")
+            return
+        }
+        this.running = 0
+        closeSocket(this.sockfd)
+    }
+
+
 
     //To start the server.
     listenAndServe() {
+        this.error = HTTP_SERVER_NO_ERROR
         port = this.port
         servaddr sockaddr_in
         cliaddr sockaddr_in
         sa sigaction
 
         sockfd int = socket(2, 1, 0)
-        this.sockfd = sockfd
 
         if sockfd < 0 {
-            panic("http: error opening socket")
+            println("http: error opening socket")
+            this.error = HTTP_SERVER_SOCKET_ERROR
+            return
         }
 
         servaddr.sin_family = 2
@@ -175,21 +229,24 @@ struct http_server {
         isBind = bind(sockfd, &servaddr, 16)
         if isBind != 0 {
             close(sockfd)
-            err = string("http: failed to bind port: ")
-            p = intToString(port)
-            err.append(p.content)
-            panic(err.content)
+            println("http: failed to bind port: '"+intToStr(port)+"'")
+            this.error = HTTP_SERVER_BIND_ERROR
+            return
         }
 
         isListening = listen(sockfd,1024)
+        this.sockfd = sockfd
 
         if isListening < 0 {
             close(sockfd)
-            panic("http: failed to start listening")
+            println("http: failed to start listening")
+            this.error = HTTP_SERVER_LISTEN_ERROR
+            return
         }
         memset(<ptr>&sa, 0, 152)
         sa.sa_handler = sigchld_handler
         sigaction(17, &sa, 0)
+        this.done()
         for this.running == 1 {
             clilen = 16
             connfd = accept(sockfd, &cliaddr, &clilen)
@@ -215,18 +272,8 @@ struct http_server {
 
         }
 
-            close(sockfd)
+            this.stop()
 
-    }
-
-    //To stop the server.
-    stop() {
-        if this.sockfd == -1 {
-            println("cannot stop http_server, not running")
-            return
-        }
-        this.running = 0
-        close(this.sockfd)
     }
 
 }
@@ -298,6 +345,33 @@ struct http_request {
     }
 }
 
+openSocket(host cpstring, port int) int {
+    serv_addr sockaddr_in
+    sockfd = socket(2, 1, 0)
+    if sockfd < 0 {
+        panic("http: error opening socket")
+    }
+
+    server hostent* = gethostbyname(host)
+    if server == null {
+        panic("http: error resolving host")
+    }
+
+    serv_addr.sin_port = htons(port)
+    serv_addr.sin_family = 2
+    ha = server.h_addr
+    saddr = in_addr{}
+    saddr.s_addr = *ha
+    serv_addr.sin_addr = saddr
+        
+        
+    canConnect = connect(sockfd,&serv_addr,16)
+    if canConnect < 0 {
+        panic("error: error connecting socket")
+    }
+    return sockfd
+}
+
 //Used for parsing the request
 http_request(connfd int) http_request {
     r = http_request{}
@@ -357,6 +431,8 @@ const HTTP_FORBIDDEN = 400
 const HTTP_ERROR = 500
 //HTTP code 301 means a permanent redirection
 const HTTP_REDIRECT = 301
+//HTTP code 206 means content can be seeked up in a range
+const HTTP_PARTIAL_CONTENT = 206
 
 //A wrapper for HTTP responses. You will be able to set/retreive the headers sent/receive.
 //You will encounter this when doing a request or sending a response to the client.
@@ -365,40 +441,50 @@ struct http_response {
     headers: []string*
     code: int = HTTP_OK
     body: string*
+    headersSent: bool = false
 
     //Send the response.
     //*Use it only when sending response to the client from a http_server*.
     send() {
-        s = string("HTTP/1.0 ")
-        if this.code == HTTP_OK {
-            s.append("200 OK")
-        } else if this.code == HTTP_NOT_FOUND {
-            s.append("404 Not Found")
-        } else if this.code == HTTP_FORBIDDEN {
-            s.append("400 Bad Request")
-        } else if this.code == HTTP_ERROR {
-            s.append("500 Internal Server Error")
-        } else if this.code == HTTP_REDIRECT {
-            s.append("301 Moved Permanently")
-        } else {
-            s.append(intToStr(this.code))
-        }
-        s.append("\r\n")
-        
-        i = 0
-        
-        for i < len(this.headers) {
-            e = this.headers[i]
-            s.append(e.content)
+        if this.headersSent == false {
+            s = string("HTTP/1.0 ")
+            if this.code == HTTP_OK {
+                s.append("200 OK")
+            } else if this.code == HTTP_NOT_FOUND {
+                s.append("404 Not Found")
+            } else if this.code == HTTP_FORBIDDEN {
+                s.append("400 Bad Request")
+            } else if this.code == HTTP_ERROR {
+                s.append("500 Internal Server Error")
+            } else if this.code == HTTP_REDIRECT {
+                s.append("301 Moved Permanently")
+            } else if this.code == HTTP_PARTIAL_CONTENT {
+                s.append("206 Partial Content")
+            } else {
+                s.append(intToStr(this.code))
+            }
             s.append("\r\n")
-            i = i + 1
-        }
-        
-        s.append("\r\n")
+            
+            i = 0
+            
+            for i < len(this.headers) {
+                e = this.headers[i]
+                s.append(e.content)
+                s.append("\r\n")
+                i = i + 1
+            }
+            
+            s.append("\r\n")
 
-        body = this.body
-        s.append(body.content)
-        http_send(this.connfd, s.content)
+            
+            s.append(this.body.content)
+            this.body.set("")
+            http_send(this.connfd, s.content)
+            headersSent = true
+        } else {
+            http_send(this.connfd, this.body.str())
+            this.body.set("")
+        }
 
     }
 
@@ -508,6 +594,7 @@ makeRawHttpsRequest(host cpstring, message cpstring) cpstring {
     SSL_set_mode(ssl, 4)
 
     BIO_set_conn_hostname(bio, host)
+    println("connecting to '"+host+"' with '"+message+"'")
     if BIO_do_connect(bio) <= 0 {
         panic("http: error connecting through ssl")
     }
@@ -544,7 +631,11 @@ makeRawRequest(method cpstring, u http_url, args []cpstring) http_response {
     path = u.path
     
     serv_addr sockaddr_in
+
     portno = 80
+    if u.port.length > 0 {
+        portno = atoi(u.port.content)
+    }
     response = string("")
     
     message = string(" ")
@@ -741,6 +832,7 @@ isPortAvailable(port int) int {
     cmdS = intToString(port)
     cmdS.prepend("netstat -antu | grep :")
     cmd = command(cmdS.str())
+    cmd.error = false
     s = cmd.run()
     if strlen(s) > 0 {
         return 0

@@ -6,52 +6,52 @@
 #include "iostream.bah"
 #include "memory.bah"
 
-#cLib "lX11"
+#cLib "Wl,-Bdynamic -lX11"
 
-#define! Display struct
+#define! Display ptr
 #define! Window int
-#define! GC struct
+#define! GC ptr
 #define! XEvent ptr
 
 #define! XColor ptr
 #define! Colormap ptr
 
-#define! Font struct
+#define! Font ptr
 
 struct! XFontStruct {
     fid: Font
 }
 #define! KeySym int
 
-#define XOpenDisplay(d int) Display*
-#define DefaultScreen(d Display*) int
-#define XCreateSimpleWindow(d Display*, p Window, x int, y int, w int, h int, bw int, b uint, bg uint) Window
-#define RootWindow(d Display*, s int) Window
-#define BlackPixel(d Display*, s int) uint
-#define WhitePixel(d Display*, s int) uint
-#define XSelectInput(d Display*,w Window,e int)
-#define XMapWindow(d Display*, w Window)
-#define XNextEvent(d Display*, e XEvent*)
-#define XCloseDisplay(d Display*)
-#define XClearArea(d Display*, w Window ,x int, y int, w int, h int, c int)
-#define DefaultGC(d Display*, s int) GC
-#define XFillRectangle(d Display*, w Window, gc GC, x int, y int, w int, h int)
-#define XDrawString(d Display*, w Window, gc GC, x int, y int, s cpstring, l int)
-#define XDefaultColormap(d Display*,s int) Colormap
-#define XAllocColor(d Display*,cmap Colormap,cc XColor*) int
-#define XSetForeground(d Display*,gc GC,p uint)
-#define XSetBackground(d Display*,gc GC,p uint)
-#define XCreateGC(d Display*,w Window,ma int,mb int)
-#define XFlush(d Display*)
-#define XGetGeometry(d Display*, w Window, rw int, x int, y int, w int*, h int*, bw int, d int)
-#define XLoadQueryFont(d Display*, name cpstring) XFontStruct*
-#define XSetFont(d Display*, gc GC, f Font)
-#define XTextWidth(f XFontStruct*, s cpstring, l int) int
-#define XFreeFont(d Display*, f XFontStruct*)
-#define XDrawLine(d Display*, w Window, gc GC, x1 int, y1 int, x2 int, y2 int)
-#define XDrawArc(d Display*, w Window, gc GC, x int, y int, w int, h int, a1 int, a2 int)
-#define XFillArc(d Display*, w Window, gc GC, x int, y int, w int, h int, a1 int, a2 int)
-#define XLookupString(evt XEvent*, buff cpstring, len int, key KeySym*, status int)
+#define! XOpenDisplay(d int) Display*
+#define! DefaultScreen(d Display*) int
+#define! XCreateSimpleWindow(d Display*, p Window, x int, y int, w int, h int, bw int, b uint, bg uint) Window
+#define! RootWindow(d Display*, s int) Window
+#define! BlackPixel(d Display*, s int) uint
+#define! WhitePixel(d Display*, s int) uint
+#define! XSelectInput(d Display*,w Window,e int)
+#define! XMapWindow(d Display*, w Window)
+#define! XNextEvent(d Display*, e XEvent*)
+#define! XCloseDisplay(d Display*)
+#define! XClearArea(d Display*, w Window ,x int, y int, w int, h int, c int)
+#define! DefaultGC(d Display*, s int) GC
+#define! XFillRectangle(d Display*, w Window, gc GC, x int, y int, w int, h int)
+#define! XDrawString(d Display*, w Window, gc GC, x int, y int, s cpstring, l int)
+#define! XDefaultColormap(d Display*,s int) Colormap
+#define! XAllocColor(d Display*,cmap Colormap,cc XColor*) int
+#define! XSetForeground(d Display*,gc GC,p uint)
+#define! XSetBackground(d Display*,gc GC,p uint)
+#define! XCreateGC(d Display*,w Window,ma int,mb int) GC
+#define! XFlush(d Display*)
+#define! XGetGeometry(d Display*, w Window, rw int, x int, y int, w int*, h int*, bw int, d int)
+#define! XLoadQueryFont(d Display*, name cpstring) XFontStruct*
+#define! XSetFont(d Display*, gc GC, f Font)
+#define! XTextWidth(f XFontStruct*, s cpstring, l int) int
+#define! XFreeFont(d Display*, f XFontStruct*)
+#define! XDrawLine(d Display*, w Window, gc GC, x1 int, y1 int, x2 int, y2 int)
+#define! XDrawArc(d Display*, w Window, gc GC, x int, y int, w int, h int, a1 int, a2 int)
+#define! XFillArc(d Display*, w Window, gc GC, x int, y int, w int, h int, a1 int, a2 int)
+#define! XLookupString(evt XEvent*, buff cpstring, len int, key KeySym*, status int)
 keysym KeySym = <KeySym>418
 
 struct winEvent {
@@ -138,13 +138,16 @@ NEW_STYLE_STRUCT() style {
 }
 
 struct graphicElemStyle {
-    background: style = NEW_STYLE_STRUCT()
-    border: style = NEW_STYLE_STRUCT()
-    text: style = NEW_STYLE_STRUCT()
+    background: style
+    border: style
+    text: style
 }
 
 NEW_ELEM_STYLE_STRUCT() graphicElemStyle {
     ges = graphicElemStyle{}
+    ges.background = NEW_STYLE_STRUCT()
+    ges.border = NEW_STYLE_STRUCT()
+    ges.text = NEW_STYLE_STRUCT()
     return ges
 }
 
@@ -157,14 +160,13 @@ struct graphicElem extend graphicElemStyle {
 
     isHovered: int
 
-    hover: graphicElemStyle = NEW_ELEM_STYLE_STRUCT()
+    hover: graphicElemStyle
 
     type: int
-    content: cpstring = <cpstring>0
+    content: cpstring = null
 
-    handle(app ptr) {
-
-    }
+    handle: function(graphicElem* , ptr)
+                                    //graphicApp*
 
     setText(t cpstring) {
         this.content = memoryAlloc(strlen(t)+1)
@@ -197,9 +199,7 @@ struct graphicApp {
 
     elems: []graphicElem*
     
-    handle(type ptr) {
-
-    }
+    handle:function(graphicApp*,winEvent*)
 
     destroy() {
         this.exit = 1
@@ -228,12 +228,12 @@ struct graphicApp {
 
     setFont(name cpstring) {
 
-        if this.currentFont != 0 {
+        if this.currentFont != null {
             XFreeFont(this.d, this.currentFont)
         }
 
         font = XLoadQueryFont(this.d, name)
-        if font != 0 {
+        if font != null {
             this.currentFont = font
             //XSetFont(this.d, this.gc, font.fid)
         } else {
@@ -246,7 +246,7 @@ struct graphicApp {
     setColor(r int, g int, b int) {
         if this.lastR == r {
             if this.lastB == b {
-                if this.lastG = g {
+                if this.lastG == g {
                     return
                 }
             }
@@ -260,10 +260,10 @@ struct graphicApp {
         if b == 0 {
             b = 1
         }
-        noCheck(this->color.flags = DoRed | DoGreen | DoBlue)
-        noCheck(this->color.red = r * 257)
-        noCheck(this->color.green = g * 257)
-        noCheck(this->color.blue = b * 257)
+        noCheck(this->noCheck(color).flags = DoRed | DoGreen | DoBlue)
+        noCheck(this->noCheck(color).red = r * 257)
+        noCheck(this->noCheck(color).green = g * 257)
+        noCheck(this->noCheck(color).blue = b * 257)
         this.lastR = r
         this.lastG = g
         this.lastB = b
@@ -271,7 +271,7 @@ struct graphicApp {
            println("window: Color allocation failed.")
         }
         p uint 
-        noCheck(p = this->color.pixel)
+        noCheck(p = this->noCheck(color).pixel)
         XSetForeground(this.d,this.gc,p)
     }
 
@@ -280,6 +280,12 @@ struct graphicApp {
     button(name cpstring, x int, y int, w int, hdl ptr) graphicElem* {
         this.currentElemId = this.currentElemId + 1 
         elem = new graphicElem
+
+        elem.hover = NEW_ELEM_STYLE_STRUCT()
+        elem.background = NEW_STYLE_STRUCT()
+        elem.border = NEW_STYLE_STRUCT()
+        elem.text = NEW_STYLE_STRUCT()
+
         elem.id = this.currentElemId
         elem.setText(name)
         elem.x = x
@@ -303,6 +309,12 @@ struct graphicApp {
     input(name cpstring, x int, y int, w int, h int, hdl ptr) graphicElem* {
         this.currentElemId = this.currentElemId + 1 
         elem = new graphicElem
+
+        elem.hover = NEW_ELEM_STYLE_STRUCT()
+        elem.background = NEW_STYLE_STRUCT()
+        elem.border = NEW_STYLE_STRUCT()
+        elem.text = NEW_STYLE_STRUCT()
+
         elem.id = this.currentElemId
         elem.setText(name)
         elem.x = x
@@ -345,7 +357,7 @@ struct graphicApp {
                 g int
                 b int
 
-                if ptr.isHovered {
+                if ptr.isHovered == 1 {
                     r = ptr.hover.background.color.r
                     g = ptr.hover.background.color.g
                     b = ptr.hover.background.color.b
@@ -361,7 +373,7 @@ struct graphicApp {
                 
                 ogc = this.gc
                 p uint
-                noCheck(p = this->color.pixel)
+                noCheck(p = this->noCheck(color).pixel)
                 XSetForeground(this.d,this.gc,p)
                 //top left
                 XFillArc(this.d, this.w, this.gc, ptr.x, ptr.y, borderRadius, borderRadius, 90 * 64, 90 * 64)
@@ -378,7 +390,7 @@ struct graphicApp {
                 this.fillRect(ptr.x+hbr,ptr.y,ptr.width-borderRadius,ptr.height)
                 
 
-                if ptr.isHovered {
+                if ptr.isHovered == 1 {
                     r = ptr.hover.text.color.r
                     g = ptr.hover.text.color.g
                     b = ptr.hover.text.color.b
@@ -395,14 +407,14 @@ struct graphicApp {
                 text = string(ptr.content)
                 for textWidth >= ptr.width {
                     text.trimLeft(1)
-                    textWidth = XTextWidth(this.currentFont, text, text.length)
+                    textWidth = XTextWidth(this.currentFont, text.str(), text.length)
                 }
 
                 r int
                 g int
                 b int
 
-                if ptr.isHovered {
+                if ptr.isHovered == 1 {
                     r = ptr.hover.background.color.r
                     g = ptr.hover.background.color.g
                     b = ptr.hover.background.color.b
@@ -415,7 +427,7 @@ struct graphicApp {
 
                 this.fillRect(ptr.x,ptr.y,ptr.width,ptr.height)
 
-                if ptr.isHovered {
+                if ptr.isHovered == 1 {
                     r = ptr.hover.border.color.r
                     g = ptr.hover.border.color.g
                     b = ptr.hover.border.color.b
@@ -430,7 +442,7 @@ struct graphicApp {
                 this.drawLine(ptr.x, ptr.y+ptr.height-1, ptr.x+ptr.width-1, ptr.y+ptr.height-1)
                 this.drawLine(ptr.x+ptr.width-1, ptr.y, ptr.x+ptr.width-1, ptr.y+ptr.height-1)
 
-                if ptr.isHovered {
+                if ptr.isHovered == 1 {
                     r = ptr.hover.text.color.r
                     g = ptr.hover.text.color.g
                     b = ptr.hover.text.color.b
@@ -443,7 +455,7 @@ struct graphicApp {
                 if ptr == this.focusElem {
                     text.append("|")
                 }
-                this.text(ptr.x+5,ptr.y+ptr.height/2+4,text)
+                this.text(ptr.x+5,ptr.y+ptr.height/2+4,text.str())
             }
 
             i = i + 1
@@ -478,7 +490,7 @@ struct graphicApp {
     }
 
     keyPressElems(key char) {
-        if this.focusElem == 0 {
+        if this.focusElem == null {
             return
         }
         if this.focusElem.type != 1 {
@@ -496,7 +508,7 @@ struct graphicApp {
         } else {
             text.append(charToString(key))
         }
-        this.focusElem.setText(text)
+        this.focusElem.setText(text.str())
         this.clear()
     }
 
@@ -526,7 +538,7 @@ struct graphicApp {
                     ptr.isHovered = 0
                 }
             }
-            if changed {
+            if changed == 1 {
                 this.clear()
             }
             i = i + 1
@@ -537,7 +549,7 @@ struct graphicApp {
         this.windowWidth = w
         this.windowHeight = h
         this.d = XOpenDisplay(0)
-        if this.d == 0 {
+        if this.d == null {
             println("window: error openning display")
             exit(1)
         }
@@ -553,15 +565,14 @@ struct graphicApp {
         createEvt = new winEvent
         createEvt.type = WIN_EVENT_CREATE
         this.setFont("*")
-        this.handle(createEvt)
+        // this.handle(createEvt)
         for this.exit == 0 {
-
             XNextEvent(this.d,&e)
             evt = new winEvent
-            noCheck(evt->type = e.type)
-            noCheck(evt->clickX = e.xbutton.x)
-            noCheck(evt->clickY = e.xbutton.y)
-            noCheck(evt->keyCode = e.xkey.keycode)
+            noCheck(evt->type = noCheck(e).type)
+            noCheck(evt->clickX = noCheck(e).noCheck(xbutton).x)
+            noCheck(evt->clickY = noCheck(e).noCheck(xbutton).y)
+            noCheck(evt->keyCode = noCheck(e).noCheck(xkey).keycode)
             
 
             if evt.type == WIN_EVENT_DRAW {
@@ -579,7 +590,7 @@ struct graphicApp {
                 this.hoverElems(evt.clickX, evt.clickY)
             }
 
-            this.handle(evt)
+            // this.handle(this, evt)
             //XFlush(this.d)
             //XFlush(this.d)
             

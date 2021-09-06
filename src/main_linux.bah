@@ -8,7 +8,7 @@
 ///////////////////////OS SPECIFIC THINGS////////////////////////
 const BAH_DIR = "/opt/bah/"
 //////////////////////BUILD SPECIFIC THINGS//////////////////////
-const BAH_VERSION = "v1.0 (build 16)"
+const BAH_VERSION = "v1.0 (build 18)"
 #include "./globals.bah"
 
 #include "./lexer.bah"
@@ -22,6 +22,7 @@ main(args []cpstring) int {
     flags.addBool("c", "Translate bah file to C instead of compiling it.")
     flags.addBool("v", "Show version of the compiler.")
     flags.addBool("l", "Compile as a library.")
+    flags.addBool("d", "Compile as a dynamic executable. (useful if you are using a library that is only available shared but might reduce portability).")
     flags.parse(args)
 
     if flags.isSet("v") == 1 {
@@ -86,12 +87,20 @@ return __BAH__main((__BAH_ARR_TYPE_cpstring)args);
     }
     parseLines(tokens, elems)
 
+    totalTime = getTimeUnix() - startTime
+    println("Parsed. ("+intToStr(totalLines)+" lines parsed in "+intToStr(totalTime / 1000000)+"ms)\e[0m")
+
     if flags.isSet("o") == 1 {
         fileName = flags.get("o")
     } else {
         outFileName = string(fileName)
         outFileName.trimRight(4)
         fileName = outFileName.str()
+    }
+
+    isStatic = "-static"
+    if flags.isSet("d") == 1 {
+        isStatic = ""
     }
 
     if flags.isSet("c") == 0 {
@@ -109,7 +118,7 @@ return __BAH__main((__BAH_ARR_TYPE_cpstring)args);
         fs.writeFile(OUTPUT.toStr())
         fs.close()
 
-        gccArgs = "gcc "+ randFileName+ " -w -o "+fileName
+        gccArgs = "gcc "+ randFileName+ " "+isStatic+" -w -o "+fileName
         
         if flags.isSet("l") == 1 {
             gccArgs = gccArgs + " -c"
@@ -124,9 +133,10 @@ return __BAH__main((__BAH_ARR_TYPE_cpstring)args);
         }
 
         cmd = command(gccArgs)
-        gccOut = cmd.run()
+        cmd.error = false
+        cmd.run()
         removeFile(randFileName)
-        if strlen(gccOut) > 0 {   
+        if cmd.status != 0 {   
             println("\e[1;31m[GCC-ERROR]\e[0m\nCould not compiled.")
             exit(1)
         }
@@ -141,7 +151,7 @@ return __BAH__main((__BAH_ARR_TYPE_cpstring)args);
             fileName = fileName + ".c"
         }
 
-        gccArgs = "gcc "+ fileName+ " -w "
+        gccArgs = "gcc "+ fileName+ " "+isStatic+" -w "
         cLibs = compilerState.cLibs
         i=0;for i < len(cLibs) {
             l = cLibs[i]
@@ -156,6 +166,6 @@ return __BAH__main((__BAH_ARR_TYPE_cpstring)args);
     }
 
     totalTime = getTimeUnix() - startTime
-    println("\e[1;32mDone. ("+intToStr(totalLines)+" lines compiled in "+intToStr(totalTime / 1000000)+"ms)\e[0m")
+    println("\e[1;32mDone. (compiled in "+intToStr(totalTime / 1000000)+"ms)\e[0m")
     return 0
 }

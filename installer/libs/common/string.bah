@@ -4,14 +4,13 @@
 #include "memory.bah"
 
 #include "cBinds.bah"
-#cLib "lm"
 
 #define! strncpy(dest cpstring, src cpstring, size int)
 #define! memcpy(dest ptr, src ptr, size int)
 #define! sscanf(str cpstring, format cpstring, dest ptr)
 #define! strtol(str cpstring, endptr ptr, base int) int
 #define! strtod(str cpstring, endptr int) float
-#define! memset(str ptr*, w int, s int)
+#define! memset(str ptr, w int, s int)
 
 cpstringCharAt(s cpstring, i int) char {
     c = <char>0

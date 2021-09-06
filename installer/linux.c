@@ -1,4 +1,4 @@
-//COMPILE WITH: 'gcc linux.c -w  -static -w /opt/bah/libs/libgc.a -lpthread -lm'
+//COMPILE WITH: 'gcc linux.c -static -w  -w /opt/bah/libs/libgc.a -lpthread -lm'
 
 #include "/opt/bah/libs/include/gc.h"
 
@@ -791,12 +791,16 @@ FILE* handle;
 long int(*isValid)(struct fileStream* this);
 void(*open)(struct fileStream* this,char * path,char * mode);
 void(*close)(struct fileStream* this);
+long int(*getPos)(struct fileStream* this);
+void(*setPos)(struct fileStream* this,long int i);
 long int(*getSize)(struct fileStream* this);
 char *(*readContent)(struct fileStream* this);
 void(*rewind)(struct fileStream* this);
 char(*getChar)(struct fileStream* this);
 void(*createFile)(struct fileStream* this,char * path);
 long int(*writeFile)(struct fileStream* this,char * content);
+void(*writePtr)(struct fileStream* this,void * a,long int s);
+void(*readPtr)(struct fileStream* this,void * a,long int s);
 };
 long int fileStream__isValid(struct fileStream* this){
 if ((this->handle==null)) {
@@ -813,13 +817,26 @@ return ;
 }
 fclose(this->handle);
 };
+long int fileStream__getPos(struct fileStream* this){
+if ((this->isValid(this)==0)) {
+return 0;
+}
+return ftell(this->handle);
+};
+void fileStream__setPos(struct fileStream* this,long int i){
+if ((this->isValid(this)==0)) {
+return ;
+}
+fseek(this->handle,i,0);
+};
 long int fileStream__getSize(struct fileStream* this){
 if ((this->isValid(this)==0)) {
 return -1;
 }
+long int oldPos =  this->getPos(this);
 fseek(this->handle,0,2);
 long int size =  ftell(this->handle);
-fclose(this->handle);
+this->setPos(this,oldPos);
 return size;
 };
 char * fileStream__readContent(struct fileStream* this){
@@ -890,8 +907,15 @@ return -1;
 fputs(content,this->handle);
 return 1;
 };
+void fileStream__writePtr(struct fileStream* this,void * a,long int s){
+fwrite(a,s,1,this->handle);
+};
+void fileStream__readPtr(struct fileStream* this,void * a,long int s){
+fread(a,s,1,this->handle);
+};
 struct fileMap {
 long int handle;
+long int size;
 char *(*open)(struct fileMap* this,char * fileName);
 long int(*isValid)(struct fileMap* this);
 void(*close)(struct fileMap* this);
@@ -900,6 +924,7 @@ char * fileMap__open(struct fileMap* this,char * fileName){
 this->handle =  open(fileName,noCheck( O_RDWR ),noCheck( S_IRUSR | S_IWUSR ));
 struct stat sb =  {};
 fstat(this->handle,&sb);
+this->size =  sb.st_size;
 char * file =  mmap(0,sb.st_size,noCheck( PROT_READ | PROT_WRITE ),noCheck( MAP_SHARED ),this->handle,0);
 return file;
 };
@@ -1235,12 +1260,16 @@ struct fileStream fs =  {};
 fs.isValid = fileStream__isValid;
 fs.open = fileStream__open;
 fs.close = fileStream__close;
+fs.getPos = fileStream__getPos;
+fs.setPos = fileStream__setPos;
 fs.getSize = fileStream__getSize;
 fs.readContent = fileStream__readContent;
 fs.rewind = fileStream__rewind;
 fs.getChar = fileStream__getChar;
 fs.createFile = fileStream__createFile;
 fs.writeFile = fileStream__writeFile;
+fs.writePtr = fileStream__writePtr;
+fs.readPtr = fileStream__readPtr;
 fs.open(&fs,"/dev/urandom","r");
 char c =  fs.getChar(&fs);
 fs.close(&fs);
@@ -1259,14 +1288,18 @@ char * cm =  this->command;
 if ((this->error==false)) {
 cm =  concatCPSTRING(cm," 2>/dev/null");
 }
-this->handle =  popen(cm,"w");
+else {
+cm =  concatCPSTRING(cm," 2>&1");
+}
+this->handle =  popen(cm,"r");
 if ((this->handle==null)) {
 return "";
 }
 char * buff =  memoryAlloc(1025);
 char * res =  "";
-long int more =  1;
-while ((more==1)) {
+char * more =  "";
+while (((void *)more!=null)) {
+memset(buff,0,1025);
 more =  fgets(buff,1024,this->handle);
 res =  concatCPSTRING(res,buff);
 };
@@ -1447,7 +1480,7 @@ r->len =  n1;
 return r;
 };
 #define BAH_DIR "/opt/bah/"
-#define BAH_VERSION "v1.0 (build 16)"
+#define BAH_VERSION "v1.0 (build 18)"
 struct rope* OUTPUT;
 char * NEXT_LINE =  "";
 struct variable {
@@ -5977,6 +6010,7 @@ flags.addString(&flags,"o","Name of the file to output.");
 flags.addBool(&flags,"c","Translate bah file to C instead of compiling it.");
 flags.addBool(&flags,"v","Show version of the compiler.");
 flags.addBool(&flags,"l","Compile as a library.");
+flags.addBool(&flags,"d","Compile as a dynamic executable. (useful if you are using a library that is only available shared but might reduce portability).");
 flags.parse(&flags,args);
 if ((flags.isSet(&flags,"v")==1)) {
 println(concatCPSTRING(concatCPSTRING("Bah compiler version: ",BAH_VERSION),".\n© Alois Laurent Boe"));
@@ -6051,6 +6085,8 @@ elems->vars = memoryAlloc(sizeof(array(struct variable*)));
 panic(concatCPSTRING(concatCPSTRING("Could not find std-libs, please check '",BAH_DIR),"'"));
 }
 parseLines(tokens,elems);
+long int totalTime =  getTimeUnix() - startTime;
+println(concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING("Parsed. (",intToStr(totalLines))," lines parsed in "),intToStr(totalTime / 1000000)),"ms)\e[0m"));
 if ((flags.isSet(&flags,"o")==1)) {
 fileName =  flags.get(&flags,"o");
 }
@@ -6058,6 +6094,10 @@ else {
 struct string outFileName =  string(fileName);
 outFileName.trimRight(&outFileName,4);
 fileName =  outFileName.str(&outFileName);
+}
+char * isStatic =  "-static";
+if ((flags.isSet(&flags,"d")==1)) {
+isStatic =  "";
 }
 if ((flags.isSet(&flags,"c")==0)) {
 char * randFileName =  "TMP_C_FILE_";
@@ -6073,16 +6113,20 @@ struct fileStream fs =  {};
 fs.isValid = fileStream__isValid;
 fs.open = fileStream__open;
 fs.close = fileStream__close;
+fs.getPos = fileStream__getPos;
+fs.setPos = fileStream__setPos;
 fs.getSize = fileStream__getSize;
 fs.readContent = fileStream__readContent;
 fs.rewind = fileStream__rewind;
 fs.getChar = fileStream__getChar;
 fs.createFile = fileStream__createFile;
 fs.writeFile = fileStream__writeFile;
+fs.writePtr = fileStream__writePtr;
+fs.readPtr = fileStream__readPtr;
 fs.open(&fs,randFileName,"w");
 fs.writeFile(&fs,OUTPUT->toStr(OUTPUT));
 fs.close(&fs);
-char * gccArgs =  concatCPSTRING(concatCPSTRING(concatCPSTRING("gcc ",randFileName)," -w -o "),fileName);
+char * gccArgs =  concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING("gcc ",randFileName)," "),isStatic)," -w -o "),fileName);
 if ((flags.isSet(&flags,"l")==1)) {
 gccArgs =  concatCPSTRING(gccArgs," -c");
 }
@@ -6094,9 +6138,10 @@ gccArgs =  concatCPSTRING(concatCPSTRING(gccArgs," -"),l);
 i =  i + 1;
 };
 struct command cmd =  command(gccArgs);
-char * gccOut =  cmd.run(&cmd);
+cmd.error =  false;
+cmd.run(&cmd);
 removeFile(randFileName);
-if ((strlen(gccOut)>0)) {
+if ((cmd.status!=0)) {
 println("\e[1;31m[GCC-ERROR]\e[0m\nCould not compiled.");
 exit(1);
 }
@@ -6109,7 +6154,7 @@ else {
 if ((flags.isSet(&flags,"o")==0)) {
 fileName =  concatCPSTRING(fileName,".c");
 }
-char * gccArgs =  concatCPSTRING(concatCPSTRING("gcc ",fileName)," -w ");
+char * gccArgs =  concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING("gcc ",fileName)," "),isStatic)," -w ");
 array(char *)* cLibs =  compilerState.cLibs;
 long int i =  0;
 while ((i<len(cLibs))) {
@@ -6122,17 +6167,21 @@ struct fileStream fs =  {};
 fs.isValid = fileStream__isValid;
 fs.open = fileStream__open;
 fs.close = fileStream__close;
+fs.getPos = fileStream__getPos;
+fs.setPos = fileStream__setPos;
 fs.getSize = fileStream__getSize;
 fs.readContent = fileStream__readContent;
 fs.rewind = fileStream__rewind;
 fs.getChar = fileStream__getChar;
 fs.createFile = fileStream__createFile;
 fs.writeFile = fileStream__writeFile;
+fs.writePtr = fileStream__writePtr;
+fs.readPtr = fileStream__readPtr;
 fs.open(&fs,fileName,"w");
 fs.writeFile(&fs,OUTPUT->toStr(OUTPUT));
 fs.close(&fs);
 }
-long int totalTime =  getTimeUnix() - startTime;
-println(concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING("\e[1;32mDone. (",intToStr(totalLines))," lines compiled in "),intToStr(totalTime / 1000000)),"ms)\e[0m"));
+totalTime =  getTimeUnix() - startTime;
+println(concatCPSTRING(concatCPSTRING("\e[1;32mDone. (compiled in ",intToStr(totalTime / 1000000)),"ms)\e[0m"));
 return 0;
 };

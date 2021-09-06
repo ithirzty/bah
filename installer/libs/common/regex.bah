@@ -37,7 +37,7 @@ matchToken(tp ptr, c char) int {
     t regexToken* = tp
     if t.type == REGEX_TYPE_WORD {
         if isAlphaNumeric(c) {
-            if t.invert {
+            if t.invert == 1 {
                 return 0
             }
             return 1
@@ -48,7 +48,7 @@ matchToken(tp ptr, c char) int {
         }
     } else if t.type == REGEX_TYPE_DIGIT {
         if isNumber(c) {
-            if t.invert {
+            if t.invert == 1 {
                 return 0
             }
             return 1
@@ -59,7 +59,7 @@ matchToken(tp ptr, c char) int {
         }
     } else if t.type == REGEX_TYPE_SPACE {
         if isSpace(c) {
-            if t.invert {
+            if t.invert == 1 {
                 return 0
             }
             return 1
@@ -126,7 +126,7 @@ struct regex {
                 isGroup = 0
                 i=i+1
                 continue
-            } else if isGroup {
+            } else if isGroup == 1 {
                 found = 0
                 glm1 = len(this.groups) - 1
                 cg = []regexToken*
@@ -203,7 +203,7 @@ struct regex {
                         goBackI = goBackI - 1
                         continue
                     }
-                    if pt == 0 {
+                    if pt == null {
                         return 0
                     }
                     ppt.match.set("")
@@ -224,7 +224,7 @@ struct regex {
                                         nm.append(charToString(nmc))
                                         nmI = nmI + 1
                                     }
-                                    pt.match.set(nm)
+                                    pt.match.set(nm.str())
                                     if maxNm == 0 {
                                         canGoBack = 0
                                         goBackI = goBackI - 1
@@ -242,7 +242,7 @@ struct regex {
                                         nm.append(charToString(nmc))
                                         nmI = nmI + 1
                                     }
-                                    pt.match.set(nm)
+                                    pt.match.set(nm.str())
                                     if maxNm == 0 {
                                         canGoBack = 0
                                         goBackI = goBackI - 1
@@ -322,7 +322,7 @@ struct regex {
             gs = string("")
             gi=0;for gi<len(g) {
                 t = g[gi]
-                gs.append(t.match)
+                gs.append(t.match.str())
                 gi = gi + 1
             }
             la = len(a)
@@ -344,7 +344,7 @@ compileRegex(cpexpr cpstring) regex* {
         c = expr.charAt(i)
         tk = new regexToken
         tk.match = string("")
-        if c == 92 {
+        if c == <char>92 {
             nc = expr.charAt(i+1)
             if nc == '^' {
                 tk.type = REGEX_TYPE_TEXT
@@ -391,7 +391,7 @@ compileRegex(cpexpr cpstring) regex* {
             for i < expr.length {
                 c = expr.charAt(i)            
                 if c == ']' {
-                    if expr.charAt(i-1) != 92 {
+                    if expr.charAt(i-1) != <char>92 {
                         break
                     }
                 }
@@ -413,13 +413,13 @@ compileRegex(cpexpr cpstring) regex* {
         } else if i == 0 {
             tk.type = REGEX_TYPE_TEXT
             tk.content = c
-        } else if expr.charAt(i-1) != 92 {
+        } else if expr.charAt(i-1) != <char>92 {
             tk.type = REGEX_TYPE_TEXT
             tk.content = c
         }
         
         if i > 0 {
-            if expr.charAt(i-1) == 92 {
+            if expr.charAt(i-1) == <char>92 {
                 if c == 'w' {
                     tk.type = REGEX_TYPE_WORD
                 } else if c == 'W' {
@@ -441,7 +441,7 @@ compileRegex(cpexpr cpstring) regex* {
                     tk.type = REGEX_TYPE_SPACE
                     tk.invert = 1
                 } else {
-                    rz = <regex*>0
+                    rz = null
                     return rz
                 }
 
@@ -471,7 +471,7 @@ compileRegex(cpexpr cpstring) regex* {
                                 break
                             }else if c == ',' {
                                 isMin = 0
-                            } else if isMin {
+                            } else if isMin == 1 {
                                 if isNumber(c) == 0 {
                                     zr = <ptr>0
                                     return zr
