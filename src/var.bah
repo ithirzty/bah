@@ -334,7 +334,6 @@ declareStructMethods(v variable*, s cStruct*, elems Elems*) cpstring {
 
     if strlen(s.extendedFrom) > 0 {
         es = searchStruct(s.extendedFrom, elems)
-        println(s.name+" is extended with "+intToStr(len(es.methods)))
         i=0; for i < len(es.methods) {
             m = es.methods[i]
             code = code + v.name + sep + m.name + " = " + es.name + "__" + m.name + ";\n"

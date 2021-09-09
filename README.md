@@ -74,6 +74,7 @@ Bah is a really fast language that is low level enough for most cases while bein
 As well as being easy to learn, you can create 
 - website (such as the [bah-lang](https://bah-lang.xyz) website),
 - compilers (the bah compiler is written in bah),
+- interpreters (such as the [Brainfuck interpreter](https://github.com/ithirzty/bah-brainfuck)),
 - web apps (the documentation of bah is wrapped up in a [web app](https://github.com/ithirzty/bah-website)),
 - and many more.
 > You did something awesome in bah? Add it to the list!

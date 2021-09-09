@@ -1,4 +1,4 @@
-//COMPILE WITH: 'gcc linux.c -static -w  -w /opt/bah/libs/libgc.a -lpthread -lm'
+//COMPILE WITH: 'gcc linux.c -static -w  -w /opt/bah/libs/libgc.a -lpthread -lm -g'
 
 #include "/opt/bah/libs/include/gc.h"
 
@@ -261,7 +261,7 @@ needle.charAt = string__charAt;
 needle.compare = string__compare;
 needle.str = string__str;
 needle.replace = string__replace;
-needle.set(&needle,nd);
+needle.set((struct string*)&needle,nd);
 struct string repl =  {};
 repl.set = string__set;
 repl.append = string__append;
@@ -270,7 +270,7 @@ repl.charAt = string__charAt;
 repl.compare = string__compare;
 repl.str = string__str;
 repl.replace = string__replace;
-repl.set(&repl,rl);
+repl.set((struct string*)&repl,rl);
 long int i =  0;
 long int si =  0;
 array(char)* replcBuff = memoryAlloc(sizeof(array(char)));
@@ -282,8 +282,8 @@ array(char)* buff = memoryAlloc(sizeof(array(char)));
 buff->length = 0;
 buff->elemSize = sizeof(char);
 while ((i<this->length)) {
-char c =  this->charAt(this,i);
-char rc =  needle.charAt(&needle,si);
+char c =  this->charAt((struct string*)this,i);
+char rc =  needle.charAt((struct string*)&needle,si);
 if ((c==rc)) {
 si =  si + 1;
 
@@ -335,10 +335,10 @@ if ((nLength+1) % 50 == 0 || nLength == 0) {
 void * newPtr = GC_REALLOC(buff->data, (nLength+50)*sizeof(char));
 buff->data = newPtr;
 }
-buff->data[len(buff)] =  repl.charAt(&repl,ii);
+buff->data[len(buff)] =  repl.charAt((struct string*)&repl,ii);
 buff->length = nLength+1;
 } else {
-buff->data[len(buff)] =  repl.charAt(&repl,ii);
+buff->data[len(buff)] =  repl.charAt((struct string*)&repl,ii);
 };
 };
 ii =  ii + 1;
@@ -355,7 +355,7 @@ noCheck( replbuffStr = replcBuff -> data );
 r =  concatCPSTRING(r,replbuffStr);
 }
 if (((void *)r!=null)) {
-this->set(this,r);
+this->set((struct string*)this,r);
 }
 };
 long int string__count(struct string* this,char * need){
@@ -370,11 +370,11 @@ needle.compare = string__compare;
 needle.str = string__str;
 needle.replace = string__replace;
 needle.count = string__count;
-needle.set(&needle,need);
+needle.set((struct string*)&needle,need);
 long int countIndex =  0;
 while ((i<this->length)) {
-char c =  this->charAt(this,i);
-char sc =  needle.charAt(&needle,countIndex);
+char c =  this->charAt((struct string*)this,i);
+char sc =  needle.charAt((struct string*)&needle,countIndex);
 if ((c==sc)) {
 countIndex =  countIndex + 1;
 }
@@ -396,7 +396,7 @@ if ((this->length<nl)) {
 return 0;
 }
 while ((i<nl)) {
-char c =  this->charAt(this,i);
+char c =  this->charAt((struct string*)this,i);
 char sc =  cpstringCharAt(need,i);
 if ((c!=sc)) {
 return 0;
@@ -413,7 +413,7 @@ return 0;
 long int i =  this->length - nl;
 long int needleIndex =  0;
 while ((i<this->length)) {
-char c =  this->charAt(this,i);
+char c =  this->charAt((struct string*)this,i);
 char sc =  cpstringCharAt(need,needleIndex);
 if ((c!=sc)) {
 return 0;
@@ -427,13 +427,13 @@ void string__trim(struct string* this){
 if ((this->length==0)) {
 return ;
 }
-char fc =  this->charAt(this,0);
+char fc =  this->charAt((struct string*)this,0);
 if ((isSpace(fc)==0)) {
 return ;
 }
 long int i =  0;
 while ((i<this->length)) {
-char c =  this->charAt(this,i);
+char c =  this->charAt((struct string*)this,i);
 if ((isSpace(c)==0)) {
 break;
 }
@@ -477,7 +477,7 @@ a.trimLeft = string__trimLeft;
 a.trimRight = string__trimRight;
 a.content =  (char *)0;
 a.length =  0;
-a.set(&a,s);
+a.set((struct string*)&a,s);
 return a;
 };
 typedef array(char)* __BAH_ARR_TYPE_char;
@@ -535,16 +535,16 @@ array(char)* tmpString = memoryAlloc(sizeof(array(char)));
 tmpString->length = 0;
 tmpString->elemSize = sizeof(char);
 while ((i<s.length)) {
-char c =  s.charAt(&s,i);
-char sepc =  sep.charAt(&sep,sepIndex);
+char c =  s.charAt((struct string*)&s,i);
+char sepc =  sep.charAt((struct string*)&sep,sepIndex);
 if ((c==sepc)) {
 sepIndex =  sepIndex + 1;
-replcBuff.append(&replcBuff,charToString(c));
+replcBuff.append((struct string*)&replcBuff,charToString(c));
 }
 else {
 if ((sepIndex>0)) {
 sepIndex =  0;
-replcBuff.append(&replcBuff,charToString(c));
+replcBuff.append((struct string*)&replcBuff,charToString(c));
 long int ii =  0;
 while ((ii<replcBuff.length)) {
 
@@ -555,15 +555,15 @@ if ((nLength+1) % 50 == 0 || nLength == 0) {
 void * newPtr = GC_REALLOC(tmpString->data, (nLength+50)*sizeof(char));
 tmpString->data = newPtr;
 }
-tmpString->data[len(tmpString)] =  replcBuff.charAt(&replcBuff,ii);
+tmpString->data[len(tmpString)] =  replcBuff.charAt((struct string*)&replcBuff,ii);
 tmpString->length = nLength+1;
 } else {
-tmpString->data[len(tmpString)] =  replcBuff.charAt(&replcBuff,ii);
+tmpString->data[len(tmpString)] =  replcBuff.charAt((struct string*)&replcBuff,ii);
 };
 };
 ii =  ii + 1;
 };
-replcBuff.set(&replcBuff,"");
+replcBuff.set((struct string*)&replcBuff,"");
 }
 else {
 
@@ -583,7 +583,7 @@ tmpString->data[len(tmpString)] =  c;
 }
 }
 if ((sepIndex==sep.length)) {
-replcBuff.set(&replcBuff,"");
+replcBuff.set((struct string*)&replcBuff,"");
 struct string* elem = memoryAlloc(sizeof(struct string));
 elem->set = string__set;
 elem->append = string__append;
@@ -598,7 +598,7 @@ elem->hasSuffix = string__hasSuffix;
 elem->trim = string__trim;
 elem->trimLeft = string__trimLeft;
 elem->trimRight = string__trimRight;
-elem->set(elem,arrToStr(tmpString));
+elem->set((struct string*)elem,arrToStr(tmpString));
 long int lenRes =  len(res);
 
 {
@@ -630,10 +630,10 @@ if ((nLength+1) % 50 == 0 || nLength == 0) {
 void * newPtr = GC_REALLOC(tmpString->data, (nLength+50)*sizeof(char));
 tmpString->data = newPtr;
 }
-tmpString->data[len(tmpString)] =  replcBuff.charAt(&replcBuff,ii);
+tmpString->data[len(tmpString)] =  replcBuff.charAt((struct string*)&replcBuff,ii);
 tmpString->length = nLength+1;
 } else {
-tmpString->data[len(tmpString)] =  replcBuff.charAt(&replcBuff,ii);
+tmpString->data[len(tmpString)] =  replcBuff.charAt((struct string*)&replcBuff,ii);
 };
 };
 ii =  ii + 1;
@@ -654,7 +654,7 @@ elem->hasSuffix = string__hasSuffix;
 elem->trim = string__trim;
 elem->trimLeft = string__trimLeft;
 elem->trimRight = string__trimRight;
-elem->set(elem,arrToStr(tmpString));
+elem->set((struct string*)elem,arrToStr(tmpString));
 long int lenRes =  len(res);
 
 {
@@ -683,11 +683,11 @@ if ((e.length==0)) {
 i =  i + 1;
 continue;
 }
-struct string tmpS =  string(e.str(&e));
+struct string tmpS =  string(e.str((struct string*)&e));
 if ((i!=max)) {
-tmpS.append(&tmpS,sep);
+tmpS.append((struct string*)&tmpS,sep);
 }
-s.append(&s,tmpS.str(&tmpS));
+s.append((struct string*)&s,tmpS.str((struct string*)&tmpS));
 i =  i + 1;
 };
 return s;
@@ -701,8 +701,8 @@ long int sepIndex =  0;
 long int foundIndex =  0;
 long int i =  0;
 while ((i<s.length)) {
-char c =  s.charAt(&s,i);
-char sc =  sep.charAt(&sep,sepIndex);
+char c =  s.charAt((struct string*)&s,i);
+char sc =  sep.charAt((struct string*)&sep,sepIndex);
 if ((c==sc)) {
 if ((sepIndex==0)) {
 foundIndex =  i - 1;
@@ -710,8 +710,8 @@ foundIndex =  i - 1;
 sepIndex =  sepIndex + 1;
 if ((sepIndex==sep.length)) {
 long int max =  s.length - foundIndex - 1;
-s.trimRight(&s,max);
-return s.str(&s);
+s.trimRight((struct string*)&s,max);
+return s.str((struct string*)&s);
 }
 }
 else {
@@ -729,7 +729,7 @@ ns->length = 0;
 ns->elemSize = sizeof(char);
 long int i =  0;
 while ((i<s.length)) {
-char c =  s.charAt(&s,i);
+char c =  s.charAt((struct string*)&s,i);
 if (isUpper(c)) {
 c =  c + (char)32;
 }
@@ -812,35 +812,35 @@ void fileStream__open(struct fileStream* this,char * path,char * mode){
 this->handle =  fopen(path,mode);
 };
 void fileStream__close(struct fileStream* this){
-if ((this->isValid(this)==0)) {
+if ((this->isValid((struct fileStream*)this)==0)) {
 return ;
 }
 fclose(this->handle);
 };
 long int fileStream__getPos(struct fileStream* this){
-if ((this->isValid(this)==0)) {
+if ((this->isValid((struct fileStream*)this)==0)) {
 return 0;
 }
 return ftell(this->handle);
 };
 void fileStream__setPos(struct fileStream* this,long int i){
-if ((this->isValid(this)==0)) {
+if ((this->isValid((struct fileStream*)this)==0)) {
 return ;
 }
 fseek(this->handle,i,0);
 };
 long int fileStream__getSize(struct fileStream* this){
-if ((this->isValid(this)==0)) {
+if ((this->isValid((struct fileStream*)this)==0)) {
 return -1;
 }
-long int oldPos =  this->getPos(this);
+long int oldPos =  this->getPos((struct fileStream*)this);
 fseek(this->handle,0,2);
 long int size =  ftell(this->handle);
-this->setPos(this,oldPos);
+this->setPos((struct fileStream*)this,oldPos);
 return size;
 };
 char * fileStream__readContent(struct fileStream* this){
-if ((this->isValid(this)==0)) {
+if ((this->isValid((struct fileStream*)this)==0)) {
 return "invalid";
 }
 fseek(this->handle,0,2);
@@ -897,11 +897,11 @@ char c =  getc(this->handle);
 return c;
 };
 void fileStream__createFile(struct fileStream* this,char * path){
-this->open(this,path,"w");
-this->close(this);
+this->open((struct fileStream*)this,path,"w");
+this->close((struct fileStream*)this);
 };
 long int fileStream__writeFile(struct fileStream* this,char * content){
-if ((this->isValid(this)==0)) {
+if ((this->isValid((struct fileStream*)this)==0)) {
 return -1;
 }
 fputs(content,this->handle);
@@ -1129,7 +1129,7 @@ struct flag* flags__getFlag(struct flags* this,struct string name){
 long int i =  0;
 while ((i<len(this->flags))) {
 struct flag* flag =  this->flags->data[i];
-if (name.compare(&name,flag->name)) {
+if (name.compare((struct string*)&name,flag->name)) {
 return flag;
 }
 i =  i + 1;
@@ -1139,12 +1139,12 @@ z->isSet =  0;
 return z;
 };
 char * flags__get(struct flags* this,char * name){
-struct flag* flag =  this->getFlag(this,string(name));
+struct flag* flag =  this->getFlag((struct flags*)this,string(name));
 char * ctn =  flag->content;
 return ctn;
 };
 long int flags__getInt(struct flags* this,char * name){
-struct flag* flag =  this->getFlag(this,string(name));
+struct flag* flag =  this->getFlag((struct flags*)this,string(name));
 if ((flag->type!=FLAG_TYPE_INT)) {
 char * error =  concatCPSTRING(concatCPSTRING("Flag '",flag->name),"' is not int.");
 panic(error);
@@ -1153,7 +1153,7 @@ long int ctn =  flag->cont_int;
 return ctn;
 };
 double flags__getFloat(struct flags* this,char * name){
-struct flag* flag =  this->getFlag(this,string(name));
+struct flag* flag =  this->getFlag((struct flags*)this,string(name));
 if ((flag->type!=FLAG_TYPE_FLOAT)) {
 char * error =  concatCPSTRING(concatCPSTRING("Flag '",flag->name),"' is not float.");
 panic(error);
@@ -1162,7 +1162,7 @@ double ctn =  flag->cont_float;
 return ctn;
 };
 long int flags__isSet(struct flags* this,char * name){
-struct flag* flag =  this->getFlag(this,string(name));
+struct flag* flag =  this->getFlag((struct flags*)this,string(name));
 long int ctn =  flag->isSet;
 return ctn;
 };
@@ -1174,30 +1174,30 @@ long int i =  1;
 while ((i<len(args))) {
 struct string argName =  string(args->data[i]);
 if ((isVal==true)) {
-currentFlag->content =  argName.str(&argName);
+currentFlag->content =  argName.str((struct string*)&argName);
 if ((currentFlag->type==FLAG_TYPE_INT)) {
-currentFlag->cont_int =  atoi(argName.str(&argName));
+currentFlag->cont_int =  atoi(argName.str((struct string*)&argName));
 }
 else if ((currentFlag->type==FLAG_TYPE_FLOAT)) {
-currentFlag->cont_float =  strtod(argName.str(&argName),0);
+currentFlag->cont_float =  strtod(argName.str((struct string*)&argName),0);
 }
 isVal =  false;
 }
 else {
-if ((argName.charAt(&argName,0)!=45)) {
+if ((argName.charAt((struct string*)&argName,0)!=45)) {
 i =  i + 1;
 continue;
 }
-argName.trimLeft(&argName,1);
-if (argName.compare(&argName,"help")) {
-this->invalidate(this);
+argName.trimLeft((struct string*)&argName,1);
+if (argName.compare((struct string*)&argName,"help")) {
+this->invalidate((struct flags*)this);
 }
-else if (argName.compare(&argName,"h")) {
-this->invalidate(this);
+else if (argName.compare((struct string*)&argName,"h")) {
+this->invalidate((struct flags*)this);
 }
-currentFlag =  this->getFlag(this,argName);
+currentFlag =  this->getFlag((struct flags*)this,argName);
 if ((currentFlag==null)) {
-this->invalidate(this);
+this->invalidate((struct flags*)this);
 }
 currentFlag->isSet =  1;
 if ((currentFlag->type!=FLAG_TYPE_BOOL)) {
@@ -1208,7 +1208,7 @@ i =  i + 1;
 };
 if ((isVal==true)) {
 if ((currentFlag->type!=FLAG_TYPE_BOOL)) {
-this->invalidate(this);
+this->invalidate((struct flags*)this);
 }
 }
 };
@@ -1270,9 +1270,9 @@ fs.createFile = fileStream__createFile;
 fs.writeFile = fileStream__writeFile;
 fs.writePtr = fileStream__writePtr;
 fs.readPtr = fileStream__readPtr;
-fs.open(&fs,"/dev/urandom","r");
-char c =  fs.getChar(&fs);
-fs.close(&fs);
+fs.open((struct fileStream*)&fs,"/dev/urandom","r");
+char c =  fs.getChar((struct fileStream*)&fs);
+fs.close((struct fileStream*)&fs);
 long int i =  (long int)c;
 return i;
 };
@@ -1387,23 +1387,23 @@ struct rope* rope__getParent(struct rope* this){
 if ((this->parent==null)) {
 return this;
 }
-return this->parent->getParent(this->parent);
+return this->parent->getParent((struct rope*)this->parent);
 };
 void rope__addStr(struct rope* this,char ** s){
 if (((this->left==null)&&(this->right==null))) {
 strcat(*s,this->str);
 return ;
 }
-this->left->addStr(this->left,s);
-this->right->addStr(this->right,s);
+this->left->addStr((struct rope*)this->left,s);
+this->right->addStr((struct rope*)this->right,s);
 };
 char * rope__toStr(struct rope* this){
 if (((this->left==null)&&(this->right==null))) {
 return this->str;
 }
 char * s =  memoryAlloc(this->totalLen + 1);
-this->left->addStr(this->left,&s);
-this->right->addStr(this->right,&s);
+this->left->addStr((struct rope*)this->left,&s);
+this->right->addStr((struct rope*)this->right,&s);
 return s;
 };
 struct rope* rope__add(struct rope* this,struct rope* root2){
@@ -1480,7 +1480,7 @@ r->len =  n1;
 return r;
 };
 #define BAH_DIR "/opt/bah/"
-#define BAH_VERSION "v1.0 (build 19)"
+#define BAH_VERSION "v1.0 (build 20)"
 struct rope* OUTPUT;
 char * NEXT_LINE =  "";
 struct variable {
@@ -1583,6 +1583,7 @@ return false;
 struct Tok makeToken(long int pos,long int lineNb,__BAH_ARR_TYPE_char cont,tokenType type){
 struct Tok t =  {};
 t.cont = "";
+t.ogCont = "";
 t.type = TOKEN_NO_TYPE;
 t.pos = 0;
 t.line = 1;
@@ -2171,20 +2172,20 @@ totalLines =  totalLines + lineNb - 1;
 return tokens;
 };
 int hasStructSep(struct string n){
-if (n.count(&n,".")) {
+if (n.count((struct string*)&n,".")) {
 return true;
 }
-if (n.count(&n,"->")) {
+if (n.count((struct string*)&n,"->")) {
 return true;
 }
 return false;
 };
 struct string splitStructSepBefore(struct string n){
-if (n.count(&n,".")) {
+if (n.count((struct string*)&n,".")) {
 struct string res =  string(splitStringBefore(n,"."));
 return res;
 }
-if (n.count(&n,"->")) {
+if (n.count((struct string*)&n,"->")) {
 struct string res =  string(splitStringBefore(n,"->"));
 return res;
 }
@@ -2193,12 +2194,12 @@ return string("");
 struct string splitStructSepAfter(struct string n){
 long int i =  n.length;
 while ((i>0)) {
-char c =  n.charAt(&n,i);
+char c =  n.charAt((struct string*)&n,i);
 if ((c==46)) {
 break;
 }
 else if ((c==62)) {
-char pc =  n.charAt(&n,i-1);
+char pc =  n.charAt((struct string*)&n,i-1);
 if ((pc==45)) {
 break;
 }
@@ -2206,13 +2207,13 @@ break;
 i =  i - 1;
 };
 i =  i + 1;
-n.trimLeft(&n,i);
+n.trimLeft((struct string*)&n,i);
 return n;
 };
 struct cStruct* searchStruct(char * name,struct Elems* elems){
 struct string n =  string(name);
-n.replace(&n,"&","");
-n.replace(&n,"*","");
+n.replace((struct string*)&n,"&","");
+n.replace((struct string*)&n,"*","");
 name =  n.content;
 long int i =  0;
 while ((i<len(elems->structs))) {
@@ -2229,18 +2230,18 @@ struct string n =  string(name);
 if (hasStructSep(n)) {
 struct string rn =  splitStructSepBefore(n);
 name =  rn.content;
-n.trimLeft(&n,rn.length);
-if (n.hasPrefix(&n,".")) {
-n.trimLeft(&n,1);
+n.trimLeft((struct string*)&n,rn.length);
+if (n.hasPrefix((struct string*)&n,".")) {
+n.trimLeft((struct string*)&n,1);
 }
 else {
-n.trimLeft(&n,2);
+n.trimLeft((struct string*)&n,2);
 }
 char * membs =  n.content;
 struct structMemb* memb =  searchStructMemb(name,s,elems);
 if ((n.length>0)) {
 s =  searchStruct(memb->type,elems);
-char * nstr =  n.str(&n);
+char * nstr =  n.str((struct string*)&n);
 memb =  searchStructMemb(nstr,s,elems);
 }
 return memb;
@@ -2286,75 +2287,75 @@ if ((strlen(t)==0)) {
 return string("void");
 }
 struct string tp =  string(t);
-tp.replace(&tp," ","");
-if (tp.hasPrefix(&tp,"[]")) {
-tp.trimLeft(&tp,2);
-char * tpstr =  tp.str(&tp);
+tp.replace((struct string*)&tp," ","");
+if (tp.hasPrefix((struct string*)&tp,"[]")) {
+tp.trimLeft((struct string*)&tp,2);
+char * tpstr =  tp.str((struct string*)&tp);
 tp =  getCType(tpstr,elems);
-t =  tp.str(&tp);
+t =  tp.str((struct string*)&tp);
 char * r =  concatCPSTRING(concatCPSTRING("array(",t),")*");
 return string(r);
 }
 struct string ctp =  tp;
-ctp.replace(&ctp,"*","");
-if (ctp.compare(&ctp,"int")) {
-tp.replace(&tp,"int","long int");
+ctp.replace((struct string*)&ctp,"*","");
+if (ctp.compare((struct string*)&ctp,"int")) {
+tp.replace((struct string*)&tp,"int","long int");
 }
-else if (ctp.compare(&ctp,"int32")) {
-tp.replace(&tp,"int32","int");
+else if (ctp.compare((struct string*)&ctp,"int32")) {
+tp.replace((struct string*)&tp,"int32","int");
 }
-else if (ctp.compare(&ctp,"uint32")) {
-tp.replace(&tp,"uint32","unsigned int");
+else if (ctp.compare((struct string*)&ctp,"uint32")) {
+tp.replace((struct string*)&tp,"uint32","unsigned int");
 }
-else if (ctp.compare(&ctp,"uint")) {
-tp.replace(&tp,"uint","unsigned long int");
+else if (ctp.compare((struct string*)&ctp,"uint")) {
+tp.replace((struct string*)&tp,"uint","unsigned long int");
 }
-else if (ctp.compare(&ctp,"float32")) {
-tp.replace(&tp,"float32","float");
+else if (ctp.compare((struct string*)&ctp,"float32")) {
+tp.replace((struct string*)&tp,"float32","float");
 }
-else if (ctp.compare(&ctp,"ufloat32")) {
-tp.replace(&tp,"ufloat32","unsigned float");
+else if (ctp.compare((struct string*)&ctp,"ufloat32")) {
+tp.replace((struct string*)&tp,"ufloat32","unsigned float");
 }
-else if (ctp.compare(&ctp,"ufloat")) {
-tp.replace(&tp,"ufloat","unsigned double");
+else if (ctp.compare((struct string*)&ctp,"ufloat")) {
+tp.replace((struct string*)&tp,"ufloat","unsigned double");
 }
-else if (ctp.compare(&ctp,"float")) {
-tp.replace(&tp,"float","double");
+else if (ctp.compare((struct string*)&ctp,"float")) {
+tp.replace((struct string*)&tp,"float","double");
 }
-else if (ctp.compare(&ctp,"long")) {
-tp.replace(&tp,"long","long long");
+else if (ctp.compare((struct string*)&ctp,"long")) {
+tp.replace((struct string*)&tp,"long","long long");
 }
-else if (ctp.compare(&ctp,"ulong")) {
-tp.replace(&tp,"ulong","unsigned long long");
+else if (ctp.compare((struct string*)&ctp,"ulong")) {
+tp.replace((struct string*)&tp,"ulong","unsigned long long");
 }
-else if (ctp.compare(&ctp,"cpstring")) {
-tp.replace(&tp,"cpstring","char *");
+else if (ctp.compare((struct string*)&ctp,"cpstring")) {
+tp.replace((struct string*)&tp,"cpstring","char *");
 }
-else if (ctp.compare(&ctp,"ptr")) {
-tp.replace(&tp,"ptr","void *");
+else if (ctp.compare((struct string*)&ctp,"ptr")) {
+tp.replace((struct string*)&tp,"ptr","void *");
 }
-else if (ctp.compare(&ctp,"ushort")) {
-tp.replace(&tp,"ushort","unsigned short");
+else if (ctp.compare((struct string*)&ctp,"ushort")) {
+tp.replace((struct string*)&tp,"ushort","unsigned short");
 }
-else if (ctp.compare(&ctp,"byte")) {
-tp.replace(&tp,"byte","unsigned char");
+else if (ctp.compare((struct string*)&ctp,"byte")) {
+tp.replace((struct string*)&tp,"byte","unsigned char");
 }
-else if (ctp.compare(&ctp,"bool")) {
-tp.replace(&tp,"bool","int");
+else if (ctp.compare((struct string*)&ctp,"bool")) {
+tp.replace((struct string*)&tp,"bool","int");
 }
-else if (ctp.compare(&ctp,"char")) {
+else if (ctp.compare((struct string*)&ctp,"char")) {
 }
 else {
-char * ctpstr =  ctp.str(&ctp);
+char * ctpstr =  ctp.str((struct string*)&ctp);
 struct cStruct* s =  searchStruct(ctpstr,elems);
 if ((s!=null)) {
-tp.prepend(&tp,"struct ");
+tp.prepend((struct string*)&tp,"struct ");
 }
 else {
 long int i =  0;
 while ((i<len(elems->types))) {
 char * ct =  elems->types->data[i];
-if (ctp.compare(&ctp,ct)) {
+if (ctp.compare((struct string*)&ctp,ct)) {
 return tp;
 }
 i =  i + 1;
@@ -2384,20 +2385,23 @@ struct fileMap fm =  {};
 fm.open = fileMap__open;
 fm.isValid = fileMap__isValid;
 fm.close = fileMap__close;
-char * fileSrcStr =  fm.open(&fm,compilerState.currentFile);
+char * fileSrcStr =  fm.open((struct fileMap*)&fm,compilerState.currentFile);
 struct string fileSrc =  string(fileSrcStr);
-fm.close(&fm);
+fm.close((struct fileMap*)&fm);
 struct Tok* t =  tp;
 struct string ffmt =  string(format);
-ffmt.replace(&ffmt,"{TOKEN}",concatCPSTRING(concatCPSTRING("'",t->ogCont),"'"));
-format =  ffmt.str(&ffmt);
+if ((strlen(t->ogCont)==0)) {
+t->ogCont =  t->cont;
+}
+ffmt.replace((struct string*)&ffmt,"{TOKEN}",concatCPSTRING(concatCPSTRING("'",t->ogCont),"'"));
+format =  ffmt.str((struct string*)&ffmt);
 array(char)* line = memoryAlloc(sizeof(array(char)));
 
 line->length = 0;
 line->elemSize = sizeof(char);
 long int beg =  t->pos;
 while ((beg>0)) {
-char c =  fileSrc.charAt(&fileSrc,beg);
+char c =  fileSrc.charAt((struct string*)&fileSrc,beg);
 if ((c==(char)10)) {
 beg =  beg + 1;
 break;
@@ -2407,7 +2411,7 @@ beg =  beg - 1;
 long int pos =  t->pos - beg;
 long int i =  beg;
 while ((i<fileSrc.length)) {
-char c =  fileSrc.charAt(&fileSrc,i);
+char c =  fileSrc.charAt((struct string*)&fileSrc,i);
 if ((c==(char)10)) {
 break;
 }
@@ -2459,24 +2463,24 @@ exit(1);
 struct variable* searchVar(char * name,struct Elems* elems){
 char * ogName =  name;
 struct string n =  string(name);
-n.replace(&n,"&","");
-n.replace(&n,"*","");
-if (n.hasSuffix(&n,"]")) {
+n.replace((struct string*)&n,"&","");
+n.replace((struct string*)&n,"*","");
+if (n.hasSuffix((struct string*)&n,"]")) {
 long int i =  n.length;
 while ((i>0)) {
-char c =  n.charAt(&n,i);
+char c =  n.charAt((struct string*)&n,i);
 if ((c==91)) {
 break;
 }
 i =  i - 1;
 };
 long int tamm =  n.length - i;
-n.trimRight(&n,tamm + 6);
-name =  n.str(&n);
+n.trimRight((struct string*)&n,tamm + 6);
+name =  n.str((struct string*)&n);
 struct variable* v =  searchVar(name,elems);
 struct string vt =  string(v->type);
-vt.trimLeft(&vt,2);
-char * vtstr =  vt.str(&vt);
+vt.trimLeft((struct string*)&vt,2);
+char * vtstr =  vt.str((struct string*)&vt);
 struct variable* nv = memoryAlloc(sizeof(struct variable));
 nv->name = "";
 nv->type = "";
@@ -2492,12 +2496,12 @@ name =  n.content;
 if (hasStructSep(n)) {
 struct string rn =  splitStructSepBefore(n);
 name =  rn.content;
-n.trimLeft(&n,rn.length);
-if (n.hasPrefix(&n,".")) {
-n.trimLeft(&n,1);
+n.trimLeft((struct string*)&n,rn.length);
+if (n.hasPrefix((struct string*)&n,".")) {
+n.trimLeft((struct string*)&n,1);
 }
 else {
-n.trimLeft(&n,2);
+n.trimLeft((struct string*)&n,2);
 }
 char * membs =  n.content;
 struct variable* v =  searchVar(name,elems);
@@ -2524,18 +2528,18 @@ nv->type =  memb->type;
 nv->name =  ogName;
 char * r =  nv->type;
 struct string tcc =  string(ogName);
-if (tcc.count(&tcc,"&")) {
+if (tcc.count((struct string*)&tcc,"&")) {
 r =  concatCPSTRING(r,"*");
 }
-long int nbUnaries =  tcc.count(&tcc,"*");
+long int nbUnaries =  tcc.count((struct string*)&tcc,"*");
 if ((nbUnaries>0)) {
 struct string ct =  string(r);
-long int pointerLevel =  ct.count(&ct,"*");
+long int pointerLevel =  ct.count((struct string*)&ct,"*");
 if ((pointerLevel<nbUnaries)) {
 throwErr(null,concatCPSTRING(concatCPSTRING("Cannot use '*' on ",nv->name)," because it is not pointer."));
 }
-ct.trimRight(&ct,nbUnaries);
-r =  ct.str(&ct);
+ct.trimRight((struct string*)&ct,nbUnaries);
+r =  ct.str((struct string*)&ct);
 }
 nv->type =  r;
 nv->name =  ogName;
@@ -2558,18 +2562,18 @@ nv->type =  v->type;
 nv->name =  v->name;
 char * r =  nv->type;
 struct string tcc =  string(ogName);
-if (tcc.count(&tcc,"&")) {
+if (tcc.count((struct string*)&tcc,"&")) {
 r =  concatCPSTRING(r,"*");
 }
-long int nbUnaries =  tcc.count(&tcc,"*");
+long int nbUnaries =  tcc.count((struct string*)&tcc,"*");
 if ((nbUnaries>0)) {
 struct string ct =  string(r);
-long int pointerLevel =  ct.count(&ct,"*");
+long int pointerLevel =  ct.count((struct string*)&ct,"*");
 if ((pointerLevel<nbUnaries)) {
 throwErr(null,concatCPSTRING(concatCPSTRING("Cannot use '*' on ",v->name)," because it is not pointer."));
 }
-ct.trimRight(&ct,nbUnaries);
-r =  ct.str(&ct);
+ct.trimRight((struct string*)&ct,nbUnaries);
+r =  ct.str((struct string*)&ct);
 }
 nv->type =  r;
 nv->name =  ogName;
@@ -2607,7 +2611,7 @@ return null;
 };
 char * setCType(struct variable* v,struct Elems* elems){
 struct string tp =  getCType(v->type,elems);
-char * t =  tp.str(&tp);
+char * t =  tp.str((struct string*)&tp);
 t =  concatCPSTRING(concatCPSTRING(t," "),v->name);
 return t;
 };
@@ -2662,14 +2666,14 @@ nf->args = memoryAlloc(sizeof(array(struct variable*)));
 nf->from = "";
 nf->file = "";
 nf->line = 1;
-cvt.trimLeft(&cvt,9);
+cvt.trimLeft((struct string*)&cvt,9);
 array(char)* memory = memoryAlloc(sizeof(array(char)));
 
 memory->length = 0;
 memory->elemSize = sizeof(char);
 long int j =  0;
 while ((j<cvt.length)) {
-char c =  cvt.charAt(&cvt,j);
+char c =  cvt.charAt((struct string*)&cvt,j);
 if ((c==41)) {
 break;
 }
@@ -2681,7 +2685,7 @@ arg->isArray = false;
 arg->from = "";
 arg->name =  concatCPSTRING("arg_",intToStr(len(nf->args)));
 while ((j<cvt.length)) {
-c =  cvt.charAt(&cvt,j);
+c =  cvt.charAt((struct string*)&cvt,j);
 if (((c==44)||(c==41))) {
 break;
 }
@@ -2724,7 +2728,7 @@ j =  j + 1;
 };
 j =  j + 1;
 while ((j<cvt.length)) {
-char c =  cvt.charAt(&cvt,j);
+char c =  cvt.charAt((struct string*)&cvt,j);
 
 {
 long nLength = len(memory);
@@ -2769,18 +2773,18 @@ return fn;
 struct string n =  string(name);
 if (hasStructSep(n)) {
 struct string fnName =  splitStructSepAfter(n);
-n.trimRight(&n,fnName.length);
-char c =  n.charAt(&n,n.length-1);
+n.trimRight((struct string*)&n,fnName.length);
+char c =  n.charAt((struct string*)&n,n.length-1);
 if ((c==46)) {
-n.trimRight(&n,1);
+n.trimRight((struct string*)&n,1);
 }
 else {
-n.trimRight(&n,2);
+n.trimRight((struct string*)&n,2);
 }
-name =  n.str(&n);
+name =  n.str((struct string*)&n);
 struct variable* v =  searchVar(name,elems);
 struct cStruct* s =  searchStruct(v->type,elems);
-struct structMemb* memb =  searchStructMemb(fnName.str(&fnName),s,elems);
+struct structMemb* memb =  searchStructMemb(fnName.str((struct string*)&fnName),s,elems);
 name =  fnName.content;
 name =  concatCPSTRING(concatCPSTRING(memb->from,"__"),name);
 }
@@ -2816,7 +2820,7 @@ nf->file = "";
 nf->line = 1;
 nf->name =  ogName;
 struct string cvt =  string(v->type);
-if ((cvt.hasPrefix(&cvt,"function(")==0)) {
+if ((cvt.hasPrefix((struct string*)&cvt,"function(")==0)) {
 return null;
 }
 struct func* pfn =  parseFnType(cvt);
@@ -2829,7 +2833,7 @@ char * code =  "";
 array(struct structMemb*)* members =  s->members;
 struct string typec =  string(v->type);
 char * sep =  ".";
-if (typec.count(&typec,"*")) {
+if (typec.count((struct string*)&typec,"*")) {
 sep =  "->";
 }
 long int i =  0;
@@ -2839,20 +2843,29 @@ struct string cmpt =  string(m->type);
 if ((strlen(m->def)>0)) {
 code =  concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING(code,v->name),sep),m->name)," = "),m->def),";\n");
 }
-if ((cmpt.hasPrefix(&cmpt,"[]")==1)) {
-cmpt.trimLeft(&cmpt,2);
-char * cmptstr =  cmpt.str(&cmpt);
+if ((cmpt.hasPrefix((struct string*)&cmpt,"[]")==1)) {
+cmpt.trimLeft((struct string*)&cmpt,2);
+char * cmptstr =  cmpt.str((struct string*)&cmpt);
 struct string elemCType =  getCType(cmptstr,elems);
-char * elemCTypeStr =  elemCType.str(&elemCType);
+char * elemCTypeStr =  elemCType.str((struct string*)&elemCType);
 code =  concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING(code,v->name),sep),m->name)," = memoryAlloc(sizeof(array("),elemCTypeStr),")));\n            "),v->name),sep),m->name),"->length = 0;\n            "),v->name),sep),m->name),"->elemSize = sizeof("),elemCTypeStr),");\n            ");
 }
 i =  i + 1;
 };
+if ((strlen(s->extendedFrom)>0)) {
+struct cStruct* es =  searchStruct(s->extendedFrom,elems);
+i =  0;
+while ((i<len(es->methods))) {
+struct func* m =  es->methods->data[i];
+code =  concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING(code,v->name),sep),m->name)," = "),es->name),"__"),m->name),";\n");
+i =  i + 1;
+};
+}
 array(struct func*)* methods =  s->methods;
 i =  0;
 while ((i<len(methods))) {
 struct func* m =  methods->data[i];
-code =  concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING(code,v->name),sep),m->name)," = "),m->from),"__"),m->name),";\n");
+code =  concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING(code,v->name),sep),m->name)," = "),s->name),"__"),m->name),";\n");
 i =  i + 1;
 };
 return code;
@@ -3111,7 +3124,7 @@ if ((nnt.type==TOKEN_TYPE_SYNTAX)) {
 if ((strcmp(nnt.cont, ">") == 0)) {
 nnnt.bahType =  nt.cont;
 struct string cCast =  getCType(nt.cont,elems);
-char * cCastStr =  cCast.str(&cCast);
+char * cCastStr =  cCast.str((struct string*)&cCast);
 nnnt.cont =  concatCPSTRING(concatCPSTRING(concatCPSTRING("(",cCastStr),")"),nnnt.cont);
 
 {
@@ -3168,11 +3181,11 @@ fm.open = fileMap__open;
 fm.isValid = fileMap__isValid;
 fm.close = fileMap__close;
 char * fileName =  concatCPSTRING(BAH_DIR,ccstr);
-char * f =  fm.open(&fm,fileName);
-if ((fm.isValid(&fm)==0)) {
+char * f =  fm.open((struct fileMap*)&fm,fileName);
+if ((fm.isValid((struct fileMap*)&fm)==0)) {
 fileName =  ccstr;
-f =  fm.open(&fm,fileName);
-if ((fm.isValid(&fm)==0)) {
+f =  fm.open((struct fileMap*)&fm,fileName);
+if ((fm.isValid((struct fileMap*)&fm)==0)) {
 return false;
 }
 }
@@ -3193,7 +3206,7 @@ includes->data[len(includes)] =  ccstr;
 };
 };
 array(struct Tok)* tokens =  lexer(f);
-fm.close(&fm);
+fm.close((struct fileMap*)&fm);
 if ((len(tokens)==0)) {
 panic(concatCPSTRING(concatCPSTRING("File '",ccstr),"' not recognized."));
 }
@@ -3210,10 +3223,10 @@ if ((strt.type!=TOKEN_TYPE_STR)) {
 throwErr(&strt,"Cannot use {TOKEN} as string in include.");
 }
 struct string cc =  string(strt.cont);
-cc.trimLeft(&cc,1);
-cc.trimRight(&cc,1);
-char * ccstr =  cc.str(&cc);
-if (cc.hasPrefix(&cc,"<")) {
+cc.trimLeft((struct string*)&cc,1);
+cc.trimRight((struct string*)&cc,1);
+char * ccstr =  cc.str((struct string*)&cc);
+if (cc.hasPrefix((struct string*)&cc,"<")) {
 OUTPUT =  OUTPUT->add(OUTPUT, rope(concatCPSTRING(concatCPSTRING("#include ",ccstr),"\n")));
 }
 else {
@@ -3295,7 +3308,7 @@ if ((((strcmp(t.cont, "+") == 0)&&(addMthd!=null))&&(addMthd->isFn==true))) {
 char * sep =  ".";
 char * amp =  "&";
 struct string cpt =  string(ptt);
-if ((cpt.count(&cpt,"*")>0)) {
+if ((cpt.count((struct string*)&cpt,"*")>0)) {
 sep =  "->";
 amp =  "";
 }
@@ -3333,7 +3346,7 @@ continue;
 }
 else if ((t.isValue==true)) {
 struct string cmtc =  string(t.cont);
-if (cmtc.hasPrefix(&cmtc,"-")) {
+if (cmtc.hasPrefix((struct string*)&cmtc,"-")) {
 struct Tok pt =  nl->data[len(nl)-1];
 if ((pt.isValue==true)) {
 char * ptt =  getTypeFromToken(&pt,true,elems);
@@ -3392,7 +3405,7 @@ while ((i<len(line))) {
 struct Tok t =  line->data[i];
 if ((t.type==TOKEN_TYPE_VAR)) {
 struct string ctbt =  string(t.bahType);
-if (ctbt.hasPrefix(&ctbt,"[]")) {
+if (ctbt.hasPrefix((struct string*)&ctbt,"[]")) {
 
 {
 long nLength = len(nl);
@@ -3492,7 +3505,7 @@ throwErr(&t,"Unknown var {TOKEN}.");
 }
 struct string ct =  string(v->type);
 char * sep =  ".";
-if (ct.count(&ct,"*")) {
+if (ct.count((struct string*)&ct,"*")) {
 sep =  "->";
 }
 struct cStruct* s =  searchStruct(v->type,elems);
@@ -3928,11 +3941,11 @@ if ((v==null)) {
 throwErr(&t,"Unknown array-var {TOKEN}.");
 }
 struct string cvt =  string(v->type);
-if ((cvt.hasPrefix(&cvt,"[]")==0)) {
+if ((cvt.hasPrefix((struct string*)&cvt,"[]")==0)) {
 throwErr(&nt,concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING("Cannot use ",v->name)," ("),v->type),") as an array."));
 }
-cvt.trimLeft(&cvt,2);
-v->type =  cvt.str(&cvt);
+cvt.trimLeft((struct string*)&cvt,2);
+v->type =  cvt.str((struct string*)&cvt);
 array(struct Tok)* memory = memoryAlloc(sizeof(array(struct Tok)));
 
 memory->length = 0;
@@ -4058,26 +4071,30 @@ throwErr(&ot,"Unknown function {TOKEN}.");
 }
 struct string varName =  string("");
 struct string fnStr =  string(fnName);
+struct variable* arg1;
 if (hasStructSep(fnStr)) {
+arg1 =  fn->args->data[0];
+struct string fnarg1t =  getCType(arg1->type,elems);
 varName =  fnStr;
 struct string realFn =  splitStructSepAfter(fnStr);
-varName.trimRight(&varName,realFn.length);
-char c =  varName.charAt(&varName,varName.length - 1);
+varName.trimRight((struct string*)&varName,realFn.length);
+char c =  varName.charAt((struct string*)&varName,varName.length - 1);
 if ((c==46)) {
-varName.trimRight(&varName,1);
+varName.trimRight((struct string*)&varName,1);
 }
 else {
-varName.trimRight(&varName,2);
+varName.trimRight((struct string*)&varName,2);
 }
-char * varNameStr =  varName.str(&varName);
+char * varNameStr =  varName.str((struct string*)&varName);
 struct variable* v =  searchVar(varNameStr,elems);
 if ((v==null)) {
 throwErr(&ot,"Cannot use {TOKEN} as a struct.");
 }
 struct string vct =  string(v->type);
-if ((vct.count(&vct,"*")==0)) {
-varName.prepend(&varName,"&");
+if ((vct.count((struct string*)&vct,"*")==0)) {
+varName.prepend((struct string*)&varName,"&");
 }
+varName.prepend((struct string*)&varName,concatCPSTRING(concatCPSTRING("(",fnarg1t.str((struct string*)&fnarg1t)),")"));
 }
 ot.cont =  concatCPSTRING(fnName,"(");
 array(struct variable*)* fnArgs =  fn->args;
@@ -4089,13 +4106,15 @@ memory->elemSize = sizeof(struct Tok);
 if ((varName.length>0)) {
 struct Tok tk =  {};
 tk.cont = "";
+tk.ogCont = "";
 tk.type = TOKEN_NO_TYPE;
 tk.pos = 0;
 tk.line = 1;
 tk.bahType = "";
 tk.isValue = false;
 tk.isFunc = false;
-tk.cont =  varName.str(&varName);
+tk.cont =  varName.str((struct string*)&varName);
+tk.bahType =  arg1->type;
 tk.type =  TOKEN_TYPE_VAR;
 tk.isValue =  true;
 
@@ -4116,6 +4135,7 @@ nt =  l->data[i];
 if ((strcmp(nt.cont, ")") != 0)) {
  {};
 tk.cont = "";
+tk.ogCont = "";
 tk.type = TOKEN_NO_TYPE;
 tk.pos = 0;
 tk.line = 1;
@@ -4320,8 +4340,8 @@ if ((t.type==TOKEN_TYPE_SYNTAX)) {
 if ((strcmp(t.cont, "=") == 0)) {
 if ((strlen(currentType)>0)) {
 struct string sct =  string(currentType);
-sct.replace(&sct," ","");
-v->type =  sct.str(&sct);
+sct.replace((struct string*)&sct," ","");
+v->type =  sct.str((struct string*)&sct);
 }
 isEqual =  true;
 i =  i + 1;
@@ -4390,20 +4410,20 @@ throwErr(&t,concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING("Cannot 
 }
 struct string ctc =  string(t.cont);
 struct string cvt =  string(v->type);
-if ((ctc.hasPrefix(&ctc,"{")==0)) {
+if ((ctc.hasPrefix((struct string*)&ctc,"{")==0)) {
 if ((strlen(t.cont)>0)) {
 code =  concatCPSTRING(concatCPSTRING(code," "),t.cont);
 break;
 }
 }
-if (cvt.hasPrefix(&cvt,"[]")) {
+if (cvt.hasPrefix((struct string*)&cvt,"[]")) {
 struct string arrType =  getCType(v->type,elems);
-arrType.trimRight(&arrType,1);
-char * arrTypeStr =  arrType.str(&arrType);
+arrType.trimRight((struct string*)&arrType,1);
+char * arrTypeStr =  arrType.str((struct string*)&arrType);
 code =  concatCPSTRING(concatCPSTRING("memoryAlloc(sizeof(",arrTypeStr),"))");
-arrType.trimLeft(&arrType,6);
-arrType.trimRight(&arrType,1);
-char * elemTypeStr =  arrType.str(&arrType);
+arrType.trimLeft((struct string*)&arrType,6);
+arrType.trimRight((struct string*)&arrType,1);
+char * elemTypeStr =  arrType.str((struct string*)&arrType);
 long int max =  i + 1;
 if ((max!=len(l))) {
 i =  i + 1;
@@ -4412,8 +4432,8 @@ if ((strcmp(nt.cont, "{") != 0)) {
 throwErr(&l->data[i + 1],"{TOKEN} not expected after array initialization.");
 }
 struct string elemBahType =  string(v->type);
-elemBahType.trimLeft(&elemBahType,2);
-char * elemBahTypeStr =  elemBahType.str(&elemBahType);
+elemBahType.trimLeft((struct string*)&elemBahType,2);
+char * elemBahTypeStr =  elemBahType.str((struct string*)&elemBahType);
 i =  i + 1;
 while ((i<len(l))) {
 t =  l->data[i];
@@ -4478,8 +4498,8 @@ code =  concatCPSTRING(concatCPSTRING(v->name," = "),code);
 }
 else {
 struct string cmpCode =  string(code);
-cmpCode.trim(&cmpCode);
-if ((cmpCode.hasPrefix(&cmpCode,"{")==0)) {
+cmpCode.trim((struct string*)&cmpCode);
+if ((cmpCode.hasPrefix((struct string*)&cmpCode,"{")==0)) {
 code =  concatCPSTRING(concatCPSTRING(v->name," = "),code);
 }
 }
@@ -4488,28 +4508,28 @@ struct string nLength =  string(v->name);
 struct string n =  string(v->name);
 i =  0;
 while ((i<nLength.length)) {
-char c =  nLength.charAt(&nLength,i);
+char c =  nLength.charAt((struct string*)&nLength,i);
 if ((c==91)) {
 break;
 }
 i =  i + 1;
 };
-nLength.trimLeft(&nLength,i + 1);
-nLength.trimRight(&nLength,1);
-char * nLengthStr =  nLength.str(&nLength);
+nLength.trimLeft((struct string*)&nLength,i + 1);
+nLength.trimRight((struct string*)&nLength,1);
+char * nLengthStr =  nLength.str((struct string*)&nLength);
 i =  n.length;
 while ((i>0)) {
-char c =  n.charAt(&n,i);
+char c =  n.charAt((struct string*)&n,i);
 if ((c==91)) {
 break;
 }
 i =  i - 1;
 };
 long int tamm =  n.length - i;
-n.trimRight(&n,tamm + 6);
-char * nstr =  n.str(&n);
+n.trimRight((struct string*)&n,tamm + 6);
+char * nstr =  n.str((struct string*)&n);
 struct string elemType =  getCType(v->type,elems);
-char * elemTypeStr =  elemType.str(&elemType);
+char * elemTypeStr =  elemType.str((struct string*)&elemType);
 code =  concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING("\n{\nlong nLength = ",nLengthStr),";\nif ("),nstr),"->length < nLength+1) {\nif ((nLength+1) % 50 == 0 || nLength == 0) {\nvoid * newPtr = GC_REALLOC("),nstr),"->data, (nLength+50)*sizeof("),elemTypeStr),"));\n"),nstr),"->data = newPtr;\n}\n"),code),";\n"),nstr),"->length = nLength+1;\n} else {\n"),code),";\n};\n}");
 }
 }
@@ -4518,13 +4538,13 @@ if ((strlen(currentType)>0)) {
 v->type =  currentType;
 }
 struct string vts =  string(v->type);
-vts.replace(&vts," ","");
+vts.replace((struct string*)&vts," ","");
 v->type =  vts.content;
 if ((strlen(v->type)==0)) {
 throwErr(&ft,"Cannot declare {TOKEN} without a type.");
 }
 char * vct;
-if (vts.hasPrefix(&vts,"function(")) {
+if (vts.hasPrefix((struct string*)&vts,"function(")) {
 struct func* tmpfn =  parseFnType(vts);
 struct string tmpfnRetCType =  getCType(tmpfn->returns->type,elems);
 char * tmpfnArgsCType =  "";
@@ -4532,13 +4552,13 @@ long int j =  0;
 while ((j<len(tmpfn->args))) {
 struct variable* arg =  tmpfn->args->data[j];
 struct string ct =  getCType(arg->type,elems);
-tmpfnArgsCType =  concatCPSTRING(tmpfnArgsCType,ct.str(&ct));
+tmpfnArgsCType =  concatCPSTRING(tmpfnArgsCType,ct.str((struct string*)&ct));
 j =  j + 1;
 if ((j<len(tmpfn->args))) {
 tmpfnArgsCType =  concatCPSTRING(tmpfnArgsCType,",");
 }
 };
-vct =  concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING(tmpfnRetCType.str(&tmpfnRetCType)," (*"),v->name),")("),tmpfnArgsCType),")");
+vct =  concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING(tmpfnRetCType.str((struct string*)&tmpfnRetCType)," (*"),v->name),")("),tmpfnArgsCType),")");
 }
 else {
 vct =  setCType(v,elems);
@@ -4638,10 +4658,10 @@ arguments->data[len(arguments)] =  argument;
 };
 struct string argCType =  getCType(argType,elems);
 struct string cfrt =  string(argType);
-char * newArgType =  argCType.str(&argCType);
-if ((cfrt.hasPrefix(&cfrt,"[]")==1)) {
-cfrt.trimLeft(&cfrt,2);
-newArgType =  concatCPSTRING("__BAH_ARR_TYPE_",cfrt.str(&cfrt));
+char * newArgType =  argCType.str((struct string*)&argCType);
+if ((cfrt.hasPrefix((struct string*)&cfrt,"[]")==1)) {
+cfrt.trimLeft((struct string*)&cfrt,2);
+newArgType =  concatCPSTRING("__BAH_ARR_TYPE_",cfrt.str((struct string*)&cfrt));
 array(char *)* csatd =  compilerState.arrTypesDecl;
 if ((inArrayStr(newArgType,csatd)==false)) {
 
@@ -4658,7 +4678,7 @@ csatd->length = nLength+1;
 csatd->data[len(csatd)] =  newArgType;
 };
 };
-tpdf =  concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING(tpdf,"typedef "),argCType.str(&argCType))," "),newArgType),";\n");
+tpdf =  concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING(tpdf,"typedef "),argCType.str((struct string*)&argCType))," "),newArgType),";\n");
 }
 }
 code =  concatCPSTRING(concatCPSTRING(concatCPSTRING(code,newArgType)," "),argName);
@@ -4693,7 +4713,7 @@ j =  j + 1;
 };
 if (strlen(returns->type)) {
 struct string rts =  string(returns->type);
-rts.replace(&rts," ","");
+rts.replace((struct string*)&rts," ","");
 returns->type =  rts.content;
 }
 *i =  j;
@@ -4701,11 +4721,11 @@ returns->name =  fn->name;
 fn->returns =  returns;
 fn->args =  arguments;
 struct string fnRetType =  getCType(returns->type,elems);
-char * newFnRetType =  fnRetType.str(&fnRetType);
+char * newFnRetType =  fnRetType.str((struct string*)&fnRetType);
 struct string cfrt =  string(returns->type);
-if ((cfrt.hasPrefix(&cfrt,"[]")==1)) {
-cfrt.trimLeft(&cfrt,2);
-newFnRetType =  concatCPSTRING("__BAH_ARR_TYPE_",cfrt.str(&cfrt));
+if ((cfrt.hasPrefix((struct string*)&cfrt,"[]")==1)) {
+cfrt.trimLeft((struct string*)&cfrt,2);
+newFnRetType =  concatCPSTRING("__BAH_ARR_TYPE_",cfrt.str((struct string*)&cfrt));
 array(char *)* csatd =  compilerState.arrTypesDecl;
 if ((inArrayStr(newFnRetType,csatd)==false)) {
 
@@ -4722,7 +4742,7 @@ csatd->length = nLength+1;
 csatd->data[len(csatd)] =  newFnRetType;
 };
 };
-tpdf =  concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING(tpdf,"typedef "),fnRetType.str(&fnRetType))," "),newFnRetType),";\n");
+tpdf =  concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING(tpdf,"typedef "),fnRetType.str((struct string*)&fnRetType))," "),newFnRetType),";\n");
 }
 }
 code =  concatCPSTRING(concatCPSTRING(concatCPSTRING(tpdf,newFnRetType)," "),code);
@@ -4800,7 +4820,7 @@ while ((j<len(extdsmbs))) {
 struct structMemb* em =  extdsmbs->data[j];
 struct string cemt =  string(em->type);
 char * membDeclStr;
-if ((cemt.hasPrefix(&cemt,"function(")==1)) {
+if ((cemt.hasPrefix((struct string*)&cemt,"function(")==1)) {
 struct func* tmpfn =  parseFnType(cemt);
 struct string tmpfnRetCType =  getCType(tmpfn->returns->type,elems);
 char * tmpfnArgsCType =  "";
@@ -4808,18 +4828,18 @@ j =  0;
 while ((j<len(tmpfn->args))) {
 struct variable* arg =  tmpfn->args->data[j];
 struct string ct =  getCType(arg->type,elems);
-tmpfnArgsCType =  concatCPSTRING(tmpfnArgsCType,ct.str(&ct));
+tmpfnArgsCType =  concatCPSTRING(tmpfnArgsCType,ct.str((struct string*)&ct));
 j =  j + 1;
 if ((j<len(tmpfn->args))) {
 tmpfnArgsCType =  concatCPSTRING(tmpfnArgsCType,",");
 }
 };
-membDeclStr =  concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING(tmpfnRetCType.str(&tmpfnRetCType)," (*"),em->name),")("),tmpfnArgsCType),")");
+membDeclStr =  concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING(tmpfnRetCType.str((struct string*)&tmpfnRetCType)," (*"),em->name),")("),tmpfnArgsCType),")");
 }
 else {
 struct string membDecl =  getCType(em->type,elems);
-membDecl.append(&membDecl," ");
-membDecl.append(&membDecl,em->name);
+membDecl.append((struct string*)&membDecl," ");
+membDecl.append((struct string*)&membDecl,em->name);
 membDeclStr =  membDecl.content;
 }
 
@@ -4851,6 +4871,45 @@ members->data[len(members)] =  em;
 };
 };
 j =  j + 1;
+};
+long int k =  0;
+while ((k<len(extdS->methods))) {
+struct func* emt =  extdS->methods->data[k];
+struct string mthdDecl =  getCType(emt->returns->type,elems);
+mthdDecl.append((struct string*)&mthdDecl,"(*");
+mthdDecl.append((struct string*)&mthdDecl,emt->name);
+mthdDecl.append((struct string*)&mthdDecl,")(");
+j =  0;
+while ((j<len(emt->args))) {
+struct variable* a =  emt->args->data[j];
+struct string tp =  getCType(a->type,elems);
+tp.append((struct string*)&tp," ");
+tp.append((struct string*)&tp,a->name);
+long int max =  len(emt->args) - 1;
+if ((j!=max)) {
+tp.append((struct string*)&tp,",");
+}
+char * tpstr =  tp.str((struct string*)&tp);
+mthdDecl.append((struct string*)&mthdDecl,tpstr);
+j =  j + 1;
+};
+mthdDecl.append((struct string*)&mthdDecl,")");
+char * mthdDeclStr =  mthdDecl.content;
+
+{
+long nLength = len(allMembs);
+if (allMembs->length < nLength+1) {
+if ((nLength+1) % 50 == 0 || nLength == 0) {
+void * newPtr = GC_REALLOC(allMembs->data, (nLength+50)*sizeof(char *));
+allMembs->data = newPtr;
+}
+allMembs->data[len(allMembs)] =  mthdDeclStr;
+allMembs->length = nLength+1;
+} else {
+allMembs->data[len(allMembs)] =  mthdDeclStr;
+};
+};
+k =  k + 1;
 };
 }
 else {
@@ -5087,7 +5146,7 @@ mfn->name =  fn->name;
 mfn->returns =  fn->returns;
 mfn->from =  s->name;
 struct string sfn =  string(mfn->name);
-sfn.trimLeft(&sfn,strlen(fnPrefix));
+sfn.trimLeft((struct string*)&sfn,strlen(fnPrefix));
 mfn->name =  sfn.content;
 
 {
@@ -5119,27 +5178,27 @@ throwErr(&l->data[len(l)-1],concatCPSTRING(concatCPSTRING("Function '",fn->name)
 code =  code->add(code, OUTPUT)->add(code->add(code, OUTPUT), rope("};\n"));
 }
 if ((doesOutput==true)) {
-nextLine =  concatCPSTRING(nextLine,code->toStr(code));
+nextLine =  concatCPSTRING(nextLine,code->toStr((struct rope*)code));
 }
 struct string mthdDecl =  getCType(fn->returns->type,elems);
-mthdDecl.append(&mthdDecl,"(*");
-mthdDecl.append(&mthdDecl,mfn->name);
-mthdDecl.append(&mthdDecl,")(");
+mthdDecl.append((struct string*)&mthdDecl,"(*");
+mthdDecl.append((struct string*)&mthdDecl,mfn->name);
+mthdDecl.append((struct string*)&mthdDecl,")(");
 j =  0;
 while ((j<len(arguments))) {
 struct variable* a =  arguments->data[j];
 struct string tp =  getCType(a->type,elems);
-tp.append(&tp," ");
-tp.append(&tp,a->name);
+tp.append((struct string*)&tp," ");
+tp.append((struct string*)&tp,a->name);
 max =  len(arguments) - 1;
 if ((j!=max)) {
-tp.append(&tp,",");
+tp.append((struct string*)&tp,",");
 }
-char * tpstr =  tp.str(&tp);
-mthdDecl.append(&mthdDecl,tpstr);
+char * tpstr =  tp.str((struct string*)&tp);
+mthdDecl.append((struct string*)&mthdDecl,tpstr);
 j =  j + 1;
 };
-mthdDecl.append(&mthdDecl,")");
+mthdDecl.append((struct string*)&mthdDecl,")");
 char * mthdDeclStr =  mthdDecl.content;
 
 {
@@ -5211,7 +5270,7 @@ members->data[len(members)] =  memb;
 };
 char * membDeclStr;
 struct string cmt =  string(memb->type);
-if ((cmt.hasPrefix(&cmt,"function(")==1)) {
+if ((cmt.hasPrefix((struct string*)&cmt,"function(")==1)) {
 struct func* tmpfn =  parseFnType(cmt);
 struct string tmpfnRetCType =  getCType(tmpfn->returns->type,elems);
 char * tmpfnArgsCType =  "";
@@ -5219,18 +5278,18 @@ long int j =  0;
 while ((j<len(tmpfn->args))) {
 struct variable* arg =  tmpfn->args->data[j];
 struct string ct =  getCType(arg->type,elems);
-tmpfnArgsCType =  concatCPSTRING(tmpfnArgsCType,ct.str(&ct));
+tmpfnArgsCType =  concatCPSTRING(tmpfnArgsCType,ct.str((struct string*)&ct));
 j =  j + 1;
 if ((j<len(tmpfn->args))) {
 tmpfnArgsCType =  concatCPSTRING(tmpfnArgsCType,",");
 }
 };
-membDeclStr =  concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING(tmpfnRetCType.str(&tmpfnRetCType)," (*"),memb->name),")("),tmpfnArgsCType),")");
+membDeclStr =  concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING(tmpfnRetCType.str((struct string*)&tmpfnRetCType)," (*"),memb->name),")("),tmpfnArgsCType),")");
 }
 else {
 struct string membDecl =  getCType(memb->type,elems);
-membDecl.append(&membDecl," ");
-membDecl.append(&membDecl,memb->name);
+membDecl.append((struct string*)&membDecl," ");
+membDecl.append((struct string*)&membDecl,memb->name);
 membDeclStr =  membDecl.content;
 }
 
@@ -5317,7 +5376,7 @@ if ((ft.type!=TOKEN_TYPE_VAR)) {
 throwErr(&ft,"Cannot use {TOKEN} as new type name.");
 }
 struct string cTypeNewType =  getCType(st.cont,elems);
-char * cTypeNewTypeStr =  cTypeNewType.str(&cTypeNewType);
+char * cTypeNewTypeStr =  cTypeNewType.str((struct string*)&cTypeNewType);
 if ((doesOutput==true)) {
 OUTPUT =  OUTPUT->add(OUTPUT, rope(concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING("typedef ",cTypeNewTypeStr)," "),ft.cont),";\n")));
 }
@@ -5347,9 +5406,9 @@ if ((t.type!=TOKEN_TYPE_STR)) {
 throwErr(&t,"Cannot use {TOKEN} as C library name.");
 }
 struct string cc =  string(t.cont);
-cc.trimLeft(&cc,1);
-cc.trimRight(&cc,1);
-char * ccstr =  cc.str(&cc);
+cc.trimLeft((struct string*)&cc,1);
+cc.trimRight((struct string*)&cc,1);
+char * ccstr =  cc.str((struct string*)&cc);
 int found =  false;
 long int j =  0;
 while ((j<len(clibs))) {
@@ -6027,17 +6086,17 @@ flags.getInt = flags__getInt;
 flags.getFloat = flags__getFloat;
 flags.isSet = flags__isSet;
 flags.parse = flags__parse;
-flags.addString(&flags,"o","Name of the file to output.");
-flags.addBool(&flags,"c","Translate bah file to C instead of compiling it.");
-flags.addBool(&flags,"v","Show version of the compiler.");
-flags.addBool(&flags,"l","Compile as a library.");
-flags.addBool(&flags,"d","Compile as a dynamic executable. (useful if you are using a library that is only available shared but might reduce portability).");
-flags.parse(&flags,args);
-if ((flags.isSet(&flags,"v")==1)) {
+flags.addString((struct flags*)&flags,"o","Name of the file to output.");
+flags.addBool((struct flags*)&flags,"c","Translate bah file to C instead of compiling it.");
+flags.addBool((struct flags*)&flags,"v","Show version of the compiler.");
+flags.addBool((struct flags*)&flags,"l","Compile as a library.");
+flags.addBool((struct flags*)&flags,"d","Compile as a dynamic executable. (useful if you are using a library that is only available shared but might reduce portability).");
+flags.parse((struct flags*)&flags,args);
+if ((flags.isSet((struct flags*)&flags,"v")==1)) {
 println(concatCPSTRING(concatCPSTRING("Bah compiler version: ",BAH_VERSION),".\n© Alois Laurent Boe"));
 return 0;
 }
-if (((flags.isSet(&flags,"c")==1)&&(flags.isSet(&flags,"l")==1))) {
+if (((flags.isSet((struct flags*)&flags,"c")==1)&&(flags.isSet((struct flags*)&flags,"l")==1))) {
 panic("Cannot use -c (to translate to C code) and -l (to compile as a library) at the same time.");
 }
 OUTPUT =  rope(concatCPSTRING(concatCPSTRING("\n#include \"",BAH_DIR),"libs/include/gc.h\"\n\n#define noCheck(v) v\n#define array(type)	\
@@ -6046,7 +6105,7 @@ type *data; \
 long int length; \
 long int elemSize; \
 }\ntypedef array(char*)* __BAH_ARR_TYPE_cpstring;\nlong int __BAH__main(__BAH_ARR_TYPE_cpstring);\n"));
-if ((flags.isSet(&flags,"l")==0)) {
+if ((flags.isSet((struct flags*)&flags,"l")==0)) {
 OUTPUT =  OUTPUT->add(OUTPUT, rope("\nint main(int argc, char ** argv) {\nGC_INIT();\narray(char*) * args = GC_MALLOC(sizeof(array(char*)));\nargs->data = GC_MALLOC(sizeof(char*)*argc);\nmemcpy(args->data, argv, sizeof(char*)*argc);\nargs->elemSize = sizeof(char*);\nargs->length = argc;\nreturn __BAH__main((__BAH_ARR_TYPE_cpstring)args);\n};\n#define main(v) __BAH__main(v)\n"));
 }
  {};
@@ -6082,10 +6141,10 @@ struct fileMap fm =  {};
 fm.open = fileMap__open;
 fm.isValid = fileMap__isValid;
 fm.close = fileMap__close;
-char * f =  fm.open(&fm,fileName);
+char * f =  fm.open((struct fileMap*)&fm,fileName);
 long int startTime =  getTimeUnix();
 array(struct Tok)* tokens =  lexer(f);
-fm.close(&fm);
+fm.close((struct fileMap*)&fm);
 if ((len(tokens)==0)) {
 panic(concatCPSTRING(concatCPSTRING("File '",fileName),"' not recognized."));
 }
@@ -6108,19 +6167,19 @@ panic(concatCPSTRING(concatCPSTRING("Could not find std-libs, please check '",BA
 parseLines(tokens,elems);
 long int totalTime =  getTimeUnix() - startTime;
 println(concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING("Parsed. (",intToStr(totalLines))," lines parsed in "),intToStr(totalTime / 1000000)),"ms)\e[0m"));
-if ((flags.isSet(&flags,"o")==1)) {
-fileName =  flags.get(&flags,"o");
+if ((flags.isSet((struct flags*)&flags,"o")==1)) {
+fileName =  flags.get((struct flags*)&flags,"o");
 }
 else {
 struct string outFileName =  string(fileName);
-outFileName.trimRight(&outFileName,4);
-fileName =  outFileName.str(&outFileName);
+outFileName.trimRight((struct string*)&outFileName,4);
+fileName =  outFileName.str((struct string*)&outFileName);
 }
 char * isStatic =  "-static";
-if ((flags.isSet(&flags,"d")==1)) {
+if ((flags.isSet((struct flags*)&flags,"d")==1)) {
 isStatic =  "";
 }
-if ((flags.isSet(&flags,"c")==0)) {
+if ((flags.isSet((struct flags*)&flags,"c")==0)) {
 char * randFileName =  "TMP_C_FILE_";
 long int i =  0;
 while ((i<9)) {
@@ -6144,11 +6203,11 @@ fs.createFile = fileStream__createFile;
 fs.writeFile = fileStream__writeFile;
 fs.writePtr = fileStream__writePtr;
 fs.readPtr = fileStream__readPtr;
-fs.open(&fs,randFileName,"w");
-fs.writeFile(&fs,OUTPUT->toStr(OUTPUT));
-fs.close(&fs);
+fs.open((struct fileStream*)&fs,randFileName,"w");
+fs.writeFile((struct fileStream*)&fs,OUTPUT->toStr((struct rope*)OUTPUT));
+fs.close((struct fileStream*)&fs);
 char * gccArgs =  concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING("gcc ",randFileName)," "),isStatic)," -w -o "),fileName);
-if ((flags.isSet(&flags,"l")==1)) {
+if ((flags.isSet((struct flags*)&flags,"l")==1)) {
 gccArgs =  concatCPSTRING(gccArgs," -c");
 }
 array(char *)* cLibs =  compilerState.cLibs;
@@ -6160,19 +6219,19 @@ i =  i + 1;
 };
 struct command cmd =  command(gccArgs);
 cmd.error =  false;
-cmd.run(&cmd);
+cmd.run((struct command*)&cmd);
 removeFile(randFileName);
 if ((cmd.status!=0)) {
 println("\e[1;31m[GCC-ERROR]\e[0m\nCould not compiled.");
 exit(1);
 }
-if ((flags.isSet(&flags,"l")==1)) {
+if ((flags.isSet((struct flags*)&flags,"l")==1)) {
 cmd =  command(concatCPSTRING(concatCPSTRING(concatCPSTRING("ar rcs ",fileName),".a "),fileName));
-cmd.run(&cmd);
+cmd.run((struct command*)&cmd);
 }
 }
 else {
-if ((flags.isSet(&flags,"o")==0)) {
+if ((flags.isSet((struct flags*)&flags,"o")==0)) {
 fileName =  concatCPSTRING(fileName,".c");
 }
 char * gccArgs =  concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING("gcc ",fileName)," "),isStatic)," -w ");
@@ -6198,9 +6257,9 @@ fs.createFile = fileStream__createFile;
 fs.writeFile = fileStream__writeFile;
 fs.writePtr = fileStream__writePtr;
 fs.readPtr = fileStream__readPtr;
-fs.open(&fs,fileName,"w");
-fs.writeFile(&fs,OUTPUT->toStr(OUTPUT));
-fs.close(&fs);
+fs.open((struct fileStream*)&fs,fileName,"w");
+fs.writeFile((struct fileStream*)&fs,OUTPUT->toStr((struct rope*)OUTPUT));
+fs.close((struct fileStream*)&fs);
 }
 totalTime =  getTimeUnix() - startTime;
 println(concatCPSTRING(concatCPSTRING("\e[1;32mDone. (compiled in ",intToStr(totalTime / 1000000)),"ms)\e[0m"));

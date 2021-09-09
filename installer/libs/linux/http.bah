@@ -13,6 +13,7 @@
 #include "iostream.bah"
 #include "string.bah"
 #include "exec.bah"
+#include "rope.bah"
 
 #define! socklen_t uint
 #define! pid_t int
@@ -68,7 +69,7 @@ struct http_url {
 #define! shutdown(fd int, flags int)
 
 //Used for parsing an URL.
-parseUrl(cps cpstring) http_url {    
+parseUrl(cps cpstring) http_url* {    
     u = new http_url
     s = string(cps)
     
@@ -120,7 +121,12 @@ parseUrl(cps cpstring) http_url {
 
     if i == max {
         u.path = string("/")
-        return *u
+        if u.proto.compare("https") {
+            u.port = string("443")
+        } else {
+            u.port = string("80")
+        }
+        return u
     }
     
     port = string("")
@@ -139,7 +145,12 @@ parseUrl(cps cpstring) http_url {
 
     if i == max {
         u.path = string("/")
-        return *u
+        if u.proto.compare("https") {
+            u.port = string("443")
+        } else {
+            u.port = string("80")
+        }
+        return u
     }
 
     path = string("")
@@ -150,7 +161,7 @@ parseUrl(cps cpstring) http_url {
     }
     u.path = path
 
-    return *u
+    return u
 }
 
 //Used for closing a socket.
@@ -246,7 +257,9 @@ struct http_server {
         memset(<ptr>&sa, 0, 152)
         sa.sa_handler = sigchld_handler
         sigaction(17, &sa, 0)
-        this.done()
+        if this.done != null {
+            this.done()
+        }
         for this.running == 1 {
             clilen = 16
             connfd = accept(sockfd, &cliaddr, &clilen)
@@ -307,19 +320,20 @@ const HTTP_PARTIAL_CONTENT = 206
 
 
 struct http_transport {
-    connfd: int
+    connfd: int = -1
     headers: []string*
     code: int = HTTP_OK
     body: string*
     url: http_url*
-    method: cpstring
-    path: cpstring
+    method: cpstring = ""
+    path: cpstring = ""
 
         //To set a header by name.
     setHeader(name cpstring, value cpstring) {
         
         h = new string
-        h.set(name)
+        ln = toLower(string(name))
+        h.set(ln.str())
         h.append(": ")
         h.append(value)
 
@@ -359,15 +373,6 @@ struct http_transport {
 
 }
 
-
-
-
-//A wrapper for requests.
-//When receiving a connection, you will be able to retreive the passed headers, path... from the client.
-struct http_request extend http_transport {
-    request: cpstring
-}
-
 openSocket(host cpstring, port int) int {
     serv_addr sockaddr_in
     sockfd = socket(2, 1, 0)
@@ -395,76 +400,8 @@ openSocket(host cpstring, port int) int {
     return sockfd
 }
 
-//Used for parsing the request
-http_request(connfd int) http_request {
-    r = http_request{}
-    r.connfd = connfd
-    reqcps = http_receive(connfd)
-    req = string(reqcps)
-    i = 0
-    //parse method (GET, POST, PUT, DELETE...)
-    method = string("")
-    for i < req.length {
-        c = req.charAt(i)
-        if c == ' ' {
-            break
-        }
-        cs = charToString(c)
-        method.append(cs)
-        i = i + 1
-    }
-    r.method = method.str()
-
-    //parse path (/)
-    path = string("")
-    i = i + 1
-    for i < req.length {
-        c = req.charAt(i)
-        if c == ' ' {
-            break
-        }
-        cs = charToString(c)
-        path.append(cs)
-        i = i + 1
-    }
-    r.path = path.str()
-
-    //trim rest of request (HTTP/1.1)
-    for i < req.length {
-        c = req.charAt(i)
-        if c == <char>10 {
-            break
-        }
-        i = i + 1
-    }
-    
-    req.trimLeft(i)
-    lines = splitString(req, "\r\n")
-
-    isBody = false
-
-    i=0; for i < len(lines) {
-        l = lines[i]
-        if isBody == true {
-            r.body.append(l.str() + "\r\n")
-        } else if l.length == 0 {
-            isBody = true
-        } else {
-            headerName = splitStringBefore(l, ":")
-            headerCont = string(l.str())
-            headerCont.trimLeft(strlen(headerName) + 1)
-            headerCont.trim()
-            r.setHeader(headerName, headerCont)
-        }
-        
-        i = i + 1
-    }
 
 
-    r.request = reqcps
-
-    return r
-}
 
 //A wrapper for HTTP responses. You will be able to set/retreive the headers sent/receive.
 //You will encounter this when doing a request or sending a response to the client.
@@ -537,6 +474,110 @@ http_response(connfd int) http_response {
 
 
 
+
+
+makeRespFromBody(response string) http_response* {
+
+    resp = new http_response
+    resp.body = new string
+
+    lines = splitString(response, "\r\n")
+    if len(lines) == 0 {
+        return resp
+    }
+
+
+    i = 0 
+    head = lines[0]
+    for i < head.length {
+        c = head.charAt(i)
+        if c == ' ' {
+            i = i + 1
+            break
+        }
+        i = i + 1
+    }
+
+    httpCode = string("")
+    for i < head.length {
+        c = head.charAt(i)
+        httpCode.append(charToString(c))
+        if c == ' ' {
+            break
+        }
+        i = i + 1
+    }
+    httpCodeInt = stringToInt(httpCode)
+    resp.code = httpCodeInt
+    
+    isBody = 0
+    
+    max = len(lines) - 1
+    body = string("")
+    i = 1; for i < len(lines) {
+
+        line = lines[i]
+        if isBody == 1 {
+            s = string(line.str())
+            if i < max {
+                s.append("\r\n")
+            }
+            body.append(s.str())
+            i = i + 1
+            continue
+        }
+        if i > 0 {
+            pl = lines[i-1]
+            if strlen(pl.str()) == 0 {
+                isBody = 1
+                line.trimLeft(2)
+                continue
+            }
+        }
+
+        header = new string
+        headerName = string(splitStringBefore(line, ":"))
+        if headerName.length > 0 {
+            headerName = toLower(headerName)
+            line.trimLeft(headerName.length)
+            line.prepend(headerName.str())
+        }
+        header.set(line.str())
+        lrh = len(resp.headers)
+        resp.headers[lrh] = header
+
+        i = i + 1
+    }
+
+    transferEncoding = resp.getHeader("Transfer-Encoding")
+    if strcmp(transferEncoding, "chunked") == 0 {
+        
+        resp.body.set("")
+        
+        for true == true {
+            chunkLen = splitStringBefore(body, "\r\n")
+            if strcmp(chunkLen, "0") == 0 {
+                break
+            }
+            l = strtol(chunkLen, noCheck(0), 16)
+            l = l
+            body.trimLeft(strlen(chunkLen)+2)
+            chunk cpstring = memoryAlloc(l+1)
+            memcpy(chunk, body.content, l)
+            resp.body.append(chunk)
+            body.trimLeft(l+2)
+        }
+
+    } else {
+        resp.body.set(body.str())
+    }
+    return resp
+
+
+}
+
+
+
 //making requests
 
 //SSL - TLS (https)
@@ -583,7 +624,6 @@ makeRawHttpsRequest(host cpstring, message cpstring) cpstring {
     if BIO_do_connect(bio) <= 0 {
         panic("http: error connecting through ssl")
     }
-
     success = BIO_write(bio, message, strlen(message))
 
     if success <= 0 {
@@ -608,9 +648,176 @@ makeRawHttpsRequest(host cpstring, message cpstring) cpstring {
 
 }
 
+
+
+
+//A wrapper for requests.
+//When receiving a connection, you will be able to retreive the passed headers, path... from the client.
+struct http_request extend http_transport {
+    request: cpstring
+
+    send() http_response* {
+        socketWasOpenned = true
+        isTLS = false
+        host = ""
+        if this.connfd == -1 {
+            if this.url != null {
+                socketWasOpenned = false
+                if strlen(this.path) == 0 {
+                    this.path = this.url.path.str()
+                }
+                if this.url.proto.compare("https") {
+                    isTLS = true
+                    if this.url.port.length == 0 {
+                        this.url.port.set("443")
+                    }
+                    host = this.url.host.str()+":"+this.url.port.str()
+                } else {
+                    if this.url.port.length == 0 {
+                        this.url.port.set("80")
+                    }
+                    this.connfd = openSocket(this.url.host.str(), atoi(this.url.port.str()))
+                }
+                    this.setHeader("host", this.url.host.str()+":"+this.url.port.str())
+            } else {
+                return null
+            }            
+        }
+
+
+        method = this.method
+        if strlen(method) == 0 {
+            method = "GET"
+        }
+
+
+        path = this.path
+        if strlen(path) == 0 {
+            path = "/"
+        }
+        message = rope(method +" "+ path + " HTTP/1.0\r\n")
+        i=0; for i < len(this.headers) {
+            h = this.headers[i]
+            message = message + rope(h.str() + "\r\n")
+            i = i + 1
+        }
+        message = message + rope("\r\n")
+
+        if this.body != null {
+            message = message + rope(this.body.str())
+        }
+
+        msg = message.toStr()
+
+        response = string("")
+        if isTLS == true {
+            response.set(makeRawHttpsRequest(host, msg))
+            
+
+        } else {
+
+            if send(this.connfd, msg, strlen(msg), 0) <= 0 {
+                panic("http: error sending trought socket")
+            }
+
+            buffer cpstring = memoryAlloc(1025)
+            nDataLength = recv(this.connfd,buffer,1024,0)
+            for nDataLength > 0 {
+                response.append(buffer)
+                if nDataLength < 1024 {
+                    trimAmm = 1024 - nDataLength
+                    response.trimRight(trimAmm)
+                }
+                nDataLength = recv(this.connfd,buffer,1024,0)
+            }
+
+        }
+
+        if socketWasOpenned == false {
+            closeSocket(this.connfd)
+        }
+
+        return makeRespFromBody(response)
+    }
+
+}
+
+//Used for parsing the request
+http_request(connfd int) http_request {
+    r = http_request{}
+    r.connfd = connfd
+    reqcps = http_receive(connfd)
+    req = string(reqcps)
+    i = 0
+    //parse method (GET, POST, PUT, DELETE...)
+    method = string("")
+    for i < req.length {
+        c = req.charAt(i)
+        if c == ' ' {
+            break
+        }
+        cs = charToString(c)
+        method.append(cs)
+        i = i + 1
+    }
+    r.method = method.str()
+
+    //parse path (/)
+    path = string("")
+    i = i + 1
+    for i < req.length {
+        c = req.charAt(i)
+        if c == ' ' {
+            break
+        }
+        cs = charToString(c)
+        path.append(cs)
+        i = i + 1
+    }
+    r.path = path.str()
+
+    //trim rest of request (HTTP/1.1)
+    for i < req.length {
+        c = req.charAt(i)
+        if c == <char>10 {
+            break
+        }
+        i = i + 1
+    }
+    
+    req.trimLeft(i)
+    lines = splitString(req, "\r\n")
+
+    isBody = false
+
+    i=0; for i < len(lines) {
+        l = lines[i]
+        if isBody == true {
+            r.body.append(l.str() + "\r\n")
+        } else if l.length == 0 {
+            isBody = true
+        } else {
+            l.trim()
+            headerName = splitStringBefore(l, ":")
+            headerCont = string(l.str())
+            headerCont.trimLeft(strlen(headerName) + 1)
+            headerCont.trim()
+            r.setHeader(headerName, headerCont.str())
+        }
+        
+        i = i + 1
+    }
+
+
+    r.request = reqcps
+
+    return r
+}
+
+
 //Used for making any request.
 //Method is either http or https. The arguments (args) are the variables to pass (can be post or get variable) formatted as: name=value.
-makeRawRequest(method cpstring, u http_url, args []cpstring) http_response {
+makeRawRequest(method cpstring, u http_url*, args []cpstring) http_response {
     proto = u.proto
     host = u.host
     path = u.path

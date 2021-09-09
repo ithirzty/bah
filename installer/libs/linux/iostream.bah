@@ -264,6 +264,8 @@ removeFile(name cpstring) bool {
     return false
 }
 
+#define! getenv(s cpstring) cpstring
+
 //Example
 // #include "iostream.bah"
 // main() {
