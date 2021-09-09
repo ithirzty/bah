@@ -72,10 +72,14 @@ main(args []cpstring) int //declare the main (the entry-point to the program)
 ## Why?
 Bah is a really fast language that is low level enough for most cases while being really simple.
 As well as being easy to learn, you can create 
-- website (such as the [bah-lang](https://bah-lang.xyz) website),
-- compilers (the bah compiler is written in bah),
-- interpreters (such as the [Brainfuck interpreter](https://github.com/ithirzty/bah-brainfuck)),
-- web apps (the documentation of bah is wrapped up in a [web app](https://github.com/ithirzty/bah-website)),
+- website
+    - [bah-lang website](https://bah-lang.xyz)
+- compilers
+    - [bah compiler](https://github.com/ithirzty/bah)
+- interpreters
+    - [Brainfuck interpreter](https://github.com/ithirzty/bah-brainfuck)
+- web apps
+    - [bah-lang doc](https://github.com/ithirzty/bah-website)
 - and many more.
 > You did something awesome in bah? Add it to the list!
 
