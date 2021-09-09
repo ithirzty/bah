@@ -23,6 +23,7 @@ cp /opt/bah/regex.bah ./libs/common/
 cp /opt/bah/string.bah ./libs/common/
 cp /opt/bah/thread.bah ./libs/common/
 cp /opt/bah/rope.bah ./libs/common/
+cp /opt/bah/matrix.bah ./libs/common/
 #linux specific libs
 cp /opt/bah/iostream.bah ./libs/linux/
 cp /opt/bah/time.bah ./libs/linux/

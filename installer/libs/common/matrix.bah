@@ -1,0 +1,50 @@
+//A matrix is defined by its number of elements per line (column size).
+struct matrix {
+    colSize: int
+    
+    //Get an index from row and column index.
+    index(r int, c int) int {
+        rowOffset = this.colSize * r
+        return rowOffset + c
+    }
+
+    //Get the row index from an index.
+    rowIndex(i int) int {
+        return i / this.colSize
+    }
+
+}
+
+//Makes a new matrix by its column size.
+matrix(sc int) matrix* {
+    m = new matrix
+    m.colSize = sc
+    return m
+}
+
+//Example
+// #include "iostream.bah"
+// #include "matrix.bah"
+// main(args []cpstring) int {
+//     a = []int
+//     m = matrix(3)
+//     i=0; for i < 4 {
+//         a[m.index(i,0)] = 1+i
+//         a[m.index(i,1)] = 2+i
+//         a[m.index(i,2)] = 3+i
+//         i = i + 1
+//     }
+//     println("a[2;1] = "+intToStr(a[m.index(2,1)]))
+//     rows = m.rowIndex(len(a))
+//     i=0; for i < rows {
+//         row = ""
+//         j=0; for j < m.colSize {
+//             e = a[m.index(i, j)]
+//             row = row + " " + intToStr(e)
+//             j = j + 1
+//         }
+//         println(row)
+//         i = i + 1
+//     }
+//     return 0
+// }
