@@ -145,6 +145,18 @@ getLineType(line []Tok) lineType {
 //Inline parsing
 parseCast(line []Tok, elems Elems*) []Tok {
     nl = []Tok
+
+    i=0; for i < len(line) {
+        t = line[i]
+        if t.cont == "<" {
+            break
+        }
+        i = i + 1
+    }
+    if i == len(line) {
+        return line
+    }
+
     i=0; for i < len(line) {
         t = line[i]
         if t.type == TOKEN_TYPE_SYNTAX {
@@ -235,6 +247,7 @@ parseInclude(l []Tok, elems Elems*) {
 parseOperations(line []Tok, elems Elems*) []Tok {
     signs = []cpstring{"|", "&", "%", "+", "-", "*", "/"}
     nl = []Tok{line[0]}
+
     i=1; for i < len(line) {
         t = line[i]
         if t.type == TOKEN_TYPE_SYNTAX {
@@ -379,6 +392,18 @@ parseStructVars(line []Tok, elems Elems*) []Tok {
 
     i=0; for i < len(line) {
         t = line[i]
+        if t.cont == "." {
+            break
+        }
+        i = i + 1
+    }
+    if i == len(line) {
+        return line
+    }
+    
+
+    i=0;for i < len(line) {
+        t = line[i]
         if t.type == TOKEN_TYPE_VAR {
             i =i + 1
             for i < len(line) {
@@ -425,6 +450,17 @@ parseArrayType(line []Tok, elems Elems*) []Tok {
     i=0; for i < len(line) {
         t = line[i]
         if t.cont == "[" {
+            break
+        }
+        i = i + 1
+    }
+    if i == len(line) {
+        return line
+    }
+
+    i=0;for i < len(line) {
+        t = line[i]
+        if t.cont == "[" {
             i =i + 1
             if i < len(line) {
                 t = line[i]
@@ -458,6 +494,17 @@ parseBool(line []Tok, elems Elems*) []Tok {
 
     comparators = []cpstring{"==", "!=", ">", "<", "<=", ">="}
     compSep = []cpstring{"||", "&&"}
+
+    i=0; for i < len(line) {
+        t = line[i]
+        if inArrayStr(t.cont, comparators) || inArrayStr(t.cont, compSep) {
+            break
+        }
+        i = i + 1
+    }
+    if i == len(line) {
+        return line
+    }
 
     i=0; for i < len(line) {
         t = line[i]
@@ -505,8 +552,8 @@ parseBool(line []Tok, elems Elems*) []Tok {
     }
 
 
-    copy(line, nl)
-    clear(nl)
+    line = nl
+    nl = []Tok
     i=0; for i < len(line) {
         t = line[i]
         if inArrayStr(t.cont, compSep) {
@@ -1230,6 +1277,10 @@ parseFnHeader(prev cpstring, l []Tok, i int*, fn func*, elems Elems*) cpstring {
             newArgType = argCType.str()
             if cfrt.hasPrefix("[]") == 1 {
                 cfrt.trimLeft(2)
+                if cfrt.hasSuffix("*") {
+                    nbast = cfrt.count("*")
+                    cfrt.trimRight(nbast)
+                }
                 newArgType = "__BAH_ARR_TYPE_" + cfrt.str()
                 csatd = compilerState.arrTypesDecl
                 if inArrayStr(newArgType, csatd) == false {
@@ -1279,6 +1330,10 @@ parseFnHeader(prev cpstring, l []Tok, i int*, fn func*, elems Elems*) cpstring {
     cfrt = string(returns.type)
     if cfrt.hasPrefix("[]") == 1 {
         cfrt.trimLeft(2)
+        if cfrt.hasSuffix("*") {
+            nbast = cfrt.count("*")
+            cfrt.trimRight(nbast)
+        }
         newFnRetType = "__BAH_ARR_TYPE_" + cfrt.str()
         csatd = compilerState.arrTypesDecl
         if inArrayStr(newFnRetType, csatd) == false {
@@ -1893,6 +1948,7 @@ parseForOp(l []Tok) {
 }
 
 prePross(line []Tok, elems Elems*) []Tok {
+
     fl = []Tok
     i=0; for i < len(line) {
         t = line[i]

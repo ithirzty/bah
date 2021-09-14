@@ -43,29 +43,29 @@ struct mutex {
 
 //A wrapper for a thread.
 struct thread {
-    id: int
+    id: int = -1
     
     //This will need to ne set by the user.
     //The specified function will be the entry point for the thread.
-    handle: function(int)
+    handle: function(ptr)
 
     //This will launch the thread.
     create() {
-        z0 = <ptr>0
-        GC_pthread_create(&this.id, z0, this.handle, z0)   
+        GC_pthread_create(&this.id, null, this.handle, null)   
     }
 
     //This will launch the thread by passing to its entry point funtion an argument.
     //The argument can only be a pointer.
     createWithArg(arg ptr) {
-        z0 = <ptr>0
-        GC_pthread_create(&this.id, z0, this.handle, arg)   
+        GC_pthread_create(&this.id, null, this.handle, arg)   
     }
 
     //This waits until the thread has finished executting.
     wait() {
-        z0 = <ptr>0
-        GC_pthread_join(this.id, z0)
+        if this.id == -1 {
+            return
+        }
+        GC_pthread_join(this.id, null)
     }
 }
 

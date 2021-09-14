@@ -91,11 +91,13 @@ lexerErr(line int, pos int, msg cpstring) {
 }
 
 
-lexer(s cpstring) []Tok {
+lexer(os cpstring) []Tok {
+    dur = getTimeUnix()
+    s = strAsArr(os)
     tokens = []Tok
     
     //code = string(s)
-    codeLength = strlen(s)
+    codeLength = len(s)
 
     memory = []char
 
@@ -114,17 +116,17 @@ lexer(s cpstring) []Tok {
 
 
     i=0; for i < codeLength {
-        c = cpstringCharAt(s, i)
+        c = s[i]
         nci = i + 1
         nc char = <char>0
         if nci < codeLength {
-            nc = cpstringCharAt(s, i+1)
+            nc = s[i+1]
         }
         if c == '/' {
-            nc = cpstringCharAt(s, i+1)
+            nc = s[i+1]
             if nc == '/' {
                 for i < codeLength {
-                    c = cpstringCharAt(s, i)
+                    c = s[i]
                     if c == <char>10 {
                         break
                     }
@@ -147,8 +149,8 @@ lexer(s cpstring) []Tok {
             memory[0] = c
             i = i + 1
             for i < codeLength {
-                c = cpstringCharAt(s, i)
-                pc = cpstringCharAt(s, i - 1) 
+                c = s[i]
+                pc = s[i-1]
                 if c == <char>34 {
                     if pc != <char>92 {
                         memory[len(memory)] = c
@@ -172,7 +174,7 @@ lexer(s cpstring) []Tok {
             i = i + 1
             currentType = TOKEN_TYPE_INT
             for i < codeLength {
-                c = cpstringCharAt(s, i)
+                c = s[i]
                 if c == <char>46 {
                     currentType = TOKEN_TYPE_FLOAT
                 } else if isNumber(c) == 0 {
@@ -186,11 +188,11 @@ lexer(s cpstring) []Tok {
         } else if c == <char>39 {
         //is a character
             i = i + 1
-            n = cpstringCharAt(s, i)
+            n = s[i]
             toInt = intToStr(<int>nc)
             memory = strToArr(toInt)
             i = i + 1
-            c = cpstringCharAt(s, i)
+            c = s[i]
             if c != <char>39 {
                 lexerErr(lineNb, i, "Missing closing tag in char declaration.")
             }
@@ -202,7 +204,7 @@ lexer(s cpstring) []Tok {
             memory[0] = c
             i = i + 1
             for i < codeLength {
-                c = cpstringCharAt(s, i)
+                c = s[i]
                 if isAlphaNumeric(c) == 0 {
                     break
                 }
@@ -210,7 +212,6 @@ lexer(s cpstring) []Tok {
                 i = i + 1
             }
             i = i - 1
-            memstr = arrAsStr(memory)
             tokens[len(tokens)] = makeToken(pos, lineNb, memory, TOKEN_TYPE_KEYWORD)
         } else if inArray(c, enclavers) {
         //token is enclaver
@@ -223,7 +224,7 @@ lexer(s cpstring) []Tok {
             i = i + 1
             fc = c
             for i < codeLength {
-                c = cpstringCharAt(s, i)
+                c = s[i]
                 if inArray(c, syntaxes) == false {
                     break
                 }
@@ -253,7 +254,7 @@ lexer(s cpstring) []Tok {
             pos = i
             i = i + 1
             for i < codeLength {
-                c = cpstringCharAt(s, i)
+                c = s[i]
 
                 if isAlphaNumeric(c) == 0 {
                     if inArray(c, varChars) == false {
@@ -292,5 +293,7 @@ lexer(s cpstring) []Tok {
         i = i + 1
     }
     totalLines = totalLines + lineNb - 1
+    dur = getTimeUnix() - dur
+    totalLexerTime = totalLexerTime + dur
     return tokens
 }

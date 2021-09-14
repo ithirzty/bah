@@ -622,7 +622,7 @@ makeRawHttpsRequest(host cpstring, message cpstring) cpstring {
 
     BIO_set_conn_hostname(bio, host)
     if BIO_do_connect(bio) <= 0 {
-        panic("http: error connecting through ssl")
+        panic("http: error connecting through ssl to '"+host+"'")
     }
     success = BIO_write(bio, message, strlen(message))
 
@@ -712,8 +712,6 @@ struct http_request extend http_transport {
         response = string("")
         if isTLS == true {
             response.set(makeRawHttpsRequest(host, msg))
-            
-
         } else {
 
             if send(this.connfd, msg, strlen(msg), 0) <= 0 {

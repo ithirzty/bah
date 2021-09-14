@@ -64,3 +64,5 @@ threadCount = 0
 currentFn func*
 
 totalLines = 0
+
+totalLexerTime = 0

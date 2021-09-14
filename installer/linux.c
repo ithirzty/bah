@@ -495,6 +495,7 @@ arr->length = 0;
 arr->elemSize = sizeof(char);
 noCheck( arr -> data = memoryAlloc ( strLen + 1 ) );
 noCheck( memcpy ( arr -> data , str , strLen ) );
+noCheck( arr -> elemSize = 1 );
 noCheck( arr -> length = strLen );
 return arr;
 };
@@ -502,6 +503,17 @@ char * arrAsStr(__BAH_ARR_TYPE_char arr){
 char * r =  "";
 noCheck( r = arr -> data );
 return r;
+};
+__BAH_ARR_TYPE_char strAsArr(char * str){
+long int l =  strlen(str);
+array(char)* arr = memoryAlloc(sizeof(array(char)));
+
+arr->length = 0;
+arr->elemSize = sizeof(char);
+noCheck( arr -> length = l );
+noCheck( arr -> elemSize = 1 );
+noCheck( arr -> data = str );
+return arr;
 };
 struct string intToString(long int i){
 char * buff =  memoryAlloc(65);
@@ -514,6 +526,9 @@ char * intToStr(long int i){
 char * buff =  memoryAlloc(65);
 sprintf(buff,"%ld",(void *)i);
 return buff;
+};
+long int strToInt(char * s){
+return atol(s);
 };
 long int stringToInt(struct string s){
 long int i =  atoi(s.content);
@@ -800,7 +815,7 @@ char(*getChar)(struct fileStream* this);
 void(*createFile)(struct fileStream* this,char * path);
 long int(*writeFile)(struct fileStream* this,char * content);
 void(*writePtr)(struct fileStream* this,void * a,long int s);
-void(*readPtr)(struct fileStream* this,void * a,long int s);
+long int(*readPtr)(struct fileStream* this,void * a,long int s);
 };
 long int fileStream__isValid(struct fileStream* this){
 if ((this->handle==null)) {
@@ -910,8 +925,8 @@ return 1;
 void fileStream__writePtr(struct fileStream* this,void * a,long int s){
 fwrite(a,s,1,this->handle);
 };
-void fileStream__readPtr(struct fileStream* this,void * a,long int s){
-fread(a,s,1,this->handle);
+long int fileStream__readPtr(struct fileStream* this,void * a,long int s){
+return fread(a,s,1,this->handle);
 };
 struct fileMap {
 long int handle;
@@ -1537,6 +1552,7 @@ struct cStruct* currentCStruct;
 long int threadCount =  0;
 struct func* currentFn;
 long int totalLines =  0;
+long int totalLexerTime =  0;
 typedef long int tokenType;
 #define TOKEN_NO_TYPE (tokenType)-1
 #define TOKEN_TYPE_INT (tokenType)0
@@ -1631,12 +1647,14 @@ println(concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRI
 exit(1);
 };
 typedef array(struct Tok)* __BAH_ARR_TYPE_Tok;
-__BAH_ARR_TYPE_Tok lexer(char * s){
+__BAH_ARR_TYPE_Tok lexer(char * os){
+long int dur =  getTimeUnix();
+array(char)* s =  strAsArr(os);
 array(struct Tok)* tokens = memoryAlloc(sizeof(array(struct Tok)));
 
 tokens->length = 0;
 tokens->elemSize = sizeof(struct Tok);
-long int codeLength =  strlen(s);
+long int codeLength =  len(s);
 array(char)* memory = memoryAlloc(sizeof(array(char)));
 
 memory->length = 0;
@@ -1702,17 +1720,17 @@ seps->elemSize = sizeof(char);
 seps->data = memoryAlloc(sizeof(char) * 50);seps->data[0] = 46;
 long int i =  0;
 while ((i<codeLength)) {
-char c =  cpstringCharAt(s,i);
+char c =  s->data[i];
 long int nci =  i + 1;
 char nc =  (char)0;
 if ((nci<codeLength)) {
-nc =  cpstringCharAt(s,i + 1);
+nc =  s->data[i + 1];
 }
 if ((c==47)) {
-nc =  cpstringCharAt(s,i + 1);
+nc =  s->data[i + 1];
 if ((nc==47)) {
 while ((i<codeLength)) {
-c =  cpstringCharAt(s,i);
+c =  s->data[i];
 if ((c==(char)10)) {
 break;
 }
@@ -1745,8 +1763,8 @@ memory->data[0] =  c;
 };
 i =  i + 1;
 while ((i<codeLength)) {
-c =  cpstringCharAt(s,i);
-char pc =  cpstringCharAt(s,i - 1);
+c =  s->data[i];
+char pc =  s->data[i-1];
 if ((c==(char)34)) {
 if ((pc!=(char)92)) {
 
@@ -1835,7 +1853,7 @@ long int pos =  i;
 i =  i + 1;
 tokenType currentType =  TOKEN_TYPE_INT;
 while ((i<codeLength)) {
-c =  cpstringCharAt(s,i);
+c =  s->data[i];
 if ((c==(char)46)) {
 currentType =  TOKEN_TYPE_FLOAT;
 }
@@ -1876,11 +1894,11 @@ tokens->data[len(tokens)] =  makeToken(pos,lineNb,memory,currentType);
 }
 else if ((c==(char)39)) {
 i =  i + 1;
-char n =  cpstringCharAt(s,i);
+char n =  s->data[i];
 char * toInt =  intToStr((long int)nc);
 memory =  strToArr(toInt);
 i =  i + 1;
-c =  cpstringCharAt(s,i);
+c =  s->data[i];
 if ((c!=(char)39)) {
 lexerErr(lineNb,i,"Missing closing tag in char declaration.");
 }
@@ -1917,7 +1935,7 @@ memory->data[0] =  c;
 };
 i =  i + 1;
 while ((i<codeLength)) {
-c =  cpstringCharAt(s,i);
+c =  s->data[i];
 if ((isAlphaNumeric(c)==0)) {
 break;
 }
@@ -1938,7 +1956,6 @@ memory->data[len(memory)] =  c;
 i =  i + 1;
 };
 i =  i - 1;
-char * memstr =  arrAsStr(memory);
 
 {
 long nLength = len(tokens);
@@ -2003,7 +2020,7 @@ long int pos =  i;
 i =  i + 1;
 char fc =  c;
 while ((i<codeLength)) {
-c =  cpstringCharAt(s,i);
+c =  s->data[i];
 if ((inArray(c,syntaxes)==false)) {
 break;
 }
@@ -2102,7 +2119,7 @@ memory->data[0] =  c;
 long int pos =  i;
 i =  i + 1;
 while ((i<codeLength)) {
-c =  cpstringCharAt(s,i);
+c =  s->data[i];
 if ((isAlphaNumeric(c)==0)) {
 if ((inArray(c,varChars)==false)) {
 if ((c==62)) {
@@ -2169,6 +2186,8 @@ tokens->data[len(tokens)] =  makeToken(pos,lineNb,memory,currentType);
 i =  i + 1;
 };
 totalLines =  totalLines + lineNb - 1;
+dur =  getTimeUnix() - dur;
+totalLexerTime =  totalLexerTime + dur;
 return tokens;
 };
 int hasStructSep(struct string n){
@@ -3112,6 +3131,17 @@ nl->elemSize = sizeof(struct Tok);
 long int i =  0;
 while ((i<len(line))) {
 struct Tok t =  line->data[i];
+if ((strcmp(t.cont, "<") == 0)) {
+break;
+}
+i =  i + 1;
+};
+if ((i==len(line))) {
+return line;
+}
+i =  0;
+while ((i<len(line))) {
+struct Tok t =  line->data[i];
 if ((t.type==TOKEN_TYPE_SYNTAX)) {
 if ((strcmp(t.cont, "<") == 0)) {
 long int max =  i + 3;
@@ -3492,6 +3522,17 @@ nl->elemSize = sizeof(struct Tok);
 long int i =  0;
 while ((i<len(line))) {
 struct Tok t =  line->data[i];
+if ((strcmp(t.cont, ".") == 0)) {
+break;
+}
+i =  i + 1;
+};
+if ((i==len(line))) {
+return line;
+}
+i =  0;
+while ((i<len(line))) {
+struct Tok t =  line->data[i];
 if ((t.type==TOKEN_TYPE_VAR)) {
 i =  i + 1;
 while ((i<len(line))) {
@@ -3561,6 +3602,17 @@ array(struct Tok)* nl = memoryAlloc(sizeof(array(struct Tok)));
 nl->length = 0;
 nl->elemSize = sizeof(struct Tok);
 long int i =  0;
+while ((i<len(line))) {
+struct Tok t =  line->data[i];
+if ((strcmp(t.cont, "[") == 0)) {
+break;
+}
+i =  i + 1;
+};
+if ((i==len(line))) {
+return line;
+}
+i =  0;
 while ((i<len(line))) {
 struct Tok t =  line->data[i];
 if ((strcmp(t.cont, "[") == 0)) {
@@ -3640,6 +3692,17 @@ compSep->data[1] = __STR("&&");
 long int i =  0;
 while ((i<len(line))) {
 struct Tok t =  line->data[i];
+if ((inArrayStr(t.cont,comparators)||inArrayStr(t.cont,compSep))) {
+break;
+}
+i =  i + 1;
+};
+if ((i==len(line))) {
+return line;
+}
+i =  0;
+while ((i<len(line))) {
+struct Tok t =  line->data[i];
 if (inArrayStr(t.cont,comparators)) {
 if ((i==0)) {
 throwErr(&t,"Cannot use {TOKEN} to compare with nothing.");
@@ -3712,8 +3775,11 @@ nl->data[len(nl)] =  t;
 };
 i =  i + 1;
 };
-copy(line,nl);
-clear(nl);
+line =  nl;
+nl = memoryAlloc(sizeof(array(struct Tok)));
+
+nl->length = 0;
+nl->elemSize = sizeof(struct Tok);
 i =  0;
 while ((i<len(line))) {
 struct Tok t =  line->data[i];
@@ -4661,6 +4727,10 @@ struct string cfrt =  string(argType);
 char * newArgType =  argCType.str((struct string*)&argCType);
 if ((cfrt.hasPrefix((struct string*)&cfrt,"[]")==1)) {
 cfrt.trimLeft((struct string*)&cfrt,2);
+if (cfrt.hasSuffix((struct string*)&cfrt,"*")) {
+long int nbast =  cfrt.count((struct string*)&cfrt,"*");
+cfrt.trimRight((struct string*)&cfrt,nbast);
+}
 newArgType =  concatCPSTRING("__BAH_ARR_TYPE_",cfrt.str((struct string*)&cfrt));
 array(char *)* csatd =  compilerState.arrTypesDecl;
 if ((inArrayStr(newArgType,csatd)==false)) {
@@ -4725,6 +4795,10 @@ char * newFnRetType =  fnRetType.str((struct string*)&fnRetType);
 struct string cfrt =  string(returns->type);
 if ((cfrt.hasPrefix((struct string*)&cfrt,"[]")==1)) {
 cfrt.trimLeft((struct string*)&cfrt,2);
+if (cfrt.hasSuffix((struct string*)&cfrt,"*")) {
+long int nbast =  cfrt.count((struct string*)&cfrt,"*");
+cfrt.trimRight((struct string*)&cfrt,nbast);
+}
 newFnRetType =  concatCPSTRING("__BAH_ARR_TYPE_",cfrt.str((struct string*)&cfrt));
 array(char *)* csatd =  compilerState.arrTypesDecl;
 if ((inArrayStr(newFnRetType,csatd)==false)) {
@@ -6166,7 +6240,7 @@ panic(concatCPSTRING(concatCPSTRING("Could not find std-libs, please check '",BA
 }
 parseLines(tokens,elems);
 long int totalTime =  getTimeUnix() - startTime;
-println(concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING("Parsed. (",intToStr(totalLines))," lines parsed in "),intToStr(totalTime / 1000000)),"ms)\e[0m"));
+println(concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING("Parsed. (",intToStr(totalLines))," lines, total time: "),intToStr(totalTime / 1000000)),"ms, lexer time: "),intToStr(totalLexerTime / 1000000)),"ms)\e[0m"));
 if ((flags.isSet((struct flags*)&flags,"o")==1)) {
 fileName =  flags.get((struct flags*)&flags,"o");
 }

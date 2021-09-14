@@ -43,7 +43,7 @@ panic(e cpstring) {
 }
 
 #define! fwrite(w ptr, s int, f int, hndl FILE*)
-#define! fread(w ptr, s int, f int, hndl FILE*)
+#define! fread(w ptr, s int, f int, hndl FILE*) int
 #define! ftell(hndl FILE*) int
 #define! fseek(hndl FILE*, offset int, from int)
 
@@ -167,8 +167,8 @@ struct fileStream {
     //Read a file and unserialize its content to a pointer.
     //a: the pointer to unserialize
     //s: sizeof() the pointer's content.
-    readPtr(a ptr, s int) {
-        fread(a, s, 1, this.handle)
+    readPtr(a ptr, s int) int {
+        return fread(a, s, 1, this.handle)
     }
 
 }

@@ -37,7 +37,7 @@ struct queue {
         current = this.head
         previous queueNode*
         for current.key != key {
-            if current.next == 0 {
+            if current.next == null {
                 return
             }
             previous = current
@@ -61,7 +61,7 @@ struct queue {
 
         ptr = this.head
         for ptr.key != key {
-            if ptr.next == 0 {
+            if ptr.next == null {
                 return zp
             }
             ptr = ptr.next

@@ -90,7 +90,7 @@ return __BAH__main((__BAH_ARR_TYPE_cpstring)args);
     parseLines(tokens, elems)
 
     totalTime = getTimeUnix() - startTime
-    println("Parsed. ("+intToStr(totalLines)+" lines parsed in "+intToStr(totalTime / 1000000)+"ms)\e[0m")
+    println("Parsed. ("+intToStr(totalLines)+" lines, total time: "+intToStr(totalTime / 1000000)+"ms, lexer time: "+intToStr(totalLexerTime / 1000000)+"ms)\e[0m")
 
     if flags.isSet("o") == 1 {
         fileName = flags.get("o")

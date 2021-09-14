@@ -11,6 +11,7 @@
 #define! strtol(str cpstring, endptr ptr, base int) int
 #define! strtod(str cpstring, endptr int) float
 #define! memset(str ptr, w int, s int)
+#define! atol(a cpstring) int
 
 cpstringCharAt(s cpstring, i int) char {
     c = <char>0
@@ -341,6 +342,7 @@ strToArr(str cpstring) []char {
     arr = []char
     noCheck(arr->data = memoryAlloc(strLen+1))
     noCheck(memcpy(arr->data, str, strLen))
+    noCheck(arr->elemSize = 1)
     noCheck(arr->length = strLen)
     
     return arr
@@ -355,6 +357,20 @@ arrAsStr(arr []char) cpstring {
     noCheck(r = arr->data)
     return r
 }
+
+//Used to get a cpstring as an array of chars.
+//This is faster than strToArr() but changing the content of the array will change the content of the cpstring.
+//This could lead to memory corruption if the cpstring is not heap allocated.
+//Make sure that the array is null terminated if editting it.
+strAsArr(str cpstring) []char {
+    l = strlen(str)
+    arr = []char
+    noCheck(arr->length = l)
+    noCheck(arr->elemSize = 1)
+    noCheck(arr->data = str)
+    return arr
+}
+
 
 //Used to convert an integer into a string.
 //*It returns a string, not a cpstring*
@@ -372,6 +388,10 @@ intToStr(i int) cpstring {
     buff cpstring = memoryAlloc(65)
     sprintf(buff, "%ld", <ptr>i)
     return buff
+}
+
+strToInt(s cpstring) int {
+    return atol(s)
 }
 
 
