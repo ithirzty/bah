@@ -85,6 +85,9 @@ return __BAH__main((__BAH_ARR_TYPE_cpstring)args);
         panic("Could not find std-libs, please check '"+BAH_DIR+"'")
     }
     parseLines(tokens, elems)
+    totalTime = getTimeUnix() - startTime
+    println("Parsed. ("+intToStr(totalLines)+" lines, total time: "+intToStr(totalTime / 1000000)+"ms, lexer time: "+intToStr(totalLexerTime / 1000000)+"ms)\e[0m")
+
 
     if flags.isSet("o") == 1 {
         fileName = flags.get("o")
@@ -156,6 +159,6 @@ return __BAH__main((__BAH_ARR_TYPE_cpstring)args);
     }
 
     totalTime = getTimeUnix() - startTime
-    println("\e[1;32mDone. ("+intToStr(totalLines)+" lines compiled in "+intToStr(totalTime / 1000000)+"ms)\e[0m")
+    println("\e[1;32mDone. (compiled in "+intToStr(totalTime / 1000000)+"ms)\e[0m")
     return 0
 }
