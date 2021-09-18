@@ -81,6 +81,8 @@ As well as being easy to learn, you can create
     - [Brainfuck interpreter](https://github.com/ithirzty/bah-brainfuck)
 - web apps
     - [bah-lang doc](https://github.com/ithirzty/bah-website)
+- libraries
+    - [bah-bmp](https://github.com/ithirzty/bah-bmp)
 - and many more.
 > You did something awesome in bah? Add it to the list!
 
