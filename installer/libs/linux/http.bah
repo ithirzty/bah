@@ -298,9 +298,24 @@ http_send(connfd int, s cpstring) {
 
 //To receive from a specified socket.
 http_receive(connfd int) cpstring {
-    buffer cpstring = memoryAlloc(1024)
-    recv(connfd,buffer,1024,0)
-    return buffer
+    buffer cpstring = memoryAlloc(1025)
+    response = string("")
+    nDataLength = recv(connfd,buffer,1024,0)
+    if nDataLength < 1024 {
+        response.append(buffer)
+    } else {
+        for nDataLength > 0 {
+            response.append(buffer)
+            if nDataLength < 1024 {
+                trimAmm = 1024 - nDataLength
+                response.trimRight(trimAmm)
+                break
+            } else {
+                nDataLength = recv(connfd,buffer,1024,0)
+            }
+        }
+    }
+    return response.str()
 }
 
 
@@ -655,6 +670,7 @@ makeRawHttpsRequest(host cpstring, message cpstring) cpstring {
 //When receiving a connection, you will be able to retreive the passed headers, path... from the client.
 struct http_request extend http_transport {
     request: cpstring
+    form: []string
 
     send() http_response* {
         socketWasOpenned = true
@@ -738,6 +754,43 @@ struct http_request extend http_transport {
         return makeRespFromBody(response)
     }
 
+    //Call this to parse the post data form.
+    //This will return false if anything goes wrong while parsing the form.
+    parseForm() bool {
+        if this.method != "POST" {
+            return false
+        }
+
+        contentType = this.getHeader("Content-Type")
+        if strHasPrefix(contentType, "multipart/form-data") {
+            //cannot handle multipart for now
+            return false
+        }
+
+        if contentType == "application/x-www-form-urlencoded" {
+            body = this.body
+            this.form = splitString(*body, "&")
+        }
+
+
+        return true
+    }
+
+    getFormValue(name cpstring) cpstring {
+        rName = string(name)
+        rName = toLower(rName)
+        i=0; for i < len(this.form) {
+            f = this.form[i]
+            if f.hasPrefix(rName.str() + "=") {
+                f.trimLeft(rName.length + 1)
+                f.trim()
+                return f.str()
+            }
+            i = i + 1
+        }
+        return ""
+    }
+
 }
 
 //Used for parsing the request
@@ -787,7 +840,7 @@ http_request(connfd int) http_request {
     lines = splitString(req, "\r\n")
 
     isBody = false
-
+    r.body = new string
     i=0; for i < len(lines) {
         l = lines[i]
         if isBody == true {

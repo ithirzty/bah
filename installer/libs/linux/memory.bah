@@ -117,6 +117,15 @@ sharedMemory(size int) ptr {
     return r
 }
 
+//Used for pre-allocating a number of element to an array.
+//The content of the array is not initialized, it may contain garbage.
+allocateArray(arr ptr, nbElems int) {
+    noCheck(array(void*) * a = arr)
+    noCheck(a->length = nbElems)
+    noCheck(a->data = memoryAlloc(nbElems * a->elemSize))
+}
+
+
 //Example
 // #include "string.bah"
 // #include "memory.bah"

@@ -100,6 +100,11 @@ size =  4096;
 void * r =  mmap(0,size,PROT_READ + PROT_WRITE,MAP_SHARED + MAP_ANONYMOUS,-1,0);
 return r;
 };
+void allocateArray(void * arr,long int nbElems){
+noCheck( array ( void* ) *a = arr );
+noCheck( a -> length = nbElems );
+noCheck( a -> data = memoryAlloc ( nbElems * a -> elemSize ) );
+};
 char * concatCPSTRING(char * a,char * b){
 long int lenA =  strlen(a);
 long int lenB =  strlen(b);
