@@ -11,7 +11,7 @@ cd ./bah
 sudo ./linux_install.sh
 ```
 If the installation fails for whatever reason, you will need to recompile the Bah compiler
-befor installing it. Dont worry this is simple, simply run:
+before installing it. Dont worry this is simple, simply run:
 ```sh
 sudo ./linux_compile_install.sh
 ```
@@ -24,7 +24,7 @@ cd ./bah
 .\windows_install.bat
 ```
 If the installation fails for whatever reason, you will need to recompile the Bah compiler
-befor installing it. Dont worry this is simple, simply run:
+before installing it. Dont worry this is simple, simply run:
 ```bat
 .\windows_compile_install.bat
 ```
@@ -36,7 +36,7 @@ cd ./bah
 .\darwin_install.bat
 ```
 If the installation fails for whatever reason, you will need to recompile the Bah compiler
-befor installing it. Dont worry this is simple, simply run:
+before installing it. Dont worry this is simple, simply run:
 ```bat
 .\darwin_compile_install.bat
 ```
