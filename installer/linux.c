@@ -535,8 +535,11 @@ return buff;
 long int strToInt(char * s){
 return atol(s);
 };
+double strToFloat(char * s){
+return strtod(s,null);
+};
 long int stringToInt(struct string s){
-long int i =  atoi(s.content);
+long int i =  atol(s.content);
 return i;
 };
 typedef array(struct string)* __BAH_ARR_TYPE_string;

@@ -390,15 +390,21 @@ intToStr(i int) cpstring {
     return buff
 }
 
+//Used for converting a string to an int.
 strToInt(s cpstring) int {
     return atol(s)
+}
+
+//Used for converting a string to a float
+strToFloat(s cpstring) float {
+    return strtod(s, null)
 }
 
 
 //Used to convert a string into an integer.
 //*It takes a string, not a cpstring*
 stringToInt(s string) int {
-    i int = atoi(s.content)
+    i int = atol(s.content)
     return i
     //i = s.length - 1
     //j = 0
