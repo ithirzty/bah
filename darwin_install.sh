@@ -26,6 +26,7 @@ sudo cp ../bin/darwin_amd64 /opt/bah/bah
 sudo ln -s /opt/bah/bah /bin/bah
 sudo chmod 777 /opt/bah
 sudo chmod +x /bin/bah
+export PATH="/opt/bah/:$PATH"
 
 cd ../
 
