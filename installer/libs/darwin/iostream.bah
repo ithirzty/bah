@@ -21,17 +21,17 @@ stdinput(len int) cpstring {
     return buff
 }
 
-#define! write(fd int, t cpstring, l int)
+#define! write(fd FILE*, t cpstring, l int)
 
 //Prints text to the terminal.
 print(s cpstring) {
-    write(1, s, strlen(s))
+    write(<ptr>1, s, strlen(s))
 }
 
 //Prints text to the terminal and adds a line return at the end.
 println(s cpstring) {
-    write(1, s, strlen(s))
-    write(1, "\n", 1)
+    write(<ptr>1, s, strlen(s))
+    write(<ptr>1, "\n", 1)
 }
 
 //Print an error to the terminal and exits the program.
@@ -41,6 +41,11 @@ panic(e cpstring) {
         exit(1)
     }
 }
+
+#define! fwrite(w ptr, s int, f int, hndl FILE*)
+#define! fread(w ptr, s int, f int, hndl FILE*) int
+#define! ftell(hndl FILE*) int
+#define! fseek(hndl FILE*, offset int, from int)
 
 //A wrapper that makes file manipulation easier.
 //*Note: after openning a file, you will need to close it.*
@@ -71,41 +76,32 @@ struct fileStream {
         fclose(this.handle)
     }
 
+    //Returns the position of the file reader.
+    getPos() int {
+        if this.isValid() == 0 {
+            return 0
+        }
+        return ftell(this.handle)
+    }
+
+    //Set the position of the file reader.
+    setPos(i int) {
+        if this.isValid() == 0 {
+            return
+        }
+        fseek(this.handle, i, 0)
+    }
+
     //Returns the size of a file in bytes.
     getSize() int {
         if this.isValid() == 0 {
             return -1
         }
-
+        oldPos = this.getPos()
         fseek(this.handle, 0, 2)
         size int = ftell(this.handle)
-        fclose(this.handle)
+        this.setPos(oldPos)
         return size
-    }
-
-    //Returns the content of the opened file.
-    readContent() cpstring {
-        if this.isValid() == 0 {
-            return "invalid"
-        }
-
-        fseek(this.handle, 0, 2)
-        size = ftell(this.handle)
-        rewind(this.handle)
-        
-        c = getc(this.handle)
-        i = 0
-        s = []char
-        for c != <char>noCheck(EOF) {
-            s[len(s)] = c
-            i = i + 1
-            c = getc(this.handle)
-        }
-        s[len(s)] = <char>0
-        ls = len(s)
-        r = ""
-        noCheck(r = s->data)
-        return r
     }
 
     //Sets the reading cursor to the beginning of the file.
@@ -135,6 +131,52 @@ struct fileStream {
 
         return 1
     }
+
+    //Serialize a pointer and write it to a file.
+    //a: the pointer to serialize
+    //s: sizeof() the pointer's content
+    writePtr(a ptr, s int) {
+        fwrite(a, s, 1, this.handle)
+    }
+
+    //Read a file and unserialize its content to a pointer.
+    //a: the pointer to unserialize
+    //s: sizeof() the pointer's content.
+    readPtr(a ptr, s int) int {
+        return fread(a, s, 1, this.handle)
+    }
+
+    //Returns the content of the opened file.
+    readContent() cpstring {
+        if this.isValid() == 0 {
+            return "invalid"
+        }
+
+        sz = this.getSize()
+        r cpstring = memoryAlloc(sz + 1)
+        l = fread(r, 1, sz, this.handle)
+        if sz != l {
+            rarr = strAsArr(r)
+            rarr[l] = <char>0
+        }
+        return r
+    }
+
+    //Returns the file's content as an array of bytes (char).
+    readBytes() []char {
+        r = []char
+        allocateArray(r, this.getSize())
+
+        this.readPtr(noCheck(r->data), len(r))
+
+        return r
+    }
+
+    //Write an array of bytes (char) to a file.
+    writeBytes(d []char) {
+        this.writePtr(noCheck(d->data), len(d))
+    }
+
 }
 
 struct! stat {
@@ -148,6 +190,7 @@ struct! stat {
 //**This is way faster than the fileStream** but every modification made to the returned string will be directly made to the file.
 struct fileMap {
     handle: int
+    size:int
 
     //To open a file inside the fileMap.
     //It returns the content of the file as cpstring.
@@ -155,6 +198,7 @@ struct fileMap {
         this.handle = open(fileName, noCheck(O_RDWR), noCheck(S_IRUSR | S_IWUSR))
         sb = stat{}
         fstat(this.handle, &sb)
+        this.size = sb.st_size
         file cpstring = mmap(0, sb.st_size, noCheck(PROT_READ | PROT_WRITE), noCheck(MAP_SHARED), this.handle, 0)
         return file
     }
@@ -225,6 +269,8 @@ removeFile(name cpstring) bool {
     }
     return false
 }
+
+#define! getenv(s cpstring) cpstring
 
 //Example
 // #include "iostream.bah"

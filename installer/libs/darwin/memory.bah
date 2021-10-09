@@ -133,3 +133,29 @@ allocateArray(arr ptr, nbElems int) {
 //     a cpstring = memoryAlloc(30)
 //     strcpy(a, "Hi!")
 // }
+
+#define! memcpy(det ptr, src ptr, s int)
+
+#define ser(a ptr) []char
+
+//Internal function used to serialize a pointer to a struct.
+__serialize(a ptr, s int) []char {
+    r cpstring = memoryAlloc(s + 9)
+    memcpy(r, &s, 8)
+    memcpy(noCheck(r+8), a, s)
+    l = s+1
+    arr = []char
+    noCheck(arr->length = s+1)
+    noCheck(arr->elemSize = 1)
+    noCheck(arr->data = r)
+    return arr
+}
+
+//Function used to unserialize the content of a struct.
+unser(data []char) ptr {
+    sarr = []char{data[0], data[1], data[2], data[3], data[4], data[5], data[6], data[7]}
+    sptr int* = noCheck(sarr->data)
+    r = memoryAlloc(*sptr)
+    memcpy(r, noCheck(data->data + 8), *sptr)
+    return r
+}

@@ -104,31 +104,6 @@ struct fileStream {
         return size
     }
 
-    //Returns the content of the opened file.
-    readContent() cpstring {
-        if this.isValid() == 0 {
-            return "invalid"
-        }
-
-        fseek(this.handle, 0, 2)
-        size = ftell(this.handle)
-        rewind(this.handle)
-        
-        c = getc(this.handle)
-        i = 0
-        s = []char
-        for c != <char>noCheck(EOF) {
-            s[len(s)] = c
-            i = i + 1
-            c = getc(this.handle)
-        }
-        s[len(s)] = <char>0
-        ls = len(s)
-        r = ""
-        noCheck(r = s->data)
-        return r
-    }
-
     //Sets the reading cursor to the beginning of the file.
     rewind() {
         rewind(this.handle)
@@ -169,6 +144,37 @@ struct fileStream {
     //s: sizeof() the pointer's content.
     readPtr(a ptr, s int) int {
         return fread(a, s, 1, this.handle)
+    }
+
+    //Returns the content of the opened file.
+    readContent() cpstring {
+        if this.isValid() == 0 {
+            return "invalid"
+        }
+
+        sz = this.getSize()
+        r cpstring = memoryAlloc(sz + 1)
+        l = fread(r, 1, sz, this.handle)
+        if sz != l {
+            rarr = strAsArr(r)
+            rarr[l] = <char>0
+        }
+        return r
+    }
+
+    //Returns the file's content as an array of bytes (char).
+    readBytes() []char {
+        r = []char
+        allocateArray(r, this.getSize())
+
+        this.readPtr(noCheck(r->data), len(r))
+
+        return r
+    }
+
+    //Write an array of bytes (char) to a file.
+    writeBytes(d []char) {
+        this.writePtr(noCheck(d->data), len(d))
     }
 
 }

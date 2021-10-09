@@ -850,13 +850,15 @@ void(*close)(struct fileStream* this);
 long int(*getPos)(struct fileStream* this);
 void(*setPos)(struct fileStream* this,long int i);
 long int(*getSize)(struct fileStream* this);
-char *(*readContent)(struct fileStream* this);
 void(*rewind)(struct fileStream* this);
 char(*getChar)(struct fileStream* this);
 void(*createFile)(struct fileStream* this,char * path);
 long int(*writeFile)(struct fileStream* this,char * content);
 void(*writePtr)(struct fileStream* this,void * a,long int s);
 long int(*readPtr)(struct fileStream* this,void * a,long int s);
+char *(*readContent)(struct fileStream* this);
+array(char)*(*readBytes)(struct fileStream* this);
+void(*writeBytes)(struct fileStream* this,array(char)* d);
 };
 long int fileStream__isValid(struct fileStream* this){
 if ((this->handle==null)) {
@@ -895,56 +897,6 @@ long int size =  ftell(this->handle);
 this->setPos((struct fileStream*)this,oldPos);
 return size;
 };
-char * fileStream__readContent(struct fileStream* this){
-if ((this->isValid((struct fileStream*)this)==0)) {
-return "invalid";
-}
-fseek(this->handle,0,2);
-long int size =  ftell(this->handle);
-rewind(this->handle);
-char c =  getc(this->handle);
-long int i =  0;
-array(char)* s = memoryAlloc(sizeof(array(char)));
-
-s->length = 0;
-s->elemSize = sizeof(char);
-while ((c!=(char)noCheck( EOF ))) {
-
-{
-long nLength = len(s);
-if (s->length < nLength+1) {
-if ((nLength+1) % 50 == 0 || nLength == 0) {
-void * newPtr = GC_REALLOC(s->data, (nLength+50)*sizeof(char));
-s->data = newPtr;
-}
-s->data[len(s)] =  c;
-s->length = nLength+1;
-} else {
-s->data[len(s)] =  c;
-};
-};
-i =  i + 1;
-c =  getc(this->handle);
-};
-
-{
-long nLength = len(s);
-if (s->length < nLength+1) {
-if ((nLength+1) % 50 == 0 || nLength == 0) {
-void * newPtr = GC_REALLOC(s->data, (nLength+50)*sizeof(char));
-s->data = newPtr;
-}
-s->data[len(s)] =  (char)0;
-s->length = nLength+1;
-} else {
-s->data[len(s)] =  (char)0;
-};
-};
-long int ls =  len(s);
-char * r =  "";
-noCheck( r = s -> data );
-return r;
-};
 void fileStream__rewind(struct fileStream* this){
 rewind(this->handle);
 };
@@ -968,6 +920,44 @@ fwrite(a,s,1,this->handle);
 };
 long int fileStream__readPtr(struct fileStream* this,void * a,long int s){
 return fread(a,s,1,this->handle);
+};
+char * fileStream__readContent(struct fileStream* this){
+if ((this->isValid((struct fileStream*)this)==0)) {
+return "invalid";
+}
+long int sz =  this->getSize((struct fileStream*)this);
+char * r =  memoryAlloc(sz + 1);
+long int l =  fread(r,1,sz,this->handle);
+if ((sz!=l)) {
+array(char)* rarr =  strAsArr(r);
+
+{
+long nLength = l;
+if (rarr->length < nLength+1) {
+if ((nLength+1) % 50 == 0 || nLength == 0) {
+void * newPtr = GC_REALLOC(rarr->data, (nLength+50)*sizeof(char));
+rarr->data = newPtr;
+}
+rarr->data[l] =  (char)0;
+rarr->length = nLength+1;
+} else {
+rarr->data[l] =  (char)0;
+};
+};
+}
+return r;
+};
+__BAH_ARR_TYPE_char fileStream__readBytes(struct fileStream* this){
+array(char)* r = memoryAlloc(sizeof(array(char)));
+
+r->length = 0;
+r->elemSize = sizeof(char);
+allocateArray(r,this->getSize((struct fileStream*)this));
+this->readPtr((struct fileStream*)this,noCheck( r -> data ),len(r));
+return r;
+};
+void fileStream__writeBytes(struct fileStream* this,__BAH_ARR_TYPE_char d){
+this->writePtr((struct fileStream*)this,noCheck( d -> data ),len(d));
 };
 struct fileMap {
 long int handle;
@@ -1319,13 +1309,15 @@ fs.close = fileStream__close;
 fs.getPos = fileStream__getPos;
 fs.setPos = fileStream__setPos;
 fs.getSize = fileStream__getSize;
-fs.readContent = fileStream__readContent;
 fs.rewind = fileStream__rewind;
 fs.getChar = fileStream__getChar;
 fs.createFile = fileStream__createFile;
 fs.writeFile = fileStream__writeFile;
 fs.writePtr = fileStream__writePtr;
 fs.readPtr = fileStream__readPtr;
+fs.readContent = fileStream__readContent;
+fs.readBytes = fileStream__readBytes;
+fs.writeBytes = fileStream__writeBytes;
 fs.open((struct fileStream*)&fs,"/dev/urandom","r");
 char c =  fs.getChar((struct fileStream*)&fs);
 fs.close((struct fileStream*)&fs);
@@ -6350,13 +6342,15 @@ fs.close = fileStream__close;
 fs.getPos = fileStream__getPos;
 fs.setPos = fileStream__setPos;
 fs.getSize = fileStream__getSize;
-fs.readContent = fileStream__readContent;
 fs.rewind = fileStream__rewind;
 fs.getChar = fileStream__getChar;
 fs.createFile = fileStream__createFile;
 fs.writeFile = fileStream__writeFile;
 fs.writePtr = fileStream__writePtr;
 fs.readPtr = fileStream__readPtr;
+fs.readContent = fileStream__readContent;
+fs.readBytes = fileStream__readBytes;
+fs.writeBytes = fileStream__writeBytes;
 fs.open((struct fileStream*)&fs,randFileName,"w");
 fs.writeFile((struct fileStream*)&fs,OUTPUT->toStr((struct rope*)OUTPUT));
 fs.close((struct fileStream*)&fs);
@@ -6404,13 +6398,15 @@ fs.close = fileStream__close;
 fs.getPos = fileStream__getPos;
 fs.setPos = fileStream__setPos;
 fs.getSize = fileStream__getSize;
-fs.readContent = fileStream__readContent;
 fs.rewind = fileStream__rewind;
 fs.getChar = fileStream__getChar;
 fs.createFile = fileStream__createFile;
 fs.writeFile = fileStream__writeFile;
 fs.writePtr = fileStream__writePtr;
 fs.readPtr = fileStream__readPtr;
+fs.readContent = fileStream__readContent;
+fs.readBytes = fileStream__readBytes;
+fs.writeBytes = fileStream__writeBytes;
 fs.open((struct fileStream*)&fs,fileName,"w");
 fs.writeFile((struct fileStream*)&fs,OUTPUT->toStr((struct rope*)OUTPUT));
 fs.close((struct fileStream*)&fs);
