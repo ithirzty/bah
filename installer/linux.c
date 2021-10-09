@@ -4725,6 +4725,22 @@ vars->data[len(vars)] =  v;
 }
 OUTPUT =  OUTPUT->add(OUTPUT, rope(concatCPSTRING(code,";\n")));
 };
+char * getCfunctionType(struct string cfrt,char * elemName,struct Elems* elems){
+struct func* tmpfn =  parseFnType(cfrt);
+struct string tmpfnRetCType =  getCType(tmpfn->returns->type,elems);
+char * tmpfnArgsCType =  "";
+long int j =  0;
+while ((j<len(tmpfn->args))) {
+struct variable* arg =  tmpfn->args->data[j];
+struct string ct =  getCType(arg->type,elems);
+tmpfnArgsCType =  concatCPSTRING(tmpfnArgsCType,ct.str((struct string*)&ct));
+j =  j + 1;
+if ((j<len(tmpfn->args))) {
+tmpfnArgsCType =  concatCPSTRING(tmpfnArgsCType,",");
+}
+};
+return concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING(tmpfnRetCType.str((struct string*)&tmpfnRetCType)," (*"),elemName),")("),tmpfnArgsCType),")");
+};
 char * parseFnHeader(char * prev,__BAH_ARR_TYPE_Tok l,long int* i,struct func* fn,struct Elems* elems){
 long int j =  *i;
 struct Tok ft =  l->data[j];
@@ -4755,15 +4771,22 @@ t =  l->data[j];
 char * argType =  t.cont;
 j =  j + 1;
 int isComa =  false;
+long int nbPars =  1;
 while ((j<len(l))) {
 t =  l->data[j];
 isComa =  false;
 if ((strcmp(t.cont, ",") != 0)) {
-if ((strcmp(t.cont, ")") != 0)) {
-argType =  concatCPSTRING(argType,t.cont);
+if ((strcmp(t.cont, "(") == 0)) {
+nbPars =  nbPars + 1;
+}
+else if ((strcmp(t.cont, ")") == 0)) {
+nbPars =  nbPars - 1;
+}
+if (((strcmp(t.cont, ")") == 0)&&(nbPars==0))) {
+break;
 }
 else {
-break;
+argType =  concatCPSTRING(argType,t.cont);
 }
 }
 else {
@@ -4823,7 +4846,12 @@ csatd->data[len(csatd)] =  newArgType;
 tpdf =  concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING(tpdf,"typedef "),argCType.str((struct string*)&argCType))," "),newArgType),";\n");
 }
 }
+if ((cfrt.hasPrefix((struct string*)&cfrt,"function(")==1)) {
+code =  concatCPSTRING(code,getCfunctionType(cfrt,argName,elems));
+}
+else {
 code =  concatCPSTRING(concatCPSTRING(concatCPSTRING(code,newArgType)," "),argName);
+}
 if ((isComa==true)) {
 code =  concatCPSTRING(code,",");
 }

@@ -3,17 +3,19 @@
 #include "time.bah"
 
 
-test(name cpstring, start int, passed bool) {
+test(name cpstring, fn function()bool) {
     s cpstring
+    start = getTimeUnix()
+    passed = fn()
     end = getTimeUnix()
     dur = end - start
-    durStr = intToStr(dur)
+    durStr = intToStr(dur / 1000)
     if passed == true {
         s = "\e[0;32m✔ " + name
     } else {
         s = "\e[0;31m❌ " + name
     }
-    s = s + " (" + durStr + "ns)"
+    s = s + " (" + durStr + "µs)"
     println(s)
 }
 
@@ -22,23 +24,40 @@ test(name cpstring, start int, passed bool) {
 #include "./libs/http.bah"
 #include "./libs/iostream.bah"
 #include "./libs/json.bah"
+#include "./libs/rope.bah"
 
+
+testSer() bool {
+    struct testSerStruct {
+        a: int
+        b: cpstring
+    }
+    t = new testSerStruct
+    t.a = 32
+    t.b = "this is a test"
+    s = ser(t)
+    nt testSerStruct* = unser(s)
+    if nt.a != t.a || nt.b != t.b {
+        return false
+    }
+    return true
+}
 
 main(args []cpstring) int {
-    start = getTimeUnix()
-    test("string", start, testString())
 
-    start = getTimeUnix()
-    test("markdown", start, testMarkdown())
+    test("string", testString)
+
+    test("markdown", testMarkdown)
     
-    start = getTimeUnix()
-    test("http", start, testHttp())
+    test("http", testHttp)
     
-    start = getTimeUnix()
-    test("iostream", start, testIostream())
+    test("iostream", testIostream)
     
-    start = getTimeUnix()
-    test("json", start, testJson())
+    test("json", testJson)
+
+    test("serialization", testSer)
+
+    test("rope", testRope)
 
     return 0
 }

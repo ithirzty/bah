@@ -1260,6 +1260,22 @@ void * newPtr = GC_REALLOC("+nstr+"->data, (nLength+50)*sizeof("+elemTypeStr+"))
     OUTPUT = OUTPUT + rope(code + ";\n")
 }
 
+getCfunctionType(cfrt string, elemName cpstring, elems Elems*) cpstring {
+    tmpfn = parseFnType(cfrt)
+                tmpfnRetCType = getCType(tmpfn.returns.type, elems)
+                tmpfnArgsCType = ""
+                j=0; for j < len(tmpfn.args) {
+                    arg = tmpfn.args[j]
+                    ct = getCType(arg.type, elems)
+                    tmpfnArgsCType = tmpfnArgsCType + ct.str()
+                    j = j + 1
+                    if j < len(tmpfn.args) {
+                        tmpfnArgsCType = tmpfnArgsCType + ","
+                    }
+                }
+    return tmpfnRetCType.str() + " (*"+elemName+")("+tmpfnArgsCType+")"
+}
+
 
 parseFnHeader(prev cpstring, l []Tok, i int*, fn func*, elems Elems*) cpstring {
     j = *i
@@ -1296,15 +1312,20 @@ parseFnHeader(prev cpstring, l []Tok, i int*, fn func*, elems Elems*) cpstring {
 
             j =j + 1
             isComa = false
+            nbPars = 1
             for j < len(l) {
                 t = l[j]
                 isComa = false
                 if t.cont != "," {
-                    if t.cont != ")" {
-                        argType = argType + t.cont
-                        //throwErr(&t, "Need a coma before next argument {TOKEN}.")
-                    } else {
+                    if t.cont == "(" {
+                        nbPars = nbPars + 1
+                    } else if t.cont == ")" {
+                        nbPars = nbPars - 1
+                    }
+                    if t.cont == ")" && nbPars == 0 {
                         break
+                    } else {
+                        argType = argType + t.cont
                     }
                 } else {
                     isComa = true
@@ -1318,6 +1339,7 @@ parseFnHeader(prev cpstring, l []Tok, i int*, fn func*, elems Elems*) cpstring {
             argument.type = argType
             arguments[len(arguments)] = argument
             
+
             argCType = getCType(argType, elems)
 
             cfrt = string(argType)
@@ -1335,8 +1357,11 @@ parseFnHeader(prev cpstring, l []Tok, i int*, fn func*, elems Elems*) cpstring {
                     tpdf = tpdf + "typedef " + argCType.str() + " " + newArgType + ";\n"
                 }
             }
-
-            code = code + newArgType + " " + argName
+            if cfrt.hasPrefix("function(") == 1 {
+                code = code + getCfunctionType(cfrt, argName, elems)
+            } else {
+                code = code + newArgType + " " + argName
+            }
             if isComa == true {
                 code = code + ","
             } else {
