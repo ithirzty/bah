@@ -105,6 +105,40 @@ noCheck( array ( void* ) *a = arr );
 noCheck( a -> length = nbElems );
 noCheck( a -> data = memoryAlloc ( nbElems * a -> elemSize ) );
 };
+typedef array(char)* __BAH_ARR_TYPE_char;
+__BAH_ARR_TYPE_char ser(void * a);
+__BAH_ARR_TYPE_char __serialize(void * a,long int s){
+char * r =  memoryAlloc(s + 9);
+memcpy(r,&s,8);
+memcpy(noCheck( r + 8 ),a,s);
+long int l =  s + 1;
+array(char)* arr = memoryAlloc(sizeof(array(char)));
+
+arr->length = 0;
+arr->elemSize = sizeof(char);
+noCheck( arr -> length = s + 1 );
+noCheck( arr -> elemSize = 1 );
+noCheck( arr -> data = r );
+return arr;
+};
+void * unser(__BAH_ARR_TYPE_char data){
+array(char)* sarr = memoryAlloc(sizeof(array(char)));
+
+sarr->length = 8;
+sarr->elemSize = sizeof(char);
+sarr->data = memoryAlloc(sizeof(char) * 50);sarr->data[0] = data->data[0];
+sarr->data[1] = data->data[1];
+sarr->data[2] = data->data[2];
+sarr->data[3] = data->data[3];
+sarr->data[4] = data->data[4];
+sarr->data[5] = data->data[5];
+sarr->data[6] = data->data[6];
+sarr->data[7] = data->data[7];
+long int* sptr =  noCheck( sarr -> data );
+void * r =  memoryAlloc(*sptr);
+memcpy(r,noCheck( data -> data + 8 ),*sptr);
+return r;
+};
 char * concatCPSTRING(char * a,char * b){
 long int lenA =  strlen(a);
 long int lenB =  strlen(b);
@@ -485,7 +519,6 @@ a.length =  0;
 a.set((struct string*)&a,s);
 return a;
 };
-typedef array(char)* __BAH_ARR_TYPE_char;
 char * arrToStr(__BAH_ARR_TYPE_char arr){
 long int strLen =  len(arr);
 char * str =  memoryAlloc(strLen + 1);
@@ -1503,7 +1536,7 @@ r->len =  n1;
 return r;
 };
 #define BAH_DIR "/opt/bah/"
-#define BAH_VERSION "v1.0 (build 20)"
+#define BAH_VERSION "v1.0 (build 21)"
 struct rope* OUTPUT;
 char * NEXT_LINE =  "";
 struct variable {
@@ -4104,6 +4137,40 @@ i =  i + 1;
 };
 return nl;
 };
+char * parseSerialize(struct Tok e,struct Elems* elems){
+struct variable* v =  searchVar(e.cont,elems);
+if ((v==null)) {
+throwErr(&e,"Must be a var, not {TOKEN}.");
+}
+struct cStruct* s =  searchStruct(v->type,elems);
+if ((s==null)) {
+throwErr(&e,"Must be a struct, not {TOKEN}.");
+}
+struct string svt =  string(v->type);
+long int ptrLevel =  svt.count((struct string*)&svt,"*");
+svt.replace((struct string*)&svt,"*","");
+char * code;
+if ((ptrLevel==0)) {
+code =  concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING("__serialize(&",e.cont),", "),"sizeof(struct "),svt.str((struct string*)&svt)),")");
+}
+else {
+char * ptrRect =  "";
+while ((ptrLevel>1)) {
+ptrRect =  concatCPSTRING(ptrRect,"*");
+ptrLevel =  ptrLevel - 1;
+};
+code =  concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING("__serialize(",ptrRect),e.cont),", "),"sizeof(struct "),svt.str((struct string*)&svt)),")");
+long int i =  0;
+while ((i<len(s->members))) {
+struct structMemb* m =  s->members->data[i];
+if ((strcmp(m->type, "cpstring") == 0)) {
+code =  concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING(code,"+strlen("),e.cont),"->"),m->name),")");
+}
+i =  i + 1;
+};
+}
+return concatCPSTRING(code,")");
+};
 __BAH_ARR_TYPE_Tok parseFnCall(__BAH_ARR_TYPE_Tok l,struct Elems* elems){
 array(struct Tok)* nl = memoryAlloc(sizeof(array(struct Tok)));
 
@@ -4328,7 +4395,12 @@ if ((paramIndex<len(fnArgs))) {
 ot.cont =  fnName;
 throwErr(&ot,"Not enough arguments in function call, ending by {TOKEN}.");
 }
+if ((strcmp(fn->name, "ser") == 0)) {
+ot.cont =  parseSerialize(memory->data[0],elems);
+}
+else {
 ot.cont =  concatCPSTRING(ot.cont,")");
+}
 ot.type =  TOKEN_TYPE_FUNC;
 ot.bahType =  fn->returns->type;
 ot.isFunc =  true;

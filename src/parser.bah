@@ -743,6 +743,49 @@ parseArrayVars(l []Tok, elems Elems*) []Tok {
     return nl
 }
 
+parseSerialize(e Tok, elems Elems*) cpstring {
+
+    v = searchVar(e.cont, elems)
+    if v == null {
+        throwErr(&e, "Must be a var, not {TOKEN}.")
+    }
+
+    s = searchStruct(v.type, elems)
+    if s == null {
+        throwErr(&e, "Must be a struct, not {TOKEN}.")
+    }
+
+    svt = string(v.type)
+    ptrLevel = svt.count("*")
+    
+    svt.replace("*", "")
+
+    code cpstring
+
+    if ptrLevel == 0 {
+        code = "__serialize(&" + e.cont + ", " + "sizeof(struct "+svt.str()+")"
+    } else {
+        ptrRect = ""
+        for ptrLevel > 1 {
+            ptrRect = ptrRect + "*"
+            ptrLevel = ptrLevel - 1
+        }
+        code = "__serialize(" + ptrRect + e.cont + ", " + "sizeof(struct "+svt.str()+")"
+        //is heap allocated, meanning we should calculate real size
+
+        i=0; for i < len(s.members) {
+            m = s.members[i]
+            if m.type == "cpstring" {
+                code = code + "+strlen("+e.cont+"->"+m.name+")"
+            }
+            i = i + 1
+        }   
+
+    }
+
+    return code + ")"
+}
+
 parseFnCall(l []Tok, elems Elems*) []Tok {
     nl = []Tok
 
@@ -901,7 +944,11 @@ parseFnCall(l []Tok, elems Elems*) []Tok {
                         ot.cont = fnName
                         throwErr(&ot, "Not enough arguments in function call, ending by {TOKEN}.")
                     }
-                    ot.cont = ot.cont + ")"
+                    if fn.name == "ser" {
+                        ot.cont = parseSerialize(memory[0], elems)
+                    } else {
+                        ot.cont = ot.cont + ")"
+                    }
                     ot.type = TOKEN_TYPE_FUNC
                     ot.bahType = fn.returns.type
                     ot.isFunc = true
