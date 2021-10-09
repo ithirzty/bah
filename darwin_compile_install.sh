@@ -33,5 +33,6 @@ sudo cp ./a.out /opt/bah/bah
 sudo ln -s /opt/bah/bah /usr/bin/bah
 sudo chmod 777 /opt/bah
 sudo chmod +x /usr/bin/bah
+export PATH="/opt/bah/:$PATH"
 rm ./a.out
 } &>/dev/null
