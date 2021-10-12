@@ -14,6 +14,7 @@
 #include "string.bah"
 #include "exec.bah"
 #include "rope.bah"
+#include "thread.bah"
 
 #define! socklen_t uint
 #define! pid_t int
@@ -258,7 +259,11 @@ struct http_server {
         sa.sa_handler = sigchld_handler
         sigaction(17, &sa, 0)
         if this.done != null {
-            this.done()
+            doneT = thread{}
+            doneT.handle = <ptr>this.done
+            doneT.createWithArg(this)
+            
+            //this.done()
         }
         for this.running == 1 {
             clilen = 16

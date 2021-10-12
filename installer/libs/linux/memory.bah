@@ -138,7 +138,7 @@ allocateArray(arr ptr, nbElems int) {
 
 #define ser(a ptr) []char
 
-//Internal function used to serialize a pointer to a struct.
+//Internal function used to serialize a pointer.
 __serialize(a ptr, s int) []char {
     r cpstring = memoryAlloc(s + 9)
     memcpy(r, &s, 8)
