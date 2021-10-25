@@ -100,6 +100,45 @@ size =  4096;
 void * r =  mmap(0,size,PROT_READ + PROT_WRITE,MAP_SHARED + MAP_ANONYMOUS,-1,0);
 return r;
 };
+void allocateArray(void * arr,long int nbElems){
+noCheck( array ( void* ) *a = arr );
+noCheck( a -> length = nbElems );
+noCheck( a -> data = memoryAlloc ( nbElems * a -> elemSize ) );
+};
+typedef array(char)* __BAH_ARR_TYPE_char;
+__BAH_ARR_TYPE_char ser(void * a);
+__BAH_ARR_TYPE_char __serialize(void * a,long int s){
+char * r =  memoryAlloc(s + 9);
+memcpy(r,&s,8);
+memcpy(noCheck( r + 8 ),a,s);
+long int l =  s + 1;
+array(char)* arr = memoryAlloc(sizeof(array(char)));
+
+arr->length = 0;
+arr->elemSize = sizeof(char);
+noCheck( arr -> length = s + 1 );
+noCheck( arr -> elemSize = 1 );
+noCheck( arr -> data = r );
+return arr;
+};
+void * unser(__BAH_ARR_TYPE_char data){
+array(char)* sarr = memoryAlloc(sizeof(array(char)));
+
+sarr->length = 8;
+sarr->elemSize = sizeof(char);
+sarr->data = memoryAlloc(sizeof(char) * 50);sarr->data[0] = data->data[0];
+sarr->data[1] = data->data[1];
+sarr->data[2] = data->data[2];
+sarr->data[3] = data->data[3];
+sarr->data[4] = data->data[4];
+sarr->data[5] = data->data[5];
+sarr->data[6] = data->data[6];
+sarr->data[7] = data->data[7];
+long int* sptr =  noCheck( sarr -> data );
+void * r =  memoryAlloc(*sptr);
+memcpy(r,noCheck( data -> data + 8 ),*sptr);
+return r;
+};
 char * concatCPSTRING(char * a,char * b){
 long int lenA =  strlen(a);
 long int lenB =  strlen(b);
@@ -480,7 +519,6 @@ a.length =  0;
 a.set((struct string*)&a,s);
 return a;
 };
-typedef array(char)* __BAH_ARR_TYPE_char;
 char * arrToStr(__BAH_ARR_TYPE_char arr){
 long int strLen =  len(arr);
 char * str =  memoryAlloc(strLen + 1);
@@ -523,15 +561,23 @@ struct string r =  string(buff);
 return r;
 };
 char * intToStr(long int i){
-char * buff =  memoryAlloc(65);
-sprintf(buff,"%ld",(void *)i);
+char * buff =  memoryAlloc(50);
+sprintf(buff,"%ld",i);
+return buff;
+};
+char * floatToStr(double f){
+char * buff =  memoryAlloc(50);
+sprintf(buff,"%lf",f);
 return buff;
 };
 long int strToInt(char * s){
 return atol(s);
 };
+double strToFloat(char * s){
+return strtod(s,null);
+};
 long int stringToInt(struct string s){
-long int i =  atoi(s.content);
+long int i =  atol(s.content);
 return i;
 };
 typedef array(struct string)* __BAH_ARR_TYPE_string;
@@ -789,11 +835,11 @@ fgets(buff,len,noCheck( stdin ));
 return buff;
 };
 void print(char * s){
-write(1,s,strlen(s));
+write((void *)1,s,strlen(s));
 };
 void println(char * s){
-write(1,s,strlen(s));
-write(1,"\n",1);
+write((void *)1,s,strlen(s));
+write((void *)1,"\n",1);
 };
 void panic(char * e){
 if (strlen(e)) {
@@ -806,12 +852,18 @@ FILE* handle;
 long int(*isValid)(struct fileStream* this);
 void(*open)(struct fileStream* this,char * path,char * mode);
 void(*close)(struct fileStream* this);
+long int(*getPos)(struct fileStream* this);
+void(*setPos)(struct fileStream* this,long int i);
 long int(*getSize)(struct fileStream* this);
-char *(*readContent)(struct fileStream* this);
 void(*rewind)(struct fileStream* this);
 char(*getChar)(struct fileStream* this);
 void(*createFile)(struct fileStream* this,char * path);
 long int(*writeFile)(struct fileStream* this,char * content);
+void(*writePtr)(struct fileStream* this,void * a,long int s);
+long int(*readPtr)(struct fileStream* this,void * a,long int s);
+char *(*readContent)(struct fileStream* this);
+array(char)*(*readBytes)(struct fileStream* this);
+void(*writeBytes)(struct fileStream* this,array(char)* d);
 };
 long int fileStream__isValid(struct fileStream* this){
 if ((this->handle==null)) {
@@ -828,64 +880,27 @@ return ;
 }
 fclose(this->handle);
 };
+long int fileStream__getPos(struct fileStream* this){
+if ((this->isValid((struct fileStream*)this)==0)) {
+return 0;
+}
+return ftell(this->handle);
+};
+void fileStream__setPos(struct fileStream* this,long int i){
+if ((this->isValid((struct fileStream*)this)==0)) {
+return ;
+}
+fseek(this->handle,i,0);
+};
 long int fileStream__getSize(struct fileStream* this){
 if ((this->isValid((struct fileStream*)this)==0)) {
 return -1;
 }
+long int oldPos =  this->getPos((struct fileStream*)this);
 fseek(this->handle,0,2);
 long int size =  ftell(this->handle);
-fclose(this->handle);
+this->setPos((struct fileStream*)this,oldPos);
 return size;
-};
-char * fileStream__readContent(struct fileStream* this){
-if ((this->isValid((struct fileStream*)this)==0)) {
-return "invalid";
-}
-fseek(this->handle,0,2);
-long int size =  ftell(this->handle);
-rewind(this->handle);
-char c =  getc(this->handle);
-long int i =  0;
-array(char)* s = memoryAlloc(sizeof(array(char)));
-
-s->length = 0;
-s->elemSize = sizeof(char);
-while ((c!=(char)noCheck( EOF ))) {
-
-{
-long nLength = len(s);
-if (s->length < nLength+1) {
-if ((nLength+1) % 50 == 0 || nLength == 0) {
-void * newPtr = GC_REALLOC(s->data, (nLength+50)*sizeof(char));
-s->data = newPtr;
-}
-s->data[len(s)] =  c;
-s->length = nLength+1;
-} else {
-s->data[len(s)] =  c;
-};
-};
-i =  i + 1;
-c =  getc(this->handle);
-};
-
-{
-long nLength = len(s);
-if (s->length < nLength+1) {
-if ((nLength+1) % 50 == 0 || nLength == 0) {
-void * newPtr = GC_REALLOC(s->data, (nLength+50)*sizeof(char));
-s->data = newPtr;
-}
-s->data[len(s)] =  (char)0;
-s->length = nLength+1;
-} else {
-s->data[len(s)] =  (char)0;
-};
-};
-long int ls =  len(s);
-char * r =  "";
-noCheck( r = s -> data );
-return r;
 };
 void fileStream__rewind(struct fileStream* this){
 rewind(this->handle);
@@ -905,8 +920,53 @@ return -1;
 fputs(content,this->handle);
 return 1;
 };
+void fileStream__writePtr(struct fileStream* this,void * a,long int s){
+fwrite(a,s,1,this->handle);
+};
+long int fileStream__readPtr(struct fileStream* this,void * a,long int s){
+return fread(a,s,1,this->handle);
+};
+char * fileStream__readContent(struct fileStream* this){
+if ((this->isValid((struct fileStream*)this)==0)) {
+return "invalid";
+}
+long int sz =  this->getSize((struct fileStream*)this);
+char * r =  memoryAlloc(sz + 1);
+long int l =  fread(r,1,sz,this->handle);
+if ((sz!=l)) {
+array(char)* rarr =  strAsArr(r);
+
+{
+long nLength = l;
+if (rarr->length < nLength+1) {
+if ((nLength+1) % 50 == 0 || nLength == 0) {
+void * newPtr = GC_REALLOC(rarr->data, (nLength+50)*sizeof(char));
+rarr->data = newPtr;
+}
+rarr->data[l] =  (char)0;
+rarr->length = nLength+1;
+} else {
+rarr->data[l] =  (char)0;
+};
+};
+}
+return r;
+};
+__BAH_ARR_TYPE_char fileStream__readBytes(struct fileStream* this){
+array(char)* r = memoryAlloc(sizeof(array(char)));
+
+r->length = 0;
+r->elemSize = sizeof(char);
+allocateArray(r,this->getSize((struct fileStream*)this));
+this->readPtr((struct fileStream*)this,noCheck( r -> data ),len(r));
+return r;
+};
+void fileStream__writeBytes(struct fileStream* this,__BAH_ARR_TYPE_char d){
+this->writePtr((struct fileStream*)this,noCheck( d -> data ),len(d));
+};
 struct fileMap {
 long int handle;
+long int size;
 char *(*open)(struct fileMap* this,char * fileName);
 long int(*isValid)(struct fileMap* this);
 void(*close)(struct fileMap* this);
@@ -915,6 +975,7 @@ char * fileMap__open(struct fileMap* this,char * fileName){
 this->handle =  open(fileName,noCheck( O_RDWR ),noCheck( S_IRUSR | S_IWUSR ));
 struct stat sb =  {};
 fstat(this->handle,&sb);
+this->size =  sb.st_size;
 char * file =  mmap(0,sb.st_size,noCheck( PROT_READ | PROT_WRITE ),noCheck( MAP_SHARED ),this->handle,0);
 return file;
 };
@@ -1250,12 +1311,18 @@ struct fileStream fs =  {};
 fs.isValid = fileStream__isValid;
 fs.open = fileStream__open;
 fs.close = fileStream__close;
+fs.getPos = fileStream__getPos;
+fs.setPos = fileStream__setPos;
 fs.getSize = fileStream__getSize;
-fs.readContent = fileStream__readContent;
 fs.rewind = fileStream__rewind;
 fs.getChar = fileStream__getChar;
 fs.createFile = fileStream__createFile;
 fs.writeFile = fileStream__writeFile;
+fs.writePtr = fileStream__writePtr;
+fs.readPtr = fileStream__readPtr;
+fs.readContent = fileStream__readContent;
+fs.readBytes = fileStream__readBytes;
+fs.writeBytes = fileStream__writeBytes;
 fs.open((struct fileStream*)&fs,"/dev/urandom","r");
 char c =  fs.getChar((struct fileStream*)&fs);
 fs.close((struct fileStream*)&fs);
@@ -1466,7 +1533,7 @@ r->len =  n1;
 return r;
 };
 #define BAH_DIR "/opt/bah/"
-#define BAH_VERSION "v1.0 (build 20)"
+#define BAH_VERSION "v1.0 (build 24)"
 struct rope* OUTPUT;
 char * NEXT_LINE =  "";
 struct variable {
@@ -2860,6 +2927,12 @@ i =  i + 1;
 };
 return code;
 };
+long int NB_COMP_VAR =  0;
+char * genCompilerVar(){
+char * name =  concatCPSTRING("____BAH_COMPILER_VAR_",intToStr(NB_COMP_VAR));
+NB_COMP_VAR =  NB_COMP_VAR + 1;
+return name;
+};
 void debugLine(__BAH_ARR_TYPE_Tok line){
 char * cont =  "";
 long int i =  0;
@@ -4067,6 +4140,92 @@ i =  i + 1;
 };
 return nl;
 };
+char * parseSerialize(struct Tok e,struct Elems* elems){
+struct variable* v =  searchVar(e.cont,elems);
+if ((v==null)) {
+throwErr(&e,"Must be a var, not {TOKEN}.");
+}
+struct cStruct* s =  searchStruct(v->type,elems);
+if ((s==null)) {
+throwErr(&e,"Must be a struct, not {TOKEN}.");
+}
+struct string svt =  string(v->type);
+long int ptrLevel =  svt.count((struct string*)&svt,"*");
+svt.replace((struct string*)&svt,"*","");
+char * code;
+if ((ptrLevel==0)) {
+code =  concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING("__serialize(&",e.cont),", "),"sizeof(struct "),svt.str((struct string*)&svt)),")");
+}
+else {
+char * ptrRect =  "";
+while ((ptrLevel>1)) {
+ptrRect =  concatCPSTRING(ptrRect,"*");
+ptrLevel =  ptrLevel - 1;
+};
+code =  concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING("__serialize(",ptrRect),e.cont),", "),"sizeof(struct "),svt.str((struct string*)&svt)),")");
+long int i =  0;
+while ((i<len(s->members))) {
+struct structMemb* m =  s->members->data[i];
+if ((strcmp(m->type, "cpstring") == 0)) {
+code =  concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING(code,"+strlen("),e.cont),"->"),m->name),")");
+}
+i =  i + 1;
+};
+}
+return concatCPSTRING(code,")");
+};
+struct Tok parseReflect(struct Tok t,char * tt,struct Elems* elems,int parsedPointer,char * ogName){
+char * isArr =  "0";
+if (strHasPrefix(tt,"[]")) {
+isArr =  "1";
+}
+char * isStruct =  "0";
+struct cStruct* ts =  searchStruct(tt,elems);
+char * structLayout =  "0";
+struct string stt =  string(tt);
+if ((ts!=null)) {
+isStruct =  "1";
+structLayout =  genCompilerVar();
+struct rope* dataLayout =  rope("");
+long int i =  0;
+while ((i<len(ts->members))) {
+struct structMemb* m =  ts->members->data[i];
+struct Tok tmpT =  {};
+tmpT.cont = "";
+tmpT.ogCont = "";
+tmpT.type = TOKEN_NO_TYPE;
+tmpT.pos = 0;
+tmpT.line = 1;
+tmpT.bahType = "";
+tmpT.isValue = false;
+tmpT.isFunc = false;
+char * sep =  "->";
+if ((stt.count((struct string*)&stt,"*")==0)) {
+sep =  ".";
+}
+struct string mCtype =  getCType(m->type,elems);
+struct string offsetTT =  string(tt);
+offsetTT.replace((struct string*)&offsetTT,"*","");
+tmpT.cont =  concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING("(",mCtype.str((struct string*)&mCtype)),"*)((char*)("),t.cont),") + offsetof(struct "),offsetTT.str((struct string*)&offsetTT)),", "),m->name),"))");
+struct Tok rt =  parseReflect(tmpT,m->type,elems,true,m->name);
+dataLayout =  dataLayout->add(dataLayout, rope(concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING(structLayout,"->data["),intToStr(i)),"] = "),rt.cont),";\n")));
+i =  i + 1;
+};
+OUTPUT =  OUTPUT->add(OUTPUT, rope(concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING("\n        array(struct reflectElement) * ",structLayout)," = memoryAlloc(sizeof(array(struct reflectElement)));\n        "),structLayout),"->elemSize = sizeof(struct reflectElement);\n        "),structLayout),"->length = "),intToStr(len(ts->members))),";\n        "),structLayout),"->data = memoryAlloc("),structLayout),"->length * "),structLayout),"->elemSize);\n        ")))->add(OUTPUT->add(OUTPUT, rope(concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING("\n        array(struct reflectElement) * ",structLayout)," = memoryAlloc(sizeof(array(struct reflectElement)));\n        "),structLayout),"->elemSize = sizeof(struct reflectElement);\n        "),structLayout),"->length = "),intToStr(len(ts->members))),";\n        "),structLayout),"->data = memoryAlloc("),structLayout),"->length * "),structLayout),"->elemSize);\n        "))), dataLayout);
+}
+char * amp =  "";
+if (((((stt.count((struct string*)&stt,"*")==0)&&(strcmp(tt, "cpstring") != 0))&&(strcmp(tt, "ptr") != 0))&&(parsedPointer==false))) {
+amp =  "&";
+}
+struct string name =  string(ogName);
+if ((hasStructSep(name)==true)) {
+name =  splitStructSepAfter(name);
+}
+struct string cType =  getCType(tt,elems);
+t.cont =  concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING("__reflect(",amp),t.cont),", sizeof("),cType.str((struct string*)&cType)),"), \""),tt),"\", \""),name.str((struct string*)&name)),"\", "),isArr),", 0, "),isStruct),", "),structLayout),")");
+t.isFunc =  true;
+return t;
+};
 __BAH_ARR_TYPE_Tok parseFnCall(__BAH_ARR_TYPE_Tok l,struct Elems* elems){
 array(struct Tok)* nl = memoryAlloc(sizeof(array(struct Tok)));
 
@@ -4264,6 +4423,10 @@ throwErr(&t,"Too many arguments in function call.");
 }
 struct variable* arg =  fnArgs->data[paramIndex];
 char * tt =  getTypeFromToken(&t,true,elems);
+if (((strcmp(arg->type, "reflectElement") == 0)&&(strcmp(tt, "reflectElement") != 0))) {
+t =  parseReflect(t,tt,elems,false,t.cont);
+tt =  "reflectElement";
+}
 if ((compTypes(tt,arg->type)==false)) {
 throwErr(&t,concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING("Cannot use {TOKEN} (",tt),") as "),arg->type)," in function call."));
 }
@@ -4291,7 +4454,12 @@ if ((paramIndex<len(fnArgs))) {
 ot.cont =  fnName;
 throwErr(&ot,"Not enough arguments in function call, ending by {TOKEN}.");
 }
+if ((strcmp(fn->name, "ser") == 0)) {
+ot.cont =  parseSerialize(memory->data[0],elems);
+}
+else {
 ot.cont =  concatCPSTRING(ot.cont,")");
+}
 ot.type =  TOKEN_TYPE_FUNC;
 ot.bahType =  fn->returns->type;
 ot.isFunc =  true;
@@ -4624,6 +4792,22 @@ vars->data[len(vars)] =  v;
 }
 OUTPUT =  OUTPUT->add(OUTPUT, rope(concatCPSTRING(code,";\n")));
 };
+char * getCfunctionType(struct string cfrt,char * elemName,struct Elems* elems){
+struct func* tmpfn =  parseFnType(cfrt);
+struct string tmpfnRetCType =  getCType(tmpfn->returns->type,elems);
+char * tmpfnArgsCType =  "";
+long int j =  0;
+while ((j<len(tmpfn->args))) {
+struct variable* arg =  tmpfn->args->data[j];
+struct string ct =  getCType(arg->type,elems);
+tmpfnArgsCType =  concatCPSTRING(tmpfnArgsCType,ct.str((struct string*)&ct));
+j =  j + 1;
+if ((j<len(tmpfn->args))) {
+tmpfnArgsCType =  concatCPSTRING(tmpfnArgsCType,",");
+}
+};
+return concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING(tmpfnRetCType.str((struct string*)&tmpfnRetCType)," (*"),elemName),")("),tmpfnArgsCType),")");
+};
 char * parseFnHeader(char * prev,__BAH_ARR_TYPE_Tok l,long int* i,struct func* fn,struct Elems* elems){
 long int j =  *i;
 struct Tok ft =  l->data[j];
@@ -4654,15 +4838,22 @@ t =  l->data[j];
 char * argType =  t.cont;
 j =  j + 1;
 int isComa =  false;
+long int nbPars =  1;
 while ((j<len(l))) {
 t =  l->data[j];
 isComa =  false;
 if ((strcmp(t.cont, ",") != 0)) {
-if ((strcmp(t.cont, ")") != 0)) {
-argType =  concatCPSTRING(argType,t.cont);
+if ((strcmp(t.cont, "(") == 0)) {
+nbPars =  nbPars + 1;
+}
+else if ((strcmp(t.cont, ")") == 0)) {
+nbPars =  nbPars - 1;
+}
+if (((strcmp(t.cont, ")") == 0)&&(nbPars==0))) {
+break;
 }
 else {
-break;
+argType =  concatCPSTRING(argType,t.cont);
 }
 }
 else {
@@ -4722,7 +4913,12 @@ csatd->data[len(csatd)] =  newArgType;
 tpdf =  concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING(tpdf,"typedef "),argCType.str((struct string*)&argCType))," "),newArgType),";\n");
 }
 }
+if ((cfrt.hasPrefix((struct string*)&cfrt,"function(")==1)) {
+code =  concatCPSTRING(code,getCfunctionType(cfrt,argName,elems));
+}
+else {
 code =  concatCPSTRING(concatCPSTRING(concatCPSTRING(code,newArgType)," "),argName);
+}
 if ((isComa==true)) {
 code =  concatCPSTRING(code,",");
 }
@@ -6233,12 +6429,18 @@ struct fileStream fs =  {};
 fs.isValid = fileStream__isValid;
 fs.open = fileStream__open;
 fs.close = fileStream__close;
+fs.getPos = fileStream__getPos;
+fs.setPos = fileStream__setPos;
 fs.getSize = fileStream__getSize;
-fs.readContent = fileStream__readContent;
 fs.rewind = fileStream__rewind;
 fs.getChar = fileStream__getChar;
 fs.createFile = fileStream__createFile;
 fs.writeFile = fileStream__writeFile;
+fs.writePtr = fileStream__writePtr;
+fs.readPtr = fileStream__readPtr;
+fs.readContent = fileStream__readContent;
+fs.readBytes = fileStream__readBytes;
+fs.writeBytes = fileStream__writeBytes;
 fs.open((struct fileStream*)&fs,randFileName,"w");
 fs.writeFile((struct fileStream*)&fs,OUTPUT->toStr((struct rope*)OUTPUT));
 fs.close((struct fileStream*)&fs);
@@ -6282,12 +6484,18 @@ struct fileStream fs =  {};
 fs.isValid = fileStream__isValid;
 fs.open = fileStream__open;
 fs.close = fileStream__close;
+fs.getPos = fileStream__getPos;
+fs.setPos = fileStream__setPos;
 fs.getSize = fileStream__getSize;
-fs.readContent = fileStream__readContent;
 fs.rewind = fileStream__rewind;
 fs.getChar = fileStream__getChar;
 fs.createFile = fileStream__createFile;
 fs.writeFile = fileStream__writeFile;
+fs.writePtr = fileStream__writePtr;
+fs.readPtr = fileStream__readPtr;
+fs.readContent = fileStream__readContent;
+fs.readBytes = fileStream__readBytes;
+fs.writeBytes = fileStream__writeBytes;
 fs.open((struct fileStream*)&fs,fileName,"w");
 fs.writeFile((struct fileStream*)&fs,OUTPUT->toStr((struct rope*)OUTPUT));
 fs.close((struct fileStream*)&fs);
