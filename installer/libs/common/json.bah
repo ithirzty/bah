@@ -52,9 +52,8 @@ struct jsonElement {
         return ctn
     }
 
-    //Used for scanning the JSON element to a var.
+    //Used for scanning the JSON element in a var.
     scan(e reflectElement) {
-        //Mapping an object to a struct
         if e.isStruct == true {
             i=0; for i < len(e.structLayout) {
                 m = e.structLayout[i]
@@ -80,6 +79,33 @@ struct jsonElement {
                 *ep = true
             } else {
                 *ep = false
+            }
+        } else if e.isArray == true {
+            arrPtr ptr* = e.value
+            if e.type == "[]int" {
+                arr = []int
+                arr = *arrPtr
+                i=0; for i < len(this.children) {
+                    c = this.children[i]
+                    arr[i] = strToInt(c.content)
+                    i = i + 1
+                }
+            } else if e.type == "[]float" {
+                arr = []float
+                arr = *arrPtr
+                i=0; for i < len(this.children) {
+                    c = this.children[i]
+                    arr[i] = strToFloat(c.content)
+                    i = i + 1
+                }
+            } else if e.type == "[]cpstring" {
+                arr = []cpstring
+                arr = *arrPtr
+                i=0; for i < len(this.children) {
+                    c = this.children[i]
+                    arr[i] = c.content
+                    i = i + 1
+                }
             }
         }
 
@@ -185,7 +211,7 @@ parseJson(s cpstring) jsonElement* {
                 continue
             }
             if c == ',' {
-                jsonElem.children[elemIndex] = parseJson(arrAsStr(currentElem))
+                jsonElem.children[elemIndex] = parseJson(arrToStr(currentElem))
                 clear(currentElem)
                 elemIndex = elemIndex + 1
             } else {
@@ -197,7 +223,8 @@ parseJson(s cpstring) jsonElement* {
             }
             i = i + 1
         }
-        jsonElem.children[elemIndex] = parseJson(arrAsStr(currentElem))
+        jsonElem.children[elemIndex] = parseJson(arrToStr(currentElem))
+
     } else if jsonElem.type == JSON_TYPE_MAP {
         i = i + 1
         trim = 1
@@ -282,7 +309,13 @@ parseJson(s cpstring) jsonElement* {
     return jsonElem
 }
 
+//Function used by toJson() to convert a var to json string.
+//*Note: this is an internal function*
 toJson__inner(e reflectElement, isMember bool, tabs int) cpstring {
+    v ptr* = e.value
+    if *v == null {
+        return "null"
+    }
     if e.isStruct == true {
         tabs = tabs + 1
         tabsStr = ""
@@ -327,10 +360,55 @@ toJson__inner(e reflectElement, isMember bool, tabs int) cpstring {
             s.replace("\n", "\\\n")
             return "\""+s.str()+"\""
         }
+    } else if e.isArray == true {
+        s = "["
+        if e.type == "[]int" {
+            arr = []int
+            arrPtr ptr* = e.value
+            arr = *arrPtr
+            i=0; for i < len(arr) {
+                s = s + intToStr(arr[i])
+                i = i + 1
+                if i < len(arr) {
+                    s = s + ","
+                }
+            }
+        } else if e.type == "[]float" {
+            arr = []float
+            arrPtr ptr* = e.value
+            arr = *arrPtr
+            i=0; for i < len(arr) {
+                s = s + floatToStr(arr[i])
+                i = i + 1
+                if i < len(arr) {
+                    s = s + ","
+                }
+            }
+        } else if e.type == "[]cpstring" {
+            s = s + "\n"
+            arr = []cpstring
+            arrPtr ptr* = e.value
+            arr = *arrPtr
+            i=0; for i < len(arr) {
+                str = string(arr[i])
+                str.replace("\n", "\\\n")
+                str.replace("\"", "\\\"")
+                s = s + "\"" + str.str() + "\""
+                i = i + 1
+                if i < len(arr) {
+                    s = s + ",\n"
+                } else {
+                    s = s + "\n"
+                }
+            }
+        }
+        s = s + "]"
+        return s
     }
     return ""
 }
 
+//Converting a var into json.
 toJson(e reflectElement) cpstring {
     return toJson__inner(e, false, 0)
 }
@@ -338,12 +416,50 @@ toJson(e reflectElement) cpstring {
 //Example
 // #include "iostream.bah"
 // #include "json.bah"
-// main() {
-// unparsed = "[54, {\"key\":[0,1]}, \"element\"]"
-// json = parseJson(unparsed)
-// fiftyfor = json.children[0]
-// println(fiftyfor.content)
-// jsonMap = json.children[1]
-// jsonArray = jsonMap.map("key")
-// println(jsonArray.content)
+// struct user {
+//     name: cpstring
+//     id: int
+//     avatar: cpstring
+//     password: cpstring
+// }
+// struct post {
+//     title: cpstring
+//     content: cpstring
+//     author: user
+//     score: float
+//     identified: []int
+// }
+// main(args []cpstring) int {
+//     //Our JSON test string
+//     doc = "
+//     {
+//         \"title\": \"Test\",
+//         \"content\": \"This is a test post\",
+//         \"author\": {
+//             \"name\": \"Alois\",
+//             \"id\": 543,
+//             \"avatar\": \"cdn.example.com/avatar.jpeg\",
+//         },
+//         \"identified\": [324, 456, 875],
+//         \"score\": 43.65
+//     }"
+//     //parsing out test string
+//     root = parseJson(doc)
+//     //sacanning it to the post1 structure
+//     post1 = new post
+//     root.scan(post1)
+//     //converting our post1 structure into json
+//     postStr = toJson(post1)
+//     //parsing the json of out test1 structure
+//     post2Json = parseJson(postStr)
+//     //scanning it to our post2 structure
+//     post2 = new post
+//     post2Json.scan(post2)
+//     //converting our post2 structure into json and printting it
+//     println(toJson(post2))
+//     //fetching post title
+//     titleElem = root.map("title")
+//     //printing the title
+//     println("The post is titled: "+titleElem.content)
+//     return 0
 // }
