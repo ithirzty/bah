@@ -145,17 +145,23 @@ __serialize(a ptr, s int) []char {
     memcpy(noCheck(r+8), a, s)
     l = s+1
     arr = []char
-    noCheck(arr->length = s+1)
+    noCheck(arr->length = s+8)
     noCheck(arr->elemSize = 1)
     noCheck(arr->data = r)
     return arr
 }
 
-//Function used to unserialize the content of a struct.
-unser(data []char) ptr {
+//Function used to get the size of the serialized pointer.
+serlen(data []char) int {
     sarr = []char{data[0], data[1], data[2], data[3], data[4], data[5], data[6], data[7]}
     sptr int* = noCheck(sarr->data)
-    r = memoryAlloc(*sptr)
-    memcpy(r, noCheck(data->data + 8), *sptr)
+    return *sptr
+}
+
+//Function used to unserialize the content of a struct.
+unser(data []char) ptr {
+    sptr = serlen(data)
+    r = memoryAlloc(sptr)
+    memcpy(r, noCheck(data->data + 8), sptr)
     return r
 }

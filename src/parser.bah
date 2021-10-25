@@ -786,6 +786,58 @@ parseSerialize(e Tok, elems Elems*) cpstring {
     return code + ")"
 }
 
+parseReflect(t Tok, tt cpstring, elems Elems*) Tok {
+    isArr = "0"
+
+    if strHasPrefix(tt, "[]") {
+        isArr = "1"
+    }
+    isStruct = "0"
+    ts = searchStruct(tt, elems)
+    structLayout = "0"
+    stt = string(tt)
+    if ts != null {
+        isStruct = "1"
+        structLayout = genCompilerVar()
+        dataLayout = rope("")
+
+        i=0; for i < len(ts.members) {
+            m = ts.members[i]
+            tmpT = Tok{}
+            sep = "->"
+            if stt.count("*") == 0 {
+                sep = "."
+            }
+            tmpT.cont = t.cont + sep + m.name
+            rt = parseReflect(tmpT, m.type, elems)
+            dataLayout = dataLayout + rope(structLayout+"->data["+intToStr(i)+"] = "+rt.cont+";\n")
+            i = i + 1
+        }
+
+        OUTPUT = OUTPUT + rope("
+        array(struct reflectElement) * "+structLayout+" = memoryAlloc(sizeof(array(struct reflectElement)));
+        "+structLayout+"->elemSize = sizeof(struct reflectElement);
+        "+structLayout+"->length = "+intToStr(len(ts.members))+";
+        "+structLayout+"->data = memoryAlloc("+structLayout+"->length * "+structLayout+"->elemSize);
+        ") + dataLayout
+    }
+
+    amp = ""
+    if stt.count("*") == 0 && tt != "cpstring" && tt != "ptr" {
+        amp = "&"
+    }
+
+    name = string(t.cont)
+    if hasStructSep(name) == true {
+        name = splitStructSepAfter(name)
+    }
+
+    t.cont = "__reflect("+amp+t.cont+", sizeof("+t.cont+"), \""+tt+"\", \""+name.str()+"\", "+isArr+", 0, "+isStruct+", "+structLayout+")"
+                        //  value             size             type         name              isArr   arrE  isStruct      structLayout
+    t.isFunc = true
+    return t
+}
+
 parseFnCall(l []Tok, elems Elems*) []Tok {
     nl = []Tok
 
@@ -916,6 +968,12 @@ parseFnCall(l []Tok, elems Elems*) []Tok {
                             }
                             arg = fnArgs[paramIndex]
                             tt = getTypeFromToken(&t, true, elems)
+                            //Used for runtime reflection (in reflect.bah)
+                            if arg.type == "reflectElement" {
+                                t = parseReflect(t, tt, elems)
+                                tt = "reflectElement"
+                            }
+                            
                             if compTypes(tt, arg.type) == false {
                                 throwErr(&t, "Cannot use {TOKEN} (" + tt + ") as " + arg.type + " in function call.")
                             }

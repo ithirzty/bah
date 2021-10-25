@@ -165,6 +165,32 @@ parseUrl(cps cpstring) http_url* {
     return u
 }
 
+//Used for decoding an url encoded string.
+urlDecode(encoded cpstring) cpstring {
+    s = strAsArr(encoded)
+    r = []char
+
+    i=0; for i < len(s) {
+        c = s[i]
+        if c == '+' {
+            r[len(r)] = ' '
+        } else if c == '%' {
+            hexStr = []char{s[i+1], s[i+2]}
+            c = <char>strtol(arrAsStr(hexStr), null, 16)
+            r[len(r)] = c
+            i = i + 2
+
+        } else {
+            r[len(r)] = c
+        }
+        i = i + 1
+    }
+
+    return arrToStr(r)
+}
+
+
+
 //Used for closing a socket.
 closeSocket(sockfd int) {
     shutdown(sockfd, noCheck(SHUT_RDWR))
@@ -781,6 +807,7 @@ struct http_request extend http_transport {
         return true
     }
 
+    //Used for getting the value of a form's input.
     getFormValue(name cpstring) cpstring {
         rName = string(name)
         rName = toLower(rName)
@@ -789,8 +816,31 @@ struct http_request extend http_transport {
             if f.hasPrefix(rName.str() + "=") {
                 f.trimLeft(rName.length + 1)
                 f.trim()
-                return f.str()
+
+                return urlDecode(f.str())
             }
+            i = i + 1
+        }
+        return ""
+    }
+
+    //Used for getting the value of a cookie.
+    getCookie(name cpstring) cpstring {
+        encoded = string(this.getHeader("cookie"))
+        cookies = splitString(encoded, ";")
+        r = []char
+
+        i=0; for i < len(cookies) {
+            c = cookies[i]
+            parts = splitString(c, "=")
+            n = parts[0]
+            n.trim()
+            v = parts[1]
+
+            if urlDecode(n.str()) == name {
+                return urlDecode(v.str())
+            }
+
             i = i + 1
         }
         return ""

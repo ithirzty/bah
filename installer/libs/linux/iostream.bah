@@ -46,6 +46,7 @@ panic(e cpstring) {
 #define! fread(w ptr, s int, f int, hndl FILE*) int
 #define! ftell(hndl FILE*) int
 #define! fseek(hndl FILE*, offset int, from int)
+#define! fputc(c char, hndl FILE*)
 
 //A wrapper that makes file manipulation easier.
 //*Note: after openning a file, you will need to close it.*
@@ -113,6 +114,11 @@ struct fileStream {
     getChar() char {
         c = getc(this.handle)
         return c
+    }
+
+    //Adds a character to the file.
+    setChar(c char) {
+        fputc(c, this.handle)
     }
 
     //Creates a file by name.
@@ -271,6 +277,8 @@ removeFile(name cpstring) bool {
 }
 
 #define! getenv(s cpstring) cpstring
+
+#define! rename(o cpstring, n cpstring)
 
 //Example
 // #include "iostream.bah"

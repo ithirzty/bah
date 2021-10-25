@@ -116,12 +116,12 @@ array(char)* arr = memoryAlloc(sizeof(array(char)));
 
 arr->length = 0;
 arr->elemSize = sizeof(char);
-noCheck( arr -> length = s + 1 );
+noCheck( arr -> length = s + 8 );
 noCheck( arr -> elemSize = 1 );
 noCheck( arr -> data = r );
 return arr;
 };
-void * unser(__BAH_ARR_TYPE_char data){
+long int serlen(__BAH_ARR_TYPE_char data){
 array(char)* sarr = memoryAlloc(sizeof(array(char)));
 
 sarr->length = 8;
@@ -135,8 +135,12 @@ sarr->data[5] = data->data[5];
 sarr->data[6] = data->data[6];
 sarr->data[7] = data->data[7];
 long int* sptr =  noCheck( sarr -> data );
-void * r =  memoryAlloc(*sptr);
-memcpy(r,noCheck( data -> data + 8 ),*sptr);
+return *sptr;
+};
+void * unser(__BAH_ARR_TYPE_char data){
+long int sptr =  serlen(data);
+void * r =  memoryAlloc(sptr);
+memcpy(r,noCheck( data -> data + 8 ),sptr);
 return r;
 };
 char * concatCPSTRING(char * a,char * b){
@@ -852,6 +856,7 @@ void(*setPos)(struct fileStream* this,long int i);
 long int(*getSize)(struct fileStream* this);
 void(*rewind)(struct fileStream* this);
 char(*getChar)(struct fileStream* this);
+void(*setChar)(struct fileStream* this,char c);
 void(*createFile)(struct fileStream* this,char * path);
 long int(*writeFile)(struct fileStream* this,char * content);
 void(*writePtr)(struct fileStream* this,void * a,long int s);
@@ -903,6 +908,9 @@ rewind(this->handle);
 char fileStream__getChar(struct fileStream* this){
 char c =  getc(this->handle);
 return c;
+};
+void fileStream__setChar(struct fileStream* this,char c){
+fputc(c,this->handle);
 };
 void fileStream__createFile(struct fileStream* this,char * path){
 this->open((struct fileStream*)this,path,"w");
@@ -1311,6 +1319,7 @@ fs.setPos = fileStream__setPos;
 fs.getSize = fileStream__getSize;
 fs.rewind = fileStream__rewind;
 fs.getChar = fileStream__getChar;
+fs.setChar = fileStream__setChar;
 fs.createFile = fileStream__createFile;
 fs.writeFile = fileStream__writeFile;
 fs.writePtr = fileStream__writePtr;
@@ -2922,6 +2931,12 @@ i =  i + 1;
 };
 return code;
 };
+long int NB_COMP_VAR =  0;
+char * genCompilerVar(){
+char * name =  concatCPSTRING("____BAH_COMPILER_VAR_",intToStr(NB_COMP_VAR));
+NB_COMP_VAR =  NB_COMP_VAR + 1;
+return name;
+};
 void debugLine(__BAH_ARR_TYPE_Tok line){
 char * cont =  "";
 long int i =  0;
@@ -4163,6 +4178,54 @@ i =  i + 1;
 }
 return concatCPSTRING(code,")");
 };
+struct Tok parseReflect(struct Tok t,char * tt,struct Elems* elems){
+char * isArr =  "0";
+if (strHasPrefix(tt,"[]")) {
+isArr =  "1";
+}
+char * isStruct =  "0";
+struct cStruct* ts =  searchStruct(tt,elems);
+char * structLayout =  "0";
+struct string stt =  string(tt);
+if ((ts!=null)) {
+isStruct =  "1";
+structLayout =  genCompilerVar();
+struct rope* dataLayout =  rope("");
+long int i =  0;
+while ((i<len(ts->members))) {
+struct structMemb* m =  ts->members->data[i];
+struct Tok tmpT =  {};
+tmpT.cont = "";
+tmpT.ogCont = "";
+tmpT.type = TOKEN_NO_TYPE;
+tmpT.pos = 0;
+tmpT.line = 1;
+tmpT.bahType = "";
+tmpT.isValue = false;
+tmpT.isFunc = false;
+char * sep =  "->";
+if ((stt.count((struct string*)&stt,"*")==0)) {
+sep =  ".";
+}
+tmpT.cont =  concatCPSTRING(concatCPSTRING(t.cont,sep),m->name);
+struct Tok rt =  parseReflect(tmpT,m->type,elems);
+dataLayout =  dataLayout->add(dataLayout, rope(concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING(structLayout,"->data["),intToStr(i)),"] = "),rt.cont),";\n")));
+i =  i + 1;
+};
+OUTPUT =  OUTPUT->add(OUTPUT, rope(concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING("\n        array(struct reflectElement) * ",structLayout)," = memoryAlloc(sizeof(array(struct reflectElement)));\n        "),structLayout),"->elemSize = sizeof(struct reflectElement);\n        "),structLayout),"->length = "),intToStr(len(ts->members))),";\n        "),structLayout),"->data = memoryAlloc("),structLayout),"->length * "),structLayout),"->elemSize);\n        ")))->add(OUTPUT->add(OUTPUT, rope(concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING("\n        array(struct reflectElement) * ",structLayout)," = memoryAlloc(sizeof(array(struct reflectElement)));\n        "),structLayout),"->elemSize = sizeof(struct reflectElement);\n        "),structLayout),"->length = "),intToStr(len(ts->members))),";\n        "),structLayout),"->data = memoryAlloc("),structLayout),"->length * "),structLayout),"->elemSize);\n        "))), dataLayout);
+}
+char * amp =  "";
+if ((((stt.count((struct string*)&stt,"*")==0)&&(strcmp(tt, "cpstring") != 0))&&(strcmp(tt, "ptr") != 0))) {
+amp =  "&";
+}
+struct string name =  string(t.cont);
+if ((hasStructSep(name)==true)) {
+name =  splitStructSepAfter(name);
+}
+t.cont =  concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING("__reflect(",amp),t.cont),", sizeof("),t.cont),"), \""),tt),"\", \""),name.str((struct string*)&name)),"\", "),isArr),", 0, "),isStruct),", "),structLayout),")");
+t.isFunc =  true;
+return t;
+};
 __BAH_ARR_TYPE_Tok parseFnCall(__BAH_ARR_TYPE_Tok l,struct Elems* elems){
 array(struct Tok)* nl = memoryAlloc(sizeof(array(struct Tok)));
 
@@ -4360,6 +4423,10 @@ throwErr(&t,"Too many arguments in function call.");
 }
 struct variable* arg =  fnArgs->data[paramIndex];
 char * tt =  getTypeFromToken(&t,true,elems);
+if ((strcmp(arg->type, "reflectElement") == 0)) {
+t =  parseReflect(t,tt,elems);
+tt =  "reflectElement";
+}
 if ((compTypes(tt,arg->type)==false)) {
 throwErr(&t,concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING("Cannot use {TOKEN} (",tt),") as "),arg->type)," in function call."));
 }
@@ -6372,6 +6439,7 @@ fs.setPos = fileStream__setPos;
 fs.getSize = fileStream__getSize;
 fs.rewind = fileStream__rewind;
 fs.getChar = fileStream__getChar;
+fs.setChar = fileStream__setChar;
 fs.createFile = fileStream__createFile;
 fs.writeFile = fileStream__writeFile;
 fs.writePtr = fileStream__writePtr;
@@ -6428,6 +6496,7 @@ fs.setPos = fileStream__setPos;
 fs.getSize = fileStream__getSize;
 fs.rewind = fileStream__rewind;
 fs.getChar = fileStream__getChar;
+fs.setChar = fileStream__setChar;
 fs.createFile = fileStream__createFile;
 fs.writeFile = fileStream__writeFile;
 fs.writePtr = fileStream__writePtr;

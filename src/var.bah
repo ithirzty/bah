@@ -350,3 +350,11 @@ declareStructMethods(v variable*, s cStruct*, elems Elems*) cpstring {
 
     return code
 }
+
+NB_COMP_VAR = 0
+
+genCompilerVar() cpstring {
+    name = "____BAH_COMPILER_VAR_"+intToStr(NB_COMP_VAR)
+    NB_COMP_VAR = NB_COMP_VAR + 1
+    return name
+}
