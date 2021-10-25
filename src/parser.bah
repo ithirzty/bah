@@ -974,7 +974,7 @@ parseFnCall(l []Tok, elems Elems*) []Tok {
                             arg = fnArgs[paramIndex]
                             tt = getTypeFromToken(&t, true, elems)
                             //Used for runtime reflection (in reflect.bah)
-                            if arg.type == "reflectElement" {
+                            if arg.type == "reflectElement" && tt != "reflectElement" {
                                 t = parseReflect(t, tt, elems, false, t.cont)
                                 tt = "reflectElement"
                             }

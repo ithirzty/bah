@@ -385,8 +385,15 @@ intToString(i int) string {
 //Converts an int into a cpstring.
 //This is faster than intToString.
 intToStr(i int) cpstring {
-    buff cpstring = memoryAlloc(65)
-    sprintf(buff, "%ld", <ptr>i)
+    buff cpstring = memoryAlloc(50)
+    sprintf(buff, "%ld", i)
+    return buff
+}
+
+//Converts a float to a cpstring.
+floatToStr(f float) cpstring {
+    buff cpstring = memoryAlloc(50)
+    sprintf(buff, "%lf", f)
     return buff
 }
 

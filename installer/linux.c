@@ -565,8 +565,13 @@ struct string r =  string(buff);
 return r;
 };
 char * intToStr(long int i){
-char * buff =  memoryAlloc(65);
-sprintf(buff,"%ld",(void *)i);
+char * buff =  memoryAlloc(50);
+sprintf(buff,"%ld",i);
+return buff;
+};
+char * floatToStr(double f){
+char * buff =  memoryAlloc(50);
+sprintf(buff,"%lf",f);
 return buff;
 };
 long int strToInt(char * s){
@@ -1537,7 +1542,7 @@ r->len =  n1;
 return r;
 };
 #define BAH_DIR "/opt/bah/"
-#define BAH_VERSION "v1.0 (build 22)"
+#define BAH_VERSION "v1.0 (build 24)"
 struct rope* OUTPUT;
 char * NEXT_LINE =  "";
 struct variable {
@@ -4178,7 +4183,7 @@ i =  i + 1;
 }
 return concatCPSTRING(code,")");
 };
-struct Tok parseReflect(struct Tok t,char * tt,struct Elems* elems){
+struct Tok parseReflect(struct Tok t,char * tt,struct Elems* elems,int parsedPointer,char * ogName){
 char * isArr =  "0";
 if (strHasPrefix(tt,"[]")) {
 isArr =  "1";
@@ -4207,22 +4212,26 @@ char * sep =  "->";
 if ((stt.count((struct string*)&stt,"*")==0)) {
 sep =  ".";
 }
-tmpT.cont =  concatCPSTRING(concatCPSTRING(t.cont,sep),m->name);
-struct Tok rt =  parseReflect(tmpT,m->type,elems);
+struct string mCtype =  getCType(m->type,elems);
+struct string offsetTT =  string(tt);
+offsetTT.replace((struct string*)&offsetTT,"*","");
+tmpT.cont =  concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING("(",mCtype.str((struct string*)&mCtype)),"*)((char*)("),t.cont),") + offsetof(struct "),offsetTT.str((struct string*)&offsetTT)),", "),m->name),"))");
+struct Tok rt =  parseReflect(tmpT,m->type,elems,true,m->name);
 dataLayout =  dataLayout->add(dataLayout, rope(concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING(structLayout,"->data["),intToStr(i)),"] = "),rt.cont),";\n")));
 i =  i + 1;
 };
 OUTPUT =  OUTPUT->add(OUTPUT, rope(concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING("\n        array(struct reflectElement) * ",structLayout)," = memoryAlloc(sizeof(array(struct reflectElement)));\n        "),structLayout),"->elemSize = sizeof(struct reflectElement);\n        "),structLayout),"->length = "),intToStr(len(ts->members))),";\n        "),structLayout),"->data = memoryAlloc("),structLayout),"->length * "),structLayout),"->elemSize);\n        ")))->add(OUTPUT->add(OUTPUT, rope(concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING("\n        array(struct reflectElement) * ",structLayout)," = memoryAlloc(sizeof(array(struct reflectElement)));\n        "),structLayout),"->elemSize = sizeof(struct reflectElement);\n        "),structLayout),"->length = "),intToStr(len(ts->members))),";\n        "),structLayout),"->data = memoryAlloc("),structLayout),"->length * "),structLayout),"->elemSize);\n        "))), dataLayout);
 }
 char * amp =  "";
-if ((((stt.count((struct string*)&stt,"*")==0)&&(strcmp(tt, "cpstring") != 0))&&(strcmp(tt, "ptr") != 0))) {
+if (((((stt.count((struct string*)&stt,"*")==0)&&(strcmp(tt, "cpstring") != 0))&&(strcmp(tt, "ptr") != 0))&&(parsedPointer==false))) {
 amp =  "&";
 }
-struct string name =  string(t.cont);
+struct string name =  string(ogName);
 if ((hasStructSep(name)==true)) {
 name =  splitStructSepAfter(name);
 }
-t.cont =  concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING("__reflect(",amp),t.cont),", sizeof("),t.cont),"), \""),tt),"\", \""),name.str((struct string*)&name)),"\", "),isArr),", 0, "),isStruct),", "),structLayout),")");
+struct string cType =  getCType(tt,elems);
+t.cont =  concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING(concatCPSTRING("__reflect(",amp),t.cont),", sizeof("),cType.str((struct string*)&cType)),"), \""),tt),"\", \""),name.str((struct string*)&name)),"\", "),isArr),", 0, "),isStruct),", "),structLayout),")");
 t.isFunc =  true;
 return t;
 };
@@ -4423,8 +4432,8 @@ throwErr(&t,"Too many arguments in function call.");
 }
 struct variable* arg =  fnArgs->data[paramIndex];
 char * tt =  getTypeFromToken(&t,true,elems);
-if ((strcmp(arg->type, "reflectElement") == 0)) {
-t =  parseReflect(t,tt,elems);
+if (((strcmp(arg->type, "reflectElement") == 0)&&(strcmp(tt, "reflectElement") != 0))) {
+t =  parseReflect(t,tt,elems,false,t.cont);
 tt =  "reflectElement";
 }
 if ((compTypes(tt,arg->type)==false)) {
