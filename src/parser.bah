@@ -786,7 +786,7 @@ parseSerialize(e Tok, elems Elems*) cpstring {
     return code + ")"
 }
 
-parseReflect(t Tok, tt cpstring, elems Elems*) Tok {
+parseReflect(t Tok, tt cpstring, elems Elems*, parsedPointer bool, ogName cpstring) Tok {
     isArr = "0"
 
     if strHasPrefix(tt, "[]") {
@@ -808,8 +808,11 @@ parseReflect(t Tok, tt cpstring, elems Elems*) Tok {
             if stt.count("*") == 0 {
                 sep = "."
             }
-            tmpT.cont = t.cont + sep + m.name
-            rt = parseReflect(tmpT, m.type, elems)
+            mCtype = getCType(m.type, elems)
+            offsetTT = string(tt)
+            offsetTT.replace("*", "")
+            tmpT.cont = "("+mCtype.str()+"*)((char*)("+t.cont+") + offsetof(struct "+offsetTT.str()+", "+m.name+"))"
+            rt = parseReflect(tmpT, m.type, elems, true, m.name)
             dataLayout = dataLayout + rope(structLayout+"->data["+intToStr(i)+"] = "+rt.cont+";\n")
             i = i + 1
         }
@@ -823,17 +826,19 @@ parseReflect(t Tok, tt cpstring, elems Elems*) Tok {
     }
 
     amp = ""
-    if stt.count("*") == 0 && tt != "cpstring" && tt != "ptr" {
+    if stt.count("*") == 0 && tt != "cpstring" && tt != "ptr" && parsedPointer == false {
         amp = "&"
     }
 
-    name = string(t.cont)
+    name = string(ogName)
     if hasStructSep(name) == true {
         name = splitStructSepAfter(name)
     }
 
-    t.cont = "__reflect("+amp+t.cont+", sizeof("+t.cont+"), \""+tt+"\", \""+name.str()+"\", "+isArr+", 0, "+isStruct+", "+structLayout+")"
-                        //  value             size             type         name              isArr   arrE  isStruct      structLayout
+    cType = getCType(tt, elems)
+
+    t.cont = "__reflect("+amp+t.cont+", sizeof("+cType.str()+"), \""+tt+"\", \""+name.str()+"\", "+isArr+", 0, "+isStruct+", "+structLayout+")"
+                        //  value             size             type              name              isArr   arrE  isStruct      structLayout
     t.isFunc = true
     return t
 }
@@ -970,7 +975,7 @@ parseFnCall(l []Tok, elems Elems*) []Tok {
                             tt = getTypeFromToken(&t, true, elems)
                             //Used for runtime reflection (in reflect.bah)
                             if arg.type == "reflectElement" {
-                                t = parseReflect(t, tt, elems)
+                                t = parseReflect(t, tt, elems, false, t.cont)
                                 tt = "reflectElement"
                             }
                             
