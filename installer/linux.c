@@ -1542,7 +1542,7 @@ r->len =  n1;
 return r;
 };
 #define BAH_DIR "/opt/bah/"
-#define BAH_VERSION "v1.0 (build 24)"
+#define BAH_VERSION "v1.0 (build 25)"
 struct rope* OUTPUT;
 char * NEXT_LINE =  "";
 struct variable {

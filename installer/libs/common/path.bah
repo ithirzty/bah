@@ -17,6 +17,15 @@ getCurrentPath() cpstring {
     return cwd
 }
 
+//Returns true if the subPath is inside the basePath.
+//Usefull for securing connection (such as HTTP server) to make sure you do not give
+//access to your complete file system.
+isInside(basePath cpstring, subPath cpstring) bool {
+    abs1 = absPath(basePath)
+    abs2 = absPath(subPath)
+    return strHasPrefix(subPath, basePath) == true
+}
+
 //Example
 // #include "iostream.bah"
 // #include "path.bah"
