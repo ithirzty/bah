@@ -86,6 +86,14 @@ As well as being easy to learn, you can create
 - and many more.
 > You did something awesome in bah? Add it to the list!
 
+
+### Awesome features
+Bah also supports awesome features like reflection (simillar to Go approach).
+
+This enables you to do things that would be impossible in C
+such as scanning JSON content to a variable (event structs and arrays), and marshalling vars to JSON.
+All of that with a single function call!
+
 ## Extras
 Here is how fast bah v1.0 (build 15) compiles itself on a ThinkPad x220 (a 16 years old machine)
 ![compilation times](extra/bah_comp_time.png)
