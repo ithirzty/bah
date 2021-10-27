@@ -20,14 +20,22 @@ struct reflectElement {
     //Struct infos
     isStruct: bool
     structLayout: []reflectElement
+    offset: int
 
     //Actual element
     value: ptr
+
+    //Calculates the offset pointer from an origin pointer.
+    //This is used to get a pointer to the element when it
+    calculateOffset(origin ptr) ptr {
+        base cpstring = origin
+        return noCheck(base + this.offset)
+    }
 }
 
 
 //Internal function used for generating a reflected element.
-__reflect(v ptr, s int, t cpstring, n cpstring, isArr bool, ae reflectElement*, isStruct bool, sl []reflectElement) reflectElement {
+__reflect(v ptr, s int, t cpstring, n cpstring, isArr bool, ae reflectElement*, isStruct bool, sl []reflectElement, offset int) reflectElement {
     re = reflectElement{}
     re.size = s
     re.type = t
@@ -37,6 +45,7 @@ __reflect(v ptr, s int, t cpstring, n cpstring, isArr bool, ae reflectElement*, 
     re.isStruct = isStruct
     re.structLayout = sl
     re.value = v
+    re.offset = offset
     return re
 }
 

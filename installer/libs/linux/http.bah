@@ -800,7 +800,9 @@ struct http_request extend http_transport {
 
         if contentType == "application/x-www-form-urlencoded" {
             body = this.body
-            this.form = splitString(*body, "&")
+            tmpBdy = *body
+            tmpBdy.trimRight(2)
+            this.form = splitString(tmpBdy, "&")
         }
 
 

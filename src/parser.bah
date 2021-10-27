@@ -786,16 +786,32 @@ parseSerialize(e Tok, elems Elems*) cpstring {
     return code + ")"
 }
 
-parseReflect(t Tok, tt cpstring, elems Elems*, parsedPointer bool, ogName cpstring) Tok {
+parseReflect(t Tok, tt cpstring, elems Elems*, parsedPointer bool, ogName cpstring, offset cpstring) Tok {
     isArr = "0"
 
+    arrElem = "0"
     if strHasPrefix(tt, "[]") {
         isArr = "1"
+        aet = string(tt)
+        aet.trimLeft(2)
+        tmpT = Tok{}
+        tmpT.cont = "0"
+        rt = parseReflect(tmpT, aet.str(), elems, true, "", "0")
+        
+        aev = genCompilerVar()
+        
+        OUTPUT = OUTPUT + rope("
+        struct reflectElement "+aev+" = "+rt.cont+";
+        ")
+
+        arrElem = "&"+aev
     }
+
     isStruct = "0"
     ts = searchStruct(tt, elems)
     structLayout = "0"
-    stt = string(tt)
+    stt = string(tt)    
+
     if ts != null {
         isStruct = "1"
         structLayout = genCompilerVar()
@@ -812,7 +828,7 @@ parseReflect(t Tok, tt cpstring, elems Elems*, parsedPointer bool, ogName cpstri
             offsetTT = string(tt)
             offsetTT.replace("*", "")
             tmpT.cont = "("+mCtype.str()+"*)((char*)("+t.cont+") + offsetof(struct "+offsetTT.str()+", "+m.name+"))"
-            rt = parseReflect(tmpT, m.type, elems, true, m.name)
+            rt = parseReflect(tmpT, m.type, elems, true, m.name, "offsetof(struct "+offsetTT.str()+", "+m.name+")")
             dataLayout = dataLayout + rope(structLayout+"->data["+intToStr(i)+"] = "+rt.cont+";\n")
             i = i + 1
         }
@@ -837,8 +853,8 @@ parseReflect(t Tok, tt cpstring, elems Elems*, parsedPointer bool, ogName cpstri
 
     cType = getCType(tt, elems)
 
-    t.cont = "__reflect("+amp+t.cont+", sizeof("+cType.str()+"), \""+tt+"\", \""+name.str()+"\", "+isArr+", 0, "+isStruct+", "+structLayout+")"
-                        //  value             size             type              name              isArr   arrE  isStruct      structLayout
+    t.cont = "__reflect("+amp+t.cont+", sizeof("+cType.str()+"), \""+tt+"\", \""+name.str()+"\", "+isArr+", "+arrElem+", "+isStruct+", "+structLayout+", "+offset+")"
+                        //  value                  size             type           name            isArr       arrE        isStruct      structLayout      offset
     t.isFunc = true
     return t
 }
@@ -975,7 +991,7 @@ parseFnCall(l []Tok, elems Elems*) []Tok {
                             tt = getTypeFromToken(&t, true, elems)
                             //Used for runtime reflection (in reflect.bah)
                             if arg.type == "reflectElement" && tt != "reflectElement" {
-                                t = parseReflect(t, tt, elems, false, t.cont)
+                                t = parseReflect(t, tt, elems, false, t.cont, "0")
                                 tt = "reflectElement"
                             }
                             

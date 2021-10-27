@@ -9,6 +9,9 @@ const JSON_TYPE_FLOAT = 2
 const JSON_TYPE_ARRAY = 3
 const JSON_TYPE_MAP = 4
 
+    #define toJson(e reflectElement) cpstring
+
+
 //A single element of a json document.
 //This can be a map, an array, an int, a float or a string.
 //If the element is of type array (or map), all of its children will be contained in an array, the .children field.
@@ -52,6 +55,7 @@ struct jsonElement {
         return ctn
     }
 
+
     //Used for scanning the JSON element in a var.
     scan(e reflectElement) {
         if e.isStruct == true {
@@ -81,29 +85,52 @@ struct jsonElement {
                 *ep = false
             }
         } else if e.isArray == true {
-            arrPtr ptr* = e.value
-            if e.type == "[]int" {
+            ae = e.arrayElem
+            if ae.type == "int" {
                 arr = []int
+                arrPtr ptr* = e.value
                 arr = *arrPtr
                 i=0; for i < len(this.children) {
                     c = this.children[i]
                     arr[i] = strToInt(c.content)
                     i = i + 1
                 }
-            } else if e.type == "[]float" {
+            } else if ae.type == "float" {
                 arr = []float
+                arrPtr ptr* = e.value
                 arr = *arrPtr
                 i=0; for i < len(this.children) {
                     c = this.children[i]
                     arr[i] = strToFloat(c.content)
                     i = i + 1
                 }
-            } else if e.type == "[]cpstring" {
+            } else if ae.type == "cpstring" {
                 arr = []cpstring
+                arrPtr ptr* = e.value
                 arr = *arrPtr
                 i=0; for i < len(this.children) {
                     c = this.children[i]
-                    arr[i] = c.content
+                    arr[i] = memoryAlloc(strlen(c.content))
+                    strcpy(arr[i], c.content)
+                    i = i + 1
+                }
+            } else if ae.isStruct == true {
+                arr = []ptr
+                arrPtr ptr* = e.value
+                arr = *arrPtr
+                i=0; for i < len(this.children) {
+                    c = this.children[i]
+                    ne ptr = memoryAlloc(ae.size)
+                    j=0; for j < len(ae.structLayout) {
+                        m = ae.structLayout[j]
+                        m.value = m.calculateOffset(ne)
+                        ov = c.map(m.name)
+                        if ov != null {
+                            ov.scan(m)
+                        }
+                        j = j + 1
+                    }
+                    arr[i] = ne
                     i = i + 1
                 }
             }
@@ -362,7 +389,8 @@ toJson__inner(e reflectElement, isMember bool, tabs int) cpstring {
         }
     } else if e.isArray == true {
         s = "["
-        if e.type == "[]int" {
+        ae = e.arrayElem
+        if ae.type == "int" {
             arr = []int
             arrPtr ptr* = e.value
             arr = *arrPtr
@@ -373,7 +401,7 @@ toJson__inner(e reflectElement, isMember bool, tabs int) cpstring {
                     s = s + ","
                 }
             }
-        } else if e.type == "[]float" {
+        } else if ae.type == "float" {
             arr = []float
             arrPtr ptr* = e.value
             arr = *arrPtr
@@ -384,16 +412,34 @@ toJson__inner(e reflectElement, isMember bool, tabs int) cpstring {
                     s = s + ","
                 }
             }
-        } else if e.type == "[]cpstring" {
-            s = s + "\n"
+        } else if ae.type == "cpstring" {
             arr = []cpstring
             arrPtr ptr* = e.value
             arr = *arrPtr
+            s = s + "\n"
             i=0; for i < len(arr) {
-                str = string(arr[i])
-                str.replace("\n", "\\\n")
-                str.replace("\"", "\\\"")
-                s = s + "\"" + str.str() + "\""
+                s = s + arr[i]
+                i = i + 1
+                if i < len(arr) {
+                    s = s + ",\n"
+                } else {
+                    s = s + "\n"
+                }
+            }
+        } else if ae.isStruct == true {
+            arr = []ptr
+            arrPtr ptr* = e.value
+            arr = *arrPtr
+            i=0; for i < len(arr) {
+                arrElem = arr[i]
+                ae.value = arrElem
+                j=0; for j < len(ae.structLayout) {
+                    m = ae.structLayout[j]
+                    m.value = m.calculateOffset(ae.value)
+                    ae.structLayout[j] = m
+                    j = j + 1
+                }
+                s = s + toJson__inner(*ae, false, tabs)
                 i = i + 1
                 if i < len(arr) {
                     s = s + ",\n"
