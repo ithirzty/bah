@@ -116,8 +116,9 @@ struct jsonElement {
                 }
             } else if ae.isStruct == true {
                 arr = []ptr
-                arrPtr ptr* = e.value
-                arr = *arrPtr
+                // arrPtr ptr* = e.value
+                // arr = *arrPtr
+                arr = e.value
                 i=0; for i < len(this.children) {
                     c = this.children[i]
                     ne ptr = memoryAlloc(ae.size)
@@ -428,8 +429,9 @@ toJson__inner(e reflectElement, isMember bool, tabs int) cpstring {
             }
         } else if ae.isStruct == true {
             arr = []ptr
-            arrPtr ptr* = e.value
-            arr = *arrPtr
+            // arrPtr ptr* = e.value
+            // arr = *arrPtr
+            arr = e.value
             i=0; for i < len(arr) {
                 arrElem = arr[i]
                 ae.value = arrElem
