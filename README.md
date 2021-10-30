@@ -97,3 +97,6 @@ All of that with a single function call!
 ## Extras
 Here is how fast bah v1.0 (build 15) compiles itself on a ThinkPad x220 (a 16 years old machine)
 ![compilation times](extra/bah_comp_time.png)
+
+## How does it work?
+Information on how a Bah compiler should operate can be found [here](how.md)
