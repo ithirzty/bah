@@ -498,6 +498,12 @@ struct http_response extend http_transport {
 
     }
 
+    //Used for flushing content rather than sending it fully.
+    //Useful for sending large files, websockets, SSE, etc...
+    flush(bytes []char) {
+        send(this.connfd, arrAsStr(bytes), len(bytes), 0)
+    }
+
 
 }
 
@@ -516,9 +522,6 @@ http_response(connfd int) http_response {
 
     return resp
 }
-
-
-
 
 
 
