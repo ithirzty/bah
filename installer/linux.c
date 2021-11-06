@@ -35,19 +35,22 @@ noCheck( array ( void* ) *arr = a );
 noCheck( i = arr -> length );
 return i;
 };
-void * memoryAlloc(long int s){
-void * p =  GC_MALLOC(s);
+void fastZeroSet(void * p,long int s){
 long int byte =  0;
+long int* v;
 long int i =  0;
 while ((i<s)) {
 if ((i + 8>s)) {
 memset(noCheck( p + i ),0,s - i);
 break;
 }
-long int* v =  noCheck( p + i );
+v =  noCheck( p + i );
 *v =  byte;
 i =  i + 8;
 };
+};
+void * memoryAlloc(long int s){
+void * p =  GC_MALLOC(s);
 return p;
 };
 void destroy(void * a){

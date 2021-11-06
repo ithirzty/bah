@@ -76,6 +76,24 @@ mutex() mutex {
     return m
 }
 
+
+fastZeroSetMT(p ptr, s int) {
+    byte int = 0
+    i=0; for i < s {
+        if i+8 > s {
+            memset(noCheck(p+i), 0, s - i)
+            break
+        }
+        v int* = noCheck(p+i)
+        *v = byte
+        i = i + 8
+    }
+}
+
+FZSfunc = fastZeroSetMT
+
+
+
 //Example
 // #include "iostream.bah"
 // #include "thread.bah"
