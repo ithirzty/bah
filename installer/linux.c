@@ -37,6 +37,17 @@ return i;
 };
 void * memoryAlloc(long int s){
 void * p =  GC_MALLOC(s);
+long int byte =  0;
+long int i =  0;
+while ((i<s)) {
+if ((i + 8>s)) {
+memset(noCheck( p + i ),0,s - i);
+break;
+}
+long int* v =  noCheck( p + i );
+*v =  byte;
+i =  i + 8;
+};
 return p;
 };
 void destroy(void * a){
@@ -1542,7 +1553,7 @@ r->len =  n1;
 return r;
 };
 #define BAH_DIR "/opt/bah/"
-#define BAH_VERSION "v1.0 (build 27)"
+#define BAH_VERSION "v1.0 (build 28)"
 struct rope* OUTPUT;
 char * NEXT_LINE =  "";
 struct variable {

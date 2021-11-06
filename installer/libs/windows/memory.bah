@@ -27,12 +27,25 @@ len(a ptr) int {
     return i
 }
 
+#define! memset(p ptr, v int, s int)
 
 //Used for allocating memory (malloc in c). You must specify the size of the block to allocate.
 //Will return a pointer to the allocated block. The memory is garbage collected.
+//**The given memory is initiated with zeros.**
 //The allocated memory cannot be shared by multiple processes. Use the sharedMemory() function instead.
 memoryAlloc(s int) ptr {
     p = GC_MALLOC(s)
+    
+    byte int = 0
+    i=0; for i < s {
+        if i+8 > s {
+            memset(noCheck(p+i), 0, s - i)
+            break
+        }
+        v int* = noCheck(p+i)
+        *v = byte
+        i = i + 8
+    }
     return p
 }
 
@@ -158,24 +171,30 @@ allocateArray(arr ptr, nbElems int) {
 
 #define ser(a ptr) []char
 
-//Internal function used to serialize a pointer to a struct.
+//Internal function used to serialize a pointer.
 __serialize(a ptr, s int) []char {
     r cpstring = memoryAlloc(s + 9)
     memcpy(r, &s, 8)
     memcpy(noCheck(r+8), a, s)
     l = s+1
     arr = []char
-    noCheck(arr->length = s+1)
+    noCheck(arr->length = s+8)
     noCheck(arr->elemSize = 1)
     noCheck(arr->data = r)
     return arr
 }
 
-//Function used to unserialize the content of a struct.
-unser(data []char) ptr {
+//Function used to get the size of the serialized pointer.
+serlen(data []char) int {
     sarr = []char{data[0], data[1], data[2], data[3], data[4], data[5], data[6], data[7]}
     sptr int* = noCheck(sarr->data)
-    r = memoryAlloc(*sptr)
-    memcpy(r, noCheck(data->data + 8), *sptr)
+    return *sptr
+}
+
+//Function used to unserialize the content of a struct.
+unser(data []char) ptr {
+    sptr = serlen(data)
+    r = memoryAlloc(sptr)
+    memcpy(r, noCheck(data->data + 8), sptr)
     return r
 }
