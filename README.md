@@ -83,6 +83,7 @@ As well as being easy to learn, you can create
     - [bah-lang doc](https://github.com/ithirzty/bah-website)
 - libraries
     - [bah-bmp](https://github.com/ithirzty/bah-bmp)
+    - [bah-cjson](https://github.com/ithirzty/bah-cjson)
 - and many more.
 > You did something awesome in bah? Add it to the list!
 
