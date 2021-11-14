@@ -126,8 +126,7 @@ struct string {
     
     //Prepends the specified cpstring to the string.
     prepend(s cpstring) {
-        tmpS cpstring = memoryAlloc(this.length+1)
-        strcpy(tmpS, this.content)
+        tmpS  = this.content
         this.length = this.length + strlen(s)
         this.content = <cpstring>memoryAlloc(this.length+1)
         strcpy(this.content, s)
@@ -596,4 +595,51 @@ strHasPrefix(s cpstring, need cpstring) bool {
         i = i + 1
     }
     return true
+}
+
+strTrimLeft(s cpstring*, i int) {
+    *s = noCheck(*s + i)
+}
+
+strTrimRight(s cpstring*, i int) {
+    ls = strlen(*s)
+    ns cpstring = memoryAlloc(ls - i)
+    memcpy(ns, *s, ls - i)
+    *s = ns
+}
+
+strTrim(s cpstring*) {
+    l = strlen(*s)
+    i=0; for i < l {
+        c = cpstringCharAt(*s, i)
+        if isSpace(c) == 0 {
+            break
+        }
+        i = i + 1
+    }
+    *s = noCheck(*s + i)
+
+}
+
+strCount(src cpstring, needle cpstring) int {
+    i = 0
+    count = 0
+    countIndex = 0
+    sl = strlen(src)
+    nl = strlen(needle)
+    for i < sl {
+        c = cpstringCharAt(src, i)
+        sc = cpstringCharAt(needle, countIndex)
+        if c == sc {
+            countIndex = countIndex + 1
+        } else {
+            countIndex = 0
+        }
+        if countIndex == nl {
+            count = count + 1
+            countIndex = 0
+        }
+        i = i + 1
+    }
+    return count
 }

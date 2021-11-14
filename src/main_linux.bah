@@ -8,7 +8,8 @@
 ///////////////////////OS SPECIFIC THINGS////////////////////////
 const BAH_DIR = "/opt/bah/"
 //////////////////////BUILD SPECIFIC THINGS//////////////////////
-const BAH_VERSION = "v1.0 (build 28)"
+const BAH_VERSION = "v1.0 (build 29)"
+
 #include "./globals.bah"
 
 #include "./lexer.bah"
@@ -169,5 +170,6 @@ return __BAH__main((__BAH_ARR_TYPE_cpstring)args);
 
     totalTime = getTimeUnix() - startTime
     println("\e[1;32mDone. (compiled in "+intToStr(totalTime / 1000000)+"ms)\e[0m")
+
     return 0
 }
