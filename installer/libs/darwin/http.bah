@@ -469,8 +469,7 @@ http_response(connfd int) http_response {
 
 //SSL - TLS (https)
 
-//#cLib "lssl" "lcrypto"
-#cLib "w /opt/bah/libs/libssl.a" "w /opt/bah/libs/libcrypto.a"
+#cLib "lssl" "lcrypto"
 
 #define! BIO int
 #define! SSL int
