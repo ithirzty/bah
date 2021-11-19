@@ -82,8 +82,9 @@ As well as being easy to learn, you can create
 - web apps
     - [bah-lang doc](https://github.com/ithirzty/bah-website)
 - libraries
-    - [bah-bmp](https://github.com/ithirzty/bah-bmp)
-    - [bah-cjson](https://github.com/ithirzty/bah-cjson)
+    - [vbah](https://github.com/ithirzty/vbah), a graphics library.
+    - [bah-bmp](https://github.com/ithirzty/bah-bmp), an image edition library.
+    - [bah-cjson](https://github.com/ithirzty/bah-cjson), a chuncked json library.
 - and many more.
 > You did something awesome in bah? Add it to the list!
 
