@@ -366,14 +366,23 @@ parseOperations(line []Tok, elems Elems*) []Tok {
                     s = searchStruct(ptt, elems)
                     if s != null {
                         addMthd = searchStructMemb("add", s, elems)
+                        subMthd = searchStructMemb("sub", s, elems)
+                        multMthd = searchStructMemb("mult", s, elems)
+                        divMthd = searchStructMemb("div", s, elems)
+                        sep = "."
+                        amp = "&"
+                        if strCount(ptt, "*") > 0 {
+                            sep = "->"
+                            amp = ""
+                        }
                         if t.cont == "+" && addMthd != null && addMthd.isFn == true {
-                            sep = "."
-                            amp = "&"
-                            if strCount(ptt, "*") > 0 {
-                                sep = "->"
-                                amp = ""
-                            }
                             t.cont = pt.cont + sep + "add(" + amp + pt.cont + ", "+nt.cont+")"
+                        } else if t.cont == "-" && subMthd != null && subMthd.isFn == true {
+                            t.cont = pt.cont + sep + "sub(" + amp + pt.cont + ", "+nt.cont+")"
+                        } else if t.cont == "*" && multMthd != null && multMthd.isFn == true {
+                            t.cont = pt.cont + sep + "mult(" + amp + pt.cont + ", "+nt.cont+")"
+                        } else if t.cont == "/" && divMthd != null && divMthd.isFn == true {
+                            t.cont = pt.cont + sep + "div(" + amp + pt.cont + ", "+nt.cont+")"
                         } else {
                             throwErr(&pt, "Undefined operation on {TOKEN} ("+ptt+").")
                         }
