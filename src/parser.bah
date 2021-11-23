@@ -127,19 +127,12 @@ getLineType(line []Tok) lineType {
             throwErr(&ft, "Cannot declare var {TOKEN} without a type.")
         }
         st = line[1]
-        if st.type == TOKEN_TYPE_ENCL {
-            if st.cont == "(" {
-                lt = line[len(line)-1]
-                if lt.type == TOKEN_TYPE_ENCL {
-                    if lt.cont == "}" {
-
-                        return LINE_TYPE_FN_DECL
-                    }
-                }
-                
-
-                return LINE_TYPE_FN_CALL
+        if st.type == TOKEN_TYPE_ENCL && st.cont == "(" {
+            lt = line[len(line)-1]
+            if lt.type == TOKEN_TYPE_ENCL && lt.cont == "}"{
+                return LINE_TYPE_FN_DECL
             }
+            return LINE_TYPE_FN_CALL
         }
 
         return LINE_TYPE_VAR
@@ -159,13 +152,14 @@ parseCast(line []Tok, elems Elems*) []Tok {
         if t.cont == "<" {
             break
         }
+        nl[i] = t
         i = i + 1
     }
     if i == len(line) {
         return line
     }
 
-    i=0; for i < len(line) {
+    for i < len(line) {
         t = line[i]
         if t.type == TOKEN_TYPE_SYNTAX {
             if t.cont == "<" {
@@ -243,21 +237,18 @@ parseInclude(l []Tok, elems Elems*) {
     if strt.type != TOKEN_TYPE_STR {
         throwErr(&strt, "Cannot use {TOKEN} as string in include.")
     }
-    cc = string(strt.cont)
-    cc.trimLeft(1)
-    cc.trimRight(1)
-    ccstr = cc.str()
-    if cc.hasPrefix("<") {
-        OUTPUT = OUTPUT + rope("#include "+ccstr+"\n")
+    sc = strt.cont
+    strTrimLeft(&sc, 1)
+    strTrimRight(&sc, 1)
+    if strHasPrefix(sc, "<") || strHasSuffix(sc, ".h") || strHasSuffix(sc, ".c") {
+        OUTPUT = OUTPUT + rope("#include "+sc+"\n")
     } else {
-        if includeFile(ccstr, elems) == false {
+        if includeFile(sc, elems) == false {
             throwErr(&strt, "Could not find file {TOKEN}.")
         }
     }
 
 }
-
-#cLib "g"
 
 parseOperations(line []Tok, elems Elems*) []Tok {
 
@@ -266,138 +257,129 @@ parseOperations(line []Tok, elems Elems*) []Tok {
 
     i=1; for i < len(line) {
         t = line[i]
-        if t.type == TOKEN_TYPE_SYNTAX {
-            if inArrayStr(t.cont, signs) {
-                max = i + 1
-                if max >= len(line) {
-                    throwErr(&t, "Cannot use {TOKEN} on nothing.")
-                }
-                pt = nl[len(nl)-1]
-                nt = line[i+1]
-                if t.cont == "-" {
-                    if pt.isValue == false {
-                        if nt.type == TOKEN_TYPE_INT {
-                            if pt.isValue == false {
-                                nt.cont = t.cont + nt.cont
-                                nl[len(nl)] = nt
-                                i = i + 2
-                                continue
-                            }
-                        }
-                    }
-                }
-                
-                ptt = getTypeFromToken(&pt, true, elems)
-                ntt = getTypeFromToken(&nt, true, elems)
-                if compTypes(ptt, ntt) == false {
-                    throwErr(&nt, "Cannot use {TOKEN} ("+ntt+") as "+ptt+".")
-                }
-                t.isValue = true
-                if compTypes(ptt, "cpstring") {
-                    if t.cont != "+" {
-                        throwErr(&t, "Can only do concatenation (+) on cpstrings, not {TOKEN}.")
-                    }
-                    j = i + 2
-                    wasAdd = false
-                    strConts = []cpstring{pt.cont, nt.cont}
-                    for j < len(line) {
-                        strAddTk = line[j]
-                        if wasAdd == false {
-                            if strAddTk.cont != "+" {
-                                break
-                            }
-                            wasAdd = true
-                        } else {
-                            strAddTkT = getTypeFromToken(&strAddTk, true, elems)
-                            if compTypes(strAddTkT, "cpstring") == false {
-                                throwErr(&strAddTkT, "Cannot use {TOKEN} ("+ntt+") as "+ptt+".")
-                                break
-                            }
-                            strConts[len(strConts)] = strAddTk.cont
-                            wasAdd = false
-                        }
-                        j = j + 1
-                    }
-                    if len(strConts) > 2 {
-                        i = j
-
-                        rstr = genCompilerVar()
-
-                        lens = ""
-                        totStrLen = "1"
-                        j=0; for j < len(strConts) {
-                            js = intToStr(j)
-                            lens = lens + "long int strLen_"+js+" = strlen("+strConts[j]+");\n"
-                            totStrLen = totStrLen + " + strLen_"+js
-                            j = j + 1
-                        }
-                        cats = rope("")
-                        j=0; for j < len(strConts) {
-                            js = intToStr(j)
-                            cats = cats + rope("
-                            strncpy("+rstr+"+currStrOff, "+strConts[j]+", strLen_"+js+");
-                            currStrOff += strLen_"+js+";
-                            ")
-                            j = j + 1
-                        }
-
-                        OUTPUT = OUTPUT + rope("
-                        char* "+rstr+"; 
-                        {
-                            long int currStrOff = 0;
-                            "+lens+";                            
-                            "+rstr+" = memoryAlloc("+totStrLen+");
-                            ")+cats+rope("
-                        }
-                        ")
-                        t.cont = rstr
-
-                        t.type = TOKEN_TYPE_VAR
-                        t.bahType = ptt
-                        t.pos = pt.pos
-                        t.ogCont = pt.cont
-                        nl[len(nl)-1] = t
-                        continue
-
-                    } else {
-                        t.cont = "concatCPSTRING("+pt.cont+","+nt.cont+")"
-                    }
-                } else {
-                    s = searchStruct(ptt, elems)
-                    if s != null {
-                        addMthd = searchStructMemb("add", s, elems)
-                        subMthd = searchStructMemb("sub", s, elems)
-                        multMthd = searchStructMemb("mult", s, elems)
-                        divMthd = searchStructMemb("div", s, elems)
-                        sep = "."
-                        amp = "&"
-                        if strCount(ptt, "*") > 0 {
-                            sep = "->"
-                            amp = ""
-                        }
-                        if t.cont == "+" && addMthd != null && addMthd.isFn == true {
-                            t.cont = pt.cont + sep + "add(" + amp + pt.cont + ", "+nt.cont+")"
-                        } else if t.cont == "-" && subMthd != null && subMthd.isFn == true {
-                            t.cont = pt.cont + sep + "sub(" + amp + pt.cont + ", "+nt.cont+")"
-                        } else if t.cont == "*" && multMthd != null && multMthd.isFn == true {
-                            t.cont = pt.cont + sep + "mult(" + amp + pt.cont + ", "+nt.cont+")"
-                        } else if t.cont == "/" && divMthd != null && divMthd.isFn == true {
-                            t.cont = pt.cont + sep + "div(" + amp + pt.cont + ", "+nt.cont+")"
-                        } else {
-                            throwErr(&pt, "Undefined operation on {TOKEN} ("+ptt+").")
-                        }
-                    } else {
-                        t.cont = pt.cont + " " + t.cont + " " + nt.cont
-                    }
-                }
-                t.type = TOKEN_TYPE_VAR
-                t.bahType = ptt
-                t.pos = pt.pos
-                t.ogCont = pt.cont
-                nl[len(nl)-1] = t
+        if t.type == TOKEN_TYPE_SYNTAX && inArrayStr(t.cont, signs) {
+            if i + 1 >= len(line) {
+                throwErr(&t, "Cannot use {TOKEN} on nothing.")
+            }
+            pt = nl[len(nl)-1]
+            nt = line[i+1]
+            if t.cont == "-" && pt.isValue == false && nt.type == TOKEN_TYPE_INT {
+                nt.cont = t.cont + nt.cont
+                nl[len(nl)] = nt
                 i = i + 2
                 continue
             }
+            
+            ptt = getTypeFromToken(&pt, true, elems)
+            ntt = getTypeFromToken(&nt, true, elems)
+            if compTypes(ptt, ntt) == false {
+                throwErr(&nt, "Cannot use {TOKEN} ("+ntt+") as "+ptt+".")
+            }
+            t.isValue = true
+            if compTypes(ptt, "cpstring") {
+                if t.cont != "+" {
+                    throwErr(&t, "Can only do concatenation (+) on cpstrings, not {TOKEN}.")
+                }
+                j = i + 2
+                wasAdd = false
+                strConts = []cpstring{pt.cont, nt.cont}
+                for j < len(line) {
+                    strAddTk = line[j]
+                    if wasAdd == false {
+                        if strAddTk.cont != "+" {
+                            break
+                        }
+                        wasAdd = true
+                    } else {
+                        strAddTkT = getTypeFromToken(&strAddTk, true, elems)
+                        if compTypes(strAddTkT, "cpstring") == false {
+                            throwErr(&strAddTkT, "Cannot use {TOKEN} ("+ntt+") as "+ptt+".")
+                            break
+                        }
+                        strConts[len(strConts)] = strAddTk.cont
+                        wasAdd = false
+                    }
+                    j = j + 1
+                }
+                if len(strConts) > 2 {
+                    i = j
+
+                    rstr = genCompilerVar()
+
+                    lens = ""
+                    totStrLen = "1"
+                    j=0; for j < len(strConts) {
+                        js = intToStr(j)
+                        lens = lens + "long int strLen_"+js+" = strlen("+strConts[j]+");\n"
+                        totStrLen = totStrLen + " + strLen_"+js
+                        j = j + 1
+                    }
+                    cats = rope("")
+                    j=0; for j < len(strConts) {
+                        js = intToStr(j)
+                        cats = cats + rope("
+                        strncpy("+rstr+"+currStrOff, "+strConts[j]+", strLen_"+js+");
+                        currStrOff += strLen_"+js+";
+                        ")
+                        j = j + 1
+                    }
+
+                    OUTPUT = OUTPUT + rope("
+                    char* "+rstr+"; 
+                    {
+                        long int currStrOff = 0;
+                        "+lens+";                            
+                        "+rstr+" = memoryAlloc("+totStrLen+");
+                        ")+cats+rope("
+                    }
+                    ")
+                    t.cont = rstr
+
+                    t.type = TOKEN_TYPE_VAR
+                    t.bahType = ptt
+                    t.pos = pt.pos
+                    t.ogCont = pt.cont
+                    nl[len(nl)-1] = t
+                    continue
+
+                } else {
+                    t.cont = "concatCPSTRING("+pt.cont+","+nt.cont+")"
+                }
+            } else {
+                s = searchStruct(ptt, elems)
+                if s != null {
+                    addMthd = searchStructMemb("add", s, elems)
+                    subMthd = searchStructMemb("sub", s, elems)
+                    multMthd = searchStructMemb("mult", s, elems)
+                    divMthd = searchStructMemb("div", s, elems)
+                    sep = "."
+                    amp = "&"
+                    if strCount(ptt, "*") > 0 {
+                        sep = "->"
+                        amp = ""
+                    }
+                    if t.cont == "+" && addMthd != null && addMthd.isFn == true {
+                        t.cont = pt.cont + sep + "add(" + amp + pt.cont + ", "+nt.cont+")"
+                    } else if t.cont == "-" && subMthd != null && subMthd.isFn == true {
+                        t.cont = pt.cont + sep + "sub(" + amp + pt.cont + ", "+nt.cont+")"
+                    } else if t.cont == "*" && multMthd != null && multMthd.isFn == true {
+                        t.cont = pt.cont + sep + "mult(" + amp + pt.cont + ", "+nt.cont+")"
+                    } else if t.cont == "/" && divMthd != null && divMthd.isFn == true {
+                        t.cont = pt.cont + sep + "div(" + amp + pt.cont + ", "+nt.cont+")"
+                    } else {
+                        throwErr(&pt, "Undefined operation on {TOKEN} ("+ptt+").")
+                    }
+                } else {
+                    t.cont = pt.cont + " " + t.cont + " " + nt.cont
+                }
+            }
+            t.type = TOKEN_TYPE_VAR
+            t.bahType = ptt
+            t.pos = pt.pos
+            t.ogCont = pt.cont
+            nl[len(nl)-1] = t
+            i = i + 2
+            continue
         } 
         else if t.isValue == true {
             if strHasPrefix(t.cont, "-") {
@@ -543,13 +525,14 @@ parseArrayType(line []Tok, elems Elems*) []Tok {
         if t.cont == "[" {
             break
         }
+        nl[i] = t
         i = i + 1
     }
     if i == len(line) {
         return line
     }
 
-    i=0;for i < len(line) {
+    for i < len(line) {
         t = line[i]
         if t.cont == "[" {
             i =i + 1
@@ -593,13 +576,14 @@ parseBool(line []Tok, elems Elems*) []Tok {
         if inArrayStr(t.cont, comparators) || inArrayStr(t.cont, compSep) {
             break
         }
+        nl[i] = t
         i = i + 1
     }
     if i == len(line) {
         return line
     }
 
-    i=0; for i < len(line) {
+    for i < len(line) {
         t = line[i]
 
         if inArrayStr(t.cont, comparators) {
@@ -758,9 +742,8 @@ parseArrayVars(l []Tok, elems Elems*) []Tok {
     found = false
     i=0; for i < len(l) {
         t = l[i]
-
         if t.type == TOKEN_TYPE_VAR {
-            i =i + 1
+            i = i + 1
             if i < len(l) {
                 t = l[i]
                 if t.cont == "[" {
@@ -769,7 +752,7 @@ parseArrayVars(l []Tok, elems Elems*) []Tok {
                 }
             }
         }
-        i =i + 1
+        i = i + 1
     }
     if found == false {
         return l
@@ -1054,10 +1037,10 @@ parseFnCall(l []Tok, elems Elems*) []Tok {
                         }
                         memory[len(memory)] = t
                         if nbPar == 0 {
-                            i =i + 1
+                            i = i + 1
                             break
                         }
-                        i =i + 1    
+                        i = i + 1    
                     }
 
                     if fnName == "noCheck" {
@@ -2196,7 +2179,6 @@ parseForOp(l []Tok) {
 
 prePross(line []Tok, elems Elems*) []Tok {
 
-
     fl = []Tok
     i=0; for i < len(line) {
         t = line[i]
@@ -2209,11 +2191,6 @@ prePross(line []Tok, elems Elems*) []Tok {
         fl[len(fl)] = t
         i =i + 1
     }
-    sl = []Tok
-    for i < len(line) {
-        sl[len(sl)] = line[i]
-        i =i + 1
-    }
 
     fl = parseStructVars(fl, elems)
     fl = parseFnCall(fl, elems)
@@ -2223,11 +2200,9 @@ prePross(line []Tok, elems Elems*) []Tok {
     fl = parseOperations(fl, elems)
     fl = parseBool(fl, elems)
 
-    if len(sl) > 0 {
-        i=0; for i < len(sl) {
-            fl[len(fl)] = sl[i]
-            i =i + 1
-        }
+    for i < len(line) {
+        fl[len(fl)] = line[i]
+        i =i + 1
     }
 
 
@@ -2235,8 +2210,6 @@ prePross(line []Tok, elems Elems*) []Tok {
 }
 
 parseFnDeclare(l []Tok, elems Elems*) {
-
-    
     i = 0
     fn = new func
     ft = l[0]

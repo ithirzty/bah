@@ -17,8 +17,6 @@ const BAH_VERSION = "v1.0 (build 30)"
 #include "./errors.bah"
 #include "./parser.bah"
 
-#cLib "g"
-
 main(args []cpstring) int {
     flags = flags{}
     flags.addString("o", "Name of the file to output.")

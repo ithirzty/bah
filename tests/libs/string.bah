@@ -50,5 +50,13 @@ testString() bool {
         return false
     }
 
+    const RES = "abc def"
+    a = string("abc ")
+    b = string("def")
+    c = a + b
+    if c.str() != RES {
+        return false
+    }
+
     return true
 }

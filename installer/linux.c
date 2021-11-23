@@ -1,4 +1,4 @@
-//COMPILE WITH: 'gcc linux.c -static -w  -w /opt/bah/libs/libgc.a -lpthread -lm -g'
+//COMPILE WITH: 'gcc linux.c -static -w  -w /opt/bah/libs/libgc.a -lpthread -lm'
 
 #include "/opt/bah/libs/include/gc.h"
 
@@ -180,6 +180,9 @@ return r;
 #include <fcntl.h>
 #include <string.h>
 #include <math.h>
+void strCatOffset(char * dest,long int destLen,char * src,long int srcLen){
+memcpy(noCheck( dest + destLen ),src,srcLen);
+};
 char cpstringCharAt(char * s,long int i){
 char c =  (char)0;
 noCheck( c = s [ i ] );
@@ -250,6 +253,7 @@ return 1;
 }
 return 0;
 };
+char * arrAsStr(__BAH_ARR_TYPE_char arr);
 struct string {
 char * content;
 long int length;
@@ -266,6 +270,7 @@ long int(*hasSuffix)(struct string* this,char * need);
 void(*trim)(struct string* this);
 void(*trimLeft)(struct string* this,long int s);
 void(*trimRight)(struct string* this,long int s);
+struct string(*add)(struct string* this,struct string s2);
 };
 void string__set(struct string* this,char * s){
 this->length =  strlen(s);
@@ -273,21 +278,21 @@ this->content =  (char *)memoryAlloc(this->length + 1);
 strcpy(this->content,s);
 };
 void string__append(struct string* this,char * s){
-this->length =  this->length + strlen(s);
-char * tmpS =  (char *)memoryRealloc((void *)this->content,this->length);
-if (((long int)tmpS==0)) {
-tmpS =  (char *)memoryAlloc(this->length);
-strncpy(tmpS,this->content,this->length);
-}
-strcat(tmpS,s);
-this->content =  tmpS;
+long int sl =  strlen(s);
+long int nl =  sl + this->length;
+this->content =  memoryRealloc(this->content,nl + 1);
+strCatOffset(this->content,this->length,s,sl);
+this->length =  nl;
 };
 void string__prepend(struct string* this,char * s){
+long int sl =  strlen(s);
+long int nl =  this->length + sl;
 char * tmpS =  this->content;
-this->length =  this->length + strlen(s);
-this->content =  (char *)memoryAlloc(this->length + 1);
-strcpy(this->content,s);
-strcat(this->content,tmpS);
+this->content =  memoryAlloc(nl + 1);
+strncpy(this->content,s,sl);
+strCatOffset(this->content,sl,tmpS,this->length);
+destroy(tmpS);
+this->length =  nl;
 };
 char string__charAt(struct string* this,long int i){
 char c =  (char)0;
@@ -329,10 +334,8 @@ repl.replace = string__replace;
 repl.set((struct string*)&repl,rl);
 long int i =  0;
 long int si =  0;
-array(char)* replcBuff = memoryAlloc(sizeof(array(char)));
-
-replcBuff->length = 0;
-replcBuff->elemSize = sizeof(char);
+long int replcBuffSart =  0;
+long int replcBuffLength =  0;
 array(char)* buff = memoryAlloc(sizeof(array(char)));
 
 buff->length = 0;
@@ -342,26 +345,33 @@ char c =  this->charAt((struct string*)this,i);
 char rc =  needle.charAt((struct string*)&needle,si);
 if ((c==rc)) {
 si =  si + 1;
-
-{
-long nLength = len(replcBuff);
-if (replcBuff->length < nLength+1) {
-if ((nLength+1) % 50 == 0 || nLength == 0) {
-void * newPtr = GC_REALLOC(replcBuff->data, (nLength+50)*sizeof(char));
-replcBuff->data = newPtr;
+if ((replcBuffLength==0)) {
+replcBuffSart =  i;
 }
-replcBuff->data[len(replcBuff)] =  c;
-replcBuff->length = nLength+1;
-} else {
-replcBuff->data[len(replcBuff)] =  c;
-};
-};
+replcBuffLength =  replcBuffLength + 1;
 }
 else {
-if ((len(replcBuff)>0)) {
+if ((replcBuffLength>0)) {
 si =  0;
-append(buff,replcBuff);
-clear(replcBuff);
+long int j =  0;
+while ((j<replcBuffLength)) {
+
+{
+long nLength = len(buff);
+if (buff->length < nLength+1) {
+if ((nLength+1) % 50 == 0 || nLength == 0) {
+void * newPtr = GC_REALLOC(buff->data, (nLength+50)*sizeof(char));
+buff->data = newPtr;
+}
+buff->data[len(buff)] =  this->charAt((struct string*)this,j + replcBuffSart);
+buff->length = nLength+1;
+} else {
+buff->data[len(buff)] =  this->charAt((struct string*)this,j + replcBuffSart);
+};
+};
+j =  j + 1;
+};
+replcBuffLength =  0;
 }
 
 {
@@ -379,7 +389,7 @@ buff->data[len(buff)] =  c;
 };
 }
 if ((si==needle.length)) {
-clear(replcBuff);
+replcBuffLength =  0;
 long int ii =  0;
 while ((ii<repl.length)) {
 long int a =  ii;
@@ -403,12 +413,32 @@ si =  0;
 }
 i =  i + 1;
 };
-char * r =  "";
-noCheck( r = buff -> data );
-if ((len(replcBuff)>0)) {
-char * replbuffStr;
-noCheck( replbuffStr = replcBuff -> data );
-r =  concatCPSTRING(r,replbuffStr);
+char * r =  arrAsStr(buff);
+if ((replcBuffLength>0)) {
+array(char)* replbuffStr = memoryAlloc(sizeof(array(char)));
+
+replbuffStr->length = 0;
+replbuffStr->elemSize = sizeof(char);
+allocateArray(replbuffStr,replcBuffLength + 1);
+long int j =  0;
+while ((j<replcBuffLength)) {
+
+{
+long nLength = j;
+if (replbuffStr->length < nLength+1) {
+if ((nLength+1) % 50 == 0 || nLength == 0) {
+void * newPtr = GC_REALLOC(replbuffStr->data, (nLength+50)*sizeof(char));
+replbuffStr->data = newPtr;
+}
+replbuffStr->data[j] =  this->charAt((struct string*)this,j + replcBuffSart);
+replbuffStr->length = nLength+1;
+} else {
+replbuffStr->data[j] =  this->charAt((struct string*)this,j + replcBuffSart);
+};
+};
+j =  j + 1;
+};
+r =  concatCPSTRING(r,arrAsStr(replbuffStr));
 }
 if (((void *)r!=null)) {
 this->set((struct string*)this,r);
@@ -516,6 +546,28 @@ memcpy(tmpS,this->content,nSize);
 this->content =  tmpS;
 this->length =  nSize;
 };
+struct string string__add(struct string* this,struct string s2){
+struct string r =  {};
+r.set = string__set;
+r.append = string__append;
+r.prepend = string__prepend;
+r.charAt = string__charAt;
+r.compare = string__compare;
+r.str = string__str;
+r.replace = string__replace;
+r.count = string__count;
+r.hasPrefix = string__hasPrefix;
+r.hasSuffix = string__hasSuffix;
+r.trim = string__trim;
+r.trimLeft = string__trimLeft;
+r.trimRight = string__trimRight;
+r.add = string__add;
+r.length =  this->length + s2.length;
+r.content =  memoryAlloc(r.length + 1);
+strncpy(r.content,this->content,this->length);
+strCatOffset(r.content,this->length,s2.content,s2.length);
+return r;
+};
 struct string string(char * s){
 struct string a =  {};
 a.set = string__set;
@@ -531,8 +583,7 @@ a.hasSuffix = string__hasSuffix;
 a.trim = string__trim;
 a.trimLeft = string__trimLeft;
 a.trimRight = string__trimRight;
-a.content =  (char *)0;
-a.length =  0;
+a.add = string__add;
 a.set((struct string*)&a,s);
 return a;
 };
@@ -550,14 +601,11 @@ arr->length = 0;
 arr->elemSize = sizeof(char);
 noCheck( arr -> data = memoryAlloc ( strLen + 1 ) );
 noCheck( memcpy ( arr -> data , str , strLen ) );
-noCheck( arr -> elemSize = 1 );
 noCheck( arr -> length = strLen );
 return arr;
 };
 char * arrAsStr(__BAH_ARR_TYPE_char arr){
-char * r =  "";
-noCheck( r = arr -> data );
-return r;
+return noCheck( arr -> data );
 };
 __BAH_ARR_TYPE_char strAsArr(char * str){
 long int l =  strlen(str);
@@ -566,7 +614,6 @@ array(char)* arr = memoryAlloc(sizeof(array(char)));
 arr->length = 0;
 arr->elemSize = sizeof(char);
 noCheck( arr -> length = l );
-noCheck( arr -> elemSize = 1 );
 noCheck( arr -> data = str );
 return arr;
 };
@@ -676,6 +723,7 @@ elem->hasSuffix = string__hasSuffix;
 elem->trim = string__trim;
 elem->trimLeft = string__trimLeft;
 elem->trimRight = string__trimRight;
+elem->add = string__add;
 elem->set((struct string*)elem,arrToStr(tmpString));
 long int lenRes =  len(res);
 
@@ -732,6 +780,7 @@ elem->hasSuffix = string__hasSuffix;
 elem->trim = string__trim;
 elem->trimLeft = string__trimLeft;
 elem->trimRight = string__trimRight;
+elem->add = string__add;
 elem->set((struct string*)elem,arrToStr(tmpString));
 long int lenRes =  len(res);
 
@@ -837,9 +886,22 @@ if ((sl<nl)) {
 return false;
 }
 while ((i<nl)) {
-char c =  cpstringCharAt(s,i);
-char sc =  cpstringCharAt(need,i);
-if ((c!=sc)) {
+if ((cpstringCharAt(s,i)!=cpstringCharAt(need,i))) {
+return false;
+}
+i =  i + 1;
+};
+return true;
+};
+int strHasSuffix(char * s,char * need){
+long int sl =  strlen(s);
+long int nl =  strlen(need);
+if ((nl>sl)) {
+return false;
+}
+long int i =  sl - nl;
+while ((i<sl)) {
+if ((cpstringCharAt(s,i)!=cpstringCharAt(need,i))) {
 return false;
 }
 i =  i + 1;
@@ -3738,16 +3800,12 @@ if ((len(line)==1)) {
 throwErr(&ft,"Cannot declare var {TOKEN} without a type.");
 }
 struct Tok st =  line->data[1];
-if ((st.type==TOKEN_TYPE_ENCL)) {
-if ((strcmp(st.cont, "(") == 0)) {
+if (((st.type==TOKEN_TYPE_ENCL)&&(strcmp(st.cont, "(") == 0))) {
 struct Tok lt =  line->data[len(line)-1];
-if ((lt.type==TOKEN_TYPE_ENCL)) {
-if ((strcmp(lt.cont, "}") == 0)) {
+if (((lt.type==TOKEN_TYPE_ENCL)&&(strcmp(lt.cont, "}") == 0))) {
 return LINE_TYPE_FN_DECL;
 }
-}
 return LINE_TYPE_FN_CALL;
-}
 }
 return LINE_TYPE_VAR;
 }
@@ -3764,12 +3822,25 @@ struct Tok t =  line->data[i];
 if ((strcmp(t.cont, "<") == 0)) {
 break;
 }
+
+{
+long nLength = i;
+if (nl->length < nLength+1) {
+if ((nLength+1) % 50 == 0 || nLength == 0) {
+void * newPtr = GC_REALLOC(nl->data, (nLength+50)*sizeof(struct Tok));
+nl->data = newPtr;
+}
+nl->data[i] =  t;
+nl->length = nLength+1;
+} else {
+nl->data[i] =  t;
+};
+};
 i =  i + 1;
 };
 if ((i==len(line))) {
 return line;
 }
-i =  0;
 while ((i<len(line))) {
 struct Tok t =  line->data[i];
 if ((t.type==TOKEN_TYPE_SYNTAX)) {
@@ -3926,17 +3997,16 @@ struct Tok strt =  l->data[1];
 if ((strt.type!=TOKEN_TYPE_STR)) {
 throwErr(&strt,"Cannot use {TOKEN} as string in include.");
 }
-struct string cc =  string(strt.cont);
-cc.trimLeft((struct string*)&cc,1);
-cc.trimRight((struct string*)&cc,1);
-char * ccstr =  cc.str((struct string*)&cc);
-if (cc.hasPrefix((struct string*)&cc,"<")) {
+char * sc =  strt.cont;
+strTrimLeft(&sc,1);
+strTrimRight(&sc,1);
+if (((strHasPrefix(sc,"<")||strHasSuffix(sc,".h"))||strHasSuffix(sc,".c"))) {
 
                         char* ____BAH_COMPILER_VAR_21; 
                         {
                             long int currStrOff = 0;
                             long int strLen_0 = strlen("#include ");
-long int strLen_1 = strlen(ccstr);
+long int strLen_1 = strlen(sc);
 long int strLen_2 = strlen("\n");
 ;                            
                             ____BAH_COMPILER_VAR_21 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2);
@@ -3944,7 +4014,7 @@ long int strLen_2 = strlen("\n");
                             strncpy(____BAH_COMPILER_VAR_21+currStrOff, "#include ", strLen_0);
                             currStrOff += strLen_0;
                             
-                            strncpy(____BAH_COMPILER_VAR_21+currStrOff, ccstr, strLen_1);
+                            strncpy(____BAH_COMPILER_VAR_21+currStrOff, sc, strLen_1);
                             currStrOff += strLen_1;
                             
                             strncpy(____BAH_COMPILER_VAR_21+currStrOff, "\n", strLen_2);
@@ -3954,7 +4024,7 @@ long int strLen_2 = strlen("\n");
                         OUTPUT =  OUTPUT->add(OUTPUT, rope(____BAH_COMPILER_VAR_21));
 }
 else {
-if ((includeFile(ccstr,elems)==false)) {
+if ((includeFile(sc,elems)==false)) {
 throwErr(&strt,"Could not find file {TOKEN}.");
 }
 }
@@ -3979,18 +4049,13 @@ nl->data = memoryAlloc(sizeof(struct Tok) * 50);nl->data[0] = line->data[0];
 long int i =  1;
 while ((i<len(line))) {
 struct Tok t =  line->data[i];
-if ((t.type==TOKEN_TYPE_SYNTAX)) {
-if (inArrayStr(t.cont,signs)) {
-long int max =  i + 1;
-if ((max>=len(line))) {
+if (((t.type==TOKEN_TYPE_SYNTAX)&&inArrayStr(t.cont,signs))) {
+if ((i + 1>=len(line))) {
 throwErr(&t,"Cannot use {TOKEN} on nothing.");
 }
 struct Tok pt =  nl->data[len(nl)-1];
 struct Tok nt =  line->data[i + 1];
-if ((strcmp(t.cont, "-") == 0)) {
-if ((pt.isValue==false)) {
-if ((nt.type==TOKEN_TYPE_INT)) {
-if ((pt.isValue==false)) {
+if ((((strcmp(t.cont, "-") == 0)&&(pt.isValue==false))&&(nt.type==TOKEN_TYPE_INT))) {
 nt.cont =  concatCPSTRING(t.cont,nt.cont);
 
 {
@@ -4008,9 +4073,6 @@ nl->data[len(nl)] =  nt;
 };
 i =  i + 2;
 continue;
-}
-}
-}
 }
 char * ptt =  getTypeFromToken(&pt,true,elems);
 char * ntt =  getTypeFromToken(&nt,true,elems);
@@ -4190,19 +4252,19 @@ char * js =  intToStr(j);
                         char* ____BAH_COMPILER_VAR_26; 
                         {
                             long int currStrOff = 0;
-                            long int strLen_0 = strlen("\n                            strncpy(");
+                            long int strLen_0 = strlen("\n                        strncpy(");
 long int strLen_1 = strlen(rstr);
 long int strLen_2 = strlen("+currStrOff, ");
 long int strLen_3 = strlen(strConts->data[j]);
 long int strLen_4 = strlen(", strLen_");
 long int strLen_5 = strlen(js);
-long int strLen_6 = strlen(");\n                            currStrOff += strLen_");
+long int strLen_6 = strlen(");\n                        currStrOff += strLen_");
 long int strLen_7 = strlen(js);
-long int strLen_8 = strlen(";\n                            ");
+long int strLen_8 = strlen(";\n                        ");
 ;                            
                             ____BAH_COMPILER_VAR_26 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2 + strLen_3 + strLen_4 + strLen_5 + strLen_6 + strLen_7 + strLen_8);
                             
-                            strncpy(____BAH_COMPILER_VAR_26+currStrOff, "\n                            strncpy(", strLen_0);
+                            strncpy(____BAH_COMPILER_VAR_26+currStrOff, "\n                        strncpy(", strLen_0);
                             currStrOff += strLen_0;
                             
                             strncpy(____BAH_COMPILER_VAR_26+currStrOff, rstr, strLen_1);
@@ -4220,13 +4282,13 @@ long int strLen_8 = strlen(";\n                            ");
                             strncpy(____BAH_COMPILER_VAR_26+currStrOff, js, strLen_5);
                             currStrOff += strLen_5;
                             
-                            strncpy(____BAH_COMPILER_VAR_26+currStrOff, ");\n                            currStrOff += strLen_", strLen_6);
+                            strncpy(____BAH_COMPILER_VAR_26+currStrOff, ");\n                        currStrOff += strLen_", strLen_6);
                             currStrOff += strLen_6;
                             
                             strncpy(____BAH_COMPILER_VAR_26+currStrOff, js, strLen_7);
                             currStrOff += strLen_7;
                             
-                            strncpy(____BAH_COMPILER_VAR_26+currStrOff, ";\n                            ", strLen_8);
+                            strncpy(____BAH_COMPILER_VAR_26+currStrOff, ";\n                        ", strLen_8);
                             currStrOff += strLen_8;
                             
                         }
@@ -4237,31 +4299,31 @@ j =  j + 1;
                         char* ____BAH_COMPILER_VAR_27; 
                         {
                             long int currStrOff = 0;
-                            long int strLen_0 = strlen("\n                        char* ");
+                            long int strLen_0 = strlen("\n                    char* ");
 long int strLen_1 = strlen(rstr);
-long int strLen_2 = strlen("; \n                        {\n                            long int currStrOff = 0;\n                            ");
+long int strLen_2 = strlen("; \n                    {\n                        long int currStrOff = 0;\n                        ");
 long int strLen_3 = strlen(lens);
-long int strLen_4 = strlen(";                            \n                            ");
+long int strLen_4 = strlen(";                            \n                        ");
 long int strLen_5 = strlen(rstr);
 long int strLen_6 = strlen(" = memoryAlloc(");
 long int strLen_7 = strlen(totStrLen);
-long int strLen_8 = strlen(");\n                            ");
+long int strLen_8 = strlen(");\n                        ");
 ;                            
                             ____BAH_COMPILER_VAR_27 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2 + strLen_3 + strLen_4 + strLen_5 + strLen_6 + strLen_7 + strLen_8);
                             
-                            strncpy(____BAH_COMPILER_VAR_27+currStrOff, "\n                        char* ", strLen_0);
+                            strncpy(____BAH_COMPILER_VAR_27+currStrOff, "\n                    char* ", strLen_0);
                             currStrOff += strLen_0;
                             
                             strncpy(____BAH_COMPILER_VAR_27+currStrOff, rstr, strLen_1);
                             currStrOff += strLen_1;
                             
-                            strncpy(____BAH_COMPILER_VAR_27+currStrOff, "; \n                        {\n                            long int currStrOff = 0;\n                            ", strLen_2);
+                            strncpy(____BAH_COMPILER_VAR_27+currStrOff, "; \n                    {\n                        long int currStrOff = 0;\n                        ", strLen_2);
                             currStrOff += strLen_2;
                             
                             strncpy(____BAH_COMPILER_VAR_27+currStrOff, lens, strLen_3);
                             currStrOff += strLen_3;
                             
-                            strncpy(____BAH_COMPILER_VAR_27+currStrOff, ";                            \n                            ", strLen_4);
+                            strncpy(____BAH_COMPILER_VAR_27+currStrOff, ";                            \n                        ", strLen_4);
                             currStrOff += strLen_4;
                             
                             strncpy(____BAH_COMPILER_VAR_27+currStrOff, rstr, strLen_5);
@@ -4273,11 +4335,11 @@ long int strLen_8 = strlen(");\n                            ");
                             strncpy(____BAH_COMPILER_VAR_27+currStrOff, totStrLen, strLen_7);
                             currStrOff += strLen_7;
                             
-                            strncpy(____BAH_COMPILER_VAR_27+currStrOff, ");\n                            ", strLen_8);
+                            strncpy(____BAH_COMPILER_VAR_27+currStrOff, ");\n                        ", strLen_8);
                             currStrOff += strLen_8;
                             
                         }
-                        OUTPUT =  OUTPUT->add(OUTPUT, rope(____BAH_COMPILER_VAR_27))->add(OUTPUT->add(OUTPUT, rope(____BAH_COMPILER_VAR_27)), cats)->add(OUTPUT->add(OUTPUT, rope(____BAH_COMPILER_VAR_27))->add(OUTPUT->add(OUTPUT, rope(____BAH_COMPILER_VAR_27)), cats), rope("\n                        }\n                        "));
+                        OUTPUT =  OUTPUT->add(OUTPUT, rope(____BAH_COMPILER_VAR_27))->add(OUTPUT->add(OUTPUT, rope(____BAH_COMPILER_VAR_27)), cats)->add(OUTPUT->add(OUTPUT, rope(____BAH_COMPILER_VAR_27))->add(OUTPUT->add(OUTPUT, rope(____BAH_COMPILER_VAR_27)), cats), rope("\n                    }\n                    "));
 t.cont =  rstr;
 t.type =  TOKEN_TYPE_VAR;
 t.bahType =  ptt;
@@ -4592,7 +4654,6 @@ nl->data[len(nl)-1] =  t;
 };
 i =  i + 2;
 continue;
-}
 }
 else if ((t.isValue==true)) {
 if (strHasPrefix(t.cont,"-")) {
@@ -4912,12 +4973,25 @@ struct Tok t =  line->data[i];
 if ((strcmp(t.cont, "[") == 0)) {
 break;
 }
+
+{
+long nLength = i;
+if (nl->length < nLength+1) {
+if ((nLength+1) % 50 == 0 || nLength == 0) {
+void * newPtr = GC_REALLOC(nl->data, (nLength+50)*sizeof(struct Tok));
+nl->data = newPtr;
+}
+nl->data[i] =  t;
+nl->length = nLength+1;
+} else {
+nl->data[i] =  t;
+};
+};
 i =  i + 1;
 };
 if ((i==len(line))) {
 return line;
 }
-i =  0;
 while ((i<len(line))) {
 struct Tok t =  line->data[i];
 if ((strcmp(t.cont, "[") == 0)) {
@@ -5000,12 +5074,25 @@ struct Tok t =  line->data[i];
 if ((inArrayStr(t.cont,comparators)||inArrayStr(t.cont,compSep))) {
 break;
 }
+
+{
+long nLength = i;
+if (nl->length < nLength+1) {
+if ((nLength+1) % 50 == 0 || nLength == 0) {
+void * newPtr = GC_REALLOC(nl->data, (nLength+50)*sizeof(struct Tok));
+nl->data = newPtr;
+}
+nl->data[i] =  t;
+nl->length = nLength+1;
+} else {
+nl->data[i] =  t;
+};
+};
 i =  i + 1;
 };
 if ((i==len(line))) {
 return line;
 }
-i =  0;
 while ((i<len(line))) {
 struct Tok t =  line->data[i];
 if (inArrayStr(t.cont,comparators)) {
@@ -8955,27 +9042,6 @@ fl->data[len(fl)] =  t;
 };
 i =  i + 1;
 };
-array(struct Tok)* sl = memoryAlloc(sizeof(array(struct Tok)));
-
-sl->length = 0;
-sl->elemSize = sizeof(struct Tok);
-while ((i<len(line))) {
-
-{
-long nLength = len(sl);
-if (sl->length < nLength+1) {
-if ((nLength+1) % 50 == 0 || nLength == 0) {
-void * newPtr = GC_REALLOC(sl->data, (nLength+50)*sizeof(struct Tok));
-sl->data = newPtr;
-}
-sl->data[len(sl)] =  line->data[i];
-sl->length = nLength+1;
-} else {
-sl->data[len(sl)] =  line->data[i];
-};
-};
-i =  i + 1;
-};
 fl =  parseStructVars(fl,elems);
 fl =  parseFnCall(fl,elems);
 fl =  parseArrayVars(fl,elems);
@@ -8983,9 +9049,7 @@ fl =  parseArrayType(fl,elems);
 fl =  parseCast(fl,elems);
 fl =  parseOperations(fl,elems);
 fl =  parseBool(fl,elems);
-if ((len(sl)>0)) {
-i =  0;
-while ((i<len(sl))) {
+while ((i<len(line))) {
 
 {
 long nLength = len(fl);
@@ -8994,15 +9058,14 @@ if ((nLength+1) % 50 == 0 || nLength == 0) {
 void * newPtr = GC_REALLOC(fl->data, (nLength+50)*sizeof(struct Tok));
 fl->data = newPtr;
 }
-fl->data[len(fl)] =  sl->data[i];
+fl->data[len(fl)] =  line->data[i];
 fl->length = nLength+1;
 } else {
-fl->data[len(fl)] =  sl->data[i];
+fl->data[len(fl)] =  line->data[i];
 };
 };
 i =  i + 1;
 };
-}
 return fl;
 };
 void parseFnDeclare(__BAH_ARR_TYPE_Tok l,struct Elems* elems){
