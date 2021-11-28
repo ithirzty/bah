@@ -1,0 +1,40 @@
+#include "<C:/Bah/libs/include/gc.h>"
+
+#cLib "w C:/Bah/libs/gc.a" "lpthread"
+
+#define! GC_INIT()
+#define! GC_MALLOC(s int) ptr
+#define! GC_REALLOC(p ptr, s int) ptr
+#define! GC_FREE(a ptr)
+
+//Used for allocating memory (malloc in c). You must specify the size of the block to allocate.
+//Will return a pointer to the allocated block. The memory is garbage collected.
+//**The given memory is initiated with zeros.**
+//The allocated memory cannot be shared by multiple processes. Use the sharedMemory() function instead.
+memoryAlloc(s int) ptr {
+    return GC_MALLOC(s)
+}
+
+//Destroy will force to free a pointer.
+destroy(a ptr) {
+    GC_FREE(a)
+}
+
+//Clear will remove the content of an array.
+clear(a ptr) {
+    noCheck(array(void*) * arr = a)
+    noCheck(destroy(arr->data))
+    noCheck(arr->data = memoryAlloc(sizeof(0)))
+    noCheck(arr->length = 0)
+}
+
+
+//Will realloc memory to a specified pointer.
+//*The data contained in the block of memory is not necessarly preserved.*
+memoryRealloc(p ptr, s int) ptr {
+    return GC_REALLOC(p,s)
+}
+
+cleanShutDown() {
+    return
+}

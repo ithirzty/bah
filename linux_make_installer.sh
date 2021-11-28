@@ -11,7 +11,6 @@ cd ../installer
 #common librairies
 cp /opt/bah/builtin.bah ./libs/common/
 cp /opt/bah/rcp.bah ./libs/common/
-cp /opt/bah/gc.bah ./libs/common/
 cp /opt/bah/cBinds.bah ./libs/common/
 cp /opt/bah/channel.bah ./libs/common/
 cp /opt/bah/exec.bah ./libs/common/
@@ -27,6 +26,7 @@ cp /opt/bah/thread.bah ./libs/common/
 cp /opt/bah/rope.bah ./libs/common/
 cp /opt/bah/matrix.bah ./libs/common/
 #linux specific libs
+cp /opt/bah/gc.bah ./libs/linux/
 cp /opt/bah/iostream.bah ./libs/linux/
 cp /opt/bah/time.bah ./libs/linux/
 cp /opt/bah/http.bah ./libs/linux/

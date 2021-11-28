@@ -1,15 +1,10 @@
-#include "<C:/Bah/libs/include/gc.h>"
 #include "<windows.h>"
 #include "<stdio.h>"
 #include "<conio.h>"
 #include "<tchar.h>"
 
-#cLib "static" "w C:/Bah/libs/gc.a" "lpthread"
 
-#define! GC_INIT()
-#define! GC_MALLOC(s int) ptr
-#define! GC_REALLOC(p ptr, s int) ptr
-#define! GC_FREE(a ptr)
+#define! void ptr
 
 const SIZE_OF_INT = 8
 const SIZE_OF_CHAR = 1
@@ -29,38 +24,8 @@ len(a ptr) int {
 
 #define! memset(p ptr, v int, s int)
 
-//Used for allocating memory (malloc in c). You must specify the size of the block to allocate.
-//Will return a pointer to the allocated block. The memory is garbage collected.
-//**The given memory is initiated with zeros.**
-//The allocated memory cannot be shared by multiple processes. Use the sharedMemory() function instead.
-memoryAlloc(s int) ptr {
-    p = GC_MALLOC(s)
-    
-    byte int = 0
-    i=0; for i < s {
-        if i+8 > s {
-            memset(noCheck(p+i), 0, s - i)
-            break
-        }
-        v int* = noCheck(p+i)
-        *v = byte
-        i = i + 8
-    }
-    return p
-}
+#include "BAH_MEM_COLLECTOR"
 
-//Destroy will force to free a pointer.
-destroy(a ptr) {
-    GC_FREE(a)
-}
-
-//Clear will remove the content of an array.
-clear(a ptr) {
-    noCheck(array(void*) * arr = a)
-    noCheck(destroy(arr->data))
-    noCheck(arr->data = memoryAlloc(sizeof(0)))
-    noCheck(arr->length = 0)
-}
 
 //Append will add the array b to the array a.
 //Note: doesn't work with []char.
@@ -107,24 +72,15 @@ copy(a ptr, b ptr) {
     noCheck(arrA->length = arrB->length)
 }
 
-//Will realloc memory to a specified pointer.
-//*The data contained in the block of memory is not necessarly preserved.*
-memoryRealloc(p ptr, s int) ptr {
-    np = GC_REALLOC(p,s)
-    return np
-}
 
-#define! CreateFileMapping(ihv ptr, sec int, rw int, mos int, bs int, fn cpstring) ptr
-#define! MapViewOfFile(f ptr, sec int, mi1 int, mi2 int, bs int) ptr
-#define! CloseHandle(mf ptr)
 
-#define! printf(s cpstring)
-#define! exit(code int)
+#define! mmap(addr int, ps int, prot int, flags int, fd int, offset int) ptr
 
-const PROT_READ = 2
-const PROT_READWRITE = 4
-
-GLOBAL_MAPPED_MEMORY_FILE ptr
+const PROT_READ = 1
+const PROT_WRITE = 2
+const PROT_READWRITE = 3
+const MAP_SHARED = 1
+const MAP_ANONYMOUS = 32
 
 //Will allocate a page of shared memory and returns a pointer to it.
 //The size should be an multiple of 4096. A size of 0 will set the page size to the default (4096).
@@ -133,21 +89,8 @@ sharedMemory(size int) ptr {
     if size == 0 {
         size = 4096
     }
-    if GLOBAL_MAPPED_MEMORY_FILE == null {
-        GLOBAL_MAPPED_MEMORY_FILE = CreateFileMapping(-1, 0, PROT_READWRITE, 0, size, "Global\\BahFileMap")
-    }
-    if GLOBAL_MAPPED_MEMORY_FILE == null {
-        printf("sharedMemory: could not make map file.")
-        exit(1)
-    }
-    r = MapViewOfFile(GLOBAL_MAPPED_MEMORY_FILE, noCheck(FILE_MAP_ALL_ACCESS), 0, 0, size)
+    r = mmap(0, size, PROT_READ + PROT_WRITE, MAP_SHARED + MAP_ANONYMOUS, -1, 0)
     return r
-}
-
-//On windows, you will need to close the mapped file.
-//*This is a windows only thing.*
-closeSharedMemory() {
-    CloseHandle(GLOBAL_MAPPED_MEMORY_FILE)
 }
 
 //Used for pre-allocating a number of element to an array.
@@ -187,8 +130,7 @@ __serialize(a ptr, s int) []char {
 //Function used to get the size of the serialized pointer.
 serlen(data []char) int {
     sarr = []char{data[0], data[1], data[2], data[3], data[4], data[5], data[6], data[7]}
-    sptr int* = noCheck(sarr->data)
-    return *sptr
+    return noCheck(*sarr->data)
 }
 
 //Function used to unserialize the content of a struct.
@@ -198,3 +140,4 @@ unser(data []char) ptr {
     memcpy(r, noCheck(data->data + 8), sptr)
     return r
 }
+
