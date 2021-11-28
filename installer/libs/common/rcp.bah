@@ -45,8 +45,6 @@ cmp_rcp(a ptr, b ptr) int {
     return 0
 }
 
-#cLib "g"
-
 #define! memcpy(dest ptr, src ptr, s int)
 #define! qsort(arr ptr, l int, s int, cmp ptr)
 #define! bsearch(key ptr, arr ptr, l int, s int, cmp ptr) ptr

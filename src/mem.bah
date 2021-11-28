@@ -143,32 +143,6 @@ makeRCPfuncFromStruct(s cStruct*, elems Elems*) rope* {
         }
     };\n")
 
-    // sep = "."
-    // if isPointer == true {
-    //     sep = "->"
-    //     r = r + rope("
-    //     struct RCP * strctRCP = RCP_request("+v.name+"); 
-    //     if(strctRCP != null && strctRCP->c == 1) {\n")
-    // } else {
-    //     r = r + rope("if(RCP_decrCounter("+v.name+".__RCP_counter) == 0) {\n")
-    // }
-
-    // i=0; for i < len(s.members) {
-    //     m = s.members[i]
-    //     rm = string(m.type)
-    //     rm.replace("*", "")
-    //     if isRCPtype(m.type, elems) && rm.str() != s.name {
-    //         mv = new variable
-    //         mv.name = v.name + sep + m.name
-    //         mv.type = m.type
-    //         r = r + decrVar(mv, elems)
-    //     }
-    //     i = i + 1
-    // }
-
-    // r = r + rope("};\n};\n")
-
-
     return r
 }
 
