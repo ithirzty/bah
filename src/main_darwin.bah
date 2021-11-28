@@ -58,6 +58,11 @@ long int __BAH__main(__BAH_ARR_TYPE_cpstring);
         if RCPenabled == true {
 
             OUTPUT = OUTPUT + rope("
+
+	void RCP_init();
+	void RCP_shutdown();
+	void free(void*);
+
         int main(int argc, char ** argv) {
         RCP_init();
         array(char*) * args = malloc(sizeof(array(char*)));
