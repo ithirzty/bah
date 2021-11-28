@@ -8,7 +8,8 @@
 ///////////////////////OS SPECIFIC THINGS////////////////////////
 const BAH_DIR = "/opt/bah/"
 //////////////////////BUILD SPECIFIC THINGS//////////////////////
-const BAH_VERSION = "v1.0 (build 29)"
+const BAH_VERSION = "v1.1 (build 31)"
+
 #include "./globals.bah"
 
 #include "./lexer.bah"
@@ -25,7 +26,10 @@ main(args []cpstring) int {
     flags.addBool("c", "Translate bah file to C instead of compiling it.")
     flags.addBool("v", "Show version of the compiler.")
     flags.addBool("l", "Compile as a library.")
+    flags.addBool("rcp", "Enables RCP (reference counter) instead of the garbage collector. Warning: if you are using self-reference, this will lead to memory leaks!")
     flags.parse(args)
+
+    RCPenabled = flags.isSet("rcp") == 1
 
     if flags.isSet("v") == 1 {
         println("Bah compiler version: "+BAH_VERSION+".\n© Alois Laurent Boe")
@@ -37,7 +41,6 @@ main(args []cpstring) int {
     }
 
     OUTPUT = rope("
-#include \""+BAH_DIR+"libs/include/gc.h\"
 
 #define noCheck(v) v
 #define array(type)	\
@@ -52,18 +55,44 @@ long int __BAH__main(__BAH_ARR_TYPE_cpstring);
 
     if flags.isSet("l") == 0 {
 
-    OUTPUT = OUTPUT + rope("
-int main(int argc, char ** argv) {
-GC_INIT();
-array(char*) * args = GC_MALLOC(sizeof(array(char*)));
-args->data = GC_MALLOC(sizeof(char*)*argc);
-memcpy(args->data, argv, sizeof(char*)*argc);
-args->elemSize = sizeof(char*);
-args->length = argc;
-return __BAH__main((__BAH_ARR_TYPE_cpstring)args);
-};
-#define main(v) __BAH__main(v)
-")
+        if RCPenabled == true {
+
+            OUTPUT = OUTPUT + rope("
+        int main(int argc, char ** argv) {
+        RCP_init();
+        array(char*) * args = malloc(sizeof(array(char*)));
+        args->data = malloc(sizeof(char*)*argc);
+        memcpy(args->data, argv, sizeof(char*)*argc);
+        args->elemSize = sizeof(char*);
+        args->length = argc;
+        long int r =  __BAH__main((__BAH_ARR_TYPE_cpstring)args);
+        free(args->data);
+        free(args);
+        RCP_shutdown();
+        return r;
+        };
+        #define main(v) __BAH__main(v)
+        ")
+
+        } else {
+        OUTPUT = OUTPUT + rope("
+        #include \""+BAH_DIR+"libs/include/gc.h\"
+        int main(int argc, char ** argv) {
+        GC_INIT();
+        array(char*) * args = GC_MALLOC(sizeof(array(char*)));
+        args->data = GC_MALLOC(sizeof(char*)*argc);
+        memcpy(args->data, argv, sizeof(char*)*argc);
+        args->elemSize = sizeof(char*);
+        args->length = argc;
+        long int r =  __BAH__main((__BAH_ARR_TYPE_cpstring)args);
+        GC_FREE(args->data);
+        GC_FREE(args);
+        return r;
+        };
+        #define main(v) __BAH__main(v)
+        ")
+        }
+
     }
 
 
@@ -88,9 +117,9 @@ return __BAH__main((__BAH_ARR_TYPE_cpstring)args);
         panic("Could not find std-libs, please check '"+BAH_DIR+"'")
     }
     parseLines(tokens, elems)
+
     totalTime = getTimeUnix() - startTime
     println("Parsed. ("+intToStr(totalLines)+" lines, total time: "+intToStr(totalTime / 1000000)+"ms, lexer time: "+intToStr(totalLexerTime / 1000000)+"ms)\e[0m")
-
 
     if flags.isSet("o") == 1 {
         fileName = flags.get("o")
@@ -163,5 +192,6 @@ return __BAH__main((__BAH_ARR_TYPE_cpstring)args);
 
     totalTime = getTimeUnix() - startTime
     println("\e[1;32mDone. (compiled in "+intToStr(totalTime / 1000000)+"ms)\e[0m")
+
     return 0
 }

@@ -1,0 +1,184 @@
+decrVar(v variable*, elems Elems*) rope* {
+    r = rope("")
+    //is array
+    if strHasPrefix(v.type, "[]") {
+        at = string(v.type)
+        at.trimLeft(2)
+        if isRCPtype(at.str(), elems) {
+            arrElem = new variable
+            arrElem.type = at.str()
+            arrElem.name = v.name+"->data[arrElemIndex]"
+            r = rope("
+            {//////////RCP//////////
+            struct RCP * arrRCP = RCP_request("+v.name+");
+            if (arrRCP != null && arrRCP->c == 1) {
+                struct RCP * arrDataRCP = RCP_request("+v.name+"->data);
+                if (arrDataRCP != null && arrDataRCP->c == 1) {
+                    for(int arrElemIndex=0; arrElemIndex < len("+v.name+"); arrElemIndex++) {
+                        ")+decrVar(arrElem, elems)+rope("
+                    };
+                    RCP_decrRCP(arrDataRCP);
+                }
+            }
+            RCP_decrRCP(arrRCP);
+            };//////////////////////
+            ")
+        } else {
+            r = rope("
+            {//////////RCP//////////
+            struct RCP * arrRCP = RCP_request("+v.name+");
+            if (arrRCP != null && arrRCP->c == 1) {
+                struct RCP * arrDataRCP = RCP_request("+v.name+"->data);
+                if (arrDataRCP != null && arrDataRCP->c == 1) {
+                    RCP_decrRCP(arrDataRCP);
+                }
+            }
+            RCP_decrRCP(arrRCP);
+            };//////////////////////
+            ")
+        }
+    } else {
+        //var can be both a struct and a pointer
+        isPointer = isRCPpointerType(v.type)
+        //is a struct
+        s = searchStruct(v.type, elems)
+        if s != null && s.isBinding == false {
+            amp = "&"
+            heap = "0"
+            if isPointer == true {
+                amp = ""
+                heap = "1"
+            }
+            r = r + rope("__RCP_clean_"+s.name+"("+amp+v.name+", "+heap+");\n")
+        } else if isPointer == true {
+            //is a pointer
+            r = r + rope("RCP_decr("+v.name+");\n")
+        }
+    }
+    return r
+}
+
+incrVar(v variable*, elems Elems*) rope* {
+
+    s = searchStruct(v.type, elems)
+    if s != null && isRCPpointerType(v.type) == false && s.isBinding == false {
+        return rope("RCP_incrCounter("+v.name+".__RCP_counter);")
+    }
+
+    return rope("RCP_incr("+v.name+");")
+}
+
+RCPavailable() bool {
+    return compilerState.currentFile != BAH_DIR+"rcp.bah" && RCPenabled == true
+}
+
+
+endRCPscope(elems Elems*, exc []variable*) {
+    if RCPavailable() == false {
+        return
+    }
+    i=0; for i < len(elems.vars) {
+        v = elems.vars[i]
+        if v.outterScope == false && isRCPtype(v.type, elems) == true {
+            if varInArr(v, exc) == false {
+                OUTPUT = OUTPUT + decrVar(v, elems)
+            }
+        }
+        i = i + 1
+    }
+}
+
+registerRCPvar(t cpstring, c cpstring, elems Elems*) cpstring {
+    av = new variable
+    av.type = t
+    av.name = genCompilerVar()
+    elems.vars[len(elems.vars)] = av
+    cType = getCType(av.type, elems)
+    OUTPUT = OUTPUT + rope(cType.str()+" "+av.name+" ="+c+";")
+    return av.name
+}
+
+makeRCPfuncFromStruct(s cStruct*, elems Elems*) rope* {
+    if s.isBinding == true || RCPavailable() == false {
+        return rope("")
+    }
+
+    decrMembs = rope("")
+
+    i=0; for i < len(s.members) {
+        m = s.members[i]
+        rm = string(m.type)
+        rm.replace("*", "")
+        if isRCPtype(m.type, elems) {
+            if rm.str() != s.name {
+                mv = new variable
+                mv.name = "e->" + m.name
+                mv.type = m.type
+                decrMembs = decrMembs + decrVar(mv, elems)
+            } else {
+                throwWarning("Strcture '"+s.name+"' has a self-referenced member '"+m.name+"'. May lead to memory leaks, recompile the program without the '-rcp' flag if memory leaks happens.")
+                amp = "&"
+                heap = "0"
+                if strCount(m.type, "*") > 0 {
+                    amp = ""
+                    heap = "1"
+                }
+                decrMembs = decrMembs + rope("__RCP_clean_"+s.name+"("+amp+"e->"+m.name+", "+heap+");\n")
+            }
+        }
+        i = i + 1
+    }
+
+    r = rope("void* __RCP_clean_"+s.name+"(struct "+s.name+"* e, int heap) {
+        if(heap == 1) {
+            struct RCP* srcp = RCP_request(e);
+            if (srcp != null) {
+                if (srcp->c == 1) {
+                    ") + decrMembs + rope("
+                }
+                RCP_decrRCP(srcp);
+            }
+        } else if(RCP_decrCounter((void*)e->__RCP_counter)==0) {
+            ") + decrMembs + rope("
+        }
+    };\n")
+
+    // sep = "."
+    // if isPointer == true {
+    //     sep = "->"
+    //     r = r + rope("
+    //     struct RCP * strctRCP = RCP_request("+v.name+"); 
+    //     if(strctRCP != null && strctRCP->c == 1) {\n")
+    // } else {
+    //     r = r + rope("if(RCP_decrCounter("+v.name+".__RCP_counter) == 0) {\n")
+    // }
+
+    // i=0; for i < len(s.members) {
+    //     m = s.members[i]
+    //     rm = string(m.type)
+    //     rm.replace("*", "")
+    //     if isRCPtype(m.type, elems) && rm.str() != s.name {
+    //         mv = new variable
+    //         mv.name = v.name + sep + m.name
+    //         mv.type = m.type
+    //         r = r + decrVar(mv, elems)
+    //     }
+    //     i = i + 1
+    // }
+
+    // r = r + rope("};\n};\n")
+
+
+    return r
+}
+
+RCPselfRef(v variable*) bool {
+    i=0; for i < len(compilerState.RCPvars) {
+        r = compilerState.RCPvars[i]
+        if r.name == v.name {
+            return true
+        }
+        i = i + 1
+    }
+    return false
+}

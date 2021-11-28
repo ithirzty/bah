@@ -4,6 +4,25 @@
 #include "./lexer.bah"
 #include "./struct.bah"
 
+isRCPpointerType(t cpstring) bool {
+    if t == "cpstring" || t == "ptr" || strCount(t, "*") > 0 || strHasPrefix(t, "[]") == true {
+        return true
+    }
+    return false
+}
+
+isRCPtype(t cpstring, elems Elems*) bool {
+    if isRCPpointerType(t) == true {
+        return true
+    }
+    s = searchStruct(t, elems)
+    if s != null && s.isBinding == false {
+        return true
+    }
+
+    return false
+}
+
 
 getCType(t cpstring, elems Elems*) string {
     if strlen(t) == 0 {

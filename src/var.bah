@@ -100,6 +100,7 @@ searchVar(name cpstring, elems Elems*) variable* {
             nv = new variable
             nv.type = v.type
             nv.name = v.name
+            nv.isConst = v.isConst
             r = nv.type
             tcc = string(ogName)
             if tcc.count("&") {
@@ -304,6 +305,8 @@ searchFunc(name cpstring, elems Elems*, inclCurr bool) func* {
     return nf
 }
 
+#define RCPavailable() bool
+
 declareStructMethods(v variable*, s cStruct*, elems Elems*) cpstring {
     code = ""
     members = s.members
@@ -348,6 +351,14 @@ declareStructMethods(v variable*, s cStruct*, elems Elems*) cpstring {
         i = i + 1
     }
 
+    if s.isBinding == false && RCPavailable() {
+        if strCount(v.type, "*") == 0 {
+            code = code + v.name+".__RCP_counter = malloc(sizeof(int));*(int*)"+v.name+".__RCP_counter = 1;\n"
+        } else {
+            code = code + v.name+"->__RCP_counter = null;\n"
+        }
+    }
+
     return code
 }
 
@@ -357,4 +368,18 @@ genCompilerVar() cpstring {
     name = "____BAH_COMPILER_VAR_"+intToStr(NB_COMP_VAR)
     NB_COMP_VAR = NB_COMP_VAR + 1
     return name
+}
+
+varInArr(v variable*, arr []variable*) bool {
+    if arr == null {
+        return false
+    }
+    j=0; for j < len(arr) {
+        ev = arr[j]
+        if ev.name == v.name {
+            return true
+        }
+        j = j + 1
+    }
+    return false
 }

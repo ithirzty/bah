@@ -10,6 +10,7 @@ struct variable {
     isConst: bool = false
     isArray: bool = false
     from: cpstring = ""
+    outterScope: bool = false
 }
 
 struct structMemb extend variable {
@@ -36,6 +37,7 @@ struct cStruct {
     postCode: cpstring = ""
     print: bool
     extendedFrom: cpstring = ""
+    isBinding: bool = false
 }
 
 struct Elems {
@@ -53,6 +55,7 @@ struct compilerStateTag {
     isFor: bool = false
     arrTypesDecl: []cpstring
     haveEntryPoint: bool = false
+    RCPvars: []variable*
 }
 
 compilerState compilerStateTag
@@ -66,3 +69,5 @@ currentFn func*
 totalLines = 0
 
 totalLexerTime = 0
+
+RCPenabled = false

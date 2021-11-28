@@ -109,6 +109,9 @@ isSpace(c char) int {
 
 #define arrAsStr(arr []char) cpstring
 
+#define println(s cpstring)
+
+
 //A string wrapper to make string manipulation easier.
 struct string {
     content: cpstring
@@ -118,14 +121,18 @@ struct string {
     set(s cpstring) {
         this.length = strlen(s)
         this.content = <cpstring>memoryAlloc(this.length+1)
-        strcpy(this.content, s)
+        strncpy(this.content, s, this.length)
     }
 
     //Appends the specified cpstring to the string.
     append(s cpstring) {
         sl = strlen(s)
         nl = sl + this.length
-        this.content = memoryRealloc(this.content, nl + 1)
+        nc = memoryRealloc(this.content, nl + 1)
+        if nc == null {
+            panic("Error appending to string, possibly due to memory shortage.")
+        }
+        this.content = nc
         strCatOffset(this.content, this.length, s, sl)
         this.length = nl
     }
@@ -135,7 +142,11 @@ struct string {
         sl = strlen(s)
         nl = this.length + sl
         tmpS = this.content
-        this.content = memoryAlloc(nl + 1)
+        nc = memoryAlloc(nl + 1)
+        if nc == null {
+            panic("Error appending to string, possibly due to memory shortage.")
+        }
+        this.content = nc
         strncpy(this.content, s, sl)
         strCatOffset(this.content, sl, tmpS, this.length)
         destroy(tmpS)
@@ -163,9 +174,10 @@ struct string {
 
     //Used for getting the content of the string as a cpstring.
     str() cpstring {
-        r = this.content
-        return r
+        s = this.content
+        return s
     }
+
 
     //Used to replace a substring by another.
     replace(nd cpstring, rl cpstring) {
@@ -180,8 +192,8 @@ struct string {
         replcBuffLength = 0
 
         buff = []char
+
         for i < this.length {
-            
             c = this.charAt(i)
             rc = needle.charAt(si)
             
@@ -215,6 +227,7 @@ struct string {
 
             i = i + 1
         }
+
         r = arrAsStr(buff)
         if replcBuffLength > 0 {
             replbuffStr = []char
@@ -379,6 +392,7 @@ strToArr(str cpstring) []char {
 //This is faster but changing the content of the returnend cpstring will change the content of the array.
 //You can see this operation as linkning the same data through two different interfaces, the only difference between these two interfaces are their type.
 arrAsStr(arr []char) cpstring {
+    // RCP_incr(noCheck(arr->data))
     return noCheck(arr->data)
 }
 
@@ -601,12 +615,15 @@ strHasSuffix(s cpstring, need cpstring) bool {
 }
 
 strTrimLeft(s cpstring*, i int) {
-    *s = noCheck(*s + i)
+    ls = strlen(*s)
+    ns cpstring = memoryAlloc(ls - i + 1)
+    memcpy(ns, noCheck(*s+i), ls - i)
+    *s = ns
 }
 
 strTrimRight(s cpstring*, i int) {
     ls = strlen(*s)
-    ns cpstring = memoryAlloc(ls - i)
+    ns cpstring = memoryAlloc(ls - i + 1)
     memcpy(ns, *s, ls - i)
     *s = ns
 }
