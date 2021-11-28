@@ -11468,7 +11468,7 @@ flags.addBool((struct flags*)&flags,"c","Translate bah file to C instead of comp
 flags.addBool((struct flags*)&flags,"v","Show version of the compiler.");
 flags.addBool((struct flags*)&flags,"l","Compile as a library.");
 flags.addBool((struct flags*)&flags,"d","Compile as a dynamic executable. (useful if you are using a library that is only available shared but might reduce portability).");
-flags.addBool((struct flags*)&flags,"rcp","Enables RCP (reference counter) insted of the garbage collector. Warning: if you are using self-reference, this will lead to memory leaks!");
+flags.addBool((struct flags*)&flags,"rcp","Enables RCP (reference counter) instead of the garbage collector. Warning: if you are using self-reference, this will lead to memory leaks!");
 flags.parse((struct flags*)&flags,args);
 RCPenabled =  (flags.isSet((struct flags*)&flags,"rcp")==1);
 if ((flags.isSet((struct flags*)&flags,"v")==1)) {

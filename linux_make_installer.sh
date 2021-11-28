@@ -10,6 +10,8 @@ mv ./linux.c ../installer/
 cd ../installer
 #common librairies
 cp /opt/bah/builtin.bah ./libs/common/
+cp /opt/bah/rcp.bah ./libs/common/
+cp /opt/bah/gc.bah ./libs/common/
 cp /opt/bah/cBinds.bah ./libs/common/
 cp /opt/bah/channel.bah ./libs/common/
 cp /opt/bah/exec.bah ./libs/common/
