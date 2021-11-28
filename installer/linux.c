@@ -1872,7 +1872,7 @@ struct rope* ____BAH_COMPILER_VAR_138 = r;
 return ____BAH_COMPILER_VAR_138;
 };
 #define BAH_DIR "/opt/bah/"
-#define BAH_VERSION "v1.1 (build 31)"
+#define BAH_VERSION "v1.1 (build 32)"
 struct rope* OUTPUT;
 char * NEXT_LINE =  "";
 struct variable {
@@ -10639,7 +10639,7 @@ struct Tok rvt =  l->data[1];
 if ((rvt.isValue==false)) {
 throwErr(&rvt,"Must be a value, not {TOKEN}.");
 }
-else if ((rvt.type==TOKEN_TYPE_VAR)) {
+else if (((rvt.type==TOKEN_TYPE_VAR)&&(rvt.isOper==false))) {
 struct variable* v =  searchVar(rvt.cont,elems);
 if (((((v!=null)&&(isRCPtype(v->type,elems)==true))&&(v->outterScope==false))&&(RCPavailable()==true))) {
 OUTPUT =  OUTPUT->add(OUTPUT, incrVar(v,elems));

@@ -2117,7 +2117,7 @@ parseReturn(l []Tok, elems Elems*) {
         rvt = l[1]
         if rvt.isValue == false {
             throwErr(&rvt, "Must be a value, not {TOKEN}.")
-        } else if rvt.type == TOKEN_TYPE_VAR {
+        } else if rvt.type == TOKEN_TYPE_VAR && rvt.isOper == false {
             v = searchVar(rvt.cont, elems)
             if v != null && isRCPtype(v.type, elems) == true && v.outterScope == false && RCPavailable() == true {
                 OUTPUT = OUTPUT + incrVar(v, elems)
