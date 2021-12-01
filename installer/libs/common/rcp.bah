@@ -1,24 +1,28 @@
 #include "<stdio.h>"
 #include "<stdlib.h>"
+#include "<unistd.h>"
+#include "<pthread.h>"
+
+
+#cLib "lpthread"
 
 #define! malloc(s int) ptr
 #define! realloc(p ptr, s int) ptr
 #define! free(a ptr)
 
+#define! pthread_mutex_t int
+
+#define! pthread_mutex_init(lock pthread_mutex_t*, m int)
+#define! pthread_mutex_lock(lock pthread_mutex_t*)
+#define! pthread_mutex_unlock(lock pthread_mutex_t*)
+#define! pthread_mutex_destroy(lock pthread_mutex_t*)
+
+
+
 #define RCP_register(p ptr, s int)
 #define RCP_remove(p ptr)
 #define RCP_setNewPtr(o ptr, n ptr)
 
-//Used for allocating memory (malloc in c). You must specify the size of the block to allocate.
-//Will return a pointer to the allocated block. The memory is garbage collected.
-//**The given memory is initiated with zeros.**
-//The allocated memory cannot be shared by multiple processes. Use the sharedMemory() function instead.
-memoryAlloc(s int) ptr {
-    r = malloc(s)
-    memset(r, 0, s)
-    RCP_register(r, s)
-    return r
-}
 
 //Destroy will force to free a pointer.
 destroy(a ptr) {
@@ -48,11 +52,18 @@ cmp_rcp(a ptr, b ptr) int {
 #define! memcpy(dest ptr, src ptr, s int)
 #define! qsort(arr ptr, l int, s int, cmp ptr)
 #define! bsearch(key ptr, arr ptr, l int, s int, cmp ptr) ptr
+#define! sbrk(i int) ptr
 
 struct RCPstate {
     RCPs: RCP* = null
     len: int = 0
     size: int = 0
+
+    lock: pthread_mutex_t
+
+    heapTop: ptr
+    heapBottom: ptr
+
 
     added: int = 0
 
@@ -65,7 +76,7 @@ struct RCPstate {
     }
 
     grow(i int) {
-        rs = this.getSize(i+5)
+        rs = this.getSize(i+30)
         nr = realloc(this.RCPs, rs)
         if nr == null {
             return
@@ -88,16 +99,39 @@ struct RCPstate {
 
 
     add(r RCP*) {
+        pthread_mutex_lock(&this.lock)
         this.added = this.added + 1
         rs = this.getSize(1)
-        i = this.len
+        max = this.len - 1
         if this.size < rs {
             this.grow(1)
         } else {
             this.len = this.len + 1
         }
-        noCheck(this.RCPs[i] = *r)
-        this.sort()
+
+        done = false
+        i = max; for i >= 0 {
+            ar RCP* = noCheck(&this.RCPs[i])
+            if ar.p < r.p {
+                j=max; for j > i {
+                    noCheck(this.RCPs[j+1] = this.RCPs[j])
+                    j = j - 1
+                }
+                noCheck(this.RCPs[i+1] = *r)
+                done = true
+                break
+            }
+            i = i - 1
+        }
+
+        if done == false {
+            j=max; for j >= 0 {
+                noCheck(this.RCPs[j+1] = this.RCPs[j])
+                j = j - 1
+            }
+            noCheck(this.RCPs[0] = *r)
+        }
+        pthread_mutex_unlock(&this.lock)
     }
 
     get(i int) RCP* {
@@ -109,10 +143,13 @@ struct RCPstate {
 
     set(i int, r RCP*) {
         noCheck(this.RCPs[i] = *r)
-        this.sort()
+        // this.sort()
     }
 
     getByPtr(p ptr) RCP* {
+        if p > this.heapTop || p < this.heapBottom {
+            return null
+        }
         return bsearch(&p, noCheck(&this.RCPs[0]), this.len, noCheck(sizeof(struct RCP)), cmp_rcp)
     }
 
@@ -126,16 +163,24 @@ struct RCPstate {
     }
 
     remove(i int) {
-        noCheck(this.RCPs[i] = this.RCPs[this.len - 1])
         this.len = this.len - 1
-
-        s = this.getSize(5)
-
+        
+        for i < this.len {
+            noCheck(this.RCPs[i] = this.RCPs[i+1])
+            i = i + 1
+        }
+        s = this.getSize(30)
         if this.size - s >= this.size / 2 {
             this.resize(s)
         }
+    }
 
-        this.sort()
+    lockMut() {
+        pthread_mutex_lock(&this.lock)
+    }
+
+    unlockMut() {
+        pthread_mutex_unlock(&this.lock)
     }
 
 }
@@ -146,11 +191,17 @@ RCPstate RCPstate
 
 RCP_init() {
     RCPstate = RCPstate{}
+    RCPstate.heapTop = sbrk(0)
+    RCPstate.heapBottom = malloc(0)
+    l = RCPstate.lock
+    pthread_mutex_init(&l, 0)
 }
 
 #define! exit(e int)
 
 RCP_shutdown() {
+    l = RCPstate.lock
+    pthread_mutex_destroy(&l)
     if RCPstate.len > 0 {
         free(RCPstate.RCPs)
         noCheck(printf("\n\n[RCP] Leak detected!\n Summary: %d leaks.\n If your program is using self-referenced object (such as ropes), recompile-it without the '-rcp' flag.\n", RCPstate.len))
@@ -291,6 +342,18 @@ RCP_decrRCP(r RCP*) {
 }
 
 
+//Used for allocating memory (malloc in c). You must specify the size of the block to allocate.
+//Will return a pointer to the allocated block. The memory is garbage collected.
+//**The given memory is initiated with zeros.**
+//The allocated memory cannot be shared by multiple processes. Use the sharedMemory() function instead.
+memoryAlloc(s int) ptr {
+    r = malloc(s)
+    RCPstate.heapTop = sbrk(0)
+    memset(r, 0, s)
+    RCP_register(r, s)
+    return r
+}
+
 
 //Will realloc memory to a specified pointer.
 //*The data contained in the block of memory is not necessarly preserved.*
@@ -300,6 +363,7 @@ memoryRealloc(p ptr, s int) ptr {
         return memoryAlloc(s)
     }
     r = malloc(s)
+    RCPstate.heapTop = sbrk(0)
     ns = or.s
     if s < or.s {
         ns = s

@@ -351,7 +351,7 @@ parseOperations(line []Tok, elems Elems*) []Tok {
 
                     t.type = TOKEN_TYPE_VAR
                     t.bahType = ptt
-                    t.isOper = true
+                    t.isOper = false
                     t.pos = pt.pos
                     t.ogCont = pt.cont
                     nl[len(nl)-1] = t
@@ -1166,6 +1166,7 @@ parseVar(l []Tok, elems Elems*) {
     l = parseStructType(l, elems)
     isEqual = false
     toVar = false
+    isPointedVar = false
     isStruct = false
     currentType = ""
     ft = l[0]
@@ -1256,8 +1257,9 @@ parseVar(l []Tok, elems Elems*) {
                 code = code + " " + t.cont
                 if t.isOper == false && RCPavailable() == true  {
                     iv = searchVar(t.cont, elems)
-                    if iv != null && iv.isConst == false{
+                    if iv != null && iv.isConst == false {
                         toVar = true
+                        isPointedVar = strHasPrefix(t.cont, "&")
                         s = searchStruct(iv.type, elems)
                         if s != null && strCount(iv.type, "*") == 0 && s.isBinding == false {
                             if strCount(iv.name, "*") == 0 {
@@ -1359,7 +1361,7 @@ parseVar(l []Tok, elems Elems*) {
             throwErr(&st, "Cannot change the type of already declared var '"+ft.cont+"' to {TOKEN}.")
         }
         if isStruct == false {
-            if isRCPpointerType(v.type) && RCPavailable() == true {
+            if isRCPpointerType(v.type) && isPointedVar == false && RCPavailable() == true {
                 cType = getCType(v.type, elems)
                 if toVar == true {
                     if RCPselfRef(v) == false {
@@ -1470,14 +1472,18 @@ void * newPtr = memoryRealloc("+nstr+"->data, (nLength+50)*sizeof("+elemTypeStr+
             vct = setCType(v, elems)
         }
         if strlen(code) > 0 {
-            if isRCPpointerType(v.type) && RCPavailable() == true && toVar == true {
+            if isRCPpointerType(v.type) && RCPavailable() == true && toVar == true  && isPointedVar == false {
                 cType = getCType(v.type, elems)
                 code = vct+" = *("+cType.str()+"*)RCP_incrIL(&"+code+")"
             } else {
                 code = vct + " = " + code
             }
         } else {
-            code = vct
+            if isRCPpointerType(v.type) {
+                code = vct + "= null"
+            } else {
+                code = vct
+            }
         }
         vars = elems.vars
         vars[len(vars)] = v
@@ -1712,6 +1718,9 @@ parseStruct(l []Tok, elems Elems*) {
                     }
                     membDeclStr = tmpfnRetCType.str() + " (*"+em.name+")("+tmpfnArgsCType+")"
                 } else {
+                    if isRCPpointerType(em.type) {
+                        s.hasRCPmemb = true
+                    }
                     membDecl = getCType(em.type, elems)
                     membDecl.append(" ")
                     membDecl.append(em.name)
@@ -1941,6 +1950,9 @@ parseStruct(l []Tok, elems Elems*) {
             } else {
                 i =i - 1
             }
+        }
+        if isRCPpointerType(memb.type) {
+            s.hasRCPmemb = true
         }
         members[len(members)] = memb
         membDeclStr cpstring

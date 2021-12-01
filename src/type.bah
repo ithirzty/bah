@@ -16,7 +16,7 @@ isRCPtype(t cpstring, elems Elems*) bool {
         return true
     }
     s = searchStruct(t, elems)
-    if s != null && s.isBinding == false {
+    if s != null && s.isBinding == false && s.hasRCPmemb == true {
         return true
     }
 

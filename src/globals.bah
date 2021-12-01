@@ -38,6 +38,7 @@ struct cStruct {
     print: bool
     extendedFrom: cpstring = ""
     isBinding: bool = false
+    hasRCPmemb: bool = false
 }
 
 struct Elems {

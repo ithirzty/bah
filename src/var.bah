@@ -318,8 +318,10 @@ declareStructMethods(v variable*, s cStruct*, elems Elems*) cpstring {
     i=0; for i < len(members) {
         m = members[i]
         cmpt = string(m.type)
+        declared = false
         if strlen(m.def) > 0 {
             code = code + v.name + sep + m.name + " = " + m.def + ";\n"
+            declared = true
         }
         if cmpt.hasPrefix("[]") == 1 {
             cmpt.trimLeft(2)
@@ -330,6 +332,11 @@ declareStructMethods(v variable*, s cStruct*, elems Elems*) cpstring {
             "+v.name+sep+m.name+"->length = 0;
             "+v.name+sep+m.name+"->elemSize = sizeof("+elemCTypeStr+");
             "
+            declared = true
+        }
+
+        if isRCPpointerType(m.type) && declared == false {
+            code = code + v.name + sep + m.name + "= null;\n"
         }
 
         i = i + 1
@@ -351,11 +358,11 @@ declareStructMethods(v variable*, s cStruct*, elems Elems*) cpstring {
         i = i + 1
     }
 
-    if s.isBinding == false && RCPavailable() {
+    if s.isBinding == false && RCPavailable() && s.hasRCPmemb == true {
         if strCount(v.type, "*") == 0 {
             code = code + v.name+".__RCP_counter = malloc(sizeof(int));*(int*)"+v.name+".__RCP_counter = 1;\n"
         } else {
-            code = code + v.name+"->__RCP_counter = null;\n"
+            code = code + v.name+"->__RCP_counter = RCP_request("+v.name+");\n"
         }
     }
 
