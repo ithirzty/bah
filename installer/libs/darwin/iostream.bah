@@ -21,12 +21,6 @@ stdinput(len int) cpstring {
     return buff
 }
 
-#define! write(fd FILE*, t cpstring, l int)
-
-//Prints text to the terminal.
-print(s cpstring) {
-    write(<ptr>1, s, strlen(s))
-}
 
 //Prints text to the terminal and adds a line return at the end.
 println(s cpstring) {
@@ -34,13 +28,6 @@ println(s cpstring) {
     write(<ptr>1, "\n", 1)
 }
 
-//Print an error to the terminal and exits the program.
-panic(e cpstring) {
-    if strlen(e) {
-        println(e)
-        exit(1)
-    }
-}
 
 #define! fwrite(w ptr, s int, f int, hndl FILE*)
 #define! fread(w ptr, s int, f int, hndl FILE*) int

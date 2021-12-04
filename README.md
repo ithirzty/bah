@@ -59,6 +59,7 @@ Files containing bah code have the `.bah` extenstion.
 - To get the current installed version, use `bah -v`.
 - To compile as a static library, use `bah myFile.bah -l`.
 - To compile your program as a dynamically linked program, use `bah myFile.bah -d`.
+- To compile your program using the reference counter instead of the garbage collector, use `bah myFile.bah -rcp`.
 
 ### Hello, world!
 ```c
@@ -95,6 +96,10 @@ Bah also supports awesome features like reflection (simillar to Go approach).
 This enables you to do things that would be impossible in C
 such as scanning JSON content to a variable (event structs and arrays), and marshalling vars to JSON.
 All of that with a single function call!
+
+Bah also has a garbage collector AND a reference counter. You can choose the one that fits your needs at compile time!
+
+### [List of most important features](features.md)
 
 ## Extras
 Here is how fast bah v1.0 (build 15) compiles itself on a ThinkPad x220 (a 16 years old machine)

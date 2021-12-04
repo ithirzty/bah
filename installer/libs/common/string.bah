@@ -13,6 +13,13 @@
 #define! memset(str ptr, w int, s int)
 #define! atol(a cpstring) int
 
+//Used for concatenating two known length cpstrings.
+strCatOffset(dest cpstring, destLen int, src cpstring, srcLen int) {
+    memcpy(noCheck(dest+destLen), src, srcLen)
+}
+
+
+//Used for getting a character by its index inside a cpstring.
 cpstringCharAt(s cpstring, i int) char {
     c = <char>0
     noCheck(c = s[i])
@@ -100,6 +107,11 @@ isSpace(c char) int {
     return 0
 }
 
+#define arrAsStr(arr []char) cpstring
+
+#define println(s cpstring)
+
+
 //A string wrapper to make string manipulation easier.
 struct string {
     content: cpstring
@@ -109,28 +121,36 @@ struct string {
     set(s cpstring) {
         this.length = strlen(s)
         this.content = <cpstring>memoryAlloc(this.length+1)
-        strcpy(this.content, s)
+        strncpy(this.content, s, this.length)
     }
 
     //Appends the specified cpstring to the string.
     append(s cpstring) {
-        this.length = this.length + strlen(s)
-        tmpS cpstring = <cpstring>memoryRealloc(<ptr>this.content, this.length)
-        if <int>tmpS == 0 {
-            tmpS = <cpstring>memoryAlloc(this.length)
-            strncpy(tmpS, this.content, this.length)
+        sl = strlen(s)
+        nl = sl + this.length
+        nc = memoryRealloc(this.content, nl + 1)
+        if nc == null {
+            panic("Error appending to string, possibly due to memory shortage.")
         }
-        strcat(tmpS, s)
-        this.content = tmpS
+        this.content = nc
+        strCatOffset(this.content, this.length, s, sl)
+        this.length = nl
     }
     
     //Prepends the specified cpstring to the string.
     prepend(s cpstring) {
-        tmpS  = this.content
-        this.length = this.length + strlen(s)
-        this.content = <cpstring>memoryAlloc(this.length+1)
-        strcpy(this.content, s)
-        strcat(this.content, tmpS)
+        sl = strlen(s)
+        nl = this.length + sl
+        tmpS = this.content
+        nc = memoryAlloc(nl + 1)
+        if nc == null {
+            panic("Error appending to string, possibly due to memory shortage.")
+        }
+        this.content = nc
+        strncpy(this.content, s, sl)
+        strCatOffset(this.content, sl, tmpS, this.length)
+        destroy(tmpS)
+        this.length = nl
     }
 
     //Returns the char at the specified position of the string.
@@ -154,9 +174,10 @@ struct string {
 
     //Used for getting the content of the string as a cpstring.
     str() cpstring {
-        r = this.content
-        return r
+        s = this.content
+        return s
     }
+
 
     //Used to replace a substring by another.
     replace(nd cpstring, rl cpstring) {
@@ -166,27 +187,36 @@ struct string {
         repl.set(rl)
         i = 0
         si = 0
-        replcBuff = []char
+        
+        replcBuffSart = 0
+        replcBuffLength = 0
+
         buff = []char
+
         for i < this.length {
-            
             c = this.charAt(i)
             rc = needle.charAt(si)
             
             if c == rc {
                 si = si + 1
-                replcBuff[len(replcBuff)] = c
+                if replcBuffLength == 0 {
+                    replcBuffSart = i
+                }
+                replcBuffLength = replcBuffLength + 1
             } else {
-                if len(replcBuff) > 0 {
+                if replcBuffLength > 0 {
                     si = 0
-                    append(buff, replcBuff)
-                    clear(replcBuff)
+                    j=0; for j < replcBuffLength {
+                        buff[len(buff)] = this.charAt(j + replcBuffSart)
+                        j = j + 1
+                    }
+                    replcBuffLength = 0
                 }
                 buff[len(buff)] = c
             }
 
             if si == needle.length {
-                clear(replcBuff)
+                replcBuffLength = 0
                 ii = 0; for ii < repl.length {
                     a = ii
                     buff[len(buff)] = repl.charAt(ii)
@@ -197,12 +227,16 @@ struct string {
 
             i = i + 1
         }
-        r = ""
-        noCheck(r = buff->data)
-        if len(replcBuff) > 0 {
-            replbuffStr cpstring
-            noCheck(replbuffStr = replcBuff->data)
-            r = r + replbuffStr
+
+        r = arrAsStr(buff)
+        if replcBuffLength > 0 {
+            replbuffStr = []char
+            allocateArray(replbuffStr, replcBuffLength+1)
+            j=0; for j < replcBuffLength {
+                replbuffStr[j] = this.charAt(j + replcBuffSart)
+                j = j + 1
+            }
+            r = r + arrAsStr(replbuffStr)
         }
         if <ptr>r != null {
             this.set(r)
@@ -316,13 +350,20 @@ struct string {
         this.length = nSize
     }
 
+    add(s2 string) string {
+        r = string{}
+        r.length = this.length + s2.length
+        r.content = memoryAlloc(r.length + 1)
+        strncpy(r.content, this.content, this.length)
+        strCatOffset(r.content, this.length, s2.content, s2.length)
+        return r
+    }
+
 }
 
 //Used to make a string wrapper from a specified cpstring.
 string(s cpstring) string {
     a = string{}
-    a.content = <cpstring>0
-    a.length = 0
     a.set(s)
     return a
 }
@@ -341,7 +382,6 @@ strToArr(str cpstring) []char {
     arr = []char
     noCheck(arr->data = memoryAlloc(strLen+1))
     noCheck(memcpy(arr->data, str, strLen))
-    noCheck(arr->elemSize = 1)
     noCheck(arr->length = strLen)
     
     return arr
@@ -352,9 +392,8 @@ strToArr(str cpstring) []char {
 //This is faster but changing the content of the returnend cpstring will change the content of the array.
 //You can see this operation as linkning the same data through two different interfaces, the only difference between these two interfaces are their type.
 arrAsStr(arr []char) cpstring {
-    r = ""
-    noCheck(r = arr->data)
-    return r
+    // RCP_incr(noCheck(arr->data))
+    return noCheck(arr->data)
 }
 
 //Used to get a cpstring as an array of chars.
@@ -365,7 +404,6 @@ strAsArr(str cpstring) []char {
     l = strlen(str)
     arr = []char
     noCheck(arr->length = l)
-    noCheck(arr->elemSize = 1)
     noCheck(arr->data = str)
     return arr
 }
@@ -412,22 +450,6 @@ strToFloat(s cpstring) float {
 stringToInt(s string) int {
     i int = atol(s.content)
     return i
-    //i = s.length - 1
-    //j = 0
-    //ri = 0
-    //for i >= 0 {
-    //    c = s.charAt(i)
-    //    if isNumber(c) == 0 {
-    //        return 0-1
-    //    }
-    //    mult int = pow(10, j)
-    //    c = c - 48
-    //    c = c * mult
-    //    ri = ri + c
-    //    i = i - 1
-    //    j = j + 1
-    //}
-    //return ri
 }
 
 //Used for splitting a string into multiple substrings delimited by the specified delimiter.
@@ -561,24 +583,6 @@ toLower(s string) string {
     return string(arrToStr(ns))
 }
 
-//Example
-//#include "iostream.bah"
-//#include "string.bah"
-//
-// main() {
-//     a = string("I code in ")
-//     a.append("Bah")
-//
-//     println(a)
-//
-//     age = 16
-//     b = intToString(age)
-//     b.prepend("I'm ")
-//     b.append(" years old")
-//     println(b)
-// }
-
-
 strHasPrefix(s cpstring, need cpstring) bool {
     i = 0
     nl = strlen(need)
@@ -586,10 +590,23 @@ strHasPrefix(s cpstring, need cpstring) bool {
     if sl < nl {
         return false
     }
-    for i < nl {
-        c = cpstringCharAt(s, i)
-        sc = cpstringCharAt(need, i)
-        if c != sc {
+    for i < nl { 
+        if cpstringCharAt(s, i) != cpstringCharAt(need, i) {
+            return false
+        }
+        i = i + 1
+    }
+    return true
+}
+
+strHasSuffix(s cpstring, need cpstring) bool {
+    sl = strlen(s)
+    nl = strlen(need)
+    if nl > sl {
+        return false
+    }
+    i=sl-nl; for i < sl {
+        if cpstringCharAt(s, i) != cpstringCharAt(need, i) {
             return false
         }
         i = i + 1
@@ -598,12 +615,15 @@ strHasPrefix(s cpstring, need cpstring) bool {
 }
 
 strTrimLeft(s cpstring*, i int) {
-    *s = noCheck(*s + i)
+    ls = strlen(*s)
+    ns cpstring = memoryAlloc(ls - i + 1)
+    memcpy(ns, noCheck(*s+i), ls - i)
+    *s = ns
 }
 
 strTrimRight(s cpstring*, i int) {
     ls = strlen(*s)
-    ns cpstring = memoryAlloc(ls - i)
+    ns cpstring = memoryAlloc(ls - i + 1)
     memcpy(ns, *s, ls - i)
     *s = ns
 }
@@ -643,3 +663,20 @@ strCount(src cpstring, needle cpstring) int {
     }
     return count
 }
+
+//Example
+//#include "iostream.bah"
+//#include "string.bah"
+//
+// main() {
+//     a = string("I code in ")
+//     a.append("Bah")
+//
+//     println(a)
+//
+//     age = 16
+//     b = intToString(age)
+//     b.prepend("I'm ")
+//     b.append(" years old")
+//     println(b)
+// }

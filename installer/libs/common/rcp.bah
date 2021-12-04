@@ -1,0 +1,470 @@
+#include "<stdio.h>"
+#include "<stdlib.h>"
+#include "<unistd.h>"
+#include "<pthread.h>"
+
+
+#cLib "lpthread"
+
+#define! malloc(s int) ptr
+#define! realloc(p ptr, s int) ptr
+#define! free(a ptr)
+
+#define! pthread_mutex_t int
+
+#define! pthread_mutex_init(lock pthread_mutex_t*, m int)
+#define! pthread_mutex_lock(lock pthread_mutex_t*)
+#define! pthread_mutex_unlock(lock pthread_mutex_t*)
+#define! pthread_mutex_destroy(lock pthread_mutex_t*)
+
+#define! pthread_create(id int*, attr ptr, func ptr, args ptr)
+#define! pthread_join(id int, ret ptr)
+
+
+#define RCP_register(p ptr, s int)
+#define RCP_remove(p ptr)
+#define RCP_setNewPtr(o ptr, n ptr)
+
+
+//Destroy will force to free a pointer.
+destroy(a ptr) {
+    RCP_remove(a)
+    free(a)
+}
+
+struct RCP {
+    p: ptr = null
+    c: int = 0
+    s: int = 0
+    //for compatibility
+    __RCP_counter: ptr
+}
+
+cmp_rcp(a ptr, b ptr) int {
+    ar RCP* = a
+    br RCP* = b
+    if ar.p < br.p {
+        return -1
+    } else if ar.p > br.p {
+        return 1
+    }
+    return 0
+}
+
+#define! memcpy(dest ptr, src ptr, s int)
+#define! qsort(arr ptr, l int, s int, cmp ptr)
+#define! bsearch(key ptr, arr ptr, l int, s int, cmp ptr) ptr
+#define! sbrk(i int) ptr
+
+struct RCP_threadSearch {
+    from: int
+    to: int
+    p: ptr
+    arr: RCP*
+    l: int
+}
+
+RCPthreadSearch(arg ptr) RCP* {
+    rts RCP_threadSearch* = arg
+    r = bsearch(&rts.p, noCheck(&rts.arr[rts.from]), rts.to - rts.from, noCheck(sizeof(struct RCP)), cmp_rcp)
+    free(arg)
+    return r
+}
+
+struct RCPstate {
+    RCPs: RCP* = null
+    len: int = 0
+    size: int = 0
+
+    lock: pthread_mutex_t
+
+    heapTop: ptr
+    heapBottom: ptr
+
+
+    added: int = 0
+
+    //for compatibility
+    __RCP_counter: ptr
+
+    getSize(add int) int {
+        l = this.len + add
+        return l * noCheck(sizeof(struct RCP))
+    }
+
+    grow(i int) {
+        rs = this.getSize(i+30)
+        nr = realloc(this.RCPs, rs)
+        if nr == null {
+            return
+        }
+        this.size = rs
+        this.RCPs = nr
+        this.len = this.len + i
+    }
+
+    sort() {
+        qsort(noCheck(&this.RCPs[0]), this.len, noCheck(sizeof(struct RCP)), cmp_rcp)
+    }
+
+    rcpToIndex(r RCP*) int {
+        i int = <int>r - <int>noCheck(&this.RCPs[0])
+        i = i / noCheck(sizeof(struct RCP))
+
+        return i
+    }
+
+
+    add(r RCP*) {
+        pthread_mutex_lock(&this.lock)
+        this.added = this.added + 1
+        rs = this.getSize(1)
+        max = this.len - 1
+        if this.size < rs {
+            this.grow(1)
+        } else {
+            this.len = this.len + 1
+        }
+
+        done = false
+        i = max; for i >= 0 {
+            ar RCP* = noCheck(&this.RCPs[i])
+            if ar.p < r.p {
+                j=max; for j > i {
+                    noCheck(this.RCPs[j+1] = this.RCPs[j])
+                    j = j - 1
+                }
+                noCheck(this.RCPs[i+1] = *r)
+                done = true
+                break
+            }
+            i = i - 1
+        }
+
+        if done == false {
+            j=max; for j >= 0 {
+                noCheck(this.RCPs[j+1] = this.RCPs[j])
+                j = j - 1
+            }
+            noCheck(this.RCPs[0] = *r)
+        }
+        pthread_mutex_unlock(&this.lock)
+    }
+
+    get(i int) RCP* {
+        if i >= this.len {
+            return null
+        }
+        return noCheck(&this.RCPs[i])
+    }
+
+    set(i int, r RCP*) {
+        noCheck(this.RCPs[i] = *r)
+        // this.sort()
+    }
+
+    // #define! pthread_create(id int*, attr ptr, func ptr, args ptr)
+    // #define! pthread_join(id int, ret ptr)
+
+
+    getByPtr(p ptr) RCP* {
+        if p > this.heapTop || p < this.heapBottom {
+            return null
+        }
+        
+
+        // if this.len > 5000 {
+        //     numThreads = 4
+
+        //     threads int* = malloc(numThreads * noCheck(sizeof(int)))
+        //     memset(threads, 0, numThreads * noCheck(sizeof(int)))
+        //     if threads == null {
+        //         noCheck(printf("null threads\n"))
+        //         noCheck(exit(1))
+        //     }
+            
+        //     i=0; for i < numThreads {
+        //         args RCP_threadSearch* = malloc(noCheck(sizeof(struct RCP_threadSearch)))
+        //         if args == null {
+        //             noCheck(printf("null args\n"))
+        //             noCheck(exit(1))
+        //         }
+        //         m = this.len / 4
+        //         args.from = i * m
+        //         if args.from >= this.len {
+        //             break
+        //         }
+        //         ni = i + 1
+        //         args.to = ni * m
+        //         if args.to >= this.len {
+        //             args.to = this.len - 1
+        //         }
+        //         args.arr = this.RCPs
+        //         args.p = p
+        //         args.l = this.len
+        //         pthread_create(noCheck(&threads[i]), null, RCPthreadSearch, args)
+        //         i = i + 1
+        //     }
+
+        //     i=0; for i < numThreads {
+        //         r RCP* = null
+        //         t int = noCheck(threads[i])
+        //         if t == 0 {
+        //             i = i + 1
+        //             continue
+        //         }
+        //         pthread_join(t, &r)
+        //         if r != null {
+        //             free(threads)
+        //             return r
+        //         }
+        //         i = i + 1
+        //     }
+
+        //     free(threads)
+        //     return null
+
+        // }
+        
+        return bsearch(&p, noCheck(&this.RCPs[0]), this.len, noCheck(sizeof(struct RCP)), cmp_rcp)
+    }
+
+    resize(ns int) {
+        nr = realloc(this.RCPs, ns)
+        if nr == null {
+            return
+        }
+        this.RCPs = nr
+        this.size = ns
+    }
+
+    remove(i int) {
+        this.len = this.len - 1
+        
+        for i < this.len {
+            noCheck(this.RCPs[i] = this.RCPs[i+1])
+            i = i + 1
+        }
+        s = this.getSize(30)
+        if this.size - s >= this.size / 2 {
+            this.resize(s)
+        }
+    }
+
+    lockMut() {
+        pthread_mutex_lock(&this.lock)
+    }
+
+    unlockMut() {
+        pthread_mutex_unlock(&this.lock)
+    }
+
+}
+
+RCPstate RCPstate
+
+
+
+RCP_init() {
+    RCPstate = RCPstate{}
+    RCPstate.heapTop = sbrk(0)
+    RCPstate.heapBottom = malloc(0)
+    l = RCPstate.lock
+    pthread_mutex_init(&l, 0)
+}
+
+#define! exit(e int)
+
+RCP_shutdown() {
+    l = RCPstate.lock
+    pthread_mutex_destroy(&l)
+    if RCPstate.len > 0 {
+        free(RCPstate.RCPs)
+        noCheck(printf("\n\n[RCP] Leak detected!\n Summary: %d leaks.\n If your program is using self-referenced object (such as ropes), recompile-it without the '-rcp' flag.\n", RCPstate.len))
+    }
+}
+
+cleanShutDown() {
+    RCP_shutdown()
+}
+
+RCP_selfRef(a ptr, b ptr) bool {
+    return a == b
+}
+
+RCP_register(p ptr, s int) {
+    if p == null {
+        return
+    }
+    r = RCP{}
+    r.c = 1
+    r.s = s
+    r.p = p
+    RCPstate.add(&r)
+}
+
+RCP_setNewPtr(o ptr, n ptr) {
+    if o == null || n == null || o == n {
+        return
+    }
+    r = RCPstate.getByPtr(o)
+    if r == null {
+        return
+    }
+    r.p = n
+}
+
+RCP_remove(p ptr) {
+    if p == null {
+        return
+    }
+    r = RCPstate.getByPtr(p)
+    if r == null {
+        return
+    }
+    RCPstate.remove(RCPstate.rcpToIndex(r))
+}
+
+RCP_incr(p ptr) {
+    if p == null {
+        return
+    }
+    r = RCPstate.getByPtr(p)
+    if r == null {
+        return
+    }
+    r.c = r.c + 1
+}
+
+RCP_getCount(p ptr) int {
+    if p == null {
+        return 0
+    }
+    r = RCPstate.getByPtr(p)
+    if r == null {
+        return 0
+    }
+
+    return r.c
+
+}
+
+RCP_isAllocated(p ptr) bool {
+    if p == null {
+        return false
+    }
+    r = RCPstate.getByPtr(p)
+    if r == null {
+        return false
+    }
+    return true
+}
+
+RCP_decr(p ptr) {
+    if p == null {
+        return
+    }
+    r = RCPstate.getByPtr(p)
+    if r == null {
+        return
+    }
+    r.c = r.c - 1
+    if r.c <= 0 {
+        free(r.p)
+        RCPstate.remove(RCPstate.rcpToIndex(r))
+    }
+}
+
+RCP_incrIL(p ptr*) ptr {
+    RCP_incr(*p)
+    return p
+}
+
+RCP_decrIL(p ptr*) ptr {
+    RCP_decr(*p)
+    return p
+}
+
+RCP_decrCounter(c int*) int {
+    if c == null {
+        return 0
+    }
+    *c = *c - 1
+    if *c <= 0 {
+        free(c)
+        return 0
+    }
+    return *c
+}
+
+RCP_incrCounter(c int*) int {
+    *c = *c + 1
+    return *c
+}
+
+RCP_request(p ptr) RCP* {
+    if p == null {
+        return null
+    }
+    return RCPstate.getByPtr(p)
+}
+
+RCP_decrRCP(r RCP*) {
+    if r == null {
+        return
+    }
+    r = RCPstate.getByPtr(r.p)
+    if r == null {
+        return
+    }
+    r.c = r.c - 1
+    if r.c <= 0 {
+        free(r.p)
+        RCPstate.remove(RCPstate.rcpToIndex(r))
+    }
+}
+
+
+//Used for allocating memory (malloc in c). You must specify the size of the block to allocate.
+//Will return a pointer to the allocated block. The memory is garbage collected.
+//**The given memory is initiated with zeros.**
+//The allocated memory cannot be shared by multiple processes. Use the sharedMemory() function instead.
+memoryAlloc(s int) ptr {
+    r = malloc(s)
+    RCPstate.heapTop = sbrk(0)
+    memset(r, 0, s)
+    RCP_register(r, s)
+    return r
+}
+
+
+//Will realloc memory to a specified pointer.
+//*The data contained in the block of memory is not necessarly preserved.*
+memoryRealloc(p ptr, s int) ptr {
+    or = RCP_request(p)
+    if or == null || or.c == 0 {
+        return memoryAlloc(s)
+    }
+    r = malloc(s)
+    RCPstate.heapTop = sbrk(0)
+    ns = or.s
+    if s < or.s {
+        ns = s
+    }
+    memcpy(r, p, ns)
+    RCP_decrRCP(or)
+    RCP_register(r, s)
+    return r
+}
+
+
+//Clear will remove the content of an array.
+clear(a ptr) {
+    if RCP_isAllocated(a) == false {
+        return
+    }
+    noCheck(array(void*) * arr = a)
+    noCheck(RCP_decr(arr->data))
+    noCheck(arr->data = memoryAlloc(sizeof(0)))
+    noCheck(arr->length = 0)
+}

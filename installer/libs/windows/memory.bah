@@ -1,15 +1,10 @@
-#include "<C:/Bah/libs/include/gc.h>"
 #include "<windows.h>"
 #include "<stdio.h>"
 #include "<conio.h>"
 #include "<tchar.h>"
 
-#cLib "static" "w C:/Bah/libs/gc.a" "lpthread"
 
-#define! GC_INIT()
-#define! GC_MALLOC(s int) ptr
-#define! GC_REALLOC(p ptr, s int) ptr
-#define! GC_FREE(a ptr)
+#define! void ptr
 
 const SIZE_OF_INT = 8
 const SIZE_OF_CHAR = 1
@@ -29,38 +24,8 @@ len(a ptr) int {
 
 #define! memset(p ptr, v int, s int)
 
-//Used for allocating memory (malloc in c). You must specify the size of the block to allocate.
-//Will return a pointer to the allocated block. The memory is garbage collected.
-//**The given memory is initiated with zeros.**
-//The allocated memory cannot be shared by multiple processes. Use the sharedMemory() function instead.
-memoryAlloc(s int) ptr {
-    p = GC_MALLOC(s)
-    
-    byte int = 0
-    i=0; for i < s {
-        if i+8 > s {
-            memset(noCheck(p+i), 0, s - i)
-            break
-        }
-        v int* = noCheck(p+i)
-        *v = byte
-        i = i + 8
-    }
-    return p
-}
+#include "BAH_MEM_COLLECTOR"
 
-//Destroy will force to free a pointer.
-destroy(a ptr) {
-    GC_FREE(a)
-}
-
-//Clear will remove the content of an array.
-clear(a ptr) {
-    noCheck(array(void*) * arr = a)
-    noCheck(destroy(arr->data))
-    noCheck(arr->data = memoryAlloc(sizeof(0)))
-    noCheck(arr->length = 0)
-}
 
 //Append will add the array b to the array a.
 //Note: doesn't work with []char.
@@ -105,13 +70,6 @@ copy(a ptr, b ptr) {
     noCheck(arrA->data = memoryAlloc(realSizeB))
     noCheck(memcpy(arrA->data, arrB->data, realSizeB))
     noCheck(arrA->length = arrB->length)
-}
-
-//Will realloc memory to a specified pointer.
-//*The data contained in the block of memory is not necessarly preserved.*
-memoryRealloc(p ptr, s int) ptr {
-    np = GC_REALLOC(p,s)
-    return np
 }
 
 #define! CreateFileMapping(ihv ptr, sec int, rw int, mos int, bs int, fn cpstring) ptr
@@ -187,8 +145,7 @@ __serialize(a ptr, s int) []char {
 //Function used to get the size of the serialized pointer.
 serlen(data []char) int {
     sarr = []char{data[0], data[1], data[2], data[3], data[4], data[5], data[6], data[7]}
-    sptr int* = noCheck(sarr->data)
-    return *sptr
+    return noCheck(*sarr->data)
 }
 
 //Function used to unserialize the content of a struct.
@@ -198,3 +155,4 @@ unser(data []char) ptr {
     memcpy(r, noCheck(data->data + 8), sptr)
     return r
 }
+

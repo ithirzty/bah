@@ -100,6 +100,7 @@ searchVar(name cpstring, elems Elems*) variable* {
             nv = new variable
             nv.type = v.type
             nv.name = v.name
+            nv.isConst = v.isConst
             r = nv.type
             tcc = string(ogName)
             if tcc.count("&") {
@@ -304,6 +305,8 @@ searchFunc(name cpstring, elems Elems*, inclCurr bool) func* {
     return nf
 }
 
+#define RCPavailable() bool
+
 declareStructMethods(v variable*, s cStruct*, elems Elems*) cpstring {
     code = ""
     members = s.members
@@ -315,8 +318,10 @@ declareStructMethods(v variable*, s cStruct*, elems Elems*) cpstring {
     i=0; for i < len(members) {
         m = members[i]
         cmpt = string(m.type)
+        declared = false
         if strlen(m.def) > 0 {
             code = code + v.name + sep + m.name + " = " + m.def + ";\n"
+            declared = true
         }
         if cmpt.hasPrefix("[]") == 1 {
             cmpt.trimLeft(2)
@@ -327,6 +332,11 @@ declareStructMethods(v variable*, s cStruct*, elems Elems*) cpstring {
             "+v.name+sep+m.name+"->length = 0;
             "+v.name+sep+m.name+"->elemSize = sizeof("+elemCTypeStr+");
             "
+            declared = true
+        }
+
+        if isRCPpointerType(m.type) && declared == false {
+            code = code + v.name + sep + m.name + "= null;\n"
         }
 
         i = i + 1
@@ -348,6 +358,14 @@ declareStructMethods(v variable*, s cStruct*, elems Elems*) cpstring {
         i = i + 1
     }
 
+    if s.isBinding == false && RCPavailable() && s.hasRCPmemb == true {
+        if strCount(v.type, "*") == 0 {
+            code = code + v.name+".__RCP_counter = malloc(sizeof(int));*(int*)"+v.name+".__RCP_counter = 1;\n"
+        } else {
+            code = code + v.name+"->__RCP_counter = RCP_request("+v.name+");\n"
+        }
+    }
+
     return code
 }
 
@@ -357,4 +375,18 @@ genCompilerVar() cpstring {
     name = "____BAH_COMPILER_VAR_"+intToStr(NB_COMP_VAR)
     NB_COMP_VAR = NB_COMP_VAR + 1
     return name
+}
+
+varInArr(v variable*, arr []variable*) bool {
+    if arr == null {
+        return false
+    }
+    j=0; for j < len(arr) {
+        ev = arr[j]
+        if ev.name == v.name {
+            return true
+        }
+        j = j + 1
+    }
+    return false
 }

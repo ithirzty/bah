@@ -44,3 +44,24 @@ __STR(a cpstring) cpstring {
 	strncpy(r,a,lenA)
 	return r
 }
+
+#include "<unistd.h>"
+#include "<sys/types.h>"
+#include "<sys/stat.h>"
+#include "<fcntl.h>"
+
+#define! write(fd FILE*, t cpstring, l int)
+
+//Prints text to the terminal.
+print(s cpstring) {
+    write(<ptr>1, s, strlen(s))
+}
+
+//Print an error to the terminal and exits the program.
+panic(e cpstring) {
+    if strlen(e) {
+        print(e)
+        print("\n")
+		cleanShutDown()
+    }
+}

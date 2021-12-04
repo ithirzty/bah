@@ -58,3 +58,7 @@ throwErr(tp ptr, format cpstring) {
     exit(1)
 
 }
+
+throwWarning(s cpstring) {
+    println("\e[1;33m[WARNING]\e[0m " + compilerState.currentFile + "\n\e[1;37m\t" + s + "\e[0m")
+}

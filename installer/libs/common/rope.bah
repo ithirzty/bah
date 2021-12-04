@@ -120,7 +120,7 @@ rope(a cpstring) rope* {
 }
 
 
-//Example
+// Example
 // main(args []cpstring) int {
 //     a = rope("This is a test: ") //Initiates rope a
 //     b = rope("I'm a substring.") //Initiates rope b

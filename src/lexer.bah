@@ -28,6 +28,7 @@ struct Tok {
     bahType: cpstring = ""
     isValue: bool = false
     isFunc: bool = false
+    isOper: bool = false
 }
 
 inArray(needle char, arr []char) bool {
