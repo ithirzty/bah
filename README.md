@@ -99,6 +99,8 @@ All of that with a single function call!
 
 Bah also has a garbage collector AND a reference counter. You can choose the one that fits your needs at compile time!
 
+### [List of most important features](features.md)
+
 ## Extras
 Here is how fast bah v1.0 (build 15) compiles itself on a ThinkPad x220 (a 16 years old machine)
 ![compilation times](extra/bah_comp_time.png)
