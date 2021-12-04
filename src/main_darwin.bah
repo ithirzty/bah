@@ -7,8 +7,9 @@
 
 ///////////////////////OS SPECIFIC THINGS////////////////////////
 const BAH_DIR = "/opt/bah/"
+const BAH_OS = "darwin"
 //////////////////////BUILD SPECIFIC THINGS//////////////////////
-const BAH_VERSION = "v1.1 (build 31)"
+const BAH_VERSION = "v1.1 (build 33)"
 
 #include "./globals.bah"
 

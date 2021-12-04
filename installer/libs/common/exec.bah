@@ -30,9 +30,7 @@ struct command {
         }
         buff cpstring = memoryAlloc(1025)
         res = ""
-        more = "";for <ptr>more != null {
-            memset(buff, 0, 1025)
-            more = fgets(buff, 1024, this.handle)
+        for <ptr>fgets(buff, 1024, this.handle) != null {
             res = res + buff
         }
         this.status = pclose(this.handle)

@@ -76,6 +76,7 @@ const LINE_TYPE_ELSE = <lineType>10
 const LINE_TYPE_MACRO = <lineType>11
 const LINE_TYPE_FOR = <lineType>12
 const LINE_TYPE_FOR_OPERATOR = <lineType>13
+const LINE_TYPE_PRE_KEYWORD = <lineType>14
 
 prevLine = <lineType>-1
 
@@ -88,41 +89,29 @@ getLineType(line []Tok) lineType {
     }
     if ft.type == TOKEN_TYPE_KEYWORD {
         if ft.cont == "#include" {
-
             return LINE_TYPE_INCLUDE
         } else if ft.cont == "#define" {
-
             return LINE_TYPE_DEFINE
         } else if ft.cont == "const" {
-
             return LINE_TYPE_CONST
         } else if ft.cont == "struct" {
-
             return LINE_TYPE_STRUCT
         } else if ft.cont == "#cLib" {
-
             return LINE_TYPE_CLIB
         } else if ft.cont == "return" {
-
             return LINE_TYPE_RETURN
         } else if ft.cont == "if" {
-
             return LINE_TYPE_IF
         } else if ft.cont == "else" {
-
             return LINE_TYPE_ELSE
         } else if ft.cont == "#macro" {
-
             return LINE_TYPE_MACRO
         } else if ft.cont == "for" {
-
             return LINE_TYPE_FOR
-        } else if ft.cont == "continue" {
-
+        } else if ft.cont == "continue" || ft.cont == "break" {
             return LINE_TYPE_FOR_OPERATOR
-        } else if ft.cont == "break" {
-
-            return LINE_TYPE_FOR_OPERATOR
+        } else {
+            return LINE_TYPE_PRE_KEYWORD
         }
     } else if ft.type == TOKEN_TYPE_VAR {
         if len(line) == 1 {
@@ -1294,9 +1283,15 @@ parseVar(l []Tok, elems Elems*) {
                     elemBahType = string(v.type)
                     elemBahType.trimLeft(2)
                     elemBahTypeStr = elemBahType.str()
-                    i =i + 1
+                    i = i + 1
+                    memory = []Tok
                     for i < len(l) {
-                        t = l[i]
+                        memory[len(memory)] = l[i]
+                        i = i + 1
+                    }
+                    memory = prePross(memory, <lineType>-1, elems)
+                    i=0; for i < len(memory) {
+                        t = memory[i]
                         tt = getTypeFromToken(&t, true, elems)
                         if compTypes(tt, elemBahTypeStr) == false {
                             throwErr(&t, "Cannot use {TOKEN} ("+tt+") as "+elemBahTypeStr)
@@ -1311,7 +1306,7 @@ parseVar(l []Tok, elems Elems*) {
 
                         NEXT_LINE = NEXT_LINE + v.name + "->data[" + strArrayLength + "] = " + t.cont + ";\n"
                         i =i + 1
-                        t = l[i]
+                        t = memory[i]
                         if t.cont != "," {
                             if t.cont == "}" {
                                 allocLength = arrayLength
@@ -1328,7 +1323,7 @@ parseVar(l []Tok, elems Elems*) {
                                 throwErr(&t, "Expected ',' got {TOKEN}.")
                             }
                         }
-                        i =i + 1
+                        i = i + 1
                     }
                 }
                 strArrayLength = intToStr(arrayLength)
@@ -2291,6 +2286,64 @@ parseForOp(l []Tok, elems Elems*) {
 
 }
 
+parsePreKeyword(l []Tok, elems Elems*) {
+
+    ft = l[0]
+    
+    if len(l) < 3 {
+        throwErr(&ft, "Invalid usage of keyword {TOKEN}.")
+    }
+    
+    if ft.cont == "#linux" || ft.cont == "#windows" || ft.cont == "#darwin" {
+        isOS = string(ft.cont)
+        isOS.trimLeft(1)
+        if isOS.str() != BAH_OS {
+            return
+        }
+    } else if ft.cont == "#static" {
+        if flags.isSet("d") == 1 {
+            return
+        }
+    } else if ft.cont == "#dynamic" {
+        if flags.isSet("d") == 0 {
+            return
+        }
+    } else if ft.cont == "#gc" {
+        if RCPavailable() == true {
+            return
+        }
+    } else if ft.cont == "#rcp" {
+        if RCPavailable() == false {
+            return
+        }
+    } else if ft.cont == "#lib" {
+        if flags.isSet("l") == 0 {
+            return
+        }
+    } else if ft.cont == "#exec" {
+        if flags.isSet("l") == 1 {
+            return
+        }
+    } else {
+        throwErr(&ft, "Undefined token {TOKEN}.")
+    }
+
+    st = l[1]
+    lt = l[len(l)-1]
+    if st.cont != "{" || lt.cont != "}" {
+        throwErr(&st, "Expected code block after keyword {TOKEN}.")
+    }
+
+    nl = []Tok
+    i=2; for i < len(l) - 1 {
+        nl[i-2] = l[i]
+        i = i + 1
+    }
+
+    parseLines(nl, elems)
+
+}
+
 addRCPvars(l []Tok, ltp lineType, elems Elems*) {
     i=0
     if ltp == LINE_TYPE_VAR {
@@ -2312,16 +2365,21 @@ addRCPvars(l []Tok, ltp lineType, elems Elems*) {
 prePross(line []Tok, ltp lineType, elems Elems*) []Tok {
 
     fl = []Tok
-    i=0; for i < len(line) {
-        t = line[i]
-        if t.cont == "{" {
-            nt = line[i+1]
-            if nt.line != t.line {
-                break
+    i = 0
+    if ltp != <lineType>-1 {
+        for i < len(line) {
+            t = line[i]
+            if t.cont == "{" {
+                nt = line[i+1]
+                if nt.line != t.line {
+                    break
+                }
             }
+            fl[len(fl)] = t
+            i =i + 1
         }
-        fl[len(fl)] = t
-        i =i + 1
+    } else {
+        fl = line
     }
 
     fl = parseStructVars(fl, elems)
@@ -2333,9 +2391,11 @@ prePross(line []Tok, ltp lineType, elems Elems*) []Tok {
     fl = parseOperations(fl, elems)
     fl = parseBool(fl, elems)
 
-    for i < len(line) {
-        fl[len(fl)] = line[i]
-        i =i + 1
+    if ltp != <lineType>-1 {
+        for i < len(line) {
+            fl[len(fl)] = line[i]
+            i =i + 1
+        }
     }
 
 
@@ -2491,6 +2551,9 @@ parseLine(line []Tok, elems Elems*) {
     } else if ltp == LINE_TYPE_FOR_OPERATOR {
         parsed = true
         parseForOp(line, elems)
+    } else if ltp == LINE_TYPE_PRE_KEYWORD {
+        parsePreKeyword(line, elems)
+        parsed = true
     }
     
     if parsed == false {

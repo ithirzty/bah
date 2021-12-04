@@ -7,8 +7,9 @@
 
 ///////////////////////OS SPECIFIC THINGS////////////////////////
 const BAH_DIR = "C:/Bah/"
+const BAH_OS = "windows"
 //////////////////////BUILD SPECIFIC THINGS//////////////////////
-const BAH_VERSION = "v1.1 (build 31)"
+const BAH_VERSION = "v1.1 (build 33)"
 
 #include "./globals.bah"
 

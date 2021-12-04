@@ -17,6 +17,8 @@
 #define! pthread_mutex_unlock(lock pthread_mutex_t*)
 #define! pthread_mutex_destroy(lock pthread_mutex_t*)
 
+#define! pthread_create(id int*, attr ptr, func ptr, args ptr)
+#define! pthread_join(id int, ret ptr)
 
 
 #define RCP_register(p ptr, s int)
@@ -53,6 +55,21 @@ cmp_rcp(a ptr, b ptr) int {
 #define! qsort(arr ptr, l int, s int, cmp ptr)
 #define! bsearch(key ptr, arr ptr, l int, s int, cmp ptr) ptr
 #define! sbrk(i int) ptr
+
+struct RCP_threadSearch {
+    from: int
+    to: int
+    p: ptr
+    arr: RCP*
+    l: int
+}
+
+RCPthreadSearch(arg ptr) RCP* {
+    rts RCP_threadSearch* = arg
+    r = bsearch(&rts.p, noCheck(&rts.arr[rts.from]), rts.to - rts.from, noCheck(sizeof(struct RCP)), cmp_rcp)
+    free(arg)
+    return r
+}
 
 struct RCPstate {
     RCPs: RCP* = null
@@ -146,10 +163,69 @@ struct RCPstate {
         // this.sort()
     }
 
+    // #define! pthread_create(id int*, attr ptr, func ptr, args ptr)
+    // #define! pthread_join(id int, ret ptr)
+
+
     getByPtr(p ptr) RCP* {
         if p > this.heapTop || p < this.heapBottom {
             return null
         }
+        
+
+        // if this.len > 5000 {
+        //     numThreads = 4
+
+        //     threads int* = malloc(numThreads * noCheck(sizeof(int)))
+        //     memset(threads, 0, numThreads * noCheck(sizeof(int)))
+        //     if threads == null {
+        //         noCheck(printf("null threads\n"))
+        //         noCheck(exit(1))
+        //     }
+            
+        //     i=0; for i < numThreads {
+        //         args RCP_threadSearch* = malloc(noCheck(sizeof(struct RCP_threadSearch)))
+        //         if args == null {
+        //             noCheck(printf("null args\n"))
+        //             noCheck(exit(1))
+        //         }
+        //         m = this.len / 4
+        //         args.from = i * m
+        //         if args.from >= this.len {
+        //             break
+        //         }
+        //         ni = i + 1
+        //         args.to = ni * m
+        //         if args.to >= this.len {
+        //             args.to = this.len - 1
+        //         }
+        //         args.arr = this.RCPs
+        //         args.p = p
+        //         args.l = this.len
+        //         pthread_create(noCheck(&threads[i]), null, RCPthreadSearch, args)
+        //         i = i + 1
+        //     }
+
+        //     i=0; for i < numThreads {
+        //         r RCP* = null
+        //         t int = noCheck(threads[i])
+        //         if t == 0 {
+        //             i = i + 1
+        //             continue
+        //         }
+        //         pthread_join(t, &r)
+        //         if r != null {
+        //             free(threads)
+        //             return r
+        //         }
+        //         i = i + 1
+        //     }
+
+        //     free(threads)
+        //     return null
+
+        // }
+        
         return bsearch(&p, noCheck(&this.RCPs[0]), this.len, noCheck(sizeof(struct RCP)), cmp_rcp)
     }
 
@@ -334,6 +410,13 @@ RCP_request(p ptr) RCP* {
 }
 
 RCP_decrRCP(r RCP*) {
+    if r == null {
+        return
+    }
+    r = RCPstate.getByPtr(r.p)
+    if r == null {
+        return
+    }
     r.c = r.c - 1
     if r.c <= 0 {
         free(r.p)

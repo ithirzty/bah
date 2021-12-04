@@ -72,3 +72,5 @@ totalLines = 0
 totalLexerTime = 0
 
 RCPenabled = false
+
+flags flags
