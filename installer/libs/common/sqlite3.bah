@@ -1,0 +1,170 @@
+ 
+#include "<sqlite3.h>"
+
+#include "reflect.bah"
+
+#cLib "lsqlite3"
+
+#define! sqlite3_open(filename cpstring, ppDb sqlite3**) int
+#define! sqlite3_close(ppDb sqlite3*)
+#define! sqlite3 int
+#define! sqlite3_exec(ppDb sqlite3*, sql cpstring, callback ptr, data ptr, err cpstring*) int
+
+//Scans a row element to a variable.
+dbResponse_scan_inner(e reflectElement, val cpstring) {
+    if <ptr>val == null {
+        return
+    }
+    if e.type == "int" {
+        ep int* = e.value
+        *ep = strToInt(val)
+    } else if e.type == "cpstring" {
+        ep cpstring* = e.value
+        *ep = val
+    } else if e.type == "float" {
+        ep float* = e.value
+        *ep = strToFloat(val)
+    } else if e.type == "bool" {
+        ep bool* = e.value
+        *ep = <bool>strToInt(val)
+    }
+}
+
+//A single row of a SQL response.
+struct dbResponseRow {
+    argv: []cpstring
+    cols: []cpstring
+
+    //Scans the row to a variable.
+    scan(e reflectElement) {
+        if e.isStruct == true {
+            i=0; for i < len(this.cols) {
+                j=0; for j < len(e.structLayout) {
+                    m = e.structLayout[j]
+                    m.value = m.calculateOffset(e.value)
+                    if m.name == this.cols[i] {
+                        dbResponse_scan_inner(m, this.argv[i])
+                        break
+                    }
+                    j = j + 1
+                }
+                i = i + 1
+            }
+        } else {
+            dbResponse_scan_inner(e, this.argv[0])
+        }
+    }
+
+}
+
+//A wrapper for a response from a SQL execution.
+struct dbResponse {
+    rows: []dbResponseRow*
+
+    err: cpstring = null
+
+    //If the response contains an error, this will print the error and panic.
+    panic() {
+        if <ptr>this.err != null {
+            panic(this.err)
+        }
+    }
+
+    //Scans the response to a variable.
+    scan(e reflectElement) {
+        if len(this.rows) == 0 {
+            return
+        }
+        if e.isArray == true {
+            ae = e.arrayElem
+            if ae.isStruct == true {
+                arr = []ptr; arr = e.value
+                i=0; for i < len(this.rows) {
+                    r = this.rows[i]
+                    ae.value = memoryAlloc(ae.size)
+                    r.scan(*ae)
+                    arr[i] = ae.value
+                    i = i + 1
+                }
+            } else if ae.type == "int" {
+                arr = []int; arr = e.value
+                i=0; for i < len(this.rows) {
+                    r = this.rows[i]
+                    v int
+                    r.scan(v)
+                    arr[i] = v
+                    i = i + 1
+                }
+            }  else if ae.type == "float" {
+                arr = []float; arr = e.value
+                i=0; for i < len(this.rows) {
+                    r = this.rows[i]
+                    v float
+                    r.scan(v)
+                    arr[i] = v
+                    i = i + 1
+                }
+            }  else if ae.type == "cpstring" {
+                arr = []cpstring; arr = e.value
+                i=0; for i < len(this.rows) {
+                    r = this.rows[i]
+                    v = ""
+                    r.scan(v)
+                    arr[i] = v
+                    i = i + 1
+                }
+            }  else if ae.type == "bool" {
+                arr = []bool; arr = e.value
+                i=0; for i < len(this.rows) {
+                    r = this.rows[i]
+                    v bool
+                    r.scan(v)
+                    arr[i] = v
+                    i = i + 1
+                }
+            }
+        } else {
+            r = this.rows[0]
+            r.scan(e)
+        }
+    }
+
+}
+
+//Inserts new row in the response.
+fillDBresponse(data ptr, argc int, argv cpstring*, azColName cpstring*) int {
+    dbr dbResponse* = data
+    row = new dbResponseRow
+    i=0; for i < argc {
+        col cpstring = noCheck(azColName[i])
+        arg cpstring = noCheck(argv[i])
+        row.cols[i] = __STR(col)
+        row.argv[i] = __STR(arg) 
+        i = i + 1
+    }
+    dbr.rows[len(dbr.rows)] = row
+    return 0
+}
+
+//Wrapper for a sqlite3 database.
+struct db {
+    DB: sqlite3*
+    
+    //Opens the database.
+    open(fileName cpstring) bool {
+        return sqlite3_open(fileName, &this.DB) == 0
+    }
+
+    //Closes the database.
+    close() {
+        sqlite3_close(this.DB)
+    }
+
+    //Executes a sql command.
+    exec(sql cpstring) dbResponse* {
+        resp = new dbResponse
+        sqlite3_exec(this.DB, sql, fillDBresponse, resp, &resp.err)
+        return resp
+    }
+
+}

@@ -25,6 +25,7 @@ cp /opt/bah/string.bah ./libs/common/
 cp /opt/bah/thread.bah ./libs/common/
 cp /opt/bah/rope.bah ./libs/common/
 cp /opt/bah/matrix.bah ./libs/common/
+cp /opt/bah/sqlite3.bah ./libs/common/
 #linux specific libs
 cp /opt/bah/gc.bah ./libs/linux/
 cp /opt/bah/iostream.bah ./libs/linux/
