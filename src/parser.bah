@@ -185,6 +185,24 @@ parseCast(line []Tok, elems Elems*) []Tok {
     return nl
 }
 
+getDirFromFile(f cpstring) cpstring {
+    p = strAsArr(__STR(f))
+    i = len(p)-1; for i >= 0 {
+        c = p[i]
+        if c == '/' {
+            p[i+1] = <char>0
+            break
+        }
+        i = i - 1
+    }
+
+    if i <= 0 {
+        return ""
+    }
+
+    return arrAsStr(p)
+}
+
 #define parseLines(ts []Tok, elems Elems*)
 includeFile(ccstr cpstring, elems Elems*) bool {
 
@@ -207,12 +225,14 @@ includeFile(ccstr cpstring, elems Elems*) bool {
     fileName = BAH_DIR + ccstr
     f = fm.open(fileName)
     if fm.isValid() == 0 {
-        fileName = ccstr
+        fileName = compilerState.currentDir + ccstr
         f = fm.open(fileName)
         if fm.isValid() == 0 {
             return false
         }
     }
+    oDir = compilerState.currentDir
+    compilerState.currentDir = compilerState.currentDir + getDirFromFile(ccstr)
     oFile = compilerState.currentFile
     compilerState.currentFile = fileName
     includes[len(includes)] = ccstr
@@ -223,6 +243,7 @@ includeFile(ccstr cpstring, elems Elems*) bool {
     }
     parseLines(tokens, elems)
     compilerState.currentFile = oFile 
+    compilerState.currentDir = oDir
 
     return true
 }

@@ -52,6 +52,7 @@ struct compilerStateTag {
     includes: []cpstring
     cLibs: []cpstring
     currentFile: cpstring
+    currentDir: cpstring = "./"
     isBranch: bool = false
     isFor: bool = false
     arrTypesDecl: []cpstring

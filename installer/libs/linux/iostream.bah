@@ -259,7 +259,7 @@ removeFile(name cpstring) bool {
 }
 
 #define! getenv(s cpstring) cpstring
-
+#define! mkdir(s cpstring, m int) int
 #define! rename(o cpstring, n cpstring)
 
 //Example

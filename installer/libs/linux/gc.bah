@@ -36,5 +36,6 @@ memoryRealloc(p ptr, s int) ptr {
 }
 
 cleanShutDown() {
+    exit(1)
     return
 }

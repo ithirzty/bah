@@ -167,4 +167,7 @@ struct db {
         return resp
     }
 
+    // //Executes a sql command and executing a callback on each row.
+    // execCallBack()
+
 }

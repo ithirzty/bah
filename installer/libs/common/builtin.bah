@@ -6,6 +6,8 @@ const null = <ptr>0
 const true = <bool>1
 const false = <bool>0
 
+#define! exit(i int)
+
 #include "memory.bah"
 
 #cLib "lm"

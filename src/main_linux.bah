@@ -118,6 +118,7 @@ long int __BAH__main(__BAH_ARR_TYPE_cpstring);
     if includeFile("builtin.bah", elems) == false {
         panic("Could not find std-libs, please check '"+BAH_DIR+"'")
     }
+    compilerState.currentDir = getDirFromFile(fileName)
     parseLines(tokens, elems)
 
     totalTime = getTimeUnix() - startTime

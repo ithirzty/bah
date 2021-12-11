@@ -26,6 +26,13 @@ isInside(basePath cpstring, subPath cpstring) bool {
     return strHasPrefix(subPath, basePath) == true
 }
 
+#define! chdir(s cpstring)
+
+//To change the current working directory.
+setCurrentPath(s cpstring) {
+    chdir(s)
+}
+
 //Example
 // #include "iostream.bah"
 // #include "path.bah"
