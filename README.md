@@ -92,7 +92,10 @@ As well as being easy to learn, you can create
 
 
 ### Awesome features
-Bah also supports awesome features like reflection (simillar to Go approach).
+Bah also supports awesome features like 
+- reflection (simillar to Go approach),
+- reference counting,
+- async calls (execute function call in a new thread)...
 
 This enables you to do things that would be impossible in C
 such as scanning JSON content to a variable (event structs and arrays), and marshalling vars to JSON.

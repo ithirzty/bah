@@ -77,6 +77,7 @@ const LINE_TYPE_MACRO = <lineType>11
 const LINE_TYPE_FOR = <lineType>12
 const LINE_TYPE_FOR_OPERATOR = <lineType>13
 const LINE_TYPE_PRE_KEYWORD = <lineType>14
+const LINE_TYPE_ASYNC = <lineType>15
 
 prevLine = <lineType>-1
 
@@ -108,6 +109,8 @@ getLineType(line []Tok) lineType {
             return LINE_TYPE_MACRO
         } else if ft.cont == "for" {
             return LINE_TYPE_FOR
+        } else if ft.cont == "async" {
+            return LINE_TYPE_ASYNC
         } else if ft.cont == "continue" || ft.cont == "break" {
             return LINE_TYPE_FOR_OPERATOR
         } else {
@@ -957,6 +960,10 @@ parseReflect(t Tok, tt cpstring, elems Elems*, parsedPointer bool, ogName cpstri
     }
 
     cType = getCType(tt, elems)
+
+    if cType.length == 0 {
+        cType.set("0")
+    }
 
     t.cont = "__reflect("+amp+t.cont+", sizeof("+cType.str()+"), \""+tt+"\", \""+name.str()+"\", "+isArr+", "+arrElem+", "+isStruct+", "+structLayout+", "+offset+")"
                         //  value                  size             type           name            isArr       arrE        isStruct      structLayout      offset
@@ -2365,6 +2372,72 @@ parsePreKeyword(l []Tok, elems Elems*) {
 
 }
 
+parseAsync(l []Tok, elems Elems*) {
+    if len(l) != 2 {
+        ft = l[0]
+        throwErr(&ft, "Cannot use keyword {TOKEN} on a function call 'async <function call>'.")
+    }
+    fnT = l[1]
+    if fnT.isFunc == false {
+        throwErr(&fnT, "Cannot use keyword async on {TOKEN}. Usage: 'async <function call>'.")
+    }
+    
+    found = false
+    i=0; for i < len(compilerState.cLibs) {
+        if compilerState.cLibs[i] == "lpthread" {
+            found = true
+            break
+        }
+        i = i + 1
+    }
+    if found == false {
+        compilerState.cLibs[len(compilerState.cLibs)] = "lpthread"
+    }
+
+    sFnT = string(fnT.cont)
+    
+    fnNameParts = splitString(sFnT, "(")
+    fnName = fnNameParts[0]
+
+    fn = searchFunc(fnName.str(), elems, true)
+    
+    if fn == null {
+        throwErr(&fnT, "Internal compiler error.\n Error in async parsing, arround {TOKEN}.")
+    }
+    sMembs = ""
+    unSerMembs = ""
+    
+    i=0; for i < len(fn.args) {
+        a = fn.args[i]
+        cType = getCType(a.type, elems)
+        sMembs = sMembs + cType.str()+" "+a.name+";\n"
+        unSerMembs = unSerMembs + "args->"+a.name
+        i = i + 1
+        if i < len(fn.args) {
+            unSerMembs = unSerMembs + ", "
+        }
+    }
+
+    tmpArgsStruct = "struct {\n"+sMembs+"}"
+    fnWrapper = genCompilerVar()
+    tmpArgs = genCompilerVar()
+
+    sFnT.trimLeft(fnName.length+1)
+    sFnT.trimRight(1)
+
+    OUTPUT = OUTPUT + rope("
+    void "+fnWrapper+"("+tmpArgsStruct+"* args) {
+        "+fnName.str()+"("+unSerMembs+");
+    };
+    {
+        "+tmpArgsStruct+" "+tmpArgs+" = {"+sFnT.str()+"};
+        pthread_t id;
+        pthread_create(&id, 0, "+fnWrapper+", &"+tmpArgs+");
+    }; 
+    
+    ")
+}
+
 addRCPvars(l []Tok, ltp lineType, elems Elems*) {
     i=0
     if ltp == LINE_TYPE_VAR {
@@ -2574,6 +2647,9 @@ parseLine(line []Tok, elems Elems*) {
         parseForOp(line, elems)
     } else if ltp == LINE_TYPE_PRE_KEYWORD {
         parsePreKeyword(line, elems)
+        parsed = true
+    } else if ltp == LINE_TYPE_ASYNC {
+        parseAsync(line, elems)
         parsed = true
     }
     

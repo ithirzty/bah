@@ -19,5 +19,6 @@ Here is a list of most of the features supported by the Bah compiler.
 | C library | You can link the program with a C library using the `#cLib` keyword followed by libraries to link inside double quotes. | Fully supported. | `#cLib "lm" "lpthread"` |
 | Constant | A constant can be declared using a constant value using the `const` keyword. <br>-> You cannot change the value of a constant. | Supported with undefined behaviors if reusing const name in other scopes. | `const myConst = 23` |
 | Return | When declaring a function, you can make it return a value while stopping its execution using the `return` keyword followed by a value. | Fully suported. | `return "I'm a return value."` |
+| Async | Make a function call in a new thread. | Supported, still early, may contain memory corruption. | `async myFunction()` |
 
 If **you find any bug** with the features listed above or you feel a **feature should be detailed in the table above**, you can open an issue on the [repository](https://github.com/ithirzty/bah) or by [contacting me](mailto:alois@alois.xyz).
