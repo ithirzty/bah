@@ -230,7 +230,7 @@ listFiles(dir cpstring) []cpstring {
             file = readdir(d)
             continue
         }
-        files[lf] = file.d_name
+        files[lf] = __STR(file.d_name)
         file = readdir(d)
     }
     closedir(d)

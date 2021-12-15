@@ -1248,10 +1248,10 @@ if ((nLength+1) % 50 == 0 || nLength == 0) {
 void * newPtr = memoryRealloc(files->data, (nLength+50)*sizeof(char *));
 files->data = newPtr;
 }
-files->data[lf] =  file->d_name;
+files->data[lf] =  __STR(file->d_name);
 files->length = nLength+1;
 } else {
-files->data[lf] =  file->d_name;
+files->data[lf] =  __STR(file->d_name);
 }
 };
 file =  readdir(d);
@@ -1908,7 +1908,7 @@ return ____BAH_COMPILER_VAR_138;
 };
 #define BAH_DIR "/opt/bah/"
 #define BAH_OS "linux"
-#define BAH_VERSION "v1.1 (build 33)"
+#define BAH_VERSION "v1.1 (build 34)"
 struct rope* OUTPUT= null;
 char * NEXT_LINE =  "";
 struct variable {
@@ -4143,9 +4143,9 @@ char * ____BAH_COMPILER_VAR_238 =null;
 long int strLen_1 = strlen(v->name);
 long int strLen_2 = strlen(");\n            if (arrRCP != null && arrRCP->c == 1) {\n                struct RCP * arrDataRCP = RCP_request(");
 long int strLen_3 = strlen(v->name);
-long int strLen_4 = strlen("->data);\n                if (arrDataRCP != null && arrDataRCP->c == 1) {\n                    for(int arrElemIndex=0; arrElemIndex < len(");
+long int strLen_4 = strlen("->data);\n                if (arrDataRCP != null && arrDataRCP->c == 1) {\n                    for(int arrElemIndex=len(");
 long int strLen_5 = strlen(v->name);
-long int strLen_6 = strlen("); arrElemIndex++) {\n                        ");
+long int strLen_6 = strlen(")-1; arrElemIndex >= 0; arrElemIndex--) {\n                        ");
 ;                            
                         ____BAH_COMPILER_VAR_238 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2 + strLen_3 + strLen_4 + strLen_5 + strLen_6);
                         
@@ -4161,13 +4161,13 @@ long int strLen_6 = strlen("); arrElemIndex++) {\n                        ");
                         strncpy(____BAH_COMPILER_VAR_238+currStrOff, v->name, strLen_3);
                         currStrOff += strLen_3;
                         
-                        strncpy(____BAH_COMPILER_VAR_238+currStrOff, "->data);\n                if (arrDataRCP != null && arrDataRCP->c == 1) {\n                    for(int arrElemIndex=0; arrElemIndex < len(", strLen_4);
+                        strncpy(____BAH_COMPILER_VAR_238+currStrOff, "->data);\n                if (arrDataRCP != null && arrDataRCP->c == 1) {\n                    for(int arrElemIndex=len(", strLen_4);
                         currStrOff += strLen_4;
                         
                         strncpy(____BAH_COMPILER_VAR_238+currStrOff, v->name, strLen_5);
                         currStrOff += strLen_5;
                         
-                        strncpy(____BAH_COMPILER_VAR_238+currStrOff, "); arrElemIndex++) {\n                        ", strLen_6);
+                        strncpy(____BAH_COMPILER_VAR_238+currStrOff, ")-1; arrElemIndex >= 0; arrElemIndex--) {\n                        ", strLen_6);
                         currStrOff += strLen_6;
                         
                     }

@@ -9,7 +9,7 @@
 const BAH_DIR = "/opt/bah/"
 const BAH_OS = "linux"
 //////////////////////BUILD SPECIFIC THINGS//////////////////////
-const BAH_VERSION = "v1.1 (build 33)"
+const BAH_VERSION = "v1.1 (build 34)"
 
 #include "./globals.bah"
 

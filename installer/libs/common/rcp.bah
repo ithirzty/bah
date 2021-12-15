@@ -286,6 +286,7 @@ RCP_shutdown() {
 
 cleanShutDown() {
     RCP_shutdown()
+    exit(1)
 }
 
 RCP_selfRef(a ptr, b ptr) bool {

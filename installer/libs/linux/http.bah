@@ -2,6 +2,7 @@
 #include "<signal.h>"
 #include "<sys/types.h>"
 #include "<sys/socket.h>"
+#include "<arpa/inet.h>"
 #include "<netinet/in.h>"
 #include "<netdb.h>"
 #include "<openssl/ssl.h>"
@@ -45,7 +46,7 @@ struct! sockaddr_in {
     sin_family: int
     sin_port: uint
     sin_addr: in_addr
-    sin_zero: []char
+    sin_zero: char*
 }
 
 struct http_url {
@@ -697,7 +698,8 @@ makeRawHttpsRequest(host cpstring, message cpstring) cpstring {
 
 }
 
-
+#define! getpeername(connfd int, addr sockaddr_in*, s int*) int
+#define! inet_ntoa(addr in_addr) cpstring
 
 
 //A wrapper for requests.
@@ -849,6 +851,14 @@ struct http_request extend http_transport {
             i = i + 1
         }
         return ""
+    }
+
+    //Returns the client IP address.
+    getIP() cpstring {
+        addr sockaddr_in
+        addrSize int = noCheck(sizeof(struct sockaddr_in))
+        getpeername(this.connfd, &addr, &addrSize)
+        return __STR(inet_ntoa(addr.sin_addr))
     }
 
 }

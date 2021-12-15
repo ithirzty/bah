@@ -337,11 +337,37 @@ parseJson(s cpstring) jsonElement* {
     return jsonElem
 }
 
+jsonEscapeStr(s cpstring) cpstring {
+    a = strAsArr(s)
+    r = []char
+
+    i=0; for i < len(a) {
+        c = a[i]
+        if c == <char>34 {
+            r[len(r)] = <char>92
+        } else if c == <char>10 {
+                r[len(r)] = <char>92
+                r[len(r)] = 'n'
+                i = i + 1
+                continue
+        } else if c == <char>13 {
+                r[len(r)] = <char>92
+                r[len(r)] = 'r'
+                i = i + 1
+                continue
+        }
+        r[len(r)] = c
+        i = i + 1
+    }
+
+    return arrToStr(r)
+}
+
 //Function used by toJson() to convert a var to json string.
 //*Note: this is an internal function*
 toJson__inner(e reflectElement, isMember bool, tabs int) cpstring {
     v ptr* = e.value
-    if *v == null {
+    if *v == null || e.value == null {
         return "null"
     }
     if e.isStruct == true {
@@ -378,16 +404,18 @@ toJson__inner(e reflectElement, isMember bool, tabs int) cpstring {
     } else if e.type == "cpstring" {
         if isMember == false {
             s = string(e.value)
-            s.replace("\"", "\\\"")
-            s.replace("\n", "\\\n")
-            return "\""+s.str()+"\""
+            return "\""+jsonEscapeStr(s.str())+"\""
         } else {
             sp cpstring* = e.value
             s = string(*sp)
-            s.replace("\"", "\\\"")
-            s.replace("\n", "\\\n")
-            return "\""+s.str()+"\""
+            return "\""+jsonEscapeStr(s.str())+"\""
         }
+    } else if e.type == "bool" {
+        bp bool* = e.value
+        if *bp == true {
+            return "true"
+        }
+        return "false"
     } else if e.isArray == true {
         s = "["
         ae = e.arrayElem

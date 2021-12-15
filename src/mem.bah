@@ -14,7 +14,7 @@ decrVar(v variable*, elems Elems*) rope* {
             if (arrRCP != null && arrRCP->c == 1) {
                 struct RCP * arrDataRCP = RCP_request("+v.name+"->data);
                 if (arrDataRCP != null && arrDataRCP->c == 1) {
-                    for(int arrElemIndex=0; arrElemIndex < len("+v.name+"); arrElemIndex++) {
+                    for(int arrElemIndex=len("+v.name+")-1; arrElemIndex >= 0; arrElemIndex--) {
                         ")+decrVar(arrElem, elems)+rope("
                     };
                     RCP_decrRCP(arrDataRCP);
