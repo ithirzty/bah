@@ -19,7 +19,7 @@
 #define! sprintf(buff cpstring, format cpstring, v ptr)
 #define! atoi(s cpstring) int
 #define! itoa(i int, s cpstring, base int) cpstring
-#define! sigaction(sig int, str ptr, m int)
+#define! sigaction(sig int, str sigaction*, args ptr)
 #define! waitpid(m int, s int*, w int) int
 #define! fork() int
 #define! realpath(path cpstring, buff ptr) cpstring

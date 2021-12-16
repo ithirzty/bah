@@ -449,23 +449,92 @@ parseStructType(line []Tok, elems Elems*) []Tok {
             if i < len(line) {
                 nt = line[i]
                 if nt.cont == "{" {
-                    i =i + 1
+                    i = i + 1
                     s = searchStruct(t.cont, elems)
                     if s == null {
                         throwErr(&t, "Unknown struct name {TOKEN}.")
                     }
-                    memory = ""
+                    memory = []Tok
                     for i < len(line) {
                         t = line[i]
                         if t.cont == "}" {
                             break
                         }
-                        memory = memory + t.cont + " "
-                        //TODO: setting struct content inside braces
-                        i =i + 1
+                        memory[len(memory)] = t
+                        i = i + 1
                     }
+                    declType = 0
+                    rvn = genCompilerVar()
+                    tmpV = new variable
+                    tmpV.name = rvn
+                    tmpV.type = s.name
+                    rst = getCType(s.name, elems)
+                    r = rope(rst.str()+" "+rvn+" = "+"{};\n"+declareStructMethods(tmpV, s, elems))
+                    j=0;k=0; for k < len(memory) {
+                        t = memory[k]
+                        if k+2 < len(memory) {
+                            st = memory[k+1]
+                            vl = memory[k+2]
+                            if st.cont == ":" {
+                                if declType != 0 && declType != 1 {
+                                    throwErr(&t, "Cannot declare member {TOKEN} by name in list declaration.")
+                                }
+                                declType = 1
+                                if t.type != TOKEN_TYPE_VAR {
+                                    throwErr(&t, "Cannot use {TOKEN} as struct member name.")
+                                }
+                                j=0; for j < len(s.members) {
+                                    m = s.members[j]
+                                    if m.name != t.cont {
+                                        j = j + 1
+                                        continue
+                                    }
+                                    vlt = getTypeFromToken(&vl, true, elems)
+                                    if compTypes(vlt, m.type) == false {
+                                        throwErr(&vl, "Cannot use {TOKEN} ("+vlt+") as '"+m.type+"'.")
+                                    }
+                                    r = r + rope(rvn+"."+m.name+" = "+vl.cont+";\n")
+                                    break
+                                }
+                                if j == len(s.members) {
+                                    throwErr(&t, "Struct '"+s.name+"' has no member called {TOKEN}.")
+                                }
+                                k = k + 3
+                                continue
+                            }
+                        }
+                        if declType != 0 && declType != 2 {
+                            throwErr(&t, "Cannot declare member {TOKEN} without specifying its name.")
+                        }
+                        declType = 2
+
+                        if j > len(s.members) {
+                            throwErr(&t, "Too many members {TOKEN}.")
+                        }
+                        m = s.members[j]
+                        j = j + 1
+
+                        tt = getTypeFromToken(&t, true, elems)
+                        if compTypes(tt, m.type) == false {
+                            throwErr(&t, "Cannot use {TOKEN} ("+tt+") as '"+m.type+"'.")
+                        }
+
+                        r = r + rope(rvn+"."+m.name+" = "+t.cont+";\n")
+
+                        if k+1 < len(memory) {
+                            k = k + 1
+                            st = memory[k]
+                            if st.cont != "," {
+                                throwErr(&st, "Need ',' separator between two values, not {TOKEN}.")
+                            }
+                        }
+                        k = k + 1
+                    }
+
+                    OUTPUT = OUTPUT + r
+
                     t.bahType = s.name
-                    t.cont = "{"+memory+"}"
+                    t.cont = rvn
                     t.isValue = true
                     nl[len(nl)] = t
                     i =i + 1
@@ -1367,8 +1436,8 @@ parseVar(l []Tok, elems Elems*) {
             if max != len(l) {
                 throwErr(&l[i+1], "{TOKEN} not expected after struct initialization.")
             }
-            s = searchStruct(v.type, elems)
-            NEXT_LINE = declareStructMethods(v, s, elems)
+            // s = searchStruct(v.type, elems)
+            // NEXT_LINE = declareStructMethods(v, s, elems)
             code = code + " " + t.cont
         }
 
@@ -2460,10 +2529,15 @@ prePross(line []Tok, ltp lineType, elems Elems*) []Tok {
 
     fl = []Tok
     i = 0
+    nbPar = 0
     if ltp != <lineType>-1 {
         for i < len(line) {
             t = line[i]
-            if t.cont == "{" {
+            if t.cont == "(" {
+                nbPar = nbPar + 1
+            } else if t.cont == ")" {
+                nbPar = nbPar - 1
+            } else if nbPar == 0 && t.cont == "{" {
                 nt = line[i+1]
                 if nt.line != t.line {
                     break
@@ -2480,6 +2554,7 @@ prePross(line []Tok, ltp lineType, elems Elems*) []Tok {
     fl = parseFnCall(fl, elems)
     fl = parseArrayVars(fl, elems)
     fl = parseArrayType(fl, elems)
+    fl = parseStructType(fl, elems)
     fl = parseCast(fl, elems)
     addRCPvars(fl, ltp, elems)
     fl = parseOperations(fl, elems)
