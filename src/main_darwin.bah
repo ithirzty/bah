@@ -9,7 +9,7 @@
 const BAH_DIR = "/opt/bah/"
 const BAH_OS = "darwin"
 //////////////////////BUILD SPECIFIC THINGS//////////////////////
-const BAH_VERSION = "v1.1 (build 33)"
+const BAH_VERSION = "v1.1 (build 37)"
 
 #include "./globals.bah"
 
@@ -109,7 +109,9 @@ long int __BAH__main(__BAH_ARR_TYPE_cpstring);
     compilerState.currentFile = fileName
     fm = fileMap{}
     f = fm.open(fileName)
-    
+    if fm.isValid() == 0 {
+        panic("Could not open file '"+fileName+"'.")
+    }
     startTime = getTimeUnix()
     tokens = lexer(f)
     fm.close()

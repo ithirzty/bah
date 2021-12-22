@@ -433,6 +433,9 @@ parseOperations(line []Tok, elems Elems*) []Tok {
     return nl
 }
 
+#define prePross(line []Tok, ltp lineType, elems Elems*) []Tok
+
+
 parseStructType(line []Tok, elems Elems*) []Tok {
 
     nl = []Tok
@@ -463,6 +466,7 @@ parseStructType(line []Tok, elems Elems*) []Tok {
                         memory[len(memory)] = t
                         i = i + 1
                     }
+                    
                     declType = 0
                     rvn = genCompilerVar()
                     tmpV = new variable
@@ -828,7 +832,6 @@ parsePointers(l []Tok) []Tok {
     return nl
 }
 
-#define prePross(line []Tok, ltp lineType, elems Elems*) []Tok
 
 parseArrayVars(l []Tok, elems Elems*) []Tok {
 
