@@ -9,7 +9,7 @@
 const BAH_DIR = "/opt/bah/"
 const BAH_OS = "linux"
 //////////////////////BUILD SPECIFIC THINGS//////////////////////
-const BAH_VERSION = "v1.1 (build 37)"
+const BAH_VERSION = "v1.1 (build 38)"
 
 #include "./globals.bah"
 
@@ -154,7 +154,7 @@ long int __BAH__main(__BAH_ARR_TYPE_cpstring);
         fs.writeFile(OUTPUT.toStr())
         fs.close()
 
-        gccArgs = "gcc "+ randFileName+ " "+isStatic+" -w -o "+fileName
+        gccArgs = "gcc "+ randFileName+ " "+isStatic+" -w -O1 -o "+fileName
         
         if flags.isSet("l") == 1 {
             gccArgs = gccArgs + " -c"
@@ -187,7 +187,7 @@ long int __BAH__main(__BAH_ARR_TYPE_cpstring);
             fileName = fileName + ".c"
         }
 
-        gccArgs = "gcc "+ fileName+ " "+isStatic+" -w "
+        gccArgs = "gcc "+ fileName+ " "+isStatic+" -O1 -w "
         cLibs = compilerState.cLibs
         i=0;for i < len(cLibs) {
             l = cLibs[i]

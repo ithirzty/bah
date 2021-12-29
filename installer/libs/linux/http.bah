@@ -14,7 +14,6 @@
 #include "iostream.bah"
 #include "string.bah"
 #include "exec.bah"
-#include "rope.bah"
 #include "thread.bah"
 
 #define! socklen_t uint
@@ -286,11 +285,7 @@ struct http_server {
         sa.sa_handler = sigchld_handler
         sigaction(17, &sa, 0)
         if this.done != null {
-            doneT = thread{}
-            doneT.handle = <ptr>this.done
-            doneT.createWithArg(this)
-            
-            //this.done()
+            async this.done()
         }
         for this.running == 1 {
             clilen = 16
@@ -747,26 +742,24 @@ struct http_request extend http_transport {
         if strlen(path) == 0 {
             path = "/"
         }
-        message = rope(method +" "+ path + " HTTP/1.0\r\n")
+        message = method +" "+ path + " HTTP/1.0\r\n"
         i=0; for i < len(this.headers) {
             h = this.headers[i]
-            message = message + rope(h.str() + "\r\n")
+            message = message + h.str() + "\r\n"
             i = i + 1
         }
-        message = message + rope("\r\n")
+        message = message + "\r\n"
 
         if this.body != null {
-            message = message + rope(this.body.str())
+            message = message + this.body.str()
         }
-
-        msg = message.toStr()
 
         response = string("")
         if isTLS == true {
-            response.set(makeRawHttpsRequest(host, msg))
+            response.set(makeRawHttpsRequest(host, message))
         } else {
 
-            if send(this.connfd, msg, strlen(msg), 0) <= 0 {
+            if send(this.connfd, message, strlen(message), 0) <= 0 {
                 panic("http: error sending trought socket")
             }
 

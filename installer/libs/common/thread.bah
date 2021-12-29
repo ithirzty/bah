@@ -2,8 +2,15 @@
 
 #cLib "lpthread"
 
-#define! GC_pthread_create(id int*, attr ptr, func ptr, args ptr)
-#define! GC_pthread_join(id int, ret ptr)
+#gc {
+    #define! GC_pthread_create(id int*, attr ptr, func ptr, args ptr)
+    #define! GC_pthread_join(id int, ret ptr)
+}
+
+#rcp {
+    #define! pthread_create(id int*, attr ptr, func ptr, args ptr)
+    #define! pthread_join(id int, ret ptr)
+}
 
 #define! pthread_mutex_t int
 
@@ -51,13 +58,23 @@ struct thread {
 
     //This will launch the thread.
     create() {
-        GC_pthread_create(&this.id, null, this.handle, null)   
+        #gc {
+            GC_pthread_create(&this.id, null, this.handle, null)   
+        }
+        #rcp {
+            pthread_create(&this.id, null, this.handle, null)   
+        }
     }
 
     //This will launch the thread by passing to its entry point funtion an argument.
     //The argument can only be a pointer.
     createWithArg(arg ptr) {
-        GC_pthread_create(&this.id, null, this.handle, arg)   
+        #gc {
+            GC_pthread_create(&this.id, null, this.handle, arg) 
+        }  
+        #rcp {
+            pthread_create(&this.id, null, this.handle, arg) 
+        }
     }
 
     //This waits until the thread has finished executting.
@@ -65,7 +82,12 @@ struct thread {
         if this.id == -1 {
             return
         }
-        GC_pthread_join(this.id, null)
+        #gc {
+            GC_pthread_join(this.id, null)
+        }
+        #rcp {
+            pthread_join(this.id, null)
+        }
     }
 }
 

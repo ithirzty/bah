@@ -5,6 +5,9 @@
 #include "./struct.bah"
 
 isRCPpointerType(t cpstring) bool {
+    if strHasPrefix(t, "function(") {
+        return false
+    }
     if t == "cpstring" || t == "ptr" || strCount(t, "*") > 0 || strHasPrefix(t, "[]") == true {
         return true
     }

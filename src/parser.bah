@@ -591,6 +591,9 @@ parseStructVars(line []Tok, elems Elems*) []Tok {
                         sep = "->"
                     }
                     s = searchStruct(v.type, elems)
+                    if s == null {
+                        throwErr(&t, "Cannot use {TOKEN} ("+v.type+") as a structure.")
+                    }
                     i =i + 1
                     nt = line[i]
                     if nt.type != TOKEN_TYPE_VAR {
@@ -995,6 +998,13 @@ parseReflect(t Tok, tt cpstring, elems Elems*, parsedPointer bool, ogName cpstri
     if ts != null {
         isStruct = "1"
         structLayout = genCompilerVar()
+
+        slv = new variable
+        slv.name = structLayout
+        slv.type = "[]reflectElement"
+
+        elems.vars[len(elems.vars)] = slv
+
         dataLayout = rope("")
 
         i=0; for i < len(ts.members) {
@@ -1037,9 +1047,15 @@ parseReflect(t Tok, tt cpstring, elems Elems*, parsedPointer bool, ogName cpstri
         cType.set("0")
     }
 
-    t.cont = "__reflect("+amp+t.cont+", sizeof("+cType.str()+"), \""+tt+"\", \""+name.str()+"\", "+isArr+", "+arrElem+", "+isStruct+", "+structLayout+", "+offset+")"
+    rv = new variable
+    rv.name = genCompilerVar()
+    rv.type = "reflectElement"
+
+    elems.vars[len(elems.vars)] = rv
+
+    OUTPUT = OUTPUT + rope("struct reflectElement "+rv.name+" = __reflect("+amp+t.cont+", sizeof("+cType.str()+"), \""+tt+"\", \""+name.str()+"\", "+isArr+", "+arrElem+", "+isStruct+", "+structLayout+", "+offset+");\n")
                         //  value                  size             type           name            isArr       arrE        isStruct      structLayout      offset
-    t.isFunc = true
+    t.cont = rv.name
 
     return t
 }
@@ -1477,10 +1493,8 @@ parseVar(l []Tok, elems Elems*) {
                 }
             } else {
                 s = searchStruct(v.type, elems)
-                if s != null && RCPavailable() == true {
-                    if RCPselfRef(v) == false {
+                if s != null && RCPavailable() == true && RCPselfRef(v) == false && s.isBinding == false {
                         code = "RCP_decrCounter("+v.name+".__RCP_counter); " + v.name + " = " + code
-                    }
                 } else {
                     code = v.name + " = " + code
                 }
@@ -2389,6 +2403,24 @@ parseForOp(l []Tok, elems Elems*) {
 parsePreKeyword(l []Tok, elems Elems*) {
 
     ft = l[0]
+
+    if ft.cont == "#warning" {
+        if len(l) != 2 {
+            throwErr(&ft, "Invalid usage of {TOKEN} '#warning \"message\"'.")
+        }
+        mt = l[1]
+        if mt.type != TOKEN_TYPE_STR {
+            throwErr(&mt, "Cannot use {TOKEN} as a string.")
+        }
+
+        msg = string(mt.cont)
+        msg.trimLeft(1)
+        msg.trimRight(1)
+
+
+        throwWarning(msg.str())
+        return
+    }
     
     if len(l) < 3 {
         throwErr(&ft, "Invalid usage of keyword {TOKEN}.")

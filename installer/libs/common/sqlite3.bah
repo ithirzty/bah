@@ -10,6 +10,10 @@
 #define! sqlite3 int
 #define! sqlite3_exec(ppDb sqlite3*, sql cpstring, callback ptr, data ptr, err cpstring*) int
 
+#static {
+    #warning "Lib sqlite3 is usually compilled dynamically (-d), may not link."
+}
+
 //Scans a row element to a variable.
 dbResponse_scan_inner(e reflectElement, val cpstring) {
     if <ptr>val == null {

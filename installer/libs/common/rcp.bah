@@ -172,59 +172,6 @@ struct RCPstate {
             return null
         }
         
-
-        // if this.len > 5000 {
-        //     numThreads = 4
-
-        //     threads int* = malloc(numThreads * noCheck(sizeof(int)))
-        //     memset(threads, 0, numThreads * noCheck(sizeof(int)))
-        //     if threads == null {
-        //         noCheck(printf("null threads\n"))
-        //         noCheck(exit(1))
-        //     }
-            
-        //     i=0; for i < numThreads {
-        //         args RCP_threadSearch* = malloc(noCheck(sizeof(struct RCP_threadSearch)))
-        //         if args == null {
-        //             noCheck(printf("null args\n"))
-        //             noCheck(exit(1))
-        //         }
-        //         m = this.len / 4
-        //         args.from = i * m
-        //         if args.from >= this.len {
-        //             break
-        //         }
-        //         ni = i + 1
-        //         args.to = ni * m
-        //         if args.to >= this.len {
-        //             args.to = this.len - 1
-        //         }
-        //         args.arr = this.RCPs
-        //         args.p = p
-        //         args.l = this.len
-        //         pthread_create(noCheck(&threads[i]), null, RCPthreadSearch, args)
-        //         i = i + 1
-        //     }
-
-        //     i=0; for i < numThreads {
-        //         r RCP* = null
-        //         t int = noCheck(threads[i])
-        //         if t == 0 {
-        //             i = i + 1
-        //             continue
-        //         }
-        //         pthread_join(t, &r)
-        //         if r != null {
-        //             free(threads)
-        //             return r
-        //         }
-        //         i = i + 1
-        //     }
-
-        //     free(threads)
-        //     return null
-
-        // }
         
         return bsearch(&p, noCheck(&this.RCPs[0]), this.len, noCheck(sizeof(struct RCP)), cmp_rcp)
     }

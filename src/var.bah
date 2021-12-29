@@ -41,7 +41,7 @@ searchVar(name cpstring, elems Elems*) variable* {
     name = n.content
 
 
-    if hasStructSep(n) {
+    if hasStructSep(n) && n.count(")") == 0 {
         rn = splitStructSepBefore(n)
         name = rn.content
         n.trimLeft(rn.length)

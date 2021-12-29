@@ -1,4 +1,4 @@
-//COMPILE WITH: 'gcc linux.c -static -w  -w /opt/bah/libs/libgc.a -lpthread -lm -O1'
+//COMPILE WITH: 'gcc linux.c -static -O1 -w  -w /opt/bah/libs/libgc.a -lpthread -lm -O1'
 
 
 #define noCheck(v) v
@@ -1283,6 +1283,12 @@ return ____BAH_COMPILER_VAR_108;
 int ____BAH_COMPILER_VAR_109 = false;
 return ____BAH_COMPILER_VAR_109;
 };
+long int getLastModified(char * name){
+struct stat attr;
+stat(name,&attr);
+long int ____BAH_COMPILER_VAR_110 = attr.st_ctime;
+return ____BAH_COMPILER_VAR_110;
+};
 #define FLAG_TYPE_CPSTRING 0
 #define FLAG_TYPE_INT 1
 #define FLAG_TYPE_FLOAT 2
@@ -1439,8 +1445,8 @@ long int i =  0;
 while ((i<len(this->flags))) {
 struct flag* flag =  this->flags->data[i];
 if (name.compare((struct string*)&name,flag->name)) {
-struct flag* ____BAH_COMPILER_VAR_110 = flag;
-return ____BAH_COMPILER_VAR_110;
+struct flag* ____BAH_COMPILER_VAR_111 = flag;
+return ____BAH_COMPILER_VAR_111;
 }
 i =  i + 1;
 };
@@ -1449,78 +1455,78 @@ z->name= null;
 z->help= null;
 z->content= null;
 z->isSet =  0;
-struct flag* ____BAH_COMPILER_VAR_111 = z;
-return ____BAH_COMPILER_VAR_111;
+struct flag* ____BAH_COMPILER_VAR_112 = z;
+return ____BAH_COMPILER_VAR_112;
 };
 char * flags__get(struct flags* this,char * name){
-struct string ____BAH_COMPILER_VAR_112 =string(name);struct flag* flag =  this->getFlag((struct flags*)this,____BAH_COMPILER_VAR_112);
+struct string ____BAH_COMPILER_VAR_113 =string(name);struct flag* flag =  this->getFlag((struct flags*)this,____BAH_COMPILER_VAR_113);
 char * ctn =  flag->content;
-char * ____BAH_COMPILER_VAR_113 = ctn;
-return ____BAH_COMPILER_VAR_113;
+char * ____BAH_COMPILER_VAR_114 = ctn;
+return ____BAH_COMPILER_VAR_114;
 };
 long int flags__getInt(struct flags* this,char * name){
-struct string ____BAH_COMPILER_VAR_114 =string(name);struct flag* flag =  this->getFlag((struct flags*)this,____BAH_COMPILER_VAR_114);
+struct string ____BAH_COMPILER_VAR_115 =string(name);struct flag* flag =  this->getFlag((struct flags*)this,____BAH_COMPILER_VAR_115);
 if ((flag->type!=FLAG_TYPE_INT)) {
-char * ____BAH_COMPILER_VAR_115 =null;
+char * ____BAH_COMPILER_VAR_116 =null;
                     {
                         long int currStrOff = 0;
                         long int strLen_0 = strlen("Flag '");
 long int strLen_1 = strlen(flag->name);
 long int strLen_2 = strlen("' is not int.");
 ;                            
-                        ____BAH_COMPILER_VAR_115 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2);
+                        ____BAH_COMPILER_VAR_116 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2);
                         
-                        strncpy(____BAH_COMPILER_VAR_115+currStrOff, "Flag '", strLen_0);
+                        strncpy(____BAH_COMPILER_VAR_116+currStrOff, "Flag '", strLen_0);
                         currStrOff += strLen_0;
                         
-                        strncpy(____BAH_COMPILER_VAR_115+currStrOff, flag->name, strLen_1);
+                        strncpy(____BAH_COMPILER_VAR_116+currStrOff, flag->name, strLen_1);
                         currStrOff += strLen_1;
                         
-                        strncpy(____BAH_COMPILER_VAR_115+currStrOff, "' is not int.", strLen_2);
+                        strncpy(____BAH_COMPILER_VAR_116+currStrOff, "' is not int.", strLen_2);
                         currStrOff += strLen_2;
                         
                     }
-                    char * error =  ____BAH_COMPILER_VAR_115;
+                    char * error =  ____BAH_COMPILER_VAR_116;
 panic(error);
 }
 long int ctn =  flag->cont_int;
-long int ____BAH_COMPILER_VAR_116 = ctn;
-return ____BAH_COMPILER_VAR_116;
+long int ____BAH_COMPILER_VAR_117 = ctn;
+return ____BAH_COMPILER_VAR_117;
 };
 double flags__getFloat(struct flags* this,char * name){
-struct string ____BAH_COMPILER_VAR_117 =string(name);struct flag* flag =  this->getFlag((struct flags*)this,____BAH_COMPILER_VAR_117);
+struct string ____BAH_COMPILER_VAR_118 =string(name);struct flag* flag =  this->getFlag((struct flags*)this,____BAH_COMPILER_VAR_118);
 if ((flag->type!=FLAG_TYPE_FLOAT)) {
-char * ____BAH_COMPILER_VAR_118 =null;
+char * ____BAH_COMPILER_VAR_119 =null;
                     {
                         long int currStrOff = 0;
                         long int strLen_0 = strlen("Flag '");
 long int strLen_1 = strlen(flag->name);
 long int strLen_2 = strlen("' is not float.");
 ;                            
-                        ____BAH_COMPILER_VAR_118 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2);
+                        ____BAH_COMPILER_VAR_119 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2);
                         
-                        strncpy(____BAH_COMPILER_VAR_118+currStrOff, "Flag '", strLen_0);
+                        strncpy(____BAH_COMPILER_VAR_119+currStrOff, "Flag '", strLen_0);
                         currStrOff += strLen_0;
                         
-                        strncpy(____BAH_COMPILER_VAR_118+currStrOff, flag->name, strLen_1);
+                        strncpy(____BAH_COMPILER_VAR_119+currStrOff, flag->name, strLen_1);
                         currStrOff += strLen_1;
                         
-                        strncpy(____BAH_COMPILER_VAR_118+currStrOff, "' is not float.", strLen_2);
+                        strncpy(____BAH_COMPILER_VAR_119+currStrOff, "' is not float.", strLen_2);
                         currStrOff += strLen_2;
                         
                     }
-                    char * error =  ____BAH_COMPILER_VAR_118;
+                    char * error =  ____BAH_COMPILER_VAR_119;
 panic(error);
 }
 double ctn =  flag->cont_float;
-double ____BAH_COMPILER_VAR_119 = ctn;
-return ____BAH_COMPILER_VAR_119;
+double ____BAH_COMPILER_VAR_120 = ctn;
+return ____BAH_COMPILER_VAR_120;
 };
 long int flags__isSet(struct flags* this,char * name){
-struct string ____BAH_COMPILER_VAR_120 =string(name);struct flag* flag =  this->getFlag((struct flags*)this,____BAH_COMPILER_VAR_120);
+struct string ____BAH_COMPILER_VAR_121 =string(name);struct flag* flag =  this->getFlag((struct flags*)this,____BAH_COMPILER_VAR_121);
 long int ctn =  flag->isSet;
-long int ____BAH_COMPILER_VAR_121 = ctn;
-return ____BAH_COMPILER_VAR_121;
+long int ____BAH_COMPILER_VAR_122 = ctn;
+return ____BAH_COMPILER_VAR_122;
 };
 void flags__parse(struct flags* this,__BAH_ARR_TYPE_cpstring args){
 struct flag* currentFlag= null;
@@ -1532,10 +1538,10 @@ struct string argName =  string(args->data[i]);
 if ((isVal==true)) {
 currentFlag->content =  argName.str((struct string*)&argName);
 if ((currentFlag->type==FLAG_TYPE_INT)) {
-char * ____BAH_COMPILER_VAR_122 =argName.str((struct string*)&argName);currentFlag->cont_int =  atoi(____BAH_COMPILER_VAR_122);
+char * ____BAH_COMPILER_VAR_123 =argName.str((struct string*)&argName);currentFlag->cont_int =  atoi(____BAH_COMPILER_VAR_123);
 }
 else if ((currentFlag->type==FLAG_TYPE_FLOAT)) {
-char * ____BAH_COMPILER_VAR_123 =argName.str((struct string*)&argName);currentFlag->cont_float =  strtod(____BAH_COMPILER_VAR_123,0);
+char * ____BAH_COMPILER_VAR_124 =argName.str((struct string*)&argName);currentFlag->cont_float =  strtod(____BAH_COMPILER_VAR_124,0);
 }
 isVal =  false;
 }
@@ -1583,22 +1589,22 @@ char * time__format(struct time* this,char * a){
 long int lt =  localtime(&this->timestamp);
 char * date =  memoryAlloc(1024);
 strftime(date,1024,a,lt);
-char * ____BAH_COMPILER_VAR_124 = date;
-return ____BAH_COMPILER_VAR_124;
+char * ____BAH_COMPILER_VAR_125 = date;
+return ____BAH_COMPILER_VAR_125;
 };
 long int time__since(struct time* this){
 long int nt =  time(0);
 long int r =  nt - this->timestamp;
-long int ____BAH_COMPILER_VAR_125 = r;
-return ____BAH_COMPILER_VAR_125;
+long int ____BAH_COMPILER_VAR_126 = r;
+return ____BAH_COMPILER_VAR_126;
 };
 long int getTimeUnix(){
-struct timespec ____BAH_COMPILER_VAR_126 = {};
-struct timespec ts =  ____BAH_COMPILER_VAR_126;
+struct timespec ____BAH_COMPILER_VAR_127 = {};
+struct timespec ts =  ____BAH_COMPILER_VAR_127;
 timespec_get(&ts,noCheck( TIME_UTC ));
 long int s =  ts.tv_sec * 1000000000 + ts.tv_nsec;
-long int ____BAH_COMPILER_VAR_127 = s;
-return ____BAH_COMPILER_VAR_127;
+long int ____BAH_COMPILER_VAR_128 = s;
+return ____BAH_COMPILER_VAR_128;
 };
 long int RAND_SEEDED =  0;
 void seedRandom(long int i){
@@ -1613,35 +1619,35 @@ RAND_SEEDED =  1;
 long int range =  max - min;
 long int i =  rand() % range + 1;
 i =  i + min;
-long int ____BAH_COMPILER_VAR_128 = i;
-return ____BAH_COMPILER_VAR_128;
+long int ____BAH_COMPILER_VAR_129 = i;
+return ____BAH_COMPILER_VAR_129;
 };
 long int cryptoRand(){
-struct fileStream ____BAH_COMPILER_VAR_129 = {};
-____BAH_COMPILER_VAR_129.handle= null;
-____BAH_COMPILER_VAR_129.isValid = fileStream__isValid;
-____BAH_COMPILER_VAR_129.open = fileStream__open;
-____BAH_COMPILER_VAR_129.close = fileStream__close;
-____BAH_COMPILER_VAR_129.getPos = fileStream__getPos;
-____BAH_COMPILER_VAR_129.setPos = fileStream__setPos;
-____BAH_COMPILER_VAR_129.getSize = fileStream__getSize;
-____BAH_COMPILER_VAR_129.rewind = fileStream__rewind;
-____BAH_COMPILER_VAR_129.getChar = fileStream__getChar;
-____BAH_COMPILER_VAR_129.setChar = fileStream__setChar;
-____BAH_COMPILER_VAR_129.createFile = fileStream__createFile;
-____BAH_COMPILER_VAR_129.writeFile = fileStream__writeFile;
-____BAH_COMPILER_VAR_129.writePtr = fileStream__writePtr;
-____BAH_COMPILER_VAR_129.readPtr = fileStream__readPtr;
-____BAH_COMPILER_VAR_129.readContent = fileStream__readContent;
-____BAH_COMPILER_VAR_129.readBytes = fileStream__readBytes;
-____BAH_COMPILER_VAR_129.writeBytes = fileStream__writeBytes;
-struct fileStream fs =  ____BAH_COMPILER_VAR_129;
+struct fileStream ____BAH_COMPILER_VAR_130 = {};
+____BAH_COMPILER_VAR_130.handle= null;
+____BAH_COMPILER_VAR_130.isValid = fileStream__isValid;
+____BAH_COMPILER_VAR_130.open = fileStream__open;
+____BAH_COMPILER_VAR_130.close = fileStream__close;
+____BAH_COMPILER_VAR_130.getPos = fileStream__getPos;
+____BAH_COMPILER_VAR_130.setPos = fileStream__setPos;
+____BAH_COMPILER_VAR_130.getSize = fileStream__getSize;
+____BAH_COMPILER_VAR_130.rewind = fileStream__rewind;
+____BAH_COMPILER_VAR_130.getChar = fileStream__getChar;
+____BAH_COMPILER_VAR_130.setChar = fileStream__setChar;
+____BAH_COMPILER_VAR_130.createFile = fileStream__createFile;
+____BAH_COMPILER_VAR_130.writeFile = fileStream__writeFile;
+____BAH_COMPILER_VAR_130.writePtr = fileStream__writePtr;
+____BAH_COMPILER_VAR_130.readPtr = fileStream__readPtr;
+____BAH_COMPILER_VAR_130.readContent = fileStream__readContent;
+____BAH_COMPILER_VAR_130.readBytes = fileStream__readBytes;
+____BAH_COMPILER_VAR_130.writeBytes = fileStream__writeBytes;
+struct fileStream fs =  ____BAH_COMPILER_VAR_130;
 fs.open((struct fileStream*)&fs,"/dev/urandom","r");
 char c =  fs.getChar((struct fileStream*)&fs);
 fs.close((struct fileStream*)&fs);
 long int i =  (long int)c;
-long int ____BAH_COMPILER_VAR_130 = i;
-return ____BAH_COMPILER_VAR_130;
+long int ____BAH_COMPILER_VAR_131 = i;
+return ____BAH_COMPILER_VAR_131;
 };
 struct command {
 char * command;
@@ -1653,81 +1659,81 @@ char *(*run)(struct command* this);
 char * command__run(struct command* this){
 char * cm =  this->command;
 if ((this->error==false)) {
-char * ____BAH_COMPILER_VAR_131 =null;
-                    {
-                        long int currStrOff = 0;
-                        long int strLen_0 = strlen(cm);
-long int strLen_1 = strlen(" 2>/dev/null");
-;                            
-                        ____BAH_COMPILER_VAR_131 = memoryAlloc(1 + strLen_0 + strLen_1);
-                        
-                        strncpy(____BAH_COMPILER_VAR_131+currStrOff, cm, strLen_0);
-                        currStrOff += strLen_0;
-                        
-                        strncpy(____BAH_COMPILER_VAR_131+currStrOff, " 2>/dev/null", strLen_1);
-                        currStrOff += strLen_1;
-                        
-                    }
-                    cm =  ____BAH_COMPILER_VAR_131;
-}
-else {
 char * ____BAH_COMPILER_VAR_132 =null;
                     {
                         long int currStrOff = 0;
                         long int strLen_0 = strlen(cm);
-long int strLen_1 = strlen(" 2>&1");
+long int strLen_1 = strlen(" 2>/dev/null");
 ;                            
                         ____BAH_COMPILER_VAR_132 = memoryAlloc(1 + strLen_0 + strLen_1);
                         
                         strncpy(____BAH_COMPILER_VAR_132+currStrOff, cm, strLen_0);
                         currStrOff += strLen_0;
                         
-                        strncpy(____BAH_COMPILER_VAR_132+currStrOff, " 2>&1", strLen_1);
+                        strncpy(____BAH_COMPILER_VAR_132+currStrOff, " 2>/dev/null", strLen_1);
                         currStrOff += strLen_1;
                         
                     }
                     cm =  ____BAH_COMPILER_VAR_132;
 }
+else {
+char * ____BAH_COMPILER_VAR_133 =null;
+                    {
+                        long int currStrOff = 0;
+                        long int strLen_0 = strlen(cm);
+long int strLen_1 = strlen(" 2>&1");
+;                            
+                        ____BAH_COMPILER_VAR_133 = memoryAlloc(1 + strLen_0 + strLen_1);
+                        
+                        strncpy(____BAH_COMPILER_VAR_133+currStrOff, cm, strLen_0);
+                        currStrOff += strLen_0;
+                        
+                        strncpy(____BAH_COMPILER_VAR_133+currStrOff, " 2>&1", strLen_1);
+                        currStrOff += strLen_1;
+                        
+                    }
+                    cm =  ____BAH_COMPILER_VAR_133;
+}
 this->handle =  popen(cm,"r");
 if ((this->handle==null)) {
-char * ____BAH_COMPILER_VAR_133 = "";
-return ____BAH_COMPILER_VAR_133;
+char * ____BAH_COMPILER_VAR_134 = "";
+return ____BAH_COMPILER_VAR_134;
 }
 char * buff =  memoryAlloc(1025);
 char * res =  "";
 while (((void *)fgets(buff,1024,this->handle)!=null)) {
-char * ____BAH_COMPILER_VAR_134 =null;
+char * ____BAH_COMPILER_VAR_135 =null;
                     {
                         long int currStrOff = 0;
                         long int strLen_0 = strlen(res);
 long int strLen_1 = strlen(buff);
 ;                            
-                        ____BAH_COMPILER_VAR_134 = memoryAlloc(1 + strLen_0 + strLen_1);
+                        ____BAH_COMPILER_VAR_135 = memoryAlloc(1 + strLen_0 + strLen_1);
                         
-                        strncpy(____BAH_COMPILER_VAR_134+currStrOff, res, strLen_0);
+                        strncpy(____BAH_COMPILER_VAR_135+currStrOff, res, strLen_0);
                         currStrOff += strLen_0;
                         
-                        strncpy(____BAH_COMPILER_VAR_134+currStrOff, buff, strLen_1);
+                        strncpy(____BAH_COMPILER_VAR_135+currStrOff, buff, strLen_1);
                         currStrOff += strLen_1;
                         
                     }
-                    res =  ____BAH_COMPILER_VAR_134;
+                    res =  ____BAH_COMPILER_VAR_135;
 };
 this->status =  pclose(this->handle);
-char * ____BAH_COMPILER_VAR_135 = res;
-return ____BAH_COMPILER_VAR_135;
+char * ____BAH_COMPILER_VAR_136 = res;
+return ____BAH_COMPILER_VAR_136;
 };
 struct command command(char * s){
-struct command ____BAH_COMPILER_VAR_136 = {};
-____BAH_COMPILER_VAR_136.command= null;
-____BAH_COMPILER_VAR_136.error = true;
-____BAH_COMPILER_VAR_136.status = 0;
-____BAH_COMPILER_VAR_136.handle= null;
-____BAH_COMPILER_VAR_136.run = command__run;
-struct command cmd =  ____BAH_COMPILER_VAR_136;
+struct command ____BAH_COMPILER_VAR_137 = {};
+____BAH_COMPILER_VAR_137.command= null;
+____BAH_COMPILER_VAR_137.error = true;
+____BAH_COMPILER_VAR_137.status = 0;
+____BAH_COMPILER_VAR_137.handle= null;
+____BAH_COMPILER_VAR_137.run = command__run;
+struct command cmd =  ____BAH_COMPILER_VAR_137;
 cmd.command =  s;
-struct command ____BAH_COMPILER_VAR_137 = cmd;
-return ____BAH_COMPILER_VAR_137;
+struct command ____BAH_COMPILER_VAR_138 = cmd;
+return ____BAH_COMPILER_VAR_138;
 };
 long int exec(char * s,__BAH_ARR_TYPE_cpstring args){
 long int r;
@@ -1782,8 +1788,8 @@ nArgs->data[i + 2] =  (char *)0;
 }
 };
 noCheck( r = execvp ( s , nArgs -> data ) );
-long int ____BAH_COMPILER_VAR_138 = r;
-return ____BAH_COMPILER_VAR_138;
+long int ____BAH_COMPILER_VAR_139 = r;
+return ____BAH_COMPILER_VAR_139;
 };
 #define ROPE_LEAF_LEN 50
 struct rope {
@@ -1801,11 +1807,11 @@ struct rope*(*add)(struct rope* this,struct rope* root2);
 };
 struct rope* rope__getParent(struct rope* this){
 if ((this->parent==null)) {
-struct rope* ____BAH_COMPILER_VAR_139 = this;
-return ____BAH_COMPILER_VAR_139;
-}
-struct rope* ____BAH_COMPILER_VAR_140 = this->parent->getParent((struct rope*)this->parent);
+struct rope* ____BAH_COMPILER_VAR_140 = this;
 return ____BAH_COMPILER_VAR_140;
+}
+struct rope* ____BAH_COMPILER_VAR_141 = this->parent->getParent((struct rope*)this->parent);
+return ____BAH_COMPILER_VAR_141;
 };
 void rope__addStr(struct rope* this,char ** s){
 if (((this->left==null)&&(this->right==null))) {
@@ -1817,14 +1823,14 @@ this->right->addStr((struct rope*)this->right,s);
 };
 char * rope__toStr(struct rope* this){
 if (((this->left==null)&&(this->right==null))) {
-char * ____BAH_COMPILER_VAR_142 = this->str;
-return ____BAH_COMPILER_VAR_142;
+char * ____BAH_COMPILER_VAR_143 = this->str;
+return ____BAH_COMPILER_VAR_143;
 }
 char * s =  memoryAlloc(this->totalLen + 1);
 this->left->addStr((struct rope*)this->left,&s);
 this->right->addStr((struct rope*)this->right,&s);
-char * ____BAH_COMPILER_VAR_143 = s;
-return ____BAH_COMPILER_VAR_143;
+char * ____BAH_COMPILER_VAR_144 = s;
+return ____BAH_COMPILER_VAR_144;
 };
 struct rope* rope__add(struct rope* this,struct rope* root2){
 long int n1 =  this->len;
@@ -1844,8 +1850,8 @@ root2->parent =  tmp;
 this->parent =  root2->parent;
 tmp->totalLen =  this->totalLen + root2->totalLen;
 tmp->str =  null;
-struct rope* ____BAH_COMPILER_VAR_144 = tmp;
-return ____BAH_COMPILER_VAR_144;
+struct rope* ____BAH_COMPILER_VAR_145 = tmp;
+return ____BAH_COMPILER_VAR_145;
 };
 struct rope* createRopeStructure(struct rope* par,char * a,long int l,long int r){
 struct rope* tmp = memoryAlloc(sizeof(struct rope));
@@ -1883,8 +1889,8 @@ i =  i + 1;
 };
 tmp->str =  arr;
 }
-struct rope* ____BAH_COMPILER_VAR_145 = tmp;
-return ____BAH_COMPILER_VAR_145;
+struct rope* ____BAH_COMPILER_VAR_146 = tmp;
+return ____BAH_COMPILER_VAR_146;
 };
 struct rope* concatenateRopes(struct rope* root1,struct rope* root2){
 long int n1 =  root1->len;
@@ -1904,20 +1910,20 @@ root2->parent =  tmp;
 root1->parent =  root2->parent;
 tmp->totalLen =  root1->totalLen + root2->totalLen;
 tmp->str =  null;
-struct rope* ____BAH_COMPILER_VAR_146 = tmp;
-return ____BAH_COMPILER_VAR_146;
+struct rope* ____BAH_COMPILER_VAR_147 = tmp;
+return ____BAH_COMPILER_VAR_147;
 };
 struct rope* rope(char * a){
 long int n1 =  strlen(a);
 struct rope* r =  createRopeStructure(null,a,0,n1-1);
 r->totalLen =  n1;
 r->len =  n1;
-struct rope* ____BAH_COMPILER_VAR_147 = r;
-return ____BAH_COMPILER_VAR_147;
+struct rope* ____BAH_COMPILER_VAR_148 = r;
+return ____BAH_COMPILER_VAR_148;
 };
 #define BAH_DIR "/opt/bah/"
 #define BAH_OS "linux"
-#define BAH_VERSION "v1.1 (build 36)"
+#define BAH_VERSION "v1.1 (build 38)"
 struct rope* OUTPUT= null;
 char * NEXT_LINE =  "";
 struct variable {
@@ -2011,38 +2017,38 @@ int inArray(char needle,__BAH_ARR_TYPE_char arr){
 long int i =  0;
 while ((i<len(arr))) {
 if ((needle==arr->data[i])) {
-int ____BAH_COMPILER_VAR_148 = true;
-return ____BAH_COMPILER_VAR_148;
+int ____BAH_COMPILER_VAR_149 = true;
+return ____BAH_COMPILER_VAR_149;
 }
 i =  i + 1;
 };
-int ____BAH_COMPILER_VAR_149 = false;
-return ____BAH_COMPILER_VAR_149;
+int ____BAH_COMPILER_VAR_150 = false;
+return ____BAH_COMPILER_VAR_150;
 };
 int inArrayStr(char * needle,__BAH_ARR_TYPE_cpstring arr){
 long int i =  0;
 while ((i<len(arr))) {
 if ((strcmp(needle, arr->data[i]) == 0)) {
-int ____BAH_COMPILER_VAR_150 = true;
-return ____BAH_COMPILER_VAR_150;
+int ____BAH_COMPILER_VAR_151 = true;
+return ____BAH_COMPILER_VAR_151;
 }
 i =  i + 1;
 };
-int ____BAH_COMPILER_VAR_151 = false;
-return ____BAH_COMPILER_VAR_151;
+int ____BAH_COMPILER_VAR_152 = false;
+return ____BAH_COMPILER_VAR_152;
 };
 struct Tok makeToken(long int pos,long int lineNb,__BAH_ARR_TYPE_char cont,tokenType type){
-struct Tok ____BAH_COMPILER_VAR_152 = {};
-____BAH_COMPILER_VAR_152.cont = "";
-____BAH_COMPILER_VAR_152.ogCont = "";
-____BAH_COMPILER_VAR_152.type = TOKEN_NO_TYPE;
-____BAH_COMPILER_VAR_152.pos = 0;
-____BAH_COMPILER_VAR_152.line = 1;
-____BAH_COMPILER_VAR_152.bahType = "";
-____BAH_COMPILER_VAR_152.isValue = false;
-____BAH_COMPILER_VAR_152.isFunc = false;
-____BAH_COMPILER_VAR_152.isOper = false;
-struct Tok t =  ____BAH_COMPILER_VAR_152;
+struct Tok ____BAH_COMPILER_VAR_153 = {};
+____BAH_COMPILER_VAR_153.cont = "";
+____BAH_COMPILER_VAR_153.ogCont = "";
+____BAH_COMPILER_VAR_153.type = TOKEN_NO_TYPE;
+____BAH_COMPILER_VAR_153.pos = 0;
+____BAH_COMPILER_VAR_153.line = 1;
+____BAH_COMPILER_VAR_153.bahType = "";
+____BAH_COMPILER_VAR_153.isValue = false;
+____BAH_COMPILER_VAR_153.isFunc = false;
+____BAH_COMPILER_VAR_153.isOper = false;
+struct Tok t =  ____BAH_COMPILER_VAR_153;
 t.cont =  arrToStr(cont);
 t.ogCont =  t.cont;
 clear(cont);
@@ -2067,23 +2073,23 @@ t.isValue =  true;
 else if ((type==TOKEN_TYPE_CHAR)) {
 t.isValue =  true;
 }
-struct Tok ____BAH_COMPILER_VAR_153 = t;
-return ____BAH_COMPILER_VAR_153;
+struct Tok ____BAH_COMPILER_VAR_154 = t;
+return ____BAH_COMPILER_VAR_154;
 };
 int isMinus(char c,char nc){
 if ((c==45)) {
 if (isNumber(nc)) {
-int ____BAH_COMPILER_VAR_154 = true;
-return ____BAH_COMPILER_VAR_154;
-}
-}
-int ____BAH_COMPILER_VAR_155 = false;
+int ____BAH_COMPILER_VAR_155 = true;
 return ____BAH_COMPILER_VAR_155;
+}
+}
+int ____BAH_COMPILER_VAR_156 = false;
+return ____BAH_COMPILER_VAR_156;
 };
 void lexerErr(long int line,long int pos,char * msg){
 char * lineStr =  intToStr(line);
 char * posStr =  intToStr(pos);
-char * ____BAH_COMPILER_VAR_156 =null;
+char * ____BAH_COMPILER_VAR_157 =null;
                     {
                         long int currStrOff = 0;
                         long int strLen_0 = strlen("\e[1;31m[LEXER-ERROR]\e[0m ");
@@ -2095,34 +2101,34 @@ long int strLen_5 = strlen(posStr);
 long int strLen_6 = strlen("\n\e[0m\n");
 long int strLen_7 = strlen(msg);
 ;                            
-                        ____BAH_COMPILER_VAR_156 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2 + strLen_3 + strLen_4 + strLen_5 + strLen_6 + strLen_7);
+                        ____BAH_COMPILER_VAR_157 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2 + strLen_3 + strLen_4 + strLen_5 + strLen_6 + strLen_7);
                         
-                        strncpy(____BAH_COMPILER_VAR_156+currStrOff, "\e[1;31m[LEXER-ERROR]\e[0m ", strLen_0);
+                        strncpy(____BAH_COMPILER_VAR_157+currStrOff, "\e[1;31m[LEXER-ERROR]\e[0m ", strLen_0);
                         currStrOff += strLen_0;
                         
-                        strncpy(____BAH_COMPILER_VAR_156+currStrOff, compilerState.currentFile, strLen_1);
+                        strncpy(____BAH_COMPILER_VAR_157+currStrOff, compilerState.currentFile, strLen_1);
                         currStrOff += strLen_1;
                         
-                        strncpy(____BAH_COMPILER_VAR_156+currStrOff, ":", strLen_2);
+                        strncpy(____BAH_COMPILER_VAR_157+currStrOff, ":", strLen_2);
                         currStrOff += strLen_2;
                         
-                        strncpy(____BAH_COMPILER_VAR_156+currStrOff, lineStr, strLen_3);
+                        strncpy(____BAH_COMPILER_VAR_157+currStrOff, lineStr, strLen_3);
                         currStrOff += strLen_3;
                         
-                        strncpy(____BAH_COMPILER_VAR_156+currStrOff, ":", strLen_4);
+                        strncpy(____BAH_COMPILER_VAR_157+currStrOff, ":", strLen_4);
                         currStrOff += strLen_4;
                         
-                        strncpy(____BAH_COMPILER_VAR_156+currStrOff, posStr, strLen_5);
+                        strncpy(____BAH_COMPILER_VAR_157+currStrOff, posStr, strLen_5);
                         currStrOff += strLen_5;
                         
-                        strncpy(____BAH_COMPILER_VAR_156+currStrOff, "\n\e[0m\n", strLen_6);
+                        strncpy(____BAH_COMPILER_VAR_157+currStrOff, "\n\e[0m\n", strLen_6);
                         currStrOff += strLen_6;
                         
-                        strncpy(____BAH_COMPILER_VAR_156+currStrOff, msg, strLen_7);
+                        strncpy(____BAH_COMPILER_VAR_157+currStrOff, msg, strLen_7);
                         currStrOff += strLen_7;
                         
                     }
-                    println(____BAH_COMPILER_VAR_156);
+                    println(____BAH_COMPILER_VAR_157);
 exit(1);
 };
 typedef array(struct Tok)* __BAH_ARR_TYPE_Tok;
@@ -2668,34 +2674,34 @@ i =  i + 1;
 totalLines =  totalLines + lineNb - 1;
 dur =  getTimeUnix() - dur;
 totalLexerTime =  totalLexerTime + dur;
-array(struct Tok)* ____BAH_COMPILER_VAR_157 = tokens;
-return ____BAH_COMPILER_VAR_157;
+array(struct Tok)* ____BAH_COMPILER_VAR_158 = tokens;
+return ____BAH_COMPILER_VAR_158;
 };
 int hasStructSep(struct string n){
 if (n.count((struct string*)&n,".")) {
-int ____BAH_COMPILER_VAR_158 = true;
-return ____BAH_COMPILER_VAR_158;
-}
-if (n.count((struct string*)&n,"->")) {
 int ____BAH_COMPILER_VAR_159 = true;
 return ____BAH_COMPILER_VAR_159;
 }
-int ____BAH_COMPILER_VAR_160 = false;
+if (n.count((struct string*)&n,"->")) {
+int ____BAH_COMPILER_VAR_160 = true;
 return ____BAH_COMPILER_VAR_160;
+}
+int ____BAH_COMPILER_VAR_161 = false;
+return ____BAH_COMPILER_VAR_161;
 };
 struct string splitStructSepBefore(struct string n){
 if (n.count((struct string*)&n,".")) {
-char * ____BAH_COMPILER_VAR_161 =splitStringBefore(n,".");struct string res =  string(____BAH_COMPILER_VAR_161);
-struct string ____BAH_COMPILER_VAR_162 = res;
-return ____BAH_COMPILER_VAR_162;
+char * ____BAH_COMPILER_VAR_162 =splitStringBefore(n,".");struct string res =  string(____BAH_COMPILER_VAR_162);
+struct string ____BAH_COMPILER_VAR_163 = res;
+return ____BAH_COMPILER_VAR_163;
 }
 if (n.count((struct string*)&n,"->")) {
-char * ____BAH_COMPILER_VAR_163 =splitStringBefore(n,"->");struct string res =  string(____BAH_COMPILER_VAR_163);
-struct string ____BAH_COMPILER_VAR_164 = res;
-return ____BAH_COMPILER_VAR_164;
-}
-struct string ____BAH_COMPILER_VAR_165 = string("");
+char * ____BAH_COMPILER_VAR_164 =splitStringBefore(n,"->");struct string res =  string(____BAH_COMPILER_VAR_164);
+struct string ____BAH_COMPILER_VAR_165 = res;
 return ____BAH_COMPILER_VAR_165;
+}
+struct string ____BAH_COMPILER_VAR_166 = string("");
+return ____BAH_COMPILER_VAR_166;
 };
 struct string splitStructSepAfter(struct string n){
 long int i =  n.length;
@@ -2714,8 +2720,8 @@ i =  i - 1;
 };
 i =  i + 1;
 n.trimLeft((struct string*)&n,i);
-struct string ____BAH_COMPILER_VAR_166 = n;
-return ____BAH_COMPILER_VAR_166;
+struct string ____BAH_COMPILER_VAR_167 = n;
+return ____BAH_COMPILER_VAR_167;
 };
 struct cStruct* searchStruct(char * name,struct Elems* elems){
 struct string n =  string(name);
@@ -2726,13 +2732,13 @@ long int i =  0;
 while ((i<len(elems->structs))) {
 struct cStruct* s =  elems->structs->data[i];
 if ((strcmp(s->name, name) == 0)) {
-struct cStruct* ____BAH_COMPILER_VAR_167 = s;
-return ____BAH_COMPILER_VAR_167;
+struct cStruct* ____BAH_COMPILER_VAR_168 = s;
+return ____BAH_COMPILER_VAR_168;
 }
 i =  i + 1;
 };
-struct cStruct* ____BAH_COMPILER_VAR_168 = null;
-return ____BAH_COMPILER_VAR_168;
+struct cStruct* ____BAH_COMPILER_VAR_169 = null;
+return ____BAH_COMPILER_VAR_169;
 };
 struct structMemb* searchStructMemb(char * name,struct cStruct* s,struct Elems* elems){
 struct string n =  string(name);
@@ -2753,16 +2759,16 @@ s =  searchStruct(memb->type,elems);
 char * nstr =  n.str((struct string*)&n);
 memb =  searchStructMemb(nstr,s,elems);
 }
-struct structMemb* ____BAH_COMPILER_VAR_169 = memb;
-return ____BAH_COMPILER_VAR_169;
+struct structMemb* ____BAH_COMPILER_VAR_170 = memb;
+return ____BAH_COMPILER_VAR_170;
 }
 array(struct structMemb*)* members =  s->members;
 long int i =  0;
 while ((i<len(members))) {
 struct structMemb* m =  members->data[i];
 if ((strcmp(m->name, name) == 0)) {
-struct structMemb* ____BAH_COMPILER_VAR_170 = m;
-return ____BAH_COMPILER_VAR_170;
+struct structMemb* ____BAH_COMPILER_VAR_171 = m;
+return ____BAH_COMPILER_VAR_171;
 }
 i =  i + 1;
 };
@@ -2784,44 +2790,48 @@ sm->name =  m->name;
 sm->from =  m->from;
 sm->type =  m->returns->type;
 sm->isFn =  true;
-struct structMemb* ____BAH_COMPILER_VAR_171 = sm;
-return ____BAH_COMPILER_VAR_171;
+struct structMemb* ____BAH_COMPILER_VAR_172 = sm;
+return ____BAH_COMPILER_VAR_172;
 }
 i =  i + 1;
 };
 if ((strlen(s->extendedFrom)==0)) {
-struct structMemb* ____BAH_COMPILER_VAR_172 = null;
-return ____BAH_COMPILER_VAR_172;
+struct structMemb* ____BAH_COMPILER_VAR_173 = null;
+return ____BAH_COMPILER_VAR_173;
 }
 struct cStruct* es =  searchStruct(s->extendedFrom,elems);
-struct structMemb* ____BAH_COMPILER_VAR_173 = searchStructMemb(name,es,elems);
-return ____BAH_COMPILER_VAR_173;
+struct structMemb* ____BAH_COMPILER_VAR_174 = searchStructMemb(name,es,elems);
+return ____BAH_COMPILER_VAR_174;
 };
 int isRCPpointerType(char * t){
-if (((((strcmp(t, "cpstring") == 0)||(strcmp(t, "ptr") == 0))||(strCount(t,"*")>0))||(strHasPrefix(t,"[]")==true))) {
-int ____BAH_COMPILER_VAR_174 = true;
-return ____BAH_COMPILER_VAR_174;
-}
+if (strHasPrefix(t,"function(")) {
 int ____BAH_COMPILER_VAR_175 = false;
 return ____BAH_COMPILER_VAR_175;
-};
-int isRCPtype(char * t,struct Elems* elems){
-if ((isRCPpointerType(t)==true)) {
+}
+if (((((strcmp(t, "cpstring") == 0)||(strcmp(t, "ptr") == 0))||(strCount(t,"*")>0))||(strHasPrefix(t,"[]")==true))) {
 int ____BAH_COMPILER_VAR_176 = true;
 return ____BAH_COMPILER_VAR_176;
 }
+int ____BAH_COMPILER_VAR_177 = false;
+return ____BAH_COMPILER_VAR_177;
+};
+int isRCPtype(char * t,struct Elems* elems){
+if ((isRCPpointerType(t)==true)) {
+int ____BAH_COMPILER_VAR_178 = true;
+return ____BAH_COMPILER_VAR_178;
+}
 struct cStruct* s =  searchStruct(t,elems);
 if ((((s!=null)&&(s->isBinding==false))&&(s->hasRCPmemb==true))) {
-int ____BAH_COMPILER_VAR_177 = true;
-return ____BAH_COMPILER_VAR_177;
+int ____BAH_COMPILER_VAR_179 = true;
+return ____BAH_COMPILER_VAR_179;
 }
-int ____BAH_COMPILER_VAR_178 = false;
-return ____BAH_COMPILER_VAR_178;
+int ____BAH_COMPILER_VAR_180 = false;
+return ____BAH_COMPILER_VAR_180;
 };
 struct string getCType(char * t,struct Elems* elems){
 if ((strlen(t)==0)) {
-struct string ____BAH_COMPILER_VAR_179 = string("void");
-return ____BAH_COMPILER_VAR_179;
+struct string ____BAH_COMPILER_VAR_181 = string("void");
+return ____BAH_COMPILER_VAR_181;
 }
 struct string tp =  string(t);
 tp.replace((struct string*)&tp," ","");
@@ -2830,28 +2840,28 @@ tp.trimLeft((struct string*)&tp,2);
 char * tpstr =  tp.str((struct string*)&tp);
 tp =  getCType(tpstr,elems);
 t =  tp.str((struct string*)&tp);
-char * ____BAH_COMPILER_VAR_180 =null;
+char * ____BAH_COMPILER_VAR_182 =null;
                     {
                         long int currStrOff = 0;
                         long int strLen_0 = strlen("array(");
 long int strLen_1 = strlen(t);
 long int strLen_2 = strlen(")*");
 ;                            
-                        ____BAH_COMPILER_VAR_180 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2);
+                        ____BAH_COMPILER_VAR_182 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2);
                         
-                        strncpy(____BAH_COMPILER_VAR_180+currStrOff, "array(", strLen_0);
+                        strncpy(____BAH_COMPILER_VAR_182+currStrOff, "array(", strLen_0);
                         currStrOff += strLen_0;
                         
-                        strncpy(____BAH_COMPILER_VAR_180+currStrOff, t, strLen_1);
+                        strncpy(____BAH_COMPILER_VAR_182+currStrOff, t, strLen_1);
                         currStrOff += strLen_1;
                         
-                        strncpy(____BAH_COMPILER_VAR_180+currStrOff, ")*", strLen_2);
+                        strncpy(____BAH_COMPILER_VAR_182+currStrOff, ")*", strLen_2);
                         currStrOff += strLen_2;
                         
                     }
-                    char * r =  ____BAH_COMPILER_VAR_180;
-struct string ____BAH_COMPILER_VAR_181 = string(r);
-return ____BAH_COMPILER_VAR_181;
+                    char * r =  ____BAH_COMPILER_VAR_182;
+struct string ____BAH_COMPILER_VAR_183 = string(r);
+return ____BAH_COMPILER_VAR_183;
 }
 struct string ctp =  tp;
 ctp.replace((struct string*)&ctp,"*","");
@@ -2913,43 +2923,43 @@ long int i =  0;
 while ((i<len(elems->types))) {
 char * ct =  elems->types->data[i];
 if (ctp.compare((struct string*)&ctp,ct)) {
-struct string ____BAH_COMPILER_VAR_182 = tp;
-return ____BAH_COMPILER_VAR_182;
+struct string ____BAH_COMPILER_VAR_184 = tp;
+return ____BAH_COMPILER_VAR_184;
 }
 i =  i + 1;
 };
-struct string ____BAH_COMPILER_VAR_183 = string("");
-return ____BAH_COMPILER_VAR_183;
+struct string ____BAH_COMPILER_VAR_185 = string("");
+return ____BAH_COMPILER_VAR_185;
 }
 }
-struct string ____BAH_COMPILER_VAR_184 = tp;
-return ____BAH_COMPILER_VAR_184;
+struct string ____BAH_COMPILER_VAR_186 = tp;
+return ____BAH_COMPILER_VAR_186;
 };
 int compTypes(char * a,char * b){
 if ((strcmp(a, "ptr") == 0)) {
-int ____BAH_COMPILER_VAR_185 = true;
-return ____BAH_COMPILER_VAR_185;
-}
-if ((strcmp(b, "ptr") == 0)) {
-int ____BAH_COMPILER_VAR_186 = true;
-return ____BAH_COMPILER_VAR_186;
-}
-if ((strcmp(a, b) == 0)) {
 int ____BAH_COMPILER_VAR_187 = true;
 return ____BAH_COMPILER_VAR_187;
 }
-int ____BAH_COMPILER_VAR_188 = false;
+if ((strcmp(b, "ptr") == 0)) {
+int ____BAH_COMPILER_VAR_188 = true;
 return ____BAH_COMPILER_VAR_188;
+}
+if ((strcmp(a, b) == 0)) {
+int ____BAH_COMPILER_VAR_189 = true;
+return ____BAH_COMPILER_VAR_189;
+}
+int ____BAH_COMPILER_VAR_190 = false;
+return ____BAH_COMPILER_VAR_190;
 };
 void throwErr(void * tp,char * format){
 char * str =  "";
 char * info =  "";
 if ((tp!=null)) {
-struct fileMap ____BAH_COMPILER_VAR_189 = {};
-____BAH_COMPILER_VAR_189.open = fileMap__open;
-____BAH_COMPILER_VAR_189.isValid = fileMap__isValid;
-____BAH_COMPILER_VAR_189.close = fileMap__close;
-struct fileMap fm =  ____BAH_COMPILER_VAR_189;
+struct fileMap ____BAH_COMPILER_VAR_191 = {};
+____BAH_COMPILER_VAR_191.open = fileMap__open;
+____BAH_COMPILER_VAR_191.isValid = fileMap__isValid;
+____BAH_COMPILER_VAR_191.close = fileMap__close;
+struct fileMap fm =  ____BAH_COMPILER_VAR_191;
 char * fileSrcStr =  fm.open((struct fileMap*)&fm,compilerState.currentFile);
 struct string fileSrc =  string(fileSrcStr);
 fm.close((struct fileMap*)&fm);
@@ -2958,26 +2968,26 @@ struct string ffmt =  string(format);
 if ((strlen(t->ogCont)==0)) {
 t->ogCont =  t->cont;
 }
-char * ____BAH_COMPILER_VAR_190 =null;
+char * ____BAH_COMPILER_VAR_192 =null;
                     {
                         long int currStrOff = 0;
                         long int strLen_0 = strlen("'");
 long int strLen_1 = strlen(t->ogCont);
 long int strLen_2 = strlen("'");
 ;                            
-                        ____BAH_COMPILER_VAR_190 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2);
+                        ____BAH_COMPILER_VAR_192 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2);
                         
-                        strncpy(____BAH_COMPILER_VAR_190+currStrOff, "'", strLen_0);
+                        strncpy(____BAH_COMPILER_VAR_192+currStrOff, "'", strLen_0);
                         currStrOff += strLen_0;
                         
-                        strncpy(____BAH_COMPILER_VAR_190+currStrOff, t->ogCont, strLen_1);
+                        strncpy(____BAH_COMPILER_VAR_192+currStrOff, t->ogCont, strLen_1);
                         currStrOff += strLen_1;
                         
-                        strncpy(____BAH_COMPILER_VAR_190+currStrOff, "'", strLen_2);
+                        strncpy(____BAH_COMPILER_VAR_192+currStrOff, "'", strLen_2);
                         currStrOff += strLen_2;
                         
                     }
-                    ffmt.replace((struct string*)&ffmt,"{TOKEN}",____BAH_COMPILER_VAR_190);
+                    ffmt.replace((struct string*)&ffmt,"{TOKEN}",____BAH_COMPILER_VAR_192);
 format =  ffmt.str((struct string*)&ffmt);
 array(char)* line = memoryAlloc(sizeof(array(char)));
 
@@ -3000,26 +3010,26 @@ if ((c==(char)10)) {
 break;
 }
 if ((i==t->pos)) {
-char * ____BAH_COMPILER_VAR_191 =null;
+char * ____BAH_COMPILER_VAR_193 =null;
                     {
                         long int currStrOff = 0;
                         long int strLen_0 = strlen("\e[1;31m");
 long int strLen_1 = strlen(t->ogCont);
 long int strLen_2 = strlen("\e[1;37m");
 ;                            
-                        ____BAH_COMPILER_VAR_191 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2);
+                        ____BAH_COMPILER_VAR_193 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2);
                         
-                        strncpy(____BAH_COMPILER_VAR_191+currStrOff, "\e[1;31m", strLen_0);
+                        strncpy(____BAH_COMPILER_VAR_193+currStrOff, "\e[1;31m", strLen_0);
                         currStrOff += strLen_0;
                         
-                        strncpy(____BAH_COMPILER_VAR_191+currStrOff, t->ogCont, strLen_1);
+                        strncpy(____BAH_COMPILER_VAR_193+currStrOff, t->ogCont, strLen_1);
                         currStrOff += strLen_1;
                         
-                        strncpy(____BAH_COMPILER_VAR_191+currStrOff, "\e[1;37m", strLen_2);
+                        strncpy(____BAH_COMPILER_VAR_193+currStrOff, "\e[1;37m", strLen_2);
                         currStrOff += strLen_2;
                         
                     }
-                    array(char)* errTk =  strToArr(____BAH_COMPILER_VAR_191);
+                    array(char)* errTk =  strToArr(____BAH_COMPILER_VAR_193);
 long int ii =  0;
 while ((ii<len(errTk))) {
 
@@ -3060,7 +3070,7 @@ i =  i + 1;
 str =  arrToStr(line);
 info =  intToStr(t->line);
 }
-char * ____BAH_COMPILER_VAR_192 =null;
+char * ____BAH_COMPILER_VAR_194 =null;
                     {
                         long int currStrOff = 0;
                         long int strLen_0 = strlen("\e[1;31m[ERROR]\e[0m ");
@@ -3072,38 +3082,38 @@ long int strLen_5 = strlen(str);
 long int strLen_6 = strlen("\e[0m\n");
 long int strLen_7 = strlen(format);
 ;                            
-                        ____BAH_COMPILER_VAR_192 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2 + strLen_3 + strLen_4 + strLen_5 + strLen_6 + strLen_7);
+                        ____BAH_COMPILER_VAR_194 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2 + strLen_3 + strLen_4 + strLen_5 + strLen_6 + strLen_7);
                         
-                        strncpy(____BAH_COMPILER_VAR_192+currStrOff, "\e[1;31m[ERROR]\e[0m ", strLen_0);
+                        strncpy(____BAH_COMPILER_VAR_194+currStrOff, "\e[1;31m[ERROR]\e[0m ", strLen_0);
                         currStrOff += strLen_0;
                         
-                        strncpy(____BAH_COMPILER_VAR_192+currStrOff, compilerState.currentFile, strLen_1);
+                        strncpy(____BAH_COMPILER_VAR_194+currStrOff, compilerState.currentFile, strLen_1);
                         currStrOff += strLen_1;
                         
-                        strncpy(____BAH_COMPILER_VAR_192+currStrOff, ":", strLen_2);
+                        strncpy(____BAH_COMPILER_VAR_194+currStrOff, ":", strLen_2);
                         currStrOff += strLen_2;
                         
-                        strncpy(____BAH_COMPILER_VAR_192+currStrOff, info, strLen_3);
+                        strncpy(____BAH_COMPILER_VAR_194+currStrOff, info, strLen_3);
                         currStrOff += strLen_3;
                         
-                        strncpy(____BAH_COMPILER_VAR_192+currStrOff, "\n\e[1;37m\t", strLen_4);
+                        strncpy(____BAH_COMPILER_VAR_194+currStrOff, "\n\e[1;37m\t", strLen_4);
                         currStrOff += strLen_4;
                         
-                        strncpy(____BAH_COMPILER_VAR_192+currStrOff, str, strLen_5);
+                        strncpy(____BAH_COMPILER_VAR_194+currStrOff, str, strLen_5);
                         currStrOff += strLen_5;
                         
-                        strncpy(____BAH_COMPILER_VAR_192+currStrOff, "\e[0m\n", strLen_6);
+                        strncpy(____BAH_COMPILER_VAR_194+currStrOff, "\e[0m\n", strLen_6);
                         currStrOff += strLen_6;
                         
-                        strncpy(____BAH_COMPILER_VAR_192+currStrOff, format, strLen_7);
+                        strncpy(____BAH_COMPILER_VAR_194+currStrOff, format, strLen_7);
                         currStrOff += strLen_7;
                         
                     }
-                    println(____BAH_COMPILER_VAR_192);
+                    println(____BAH_COMPILER_VAR_194);
 exit(1);
 };
 void throwWarning(char * s){
-char * ____BAH_COMPILER_VAR_193 =null;
+char * ____BAH_COMPILER_VAR_195 =null;
                     {
                         long int currStrOff = 0;
                         long int strLen_0 = strlen("\e[1;33m[WARNING]\e[0m ");
@@ -3112,25 +3122,25 @@ long int strLen_2 = strlen("\n\e[1;37m\t");
 long int strLen_3 = strlen(s);
 long int strLen_4 = strlen("\e[0m");
 ;                            
-                        ____BAH_COMPILER_VAR_193 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2 + strLen_3 + strLen_4);
+                        ____BAH_COMPILER_VAR_195 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2 + strLen_3 + strLen_4);
                         
-                        strncpy(____BAH_COMPILER_VAR_193+currStrOff, "\e[1;33m[WARNING]\e[0m ", strLen_0);
+                        strncpy(____BAH_COMPILER_VAR_195+currStrOff, "\e[1;33m[WARNING]\e[0m ", strLen_0);
                         currStrOff += strLen_0;
                         
-                        strncpy(____BAH_COMPILER_VAR_193+currStrOff, compilerState.currentFile, strLen_1);
+                        strncpy(____BAH_COMPILER_VAR_195+currStrOff, compilerState.currentFile, strLen_1);
                         currStrOff += strLen_1;
                         
-                        strncpy(____BAH_COMPILER_VAR_193+currStrOff, "\n\e[1;37m\t", strLen_2);
+                        strncpy(____BAH_COMPILER_VAR_195+currStrOff, "\n\e[1;37m\t", strLen_2);
                         currStrOff += strLen_2;
                         
-                        strncpy(____BAH_COMPILER_VAR_193+currStrOff, s, strLen_3);
+                        strncpy(____BAH_COMPILER_VAR_195+currStrOff, s, strLen_3);
                         currStrOff += strLen_3;
                         
-                        strncpy(____BAH_COMPILER_VAR_193+currStrOff, "\e[0m", strLen_4);
+                        strncpy(____BAH_COMPILER_VAR_195+currStrOff, "\e[0m", strLen_4);
                         currStrOff += strLen_4;
                         
                     }
-                    println(____BAH_COMPILER_VAR_193);
+                    println(____BAH_COMPILER_VAR_195);
 };
 struct variable* searchVar(char * name,struct Elems* elems){
 char * ogName =  name;
@@ -3163,11 +3173,11 @@ nv->outterScope = false;
 nv->type =  vtstr;
 nv->name =  ogName;
 nv->isArray =  true;
-struct variable* ____BAH_COMPILER_VAR_194 = nv;
-return ____BAH_COMPILER_VAR_194;
+struct variable* ____BAH_COMPILER_VAR_196 = nv;
+return ____BAH_COMPILER_VAR_196;
 }
 name =  n.content;
-if (hasStructSep(n)) {
+if ((hasStructSep(n)&&(n.count((struct string*)&n,")")==0))) {
 struct string rn =  splitStructSepBefore(n);
 name =  rn.content;
 n.trimLeft((struct string*)&n,rn.length);
@@ -3180,18 +3190,18 @@ n.trimLeft((struct string*)&n,2);
 char * membs =  n.content;
 struct variable* v =  searchVar(name,elems);
 if ((v==null)) {
-struct variable* ____BAH_COMPILER_VAR_195 = null;
-return ____BAH_COMPILER_VAR_195;
+struct variable* ____BAH_COMPILER_VAR_197 = null;
+return ____BAH_COMPILER_VAR_197;
 }
 struct cStruct* s =  searchStruct(v->type,elems);
 if ((s==null)) {
-struct variable* ____BAH_COMPILER_VAR_196 = null;
-return ____BAH_COMPILER_VAR_196;
+struct variable* ____BAH_COMPILER_VAR_198 = null;
+return ____BAH_COMPILER_VAR_198;
 }
 struct structMemb* memb =  searchStructMemb(membs,s,elems);
 if ((memb==null)) {
-struct variable* ____BAH_COMPILER_VAR_197 = null;
-return ____BAH_COMPILER_VAR_197;
+struct variable* ____BAH_COMPILER_VAR_199 = null;
+return ____BAH_COMPILER_VAR_199;
 }
 struct variable* nv = memoryAlloc(sizeof(struct variable));
 nv->name = "";
@@ -3207,81 +3217,81 @@ nv->name =  ogName;
 char * r =  nv->type;
 struct string tcc =  string(ogName);
 if (tcc.count((struct string*)&tcc,"&")) {
-char * ____BAH_COMPILER_VAR_198 =null;
+char * ____BAH_COMPILER_VAR_200 =null;
                     {
                         long int currStrOff = 0;
                         long int strLen_0 = strlen(r);
 long int strLen_1 = strlen("*");
 ;                            
-                        ____BAH_COMPILER_VAR_198 = memoryAlloc(1 + strLen_0 + strLen_1);
+                        ____BAH_COMPILER_VAR_200 = memoryAlloc(1 + strLen_0 + strLen_1);
                         
-                        strncpy(____BAH_COMPILER_VAR_198+currStrOff, r, strLen_0);
+                        strncpy(____BAH_COMPILER_VAR_200+currStrOff, r, strLen_0);
                         currStrOff += strLen_0;
                         
-                        strncpy(____BAH_COMPILER_VAR_198+currStrOff, "*", strLen_1);
+                        strncpy(____BAH_COMPILER_VAR_200+currStrOff, "*", strLen_1);
                         currStrOff += strLen_1;
                         
                     }
-                    r =  ____BAH_COMPILER_VAR_198;
+                    r =  ____BAH_COMPILER_VAR_200;
 }
 long int nbUnaries =  tcc.count((struct string*)&tcc,"*");
 if ((nbUnaries>0)) {
 struct string ct =  string(r);
 long int pointerLevel =  ct.count((struct string*)&ct,"*");
 if ((pointerLevel<nbUnaries)) {
-char * ____BAH_COMPILER_VAR_199 =null;
+char * ____BAH_COMPILER_VAR_201 =null;
                     {
                         long int currStrOff = 0;
                         long int strLen_0 = strlen("Cannot use '*' on ");
 long int strLen_1 = strlen(nv->name);
 long int strLen_2 = strlen(" because it is not pointer.");
 ;                            
-                        ____BAH_COMPILER_VAR_199 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2);
+                        ____BAH_COMPILER_VAR_201 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2);
                         
-                        strncpy(____BAH_COMPILER_VAR_199+currStrOff, "Cannot use '*' on ", strLen_0);
+                        strncpy(____BAH_COMPILER_VAR_201+currStrOff, "Cannot use '*' on ", strLen_0);
                         currStrOff += strLen_0;
                         
-                        strncpy(____BAH_COMPILER_VAR_199+currStrOff, nv->name, strLen_1);
+                        strncpy(____BAH_COMPILER_VAR_201+currStrOff, nv->name, strLen_1);
                         currStrOff += strLen_1;
                         
-                        strncpy(____BAH_COMPILER_VAR_199+currStrOff, " because it is not pointer.", strLen_2);
+                        strncpy(____BAH_COMPILER_VAR_201+currStrOff, " because it is not pointer.", strLen_2);
                         currStrOff += strLen_2;
                         
                     }
-                    throwErr(null,____BAH_COMPILER_VAR_199);
+                    throwErr(null,____BAH_COMPILER_VAR_201);
 }
 ct.trimRight((struct string*)&ct,nbUnaries);
 r =  ct.str((struct string*)&ct);
 }
 nv->type =  r;
 nv->name =  ogName;
-struct variable* ____BAH_COMPILER_VAR_200 = nv;
-return ____BAH_COMPILER_VAR_200;
+struct variable* ____BAH_COMPILER_VAR_202 = nv;
+return ____BAH_COMPILER_VAR_202;
 }
 long int i =  0;
 while ((i<len(elems->vars))) {
 struct variable* v =  elems->vars->data[i];
 if ((v==null)) {
-char * ____BAH_COMPILER_VAR_201 =null;
+char * ____BAH_COMPILER_VAR_203 =null;
                     {
                         long int currStrOff = 0;
                         long int strLen_0 = strlen("\e[1;31m[INTERNAL COMPILER ERROR]\e[0m\n Please report the bug as 'compiler searching '");
 long int strLen_1 = strlen(name);
 long int strLen_2 = strlen("' resulting in null var'.");
 ;                            
-                        ____BAH_COMPILER_VAR_201 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2);
+                        ____BAH_COMPILER_VAR_203 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2);
                         
-                        strncpy(____BAH_COMPILER_VAR_201+currStrOff, "\e[1;31m[INTERNAL COMPILER ERROR]\e[0m\n Please report the bug as 'compiler searching '", strLen_0);
+                        strncpy(____BAH_COMPILER_VAR_203+currStrOff, "\e[1;31m[INTERNAL COMPILER ERROR]\e[0m\n Please report the bug as 'compiler searching '", strLen_0);
                         currStrOff += strLen_0;
                         
-                        strncpy(____BAH_COMPILER_VAR_201+currStrOff, name, strLen_1);
+                        strncpy(____BAH_COMPILER_VAR_203+currStrOff, name, strLen_1);
                         currStrOff += strLen_1;
                         
-                        strncpy(____BAH_COMPILER_VAR_201+currStrOff, "' resulting in null var'.", strLen_2);
+                        strncpy(____BAH_COMPILER_VAR_203+currStrOff, "' resulting in null var'.", strLen_2);
                         currStrOff += strLen_2;
                         
                     }
-                    panic(____BAH_COMPILER_VAR_201);
+                    panic(____BAH_COMPILER_VAR_203);
 }
 if ((strcmp(v->name, name) == 0)) {
 struct variable* nv = memoryAlloc(sizeof(struct variable));
@@ -3297,56 +3307,56 @@ nv->isConst =  v->isConst;
 char * r =  nv->type;
 struct string tcc =  string(ogName);
 if (tcc.count((struct string*)&tcc,"&")) {
-char * ____BAH_COMPILER_VAR_202 =null;
+char * ____BAH_COMPILER_VAR_204 =null;
                     {
                         long int currStrOff = 0;
                         long int strLen_0 = strlen(r);
 long int strLen_1 = strlen("*");
 ;                            
-                        ____BAH_COMPILER_VAR_202 = memoryAlloc(1 + strLen_0 + strLen_1);
+                        ____BAH_COMPILER_VAR_204 = memoryAlloc(1 + strLen_0 + strLen_1);
                         
-                        strncpy(____BAH_COMPILER_VAR_202+currStrOff, r, strLen_0);
+                        strncpy(____BAH_COMPILER_VAR_204+currStrOff, r, strLen_0);
                         currStrOff += strLen_0;
                         
-                        strncpy(____BAH_COMPILER_VAR_202+currStrOff, "*", strLen_1);
+                        strncpy(____BAH_COMPILER_VAR_204+currStrOff, "*", strLen_1);
                         currStrOff += strLen_1;
                         
                     }
-                    r =  ____BAH_COMPILER_VAR_202;
+                    r =  ____BAH_COMPILER_VAR_204;
 }
 long int nbUnaries =  tcc.count((struct string*)&tcc,"*");
 if ((nbUnaries>0)) {
 struct string ct =  string(r);
 long int pointerLevel =  ct.count((struct string*)&ct,"*");
 if ((pointerLevel<nbUnaries)) {
-char * ____BAH_COMPILER_VAR_203 =null;
+char * ____BAH_COMPILER_VAR_205 =null;
                     {
                         long int currStrOff = 0;
                         long int strLen_0 = strlen("Cannot use '*' on ");
 long int strLen_1 = strlen(v->name);
 long int strLen_2 = strlen(" because it is not pointer.");
 ;                            
-                        ____BAH_COMPILER_VAR_203 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2);
+                        ____BAH_COMPILER_VAR_205 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2);
                         
-                        strncpy(____BAH_COMPILER_VAR_203+currStrOff, "Cannot use '*' on ", strLen_0);
+                        strncpy(____BAH_COMPILER_VAR_205+currStrOff, "Cannot use '*' on ", strLen_0);
                         currStrOff += strLen_0;
                         
-                        strncpy(____BAH_COMPILER_VAR_203+currStrOff, v->name, strLen_1);
+                        strncpy(____BAH_COMPILER_VAR_205+currStrOff, v->name, strLen_1);
                         currStrOff += strLen_1;
                         
-                        strncpy(____BAH_COMPILER_VAR_203+currStrOff, " because it is not pointer.", strLen_2);
+                        strncpy(____BAH_COMPILER_VAR_205+currStrOff, " because it is not pointer.", strLen_2);
                         currStrOff += strLen_2;
                         
                     }
-                    throwErr(null,____BAH_COMPILER_VAR_203);
+                    throwErr(null,____BAH_COMPILER_VAR_205);
 }
 ct.trimRight((struct string*)&ct,nbUnaries);
 r =  ct.str((struct string*)&ct);
 }
 nv->type =  r;
 nv->name =  ogName;
-struct variable* ____BAH_COMPILER_VAR_204 = nv;
-return ____BAH_COMPILER_VAR_204;
+struct variable* ____BAH_COMPILER_VAR_206 = nv;
+return ____BAH_COMPILER_VAR_206;
 }
 i =  i + 1;
 };
@@ -3366,101 +3376,101 @@ nv->type =  "function(";
 long int j =  0;
 while ((j<len(fn->args))) {
 struct variable* arg =  fn->args->data[j];
-char * ____BAH_COMPILER_VAR_205 =null;
+char * ____BAH_COMPILER_VAR_207 =null;
                     {
                         long int currStrOff = 0;
                         long int strLen_0 = strlen(nv->type);
 long int strLen_1 = strlen(arg->type);
 ;                            
-                        ____BAH_COMPILER_VAR_205 = memoryAlloc(1 + strLen_0 + strLen_1);
+                        ____BAH_COMPILER_VAR_207 = memoryAlloc(1 + strLen_0 + strLen_1);
                         
-                        strncpy(____BAH_COMPILER_VAR_205+currStrOff, nv->type, strLen_0);
+                        strncpy(____BAH_COMPILER_VAR_207+currStrOff, nv->type, strLen_0);
                         currStrOff += strLen_0;
                         
-                        strncpy(____BAH_COMPILER_VAR_205+currStrOff, arg->type, strLen_1);
+                        strncpy(____BAH_COMPILER_VAR_207+currStrOff, arg->type, strLen_1);
                         currStrOff += strLen_1;
                         
                     }
-                    nv->type =  ____BAH_COMPILER_VAR_205;
+                    nv->type =  ____BAH_COMPILER_VAR_207;
 j =  j + 1;
 if ((j<len(fn->args))) {
-char * ____BAH_COMPILER_VAR_206 =null;
+char * ____BAH_COMPILER_VAR_208 =null;
                     {
                         long int currStrOff = 0;
                         long int strLen_0 = strlen(nv->type);
 long int strLen_1 = strlen(",");
 ;                            
-                        ____BAH_COMPILER_VAR_206 = memoryAlloc(1 + strLen_0 + strLen_1);
+                        ____BAH_COMPILER_VAR_208 = memoryAlloc(1 + strLen_0 + strLen_1);
                         
-                        strncpy(____BAH_COMPILER_VAR_206+currStrOff, nv->type, strLen_0);
+                        strncpy(____BAH_COMPILER_VAR_208+currStrOff, nv->type, strLen_0);
                         currStrOff += strLen_0;
                         
-                        strncpy(____BAH_COMPILER_VAR_206+currStrOff, ",", strLen_1);
+                        strncpy(____BAH_COMPILER_VAR_208+currStrOff, ",", strLen_1);
                         currStrOff += strLen_1;
                         
                     }
-                    nv->type =  ____BAH_COMPILER_VAR_206;
+                    nv->type =  ____BAH_COMPILER_VAR_208;
 }
 };
-char * ____BAH_COMPILER_VAR_207 =null;
+char * ____BAH_COMPILER_VAR_209 =null;
                     {
                         long int currStrOff = 0;
                         long int strLen_0 = strlen(nv->type);
 long int strLen_1 = strlen(")");
 long int strLen_2 = strlen(fn->returns->type);
 ;                            
-                        ____BAH_COMPILER_VAR_207 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2);
+                        ____BAH_COMPILER_VAR_209 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2);
                         
-                        strncpy(____BAH_COMPILER_VAR_207+currStrOff, nv->type, strLen_0);
+                        strncpy(____BAH_COMPILER_VAR_209+currStrOff, nv->type, strLen_0);
                         currStrOff += strLen_0;
                         
-                        strncpy(____BAH_COMPILER_VAR_207+currStrOff, ")", strLen_1);
+                        strncpy(____BAH_COMPILER_VAR_209+currStrOff, ")", strLen_1);
                         currStrOff += strLen_1;
                         
-                        strncpy(____BAH_COMPILER_VAR_207+currStrOff, fn->returns->type, strLen_2);
+                        strncpy(____BAH_COMPILER_VAR_209+currStrOff, fn->returns->type, strLen_2);
                         currStrOff += strLen_2;
                         
                     }
-                    nv->type =  ____BAH_COMPILER_VAR_207;
-struct variable* ____BAH_COMPILER_VAR_208 = nv;
-return ____BAH_COMPILER_VAR_208;
+                    nv->type =  ____BAH_COMPILER_VAR_209;
+struct variable* ____BAH_COMPILER_VAR_210 = nv;
+return ____BAH_COMPILER_VAR_210;
 }
 i =  i + 1;
 };
-struct variable* ____BAH_COMPILER_VAR_209 = null;
-return ____BAH_COMPILER_VAR_209;
+struct variable* ____BAH_COMPILER_VAR_211 = null;
+return ____BAH_COMPILER_VAR_211;
 };
 char * setCType(struct variable* v,struct Elems* elems){
 struct string tp =  getCType(v->type,elems);
 char * t =  tp.str((struct string*)&tp);
-char * ____BAH_COMPILER_VAR_210 =null;
+char * ____BAH_COMPILER_VAR_212 =null;
                     {
                         long int currStrOff = 0;
                         long int strLen_0 = strlen(t);
 long int strLen_1 = strlen(" ");
 long int strLen_2 = strlen(v->name);
 ;                            
-                        ____BAH_COMPILER_VAR_210 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2);
+                        ____BAH_COMPILER_VAR_212 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2);
                         
-                        strncpy(____BAH_COMPILER_VAR_210+currStrOff, t, strLen_0);
+                        strncpy(____BAH_COMPILER_VAR_212+currStrOff, t, strLen_0);
                         currStrOff += strLen_0;
                         
-                        strncpy(____BAH_COMPILER_VAR_210+currStrOff, " ", strLen_1);
+                        strncpy(____BAH_COMPILER_VAR_212+currStrOff, " ", strLen_1);
                         currStrOff += strLen_1;
                         
-                        strncpy(____BAH_COMPILER_VAR_210+currStrOff, v->name, strLen_2);
+                        strncpy(____BAH_COMPILER_VAR_212+currStrOff, v->name, strLen_2);
                         currStrOff += strLen_2;
                         
                     }
-                    t =  ____BAH_COMPILER_VAR_210;
-char * ____BAH_COMPILER_VAR_211 = t;
-return ____BAH_COMPILER_VAR_211;
+                    t =  ____BAH_COMPILER_VAR_212;
+char * ____BAH_COMPILER_VAR_213 = t;
+return ____BAH_COMPILER_VAR_213;
 };
 char * getTypeFromToken(struct Tok* t,int strict,struct Elems* elems){
 if ((strlen(t->bahType)>0)) {
 char * r =  t->bahType;
-char * ____BAH_COMPILER_VAR_212 = r;
-return ____BAH_COMPILER_VAR_212;
+char * ____BAH_COMPILER_VAR_214 = r;
+return ____BAH_COMPILER_VAR_214;
 }
 if ((t->type==TOKEN_TYPE_VAR)) {
 struct variable* v =  searchVar(t->cont,elems);
@@ -3469,8 +3479,8 @@ if ((strict==true)) {
 throwErr(t,"Unknown var {TOKEN}.");
 }
 else {
-char * ____BAH_COMPILER_VAR_213 = "";
-return ____BAH_COMPILER_VAR_213;
+char * ____BAH_COMPILER_VAR_215 = "";
+return ____BAH_COMPILER_VAR_215;
 }
 }
 if ((strict==true)) {
@@ -3479,32 +3489,32 @@ throwErr(t,"Cannot use {TOKEN} because it does not have any type.");
 }
 }
 char * r =  v->type;
-char * ____BAH_COMPILER_VAR_214 = r;
-return ____BAH_COMPILER_VAR_214;
-}
-if ((t->type==TOKEN_TYPE_FLOAT)) {
-char * ____BAH_COMPILER_VAR_215 = "float";
-return ____BAH_COMPILER_VAR_215;
-}
-if ((t->type==TOKEN_TYPE_INT)) {
-char * ____BAH_COMPILER_VAR_216 = "int";
+char * ____BAH_COMPILER_VAR_216 = r;
 return ____BAH_COMPILER_VAR_216;
 }
-if ((t->type==TOKEN_TYPE_STR)) {
-char * ____BAH_COMPILER_VAR_217 = "cpstring";
+if ((t->type==TOKEN_TYPE_FLOAT)) {
+char * ____BAH_COMPILER_VAR_217 = "float";
 return ____BAH_COMPILER_VAR_217;
 }
-if ((t->type==TOKEN_TYPE_CHAR)) {
-char * ____BAH_COMPILER_VAR_218 = "char";
+if ((t->type==TOKEN_TYPE_INT)) {
+char * ____BAH_COMPILER_VAR_218 = "int";
 return ____BAH_COMPILER_VAR_218;
 }
-if ((t->type==TOKEN_TYPE_BOOL)) {
-char * ____BAH_COMPILER_VAR_219 = "bool";
+if ((t->type==TOKEN_TYPE_STR)) {
+char * ____BAH_COMPILER_VAR_219 = "cpstring";
 return ____BAH_COMPILER_VAR_219;
 }
-throwErr(t,"Cannot use {TOKEN} as value.");
-char * ____BAH_COMPILER_VAR_220 = "";
+if ((t->type==TOKEN_TYPE_CHAR)) {
+char * ____BAH_COMPILER_VAR_220 = "char";
 return ____BAH_COMPILER_VAR_220;
+}
+if ((t->type==TOKEN_TYPE_BOOL)) {
+char * ____BAH_COMPILER_VAR_221 = "bool";
+return ____BAH_COMPILER_VAR_221;
+}
+throwErr(t,"Cannot use {TOKEN} as value.");
+char * ____BAH_COMPILER_VAR_222 = "";
+return ____BAH_COMPILER_VAR_222;
 };
 struct func* parseFnType(struct string cvt){
 struct func* nf = memoryAlloc(sizeof(struct func));
@@ -3535,22 +3545,22 @@ arg->isConst = false;
 arg->isArray = false;
 arg->from = "";
 arg->outterScope = false;
-char * ____BAH_COMPILER_VAR_221 =intToStr(len(nf->args));char * ____BAH_COMPILER_VAR_222 =null;
+char * ____BAH_COMPILER_VAR_223 =intToStr(len(nf->args));char * ____BAH_COMPILER_VAR_224 =null;
                     {
                         long int currStrOff = 0;
                         long int strLen_0 = strlen("arg_");
-long int strLen_1 = strlen(____BAH_COMPILER_VAR_221);
+long int strLen_1 = strlen(____BAH_COMPILER_VAR_223);
 ;                            
-                        ____BAH_COMPILER_VAR_222 = memoryAlloc(1 + strLen_0 + strLen_1);
+                        ____BAH_COMPILER_VAR_224 = memoryAlloc(1 + strLen_0 + strLen_1);
                         
-                        strncpy(____BAH_COMPILER_VAR_222+currStrOff, "arg_", strLen_0);
+                        strncpy(____BAH_COMPILER_VAR_224+currStrOff, "arg_", strLen_0);
                         currStrOff += strLen_0;
                         
-                        strncpy(____BAH_COMPILER_VAR_222+currStrOff, ____BAH_COMPILER_VAR_221, strLen_1);
+                        strncpy(____BAH_COMPILER_VAR_224+currStrOff, ____BAH_COMPILER_VAR_223, strLen_1);
                         currStrOff += strLen_1;
                         
                     }
-                    arg->name =  ____BAH_COMPILER_VAR_222;
+                    arg->name =  ____BAH_COMPILER_VAR_224;
 while ((j<cvt.length)) {
 c =  cvt.charAt((struct string*)&cvt,j);
 if (((c==44)||(c==41))) {
@@ -3621,8 +3631,8 @@ nf->returns->from = "";
 nf->returns->outterScope = false;
 nf->returns->name =  "_return";
 nf->returns->type =  arrToStr(memory);
-struct func* ____BAH_COMPILER_VAR_223 = nf;
-return ____BAH_COMPILER_VAR_223;
+struct func* ____BAH_COMPILER_VAR_225 = nf;
+return ____BAH_COMPILER_VAR_225;
 };
 struct func* searchFunc(char * name,struct Elems* elems,int inclCurr){
 char * ogName =  name;
@@ -3638,8 +3648,8 @@ fn->from = "";
 fn->file = "";
 fn->line = 1;
 fn->name =  "noCheck";
-struct func* ____BAH_COMPILER_VAR_224 = fn;
-return ____BAH_COMPILER_VAR_224;
+struct func* ____BAH_COMPILER_VAR_226 = fn;
+return ____BAH_COMPILER_VAR_226;
 }
 struct string n =  string(name);
 if (hasStructSep(n)) {
@@ -3655,71 +3665,71 @@ n.trimRight((struct string*)&n,2);
 name =  n.str((struct string*)&n);
 struct variable* v =  searchVar(name,elems);
 struct cStruct* s =  searchStruct(v->type,elems);
-char * ____BAH_COMPILER_VAR_225 =fnName.str((struct string*)&fnName);struct structMemb* memb =  searchStructMemb(____BAH_COMPILER_VAR_225,s,elems);
+char * ____BAH_COMPILER_VAR_227 =fnName.str((struct string*)&fnName);struct structMemb* memb =  searchStructMemb(____BAH_COMPILER_VAR_227,s,elems);
 name =  fnName.content;
-char * ____BAH_COMPILER_VAR_226 =null;
+char * ____BAH_COMPILER_VAR_228 =null;
                     {
                         long int currStrOff = 0;
                         long int strLen_0 = strlen(memb->from);
 long int strLen_1 = strlen("__");
 long int strLen_2 = strlen(name);
 ;                            
-                        ____BAH_COMPILER_VAR_226 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2);
+                        ____BAH_COMPILER_VAR_228 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2);
                         
-                        strncpy(____BAH_COMPILER_VAR_226+currStrOff, memb->from, strLen_0);
+                        strncpy(____BAH_COMPILER_VAR_228+currStrOff, memb->from, strLen_0);
                         currStrOff += strLen_0;
                         
-                        strncpy(____BAH_COMPILER_VAR_226+currStrOff, "__", strLen_1);
+                        strncpy(____BAH_COMPILER_VAR_228+currStrOff, "__", strLen_1);
                         currStrOff += strLen_1;
                         
-                        strncpy(____BAH_COMPILER_VAR_226+currStrOff, name, strLen_2);
+                        strncpy(____BAH_COMPILER_VAR_228+currStrOff, name, strLen_2);
                         currStrOff += strLen_2;
                         
                     }
-                    name =  ____BAH_COMPILER_VAR_226;
+                    name =  ____BAH_COMPILER_VAR_228;
 }
 array(struct func*)* fns =  elems->fns;
 long int i =  0;
 while ((i<len(fns))) {
 struct func* fn =  fns->data[i];
 if ((fn==null)) {
-char * ____BAH_COMPILER_VAR_227 =null;
+char * ____BAH_COMPILER_VAR_229 =null;
                     {
                         long int currStrOff = 0;
                         long int strLen_0 = strlen("\e[1;31m[INTERNAL COMPILER ERROR]\e[0m\n Please report the bug as 'compiler searching '");
 long int strLen_1 = strlen(name);
 long int strLen_2 = strlen("' resulting in null func'.");
 ;                            
-                        ____BAH_COMPILER_VAR_227 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2);
+                        ____BAH_COMPILER_VAR_229 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2);
                         
-                        strncpy(____BAH_COMPILER_VAR_227+currStrOff, "\e[1;31m[INTERNAL COMPILER ERROR]\e[0m\n Please report the bug as 'compiler searching '", strLen_0);
+                        strncpy(____BAH_COMPILER_VAR_229+currStrOff, "\e[1;31m[INTERNAL COMPILER ERROR]\e[0m\n Please report the bug as 'compiler searching '", strLen_0);
                         currStrOff += strLen_0;
                         
-                        strncpy(____BAH_COMPILER_VAR_227+currStrOff, name, strLen_1);
+                        strncpy(____BAH_COMPILER_VAR_229+currStrOff, name, strLen_1);
                         currStrOff += strLen_1;
                         
-                        strncpy(____BAH_COMPILER_VAR_227+currStrOff, "' resulting in null func'.", strLen_2);
+                        strncpy(____BAH_COMPILER_VAR_229+currStrOff, "' resulting in null func'.", strLen_2);
                         currStrOff += strLen_2;
                         
                     }
-                    panic(____BAH_COMPILER_VAR_227);
+                    panic(____BAH_COMPILER_VAR_229);
 }
 if ((strcmp(fn->name, name) == 0)) {
-struct func* ____BAH_COMPILER_VAR_228 = fn;
-return ____BAH_COMPILER_VAR_228;
+struct func* ____BAH_COMPILER_VAR_230 = fn;
+return ____BAH_COMPILER_VAR_230;
 }
 i =  i + 1;
 };
 if ((inclCurr==true)) {
 if ((strcmp(currentFn->name, name) == 0)) {
-struct func* ____BAH_COMPILER_VAR_229 = currentFn;
-return ____BAH_COMPILER_VAR_229;
+struct func* ____BAH_COMPILER_VAR_231 = currentFn;
+return ____BAH_COMPILER_VAR_231;
 }
 }
 struct variable* v =  searchVar(ogName,elems);
 if ((v==null)) {
-struct func* ____BAH_COMPILER_VAR_230 = null;
-return ____BAH_COMPILER_VAR_230;
+struct func* ____BAH_COMPILER_VAR_232 = null;
+return ____BAH_COMPILER_VAR_232;
 }
 struct func* nf = memoryAlloc(sizeof(struct func));
 nf->name = "";
@@ -3734,14 +3744,14 @@ nf->line = 1;
 nf->name =  ogName;
 struct string cvt =  string(v->type);
 if ((cvt.hasPrefix((struct string*)&cvt,"function(")==0)) {
-struct func* ____BAH_COMPILER_VAR_231 = null;
-return ____BAH_COMPILER_VAR_231;
+struct func* ____BAH_COMPILER_VAR_233 = null;
+return ____BAH_COMPILER_VAR_233;
 }
 struct func* pfn =  parseFnType(cvt);
 nf->returns =  pfn->returns;
 nf->args =  pfn->args;
-struct func* ____BAH_COMPILER_VAR_232 = nf;
-return ____BAH_COMPILER_VAR_232;
+struct func* ____BAH_COMPILER_VAR_234 = nf;
+return ____BAH_COMPILER_VAR_234;
 };
 int RCPavailable();
 char * declareStructMethods(struct variable* v,struct cStruct* s,struct Elems* elems){
@@ -3758,7 +3768,7 @@ struct structMemb* m =  members->data[i];
 struct string cmpt =  string(m->type);
 int declared =  false;
 if ((strlen(m->def)>0)) {
-char * ____BAH_COMPILER_VAR_233 =null;
+char * ____BAH_COMPILER_VAR_235 =null;
                     {
                         long int currStrOff = 0;
                         long int strLen_0 = strlen(code);
@@ -3769,31 +3779,31 @@ long int strLen_4 = strlen(" = ");
 long int strLen_5 = strlen(m->def);
 long int strLen_6 = strlen(";\n");
 ;                            
-                        ____BAH_COMPILER_VAR_233 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2 + strLen_3 + strLen_4 + strLen_5 + strLen_6);
+                        ____BAH_COMPILER_VAR_235 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2 + strLen_3 + strLen_4 + strLen_5 + strLen_6);
                         
-                        strncpy(____BAH_COMPILER_VAR_233+currStrOff, code, strLen_0);
+                        strncpy(____BAH_COMPILER_VAR_235+currStrOff, code, strLen_0);
                         currStrOff += strLen_0;
                         
-                        strncpy(____BAH_COMPILER_VAR_233+currStrOff, v->name, strLen_1);
+                        strncpy(____BAH_COMPILER_VAR_235+currStrOff, v->name, strLen_1);
                         currStrOff += strLen_1;
                         
-                        strncpy(____BAH_COMPILER_VAR_233+currStrOff, sep, strLen_2);
+                        strncpy(____BAH_COMPILER_VAR_235+currStrOff, sep, strLen_2);
                         currStrOff += strLen_2;
                         
-                        strncpy(____BAH_COMPILER_VAR_233+currStrOff, m->name, strLen_3);
+                        strncpy(____BAH_COMPILER_VAR_235+currStrOff, m->name, strLen_3);
                         currStrOff += strLen_3;
                         
-                        strncpy(____BAH_COMPILER_VAR_233+currStrOff, " = ", strLen_4);
+                        strncpy(____BAH_COMPILER_VAR_235+currStrOff, " = ", strLen_4);
                         currStrOff += strLen_4;
                         
-                        strncpy(____BAH_COMPILER_VAR_233+currStrOff, m->def, strLen_5);
+                        strncpy(____BAH_COMPILER_VAR_235+currStrOff, m->def, strLen_5);
                         currStrOff += strLen_5;
                         
-                        strncpy(____BAH_COMPILER_VAR_233+currStrOff, ";\n", strLen_6);
+                        strncpy(____BAH_COMPILER_VAR_235+currStrOff, ";\n", strLen_6);
                         currStrOff += strLen_6;
                         
                     }
-                    code =  ____BAH_COMPILER_VAR_233;
+                    code =  ____BAH_COMPILER_VAR_235;
 declared =  true;
 }
 if ((cmpt.hasPrefix((struct string*)&cmpt,"[]")==1)) {
@@ -3801,7 +3811,7 @@ cmpt.trimLeft((struct string*)&cmpt,2);
 char * cmptstr =  cmpt.str((struct string*)&cmpt);
 struct string elemCType =  getCType(cmptstr,elems);
 char * elemCTypeStr =  elemCType.str((struct string*)&elemCType);
-char * ____BAH_COMPILER_VAR_234 =null;
+char * ____BAH_COMPILER_VAR_236 =null;
                     {
                         long int currStrOff = 0;
                         long int strLen_0 = strlen(code);
@@ -3822,114 +3832,7 @@ long int strLen_14 = strlen("->elemSize = sizeof(");
 long int strLen_15 = strlen(elemCTypeStr);
 long int strLen_16 = strlen(");\n            ");
 ;                            
-                        ____BAH_COMPILER_VAR_234 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2 + strLen_3 + strLen_4 + strLen_5 + strLen_6 + strLen_7 + strLen_8 + strLen_9 + strLen_10 + strLen_11 + strLen_12 + strLen_13 + strLen_14 + strLen_15 + strLen_16);
-                        
-                        strncpy(____BAH_COMPILER_VAR_234+currStrOff, code, strLen_0);
-                        currStrOff += strLen_0;
-                        
-                        strncpy(____BAH_COMPILER_VAR_234+currStrOff, v->name, strLen_1);
-                        currStrOff += strLen_1;
-                        
-                        strncpy(____BAH_COMPILER_VAR_234+currStrOff, sep, strLen_2);
-                        currStrOff += strLen_2;
-                        
-                        strncpy(____BAH_COMPILER_VAR_234+currStrOff, m->name, strLen_3);
-                        currStrOff += strLen_3;
-                        
-                        strncpy(____BAH_COMPILER_VAR_234+currStrOff, " = memoryAlloc(sizeof(array(", strLen_4);
-                        currStrOff += strLen_4;
-                        
-                        strncpy(____BAH_COMPILER_VAR_234+currStrOff, elemCTypeStr, strLen_5);
-                        currStrOff += strLen_5;
-                        
-                        strncpy(____BAH_COMPILER_VAR_234+currStrOff, ")));\n            ", strLen_6);
-                        currStrOff += strLen_6;
-                        
-                        strncpy(____BAH_COMPILER_VAR_234+currStrOff, v->name, strLen_7);
-                        currStrOff += strLen_7;
-                        
-                        strncpy(____BAH_COMPILER_VAR_234+currStrOff, sep, strLen_8);
-                        currStrOff += strLen_8;
-                        
-                        strncpy(____BAH_COMPILER_VAR_234+currStrOff, m->name, strLen_9);
-                        currStrOff += strLen_9;
-                        
-                        strncpy(____BAH_COMPILER_VAR_234+currStrOff, "->length = 0;\n            ", strLen_10);
-                        currStrOff += strLen_10;
-                        
-                        strncpy(____BAH_COMPILER_VAR_234+currStrOff, v->name, strLen_11);
-                        currStrOff += strLen_11;
-                        
-                        strncpy(____BAH_COMPILER_VAR_234+currStrOff, sep, strLen_12);
-                        currStrOff += strLen_12;
-                        
-                        strncpy(____BAH_COMPILER_VAR_234+currStrOff, m->name, strLen_13);
-                        currStrOff += strLen_13;
-                        
-                        strncpy(____BAH_COMPILER_VAR_234+currStrOff, "->elemSize = sizeof(", strLen_14);
-                        currStrOff += strLen_14;
-                        
-                        strncpy(____BAH_COMPILER_VAR_234+currStrOff, elemCTypeStr, strLen_15);
-                        currStrOff += strLen_15;
-                        
-                        strncpy(____BAH_COMPILER_VAR_234+currStrOff, ");\n            ", strLen_16);
-                        currStrOff += strLen_16;
-                        
-                    }
-                    code =  ____BAH_COMPILER_VAR_234;
-declared =  true;
-}
-if ((isRCPpointerType(m->type)&&(declared==false))) {
-char * ____BAH_COMPILER_VAR_235 =null;
-                    {
-                        long int currStrOff = 0;
-                        long int strLen_0 = strlen(code);
-long int strLen_1 = strlen(v->name);
-long int strLen_2 = strlen(sep);
-long int strLen_3 = strlen(m->name);
-long int strLen_4 = strlen("= null;\n");
-;                            
-                        ____BAH_COMPILER_VAR_235 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2 + strLen_3 + strLen_4);
-                        
-                        strncpy(____BAH_COMPILER_VAR_235+currStrOff, code, strLen_0);
-                        currStrOff += strLen_0;
-                        
-                        strncpy(____BAH_COMPILER_VAR_235+currStrOff, v->name, strLen_1);
-                        currStrOff += strLen_1;
-                        
-                        strncpy(____BAH_COMPILER_VAR_235+currStrOff, sep, strLen_2);
-                        currStrOff += strLen_2;
-                        
-                        strncpy(____BAH_COMPILER_VAR_235+currStrOff, m->name, strLen_3);
-                        currStrOff += strLen_3;
-                        
-                        strncpy(____BAH_COMPILER_VAR_235+currStrOff, "= null;\n", strLen_4);
-                        currStrOff += strLen_4;
-                        
-                    }
-                    code =  ____BAH_COMPILER_VAR_235;
-}
-i =  i + 1;
-};
-if ((strlen(s->extendedFrom)>0)) {
-struct cStruct* es =  searchStruct(s->extendedFrom,elems);
-i =  0;
-while ((i<len(es->methods))) {
-struct func* m =  es->methods->data[i];
-char * ____BAH_COMPILER_VAR_236 =null;
-                    {
-                        long int currStrOff = 0;
-                        long int strLen_0 = strlen(code);
-long int strLen_1 = strlen(v->name);
-long int strLen_2 = strlen(sep);
-long int strLen_3 = strlen(m->name);
-long int strLen_4 = strlen(" = ");
-long int strLen_5 = strlen(es->name);
-long int strLen_6 = strlen("__");
-long int strLen_7 = strlen(m->name);
-long int strLen_8 = strlen(";\n");
-;                            
-                        ____BAH_COMPILER_VAR_236 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2 + strLen_3 + strLen_4 + strLen_5 + strLen_6 + strLen_7 + strLen_8);
+                        ____BAH_COMPILER_VAR_236 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2 + strLen_3 + strLen_4 + strLen_5 + strLen_6 + strLen_7 + strLen_8 + strLen_9 + strLen_10 + strLen_11 + strLen_12 + strLen_13 + strLen_14 + strLen_15 + strLen_16);
                         
                         strncpy(____BAH_COMPILER_VAR_236+currStrOff, code, strLen_0);
                         currStrOff += strLen_0;
@@ -3943,30 +3846,50 @@ long int strLen_8 = strlen(";\n");
                         strncpy(____BAH_COMPILER_VAR_236+currStrOff, m->name, strLen_3);
                         currStrOff += strLen_3;
                         
-                        strncpy(____BAH_COMPILER_VAR_236+currStrOff, " = ", strLen_4);
+                        strncpy(____BAH_COMPILER_VAR_236+currStrOff, " = memoryAlloc(sizeof(array(", strLen_4);
                         currStrOff += strLen_4;
                         
-                        strncpy(____BAH_COMPILER_VAR_236+currStrOff, es->name, strLen_5);
+                        strncpy(____BAH_COMPILER_VAR_236+currStrOff, elemCTypeStr, strLen_5);
                         currStrOff += strLen_5;
                         
-                        strncpy(____BAH_COMPILER_VAR_236+currStrOff, "__", strLen_6);
+                        strncpy(____BAH_COMPILER_VAR_236+currStrOff, ")));\n            ", strLen_6);
                         currStrOff += strLen_6;
                         
-                        strncpy(____BAH_COMPILER_VAR_236+currStrOff, m->name, strLen_7);
+                        strncpy(____BAH_COMPILER_VAR_236+currStrOff, v->name, strLen_7);
                         currStrOff += strLen_7;
                         
-                        strncpy(____BAH_COMPILER_VAR_236+currStrOff, ";\n", strLen_8);
+                        strncpy(____BAH_COMPILER_VAR_236+currStrOff, sep, strLen_8);
                         currStrOff += strLen_8;
+                        
+                        strncpy(____BAH_COMPILER_VAR_236+currStrOff, m->name, strLen_9);
+                        currStrOff += strLen_9;
+                        
+                        strncpy(____BAH_COMPILER_VAR_236+currStrOff, "->length = 0;\n            ", strLen_10);
+                        currStrOff += strLen_10;
+                        
+                        strncpy(____BAH_COMPILER_VAR_236+currStrOff, v->name, strLen_11);
+                        currStrOff += strLen_11;
+                        
+                        strncpy(____BAH_COMPILER_VAR_236+currStrOff, sep, strLen_12);
+                        currStrOff += strLen_12;
+                        
+                        strncpy(____BAH_COMPILER_VAR_236+currStrOff, m->name, strLen_13);
+                        currStrOff += strLen_13;
+                        
+                        strncpy(____BAH_COMPILER_VAR_236+currStrOff, "->elemSize = sizeof(", strLen_14);
+                        currStrOff += strLen_14;
+                        
+                        strncpy(____BAH_COMPILER_VAR_236+currStrOff, elemCTypeStr, strLen_15);
+                        currStrOff += strLen_15;
+                        
+                        strncpy(____BAH_COMPILER_VAR_236+currStrOff, ");\n            ", strLen_16);
+                        currStrOff += strLen_16;
                         
                     }
                     code =  ____BAH_COMPILER_VAR_236;
-i =  i + 1;
-};
+declared =  true;
 }
-array(struct func*)* methods =  s->methods;
-i =  0;
-while ((i<len(methods))) {
-struct func* m =  methods->data[i];
+if ((isRCPpointerType(m->type)&&(declared==false))) {
 char * ____BAH_COMPILER_VAR_237 =null;
                     {
                         long int currStrOff = 0;
@@ -3974,13 +3897,9 @@ char * ____BAH_COMPILER_VAR_237 =null;
 long int strLen_1 = strlen(v->name);
 long int strLen_2 = strlen(sep);
 long int strLen_3 = strlen(m->name);
-long int strLen_4 = strlen(" = ");
-long int strLen_5 = strlen(s->name);
-long int strLen_6 = strlen("__");
-long int strLen_7 = strlen(m->name);
-long int strLen_8 = strlen(";\n");
+long int strLen_4 = strlen("= null;\n");
 ;                            
-                        ____BAH_COMPILER_VAR_237 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2 + strLen_3 + strLen_4 + strLen_5 + strLen_6 + strLen_7 + strLen_8);
+                        ____BAH_COMPILER_VAR_237 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2 + strLen_3 + strLen_4);
                         
                         strncpy(____BAH_COMPILER_VAR_237+currStrOff, code, strLen_0);
                         currStrOff += strLen_0;
@@ -3994,28 +3913,119 @@ long int strLen_8 = strlen(";\n");
                         strncpy(____BAH_COMPILER_VAR_237+currStrOff, m->name, strLen_3);
                         currStrOff += strLen_3;
                         
-                        strncpy(____BAH_COMPILER_VAR_237+currStrOff, " = ", strLen_4);
+                        strncpy(____BAH_COMPILER_VAR_237+currStrOff, "= null;\n", strLen_4);
                         currStrOff += strLen_4;
-                        
-                        strncpy(____BAH_COMPILER_VAR_237+currStrOff, s->name, strLen_5);
-                        currStrOff += strLen_5;
-                        
-                        strncpy(____BAH_COMPILER_VAR_237+currStrOff, "__", strLen_6);
-                        currStrOff += strLen_6;
-                        
-                        strncpy(____BAH_COMPILER_VAR_237+currStrOff, m->name, strLen_7);
-                        currStrOff += strLen_7;
-                        
-                        strncpy(____BAH_COMPILER_VAR_237+currStrOff, ";\n", strLen_8);
-                        currStrOff += strLen_8;
                         
                     }
                     code =  ____BAH_COMPILER_VAR_237;
+}
+i =  i + 1;
+};
+if ((strlen(s->extendedFrom)>0)) {
+struct cStruct* es =  searchStruct(s->extendedFrom,elems);
+i =  0;
+while ((i<len(es->methods))) {
+struct func* m =  es->methods->data[i];
+char * ____BAH_COMPILER_VAR_238 =null;
+                    {
+                        long int currStrOff = 0;
+                        long int strLen_0 = strlen(code);
+long int strLen_1 = strlen(v->name);
+long int strLen_2 = strlen(sep);
+long int strLen_3 = strlen(m->name);
+long int strLen_4 = strlen(" = ");
+long int strLen_5 = strlen(es->name);
+long int strLen_6 = strlen("__");
+long int strLen_7 = strlen(m->name);
+long int strLen_8 = strlen(";\n");
+;                            
+                        ____BAH_COMPILER_VAR_238 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2 + strLen_3 + strLen_4 + strLen_5 + strLen_6 + strLen_7 + strLen_8);
+                        
+                        strncpy(____BAH_COMPILER_VAR_238+currStrOff, code, strLen_0);
+                        currStrOff += strLen_0;
+                        
+                        strncpy(____BAH_COMPILER_VAR_238+currStrOff, v->name, strLen_1);
+                        currStrOff += strLen_1;
+                        
+                        strncpy(____BAH_COMPILER_VAR_238+currStrOff, sep, strLen_2);
+                        currStrOff += strLen_2;
+                        
+                        strncpy(____BAH_COMPILER_VAR_238+currStrOff, m->name, strLen_3);
+                        currStrOff += strLen_3;
+                        
+                        strncpy(____BAH_COMPILER_VAR_238+currStrOff, " = ", strLen_4);
+                        currStrOff += strLen_4;
+                        
+                        strncpy(____BAH_COMPILER_VAR_238+currStrOff, es->name, strLen_5);
+                        currStrOff += strLen_5;
+                        
+                        strncpy(____BAH_COMPILER_VAR_238+currStrOff, "__", strLen_6);
+                        currStrOff += strLen_6;
+                        
+                        strncpy(____BAH_COMPILER_VAR_238+currStrOff, m->name, strLen_7);
+                        currStrOff += strLen_7;
+                        
+                        strncpy(____BAH_COMPILER_VAR_238+currStrOff, ";\n", strLen_8);
+                        currStrOff += strLen_8;
+                        
+                    }
+                    code =  ____BAH_COMPILER_VAR_238;
+i =  i + 1;
+};
+}
+array(struct func*)* methods =  s->methods;
+i =  0;
+while ((i<len(methods))) {
+struct func* m =  methods->data[i];
+char * ____BAH_COMPILER_VAR_239 =null;
+                    {
+                        long int currStrOff = 0;
+                        long int strLen_0 = strlen(code);
+long int strLen_1 = strlen(v->name);
+long int strLen_2 = strlen(sep);
+long int strLen_3 = strlen(m->name);
+long int strLen_4 = strlen(" = ");
+long int strLen_5 = strlen(s->name);
+long int strLen_6 = strlen("__");
+long int strLen_7 = strlen(m->name);
+long int strLen_8 = strlen(";\n");
+;                            
+                        ____BAH_COMPILER_VAR_239 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2 + strLen_3 + strLen_4 + strLen_5 + strLen_6 + strLen_7 + strLen_8);
+                        
+                        strncpy(____BAH_COMPILER_VAR_239+currStrOff, code, strLen_0);
+                        currStrOff += strLen_0;
+                        
+                        strncpy(____BAH_COMPILER_VAR_239+currStrOff, v->name, strLen_1);
+                        currStrOff += strLen_1;
+                        
+                        strncpy(____BAH_COMPILER_VAR_239+currStrOff, sep, strLen_2);
+                        currStrOff += strLen_2;
+                        
+                        strncpy(____BAH_COMPILER_VAR_239+currStrOff, m->name, strLen_3);
+                        currStrOff += strLen_3;
+                        
+                        strncpy(____BAH_COMPILER_VAR_239+currStrOff, " = ", strLen_4);
+                        currStrOff += strLen_4;
+                        
+                        strncpy(____BAH_COMPILER_VAR_239+currStrOff, s->name, strLen_5);
+                        currStrOff += strLen_5;
+                        
+                        strncpy(____BAH_COMPILER_VAR_239+currStrOff, "__", strLen_6);
+                        currStrOff += strLen_6;
+                        
+                        strncpy(____BAH_COMPILER_VAR_239+currStrOff, m->name, strLen_7);
+                        currStrOff += strLen_7;
+                        
+                        strncpy(____BAH_COMPILER_VAR_239+currStrOff, ";\n", strLen_8);
+                        currStrOff += strLen_8;
+                        
+                    }
+                    code =  ____BAH_COMPILER_VAR_239;
 i =  i + 1;
 };
 if ((((s->isBinding==false)&&RCPavailable())&&(s->hasRCPmemb==true))) {
 if ((strCount(v->type,"*")==0)) {
-char * ____BAH_COMPILER_VAR_238 =null;
+char * ____BAH_COMPILER_VAR_240 =null;
                     {
                         long int currStrOff = 0;
                         long int strLen_0 = strlen(code);
@@ -4024,28 +4034,28 @@ long int strLen_2 = strlen(".__RCP_counter = malloc(sizeof(int));*(int*)");
 long int strLen_3 = strlen(v->name);
 long int strLen_4 = strlen(".__RCP_counter = 1;\n");
 ;                            
-                        ____BAH_COMPILER_VAR_238 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2 + strLen_3 + strLen_4);
+                        ____BAH_COMPILER_VAR_240 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2 + strLen_3 + strLen_4);
                         
-                        strncpy(____BAH_COMPILER_VAR_238+currStrOff, code, strLen_0);
+                        strncpy(____BAH_COMPILER_VAR_240+currStrOff, code, strLen_0);
                         currStrOff += strLen_0;
                         
-                        strncpy(____BAH_COMPILER_VAR_238+currStrOff, v->name, strLen_1);
+                        strncpy(____BAH_COMPILER_VAR_240+currStrOff, v->name, strLen_1);
                         currStrOff += strLen_1;
                         
-                        strncpy(____BAH_COMPILER_VAR_238+currStrOff, ".__RCP_counter = malloc(sizeof(int));*(int*)", strLen_2);
+                        strncpy(____BAH_COMPILER_VAR_240+currStrOff, ".__RCP_counter = malloc(sizeof(int));*(int*)", strLen_2);
                         currStrOff += strLen_2;
                         
-                        strncpy(____BAH_COMPILER_VAR_238+currStrOff, v->name, strLen_3);
+                        strncpy(____BAH_COMPILER_VAR_240+currStrOff, v->name, strLen_3);
                         currStrOff += strLen_3;
                         
-                        strncpy(____BAH_COMPILER_VAR_238+currStrOff, ".__RCP_counter = 1;\n", strLen_4);
+                        strncpy(____BAH_COMPILER_VAR_240+currStrOff, ".__RCP_counter = 1;\n", strLen_4);
                         currStrOff += strLen_4;
                         
                     }
-                    code =  ____BAH_COMPILER_VAR_238;
+                    code =  ____BAH_COMPILER_VAR_240;
 }
 else {
-char * ____BAH_COMPILER_VAR_239 =null;
+char * ____BAH_COMPILER_VAR_241 =null;
                     {
                         long int currStrOff = 0;
                         long int strLen_0 = strlen(code);
@@ -4054,76 +4064,76 @@ long int strLen_2 = strlen("->__RCP_counter = RCP_request(");
 long int strLen_3 = strlen(v->name);
 long int strLen_4 = strlen(");\n");
 ;                            
-                        ____BAH_COMPILER_VAR_239 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2 + strLen_3 + strLen_4);
+                        ____BAH_COMPILER_VAR_241 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2 + strLen_3 + strLen_4);
                         
-                        strncpy(____BAH_COMPILER_VAR_239+currStrOff, code, strLen_0);
+                        strncpy(____BAH_COMPILER_VAR_241+currStrOff, code, strLen_0);
                         currStrOff += strLen_0;
                         
-                        strncpy(____BAH_COMPILER_VAR_239+currStrOff, v->name, strLen_1);
+                        strncpy(____BAH_COMPILER_VAR_241+currStrOff, v->name, strLen_1);
                         currStrOff += strLen_1;
                         
-                        strncpy(____BAH_COMPILER_VAR_239+currStrOff, "->__RCP_counter = RCP_request(", strLen_2);
+                        strncpy(____BAH_COMPILER_VAR_241+currStrOff, "->__RCP_counter = RCP_request(", strLen_2);
                         currStrOff += strLen_2;
                         
-                        strncpy(____BAH_COMPILER_VAR_239+currStrOff, v->name, strLen_3);
+                        strncpy(____BAH_COMPILER_VAR_241+currStrOff, v->name, strLen_3);
                         currStrOff += strLen_3;
                         
-                        strncpy(____BAH_COMPILER_VAR_239+currStrOff, ");\n", strLen_4);
+                        strncpy(____BAH_COMPILER_VAR_241+currStrOff, ");\n", strLen_4);
                         currStrOff += strLen_4;
                         
                     }
-                    code =  ____BAH_COMPILER_VAR_239;
+                    code =  ____BAH_COMPILER_VAR_241;
 }
 }
-char * ____BAH_COMPILER_VAR_240 = code;
-return ____BAH_COMPILER_VAR_240;
+char * ____BAH_COMPILER_VAR_242 = code;
+return ____BAH_COMPILER_VAR_242;
 };
 long int NB_COMP_VAR =  0;
 char * genCompilerVar(){
-char * ____BAH_COMPILER_VAR_241 =intToStr(NB_COMP_VAR);char * ____BAH_COMPILER_VAR_242 =null;
+char * ____BAH_COMPILER_VAR_243 =intToStr(NB_COMP_VAR);char * ____BAH_COMPILER_VAR_244 =null;
                     {
                         long int currStrOff = 0;
                         long int strLen_0 = strlen("____BAH_COMPILER_VAR_");
-long int strLen_1 = strlen(____BAH_COMPILER_VAR_241);
+long int strLen_1 = strlen(____BAH_COMPILER_VAR_243);
 ;                            
-                        ____BAH_COMPILER_VAR_242 = memoryAlloc(1 + strLen_0 + strLen_1);
+                        ____BAH_COMPILER_VAR_244 = memoryAlloc(1 + strLen_0 + strLen_1);
                         
-                        strncpy(____BAH_COMPILER_VAR_242+currStrOff, "____BAH_COMPILER_VAR_", strLen_0);
+                        strncpy(____BAH_COMPILER_VAR_244+currStrOff, "____BAH_COMPILER_VAR_", strLen_0);
                         currStrOff += strLen_0;
                         
-                        strncpy(____BAH_COMPILER_VAR_242+currStrOff, ____BAH_COMPILER_VAR_241, strLen_1);
+                        strncpy(____BAH_COMPILER_VAR_244+currStrOff, ____BAH_COMPILER_VAR_243, strLen_1);
                         currStrOff += strLen_1;
                         
                     }
-                    char * name =  ____BAH_COMPILER_VAR_242;
+                    char * name =  ____BAH_COMPILER_VAR_244;
 NB_COMP_VAR =  NB_COMP_VAR + 1;
-char * ____BAH_COMPILER_VAR_243 = name;
-return ____BAH_COMPILER_VAR_243;
+char * ____BAH_COMPILER_VAR_245 = name;
+return ____BAH_COMPILER_VAR_245;
 };
 typedef array(struct variable*)* __BAH_ARR_TYPE_variable;
 int varInArr(struct variable* v,__BAH_ARR_TYPE_variable arr){
 if ((arr==null)) {
-int ____BAH_COMPILER_VAR_244 = false;
-return ____BAH_COMPILER_VAR_244;
+int ____BAH_COMPILER_VAR_246 = false;
+return ____BAH_COMPILER_VAR_246;
 }
 long int j =  0;
 while ((j<len(arr))) {
 struct variable* ev =  arr->data[j];
 if ((strcmp(ev->name, v->name) == 0)) {
-int ____BAH_COMPILER_VAR_245 = true;
-return ____BAH_COMPILER_VAR_245;
+int ____BAH_COMPILER_VAR_247 = true;
+return ____BAH_COMPILER_VAR_247;
 }
 j =  j + 1;
 };
-int ____BAH_COMPILER_VAR_246 = false;
-return ____BAH_COMPILER_VAR_246;
+int ____BAH_COMPILER_VAR_248 = false;
+return ____BAH_COMPILER_VAR_248;
 };
 struct rope* decrVar(struct variable* v,struct Elems* elems){
 struct rope* r =  rope("");
 if (strHasPrefix(v->type,"[]")) {
 struct string at =  string(v->type);
 at.trimLeft((struct string*)&at,2);
-char * ____BAH_COMPILER_VAR_247 =at.str((struct string*)&at);if (isRCPtype(____BAH_COMPILER_VAR_247,elems)) {
+char * ____BAH_COMPILER_VAR_249 =at.str((struct string*)&at);if (isRCPtype(____BAH_COMPILER_VAR_249,elems)) {
 struct variable* arrElem = memoryAlloc(sizeof(struct variable));
 arrElem->name = "";
 arrElem->type = "";
@@ -4132,23 +4142,23 @@ arrElem->isArray = false;
 arrElem->from = "";
 arrElem->outterScope = false;
 arrElem->type =  at.str((struct string*)&at);
-char * ____BAH_COMPILER_VAR_248 =null;
+char * ____BAH_COMPILER_VAR_250 =null;
                     {
                         long int currStrOff = 0;
                         long int strLen_0 = strlen(v->name);
 long int strLen_1 = strlen("->data[arrElemIndex]");
 ;                            
-                        ____BAH_COMPILER_VAR_248 = memoryAlloc(1 + strLen_0 + strLen_1);
+                        ____BAH_COMPILER_VAR_250 = memoryAlloc(1 + strLen_0 + strLen_1);
                         
-                        strncpy(____BAH_COMPILER_VAR_248+currStrOff, v->name, strLen_0);
+                        strncpy(____BAH_COMPILER_VAR_250+currStrOff, v->name, strLen_0);
                         currStrOff += strLen_0;
                         
-                        strncpy(____BAH_COMPILER_VAR_248+currStrOff, "->data[arrElemIndex]", strLen_1);
+                        strncpy(____BAH_COMPILER_VAR_250+currStrOff, "->data[arrElemIndex]", strLen_1);
                         currStrOff += strLen_1;
                         
                     }
-                    arrElem->name =  ____BAH_COMPILER_VAR_248;
-char * ____BAH_COMPILER_VAR_249 =null;
+                    arrElem->name =  ____BAH_COMPILER_VAR_250;
+char * ____BAH_COMPILER_VAR_251 =null;
                     {
                         long int currStrOff = 0;
                         long int strLen_0 = strlen("\n            {//////////RCP//////////\n            struct RCP * arrRCP = RCP_request(");
@@ -4159,34 +4169,34 @@ long int strLen_4 = strlen("->data);\n                if (arrDataRCP != null && 
 long int strLen_5 = strlen(v->name);
 long int strLen_6 = strlen(")-1; arrElemIndex >= 0; arrElemIndex--) {\n                        ");
 ;                            
-                        ____BAH_COMPILER_VAR_249 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2 + strLen_3 + strLen_4 + strLen_5 + strLen_6);
+                        ____BAH_COMPILER_VAR_251 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2 + strLen_3 + strLen_4 + strLen_5 + strLen_6);
                         
-                        strncpy(____BAH_COMPILER_VAR_249+currStrOff, "\n            {//////////RCP//////////\n            struct RCP * arrRCP = RCP_request(", strLen_0);
+                        strncpy(____BAH_COMPILER_VAR_251+currStrOff, "\n            {//////////RCP//////////\n            struct RCP * arrRCP = RCP_request(", strLen_0);
                         currStrOff += strLen_0;
                         
-                        strncpy(____BAH_COMPILER_VAR_249+currStrOff, v->name, strLen_1);
+                        strncpy(____BAH_COMPILER_VAR_251+currStrOff, v->name, strLen_1);
                         currStrOff += strLen_1;
                         
-                        strncpy(____BAH_COMPILER_VAR_249+currStrOff, ");\n            if (arrRCP != null && arrRCP->c == 1) {\n                struct RCP * arrDataRCP = RCP_request(", strLen_2);
+                        strncpy(____BAH_COMPILER_VAR_251+currStrOff, ");\n            if (arrRCP != null && arrRCP->c == 1) {\n                struct RCP * arrDataRCP = RCP_request(", strLen_2);
                         currStrOff += strLen_2;
                         
-                        strncpy(____BAH_COMPILER_VAR_249+currStrOff, v->name, strLen_3);
+                        strncpy(____BAH_COMPILER_VAR_251+currStrOff, v->name, strLen_3);
                         currStrOff += strLen_3;
                         
-                        strncpy(____BAH_COMPILER_VAR_249+currStrOff, "->data);\n                if (arrDataRCP != null && arrDataRCP->c == 1) {\n                    for(int arrElemIndex=len(", strLen_4);
+                        strncpy(____BAH_COMPILER_VAR_251+currStrOff, "->data);\n                if (arrDataRCP != null && arrDataRCP->c == 1) {\n                    for(int arrElemIndex=len(", strLen_4);
                         currStrOff += strLen_4;
                         
-                        strncpy(____BAH_COMPILER_VAR_249+currStrOff, v->name, strLen_5);
+                        strncpy(____BAH_COMPILER_VAR_251+currStrOff, v->name, strLen_5);
                         currStrOff += strLen_5;
                         
-                        strncpy(____BAH_COMPILER_VAR_249+currStrOff, ")-1; arrElemIndex >= 0; arrElemIndex--) {\n                        ", strLen_6);
+                        strncpy(____BAH_COMPILER_VAR_251+currStrOff, ")-1; arrElemIndex >= 0; arrElemIndex--) {\n                        ", strLen_6);
                         currStrOff += strLen_6;
                         
                     }
-                    r =  rope(____BAH_COMPILER_VAR_249)->add(rope(____BAH_COMPILER_VAR_249), decrVar(arrElem,elems))->add(rope(____BAH_COMPILER_VAR_249)->add(rope(____BAH_COMPILER_VAR_249), decrVar(arrElem,elems)), rope("\n                    };\n                    RCP_decrRCP(arrDataRCP);\n                }\n            }\n            RCP_decrRCP(arrRCP);\n            };//////////////////////\n            "));
+                    r =  rope(____BAH_COMPILER_VAR_251)->add(rope(____BAH_COMPILER_VAR_251), decrVar(arrElem,elems))->add(rope(____BAH_COMPILER_VAR_251)->add(rope(____BAH_COMPILER_VAR_251), decrVar(arrElem,elems)), rope("\n                    };\n                    RCP_decrRCP(arrDataRCP);\n                }\n            }\n            RCP_decrRCP(arrRCP);\n            };//////////////////////\n            "));
 }
 else {
-char * ____BAH_COMPILER_VAR_250 =null;
+char * ____BAH_COMPILER_VAR_252 =null;
                     {
                         long int currStrOff = 0;
                         long int strLen_0 = strlen("\n            {//////////RCP//////////\n            struct RCP * arrRCP = RCP_request(");
@@ -4195,25 +4205,25 @@ long int strLen_2 = strlen(");\n            if (arrRCP != null) {\n             
 long int strLen_3 = strlen(v->name);
 long int strLen_4 = strlen("->data);\n                    if (arrDataRCP != null && arrDataRCP->c == 1) {\n                        RCP_decrRCP(arrDataRCP);\n                    }\n                }\n                RCP_decrRCP(arrRCP);\n            }\n            };//////////////////////\n            ");
 ;                            
-                        ____BAH_COMPILER_VAR_250 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2 + strLen_3 + strLen_4);
+                        ____BAH_COMPILER_VAR_252 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2 + strLen_3 + strLen_4);
                         
-                        strncpy(____BAH_COMPILER_VAR_250+currStrOff, "\n            {//////////RCP//////////\n            struct RCP * arrRCP = RCP_request(", strLen_0);
+                        strncpy(____BAH_COMPILER_VAR_252+currStrOff, "\n            {//////////RCP//////////\n            struct RCP * arrRCP = RCP_request(", strLen_0);
                         currStrOff += strLen_0;
                         
-                        strncpy(____BAH_COMPILER_VAR_250+currStrOff, v->name, strLen_1);
+                        strncpy(____BAH_COMPILER_VAR_252+currStrOff, v->name, strLen_1);
                         currStrOff += strLen_1;
                         
-                        strncpy(____BAH_COMPILER_VAR_250+currStrOff, ");\n            if (arrRCP != null) {\n                if (arrRCP->c == 1) {\n                    struct RCP * arrDataRCP = RCP_request(", strLen_2);
+                        strncpy(____BAH_COMPILER_VAR_252+currStrOff, ");\n            if (arrRCP != null) {\n                if (arrRCP->c == 1) {\n                    struct RCP * arrDataRCP = RCP_request(", strLen_2);
                         currStrOff += strLen_2;
                         
-                        strncpy(____BAH_COMPILER_VAR_250+currStrOff, v->name, strLen_3);
+                        strncpy(____BAH_COMPILER_VAR_252+currStrOff, v->name, strLen_3);
                         currStrOff += strLen_3;
                         
-                        strncpy(____BAH_COMPILER_VAR_250+currStrOff, "->data);\n                    if (arrDataRCP != null && arrDataRCP->c == 1) {\n                        RCP_decrRCP(arrDataRCP);\n                    }\n                }\n                RCP_decrRCP(arrRCP);\n            }\n            };//////////////////////\n            ", strLen_4);
+                        strncpy(____BAH_COMPILER_VAR_252+currStrOff, "->data);\n                    if (arrDataRCP != null && arrDataRCP->c == 1) {\n                        RCP_decrRCP(arrDataRCP);\n                    }\n                }\n                RCP_decrRCP(arrRCP);\n            }\n            };//////////////////////\n            ", strLen_4);
                         currStrOff += strLen_4;
                         
                     }
-                    r =  rope(____BAH_COMPILER_VAR_250);
+                    r =  rope(____BAH_COMPILER_VAR_252);
 }
 }
 else {
@@ -4226,7 +4236,7 @@ if ((isPointer==true)) {
 amp =  "";
 heap =  "1";
 }
-char * ____BAH_COMPILER_VAR_251 =null;
+char * ____BAH_COMPILER_VAR_253 =null;
                     {
                         long int currStrOff = 0;
                         long int strLen_0 = strlen("__RCP_clean_");
@@ -4238,126 +4248,126 @@ long int strLen_5 = strlen(", ");
 long int strLen_6 = strlen(heap);
 long int strLen_7 = strlen(");\n");
 ;                            
-                        ____BAH_COMPILER_VAR_251 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2 + strLen_3 + strLen_4 + strLen_5 + strLen_6 + strLen_7);
+                        ____BAH_COMPILER_VAR_253 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2 + strLen_3 + strLen_4 + strLen_5 + strLen_6 + strLen_7);
                         
-                        strncpy(____BAH_COMPILER_VAR_251+currStrOff, "__RCP_clean_", strLen_0);
+                        strncpy(____BAH_COMPILER_VAR_253+currStrOff, "__RCP_clean_", strLen_0);
                         currStrOff += strLen_0;
                         
-                        strncpy(____BAH_COMPILER_VAR_251+currStrOff, s->name, strLen_1);
+                        strncpy(____BAH_COMPILER_VAR_253+currStrOff, s->name, strLen_1);
                         currStrOff += strLen_1;
                         
-                        strncpy(____BAH_COMPILER_VAR_251+currStrOff, "(", strLen_2);
+                        strncpy(____BAH_COMPILER_VAR_253+currStrOff, "(", strLen_2);
                         currStrOff += strLen_2;
                         
-                        strncpy(____BAH_COMPILER_VAR_251+currStrOff, amp, strLen_3);
+                        strncpy(____BAH_COMPILER_VAR_253+currStrOff, amp, strLen_3);
                         currStrOff += strLen_3;
                         
-                        strncpy(____BAH_COMPILER_VAR_251+currStrOff, v->name, strLen_4);
+                        strncpy(____BAH_COMPILER_VAR_253+currStrOff, v->name, strLen_4);
                         currStrOff += strLen_4;
                         
-                        strncpy(____BAH_COMPILER_VAR_251+currStrOff, ", ", strLen_5);
+                        strncpy(____BAH_COMPILER_VAR_253+currStrOff, ", ", strLen_5);
                         currStrOff += strLen_5;
                         
-                        strncpy(____BAH_COMPILER_VAR_251+currStrOff, heap, strLen_6);
+                        strncpy(____BAH_COMPILER_VAR_253+currStrOff, heap, strLen_6);
                         currStrOff += strLen_6;
                         
-                        strncpy(____BAH_COMPILER_VAR_251+currStrOff, ");\n", strLen_7);
+                        strncpy(____BAH_COMPILER_VAR_253+currStrOff, ");\n", strLen_7);
                         currStrOff += strLen_7;
                         
                     }
-                    r =  r->add(r, rope(____BAH_COMPILER_VAR_251));
+                    r =  r->add(r, rope(____BAH_COMPILER_VAR_253));
 }
 else if ((isPointer==true)) {
-char * ____BAH_COMPILER_VAR_252 =null;
+char * ____BAH_COMPILER_VAR_254 =null;
                     {
                         long int currStrOff = 0;
                         long int strLen_0 = strlen("RCP_decr(");
 long int strLen_1 = strlen(v->name);
 long int strLen_2 = strlen(");\n");
 ;                            
-                        ____BAH_COMPILER_VAR_252 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2);
+                        ____BAH_COMPILER_VAR_254 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2);
                         
-                        strncpy(____BAH_COMPILER_VAR_252+currStrOff, "RCP_decr(", strLen_0);
+                        strncpy(____BAH_COMPILER_VAR_254+currStrOff, "RCP_decr(", strLen_0);
                         currStrOff += strLen_0;
                         
-                        strncpy(____BAH_COMPILER_VAR_252+currStrOff, v->name, strLen_1);
+                        strncpy(____BAH_COMPILER_VAR_254+currStrOff, v->name, strLen_1);
                         currStrOff += strLen_1;
                         
-                        strncpy(____BAH_COMPILER_VAR_252+currStrOff, ");\n", strLen_2);
+                        strncpy(____BAH_COMPILER_VAR_254+currStrOff, ");\n", strLen_2);
                         currStrOff += strLen_2;
                         
                     }
-                    r =  r->add(r, rope(____BAH_COMPILER_VAR_252));
+                    r =  r->add(r, rope(____BAH_COMPILER_VAR_254));
 }
 }
-struct rope* ____BAH_COMPILER_VAR_253 = r;
-return ____BAH_COMPILER_VAR_253;
+struct rope* ____BAH_COMPILER_VAR_255 = r;
+return ____BAH_COMPILER_VAR_255;
 };
 struct rope* incrVar(struct variable* v,struct Elems* elems){
 struct cStruct* s =  searchStruct(v->type,elems);
 if ((((s!=null)&&(isRCPpointerType(v->type)==false))&&(s->isBinding==false))) {
-char * ____BAH_COMPILER_VAR_254 =null;
+char * ____BAH_COMPILER_VAR_256 =null;
                     {
                         long int currStrOff = 0;
                         long int strLen_0 = strlen("RCP_incrCounter(");
 long int strLen_1 = strlen(v->name);
 long int strLen_2 = strlen(".__RCP_counter);");
 ;                            
-                        ____BAH_COMPILER_VAR_254 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2);
+                        ____BAH_COMPILER_VAR_256 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2);
                         
-                        strncpy(____BAH_COMPILER_VAR_254+currStrOff, "RCP_incrCounter(", strLen_0);
+                        strncpy(____BAH_COMPILER_VAR_256+currStrOff, "RCP_incrCounter(", strLen_0);
                         currStrOff += strLen_0;
                         
-                        strncpy(____BAH_COMPILER_VAR_254+currStrOff, v->name, strLen_1);
+                        strncpy(____BAH_COMPILER_VAR_256+currStrOff, v->name, strLen_1);
                         currStrOff += strLen_1;
                         
-                        strncpy(____BAH_COMPILER_VAR_254+currStrOff, ".__RCP_counter);", strLen_2);
+                        strncpy(____BAH_COMPILER_VAR_256+currStrOff, ".__RCP_counter);", strLen_2);
                         currStrOff += strLen_2;
                         
                     }
-                    struct rope* ____BAH_COMPILER_VAR_255 = rope(____BAH_COMPILER_VAR_254);
-return ____BAH_COMPILER_VAR_255;
+                    struct rope* ____BAH_COMPILER_VAR_257 = rope(____BAH_COMPILER_VAR_256);
+return ____BAH_COMPILER_VAR_257;
 }
-char * ____BAH_COMPILER_VAR_256 =null;
+char * ____BAH_COMPILER_VAR_258 =null;
                     {
                         long int currStrOff = 0;
                         long int strLen_0 = strlen("RCP_incr(");
 long int strLen_1 = strlen(v->name);
 long int strLen_2 = strlen(");");
 ;                            
-                        ____BAH_COMPILER_VAR_256 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2);
+                        ____BAH_COMPILER_VAR_258 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2);
                         
-                        strncpy(____BAH_COMPILER_VAR_256+currStrOff, "RCP_incr(", strLen_0);
+                        strncpy(____BAH_COMPILER_VAR_258+currStrOff, "RCP_incr(", strLen_0);
                         currStrOff += strLen_0;
                         
-                        strncpy(____BAH_COMPILER_VAR_256+currStrOff, v->name, strLen_1);
+                        strncpy(____BAH_COMPILER_VAR_258+currStrOff, v->name, strLen_1);
                         currStrOff += strLen_1;
                         
-                        strncpy(____BAH_COMPILER_VAR_256+currStrOff, ");", strLen_2);
+                        strncpy(____BAH_COMPILER_VAR_258+currStrOff, ");", strLen_2);
                         currStrOff += strLen_2;
                         
                     }
-                    struct rope* ____BAH_COMPILER_VAR_257 = rope(____BAH_COMPILER_VAR_256);
-return ____BAH_COMPILER_VAR_257;
+                    struct rope* ____BAH_COMPILER_VAR_259 = rope(____BAH_COMPILER_VAR_258);
+return ____BAH_COMPILER_VAR_259;
 };
 int RCPavailable(){
-char * ____BAH_COMPILER_VAR_258 =null;
+char * ____BAH_COMPILER_VAR_260 =null;
                     {
                         long int currStrOff = 0;
                         long int strLen_0 = strlen(BAH_DIR);
 long int strLen_1 = strlen("rcp.bah");
 ;                            
-                        ____BAH_COMPILER_VAR_258 = memoryAlloc(1 + strLen_0 + strLen_1);
+                        ____BAH_COMPILER_VAR_260 = memoryAlloc(1 + strLen_0 + strLen_1);
                         
-                        strncpy(____BAH_COMPILER_VAR_258+currStrOff, BAH_DIR, strLen_0);
+                        strncpy(____BAH_COMPILER_VAR_260+currStrOff, BAH_DIR, strLen_0);
                         currStrOff += strLen_0;
                         
-                        strncpy(____BAH_COMPILER_VAR_258+currStrOff, "rcp.bah", strLen_1);
+                        strncpy(____BAH_COMPILER_VAR_260+currStrOff, "rcp.bah", strLen_1);
                         currStrOff += strLen_1;
                         
                     }
-                    int ____BAH_COMPILER_VAR_259 = ((strcmp(compilerState.currentFile, ____BAH_COMPILER_VAR_258) != 0)&&(RCPenabled==true));
-return ____BAH_COMPILER_VAR_259;
+                    int ____BAH_COMPILER_VAR_261 = ((strcmp(compilerState.currentFile, ____BAH_COMPILER_VAR_260) != 0)&&(RCPenabled==true));
+return ____BAH_COMPILER_VAR_261;
 };
 void endRCPscope(struct Elems* elems,__BAH_ARR_TYPE_variable exc){
 if ((RCPavailable()==false)) {
@@ -4399,45 +4409,45 @@ elems->vars->data[len(elems->vars)] =  av;
 }
 };
 struct string cType =  getCType(av->type,elems);
-char * ____BAH_COMPILER_VAR_261 =cType.str((struct string*)&cType);char * ____BAH_COMPILER_VAR_262 =null;
+char * ____BAH_COMPILER_VAR_263 =cType.str((struct string*)&cType);char * ____BAH_COMPILER_VAR_264 =null;
                     {
                         long int currStrOff = 0;
-                        long int strLen_0 = strlen(____BAH_COMPILER_VAR_261);
+                        long int strLen_0 = strlen(____BAH_COMPILER_VAR_263);
 long int strLen_1 = strlen(" ");
 long int strLen_2 = strlen(av->name);
 long int strLen_3 = strlen(" =");
 long int strLen_4 = strlen(c);
 long int strLen_5 = strlen(";");
 ;                            
-                        ____BAH_COMPILER_VAR_262 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2 + strLen_3 + strLen_4 + strLen_5);
+                        ____BAH_COMPILER_VAR_264 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2 + strLen_3 + strLen_4 + strLen_5);
                         
-                        strncpy(____BAH_COMPILER_VAR_262+currStrOff, ____BAH_COMPILER_VAR_261, strLen_0);
+                        strncpy(____BAH_COMPILER_VAR_264+currStrOff, ____BAH_COMPILER_VAR_263, strLen_0);
                         currStrOff += strLen_0;
                         
-                        strncpy(____BAH_COMPILER_VAR_262+currStrOff, " ", strLen_1);
+                        strncpy(____BAH_COMPILER_VAR_264+currStrOff, " ", strLen_1);
                         currStrOff += strLen_1;
                         
-                        strncpy(____BAH_COMPILER_VAR_262+currStrOff, av->name, strLen_2);
+                        strncpy(____BAH_COMPILER_VAR_264+currStrOff, av->name, strLen_2);
                         currStrOff += strLen_2;
                         
-                        strncpy(____BAH_COMPILER_VAR_262+currStrOff, " =", strLen_3);
+                        strncpy(____BAH_COMPILER_VAR_264+currStrOff, " =", strLen_3);
                         currStrOff += strLen_3;
                         
-                        strncpy(____BAH_COMPILER_VAR_262+currStrOff, c, strLen_4);
+                        strncpy(____BAH_COMPILER_VAR_264+currStrOff, c, strLen_4);
                         currStrOff += strLen_4;
                         
-                        strncpy(____BAH_COMPILER_VAR_262+currStrOff, ";", strLen_5);
+                        strncpy(____BAH_COMPILER_VAR_264+currStrOff, ";", strLen_5);
                         currStrOff += strLen_5;
                         
                     }
-                    OUTPUT =  OUTPUT->add(OUTPUT, rope(____BAH_COMPILER_VAR_262));
-char * ____BAH_COMPILER_VAR_263 = av->name;
-return ____BAH_COMPILER_VAR_263;
+                    OUTPUT =  OUTPUT->add(OUTPUT, rope(____BAH_COMPILER_VAR_264));
+char * ____BAH_COMPILER_VAR_265 = av->name;
+return ____BAH_COMPILER_VAR_265;
 };
 struct rope* makeRCPfuncFromStruct(struct cStruct* s,struct Elems* elems){
 if (((s->isBinding==true)||(RCPavailable()==false))) {
-struct rope* ____BAH_COMPILER_VAR_264 = rope("");
-return ____BAH_COMPILER_VAR_264;
+struct rope* ____BAH_COMPILER_VAR_266 = rope("");
+return ____BAH_COMPILER_VAR_266;
 }
 struct rope* decrMembs =  rope("");
 long int i =  0;
@@ -4454,27 +4464,27 @@ mv->isConst = false;
 mv->isArray = false;
 mv->from = "";
 mv->outterScope = false;
-char * ____BAH_COMPILER_VAR_265 =null;
+char * ____BAH_COMPILER_VAR_267 =null;
                     {
                         long int currStrOff = 0;
                         long int strLen_0 = strlen("e->");
 long int strLen_1 = strlen(m->name);
 ;                            
-                        ____BAH_COMPILER_VAR_265 = memoryAlloc(1 + strLen_0 + strLen_1);
+                        ____BAH_COMPILER_VAR_267 = memoryAlloc(1 + strLen_0 + strLen_1);
                         
-                        strncpy(____BAH_COMPILER_VAR_265+currStrOff, "e->", strLen_0);
+                        strncpy(____BAH_COMPILER_VAR_267+currStrOff, "e->", strLen_0);
                         currStrOff += strLen_0;
                         
-                        strncpy(____BAH_COMPILER_VAR_265+currStrOff, m->name, strLen_1);
+                        strncpy(____BAH_COMPILER_VAR_267+currStrOff, m->name, strLen_1);
                         currStrOff += strLen_1;
                         
                     }
-                    mv->name =  ____BAH_COMPILER_VAR_265;
+                    mv->name =  ____BAH_COMPILER_VAR_267;
 mv->type =  m->type;
 decrMembs =  decrMembs->add(decrMembs, decrVar(mv,elems));
 }
 else {
-char * ____BAH_COMPILER_VAR_266 =null;
+char * ____BAH_COMPILER_VAR_268 =null;
                     {
                         long int currStrOff = 0;
                         long int strLen_0 = strlen("Strcture '");
@@ -4483,32 +4493,32 @@ long int strLen_2 = strlen("' has a self-referenced member '");
 long int strLen_3 = strlen(m->name);
 long int strLen_4 = strlen("'. May lead to memory leaks, recompile the program without the '-rcp' flag if memory leaks happens.");
 ;                            
-                        ____BAH_COMPILER_VAR_266 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2 + strLen_3 + strLen_4);
+                        ____BAH_COMPILER_VAR_268 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2 + strLen_3 + strLen_4);
                         
-                        strncpy(____BAH_COMPILER_VAR_266+currStrOff, "Strcture '", strLen_0);
+                        strncpy(____BAH_COMPILER_VAR_268+currStrOff, "Strcture '", strLen_0);
                         currStrOff += strLen_0;
                         
-                        strncpy(____BAH_COMPILER_VAR_266+currStrOff, s->name, strLen_1);
+                        strncpy(____BAH_COMPILER_VAR_268+currStrOff, s->name, strLen_1);
                         currStrOff += strLen_1;
                         
-                        strncpy(____BAH_COMPILER_VAR_266+currStrOff, "' has a self-referenced member '", strLen_2);
+                        strncpy(____BAH_COMPILER_VAR_268+currStrOff, "' has a self-referenced member '", strLen_2);
                         currStrOff += strLen_2;
                         
-                        strncpy(____BAH_COMPILER_VAR_266+currStrOff, m->name, strLen_3);
+                        strncpy(____BAH_COMPILER_VAR_268+currStrOff, m->name, strLen_3);
                         currStrOff += strLen_3;
                         
-                        strncpy(____BAH_COMPILER_VAR_266+currStrOff, "'. May lead to memory leaks, recompile the program without the '-rcp' flag if memory leaks happens.", strLen_4);
+                        strncpy(____BAH_COMPILER_VAR_268+currStrOff, "'. May lead to memory leaks, recompile the program without the '-rcp' flag if memory leaks happens.", strLen_4);
                         currStrOff += strLen_4;
                         
                     }
-                    throwWarning(____BAH_COMPILER_VAR_266);
+                    throwWarning(____BAH_COMPILER_VAR_268);
 char * amp =  "&";
 char * heap =  "0";
 if ((strCount(m->type,"*")>0)) {
 amp =  "";
 heap =  "1";
 }
-char * ____BAH_COMPILER_VAR_267 =null;
+char * ____BAH_COMPILER_VAR_269 =null;
                     {
                         long int currStrOff = 0;
                         long int strLen_0 = strlen("__RCP_clean_");
@@ -4521,42 +4531,42 @@ long int strLen_6 = strlen(", ");
 long int strLen_7 = strlen(heap);
 long int strLen_8 = strlen(");\n");
 ;                            
-                        ____BAH_COMPILER_VAR_267 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2 + strLen_3 + strLen_4 + strLen_5 + strLen_6 + strLen_7 + strLen_8);
+                        ____BAH_COMPILER_VAR_269 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2 + strLen_3 + strLen_4 + strLen_5 + strLen_6 + strLen_7 + strLen_8);
                         
-                        strncpy(____BAH_COMPILER_VAR_267+currStrOff, "__RCP_clean_", strLen_0);
+                        strncpy(____BAH_COMPILER_VAR_269+currStrOff, "__RCP_clean_", strLen_0);
                         currStrOff += strLen_0;
                         
-                        strncpy(____BAH_COMPILER_VAR_267+currStrOff, s->name, strLen_1);
+                        strncpy(____BAH_COMPILER_VAR_269+currStrOff, s->name, strLen_1);
                         currStrOff += strLen_1;
                         
-                        strncpy(____BAH_COMPILER_VAR_267+currStrOff, "(", strLen_2);
+                        strncpy(____BAH_COMPILER_VAR_269+currStrOff, "(", strLen_2);
                         currStrOff += strLen_2;
                         
-                        strncpy(____BAH_COMPILER_VAR_267+currStrOff, amp, strLen_3);
+                        strncpy(____BAH_COMPILER_VAR_269+currStrOff, amp, strLen_3);
                         currStrOff += strLen_3;
                         
-                        strncpy(____BAH_COMPILER_VAR_267+currStrOff, "e->", strLen_4);
+                        strncpy(____BAH_COMPILER_VAR_269+currStrOff, "e->", strLen_4);
                         currStrOff += strLen_4;
                         
-                        strncpy(____BAH_COMPILER_VAR_267+currStrOff, m->name, strLen_5);
+                        strncpy(____BAH_COMPILER_VAR_269+currStrOff, m->name, strLen_5);
                         currStrOff += strLen_5;
                         
-                        strncpy(____BAH_COMPILER_VAR_267+currStrOff, ", ", strLen_6);
+                        strncpy(____BAH_COMPILER_VAR_269+currStrOff, ", ", strLen_6);
                         currStrOff += strLen_6;
                         
-                        strncpy(____BAH_COMPILER_VAR_267+currStrOff, heap, strLen_7);
+                        strncpy(____BAH_COMPILER_VAR_269+currStrOff, heap, strLen_7);
                         currStrOff += strLen_7;
                         
-                        strncpy(____BAH_COMPILER_VAR_267+currStrOff, ");\n", strLen_8);
+                        strncpy(____BAH_COMPILER_VAR_269+currStrOff, ");\n", strLen_8);
                         currStrOff += strLen_8;
                         
                     }
-                    decrMembs =  decrMembs->add(decrMembs, rope(____BAH_COMPILER_VAR_267));
+                    decrMembs =  decrMembs->add(decrMembs, rope(____BAH_COMPILER_VAR_269));
 }
 }
 i =  i + 1;
 };
-char * ____BAH_COMPILER_VAR_268 =null;
+char * ____BAH_COMPILER_VAR_270 =null;
                     {
                         long int currStrOff = 0;
                         long int strLen_0 = strlen("void* __RCP_clean_");
@@ -4565,47 +4575,47 @@ long int strLen_2 = strlen("(struct ");
 long int strLen_3 = strlen(s->name);
 long int strLen_4 = strlen("* e, int heap) {\n        if(heap == 1) {\n            struct RCP* srcp = RCP_request(e);\n            if (srcp != null) {\n                if (srcp->c == 1) {\n                    ");
 ;                            
-                        ____BAH_COMPILER_VAR_268 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2 + strLen_3 + strLen_4);
+                        ____BAH_COMPILER_VAR_270 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2 + strLen_3 + strLen_4);
                         
-                        strncpy(____BAH_COMPILER_VAR_268+currStrOff, "void* __RCP_clean_", strLen_0);
+                        strncpy(____BAH_COMPILER_VAR_270+currStrOff, "void* __RCP_clean_", strLen_0);
                         currStrOff += strLen_0;
                         
-                        strncpy(____BAH_COMPILER_VAR_268+currStrOff, s->name, strLen_1);
+                        strncpy(____BAH_COMPILER_VAR_270+currStrOff, s->name, strLen_1);
                         currStrOff += strLen_1;
                         
-                        strncpy(____BAH_COMPILER_VAR_268+currStrOff, "(struct ", strLen_2);
+                        strncpy(____BAH_COMPILER_VAR_270+currStrOff, "(struct ", strLen_2);
                         currStrOff += strLen_2;
                         
-                        strncpy(____BAH_COMPILER_VAR_268+currStrOff, s->name, strLen_3);
+                        strncpy(____BAH_COMPILER_VAR_270+currStrOff, s->name, strLen_3);
                         currStrOff += strLen_3;
                         
-                        strncpy(____BAH_COMPILER_VAR_268+currStrOff, "* e, int heap) {\n        if(heap == 1) {\n            struct RCP* srcp = RCP_request(e);\n            if (srcp != null) {\n                if (srcp->c == 1) {\n                    ", strLen_4);
+                        strncpy(____BAH_COMPILER_VAR_270+currStrOff, "* e, int heap) {\n        if(heap == 1) {\n            struct RCP* srcp = RCP_request(e);\n            if (srcp != null) {\n                if (srcp->c == 1) {\n                    ", strLen_4);
                         currStrOff += strLen_4;
                         
                     }
-                    struct rope* r =  rope(____BAH_COMPILER_VAR_268)->add(rope(____BAH_COMPILER_VAR_268), decrMembs)->add(rope(____BAH_COMPILER_VAR_268)->add(rope(____BAH_COMPILER_VAR_268), decrMembs), rope("\n                }\n                RCP_decrRCP(srcp);\n            }\n        } else if(RCP_decrCounter((void*)e->__RCP_counter)==0) {\n            "))->add(rope(____BAH_COMPILER_VAR_268)->add(rope(____BAH_COMPILER_VAR_268), decrMembs)->add(rope(____BAH_COMPILER_VAR_268)->add(rope(____BAH_COMPILER_VAR_268), decrMembs), rope("\n                }\n                RCP_decrRCP(srcp);\n            }\n        } else if(RCP_decrCounter((void*)e->__RCP_counter)==0) {\n            ")), decrMembs)->add(rope(____BAH_COMPILER_VAR_268)->add(rope(____BAH_COMPILER_VAR_268), decrMembs)->add(rope(____BAH_COMPILER_VAR_268)->add(rope(____BAH_COMPILER_VAR_268), decrMembs), rope("\n                }\n                RCP_decrRCP(srcp);\n            }\n        } else if(RCP_decrCounter((void*)e->__RCP_counter)==0) {\n            "))->add(rope(____BAH_COMPILER_VAR_268)->add(rope(____BAH_COMPILER_VAR_268), decrMembs)->add(rope(____BAH_COMPILER_VAR_268)->add(rope(____BAH_COMPILER_VAR_268), decrMembs), rope("\n                }\n                RCP_decrRCP(srcp);\n            }\n        } else if(RCP_decrCounter((void*)e->__RCP_counter)==0) {\n            ")), decrMembs), rope("\n        }\n    };\n"));
-struct rope* ____BAH_COMPILER_VAR_269 = r;
-return ____BAH_COMPILER_VAR_269;
+                    struct rope* r =  rope(____BAH_COMPILER_VAR_270)->add(rope(____BAH_COMPILER_VAR_270), decrMembs)->add(rope(____BAH_COMPILER_VAR_270)->add(rope(____BAH_COMPILER_VAR_270), decrMembs), rope("\n                }\n                RCP_decrRCP(srcp);\n            }\n        } else if(RCP_decrCounter((void*)e->__RCP_counter)==0) {\n            "))->add(rope(____BAH_COMPILER_VAR_270)->add(rope(____BAH_COMPILER_VAR_270), decrMembs)->add(rope(____BAH_COMPILER_VAR_270)->add(rope(____BAH_COMPILER_VAR_270), decrMembs), rope("\n                }\n                RCP_decrRCP(srcp);\n            }\n        } else if(RCP_decrCounter((void*)e->__RCP_counter)==0) {\n            ")), decrMembs)->add(rope(____BAH_COMPILER_VAR_270)->add(rope(____BAH_COMPILER_VAR_270), decrMembs)->add(rope(____BAH_COMPILER_VAR_270)->add(rope(____BAH_COMPILER_VAR_270), decrMembs), rope("\n                }\n                RCP_decrRCP(srcp);\n            }\n        } else if(RCP_decrCounter((void*)e->__RCP_counter)==0) {\n            "))->add(rope(____BAH_COMPILER_VAR_270)->add(rope(____BAH_COMPILER_VAR_270), decrMembs)->add(rope(____BAH_COMPILER_VAR_270)->add(rope(____BAH_COMPILER_VAR_270), decrMembs), rope("\n                }\n                RCP_decrRCP(srcp);\n            }\n        } else if(RCP_decrCounter((void*)e->__RCP_counter)==0) {\n            ")), decrMembs), rope("\n        }\n    };\n"));
+struct rope* ____BAH_COMPILER_VAR_271 = r;
+return ____BAH_COMPILER_VAR_271;
 };
 int RCPselfRef(struct variable* v){
 long int i =  0;
 while ((i<len(compilerState.RCPvars))) {
 struct variable* r =  compilerState.RCPvars->data[i];
 if ((strcmp(r->name, v->name) == 0)) {
-int ____BAH_COMPILER_VAR_270 = true;
-return ____BAH_COMPILER_VAR_270;
+int ____BAH_COMPILER_VAR_272 = true;
+return ____BAH_COMPILER_VAR_272;
 }
 i =  i + 1;
 };
-int ____BAH_COMPILER_VAR_271 = false;
-return ____BAH_COMPILER_VAR_271;
+int ____BAH_COMPILER_VAR_273 = false;
+return ____BAH_COMPILER_VAR_273;
 };
 void debugLine(__BAH_ARR_TYPE_Tok line){
 char * cont =  "";
 long int i =  0;
 while ((i<len(line))) {
 struct Tok t =  line->data[i];
-char * ____BAH_COMPILER_VAR_272 =null;
+char * ____BAH_COMPILER_VAR_274 =null;
                     {
                         long int currStrOff = 0;
                         long int strLen_0 = strlen(cont);
@@ -4613,22 +4623,22 @@ long int strLen_1 = strlen(" '");
 long int strLen_2 = strlen(t.cont);
 long int strLen_3 = strlen("'");
 ;                            
-                        ____BAH_COMPILER_VAR_272 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2 + strLen_3);
+                        ____BAH_COMPILER_VAR_274 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2 + strLen_3);
                         
-                        strncpy(____BAH_COMPILER_VAR_272+currStrOff, cont, strLen_0);
+                        strncpy(____BAH_COMPILER_VAR_274+currStrOff, cont, strLen_0);
                         currStrOff += strLen_0;
                         
-                        strncpy(____BAH_COMPILER_VAR_272+currStrOff, " '", strLen_1);
+                        strncpy(____BAH_COMPILER_VAR_274+currStrOff, " '", strLen_1);
                         currStrOff += strLen_1;
                         
-                        strncpy(____BAH_COMPILER_VAR_272+currStrOff, t.cont, strLen_2);
+                        strncpy(____BAH_COMPILER_VAR_274+currStrOff, t.cont, strLen_2);
                         currStrOff += strLen_2;
                         
-                        strncpy(____BAH_COMPILER_VAR_272+currStrOff, "'", strLen_3);
+                        strncpy(____BAH_COMPILER_VAR_274+currStrOff, "'", strLen_3);
                         currStrOff += strLen_3;
                         
                     }
-                    cont =  ____BAH_COMPILER_VAR_272;
+                    cont =  ____BAH_COMPILER_VAR_274;
 i =  i + 1;
 };
 println(cont);
@@ -4757,8 +4767,8 @@ nElems->fns->data[j] =  nf;
 };
 j =  j + 1;
 };
-struct Elems* ____BAH_COMPILER_VAR_273 = nElems;
-return ____BAH_COMPILER_VAR_273;
+struct Elems* ____BAH_COMPILER_VAR_275 = nElems;
+return ____BAH_COMPILER_VAR_275;
 };
 typedef long int lineType;
 #define LINE_TYPE_INCLUDE (lineType)0
@@ -4781,61 +4791,61 @@ lineType prevLine =  (lineType)-1;
 lineType getLineType(__BAH_ARR_TYPE_Tok line){
 struct Tok ft =  line->data[0];
 if ((ft.type==TOKEN_TYPE_FUNC)) {
-lineType ____BAH_COMPILER_VAR_274 = LINE_TYPE_FN_CALL;
-return ____BAH_COMPILER_VAR_274;
+lineType ____BAH_COMPILER_VAR_276 = LINE_TYPE_FN_CALL;
+return ____BAH_COMPILER_VAR_276;
 }
 if ((ft.type==TOKEN_TYPE_KEYWORD)) {
 if ((strcmp(ft.cont, "#include") == 0)) {
-lineType ____BAH_COMPILER_VAR_275 = LINE_TYPE_INCLUDE;
-return ____BAH_COMPILER_VAR_275;
-}
-else if ((strcmp(ft.cont, "#define") == 0)) {
-lineType ____BAH_COMPILER_VAR_276 = LINE_TYPE_DEFINE;
-return ____BAH_COMPILER_VAR_276;
-}
-else if ((strcmp(ft.cont, "const") == 0)) {
-lineType ____BAH_COMPILER_VAR_277 = LINE_TYPE_CONST;
+lineType ____BAH_COMPILER_VAR_277 = LINE_TYPE_INCLUDE;
 return ____BAH_COMPILER_VAR_277;
 }
-else if ((strcmp(ft.cont, "struct") == 0)) {
-lineType ____BAH_COMPILER_VAR_278 = LINE_TYPE_STRUCT;
+else if ((strcmp(ft.cont, "#define") == 0)) {
+lineType ____BAH_COMPILER_VAR_278 = LINE_TYPE_DEFINE;
 return ____BAH_COMPILER_VAR_278;
 }
-else if ((strcmp(ft.cont, "#cLib") == 0)) {
-lineType ____BAH_COMPILER_VAR_279 = LINE_TYPE_CLIB;
+else if ((strcmp(ft.cont, "const") == 0)) {
+lineType ____BAH_COMPILER_VAR_279 = LINE_TYPE_CONST;
 return ____BAH_COMPILER_VAR_279;
 }
-else if ((strcmp(ft.cont, "return") == 0)) {
-lineType ____BAH_COMPILER_VAR_280 = LINE_TYPE_RETURN;
+else if ((strcmp(ft.cont, "struct") == 0)) {
+lineType ____BAH_COMPILER_VAR_280 = LINE_TYPE_STRUCT;
 return ____BAH_COMPILER_VAR_280;
 }
-else if ((strcmp(ft.cont, "if") == 0)) {
-lineType ____BAH_COMPILER_VAR_281 = LINE_TYPE_IF;
+else if ((strcmp(ft.cont, "#cLib") == 0)) {
+lineType ____BAH_COMPILER_VAR_281 = LINE_TYPE_CLIB;
 return ____BAH_COMPILER_VAR_281;
 }
-else if ((strcmp(ft.cont, "else") == 0)) {
-lineType ____BAH_COMPILER_VAR_282 = LINE_TYPE_ELSE;
+else if ((strcmp(ft.cont, "return") == 0)) {
+lineType ____BAH_COMPILER_VAR_282 = LINE_TYPE_RETURN;
 return ____BAH_COMPILER_VAR_282;
 }
-else if ((strcmp(ft.cont, "#macro") == 0)) {
-lineType ____BAH_COMPILER_VAR_283 = LINE_TYPE_MACRO;
+else if ((strcmp(ft.cont, "if") == 0)) {
+lineType ____BAH_COMPILER_VAR_283 = LINE_TYPE_IF;
 return ____BAH_COMPILER_VAR_283;
 }
-else if ((strcmp(ft.cont, "for") == 0)) {
-lineType ____BAH_COMPILER_VAR_284 = LINE_TYPE_FOR;
+else if ((strcmp(ft.cont, "else") == 0)) {
+lineType ____BAH_COMPILER_VAR_284 = LINE_TYPE_ELSE;
 return ____BAH_COMPILER_VAR_284;
 }
-else if ((strcmp(ft.cont, "async") == 0)) {
-lineType ____BAH_COMPILER_VAR_285 = LINE_TYPE_ASYNC;
+else if ((strcmp(ft.cont, "#macro") == 0)) {
+lineType ____BAH_COMPILER_VAR_285 = LINE_TYPE_MACRO;
 return ____BAH_COMPILER_VAR_285;
 }
-else if (((strcmp(ft.cont, "continue") == 0)||(strcmp(ft.cont, "break") == 0))) {
-lineType ____BAH_COMPILER_VAR_286 = LINE_TYPE_FOR_OPERATOR;
+else if ((strcmp(ft.cont, "for") == 0)) {
+lineType ____BAH_COMPILER_VAR_286 = LINE_TYPE_FOR;
 return ____BAH_COMPILER_VAR_286;
 }
-else {
-lineType ____BAH_COMPILER_VAR_287 = LINE_TYPE_PRE_KEYWORD;
+else if ((strcmp(ft.cont, "async") == 0)) {
+lineType ____BAH_COMPILER_VAR_287 = LINE_TYPE_ASYNC;
 return ____BAH_COMPILER_VAR_287;
+}
+else if (((strcmp(ft.cont, "continue") == 0)||(strcmp(ft.cont, "break") == 0))) {
+lineType ____BAH_COMPILER_VAR_288 = LINE_TYPE_FOR_OPERATOR;
+return ____BAH_COMPILER_VAR_288;
+}
+else {
+lineType ____BAH_COMPILER_VAR_289 = LINE_TYPE_PRE_KEYWORD;
+return ____BAH_COMPILER_VAR_289;
 }
 }
 else if ((ft.type==TOKEN_TYPE_VAR)) {
@@ -4846,17 +4856,17 @@ struct Tok st =  line->data[1];
 if (((st.type==TOKEN_TYPE_ENCL)&&(strcmp(st.cont, "(") == 0))) {
 struct Tok lt =  line->data[len(line)-1];
 if (((lt.type==TOKEN_TYPE_ENCL)&&(strcmp(lt.cont, "}") == 0))) {
-lineType ____BAH_COMPILER_VAR_288 = LINE_TYPE_FN_DECL;
-return ____BAH_COMPILER_VAR_288;
-}
-lineType ____BAH_COMPILER_VAR_289 = LINE_TYPE_FN_CALL;
-return ____BAH_COMPILER_VAR_289;
-}
-lineType ____BAH_COMPILER_VAR_290 = LINE_TYPE_VAR;
+lineType ____BAH_COMPILER_VAR_290 = LINE_TYPE_FN_DECL;
 return ____BAH_COMPILER_VAR_290;
 }
-lineType ____BAH_COMPILER_VAR_291 = (lineType)-1;
+lineType ____BAH_COMPILER_VAR_291 = LINE_TYPE_FN_CALL;
 return ____BAH_COMPILER_VAR_291;
+}
+lineType ____BAH_COMPILER_VAR_292 = LINE_TYPE_VAR;
+return ____BAH_COMPILER_VAR_292;
+}
+lineType ____BAH_COMPILER_VAR_293 = (lineType)-1;
+return ____BAH_COMPILER_VAR_293;
 };
 __BAH_ARR_TYPE_Tok parseCast(__BAH_ARR_TYPE_Tok line,struct Elems* elems){
 array(struct Tok)* nl = memoryAlloc(sizeof(array(struct Tok)));
@@ -4886,8 +4896,8 @@ nl->data[i] =  t;
 i =  i + 1;
 };
 if ((i==len(line))) {
-array(struct Tok)* ____BAH_COMPILER_VAR_292 = line;
-return ____BAH_COMPILER_VAR_292;
+array(struct Tok)* ____BAH_COMPILER_VAR_294 = line;
+return ____BAH_COMPILER_VAR_294;
 }
 while ((i<len(line))) {
 struct Tok t =  line->data[i];
@@ -4904,7 +4914,7 @@ if ((strcmp(nnt.cont, ">") == 0)) {
 nnnt.bahType =  nt.cont;
 struct string cCast =  getCType(nt.cont,elems);
 char * cCastStr =  cCast.str((struct string*)&cCast);
-char * ____BAH_COMPILER_VAR_293 =null;
+char * ____BAH_COMPILER_VAR_295 =null;
                     {
                         long int currStrOff = 0;
                         long int strLen_0 = strlen("(");
@@ -4912,22 +4922,22 @@ long int strLen_1 = strlen(cCastStr);
 long int strLen_2 = strlen(")");
 long int strLen_3 = strlen(nnnt.cont);
 ;                            
-                        ____BAH_COMPILER_VAR_293 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2 + strLen_3);
+                        ____BAH_COMPILER_VAR_295 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2 + strLen_3);
                         
-                        strncpy(____BAH_COMPILER_VAR_293+currStrOff, "(", strLen_0);
+                        strncpy(____BAH_COMPILER_VAR_295+currStrOff, "(", strLen_0);
                         currStrOff += strLen_0;
                         
-                        strncpy(____BAH_COMPILER_VAR_293+currStrOff, cCastStr, strLen_1);
+                        strncpy(____BAH_COMPILER_VAR_295+currStrOff, cCastStr, strLen_1);
                         currStrOff += strLen_1;
                         
-                        strncpy(____BAH_COMPILER_VAR_293+currStrOff, ")", strLen_2);
+                        strncpy(____BAH_COMPILER_VAR_295+currStrOff, ")", strLen_2);
                         currStrOff += strLen_2;
                         
-                        strncpy(____BAH_COMPILER_VAR_293+currStrOff, nnnt.cont, strLen_3);
+                        strncpy(____BAH_COMPILER_VAR_295+currStrOff, nnnt.cont, strLen_3);
                         currStrOff += strLen_3;
                         
                     }
-                    nnnt.cont =  ____BAH_COMPILER_VAR_293;
+                    nnnt.cont =  ____BAH_COMPILER_VAR_295;
 
 {
 long nLength = len(nl);
@@ -4966,11 +4976,11 @@ nl->data[len(nl)] =  t;
 };
 i =  i + 1;
 };
-array(struct Tok)* ____BAH_COMPILER_VAR_294 = nl;
-return ____BAH_COMPILER_VAR_294;
+array(struct Tok)* ____BAH_COMPILER_VAR_296 = nl;
+return ____BAH_COMPILER_VAR_296;
 };
 char * getDirFromFile(char * f){
-char * ____BAH_COMPILER_VAR_295 =__STR(f);array(char)* p =  strAsArr(____BAH_COMPILER_VAR_295);
+char * ____BAH_COMPILER_VAR_297 =__STR(f);array(char)* p =  strAsArr(____BAH_COMPILER_VAR_297);
 long int i =  len(p)-1;
 while ((i>=0)) {
 char c =  p->data[i];
@@ -4994,11 +5004,11 @@ break;
 i =  i - 1;
 };
 if ((i<=0)) {
-char * ____BAH_COMPILER_VAR_296 = "";
-return ____BAH_COMPILER_VAR_296;
+char * ____BAH_COMPILER_VAR_298 = "";
+return ____BAH_COMPILER_VAR_298;
 }
-char * ____BAH_COMPILER_VAR_297 = arrAsStr(p);
-return ____BAH_COMPILER_VAR_297;
+char * ____BAH_COMPILER_VAR_299 = arrAsStr(p);
+return ____BAH_COMPILER_VAR_299;
 };
 void parseLines(__BAH_ARR_TYPE_Tok ts,struct Elems* elems);
 int includeFile(char * ccstr,struct Elems* elems){
@@ -5014,73 +5024,73 @@ array(char *)* includes =  compilerState.includes;
 long int i =  0;
 while ((i<len(includes))) {
 if ((strcmp(includes->data[i], ccstr) == 0)) {
-int ____BAH_COMPILER_VAR_298 = true;
-return ____BAH_COMPILER_VAR_298;
+int ____BAH_COMPILER_VAR_300 = true;
+return ____BAH_COMPILER_VAR_300;
 }
 i =  i + 1;
 };
-struct fileMap ____BAH_COMPILER_VAR_299 = {};
-____BAH_COMPILER_VAR_299.open = fileMap__open;
-____BAH_COMPILER_VAR_299.isValid = fileMap__isValid;
-____BAH_COMPILER_VAR_299.close = fileMap__close;
-struct fileMap fm =  ____BAH_COMPILER_VAR_299;
-char * ____BAH_COMPILER_VAR_300 =null;
+struct fileMap ____BAH_COMPILER_VAR_301 = {};
+____BAH_COMPILER_VAR_301.open = fileMap__open;
+____BAH_COMPILER_VAR_301.isValid = fileMap__isValid;
+____BAH_COMPILER_VAR_301.close = fileMap__close;
+struct fileMap fm =  ____BAH_COMPILER_VAR_301;
+char * ____BAH_COMPILER_VAR_302 =null;
                     {
                         long int currStrOff = 0;
                         long int strLen_0 = strlen(BAH_DIR);
 long int strLen_1 = strlen(ccstr);
 ;                            
-                        ____BAH_COMPILER_VAR_300 = memoryAlloc(1 + strLen_0 + strLen_1);
+                        ____BAH_COMPILER_VAR_302 = memoryAlloc(1 + strLen_0 + strLen_1);
                         
-                        strncpy(____BAH_COMPILER_VAR_300+currStrOff, BAH_DIR, strLen_0);
+                        strncpy(____BAH_COMPILER_VAR_302+currStrOff, BAH_DIR, strLen_0);
                         currStrOff += strLen_0;
                         
-                        strncpy(____BAH_COMPILER_VAR_300+currStrOff, ccstr, strLen_1);
+                        strncpy(____BAH_COMPILER_VAR_302+currStrOff, ccstr, strLen_1);
                         currStrOff += strLen_1;
                         
                     }
-                    char * fileName =  ____BAH_COMPILER_VAR_300;
+                    char * fileName =  ____BAH_COMPILER_VAR_302;
 char * f =  fm.open((struct fileMap*)&fm,fileName);
 if ((fm.isValid((struct fileMap*)&fm)==0)) {
-char * ____BAH_COMPILER_VAR_301 =null;
+char * ____BAH_COMPILER_VAR_303 =null;
                     {
                         long int currStrOff = 0;
                         long int strLen_0 = strlen(compilerState.currentDir);
 long int strLen_1 = strlen(ccstr);
 ;                            
-                        ____BAH_COMPILER_VAR_301 = memoryAlloc(1 + strLen_0 + strLen_1);
+                        ____BAH_COMPILER_VAR_303 = memoryAlloc(1 + strLen_0 + strLen_1);
                         
-                        strncpy(____BAH_COMPILER_VAR_301+currStrOff, compilerState.currentDir, strLen_0);
+                        strncpy(____BAH_COMPILER_VAR_303+currStrOff, compilerState.currentDir, strLen_0);
                         currStrOff += strLen_0;
                         
-                        strncpy(____BAH_COMPILER_VAR_301+currStrOff, ccstr, strLen_1);
+                        strncpy(____BAH_COMPILER_VAR_303+currStrOff, ccstr, strLen_1);
                         currStrOff += strLen_1;
                         
                     }
-                    fileName =  ____BAH_COMPILER_VAR_301;
+                    fileName =  ____BAH_COMPILER_VAR_303;
 f =  fm.open((struct fileMap*)&fm,fileName);
 if ((fm.isValid((struct fileMap*)&fm)==0)) {
-int ____BAH_COMPILER_VAR_302 = false;
-return ____BAH_COMPILER_VAR_302;
+int ____BAH_COMPILER_VAR_304 = false;
+return ____BAH_COMPILER_VAR_304;
 }
 }
 char * oDir =  compilerState.currentDir;
-char * ____BAH_COMPILER_VAR_303 =getDirFromFile(ccstr);char * ____BAH_COMPILER_VAR_304 =null;
+char * ____BAH_COMPILER_VAR_305 =getDirFromFile(ccstr);char * ____BAH_COMPILER_VAR_306 =null;
                     {
                         long int currStrOff = 0;
                         long int strLen_0 = strlen(compilerState.currentDir);
-long int strLen_1 = strlen(____BAH_COMPILER_VAR_303);
+long int strLen_1 = strlen(____BAH_COMPILER_VAR_305);
 ;                            
-                        ____BAH_COMPILER_VAR_304 = memoryAlloc(1 + strLen_0 + strLen_1);
+                        ____BAH_COMPILER_VAR_306 = memoryAlloc(1 + strLen_0 + strLen_1);
                         
-                        strncpy(____BAH_COMPILER_VAR_304+currStrOff, compilerState.currentDir, strLen_0);
+                        strncpy(____BAH_COMPILER_VAR_306+currStrOff, compilerState.currentDir, strLen_0);
                         currStrOff += strLen_0;
                         
-                        strncpy(____BAH_COMPILER_VAR_304+currStrOff, ____BAH_COMPILER_VAR_303, strLen_1);
+                        strncpy(____BAH_COMPILER_VAR_306+currStrOff, ____BAH_COMPILER_VAR_305, strLen_1);
                         currStrOff += strLen_1;
                         
                     }
-                    compilerState.currentDir =  ____BAH_COMPILER_VAR_304;
+                    compilerState.currentDir =  ____BAH_COMPILER_VAR_306;
 char * oFile =  compilerState.currentFile;
 compilerState.currentFile =  fileName;
 
@@ -5100,32 +5110,32 @@ includes->data[len(includes)] =  ccstr;
 array(struct Tok)* tokens =  lexer(f);
 fm.close((struct fileMap*)&fm);
 if ((len(tokens)==0)) {
-char * ____BAH_COMPILER_VAR_305 =null;
+char * ____BAH_COMPILER_VAR_307 =null;
                     {
                         long int currStrOff = 0;
                         long int strLen_0 = strlen("File '");
 long int strLen_1 = strlen(ccstr);
 long int strLen_2 = strlen("' not recognized.");
 ;                            
-                        ____BAH_COMPILER_VAR_305 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2);
+                        ____BAH_COMPILER_VAR_307 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2);
                         
-                        strncpy(____BAH_COMPILER_VAR_305+currStrOff, "File '", strLen_0);
+                        strncpy(____BAH_COMPILER_VAR_307+currStrOff, "File '", strLen_0);
                         currStrOff += strLen_0;
                         
-                        strncpy(____BAH_COMPILER_VAR_305+currStrOff, ccstr, strLen_1);
+                        strncpy(____BAH_COMPILER_VAR_307+currStrOff, ccstr, strLen_1);
                         currStrOff += strLen_1;
                         
-                        strncpy(____BAH_COMPILER_VAR_305+currStrOff, "' not recognized.", strLen_2);
+                        strncpy(____BAH_COMPILER_VAR_307+currStrOff, "' not recognized.", strLen_2);
                         currStrOff += strLen_2;
                         
                     }
-                    panic(____BAH_COMPILER_VAR_305);
+                    panic(____BAH_COMPILER_VAR_307);
 }
 parseLines(tokens,elems);
 compilerState.currentFile =  oFile;
 compilerState.currentDir =  oDir;
-int ____BAH_COMPILER_VAR_306 = true;
-return ____BAH_COMPILER_VAR_306;
+int ____BAH_COMPILER_VAR_308 = true;
+return ____BAH_COMPILER_VAR_308;
 };
 void parseInclude(__BAH_ARR_TYPE_Tok l,struct Elems* elems){
 if ((len(l)>2)) {
@@ -5139,26 +5149,26 @@ char * sc =  strt.cont;
 strTrimLeft(&sc,1);
 strTrimRight(&sc,1);
 if (((strHasPrefix(sc,"<")||strHasSuffix(sc,".h"))||strHasSuffix(sc,".c"))) {
-char * ____BAH_COMPILER_VAR_307 =null;
+char * ____BAH_COMPILER_VAR_309 =null;
                     {
                         long int currStrOff = 0;
                         long int strLen_0 = strlen("#include ");
 long int strLen_1 = strlen(sc);
 long int strLen_2 = strlen("\n");
 ;                            
-                        ____BAH_COMPILER_VAR_307 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2);
+                        ____BAH_COMPILER_VAR_309 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2);
                         
-                        strncpy(____BAH_COMPILER_VAR_307+currStrOff, "#include ", strLen_0);
+                        strncpy(____BAH_COMPILER_VAR_309+currStrOff, "#include ", strLen_0);
                         currStrOff += strLen_0;
                         
-                        strncpy(____BAH_COMPILER_VAR_307+currStrOff, sc, strLen_1);
+                        strncpy(____BAH_COMPILER_VAR_309+currStrOff, sc, strLen_1);
                         currStrOff += strLen_1;
                         
-                        strncpy(____BAH_COMPILER_VAR_307+currStrOff, "\n", strLen_2);
+                        strncpy(____BAH_COMPILER_VAR_309+currStrOff, "\n", strLen_2);
                         currStrOff += strLen_2;
                         
                     }
-                    OUTPUT =  OUTPUT->add(OUTPUT, rope(____BAH_COMPILER_VAR_307));
+                    OUTPUT =  OUTPUT->add(OUTPUT, rope(____BAH_COMPILER_VAR_309));
 }
 else {
 if ((includeFile(sc,elems)==false)) {
@@ -5193,22 +5203,22 @@ throwErr(&t,"Cannot use {TOKEN} on nothing.");
 struct Tok pt =  nl->data[len(nl)-1];
 struct Tok nt =  line->data[i + 1];
 if ((((strcmp(t.cont, "-") == 0)&&(pt.isValue==false))&&(nt.type==TOKEN_TYPE_INT))) {
-char * ____BAH_COMPILER_VAR_308 =null;
+char * ____BAH_COMPILER_VAR_310 =null;
                     {
                         long int currStrOff = 0;
                         long int strLen_0 = strlen(t.cont);
 long int strLen_1 = strlen(nt.cont);
 ;                            
-                        ____BAH_COMPILER_VAR_308 = memoryAlloc(1 + strLen_0 + strLen_1);
+                        ____BAH_COMPILER_VAR_310 = memoryAlloc(1 + strLen_0 + strLen_1);
                         
-                        strncpy(____BAH_COMPILER_VAR_308+currStrOff, t.cont, strLen_0);
+                        strncpy(____BAH_COMPILER_VAR_310+currStrOff, t.cont, strLen_0);
                         currStrOff += strLen_0;
                         
-                        strncpy(____BAH_COMPILER_VAR_308+currStrOff, nt.cont, strLen_1);
+                        strncpy(____BAH_COMPILER_VAR_310+currStrOff, nt.cont, strLen_1);
                         currStrOff += strLen_1;
                         
                     }
-                    nt.cont =  ____BAH_COMPILER_VAR_308;
+                    nt.cont =  ____BAH_COMPILER_VAR_310;
 
 {
 long nLength = len(nl);
@@ -5229,7 +5239,7 @@ continue;
 char * ptt =  getTypeFromToken(&pt,true,elems);
 char * ntt =  getTypeFromToken(&nt,true,elems);
 if ((compTypes(ptt,ntt)==false)) {
-char * ____BAH_COMPILER_VAR_309 =null;
+char * ____BAH_COMPILER_VAR_311 =null;
                     {
                         long int currStrOff = 0;
                         long int strLen_0 = strlen("Cannot use {TOKEN} (");
@@ -5238,25 +5248,25 @@ long int strLen_2 = strlen(") as ");
 long int strLen_3 = strlen(ptt);
 long int strLen_4 = strlen(".");
 ;                            
-                        ____BAH_COMPILER_VAR_309 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2 + strLen_3 + strLen_4);
+                        ____BAH_COMPILER_VAR_311 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2 + strLen_3 + strLen_4);
                         
-                        strncpy(____BAH_COMPILER_VAR_309+currStrOff, "Cannot use {TOKEN} (", strLen_0);
+                        strncpy(____BAH_COMPILER_VAR_311+currStrOff, "Cannot use {TOKEN} (", strLen_0);
                         currStrOff += strLen_0;
                         
-                        strncpy(____BAH_COMPILER_VAR_309+currStrOff, ntt, strLen_1);
+                        strncpy(____BAH_COMPILER_VAR_311+currStrOff, ntt, strLen_1);
                         currStrOff += strLen_1;
                         
-                        strncpy(____BAH_COMPILER_VAR_309+currStrOff, ") as ", strLen_2);
+                        strncpy(____BAH_COMPILER_VAR_311+currStrOff, ") as ", strLen_2);
                         currStrOff += strLen_2;
                         
-                        strncpy(____BAH_COMPILER_VAR_309+currStrOff, ptt, strLen_3);
+                        strncpy(____BAH_COMPILER_VAR_311+currStrOff, ptt, strLen_3);
                         currStrOff += strLen_3;
                         
-                        strncpy(____BAH_COMPILER_VAR_309+currStrOff, ".", strLen_4);
+                        strncpy(____BAH_COMPILER_VAR_311+currStrOff, ".", strLen_4);
                         currStrOff += strLen_4;
                         
                     }
-                    throwErr(&nt,____BAH_COMPILER_VAR_309);
+                    throwErr(&nt,____BAH_COMPILER_VAR_311);
 }
 t.isValue =  true;
 if (compTypes(ptt,"cpstring")) {
@@ -5280,7 +5290,7 @@ wasAdd =  true;
 else {
 char * strAddTkT =  getTypeFromToken(&strAddTk,true,elems);
 if ((compTypes(strAddTkT,"cpstring")==false)) {
-char * ____BAH_COMPILER_VAR_310 =null;
+char * ____BAH_COMPILER_VAR_312 =null;
                     {
                         long int currStrOff = 0;
                         long int strLen_0 = strlen("Cannot use {TOKEN} (");
@@ -5289,25 +5299,25 @@ long int strLen_2 = strlen(") as ");
 long int strLen_3 = strlen(ptt);
 long int strLen_4 = strlen(".");
 ;                            
-                        ____BAH_COMPILER_VAR_310 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2 + strLen_3 + strLen_4);
+                        ____BAH_COMPILER_VAR_312 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2 + strLen_3 + strLen_4);
                         
-                        strncpy(____BAH_COMPILER_VAR_310+currStrOff, "Cannot use {TOKEN} (", strLen_0);
+                        strncpy(____BAH_COMPILER_VAR_312+currStrOff, "Cannot use {TOKEN} (", strLen_0);
                         currStrOff += strLen_0;
                         
-                        strncpy(____BAH_COMPILER_VAR_310+currStrOff, ntt, strLen_1);
+                        strncpy(____BAH_COMPILER_VAR_312+currStrOff, ntt, strLen_1);
                         currStrOff += strLen_1;
                         
-                        strncpy(____BAH_COMPILER_VAR_310+currStrOff, ") as ", strLen_2);
+                        strncpy(____BAH_COMPILER_VAR_312+currStrOff, ") as ", strLen_2);
                         currStrOff += strLen_2;
                         
-                        strncpy(____BAH_COMPILER_VAR_310+currStrOff, ptt, strLen_3);
+                        strncpy(____BAH_COMPILER_VAR_312+currStrOff, ptt, strLen_3);
                         currStrOff += strLen_3;
                         
-                        strncpy(____BAH_COMPILER_VAR_310+currStrOff, ".", strLen_4);
+                        strncpy(____BAH_COMPILER_VAR_312+currStrOff, ".", strLen_4);
                         currStrOff += strLen_4;
                         
                     }
-                    throwErr(&strAddTkT,____BAH_COMPILER_VAR_310);
+                    throwErr(&strAddTkT,____BAH_COMPILER_VAR_312);
 break;
 }
 if ((((strAddTk.type==TOKEN_TYPE_FUNC)&&(strHasPrefix(strAddTk.cont,"noCheck(")==false))&&(isRCPtype(strAddTkT,elems)==true))) {
@@ -5353,7 +5363,7 @@ char * totStrLen =  "1";
 j =  0;
 while ((j<len(strConts))) {
 char * js =  intToStr(j);
-char * ____BAH_COMPILER_VAR_311 =null;
+char * ____BAH_COMPILER_VAR_313 =null;
                     {
                         long int currStrOff = 0;
                         long int strLen_0 = strlen(lens);
@@ -5363,55 +5373,55 @@ long int strLen_3 = strlen(" = strlen(");
 long int strLen_4 = strlen(strConts->data[j]);
 long int strLen_5 = strlen(");\n");
 ;                            
-                        ____BAH_COMPILER_VAR_311 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2 + strLen_3 + strLen_4 + strLen_5);
+                        ____BAH_COMPILER_VAR_313 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2 + strLen_3 + strLen_4 + strLen_5);
                         
-                        strncpy(____BAH_COMPILER_VAR_311+currStrOff, lens, strLen_0);
+                        strncpy(____BAH_COMPILER_VAR_313+currStrOff, lens, strLen_0);
                         currStrOff += strLen_0;
                         
-                        strncpy(____BAH_COMPILER_VAR_311+currStrOff, "long int strLen_", strLen_1);
+                        strncpy(____BAH_COMPILER_VAR_313+currStrOff, "long int strLen_", strLen_1);
                         currStrOff += strLen_1;
                         
-                        strncpy(____BAH_COMPILER_VAR_311+currStrOff, js, strLen_2);
+                        strncpy(____BAH_COMPILER_VAR_313+currStrOff, js, strLen_2);
                         currStrOff += strLen_2;
                         
-                        strncpy(____BAH_COMPILER_VAR_311+currStrOff, " = strlen(", strLen_3);
+                        strncpy(____BAH_COMPILER_VAR_313+currStrOff, " = strlen(", strLen_3);
                         currStrOff += strLen_3;
                         
-                        strncpy(____BAH_COMPILER_VAR_311+currStrOff, strConts->data[j], strLen_4);
+                        strncpy(____BAH_COMPILER_VAR_313+currStrOff, strConts->data[j], strLen_4);
                         currStrOff += strLen_4;
                         
-                        strncpy(____BAH_COMPILER_VAR_311+currStrOff, ");\n", strLen_5);
+                        strncpy(____BAH_COMPILER_VAR_313+currStrOff, ");\n", strLen_5);
                         currStrOff += strLen_5;
                         
                     }
-                    lens =  ____BAH_COMPILER_VAR_311;
-char * ____BAH_COMPILER_VAR_312 =null;
+                    lens =  ____BAH_COMPILER_VAR_313;
+char * ____BAH_COMPILER_VAR_314 =null;
                     {
                         long int currStrOff = 0;
                         long int strLen_0 = strlen(totStrLen);
 long int strLen_1 = strlen(" + strLen_");
 long int strLen_2 = strlen(js);
 ;                            
-                        ____BAH_COMPILER_VAR_312 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2);
+                        ____BAH_COMPILER_VAR_314 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2);
                         
-                        strncpy(____BAH_COMPILER_VAR_312+currStrOff, totStrLen, strLen_0);
+                        strncpy(____BAH_COMPILER_VAR_314+currStrOff, totStrLen, strLen_0);
                         currStrOff += strLen_0;
                         
-                        strncpy(____BAH_COMPILER_VAR_312+currStrOff, " + strLen_", strLen_1);
+                        strncpy(____BAH_COMPILER_VAR_314+currStrOff, " + strLen_", strLen_1);
                         currStrOff += strLen_1;
                         
-                        strncpy(____BAH_COMPILER_VAR_312+currStrOff, js, strLen_2);
+                        strncpy(____BAH_COMPILER_VAR_314+currStrOff, js, strLen_2);
                         currStrOff += strLen_2;
                         
                     }
-                    totStrLen =  ____BAH_COMPILER_VAR_312;
+                    totStrLen =  ____BAH_COMPILER_VAR_314;
 j =  j + 1;
 };
 struct rope* cats =  rope("");
 j =  0;
 while ((j<len(strConts))) {
 char * js =  intToStr(j);
-char * ____BAH_COMPILER_VAR_313 =null;
+char * ____BAH_COMPILER_VAR_315 =null;
                     {
                         long int currStrOff = 0;
                         long int strLen_0 = strlen("\n                        strncpy(");
@@ -5424,40 +5434,40 @@ long int strLen_6 = strlen(");\n                        currStrOff += strLen_");
 long int strLen_7 = strlen(js);
 long int strLen_8 = strlen(";\n                        ");
 ;                            
-                        ____BAH_COMPILER_VAR_313 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2 + strLen_3 + strLen_4 + strLen_5 + strLen_6 + strLen_7 + strLen_8);
+                        ____BAH_COMPILER_VAR_315 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2 + strLen_3 + strLen_4 + strLen_5 + strLen_6 + strLen_7 + strLen_8);
                         
-                        strncpy(____BAH_COMPILER_VAR_313+currStrOff, "\n                        strncpy(", strLen_0);
+                        strncpy(____BAH_COMPILER_VAR_315+currStrOff, "\n                        strncpy(", strLen_0);
                         currStrOff += strLen_0;
                         
-                        strncpy(____BAH_COMPILER_VAR_313+currStrOff, rstr, strLen_1);
+                        strncpy(____BAH_COMPILER_VAR_315+currStrOff, rstr, strLen_1);
                         currStrOff += strLen_1;
                         
-                        strncpy(____BAH_COMPILER_VAR_313+currStrOff, "+currStrOff, ", strLen_2);
+                        strncpy(____BAH_COMPILER_VAR_315+currStrOff, "+currStrOff, ", strLen_2);
                         currStrOff += strLen_2;
                         
-                        strncpy(____BAH_COMPILER_VAR_313+currStrOff, strConts->data[j], strLen_3);
+                        strncpy(____BAH_COMPILER_VAR_315+currStrOff, strConts->data[j], strLen_3);
                         currStrOff += strLen_3;
                         
-                        strncpy(____BAH_COMPILER_VAR_313+currStrOff, ", strLen_", strLen_4);
+                        strncpy(____BAH_COMPILER_VAR_315+currStrOff, ", strLen_", strLen_4);
                         currStrOff += strLen_4;
                         
-                        strncpy(____BAH_COMPILER_VAR_313+currStrOff, js, strLen_5);
+                        strncpy(____BAH_COMPILER_VAR_315+currStrOff, js, strLen_5);
                         currStrOff += strLen_5;
                         
-                        strncpy(____BAH_COMPILER_VAR_313+currStrOff, ");\n                        currStrOff += strLen_", strLen_6);
+                        strncpy(____BAH_COMPILER_VAR_315+currStrOff, ");\n                        currStrOff += strLen_", strLen_6);
                         currStrOff += strLen_6;
                         
-                        strncpy(____BAH_COMPILER_VAR_313+currStrOff, js, strLen_7);
+                        strncpy(____BAH_COMPILER_VAR_315+currStrOff, js, strLen_7);
                         currStrOff += strLen_7;
                         
-                        strncpy(____BAH_COMPILER_VAR_313+currStrOff, ";\n                        ", strLen_8);
+                        strncpy(____BAH_COMPILER_VAR_315+currStrOff, ";\n                        ", strLen_8);
                         currStrOff += strLen_8;
                         
                     }
-                    cats =  cats->add(cats, rope(____BAH_COMPILER_VAR_313));
+                    cats =  cats->add(cats, rope(____BAH_COMPILER_VAR_315));
 j =  j + 1;
 };
-char * ____BAH_COMPILER_VAR_314 =null;
+char * ____BAH_COMPILER_VAR_316 =null;
                     {
                         long int currStrOff = 0;
                         long int strLen_0 = strlen("\n                    {\n                        long int currStrOff = 0;\n                        ");
@@ -5468,31 +5478,31 @@ long int strLen_4 = strlen(" = memoryAlloc(");
 long int strLen_5 = strlen(totStrLen);
 long int strLen_6 = strlen(");\n                        ");
 ;                            
-                        ____BAH_COMPILER_VAR_314 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2 + strLen_3 + strLen_4 + strLen_5 + strLen_6);
+                        ____BAH_COMPILER_VAR_316 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2 + strLen_3 + strLen_4 + strLen_5 + strLen_6);
                         
-                        strncpy(____BAH_COMPILER_VAR_314+currStrOff, "\n                    {\n                        long int currStrOff = 0;\n                        ", strLen_0);
+                        strncpy(____BAH_COMPILER_VAR_316+currStrOff, "\n                    {\n                        long int currStrOff = 0;\n                        ", strLen_0);
                         currStrOff += strLen_0;
                         
-                        strncpy(____BAH_COMPILER_VAR_314+currStrOff, lens, strLen_1);
+                        strncpy(____BAH_COMPILER_VAR_316+currStrOff, lens, strLen_1);
                         currStrOff += strLen_1;
                         
-                        strncpy(____BAH_COMPILER_VAR_314+currStrOff, ";                            \n                        ", strLen_2);
+                        strncpy(____BAH_COMPILER_VAR_316+currStrOff, ";                            \n                        ", strLen_2);
                         currStrOff += strLen_2;
                         
-                        strncpy(____BAH_COMPILER_VAR_314+currStrOff, rstr, strLen_3);
+                        strncpy(____BAH_COMPILER_VAR_316+currStrOff, rstr, strLen_3);
                         currStrOff += strLen_3;
                         
-                        strncpy(____BAH_COMPILER_VAR_314+currStrOff, " = memoryAlloc(", strLen_4);
+                        strncpy(____BAH_COMPILER_VAR_316+currStrOff, " = memoryAlloc(", strLen_4);
                         currStrOff += strLen_4;
                         
-                        strncpy(____BAH_COMPILER_VAR_314+currStrOff, totStrLen, strLen_5);
+                        strncpy(____BAH_COMPILER_VAR_316+currStrOff, totStrLen, strLen_5);
                         currStrOff += strLen_5;
                         
-                        strncpy(____BAH_COMPILER_VAR_314+currStrOff, ");\n                        ", strLen_6);
+                        strncpy(____BAH_COMPILER_VAR_316+currStrOff, ");\n                        ", strLen_6);
                         currStrOff += strLen_6;
                         
                     }
-                    OUTPUT =  OUTPUT->add(OUTPUT, rope(____BAH_COMPILER_VAR_314))->add(OUTPUT->add(OUTPUT, rope(____BAH_COMPILER_VAR_314)), cats)->add(OUTPUT->add(OUTPUT, rope(____BAH_COMPILER_VAR_314))->add(OUTPUT->add(OUTPUT, rope(____BAH_COMPILER_VAR_314)), cats), rope("\n                    }\n                    "));
+                    OUTPUT =  OUTPUT->add(OUTPUT, rope(____BAH_COMPILER_VAR_316))->add(OUTPUT->add(OUTPUT, rope(____BAH_COMPILER_VAR_316)), cats)->add(OUTPUT->add(OUTPUT, rope(____BAH_COMPILER_VAR_316))->add(OUTPUT->add(OUTPUT, rope(____BAH_COMPILER_VAR_316)), cats), rope("\n                    }\n                    "));
 t.cont =  rstr;
 t.type =  TOKEN_TYPE_VAR;
 t.bahType =  ptt;
@@ -5529,96 +5539,12 @@ sep =  "->";
 amp =  "";
 }
 if ((((strcmp(t.cont, "+") == 0)&&(addMthd!=null))&&(addMthd->isFn==true))) {
-char * ____BAH_COMPILER_VAR_315 =null;
-                    {
-                        long int currStrOff = 0;
-                        long int strLen_0 = strlen(pt.cont);
-long int strLen_1 = strlen(sep);
-long int strLen_2 = strlen("add(");
-long int strLen_3 = strlen(amp);
-long int strLen_4 = strlen(pt.cont);
-long int strLen_5 = strlen(", ");
-long int strLen_6 = strlen(nt.cont);
-long int strLen_7 = strlen(")");
-;                            
-                        ____BAH_COMPILER_VAR_315 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2 + strLen_3 + strLen_4 + strLen_5 + strLen_6 + strLen_7);
-                        
-                        strncpy(____BAH_COMPILER_VAR_315+currStrOff, pt.cont, strLen_0);
-                        currStrOff += strLen_0;
-                        
-                        strncpy(____BAH_COMPILER_VAR_315+currStrOff, sep, strLen_1);
-                        currStrOff += strLen_1;
-                        
-                        strncpy(____BAH_COMPILER_VAR_315+currStrOff, "add(", strLen_2);
-                        currStrOff += strLen_2;
-                        
-                        strncpy(____BAH_COMPILER_VAR_315+currStrOff, amp, strLen_3);
-                        currStrOff += strLen_3;
-                        
-                        strncpy(____BAH_COMPILER_VAR_315+currStrOff, pt.cont, strLen_4);
-                        currStrOff += strLen_4;
-                        
-                        strncpy(____BAH_COMPILER_VAR_315+currStrOff, ", ", strLen_5);
-                        currStrOff += strLen_5;
-                        
-                        strncpy(____BAH_COMPILER_VAR_315+currStrOff, nt.cont, strLen_6);
-                        currStrOff += strLen_6;
-                        
-                        strncpy(____BAH_COMPILER_VAR_315+currStrOff, ")", strLen_7);
-                        currStrOff += strLen_7;
-                        
-                    }
-                    t.cont =  ____BAH_COMPILER_VAR_315;
-}
-else if ((((strcmp(t.cont, "-") == 0)&&(subMthd!=null))&&(subMthd->isFn==true))) {
-char * ____BAH_COMPILER_VAR_316 =null;
-                    {
-                        long int currStrOff = 0;
-                        long int strLen_0 = strlen(pt.cont);
-long int strLen_1 = strlen(sep);
-long int strLen_2 = strlen("sub(");
-long int strLen_3 = strlen(amp);
-long int strLen_4 = strlen(pt.cont);
-long int strLen_5 = strlen(", ");
-long int strLen_6 = strlen(nt.cont);
-long int strLen_7 = strlen(")");
-;                            
-                        ____BAH_COMPILER_VAR_316 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2 + strLen_3 + strLen_4 + strLen_5 + strLen_6 + strLen_7);
-                        
-                        strncpy(____BAH_COMPILER_VAR_316+currStrOff, pt.cont, strLen_0);
-                        currStrOff += strLen_0;
-                        
-                        strncpy(____BAH_COMPILER_VAR_316+currStrOff, sep, strLen_1);
-                        currStrOff += strLen_1;
-                        
-                        strncpy(____BAH_COMPILER_VAR_316+currStrOff, "sub(", strLen_2);
-                        currStrOff += strLen_2;
-                        
-                        strncpy(____BAH_COMPILER_VAR_316+currStrOff, amp, strLen_3);
-                        currStrOff += strLen_3;
-                        
-                        strncpy(____BAH_COMPILER_VAR_316+currStrOff, pt.cont, strLen_4);
-                        currStrOff += strLen_4;
-                        
-                        strncpy(____BAH_COMPILER_VAR_316+currStrOff, ", ", strLen_5);
-                        currStrOff += strLen_5;
-                        
-                        strncpy(____BAH_COMPILER_VAR_316+currStrOff, nt.cont, strLen_6);
-                        currStrOff += strLen_6;
-                        
-                        strncpy(____BAH_COMPILER_VAR_316+currStrOff, ")", strLen_7);
-                        currStrOff += strLen_7;
-                        
-                    }
-                    t.cont =  ____BAH_COMPILER_VAR_316;
-}
-else if ((((strcmp(t.cont, "*") == 0)&&(multMthd!=null))&&(multMthd->isFn==true))) {
 char * ____BAH_COMPILER_VAR_317 =null;
                     {
                         long int currStrOff = 0;
                         long int strLen_0 = strlen(pt.cont);
 long int strLen_1 = strlen(sep);
-long int strLen_2 = strlen("mult(");
+long int strLen_2 = strlen("add(");
 long int strLen_3 = strlen(amp);
 long int strLen_4 = strlen(pt.cont);
 long int strLen_5 = strlen(", ");
@@ -5633,7 +5559,7 @@ long int strLen_7 = strlen(")");
                         strncpy(____BAH_COMPILER_VAR_317+currStrOff, sep, strLen_1);
                         currStrOff += strLen_1;
                         
-                        strncpy(____BAH_COMPILER_VAR_317+currStrOff, "mult(", strLen_2);
+                        strncpy(____BAH_COMPILER_VAR_317+currStrOff, "add(", strLen_2);
                         currStrOff += strLen_2;
                         
                         strncpy(____BAH_COMPILER_VAR_317+currStrOff, amp, strLen_3);
@@ -5654,13 +5580,13 @@ long int strLen_7 = strlen(")");
                     }
                     t.cont =  ____BAH_COMPILER_VAR_317;
 }
-else if ((((strcmp(t.cont, "/") == 0)&&(divMthd!=null))&&(divMthd->isFn==true))) {
+else if ((((strcmp(t.cont, "-") == 0)&&(subMthd!=null))&&(subMthd->isFn==true))) {
 char * ____BAH_COMPILER_VAR_318 =null;
                     {
                         long int currStrOff = 0;
                         long int strLen_0 = strlen(pt.cont);
 long int strLen_1 = strlen(sep);
-long int strLen_2 = strlen("div(");
+long int strLen_2 = strlen("sub(");
 long int strLen_3 = strlen(amp);
 long int strLen_4 = strlen(pt.cont);
 long int strLen_5 = strlen(", ");
@@ -5675,7 +5601,7 @@ long int strLen_7 = strlen(")");
                         strncpy(____BAH_COMPILER_VAR_318+currStrOff, sep, strLen_1);
                         currStrOff += strLen_1;
                         
-                        strncpy(____BAH_COMPILER_VAR_318+currStrOff, "div(", strLen_2);
+                        strncpy(____BAH_COMPILER_VAR_318+currStrOff, "sub(", strLen_2);
                         currStrOff += strLen_2;
                         
                         strncpy(____BAH_COMPILER_VAR_318+currStrOff, amp, strLen_3);
@@ -5696,31 +5622,115 @@ long int strLen_7 = strlen(")");
                     }
                     t.cont =  ____BAH_COMPILER_VAR_318;
 }
-else {
+else if ((((strcmp(t.cont, "*") == 0)&&(multMthd!=null))&&(multMthd->isFn==true))) {
 char * ____BAH_COMPILER_VAR_319 =null;
+                    {
+                        long int currStrOff = 0;
+                        long int strLen_0 = strlen(pt.cont);
+long int strLen_1 = strlen(sep);
+long int strLen_2 = strlen("mult(");
+long int strLen_3 = strlen(amp);
+long int strLen_4 = strlen(pt.cont);
+long int strLen_5 = strlen(", ");
+long int strLen_6 = strlen(nt.cont);
+long int strLen_7 = strlen(")");
+;                            
+                        ____BAH_COMPILER_VAR_319 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2 + strLen_3 + strLen_4 + strLen_5 + strLen_6 + strLen_7);
+                        
+                        strncpy(____BAH_COMPILER_VAR_319+currStrOff, pt.cont, strLen_0);
+                        currStrOff += strLen_0;
+                        
+                        strncpy(____BAH_COMPILER_VAR_319+currStrOff, sep, strLen_1);
+                        currStrOff += strLen_1;
+                        
+                        strncpy(____BAH_COMPILER_VAR_319+currStrOff, "mult(", strLen_2);
+                        currStrOff += strLen_2;
+                        
+                        strncpy(____BAH_COMPILER_VAR_319+currStrOff, amp, strLen_3);
+                        currStrOff += strLen_3;
+                        
+                        strncpy(____BAH_COMPILER_VAR_319+currStrOff, pt.cont, strLen_4);
+                        currStrOff += strLen_4;
+                        
+                        strncpy(____BAH_COMPILER_VAR_319+currStrOff, ", ", strLen_5);
+                        currStrOff += strLen_5;
+                        
+                        strncpy(____BAH_COMPILER_VAR_319+currStrOff, nt.cont, strLen_6);
+                        currStrOff += strLen_6;
+                        
+                        strncpy(____BAH_COMPILER_VAR_319+currStrOff, ")", strLen_7);
+                        currStrOff += strLen_7;
+                        
+                    }
+                    t.cont =  ____BAH_COMPILER_VAR_319;
+}
+else if ((((strcmp(t.cont, "/") == 0)&&(divMthd!=null))&&(divMthd->isFn==true))) {
+char * ____BAH_COMPILER_VAR_320 =null;
+                    {
+                        long int currStrOff = 0;
+                        long int strLen_0 = strlen(pt.cont);
+long int strLen_1 = strlen(sep);
+long int strLen_2 = strlen("div(");
+long int strLen_3 = strlen(amp);
+long int strLen_4 = strlen(pt.cont);
+long int strLen_5 = strlen(", ");
+long int strLen_6 = strlen(nt.cont);
+long int strLen_7 = strlen(")");
+;                            
+                        ____BAH_COMPILER_VAR_320 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2 + strLen_3 + strLen_4 + strLen_5 + strLen_6 + strLen_7);
+                        
+                        strncpy(____BAH_COMPILER_VAR_320+currStrOff, pt.cont, strLen_0);
+                        currStrOff += strLen_0;
+                        
+                        strncpy(____BAH_COMPILER_VAR_320+currStrOff, sep, strLen_1);
+                        currStrOff += strLen_1;
+                        
+                        strncpy(____BAH_COMPILER_VAR_320+currStrOff, "div(", strLen_2);
+                        currStrOff += strLen_2;
+                        
+                        strncpy(____BAH_COMPILER_VAR_320+currStrOff, amp, strLen_3);
+                        currStrOff += strLen_3;
+                        
+                        strncpy(____BAH_COMPILER_VAR_320+currStrOff, pt.cont, strLen_4);
+                        currStrOff += strLen_4;
+                        
+                        strncpy(____BAH_COMPILER_VAR_320+currStrOff, ", ", strLen_5);
+                        currStrOff += strLen_5;
+                        
+                        strncpy(____BAH_COMPILER_VAR_320+currStrOff, nt.cont, strLen_6);
+                        currStrOff += strLen_6;
+                        
+                        strncpy(____BAH_COMPILER_VAR_320+currStrOff, ")", strLen_7);
+                        currStrOff += strLen_7;
+                        
+                    }
+                    t.cont =  ____BAH_COMPILER_VAR_320;
+}
+else {
+char * ____BAH_COMPILER_VAR_321 =null;
                     {
                         long int currStrOff = 0;
                         long int strLen_0 = strlen("Undefined operation on {TOKEN} (");
 long int strLen_1 = strlen(ptt);
 long int strLen_2 = strlen(").");
 ;                            
-                        ____BAH_COMPILER_VAR_319 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2);
+                        ____BAH_COMPILER_VAR_321 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2);
                         
-                        strncpy(____BAH_COMPILER_VAR_319+currStrOff, "Undefined operation on {TOKEN} (", strLen_0);
+                        strncpy(____BAH_COMPILER_VAR_321+currStrOff, "Undefined operation on {TOKEN} (", strLen_0);
                         currStrOff += strLen_0;
                         
-                        strncpy(____BAH_COMPILER_VAR_319+currStrOff, ptt, strLen_1);
+                        strncpy(____BAH_COMPILER_VAR_321+currStrOff, ptt, strLen_1);
                         currStrOff += strLen_1;
                         
-                        strncpy(____BAH_COMPILER_VAR_319+currStrOff, ").", strLen_2);
+                        strncpy(____BAH_COMPILER_VAR_321+currStrOff, ").", strLen_2);
                         currStrOff += strLen_2;
                         
                     }
-                    throwErr(&pt,____BAH_COMPILER_VAR_319);
+                    throwErr(&pt,____BAH_COMPILER_VAR_321);
 }
 }
 else {
-char * ____BAH_COMPILER_VAR_320 =null;
+char * ____BAH_COMPILER_VAR_322 =null;
                     {
                         long int currStrOff = 0;
                         long int strLen_0 = strlen(pt.cont);
@@ -5729,25 +5739,25 @@ long int strLen_2 = strlen(t.cont);
 long int strLen_3 = strlen(" ");
 long int strLen_4 = strlen(nt.cont);
 ;                            
-                        ____BAH_COMPILER_VAR_320 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2 + strLen_3 + strLen_4);
+                        ____BAH_COMPILER_VAR_322 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2 + strLen_3 + strLen_4);
                         
-                        strncpy(____BAH_COMPILER_VAR_320+currStrOff, pt.cont, strLen_0);
+                        strncpy(____BAH_COMPILER_VAR_322+currStrOff, pt.cont, strLen_0);
                         currStrOff += strLen_0;
                         
-                        strncpy(____BAH_COMPILER_VAR_320+currStrOff, " ", strLen_1);
+                        strncpy(____BAH_COMPILER_VAR_322+currStrOff, " ", strLen_1);
                         currStrOff += strLen_1;
                         
-                        strncpy(____BAH_COMPILER_VAR_320+currStrOff, t.cont, strLen_2);
+                        strncpy(____BAH_COMPILER_VAR_322+currStrOff, t.cont, strLen_2);
                         currStrOff += strLen_2;
                         
-                        strncpy(____BAH_COMPILER_VAR_320+currStrOff, " ", strLen_3);
+                        strncpy(____BAH_COMPILER_VAR_322+currStrOff, " ", strLen_3);
                         currStrOff += strLen_3;
                         
-                        strncpy(____BAH_COMPILER_VAR_320+currStrOff, nt.cont, strLen_4);
+                        strncpy(____BAH_COMPILER_VAR_322+currStrOff, nt.cont, strLen_4);
                         currStrOff += strLen_4;
                         
                     }
-                    t.cont =  ____BAH_COMPILER_VAR_320;
+                    t.cont =  ____BAH_COMPILER_VAR_322;
 }
 }
 t.type =  TOKEN_TYPE_VAR;
@@ -5779,7 +5789,7 @@ if ((pt.isValue==true)) {
 char * ptt =  getTypeFromToken(&pt,true,elems);
 char * ntt =  getTypeFromToken(&t,true,elems);
 if ((compTypes(ptt,ntt)==false)) {
-char * ____BAH_COMPILER_VAR_321 =null;
+char * ____BAH_COMPILER_VAR_323 =null;
                     {
                         long int currStrOff = 0;
                         long int strLen_0 = strlen("Cannot use {TOKEN} (");
@@ -5788,44 +5798,44 @@ long int strLen_2 = strlen(") as ");
 long int strLen_3 = strlen(ptt);
 long int strLen_4 = strlen(".");
 ;                            
-                        ____BAH_COMPILER_VAR_321 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2 + strLen_3 + strLen_4);
+                        ____BAH_COMPILER_VAR_323 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2 + strLen_3 + strLen_4);
                         
-                        strncpy(____BAH_COMPILER_VAR_321+currStrOff, "Cannot use {TOKEN} (", strLen_0);
+                        strncpy(____BAH_COMPILER_VAR_323+currStrOff, "Cannot use {TOKEN} (", strLen_0);
                         currStrOff += strLen_0;
                         
-                        strncpy(____BAH_COMPILER_VAR_321+currStrOff, ntt, strLen_1);
+                        strncpy(____BAH_COMPILER_VAR_323+currStrOff, ntt, strLen_1);
                         currStrOff += strLen_1;
                         
-                        strncpy(____BAH_COMPILER_VAR_321+currStrOff, ") as ", strLen_2);
+                        strncpy(____BAH_COMPILER_VAR_323+currStrOff, ") as ", strLen_2);
                         currStrOff += strLen_2;
                         
-                        strncpy(____BAH_COMPILER_VAR_321+currStrOff, ptt, strLen_3);
+                        strncpy(____BAH_COMPILER_VAR_323+currStrOff, ptt, strLen_3);
                         currStrOff += strLen_3;
                         
-                        strncpy(____BAH_COMPILER_VAR_321+currStrOff, ".", strLen_4);
+                        strncpy(____BAH_COMPILER_VAR_323+currStrOff, ".", strLen_4);
                         currStrOff += strLen_4;
                         
                     }
-                    throwErr(&t,____BAH_COMPILER_VAR_321);
+                    throwErr(&t,____BAH_COMPILER_VAR_323);
 }
 t.type =  TOKEN_TYPE_VAR;
 t.isOper =  true;
-char * ____BAH_COMPILER_VAR_322 =null;
+char * ____BAH_COMPILER_VAR_324 =null;
                     {
                         long int currStrOff = 0;
                         long int strLen_0 = strlen(pt.cont);
 long int strLen_1 = strlen(t.cont);
 ;                            
-                        ____BAH_COMPILER_VAR_322 = memoryAlloc(1 + strLen_0 + strLen_1);
+                        ____BAH_COMPILER_VAR_324 = memoryAlloc(1 + strLen_0 + strLen_1);
                         
-                        strncpy(____BAH_COMPILER_VAR_322+currStrOff, pt.cont, strLen_0);
+                        strncpy(____BAH_COMPILER_VAR_324+currStrOff, pt.cont, strLen_0);
                         currStrOff += strLen_0;
                         
-                        strncpy(____BAH_COMPILER_VAR_322+currStrOff, t.cont, strLen_1);
+                        strncpy(____BAH_COMPILER_VAR_324+currStrOff, t.cont, strLen_1);
                         currStrOff += strLen_1;
                         
                     }
-                    t.cont =  ____BAH_COMPILER_VAR_322;
+                    t.cont =  ____BAH_COMPILER_VAR_324;
 t.bahType =  ptt;
 t.pos =  pt.pos;
 
@@ -5863,9 +5873,10 @@ nl->data[len(nl)] =  t;
 };
 i =  i + 1;
 };
-array(struct Tok)* ____BAH_COMPILER_VAR_323 = nl;
-return ____BAH_COMPILER_VAR_323;
+array(struct Tok)* ____BAH_COMPILER_VAR_325 = nl;
+return ____BAH_COMPILER_VAR_325;
 };
+__BAH_ARR_TYPE_Tok prePross(__BAH_ARR_TYPE_Tok line,lineType ltp,struct Elems* elems);
 __BAH_ARR_TYPE_Tok parseStructType(__BAH_ARR_TYPE_Tok line,struct Elems* elems){
 array(struct Tok)* nl = memoryAlloc(sizeof(array(struct Tok)));
 
@@ -5939,38 +5950,38 @@ tmpV->outterScope = false;
 tmpV->name =  rvn;
 tmpV->type =  s->name;
 struct string rst =  getCType(s->name,elems);
-char * ____BAH_COMPILER_VAR_324 =rst.str((struct string*)&rst);char * ____BAH_COMPILER_VAR_325 =declareStructMethods(tmpV,s,elems);char * ____BAH_COMPILER_VAR_326 =null;
+char * ____BAH_COMPILER_VAR_326 =rst.str((struct string*)&rst);char * ____BAH_COMPILER_VAR_327 =declareStructMethods(tmpV,s,elems);char * ____BAH_COMPILER_VAR_328 =null;
                     {
                         long int currStrOff = 0;
-                        long int strLen_0 = strlen(____BAH_COMPILER_VAR_324);
+                        long int strLen_0 = strlen(____BAH_COMPILER_VAR_326);
 long int strLen_1 = strlen(" ");
 long int strLen_2 = strlen(rvn);
 long int strLen_3 = strlen(" = ");
 long int strLen_4 = strlen("{};\n");
-long int strLen_5 = strlen(____BAH_COMPILER_VAR_325);
+long int strLen_5 = strlen(____BAH_COMPILER_VAR_327);
 ;                            
-                        ____BAH_COMPILER_VAR_326 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2 + strLen_3 + strLen_4 + strLen_5);
+                        ____BAH_COMPILER_VAR_328 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2 + strLen_3 + strLen_4 + strLen_5);
                         
-                        strncpy(____BAH_COMPILER_VAR_326+currStrOff, ____BAH_COMPILER_VAR_324, strLen_0);
+                        strncpy(____BAH_COMPILER_VAR_328+currStrOff, ____BAH_COMPILER_VAR_326, strLen_0);
                         currStrOff += strLen_0;
                         
-                        strncpy(____BAH_COMPILER_VAR_326+currStrOff, " ", strLen_1);
+                        strncpy(____BAH_COMPILER_VAR_328+currStrOff, " ", strLen_1);
                         currStrOff += strLen_1;
                         
-                        strncpy(____BAH_COMPILER_VAR_326+currStrOff, rvn, strLen_2);
+                        strncpy(____BAH_COMPILER_VAR_328+currStrOff, rvn, strLen_2);
                         currStrOff += strLen_2;
                         
-                        strncpy(____BAH_COMPILER_VAR_326+currStrOff, " = ", strLen_3);
+                        strncpy(____BAH_COMPILER_VAR_328+currStrOff, " = ", strLen_3);
                         currStrOff += strLen_3;
                         
-                        strncpy(____BAH_COMPILER_VAR_326+currStrOff, "{};\n", strLen_4);
+                        strncpy(____BAH_COMPILER_VAR_328+currStrOff, "{};\n", strLen_4);
                         currStrOff += strLen_4;
                         
-                        strncpy(____BAH_COMPILER_VAR_326+currStrOff, ____BAH_COMPILER_VAR_325, strLen_5);
+                        strncpy(____BAH_COMPILER_VAR_328+currStrOff, ____BAH_COMPILER_VAR_327, strLen_5);
                         currStrOff += strLen_5;
                         
                     }
-                    struct rope* r =  rope(____BAH_COMPILER_VAR_326);
+                    struct rope* r =  rope(____BAH_COMPILER_VAR_328);
 long int j =  0;
 long int k =  0;
 while ((k<len(memory))) {
@@ -5995,7 +6006,7 @@ continue;
 }
 char * vlt =  getTypeFromToken(&vl,true,elems);
 if ((compTypes(vlt,m->type)==false)) {
-char * ____BAH_COMPILER_VAR_327 =null;
+char * ____BAH_COMPILER_VAR_329 =null;
                     {
                         long int currStrOff = 0;
                         long int strLen_0 = strlen("Cannot use {TOKEN} (");
@@ -6004,27 +6015,27 @@ long int strLen_2 = strlen(") as '");
 long int strLen_3 = strlen(m->type);
 long int strLen_4 = strlen("'.");
 ;                            
-                        ____BAH_COMPILER_VAR_327 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2 + strLen_3 + strLen_4);
+                        ____BAH_COMPILER_VAR_329 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2 + strLen_3 + strLen_4);
                         
-                        strncpy(____BAH_COMPILER_VAR_327+currStrOff, "Cannot use {TOKEN} (", strLen_0);
+                        strncpy(____BAH_COMPILER_VAR_329+currStrOff, "Cannot use {TOKEN} (", strLen_0);
                         currStrOff += strLen_0;
                         
-                        strncpy(____BAH_COMPILER_VAR_327+currStrOff, vlt, strLen_1);
+                        strncpy(____BAH_COMPILER_VAR_329+currStrOff, vlt, strLen_1);
                         currStrOff += strLen_1;
                         
-                        strncpy(____BAH_COMPILER_VAR_327+currStrOff, ") as '", strLen_2);
+                        strncpy(____BAH_COMPILER_VAR_329+currStrOff, ") as '", strLen_2);
                         currStrOff += strLen_2;
                         
-                        strncpy(____BAH_COMPILER_VAR_327+currStrOff, m->type, strLen_3);
+                        strncpy(____BAH_COMPILER_VAR_329+currStrOff, m->type, strLen_3);
                         currStrOff += strLen_3;
                         
-                        strncpy(____BAH_COMPILER_VAR_327+currStrOff, "'.", strLen_4);
+                        strncpy(____BAH_COMPILER_VAR_329+currStrOff, "'.", strLen_4);
                         currStrOff += strLen_4;
                         
                     }
-                    throwErr(&vl,____BAH_COMPILER_VAR_327);
+                    throwErr(&vl,____BAH_COMPILER_VAR_329);
 }
-char * ____BAH_COMPILER_VAR_328 =null;
+char * ____BAH_COMPILER_VAR_330 =null;
                     {
                         long int currStrOff = 0;
                         long int strLen_0 = strlen(rvn);
@@ -6034,51 +6045,51 @@ long int strLen_3 = strlen(" = ");
 long int strLen_4 = strlen(vl.cont);
 long int strLen_5 = strlen(";\n");
 ;                            
-                        ____BAH_COMPILER_VAR_328 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2 + strLen_3 + strLen_4 + strLen_5);
+                        ____BAH_COMPILER_VAR_330 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2 + strLen_3 + strLen_4 + strLen_5);
                         
-                        strncpy(____BAH_COMPILER_VAR_328+currStrOff, rvn, strLen_0);
+                        strncpy(____BAH_COMPILER_VAR_330+currStrOff, rvn, strLen_0);
                         currStrOff += strLen_0;
                         
-                        strncpy(____BAH_COMPILER_VAR_328+currStrOff, ".", strLen_1);
+                        strncpy(____BAH_COMPILER_VAR_330+currStrOff, ".", strLen_1);
                         currStrOff += strLen_1;
                         
-                        strncpy(____BAH_COMPILER_VAR_328+currStrOff, m->name, strLen_2);
+                        strncpy(____BAH_COMPILER_VAR_330+currStrOff, m->name, strLen_2);
                         currStrOff += strLen_2;
                         
-                        strncpy(____BAH_COMPILER_VAR_328+currStrOff, " = ", strLen_3);
+                        strncpy(____BAH_COMPILER_VAR_330+currStrOff, " = ", strLen_3);
                         currStrOff += strLen_3;
                         
-                        strncpy(____BAH_COMPILER_VAR_328+currStrOff, vl.cont, strLen_4);
+                        strncpy(____BAH_COMPILER_VAR_330+currStrOff, vl.cont, strLen_4);
                         currStrOff += strLen_4;
                         
-                        strncpy(____BAH_COMPILER_VAR_328+currStrOff, ";\n", strLen_5);
+                        strncpy(____BAH_COMPILER_VAR_330+currStrOff, ";\n", strLen_5);
                         currStrOff += strLen_5;
                         
                     }
-                    r =  r->add(r, rope(____BAH_COMPILER_VAR_328));
+                    r =  r->add(r, rope(____BAH_COMPILER_VAR_330));
 break;
 };
 if ((j==len(s->members))) {
-char * ____BAH_COMPILER_VAR_329 =null;
+char * ____BAH_COMPILER_VAR_331 =null;
                     {
                         long int currStrOff = 0;
                         long int strLen_0 = strlen("Struct '");
 long int strLen_1 = strlen(s->name);
 long int strLen_2 = strlen("' has no member called {TOKEN}.");
 ;                            
-                        ____BAH_COMPILER_VAR_329 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2);
+                        ____BAH_COMPILER_VAR_331 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2);
                         
-                        strncpy(____BAH_COMPILER_VAR_329+currStrOff, "Struct '", strLen_0);
+                        strncpy(____BAH_COMPILER_VAR_331+currStrOff, "Struct '", strLen_0);
                         currStrOff += strLen_0;
                         
-                        strncpy(____BAH_COMPILER_VAR_329+currStrOff, s->name, strLen_1);
+                        strncpy(____BAH_COMPILER_VAR_331+currStrOff, s->name, strLen_1);
                         currStrOff += strLen_1;
                         
-                        strncpy(____BAH_COMPILER_VAR_329+currStrOff, "' has no member called {TOKEN}.", strLen_2);
+                        strncpy(____BAH_COMPILER_VAR_331+currStrOff, "' has no member called {TOKEN}.", strLen_2);
                         currStrOff += strLen_2;
                         
                     }
-                    throwErr(&t,____BAH_COMPILER_VAR_329);
+                    throwErr(&t,____BAH_COMPILER_VAR_331);
 }
 k =  k + 3;
 continue;
@@ -6095,7 +6106,7 @@ struct structMemb* m =  s->members->data[j];
 j =  j + 1;
 char * tt =  getTypeFromToken(&t,true,elems);
 if ((compTypes(tt,m->type)==false)) {
-char * ____BAH_COMPILER_VAR_330 =null;
+char * ____BAH_COMPILER_VAR_332 =null;
                     {
                         long int currStrOff = 0;
                         long int strLen_0 = strlen("Cannot use {TOKEN} (");
@@ -6104,27 +6115,27 @@ long int strLen_2 = strlen(") as '");
 long int strLen_3 = strlen(m->type);
 long int strLen_4 = strlen("'.");
 ;                            
-                        ____BAH_COMPILER_VAR_330 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2 + strLen_3 + strLen_4);
+                        ____BAH_COMPILER_VAR_332 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2 + strLen_3 + strLen_4);
                         
-                        strncpy(____BAH_COMPILER_VAR_330+currStrOff, "Cannot use {TOKEN} (", strLen_0);
+                        strncpy(____BAH_COMPILER_VAR_332+currStrOff, "Cannot use {TOKEN} (", strLen_0);
                         currStrOff += strLen_0;
                         
-                        strncpy(____BAH_COMPILER_VAR_330+currStrOff, tt, strLen_1);
+                        strncpy(____BAH_COMPILER_VAR_332+currStrOff, tt, strLen_1);
                         currStrOff += strLen_1;
                         
-                        strncpy(____BAH_COMPILER_VAR_330+currStrOff, ") as '", strLen_2);
+                        strncpy(____BAH_COMPILER_VAR_332+currStrOff, ") as '", strLen_2);
                         currStrOff += strLen_2;
                         
-                        strncpy(____BAH_COMPILER_VAR_330+currStrOff, m->type, strLen_3);
+                        strncpy(____BAH_COMPILER_VAR_332+currStrOff, m->type, strLen_3);
                         currStrOff += strLen_3;
                         
-                        strncpy(____BAH_COMPILER_VAR_330+currStrOff, "'.", strLen_4);
+                        strncpy(____BAH_COMPILER_VAR_332+currStrOff, "'.", strLen_4);
                         currStrOff += strLen_4;
                         
                     }
-                    throwErr(&t,____BAH_COMPILER_VAR_330);
+                    throwErr(&t,____BAH_COMPILER_VAR_332);
 }
-char * ____BAH_COMPILER_VAR_331 =null;
+char * ____BAH_COMPILER_VAR_333 =null;
                     {
                         long int currStrOff = 0;
                         long int strLen_0 = strlen(rvn);
@@ -6134,28 +6145,28 @@ long int strLen_3 = strlen(" = ");
 long int strLen_4 = strlen(t.cont);
 long int strLen_5 = strlen(";\n");
 ;                            
-                        ____BAH_COMPILER_VAR_331 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2 + strLen_3 + strLen_4 + strLen_5);
+                        ____BAH_COMPILER_VAR_333 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2 + strLen_3 + strLen_4 + strLen_5);
                         
-                        strncpy(____BAH_COMPILER_VAR_331+currStrOff, rvn, strLen_0);
+                        strncpy(____BAH_COMPILER_VAR_333+currStrOff, rvn, strLen_0);
                         currStrOff += strLen_0;
                         
-                        strncpy(____BAH_COMPILER_VAR_331+currStrOff, ".", strLen_1);
+                        strncpy(____BAH_COMPILER_VAR_333+currStrOff, ".", strLen_1);
                         currStrOff += strLen_1;
                         
-                        strncpy(____BAH_COMPILER_VAR_331+currStrOff, m->name, strLen_2);
+                        strncpy(____BAH_COMPILER_VAR_333+currStrOff, m->name, strLen_2);
                         currStrOff += strLen_2;
                         
-                        strncpy(____BAH_COMPILER_VAR_331+currStrOff, " = ", strLen_3);
+                        strncpy(____BAH_COMPILER_VAR_333+currStrOff, " = ", strLen_3);
                         currStrOff += strLen_3;
                         
-                        strncpy(____BAH_COMPILER_VAR_331+currStrOff, t.cont, strLen_4);
+                        strncpy(____BAH_COMPILER_VAR_333+currStrOff, t.cont, strLen_4);
                         currStrOff += strLen_4;
                         
-                        strncpy(____BAH_COMPILER_VAR_331+currStrOff, ";\n", strLen_5);
+                        strncpy(____BAH_COMPILER_VAR_333+currStrOff, ";\n", strLen_5);
                         currStrOff += strLen_5;
                         
                     }
-                    r =  r->add(r, rope(____BAH_COMPILER_VAR_331));
+                    r =  r->add(r, rope(____BAH_COMPILER_VAR_333));
 if ((k + 1<len(memory))) {
 k =  k + 1;
 struct Tok st =  memory->data[k];
@@ -6207,8 +6218,8 @@ nl->data[len(nl)] =  t;
 };
 i =  i + 1;
 };
-array(struct Tok)* ____BAH_COMPILER_VAR_332 = nl;
-return ____BAH_COMPILER_VAR_332;
+array(struct Tok)* ____BAH_COMPILER_VAR_334 = nl;
+return ____BAH_COMPILER_VAR_334;
 };
 __BAH_ARR_TYPE_Tok parseStructVars(__BAH_ARR_TYPE_Tok line,struct Elems* elems){
 array(struct Tok)* nl = memoryAlloc(sizeof(array(struct Tok)));
@@ -6224,8 +6235,8 @@ break;
 i =  i + 1;
 };
 if ((i==len(line))) {
-array(struct Tok)* ____BAH_COMPILER_VAR_333 = line;
-return ____BAH_COMPILER_VAR_333;
+array(struct Tok)* ____BAH_COMPILER_VAR_335 = line;
+return ____BAH_COMPILER_VAR_335;
 }
 i =  0;
 while ((i<len(line))) {
@@ -6246,6 +6257,28 @@ if (strCount(v->type,"*")) {
 sep =  "->";
 }
 struct cStruct* s =  searchStruct(v->type,elems);
+if ((s==null)) {
+char * ____BAH_COMPILER_VAR_336 =null;
+                    {
+                        long int currStrOff = 0;
+                        long int strLen_0 = strlen("Cannot use {TOKEN} (");
+long int strLen_1 = strlen(v->type);
+long int strLen_2 = strlen(") as a structure.");
+;                            
+                        ____BAH_COMPILER_VAR_336 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2);
+                        
+                        strncpy(____BAH_COMPILER_VAR_336+currStrOff, "Cannot use {TOKEN} (", strLen_0);
+                        currStrOff += strLen_0;
+                        
+                        strncpy(____BAH_COMPILER_VAR_336+currStrOff, v->type, strLen_1);
+                        currStrOff += strLen_1;
+                        
+                        strncpy(____BAH_COMPILER_VAR_336+currStrOff, ") as a structure.", strLen_2);
+                        currStrOff += strLen_2;
+                        
+                    }
+                    throwErr(&t,____BAH_COMPILER_VAR_336);
+}
 i =  i + 1;
 struct Tok nt =  line->data[i];
 if ((nt.type!=TOKEN_TYPE_VAR)) {
@@ -6255,26 +6288,26 @@ struct structMemb* memb =  searchStructMemb(nt.cont,s,elems);
 if ((memb==null)) {
 throwErr(&nt,"Unknown struct member {TOKEN}.");
 }
-char * ____BAH_COMPILER_VAR_334 =null;
+char * ____BAH_COMPILER_VAR_337 =null;
                     {
                         long int currStrOff = 0;
                         long int strLen_0 = strlen(t.cont);
 long int strLen_1 = strlen(sep);
 long int strLen_2 = strlen(memb->name);
 ;                            
-                        ____BAH_COMPILER_VAR_334 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2);
+                        ____BAH_COMPILER_VAR_337 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2);
                         
-                        strncpy(____BAH_COMPILER_VAR_334+currStrOff, t.cont, strLen_0);
+                        strncpy(____BAH_COMPILER_VAR_337+currStrOff, t.cont, strLen_0);
                         currStrOff += strLen_0;
                         
-                        strncpy(____BAH_COMPILER_VAR_334+currStrOff, sep, strLen_1);
+                        strncpy(____BAH_COMPILER_VAR_337+currStrOff, sep, strLen_1);
                         currStrOff += strLen_1;
                         
-                        strncpy(____BAH_COMPILER_VAR_334+currStrOff, memb->name, strLen_2);
+                        strncpy(____BAH_COMPILER_VAR_337+currStrOff, memb->name, strLen_2);
                         currStrOff += strLen_2;
                         
                     }
-                    t.cont =  ____BAH_COMPILER_VAR_334;
+                    t.cont =  ____BAH_COMPILER_VAR_337;
 i =  i + 1;
 };
 
@@ -6309,8 +6342,8 @@ nl->data[len(nl)] =  t;
 };
 i =  i + 1;
 };
-array(struct Tok)* ____BAH_COMPILER_VAR_335 = nl;
-return ____BAH_COMPILER_VAR_335;
+array(struct Tok)* ____BAH_COMPILER_VAR_338 = nl;
+return ____BAH_COMPILER_VAR_338;
 };
 __BAH_ARR_TYPE_Tok parseArrayType(__BAH_ARR_TYPE_Tok line,struct Elems* elems){
 array(struct Tok)* nl = memoryAlloc(sizeof(array(struct Tok)));
@@ -6340,8 +6373,8 @@ nl->data[i] =  t;
 i =  i + 1;
 };
 if ((i==len(line))) {
-array(struct Tok)* ____BAH_COMPILER_VAR_336 = line;
-return ____BAH_COMPILER_VAR_336;
+array(struct Tok)* ____BAH_COMPILER_VAR_339 = line;
+return ____BAH_COMPILER_VAR_339;
 }
 while ((i<len(line))) {
 struct Tok t =  line->data[i];
@@ -6357,22 +6390,22 @@ if ((t.type!=TOKEN_TYPE_VAR)) {
 throwErr(&t,"Cannot use {TOKEN} as array type.");
 }
 char * arrElem =  t.cont;
-char * ____BAH_COMPILER_VAR_337 =null;
+char * ____BAH_COMPILER_VAR_340 =null;
                     {
                         long int currStrOff = 0;
                         long int strLen_0 = strlen("[]");
 long int strLen_1 = strlen(arrElem);
 ;                            
-                        ____BAH_COMPILER_VAR_337 = memoryAlloc(1 + strLen_0 + strLen_1);
+                        ____BAH_COMPILER_VAR_340 = memoryAlloc(1 + strLen_0 + strLen_1);
                         
-                        strncpy(____BAH_COMPILER_VAR_337+currStrOff, "[]", strLen_0);
+                        strncpy(____BAH_COMPILER_VAR_340+currStrOff, "[]", strLen_0);
                         currStrOff += strLen_0;
                         
-                        strncpy(____BAH_COMPILER_VAR_337+currStrOff, arrElem, strLen_1);
+                        strncpy(____BAH_COMPILER_VAR_340+currStrOff, arrElem, strLen_1);
                         currStrOff += strLen_1;
                         
                     }
-                    t.bahType =  ____BAH_COMPILER_VAR_337;
+                    t.bahType =  ____BAH_COMPILER_VAR_340;
 t.cont =  "";
 t.isValue =  true;
 
@@ -6411,8 +6444,8 @@ nl->data[len(nl)] =  t;
 };
 i =  i + 1;
 };
-array(struct Tok)* ____BAH_COMPILER_VAR_338 = nl;
-return ____BAH_COMPILER_VAR_338;
+array(struct Tok)* ____BAH_COMPILER_VAR_341 = nl;
+return ____BAH_COMPILER_VAR_341;
 };
 __BAH_ARR_TYPE_Tok parseBool(__BAH_ARR_TYPE_Tok line,struct Elems* elems){
 array(struct Tok)* nl = memoryAlloc(sizeof(array(struct Tok)));
@@ -6458,8 +6491,8 @@ nl->data[i] =  t;
 i =  i + 1;
 };
 if ((i==len(line))) {
-array(struct Tok)* ____BAH_COMPILER_VAR_339 = line;
-return ____BAH_COMPILER_VAR_339;
+array(struct Tok)* ____BAH_COMPILER_VAR_342 = line;
+return ____BAH_COMPILER_VAR_342;
 }
 while ((i<len(line))) {
 struct Tok t =  line->data[i];
@@ -6476,7 +6509,7 @@ struct Tok nt =  line->data[i + 1];
 char * ptt =  getTypeFromToken(&pt,true,elems);
 char * ntt =  getTypeFromToken(&nt,true,elems);
 if ((compTypes(ptt,ntt)==false)) {
-char * ____BAH_COMPILER_VAR_340 =null;
+char * ____BAH_COMPILER_VAR_343 =null;
                     {
                         long int currStrOff = 0;
                         long int strLen_0 = strlen("Cannot compare {TOKEN} (");
@@ -6485,29 +6518,29 @@ long int strLen_2 = strlen(") to ");
 long int strLen_3 = strlen(ptt);
 long int strLen_4 = strlen(".");
 ;                            
-                        ____BAH_COMPILER_VAR_340 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2 + strLen_3 + strLen_4);
+                        ____BAH_COMPILER_VAR_343 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2 + strLen_3 + strLen_4);
                         
-                        strncpy(____BAH_COMPILER_VAR_340+currStrOff, "Cannot compare {TOKEN} (", strLen_0);
+                        strncpy(____BAH_COMPILER_VAR_343+currStrOff, "Cannot compare {TOKEN} (", strLen_0);
                         currStrOff += strLen_0;
                         
-                        strncpy(____BAH_COMPILER_VAR_340+currStrOff, ntt, strLen_1);
+                        strncpy(____BAH_COMPILER_VAR_343+currStrOff, ntt, strLen_1);
                         currStrOff += strLen_1;
                         
-                        strncpy(____BAH_COMPILER_VAR_340+currStrOff, ") to ", strLen_2);
+                        strncpy(____BAH_COMPILER_VAR_343+currStrOff, ") to ", strLen_2);
                         currStrOff += strLen_2;
                         
-                        strncpy(____BAH_COMPILER_VAR_340+currStrOff, ptt, strLen_3);
+                        strncpy(____BAH_COMPILER_VAR_343+currStrOff, ptt, strLen_3);
                         currStrOff += strLen_3;
                         
-                        strncpy(____BAH_COMPILER_VAR_340+currStrOff, ".", strLen_4);
+                        strncpy(____BAH_COMPILER_VAR_343+currStrOff, ".", strLen_4);
                         currStrOff += strLen_4;
                         
                     }
-                    throwErr(&nt,____BAH_COMPILER_VAR_340);
+                    throwErr(&nt,____BAH_COMPILER_VAR_343);
 }
 if ((strcmp(ptt, "cpstring") == 0)) {
 if ((strcmp(t.cont, "==") == 0)) {
-char * ____BAH_COMPILER_VAR_341 =null;
+char * ____BAH_COMPILER_VAR_344 =null;
                     {
                         long int currStrOff = 0;
                         long int strLen_0 = strlen("(strcmp(");
@@ -6516,28 +6549,28 @@ long int strLen_2 = strlen(", ");
 long int strLen_3 = strlen(nt.cont);
 long int strLen_4 = strlen(") == 0)");
 ;                            
-                        ____BAH_COMPILER_VAR_341 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2 + strLen_3 + strLen_4);
+                        ____BAH_COMPILER_VAR_344 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2 + strLen_3 + strLen_4);
                         
-                        strncpy(____BAH_COMPILER_VAR_341+currStrOff, "(strcmp(", strLen_0);
+                        strncpy(____BAH_COMPILER_VAR_344+currStrOff, "(strcmp(", strLen_0);
                         currStrOff += strLen_0;
                         
-                        strncpy(____BAH_COMPILER_VAR_341+currStrOff, pt.cont, strLen_1);
+                        strncpy(____BAH_COMPILER_VAR_344+currStrOff, pt.cont, strLen_1);
                         currStrOff += strLen_1;
                         
-                        strncpy(____BAH_COMPILER_VAR_341+currStrOff, ", ", strLen_2);
+                        strncpy(____BAH_COMPILER_VAR_344+currStrOff, ", ", strLen_2);
                         currStrOff += strLen_2;
                         
-                        strncpy(____BAH_COMPILER_VAR_341+currStrOff, nt.cont, strLen_3);
+                        strncpy(____BAH_COMPILER_VAR_344+currStrOff, nt.cont, strLen_3);
                         currStrOff += strLen_3;
                         
-                        strncpy(____BAH_COMPILER_VAR_341+currStrOff, ") == 0)", strLen_4);
+                        strncpy(____BAH_COMPILER_VAR_344+currStrOff, ") == 0)", strLen_4);
                         currStrOff += strLen_4;
                         
                     }
-                    pt.cont =  ____BAH_COMPILER_VAR_341;
+                    pt.cont =  ____BAH_COMPILER_VAR_344;
 }
 else if ((strcmp(t.cont, "!=") == 0)) {
-char * ____BAH_COMPILER_VAR_342 =null;
+char * ____BAH_COMPILER_VAR_345 =null;
                     {
                         long int currStrOff = 0;
                         long int strLen_0 = strlen("(strcmp(");
@@ -6546,123 +6579,33 @@ long int strLen_2 = strlen(", ");
 long int strLen_3 = strlen(nt.cont);
 long int strLen_4 = strlen(") != 0)");
 ;                            
-                        ____BAH_COMPILER_VAR_342 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2 + strLen_3 + strLen_4);
-                        
-                        strncpy(____BAH_COMPILER_VAR_342+currStrOff, "(strcmp(", strLen_0);
-                        currStrOff += strLen_0;
-                        
-                        strncpy(____BAH_COMPILER_VAR_342+currStrOff, pt.cont, strLen_1);
-                        currStrOff += strLen_1;
-                        
-                        strncpy(____BAH_COMPILER_VAR_342+currStrOff, ", ", strLen_2);
-                        currStrOff += strLen_2;
-                        
-                        strncpy(____BAH_COMPILER_VAR_342+currStrOff, nt.cont, strLen_3);
-                        currStrOff += strLen_3;
-                        
-                        strncpy(____BAH_COMPILER_VAR_342+currStrOff, ") != 0)", strLen_4);
-                        currStrOff += strLen_4;
-                        
-                    }
-                    pt.cont =  ____BAH_COMPILER_VAR_342;
-}
-else if ((strcmp(t.cont, ">") == 0)) {
-char * ____BAH_COMPILER_VAR_343 =null;
-                    {
-                        long int currStrOff = 0;
-                        long int strLen_0 = strlen("(strlen(");
-long int strLen_1 = strlen(pt.cont);
-long int strLen_2 = strlen(") > srtlen(");
-long int strLen_3 = strlen(nt.cont);
-long int strLen_4 = strlen("))");
-;                            
-                        ____BAH_COMPILER_VAR_343 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2 + strLen_3 + strLen_4);
-                        
-                        strncpy(____BAH_COMPILER_VAR_343+currStrOff, "(strlen(", strLen_0);
-                        currStrOff += strLen_0;
-                        
-                        strncpy(____BAH_COMPILER_VAR_343+currStrOff, pt.cont, strLen_1);
-                        currStrOff += strLen_1;
-                        
-                        strncpy(____BAH_COMPILER_VAR_343+currStrOff, ") > srtlen(", strLen_2);
-                        currStrOff += strLen_2;
-                        
-                        strncpy(____BAH_COMPILER_VAR_343+currStrOff, nt.cont, strLen_3);
-                        currStrOff += strLen_3;
-                        
-                        strncpy(____BAH_COMPILER_VAR_343+currStrOff, "))", strLen_4);
-                        currStrOff += strLen_4;
-                        
-                    }
-                    pt.cont =  ____BAH_COMPILER_VAR_343;
-}
-else if ((strcmp(t.cont, "<") == 0)) {
-char * ____BAH_COMPILER_VAR_344 =null;
-                    {
-                        long int currStrOff = 0;
-                        long int strLen_0 = strlen("(strlen(");
-long int strLen_1 = strlen(pt.cont);
-long int strLen_2 = strlen(") < srtlen(");
-long int strLen_3 = strlen(nt.cont);
-long int strLen_4 = strlen("))");
-;                            
-                        ____BAH_COMPILER_VAR_344 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2 + strLen_3 + strLen_4);
-                        
-                        strncpy(____BAH_COMPILER_VAR_344+currStrOff, "(strlen(", strLen_0);
-                        currStrOff += strLen_0;
-                        
-                        strncpy(____BAH_COMPILER_VAR_344+currStrOff, pt.cont, strLen_1);
-                        currStrOff += strLen_1;
-                        
-                        strncpy(____BAH_COMPILER_VAR_344+currStrOff, ") < srtlen(", strLen_2);
-                        currStrOff += strLen_2;
-                        
-                        strncpy(____BAH_COMPILER_VAR_344+currStrOff, nt.cont, strLen_3);
-                        currStrOff += strLen_3;
-                        
-                        strncpy(____BAH_COMPILER_VAR_344+currStrOff, "))", strLen_4);
-                        currStrOff += strLen_4;
-                        
-                    }
-                    pt.cont =  ____BAH_COMPILER_VAR_344;
-}
-else if ((strcmp(t.cont, ">=") == 0)) {
-char * ____BAH_COMPILER_VAR_345 =null;
-                    {
-                        long int currStrOff = 0;
-                        long int strLen_0 = strlen("(strlen(");
-long int strLen_1 = strlen(pt.cont);
-long int strLen_2 = strlen(") >= srtlen(");
-long int strLen_3 = strlen(nt.cont);
-long int strLen_4 = strlen("))");
-;                            
                         ____BAH_COMPILER_VAR_345 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2 + strLen_3 + strLen_4);
                         
-                        strncpy(____BAH_COMPILER_VAR_345+currStrOff, "(strlen(", strLen_0);
+                        strncpy(____BAH_COMPILER_VAR_345+currStrOff, "(strcmp(", strLen_0);
                         currStrOff += strLen_0;
                         
                         strncpy(____BAH_COMPILER_VAR_345+currStrOff, pt.cont, strLen_1);
                         currStrOff += strLen_1;
                         
-                        strncpy(____BAH_COMPILER_VAR_345+currStrOff, ") >= srtlen(", strLen_2);
+                        strncpy(____BAH_COMPILER_VAR_345+currStrOff, ", ", strLen_2);
                         currStrOff += strLen_2;
                         
                         strncpy(____BAH_COMPILER_VAR_345+currStrOff, nt.cont, strLen_3);
                         currStrOff += strLen_3;
                         
-                        strncpy(____BAH_COMPILER_VAR_345+currStrOff, "))", strLen_4);
+                        strncpy(____BAH_COMPILER_VAR_345+currStrOff, ") != 0)", strLen_4);
                         currStrOff += strLen_4;
                         
                     }
                     pt.cont =  ____BAH_COMPILER_VAR_345;
 }
-else if ((strcmp(t.cont, "<=") == 0)) {
+else if ((strcmp(t.cont, ">") == 0)) {
 char * ____BAH_COMPILER_VAR_346 =null;
                     {
                         long int currStrOff = 0;
                         long int strLen_0 = strlen("(strlen(");
 long int strLen_1 = strlen(pt.cont);
-long int strLen_2 = strlen(") <= srtlen(");
+long int strLen_2 = strlen(") > srtlen(");
 long int strLen_3 = strlen(nt.cont);
 long int strLen_4 = strlen("))");
 ;                            
@@ -6674,7 +6617,7 @@ long int strLen_4 = strlen("))");
                         strncpy(____BAH_COMPILER_VAR_346+currStrOff, pt.cont, strLen_1);
                         currStrOff += strLen_1;
                         
-                        strncpy(____BAH_COMPILER_VAR_346+currStrOff, ") <= srtlen(", strLen_2);
+                        strncpy(____BAH_COMPILER_VAR_346+currStrOff, ") > srtlen(", strLen_2);
                         currStrOff += strLen_2;
                         
                         strncpy(____BAH_COMPILER_VAR_346+currStrOff, nt.cont, strLen_3);
@@ -6686,9 +6629,99 @@ long int strLen_4 = strlen("))");
                     }
                     pt.cont =  ____BAH_COMPILER_VAR_346;
 }
+else if ((strcmp(t.cont, "<") == 0)) {
+char * ____BAH_COMPILER_VAR_347 =null;
+                    {
+                        long int currStrOff = 0;
+                        long int strLen_0 = strlen("(strlen(");
+long int strLen_1 = strlen(pt.cont);
+long int strLen_2 = strlen(") < srtlen(");
+long int strLen_3 = strlen(nt.cont);
+long int strLen_4 = strlen("))");
+;                            
+                        ____BAH_COMPILER_VAR_347 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2 + strLen_3 + strLen_4);
+                        
+                        strncpy(____BAH_COMPILER_VAR_347+currStrOff, "(strlen(", strLen_0);
+                        currStrOff += strLen_0;
+                        
+                        strncpy(____BAH_COMPILER_VAR_347+currStrOff, pt.cont, strLen_1);
+                        currStrOff += strLen_1;
+                        
+                        strncpy(____BAH_COMPILER_VAR_347+currStrOff, ") < srtlen(", strLen_2);
+                        currStrOff += strLen_2;
+                        
+                        strncpy(____BAH_COMPILER_VAR_347+currStrOff, nt.cont, strLen_3);
+                        currStrOff += strLen_3;
+                        
+                        strncpy(____BAH_COMPILER_VAR_347+currStrOff, "))", strLen_4);
+                        currStrOff += strLen_4;
+                        
+                    }
+                    pt.cont =  ____BAH_COMPILER_VAR_347;
+}
+else if ((strcmp(t.cont, ">=") == 0)) {
+char * ____BAH_COMPILER_VAR_348 =null;
+                    {
+                        long int currStrOff = 0;
+                        long int strLen_0 = strlen("(strlen(");
+long int strLen_1 = strlen(pt.cont);
+long int strLen_2 = strlen(") >= srtlen(");
+long int strLen_3 = strlen(nt.cont);
+long int strLen_4 = strlen("))");
+;                            
+                        ____BAH_COMPILER_VAR_348 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2 + strLen_3 + strLen_4);
+                        
+                        strncpy(____BAH_COMPILER_VAR_348+currStrOff, "(strlen(", strLen_0);
+                        currStrOff += strLen_0;
+                        
+                        strncpy(____BAH_COMPILER_VAR_348+currStrOff, pt.cont, strLen_1);
+                        currStrOff += strLen_1;
+                        
+                        strncpy(____BAH_COMPILER_VAR_348+currStrOff, ") >= srtlen(", strLen_2);
+                        currStrOff += strLen_2;
+                        
+                        strncpy(____BAH_COMPILER_VAR_348+currStrOff, nt.cont, strLen_3);
+                        currStrOff += strLen_3;
+                        
+                        strncpy(____BAH_COMPILER_VAR_348+currStrOff, "))", strLen_4);
+                        currStrOff += strLen_4;
+                        
+                    }
+                    pt.cont =  ____BAH_COMPILER_VAR_348;
+}
+else if ((strcmp(t.cont, "<=") == 0)) {
+char * ____BAH_COMPILER_VAR_349 =null;
+                    {
+                        long int currStrOff = 0;
+                        long int strLen_0 = strlen("(strlen(");
+long int strLen_1 = strlen(pt.cont);
+long int strLen_2 = strlen(") <= srtlen(");
+long int strLen_3 = strlen(nt.cont);
+long int strLen_4 = strlen("))");
+;                            
+                        ____BAH_COMPILER_VAR_349 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2 + strLen_3 + strLen_4);
+                        
+                        strncpy(____BAH_COMPILER_VAR_349+currStrOff, "(strlen(", strLen_0);
+                        currStrOff += strLen_0;
+                        
+                        strncpy(____BAH_COMPILER_VAR_349+currStrOff, pt.cont, strLen_1);
+                        currStrOff += strLen_1;
+                        
+                        strncpy(____BAH_COMPILER_VAR_349+currStrOff, ") <= srtlen(", strLen_2);
+                        currStrOff += strLen_2;
+                        
+                        strncpy(____BAH_COMPILER_VAR_349+currStrOff, nt.cont, strLen_3);
+                        currStrOff += strLen_3;
+                        
+                        strncpy(____BAH_COMPILER_VAR_349+currStrOff, "))", strLen_4);
+                        currStrOff += strLen_4;
+                        
+                    }
+                    pt.cont =  ____BAH_COMPILER_VAR_349;
+}
 }
 else {
-char * ____BAH_COMPILER_VAR_347 =null;
+char * ____BAH_COMPILER_VAR_350 =null;
                     {
                         long int currStrOff = 0;
                         long int strLen_0 = strlen("(");
@@ -6697,25 +6730,25 @@ long int strLen_2 = strlen(t.cont);
 long int strLen_3 = strlen(nt.cont);
 long int strLen_4 = strlen(")");
 ;                            
-                        ____BAH_COMPILER_VAR_347 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2 + strLen_3 + strLen_4);
+                        ____BAH_COMPILER_VAR_350 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2 + strLen_3 + strLen_4);
                         
-                        strncpy(____BAH_COMPILER_VAR_347+currStrOff, "(", strLen_0);
+                        strncpy(____BAH_COMPILER_VAR_350+currStrOff, "(", strLen_0);
                         currStrOff += strLen_0;
                         
-                        strncpy(____BAH_COMPILER_VAR_347+currStrOff, pt.cont, strLen_1);
+                        strncpy(____BAH_COMPILER_VAR_350+currStrOff, pt.cont, strLen_1);
                         currStrOff += strLen_1;
                         
-                        strncpy(____BAH_COMPILER_VAR_347+currStrOff, t.cont, strLen_2);
+                        strncpy(____BAH_COMPILER_VAR_350+currStrOff, t.cont, strLen_2);
                         currStrOff += strLen_2;
                         
-                        strncpy(____BAH_COMPILER_VAR_347+currStrOff, nt.cont, strLen_3);
+                        strncpy(____BAH_COMPILER_VAR_350+currStrOff, nt.cont, strLen_3);
                         currStrOff += strLen_3;
                         
-                        strncpy(____BAH_COMPILER_VAR_347+currStrOff, ")", strLen_4);
+                        strncpy(____BAH_COMPILER_VAR_350+currStrOff, ")", strLen_4);
                         currStrOff += strLen_4;
                         
                     }
-                    pt.cont =  ____BAH_COMPILER_VAR_347;
+                    pt.cont =  ____BAH_COMPILER_VAR_350;
 }
 pt.bahType =  "bool";
 
@@ -6781,7 +6814,7 @@ if ((strcmp(ntt, "int") != 0)) {
 throwErr(&nt,"Cannot compare {TOKEN} that is not a bool.");
 }
 }
-char * ____BAH_COMPILER_VAR_348 =null;
+char * ____BAH_COMPILER_VAR_351 =null;
                     {
                         long int currStrOff = 0;
                         long int strLen_0 = strlen("(");
@@ -6790,25 +6823,25 @@ long int strLen_2 = strlen(t.cont);
 long int strLen_3 = strlen(nt.cont);
 long int strLen_4 = strlen(")");
 ;                            
-                        ____BAH_COMPILER_VAR_348 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2 + strLen_3 + strLen_4);
+                        ____BAH_COMPILER_VAR_351 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2 + strLen_3 + strLen_4);
                         
-                        strncpy(____BAH_COMPILER_VAR_348+currStrOff, "(", strLen_0);
+                        strncpy(____BAH_COMPILER_VAR_351+currStrOff, "(", strLen_0);
                         currStrOff += strLen_0;
                         
-                        strncpy(____BAH_COMPILER_VAR_348+currStrOff, pt.cont, strLen_1);
+                        strncpy(____BAH_COMPILER_VAR_351+currStrOff, pt.cont, strLen_1);
                         currStrOff += strLen_1;
                         
-                        strncpy(____BAH_COMPILER_VAR_348+currStrOff, t.cont, strLen_2);
+                        strncpy(____BAH_COMPILER_VAR_351+currStrOff, t.cont, strLen_2);
                         currStrOff += strLen_2;
                         
-                        strncpy(____BAH_COMPILER_VAR_348+currStrOff, nt.cont, strLen_3);
+                        strncpy(____BAH_COMPILER_VAR_351+currStrOff, nt.cont, strLen_3);
                         currStrOff += strLen_3;
                         
-                        strncpy(____BAH_COMPILER_VAR_348+currStrOff, ")", strLen_4);
+                        strncpy(____BAH_COMPILER_VAR_351+currStrOff, ")", strLen_4);
                         currStrOff += strLen_4;
                         
                     }
-                    pt.cont =  ____BAH_COMPILER_VAR_348;
+                    pt.cont =  ____BAH_COMPILER_VAR_351;
 pt.bahType =  "bool";
 
 {
@@ -6843,8 +6876,8 @@ nl->data[len(nl)] =  t;
 };
 i =  i + 1;
 };
-array(struct Tok)* ____BAH_COMPILER_VAR_349 = nl;
-return ____BAH_COMPILER_VAR_349;
+array(struct Tok)* ____BAH_COMPILER_VAR_352 = nl;
+return ____BAH_COMPILER_VAR_352;
 };
 __BAH_ARR_TYPE_Tok parsePointers(__BAH_ARR_TYPE_Tok l){
 array(struct Tok)* nl = memoryAlloc(sizeof(array(struct Tok)));
@@ -6868,22 +6901,22 @@ if ((pt.type==TOKEN_TYPE_VAR)) {
 if ((i + 1<len(l))) {
 struct Tok nt =  l->data[i + 1];
 if ((nt.isValue==false)) {
-char * ____BAH_COMPILER_VAR_350 =null;
+char * ____BAH_COMPILER_VAR_353 =null;
                     {
                         long int currStrOff = 0;
                         long int strLen_0 = strlen(pt.cont);
 long int strLen_1 = strlen(t.cont);
 ;                            
-                        ____BAH_COMPILER_VAR_350 = memoryAlloc(1 + strLen_0 + strLen_1);
+                        ____BAH_COMPILER_VAR_353 = memoryAlloc(1 + strLen_0 + strLen_1);
                         
-                        strncpy(____BAH_COMPILER_VAR_350+currStrOff, pt.cont, strLen_0);
+                        strncpy(____BAH_COMPILER_VAR_353+currStrOff, pt.cont, strLen_0);
                         currStrOff += strLen_0;
                         
-                        strncpy(____BAH_COMPILER_VAR_350+currStrOff, t.cont, strLen_1);
+                        strncpy(____BAH_COMPILER_VAR_353+currStrOff, t.cont, strLen_1);
                         currStrOff += strLen_1;
                         
                     }
-                    pt.cont =  ____BAH_COMPILER_VAR_350;
+                    pt.cont =  ____BAH_COMPILER_VAR_353;
 
 {
 long nLength = len(nl)-1;
@@ -6903,22 +6936,22 @@ continue;
 }
 }
 else {
-char * ____BAH_COMPILER_VAR_351 =null;
+char * ____BAH_COMPILER_VAR_354 =null;
                     {
                         long int currStrOff = 0;
                         long int strLen_0 = strlen(pt.cont);
 long int strLen_1 = strlen(t.cont);
 ;                            
-                        ____BAH_COMPILER_VAR_351 = memoryAlloc(1 + strLen_0 + strLen_1);
+                        ____BAH_COMPILER_VAR_354 = memoryAlloc(1 + strLen_0 + strLen_1);
                         
-                        strncpy(____BAH_COMPILER_VAR_351+currStrOff, pt.cont, strLen_0);
+                        strncpy(____BAH_COMPILER_VAR_354+currStrOff, pt.cont, strLen_0);
                         currStrOff += strLen_0;
                         
-                        strncpy(____BAH_COMPILER_VAR_351+currStrOff, t.cont, strLen_1);
+                        strncpy(____BAH_COMPILER_VAR_354+currStrOff, t.cont, strLen_1);
                         currStrOff += strLen_1;
                         
                     }
-                    pt.cont =  ____BAH_COMPILER_VAR_351;
+                    pt.cont =  ____BAH_COMPILER_VAR_354;
 
 {
 long nLength = len(nl)-1;
@@ -6965,22 +6998,22 @@ i =  i + 1;
 if ((i<len(l))) {
 struct Tok nt =  l->data[i];
 if ((nt.type==TOKEN_TYPE_VAR)) {
-char * ____BAH_COMPILER_VAR_352 =null;
+char * ____BAH_COMPILER_VAR_355 =null;
                     {
                         long int currStrOff = 0;
                         long int strLen_0 = strlen(t.cont);
 long int strLen_1 = strlen(nt.cont);
 ;                            
-                        ____BAH_COMPILER_VAR_352 = memoryAlloc(1 + strLen_0 + strLen_1);
+                        ____BAH_COMPILER_VAR_355 = memoryAlloc(1 + strLen_0 + strLen_1);
                         
-                        strncpy(____BAH_COMPILER_VAR_352+currStrOff, t.cont, strLen_0);
+                        strncpy(____BAH_COMPILER_VAR_355+currStrOff, t.cont, strLen_0);
                         currStrOff += strLen_0;
                         
-                        strncpy(____BAH_COMPILER_VAR_352+currStrOff, nt.cont, strLen_1);
+                        strncpy(____BAH_COMPILER_VAR_355+currStrOff, nt.cont, strLen_1);
                         currStrOff += strLen_1;
                         
                     }
-                    nt.cont =  ____BAH_COMPILER_VAR_352;
+                    nt.cont =  ____BAH_COMPILER_VAR_355;
 
 {
 long nLength = len(nl);
@@ -7017,10 +7050,9 @@ nl->data[len(nl)] =  t;
 };
 i =  i + 1;
 };
-array(struct Tok)* ____BAH_COMPILER_VAR_353 = nl;
-return ____BAH_COMPILER_VAR_353;
+array(struct Tok)* ____BAH_COMPILER_VAR_356 = nl;
+return ____BAH_COMPILER_VAR_356;
 };
-__BAH_ARR_TYPE_Tok prePross(__BAH_ARR_TYPE_Tok line,lineType ltp,struct Elems* elems);
 __BAH_ARR_TYPE_Tok parseArrayVars(__BAH_ARR_TYPE_Tok l,struct Elems* elems){
 array(struct Tok)* nl = memoryAlloc(sizeof(array(struct Tok)));
 
@@ -7043,8 +7075,8 @@ break;
 i =  i + 1;
 };
 if ((found==false)) {
-array(struct Tok)* ____BAH_COMPILER_VAR_354 = l;
-return ____BAH_COMPILER_VAR_354;
+array(struct Tok)* ____BAH_COMPILER_VAR_357 = l;
+return ____BAH_COMPILER_VAR_357;
 }
 i =  0;
 while ((i<len(l))) {
@@ -7059,7 +7091,7 @@ if ((v==null)) {
 throwErr(&t,"Unknown array-var {TOKEN}.");
 }
 if ((strHasPrefix(v->type,"[]")==false)) {
-char * ____BAH_COMPILER_VAR_355 =null;
+char * ____BAH_COMPILER_VAR_358 =null;
                     {
                         long int currStrOff = 0;
                         long int strLen_0 = strlen("Cannot use ");
@@ -7068,25 +7100,25 @@ long int strLen_2 = strlen(" (");
 long int strLen_3 = strlen(v->type);
 long int strLen_4 = strlen(") as an array.");
 ;                            
-                        ____BAH_COMPILER_VAR_355 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2 + strLen_3 + strLen_4);
+                        ____BAH_COMPILER_VAR_358 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2 + strLen_3 + strLen_4);
                         
-                        strncpy(____BAH_COMPILER_VAR_355+currStrOff, "Cannot use ", strLen_0);
+                        strncpy(____BAH_COMPILER_VAR_358+currStrOff, "Cannot use ", strLen_0);
                         currStrOff += strLen_0;
                         
-                        strncpy(____BAH_COMPILER_VAR_355+currStrOff, v->name, strLen_1);
+                        strncpy(____BAH_COMPILER_VAR_358+currStrOff, v->name, strLen_1);
                         currStrOff += strLen_1;
                         
-                        strncpy(____BAH_COMPILER_VAR_355+currStrOff, " (", strLen_2);
+                        strncpy(____BAH_COMPILER_VAR_358+currStrOff, " (", strLen_2);
                         currStrOff += strLen_2;
                         
-                        strncpy(____BAH_COMPILER_VAR_355+currStrOff, v->type, strLen_3);
+                        strncpy(____BAH_COMPILER_VAR_358+currStrOff, v->type, strLen_3);
                         currStrOff += strLen_3;
                         
-                        strncpy(____BAH_COMPILER_VAR_355+currStrOff, ") as an array.", strLen_4);
+                        strncpy(____BAH_COMPILER_VAR_358+currStrOff, ") as an array.", strLen_4);
                         currStrOff += strLen_4;
                         
                     }
-                    throwErr(&nt,____BAH_COMPILER_VAR_355);
+                    throwErr(&nt,____BAH_COMPILER_VAR_358);
 }
 strTrimLeft(&v->type,2);
 array(struct Tok)* memory = memoryAlloc(sizeof(array(struct Tok)));
@@ -7131,25 +7163,25 @@ char * cont =  "";
 long int j =  0;
 while ((j<len(memory))) {
 struct Tok mt =  memory->data[j];
-char * ____BAH_COMPILER_VAR_356 =null;
+char * ____BAH_COMPILER_VAR_359 =null;
                     {
                         long int currStrOff = 0;
                         long int strLen_0 = strlen(cont);
 long int strLen_1 = strlen(mt.cont);
 ;                            
-                        ____BAH_COMPILER_VAR_356 = memoryAlloc(1 + strLen_0 + strLen_1);
+                        ____BAH_COMPILER_VAR_359 = memoryAlloc(1 + strLen_0 + strLen_1);
                         
-                        strncpy(____BAH_COMPILER_VAR_356+currStrOff, cont, strLen_0);
+                        strncpy(____BAH_COMPILER_VAR_359+currStrOff, cont, strLen_0);
                         currStrOff += strLen_0;
                         
-                        strncpy(____BAH_COMPILER_VAR_356+currStrOff, mt.cont, strLen_1);
+                        strncpy(____BAH_COMPILER_VAR_359+currStrOff, mt.cont, strLen_1);
                         currStrOff += strLen_1;
                         
                     }
-                    cont =  ____BAH_COMPILER_VAR_356;
+                    cont =  ____BAH_COMPILER_VAR_359;
 j =  j + 1;
 };
-char * ____BAH_COMPILER_VAR_357 =null;
+char * ____BAH_COMPILER_VAR_360 =null;
                     {
                         long int currStrOff = 0;
                         long int strLen_0 = strlen(t.cont);
@@ -7157,22 +7189,22 @@ long int strLen_1 = strlen("->data[");
 long int strLen_2 = strlen(cont);
 long int strLen_3 = strlen("]");
 ;                            
-                        ____BAH_COMPILER_VAR_357 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2 + strLen_3);
+                        ____BAH_COMPILER_VAR_360 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2 + strLen_3);
                         
-                        strncpy(____BAH_COMPILER_VAR_357+currStrOff, t.cont, strLen_0);
+                        strncpy(____BAH_COMPILER_VAR_360+currStrOff, t.cont, strLen_0);
                         currStrOff += strLen_0;
                         
-                        strncpy(____BAH_COMPILER_VAR_357+currStrOff, "->data[", strLen_1);
+                        strncpy(____BAH_COMPILER_VAR_360+currStrOff, "->data[", strLen_1);
                         currStrOff += strLen_1;
                         
-                        strncpy(____BAH_COMPILER_VAR_357+currStrOff, cont, strLen_2);
+                        strncpy(____BAH_COMPILER_VAR_360+currStrOff, cont, strLen_2);
                         currStrOff += strLen_2;
                         
-                        strncpy(____BAH_COMPILER_VAR_357+currStrOff, "]", strLen_3);
+                        strncpy(____BAH_COMPILER_VAR_360+currStrOff, "]", strLen_3);
                         currStrOff += strLen_3;
                         
                     }
-                    t.cont =  ____BAH_COMPILER_VAR_357;
+                    t.cont =  ____BAH_COMPILER_VAR_360;
 t.bahType =  v->type;
 
 {
@@ -7209,8 +7241,8 @@ nl->data[len(nl)] =  t;
 };
 i =  i + 1;
 };
-array(struct Tok)* ____BAH_COMPILER_VAR_358 = nl;
-return ____BAH_COMPILER_VAR_358;
+array(struct Tok)* ____BAH_COMPILER_VAR_361 = nl;
+return ____BAH_COMPILER_VAR_361;
 };
 char * parseSerialize(struct Tok e,struct Elems* elems){
 struct variable* v =  searchVar(e.cont,elems);
@@ -7226,61 +7258,61 @@ long int ptrLevel =  svt.count((struct string*)&svt,"*");
 svt.replace((struct string*)&svt,"*","");
 char * code= null;
 if ((ptrLevel==0)) {
-char * ____BAH_COMPILER_VAR_359 =svt.str((struct string*)&svt);char * ____BAH_COMPILER_VAR_360 =null;
+char * ____BAH_COMPILER_VAR_362 =svt.str((struct string*)&svt);char * ____BAH_COMPILER_VAR_363 =null;
                     {
                         long int currStrOff = 0;
                         long int strLen_0 = strlen("__serialize(&");
 long int strLen_1 = strlen(e.cont);
 long int strLen_2 = strlen(", ");
 long int strLen_3 = strlen("sizeof(struct ");
-long int strLen_4 = strlen(____BAH_COMPILER_VAR_359);
+long int strLen_4 = strlen(____BAH_COMPILER_VAR_362);
 long int strLen_5 = strlen(")");
 ;                            
-                        ____BAH_COMPILER_VAR_360 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2 + strLen_3 + strLen_4 + strLen_5);
+                        ____BAH_COMPILER_VAR_363 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2 + strLen_3 + strLen_4 + strLen_5);
                         
-                        strncpy(____BAH_COMPILER_VAR_360+currStrOff, "__serialize(&", strLen_0);
+                        strncpy(____BAH_COMPILER_VAR_363+currStrOff, "__serialize(&", strLen_0);
                         currStrOff += strLen_0;
                         
-                        strncpy(____BAH_COMPILER_VAR_360+currStrOff, e.cont, strLen_1);
+                        strncpy(____BAH_COMPILER_VAR_363+currStrOff, e.cont, strLen_1);
                         currStrOff += strLen_1;
                         
-                        strncpy(____BAH_COMPILER_VAR_360+currStrOff, ", ", strLen_2);
+                        strncpy(____BAH_COMPILER_VAR_363+currStrOff, ", ", strLen_2);
                         currStrOff += strLen_2;
                         
-                        strncpy(____BAH_COMPILER_VAR_360+currStrOff, "sizeof(struct ", strLen_3);
+                        strncpy(____BAH_COMPILER_VAR_363+currStrOff, "sizeof(struct ", strLen_3);
                         currStrOff += strLen_3;
                         
-                        strncpy(____BAH_COMPILER_VAR_360+currStrOff, ____BAH_COMPILER_VAR_359, strLen_4);
+                        strncpy(____BAH_COMPILER_VAR_363+currStrOff, ____BAH_COMPILER_VAR_362, strLen_4);
                         currStrOff += strLen_4;
                         
-                        strncpy(____BAH_COMPILER_VAR_360+currStrOff, ")", strLen_5);
+                        strncpy(____BAH_COMPILER_VAR_363+currStrOff, ")", strLen_5);
                         currStrOff += strLen_5;
                         
                     }
-                    code =  ____BAH_COMPILER_VAR_360;
+                    code =  ____BAH_COMPILER_VAR_363;
 }
 else {
 char * ptrRect =  "";
 while ((ptrLevel>1)) {
-char * ____BAH_COMPILER_VAR_361 =null;
+char * ____BAH_COMPILER_VAR_364 =null;
                     {
                         long int currStrOff = 0;
                         long int strLen_0 = strlen(ptrRect);
 long int strLen_1 = strlen("*");
 ;                            
-                        ____BAH_COMPILER_VAR_361 = memoryAlloc(1 + strLen_0 + strLen_1);
+                        ____BAH_COMPILER_VAR_364 = memoryAlloc(1 + strLen_0 + strLen_1);
                         
-                        strncpy(____BAH_COMPILER_VAR_361+currStrOff, ptrRect, strLen_0);
+                        strncpy(____BAH_COMPILER_VAR_364+currStrOff, ptrRect, strLen_0);
                         currStrOff += strLen_0;
                         
-                        strncpy(____BAH_COMPILER_VAR_361+currStrOff, "*", strLen_1);
+                        strncpy(____BAH_COMPILER_VAR_364+currStrOff, "*", strLen_1);
                         currStrOff += strLen_1;
                         
                     }
-                    ptrRect =  ____BAH_COMPILER_VAR_361;
+                    ptrRect =  ____BAH_COMPILER_VAR_364;
 ptrLevel =  ptrLevel - 1;
 };
-char * ____BAH_COMPILER_VAR_362 =svt.str((struct string*)&svt);char * ____BAH_COMPILER_VAR_363 =null;
+char * ____BAH_COMPILER_VAR_365 =svt.str((struct string*)&svt);char * ____BAH_COMPILER_VAR_366 =null;
                     {
                         long int currStrOff = 0;
                         long int strLen_0 = strlen("__serialize(");
@@ -7288,39 +7320,39 @@ long int strLen_1 = strlen(ptrRect);
 long int strLen_2 = strlen(e.cont);
 long int strLen_3 = strlen(", ");
 long int strLen_4 = strlen("sizeof(struct ");
-long int strLen_5 = strlen(____BAH_COMPILER_VAR_362);
+long int strLen_5 = strlen(____BAH_COMPILER_VAR_365);
 long int strLen_6 = strlen(")");
 ;                            
-                        ____BAH_COMPILER_VAR_363 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2 + strLen_3 + strLen_4 + strLen_5 + strLen_6);
+                        ____BAH_COMPILER_VAR_366 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2 + strLen_3 + strLen_4 + strLen_5 + strLen_6);
                         
-                        strncpy(____BAH_COMPILER_VAR_363+currStrOff, "__serialize(", strLen_0);
+                        strncpy(____BAH_COMPILER_VAR_366+currStrOff, "__serialize(", strLen_0);
                         currStrOff += strLen_0;
                         
-                        strncpy(____BAH_COMPILER_VAR_363+currStrOff, ptrRect, strLen_1);
+                        strncpy(____BAH_COMPILER_VAR_366+currStrOff, ptrRect, strLen_1);
                         currStrOff += strLen_1;
                         
-                        strncpy(____BAH_COMPILER_VAR_363+currStrOff, e.cont, strLen_2);
+                        strncpy(____BAH_COMPILER_VAR_366+currStrOff, e.cont, strLen_2);
                         currStrOff += strLen_2;
                         
-                        strncpy(____BAH_COMPILER_VAR_363+currStrOff, ", ", strLen_3);
+                        strncpy(____BAH_COMPILER_VAR_366+currStrOff, ", ", strLen_3);
                         currStrOff += strLen_3;
                         
-                        strncpy(____BAH_COMPILER_VAR_363+currStrOff, "sizeof(struct ", strLen_4);
+                        strncpy(____BAH_COMPILER_VAR_366+currStrOff, "sizeof(struct ", strLen_4);
                         currStrOff += strLen_4;
                         
-                        strncpy(____BAH_COMPILER_VAR_363+currStrOff, ____BAH_COMPILER_VAR_362, strLen_5);
+                        strncpy(____BAH_COMPILER_VAR_366+currStrOff, ____BAH_COMPILER_VAR_365, strLen_5);
                         currStrOff += strLen_5;
                         
-                        strncpy(____BAH_COMPILER_VAR_363+currStrOff, ")", strLen_6);
+                        strncpy(____BAH_COMPILER_VAR_366+currStrOff, ")", strLen_6);
                         currStrOff += strLen_6;
                         
                     }
-                    code =  ____BAH_COMPILER_VAR_363;
+                    code =  ____BAH_COMPILER_VAR_366;
 long int i =  0;
 while ((i<len(s->members))) {
 struct structMemb* m =  s->members->data[i];
 if ((strcmp(m->type, "cpstring") == 0)) {
-char * ____BAH_COMPILER_VAR_364 =null;
+char * ____BAH_COMPILER_VAR_367 =null;
                     {
                         long int currStrOff = 0;
                         long int strLen_0 = strlen(code);
@@ -7330,49 +7362,49 @@ long int strLen_3 = strlen("->");
 long int strLen_4 = strlen(m->name);
 long int strLen_5 = strlen(")");
 ;                            
-                        ____BAH_COMPILER_VAR_364 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2 + strLen_3 + strLen_4 + strLen_5);
+                        ____BAH_COMPILER_VAR_367 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2 + strLen_3 + strLen_4 + strLen_5);
                         
-                        strncpy(____BAH_COMPILER_VAR_364+currStrOff, code, strLen_0);
+                        strncpy(____BAH_COMPILER_VAR_367+currStrOff, code, strLen_0);
                         currStrOff += strLen_0;
                         
-                        strncpy(____BAH_COMPILER_VAR_364+currStrOff, "+strlen(", strLen_1);
+                        strncpy(____BAH_COMPILER_VAR_367+currStrOff, "+strlen(", strLen_1);
                         currStrOff += strLen_1;
                         
-                        strncpy(____BAH_COMPILER_VAR_364+currStrOff, e.cont, strLen_2);
+                        strncpy(____BAH_COMPILER_VAR_367+currStrOff, e.cont, strLen_2);
                         currStrOff += strLen_2;
                         
-                        strncpy(____BAH_COMPILER_VAR_364+currStrOff, "->", strLen_3);
+                        strncpy(____BAH_COMPILER_VAR_367+currStrOff, "->", strLen_3);
                         currStrOff += strLen_3;
                         
-                        strncpy(____BAH_COMPILER_VAR_364+currStrOff, m->name, strLen_4);
+                        strncpy(____BAH_COMPILER_VAR_367+currStrOff, m->name, strLen_4);
                         currStrOff += strLen_4;
                         
-                        strncpy(____BAH_COMPILER_VAR_364+currStrOff, ")", strLen_5);
+                        strncpy(____BAH_COMPILER_VAR_367+currStrOff, ")", strLen_5);
                         currStrOff += strLen_5;
                         
                     }
-                    code =  ____BAH_COMPILER_VAR_364;
+                    code =  ____BAH_COMPILER_VAR_367;
 }
 i =  i + 1;
 };
 }
-char * ____BAH_COMPILER_VAR_365 =null;
+char * ____BAH_COMPILER_VAR_368 =null;
                     {
                         long int currStrOff = 0;
                         long int strLen_0 = strlen(code);
 long int strLen_1 = strlen(")");
 ;                            
-                        ____BAH_COMPILER_VAR_365 = memoryAlloc(1 + strLen_0 + strLen_1);
+                        ____BAH_COMPILER_VAR_368 = memoryAlloc(1 + strLen_0 + strLen_1);
                         
-                        strncpy(____BAH_COMPILER_VAR_365+currStrOff, code, strLen_0);
+                        strncpy(____BAH_COMPILER_VAR_368+currStrOff, code, strLen_0);
                         currStrOff += strLen_0;
                         
-                        strncpy(____BAH_COMPILER_VAR_365+currStrOff, ")", strLen_1);
+                        strncpy(____BAH_COMPILER_VAR_368+currStrOff, ")", strLen_1);
                         currStrOff += strLen_1;
                         
                     }
-                    char * ____BAH_COMPILER_VAR_366 = ____BAH_COMPILER_VAR_365;
-return ____BAH_COMPILER_VAR_366;
+                    char * ____BAH_COMPILER_VAR_369 = ____BAH_COMPILER_VAR_368;
+return ____BAH_COMPILER_VAR_369;
 };
 struct Tok parseReflect(struct Tok t,char * tt,struct Elems* elems,int parsedPointer,char * ogName,char * offset){
 char * isArr =  "0";
@@ -7381,21 +7413,21 @@ if (strHasPrefix(tt,"[]")) {
 isArr =  "1";
 struct string aet =  string(tt);
 aet.trimLeft((struct string*)&aet,2);
-struct Tok ____BAH_COMPILER_VAR_367 = {};
-____BAH_COMPILER_VAR_367.cont = "";
-____BAH_COMPILER_VAR_367.ogCont = "";
-____BAH_COMPILER_VAR_367.type = TOKEN_NO_TYPE;
-____BAH_COMPILER_VAR_367.pos = 0;
-____BAH_COMPILER_VAR_367.line = 1;
-____BAH_COMPILER_VAR_367.bahType = "";
-____BAH_COMPILER_VAR_367.isValue = false;
-____BAH_COMPILER_VAR_367.isFunc = false;
-____BAH_COMPILER_VAR_367.isOper = false;
-struct Tok tmpT =  ____BAH_COMPILER_VAR_367;
+struct Tok ____BAH_COMPILER_VAR_370 = {};
+____BAH_COMPILER_VAR_370.cont = "";
+____BAH_COMPILER_VAR_370.ogCont = "";
+____BAH_COMPILER_VAR_370.type = TOKEN_NO_TYPE;
+____BAH_COMPILER_VAR_370.pos = 0;
+____BAH_COMPILER_VAR_370.line = 1;
+____BAH_COMPILER_VAR_370.bahType = "";
+____BAH_COMPILER_VAR_370.isValue = false;
+____BAH_COMPILER_VAR_370.isFunc = false;
+____BAH_COMPILER_VAR_370.isOper = false;
+struct Tok tmpT =  ____BAH_COMPILER_VAR_370;
 tmpT.cont =  "0";
-char * ____BAH_COMPILER_VAR_368 =aet.str((struct string*)&aet);struct Tok rt =  parseReflect(tmpT,____BAH_COMPILER_VAR_368,elems,true,"","0");
+char * ____BAH_COMPILER_VAR_371 =aet.str((struct string*)&aet);struct Tok rt =  parseReflect(tmpT,____BAH_COMPILER_VAR_371,elems,true,"","0");
 char * aev =  genCompilerVar();
-char * ____BAH_COMPILER_VAR_369 =null;
+char * ____BAH_COMPILER_VAR_372 =null;
                     {
                         long int currStrOff = 0;
                         long int strLen_0 = strlen("\n        struct reflectElement ");
@@ -7404,41 +7436,41 @@ long int strLen_2 = strlen(" = ");
 long int strLen_3 = strlen(rt.cont);
 long int strLen_4 = strlen(";\n        ");
 ;                            
-                        ____BAH_COMPILER_VAR_369 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2 + strLen_3 + strLen_4);
+                        ____BAH_COMPILER_VAR_372 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2 + strLen_3 + strLen_4);
                         
-                        strncpy(____BAH_COMPILER_VAR_369+currStrOff, "\n        struct reflectElement ", strLen_0);
+                        strncpy(____BAH_COMPILER_VAR_372+currStrOff, "\n        struct reflectElement ", strLen_0);
                         currStrOff += strLen_0;
                         
-                        strncpy(____BAH_COMPILER_VAR_369+currStrOff, aev, strLen_1);
+                        strncpy(____BAH_COMPILER_VAR_372+currStrOff, aev, strLen_1);
                         currStrOff += strLen_1;
                         
-                        strncpy(____BAH_COMPILER_VAR_369+currStrOff, " = ", strLen_2);
+                        strncpy(____BAH_COMPILER_VAR_372+currStrOff, " = ", strLen_2);
                         currStrOff += strLen_2;
                         
-                        strncpy(____BAH_COMPILER_VAR_369+currStrOff, rt.cont, strLen_3);
+                        strncpy(____BAH_COMPILER_VAR_372+currStrOff, rt.cont, strLen_3);
                         currStrOff += strLen_3;
                         
-                        strncpy(____BAH_COMPILER_VAR_369+currStrOff, ";\n        ", strLen_4);
+                        strncpy(____BAH_COMPILER_VAR_372+currStrOff, ";\n        ", strLen_4);
                         currStrOff += strLen_4;
                         
                     }
-                    OUTPUT =  OUTPUT->add(OUTPUT, rope(____BAH_COMPILER_VAR_369));
-char * ____BAH_COMPILER_VAR_370 =null;
+                    OUTPUT =  OUTPUT->add(OUTPUT, rope(____BAH_COMPILER_VAR_372));
+char * ____BAH_COMPILER_VAR_373 =null;
                     {
                         long int currStrOff = 0;
                         long int strLen_0 = strlen("&");
 long int strLen_1 = strlen(aev);
 ;                            
-                        ____BAH_COMPILER_VAR_370 = memoryAlloc(1 + strLen_0 + strLen_1);
+                        ____BAH_COMPILER_VAR_373 = memoryAlloc(1 + strLen_0 + strLen_1);
                         
-                        strncpy(____BAH_COMPILER_VAR_370+currStrOff, "&", strLen_0);
+                        strncpy(____BAH_COMPILER_VAR_373+currStrOff, "&", strLen_0);
                         currStrOff += strLen_0;
                         
-                        strncpy(____BAH_COMPILER_VAR_370+currStrOff, aev, strLen_1);
+                        strncpy(____BAH_COMPILER_VAR_373+currStrOff, aev, strLen_1);
                         currStrOff += strLen_1;
                         
                     }
-                    arrElem =  ____BAH_COMPILER_VAR_370;
+                    arrElem =  ____BAH_COMPILER_VAR_373;
 }
 char * isStruct =  "0";
 struct cStruct* ts =  searchStruct(tt,elems);
@@ -7446,21 +7478,44 @@ char * structLayout =  "0";
 if ((ts!=null)) {
 isStruct =  "1";
 structLayout =  genCompilerVar();
+struct variable* slv = memoryAlloc(sizeof(struct variable));
+slv->name = "";
+slv->type = "";
+slv->isConst = false;
+slv->isArray = false;
+slv->from = "";
+slv->outterScope = false;
+slv->name =  structLayout;
+slv->type =  "[]reflectElement";
+
+{
+long nLength = len(elems->vars);
+if (elems->vars->length < nLength+1) {
+if ((nLength+1) % 50 == 0 || nLength == 0) {
+void * newPtr = memoryRealloc(elems->vars->data, (nLength+50)*sizeof(struct variable*));
+elems->vars->data = newPtr;
+}
+elems->vars->data[len(elems->vars)] =  slv;
+elems->vars->length = nLength+1;
+} else {
+elems->vars->data[len(elems->vars)] =  slv;
+}
+};
 struct rope* dataLayout =  rope("");
 long int i =  0;
 while ((i<len(ts->members))) {
 struct structMemb* m =  ts->members->data[i];
-struct Tok ____BAH_COMPILER_VAR_371 = {};
-____BAH_COMPILER_VAR_371.cont = "";
-____BAH_COMPILER_VAR_371.ogCont = "";
-____BAH_COMPILER_VAR_371.type = TOKEN_NO_TYPE;
-____BAH_COMPILER_VAR_371.pos = 0;
-____BAH_COMPILER_VAR_371.line = 1;
-____BAH_COMPILER_VAR_371.bahType = "";
-____BAH_COMPILER_VAR_371.isValue = false;
-____BAH_COMPILER_VAR_371.isFunc = false;
-____BAH_COMPILER_VAR_371.isOper = false;
-struct Tok tmpT =  ____BAH_COMPILER_VAR_371;
+struct Tok ____BAH_COMPILER_VAR_374 = {};
+____BAH_COMPILER_VAR_374.cont = "";
+____BAH_COMPILER_VAR_374.ogCont = "";
+____BAH_COMPILER_VAR_374.type = TOKEN_NO_TYPE;
+____BAH_COMPILER_VAR_374.pos = 0;
+____BAH_COMPILER_VAR_374.line = 1;
+____BAH_COMPILER_VAR_374.bahType = "";
+____BAH_COMPILER_VAR_374.isValue = false;
+____BAH_COMPILER_VAR_374.isFunc = false;
+____BAH_COMPILER_VAR_374.isOper = false;
+struct Tok tmpT =  ____BAH_COMPILER_VAR_374;
 char * sep =  "->";
 if ((strCount(tt,"*")==0)) {
 sep =  ".";
@@ -7468,113 +7523,113 @@ sep =  ".";
 struct string mCtype =  getCType(m->type,elems);
 struct string offsetTT =  string(tt);
 offsetTT.replace((struct string*)&offsetTT,"*","");
-char * ____BAH_COMPILER_VAR_372 =mCtype.str((struct string*)&mCtype);char * ____BAH_COMPILER_VAR_373 =offsetTT.str((struct string*)&offsetTT);char * ____BAH_COMPILER_VAR_374 =null;
+char * ____BAH_COMPILER_VAR_375 =mCtype.str((struct string*)&mCtype);char * ____BAH_COMPILER_VAR_376 =offsetTT.str((struct string*)&offsetTT);char * ____BAH_COMPILER_VAR_377 =null;
                     {
                         long int currStrOff = 0;
                         long int strLen_0 = strlen("(");
-long int strLen_1 = strlen(____BAH_COMPILER_VAR_372);
+long int strLen_1 = strlen(____BAH_COMPILER_VAR_375);
 long int strLen_2 = strlen("*)((char*)(");
 long int strLen_3 = strlen(t.cont);
 long int strLen_4 = strlen(") + offsetof(struct ");
-long int strLen_5 = strlen(____BAH_COMPILER_VAR_373);
+long int strLen_5 = strlen(____BAH_COMPILER_VAR_376);
 long int strLen_6 = strlen(", ");
 long int strLen_7 = strlen(m->name);
 long int strLen_8 = strlen("))");
 ;                            
-                        ____BAH_COMPILER_VAR_374 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2 + strLen_3 + strLen_4 + strLen_5 + strLen_6 + strLen_7 + strLen_8);
+                        ____BAH_COMPILER_VAR_377 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2 + strLen_3 + strLen_4 + strLen_5 + strLen_6 + strLen_7 + strLen_8);
                         
-                        strncpy(____BAH_COMPILER_VAR_374+currStrOff, "(", strLen_0);
+                        strncpy(____BAH_COMPILER_VAR_377+currStrOff, "(", strLen_0);
                         currStrOff += strLen_0;
                         
-                        strncpy(____BAH_COMPILER_VAR_374+currStrOff, ____BAH_COMPILER_VAR_372, strLen_1);
+                        strncpy(____BAH_COMPILER_VAR_377+currStrOff, ____BAH_COMPILER_VAR_375, strLen_1);
                         currStrOff += strLen_1;
                         
-                        strncpy(____BAH_COMPILER_VAR_374+currStrOff, "*)((char*)(", strLen_2);
+                        strncpy(____BAH_COMPILER_VAR_377+currStrOff, "*)((char*)(", strLen_2);
                         currStrOff += strLen_2;
                         
-                        strncpy(____BAH_COMPILER_VAR_374+currStrOff, t.cont, strLen_3);
+                        strncpy(____BAH_COMPILER_VAR_377+currStrOff, t.cont, strLen_3);
                         currStrOff += strLen_3;
                         
-                        strncpy(____BAH_COMPILER_VAR_374+currStrOff, ") + offsetof(struct ", strLen_4);
+                        strncpy(____BAH_COMPILER_VAR_377+currStrOff, ") + offsetof(struct ", strLen_4);
                         currStrOff += strLen_4;
                         
-                        strncpy(____BAH_COMPILER_VAR_374+currStrOff, ____BAH_COMPILER_VAR_373, strLen_5);
+                        strncpy(____BAH_COMPILER_VAR_377+currStrOff, ____BAH_COMPILER_VAR_376, strLen_5);
                         currStrOff += strLen_5;
                         
-                        strncpy(____BAH_COMPILER_VAR_374+currStrOff, ", ", strLen_6);
+                        strncpy(____BAH_COMPILER_VAR_377+currStrOff, ", ", strLen_6);
                         currStrOff += strLen_6;
                         
-                        strncpy(____BAH_COMPILER_VAR_374+currStrOff, m->name, strLen_7);
+                        strncpy(____BAH_COMPILER_VAR_377+currStrOff, m->name, strLen_7);
                         currStrOff += strLen_7;
                         
-                        strncpy(____BAH_COMPILER_VAR_374+currStrOff, "))", strLen_8);
+                        strncpy(____BAH_COMPILER_VAR_377+currStrOff, "))", strLen_8);
                         currStrOff += strLen_8;
                         
                     }
-                    tmpT.cont =  ____BAH_COMPILER_VAR_374;
-char * ____BAH_COMPILER_VAR_375 =offsetTT.str((struct string*)&offsetTT);char * ____BAH_COMPILER_VAR_376 =null;
+                    tmpT.cont =  ____BAH_COMPILER_VAR_377;
+char * ____BAH_COMPILER_VAR_378 =offsetTT.str((struct string*)&offsetTT);char * ____BAH_COMPILER_VAR_379 =null;
                     {
                         long int currStrOff = 0;
                         long int strLen_0 = strlen("offsetof(struct ");
-long int strLen_1 = strlen(____BAH_COMPILER_VAR_375);
+long int strLen_1 = strlen(____BAH_COMPILER_VAR_378);
 long int strLen_2 = strlen(", ");
 long int strLen_3 = strlen(m->name);
 long int strLen_4 = strlen(")");
 ;                            
-                        ____BAH_COMPILER_VAR_376 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2 + strLen_3 + strLen_4);
+                        ____BAH_COMPILER_VAR_379 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2 + strLen_3 + strLen_4);
                         
-                        strncpy(____BAH_COMPILER_VAR_376+currStrOff, "offsetof(struct ", strLen_0);
+                        strncpy(____BAH_COMPILER_VAR_379+currStrOff, "offsetof(struct ", strLen_0);
                         currStrOff += strLen_0;
                         
-                        strncpy(____BAH_COMPILER_VAR_376+currStrOff, ____BAH_COMPILER_VAR_375, strLen_1);
+                        strncpy(____BAH_COMPILER_VAR_379+currStrOff, ____BAH_COMPILER_VAR_378, strLen_1);
                         currStrOff += strLen_1;
                         
-                        strncpy(____BAH_COMPILER_VAR_376+currStrOff, ", ", strLen_2);
+                        strncpy(____BAH_COMPILER_VAR_379+currStrOff, ", ", strLen_2);
                         currStrOff += strLen_2;
                         
-                        strncpy(____BAH_COMPILER_VAR_376+currStrOff, m->name, strLen_3);
+                        strncpy(____BAH_COMPILER_VAR_379+currStrOff, m->name, strLen_3);
                         currStrOff += strLen_3;
                         
-                        strncpy(____BAH_COMPILER_VAR_376+currStrOff, ")", strLen_4);
+                        strncpy(____BAH_COMPILER_VAR_379+currStrOff, ")", strLen_4);
                         currStrOff += strLen_4;
                         
                     }
-                    struct Tok rt =  parseReflect(tmpT,m->type,elems,true,m->name,____BAH_COMPILER_VAR_376);
-char * ____BAH_COMPILER_VAR_377 =intToStr(i);char * ____BAH_COMPILER_VAR_378 =null;
+                    struct Tok rt =  parseReflect(tmpT,m->type,elems,true,m->name,____BAH_COMPILER_VAR_379);
+char * ____BAH_COMPILER_VAR_380 =intToStr(i);char * ____BAH_COMPILER_VAR_381 =null;
                     {
                         long int currStrOff = 0;
                         long int strLen_0 = strlen(structLayout);
 long int strLen_1 = strlen("->data[");
-long int strLen_2 = strlen(____BAH_COMPILER_VAR_377);
+long int strLen_2 = strlen(____BAH_COMPILER_VAR_380);
 long int strLen_3 = strlen("] = ");
 long int strLen_4 = strlen(rt.cont);
 long int strLen_5 = strlen(";\n");
 ;                            
-                        ____BAH_COMPILER_VAR_378 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2 + strLen_3 + strLen_4 + strLen_5);
+                        ____BAH_COMPILER_VAR_381 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2 + strLen_3 + strLen_4 + strLen_5);
                         
-                        strncpy(____BAH_COMPILER_VAR_378+currStrOff, structLayout, strLen_0);
+                        strncpy(____BAH_COMPILER_VAR_381+currStrOff, structLayout, strLen_0);
                         currStrOff += strLen_0;
                         
-                        strncpy(____BAH_COMPILER_VAR_378+currStrOff, "->data[", strLen_1);
+                        strncpy(____BAH_COMPILER_VAR_381+currStrOff, "->data[", strLen_1);
                         currStrOff += strLen_1;
                         
-                        strncpy(____BAH_COMPILER_VAR_378+currStrOff, ____BAH_COMPILER_VAR_377, strLen_2);
+                        strncpy(____BAH_COMPILER_VAR_381+currStrOff, ____BAH_COMPILER_VAR_380, strLen_2);
                         currStrOff += strLen_2;
                         
-                        strncpy(____BAH_COMPILER_VAR_378+currStrOff, "] = ", strLen_3);
+                        strncpy(____BAH_COMPILER_VAR_381+currStrOff, "] = ", strLen_3);
                         currStrOff += strLen_3;
                         
-                        strncpy(____BAH_COMPILER_VAR_378+currStrOff, rt.cont, strLen_4);
+                        strncpy(____BAH_COMPILER_VAR_381+currStrOff, rt.cont, strLen_4);
                         currStrOff += strLen_4;
                         
-                        strncpy(____BAH_COMPILER_VAR_378+currStrOff, ";\n", strLen_5);
+                        strncpy(____BAH_COMPILER_VAR_381+currStrOff, ";\n", strLen_5);
                         currStrOff += strLen_5;
                         
                     }
-                    dataLayout =  dataLayout->add(dataLayout, rope(____BAH_COMPILER_VAR_378));
+                    dataLayout =  dataLayout->add(dataLayout, rope(____BAH_COMPILER_VAR_381));
 i =  i + 1;
 };
-char * ____BAH_COMPILER_VAR_379 =intToStr(len(ts->members));char * ____BAH_COMPILER_VAR_380 =null;
+char * ____BAH_COMPILER_VAR_382 =intToStr(len(ts->members));char * ____BAH_COMPILER_VAR_383 =null;
                     {
                         long int currStrOff = 0;
                         long int strLen_0 = strlen("\n        array(struct reflectElement) * ");
@@ -7584,7 +7639,7 @@ long int strLen_3 = strlen(structLayout);
 long int strLen_4 = strlen("->elemSize = sizeof(struct reflectElement);\n        ");
 long int strLen_5 = strlen(structLayout);
 long int strLen_6 = strlen("->length = ");
-long int strLen_7 = strlen(____BAH_COMPILER_VAR_379);
+long int strLen_7 = strlen(____BAH_COMPILER_VAR_382);
 long int strLen_8 = strlen(";\n        ");
 long int strLen_9 = strlen(structLayout);
 long int strLen_10 = strlen("->data = memoryAlloc(");
@@ -7593,55 +7648,55 @@ long int strLen_12 = strlen("->length * ");
 long int strLen_13 = strlen(structLayout);
 long int strLen_14 = strlen("->elemSize);\n        ");
 ;                            
-                        ____BAH_COMPILER_VAR_380 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2 + strLen_3 + strLen_4 + strLen_5 + strLen_6 + strLen_7 + strLen_8 + strLen_9 + strLen_10 + strLen_11 + strLen_12 + strLen_13 + strLen_14);
+                        ____BAH_COMPILER_VAR_383 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2 + strLen_3 + strLen_4 + strLen_5 + strLen_6 + strLen_7 + strLen_8 + strLen_9 + strLen_10 + strLen_11 + strLen_12 + strLen_13 + strLen_14);
                         
-                        strncpy(____BAH_COMPILER_VAR_380+currStrOff, "\n        array(struct reflectElement) * ", strLen_0);
+                        strncpy(____BAH_COMPILER_VAR_383+currStrOff, "\n        array(struct reflectElement) * ", strLen_0);
                         currStrOff += strLen_0;
                         
-                        strncpy(____BAH_COMPILER_VAR_380+currStrOff, structLayout, strLen_1);
+                        strncpy(____BAH_COMPILER_VAR_383+currStrOff, structLayout, strLen_1);
                         currStrOff += strLen_1;
                         
-                        strncpy(____BAH_COMPILER_VAR_380+currStrOff, " = memoryAlloc(sizeof(array(struct reflectElement)));\n        ", strLen_2);
+                        strncpy(____BAH_COMPILER_VAR_383+currStrOff, " = memoryAlloc(sizeof(array(struct reflectElement)));\n        ", strLen_2);
                         currStrOff += strLen_2;
                         
-                        strncpy(____BAH_COMPILER_VAR_380+currStrOff, structLayout, strLen_3);
+                        strncpy(____BAH_COMPILER_VAR_383+currStrOff, structLayout, strLen_3);
                         currStrOff += strLen_3;
                         
-                        strncpy(____BAH_COMPILER_VAR_380+currStrOff, "->elemSize = sizeof(struct reflectElement);\n        ", strLen_4);
+                        strncpy(____BAH_COMPILER_VAR_383+currStrOff, "->elemSize = sizeof(struct reflectElement);\n        ", strLen_4);
                         currStrOff += strLen_4;
                         
-                        strncpy(____BAH_COMPILER_VAR_380+currStrOff, structLayout, strLen_5);
+                        strncpy(____BAH_COMPILER_VAR_383+currStrOff, structLayout, strLen_5);
                         currStrOff += strLen_5;
                         
-                        strncpy(____BAH_COMPILER_VAR_380+currStrOff, "->length = ", strLen_6);
+                        strncpy(____BAH_COMPILER_VAR_383+currStrOff, "->length = ", strLen_6);
                         currStrOff += strLen_6;
                         
-                        strncpy(____BAH_COMPILER_VAR_380+currStrOff, ____BAH_COMPILER_VAR_379, strLen_7);
+                        strncpy(____BAH_COMPILER_VAR_383+currStrOff, ____BAH_COMPILER_VAR_382, strLen_7);
                         currStrOff += strLen_7;
                         
-                        strncpy(____BAH_COMPILER_VAR_380+currStrOff, ";\n        ", strLen_8);
+                        strncpy(____BAH_COMPILER_VAR_383+currStrOff, ";\n        ", strLen_8);
                         currStrOff += strLen_8;
                         
-                        strncpy(____BAH_COMPILER_VAR_380+currStrOff, structLayout, strLen_9);
+                        strncpy(____BAH_COMPILER_VAR_383+currStrOff, structLayout, strLen_9);
                         currStrOff += strLen_9;
                         
-                        strncpy(____BAH_COMPILER_VAR_380+currStrOff, "->data = memoryAlloc(", strLen_10);
+                        strncpy(____BAH_COMPILER_VAR_383+currStrOff, "->data = memoryAlloc(", strLen_10);
                         currStrOff += strLen_10;
                         
-                        strncpy(____BAH_COMPILER_VAR_380+currStrOff, structLayout, strLen_11);
+                        strncpy(____BAH_COMPILER_VAR_383+currStrOff, structLayout, strLen_11);
                         currStrOff += strLen_11;
                         
-                        strncpy(____BAH_COMPILER_VAR_380+currStrOff, "->length * ", strLen_12);
+                        strncpy(____BAH_COMPILER_VAR_383+currStrOff, "->length * ", strLen_12);
                         currStrOff += strLen_12;
                         
-                        strncpy(____BAH_COMPILER_VAR_380+currStrOff, structLayout, strLen_13);
+                        strncpy(____BAH_COMPILER_VAR_383+currStrOff, structLayout, strLen_13);
                         currStrOff += strLen_13;
                         
-                        strncpy(____BAH_COMPILER_VAR_380+currStrOff, "->elemSize);\n        ", strLen_14);
+                        strncpy(____BAH_COMPILER_VAR_383+currStrOff, "->elemSize);\n        ", strLen_14);
                         currStrOff += strLen_14;
                         
                     }
-                    OUTPUT =  OUTPUT->add(OUTPUT, rope(____BAH_COMPILER_VAR_380))->add(OUTPUT->add(OUTPUT, rope(____BAH_COMPILER_VAR_380)), dataLayout);
+                    OUTPUT =  OUTPUT->add(OUTPUT, rope(____BAH_COMPILER_VAR_383))->add(OUTPUT->add(OUTPUT, rope(____BAH_COMPILER_VAR_383)), dataLayout);
 }
 char * amp =  "";
 if (((((strCount(tt,"*")==0)&&(strcmp(tt, "cpstring") != 0))&&(strcmp(tt, "ptr") != 0))&&(parsedPointer==false))) {
@@ -7655,97 +7710,128 @@ struct string cType =  getCType(tt,elems);
 if ((cType.length==0)) {
 cType.set((struct string*)&cType,"0");
 }
-char * ____BAH_COMPILER_VAR_381 =cType.str((struct string*)&cType);char * ____BAH_COMPILER_VAR_382 =name.str((struct string*)&name);char * ____BAH_COMPILER_VAR_383 =null;
+struct variable* rv = memoryAlloc(sizeof(struct variable));
+rv->name = "";
+rv->type = "";
+rv->isConst = false;
+rv->isArray = false;
+rv->from = "";
+rv->outterScope = false;
+rv->name =  genCompilerVar();
+rv->type =  "reflectElement";
+
+{
+long nLength = len(elems->vars);
+if (elems->vars->length < nLength+1) {
+if ((nLength+1) % 50 == 0 || nLength == 0) {
+void * newPtr = memoryRealloc(elems->vars->data, (nLength+50)*sizeof(struct variable*));
+elems->vars->data = newPtr;
+}
+elems->vars->data[len(elems->vars)] =  rv;
+elems->vars->length = nLength+1;
+} else {
+elems->vars->data[len(elems->vars)] =  rv;
+}
+};
+char * ____BAH_COMPILER_VAR_384 =cType.str((struct string*)&cType);char * ____BAH_COMPILER_VAR_385 =name.str((struct string*)&name);char * ____BAH_COMPILER_VAR_386 =null;
                     {
                         long int currStrOff = 0;
-                        long int strLen_0 = strlen("__reflect(");
-long int strLen_1 = strlen(amp);
-long int strLen_2 = strlen(t.cont);
-long int strLen_3 = strlen(", sizeof(");
-long int strLen_4 = strlen(____BAH_COMPILER_VAR_381);
-long int strLen_5 = strlen("), \"");
-long int strLen_6 = strlen(tt);
-long int strLen_7 = strlen("\", \"");
-long int strLen_8 = strlen(____BAH_COMPILER_VAR_382);
-long int strLen_9 = strlen("\", ");
-long int strLen_10 = strlen(isArr);
-long int strLen_11 = strlen(", ");
-long int strLen_12 = strlen(arrElem);
+                        long int strLen_0 = strlen("struct reflectElement ");
+long int strLen_1 = strlen(rv->name);
+long int strLen_2 = strlen(" = __reflect(");
+long int strLen_3 = strlen(amp);
+long int strLen_4 = strlen(t.cont);
+long int strLen_5 = strlen(", sizeof(");
+long int strLen_6 = strlen(____BAH_COMPILER_VAR_384);
+long int strLen_7 = strlen("), \"");
+long int strLen_8 = strlen(tt);
+long int strLen_9 = strlen("\", \"");
+long int strLen_10 = strlen(____BAH_COMPILER_VAR_385);
+long int strLen_11 = strlen("\", ");
+long int strLen_12 = strlen(isArr);
 long int strLen_13 = strlen(", ");
-long int strLen_14 = strlen(isStruct);
+long int strLen_14 = strlen(arrElem);
 long int strLen_15 = strlen(", ");
-long int strLen_16 = strlen(structLayout);
+long int strLen_16 = strlen(isStruct);
 long int strLen_17 = strlen(", ");
-long int strLen_18 = strlen(offset);
-long int strLen_19 = strlen(")");
+long int strLen_18 = strlen(structLayout);
+long int strLen_19 = strlen(", ");
+long int strLen_20 = strlen(offset);
+long int strLen_21 = strlen(");\n");
 ;                            
-                        ____BAH_COMPILER_VAR_383 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2 + strLen_3 + strLen_4 + strLen_5 + strLen_6 + strLen_7 + strLen_8 + strLen_9 + strLen_10 + strLen_11 + strLen_12 + strLen_13 + strLen_14 + strLen_15 + strLen_16 + strLen_17 + strLen_18 + strLen_19);
+                        ____BAH_COMPILER_VAR_386 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2 + strLen_3 + strLen_4 + strLen_5 + strLen_6 + strLen_7 + strLen_8 + strLen_9 + strLen_10 + strLen_11 + strLen_12 + strLen_13 + strLen_14 + strLen_15 + strLen_16 + strLen_17 + strLen_18 + strLen_19 + strLen_20 + strLen_21);
                         
-                        strncpy(____BAH_COMPILER_VAR_383+currStrOff, "__reflect(", strLen_0);
+                        strncpy(____BAH_COMPILER_VAR_386+currStrOff, "struct reflectElement ", strLen_0);
                         currStrOff += strLen_0;
                         
-                        strncpy(____BAH_COMPILER_VAR_383+currStrOff, amp, strLen_1);
+                        strncpy(____BAH_COMPILER_VAR_386+currStrOff, rv->name, strLen_1);
                         currStrOff += strLen_1;
                         
-                        strncpy(____BAH_COMPILER_VAR_383+currStrOff, t.cont, strLen_2);
+                        strncpy(____BAH_COMPILER_VAR_386+currStrOff, " = __reflect(", strLen_2);
                         currStrOff += strLen_2;
                         
-                        strncpy(____BAH_COMPILER_VAR_383+currStrOff, ", sizeof(", strLen_3);
+                        strncpy(____BAH_COMPILER_VAR_386+currStrOff, amp, strLen_3);
                         currStrOff += strLen_3;
                         
-                        strncpy(____BAH_COMPILER_VAR_383+currStrOff, ____BAH_COMPILER_VAR_381, strLen_4);
+                        strncpy(____BAH_COMPILER_VAR_386+currStrOff, t.cont, strLen_4);
                         currStrOff += strLen_4;
                         
-                        strncpy(____BAH_COMPILER_VAR_383+currStrOff, "), \"", strLen_5);
+                        strncpy(____BAH_COMPILER_VAR_386+currStrOff, ", sizeof(", strLen_5);
                         currStrOff += strLen_5;
                         
-                        strncpy(____BAH_COMPILER_VAR_383+currStrOff, tt, strLen_6);
+                        strncpy(____BAH_COMPILER_VAR_386+currStrOff, ____BAH_COMPILER_VAR_384, strLen_6);
                         currStrOff += strLen_6;
                         
-                        strncpy(____BAH_COMPILER_VAR_383+currStrOff, "\", \"", strLen_7);
+                        strncpy(____BAH_COMPILER_VAR_386+currStrOff, "), \"", strLen_7);
                         currStrOff += strLen_7;
                         
-                        strncpy(____BAH_COMPILER_VAR_383+currStrOff, ____BAH_COMPILER_VAR_382, strLen_8);
+                        strncpy(____BAH_COMPILER_VAR_386+currStrOff, tt, strLen_8);
                         currStrOff += strLen_8;
                         
-                        strncpy(____BAH_COMPILER_VAR_383+currStrOff, "\", ", strLen_9);
+                        strncpy(____BAH_COMPILER_VAR_386+currStrOff, "\", \"", strLen_9);
                         currStrOff += strLen_9;
                         
-                        strncpy(____BAH_COMPILER_VAR_383+currStrOff, isArr, strLen_10);
+                        strncpy(____BAH_COMPILER_VAR_386+currStrOff, ____BAH_COMPILER_VAR_385, strLen_10);
                         currStrOff += strLen_10;
                         
-                        strncpy(____BAH_COMPILER_VAR_383+currStrOff, ", ", strLen_11);
+                        strncpy(____BAH_COMPILER_VAR_386+currStrOff, "\", ", strLen_11);
                         currStrOff += strLen_11;
                         
-                        strncpy(____BAH_COMPILER_VAR_383+currStrOff, arrElem, strLen_12);
+                        strncpy(____BAH_COMPILER_VAR_386+currStrOff, isArr, strLen_12);
                         currStrOff += strLen_12;
                         
-                        strncpy(____BAH_COMPILER_VAR_383+currStrOff, ", ", strLen_13);
+                        strncpy(____BAH_COMPILER_VAR_386+currStrOff, ", ", strLen_13);
                         currStrOff += strLen_13;
                         
-                        strncpy(____BAH_COMPILER_VAR_383+currStrOff, isStruct, strLen_14);
+                        strncpy(____BAH_COMPILER_VAR_386+currStrOff, arrElem, strLen_14);
                         currStrOff += strLen_14;
                         
-                        strncpy(____BAH_COMPILER_VAR_383+currStrOff, ", ", strLen_15);
+                        strncpy(____BAH_COMPILER_VAR_386+currStrOff, ", ", strLen_15);
                         currStrOff += strLen_15;
                         
-                        strncpy(____BAH_COMPILER_VAR_383+currStrOff, structLayout, strLen_16);
+                        strncpy(____BAH_COMPILER_VAR_386+currStrOff, isStruct, strLen_16);
                         currStrOff += strLen_16;
                         
-                        strncpy(____BAH_COMPILER_VAR_383+currStrOff, ", ", strLen_17);
+                        strncpy(____BAH_COMPILER_VAR_386+currStrOff, ", ", strLen_17);
                         currStrOff += strLen_17;
                         
-                        strncpy(____BAH_COMPILER_VAR_383+currStrOff, offset, strLen_18);
+                        strncpy(____BAH_COMPILER_VAR_386+currStrOff, structLayout, strLen_18);
                         currStrOff += strLen_18;
                         
-                        strncpy(____BAH_COMPILER_VAR_383+currStrOff, ")", strLen_19);
+                        strncpy(____BAH_COMPILER_VAR_386+currStrOff, ", ", strLen_19);
                         currStrOff += strLen_19;
                         
+                        strncpy(____BAH_COMPILER_VAR_386+currStrOff, offset, strLen_20);
+                        currStrOff += strLen_20;
+                        
+                        strncpy(____BAH_COMPILER_VAR_386+currStrOff, ");\n", strLen_21);
+                        currStrOff += strLen_21;
+                        
                     }
-                    t.cont =  ____BAH_COMPILER_VAR_383;
-t.isFunc =  true;
-struct Tok ____BAH_COMPILER_VAR_384 = t;
-return ____BAH_COMPILER_VAR_384;
+                    OUTPUT =  OUTPUT->add(OUTPUT, rope(____BAH_COMPILER_VAR_386));
+t.cont =  rv->name;
+struct Tok ____BAH_COMPILER_VAR_387 = t;
+return ____BAH_COMPILER_VAR_387;
 };
 __BAH_ARR_TYPE_Tok parseFnCall(__BAH_ARR_TYPE_Tok l,struct Elems* elems){
 array(struct Tok)* nl = memoryAlloc(sizeof(array(struct Tok)));
@@ -7769,8 +7855,8 @@ break;
 i =  i + 1;
 };
 if ((found==false)) {
-array(struct Tok)* ____BAH_COMPILER_VAR_385 = l;
-return ____BAH_COMPILER_VAR_385;
+array(struct Tok)* ____BAH_COMPILER_VAR_388 = l;
+return ____BAH_COMPILER_VAR_388;
 }
 i =  0;
 while ((i<len(l))) {
@@ -7811,43 +7897,43 @@ throwErr(&ot,"Cannot use {TOKEN} as a struct.");
 if ((strCount(v->type,"*")==0)) {
 varName.prepend((struct string*)&varName,"&");
 }
-char * ____BAH_COMPILER_VAR_386 =fnarg1t.str((struct string*)&fnarg1t);char * ____BAH_COMPILER_VAR_387 =null;
+char * ____BAH_COMPILER_VAR_389 =fnarg1t.str((struct string*)&fnarg1t);char * ____BAH_COMPILER_VAR_390 =null;
                     {
                         long int currStrOff = 0;
                         long int strLen_0 = strlen("(");
-long int strLen_1 = strlen(____BAH_COMPILER_VAR_386);
+long int strLen_1 = strlen(____BAH_COMPILER_VAR_389);
 long int strLen_2 = strlen(")");
 ;                            
-                        ____BAH_COMPILER_VAR_387 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2);
+                        ____BAH_COMPILER_VAR_390 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2);
                         
-                        strncpy(____BAH_COMPILER_VAR_387+currStrOff, "(", strLen_0);
+                        strncpy(____BAH_COMPILER_VAR_390+currStrOff, "(", strLen_0);
                         currStrOff += strLen_0;
                         
-                        strncpy(____BAH_COMPILER_VAR_387+currStrOff, ____BAH_COMPILER_VAR_386, strLen_1);
+                        strncpy(____BAH_COMPILER_VAR_390+currStrOff, ____BAH_COMPILER_VAR_389, strLen_1);
                         currStrOff += strLen_1;
                         
-                        strncpy(____BAH_COMPILER_VAR_387+currStrOff, ")", strLen_2);
+                        strncpy(____BAH_COMPILER_VAR_390+currStrOff, ")", strLen_2);
                         currStrOff += strLen_2;
                         
                     }
-                    varName.prepend((struct string*)&varName,____BAH_COMPILER_VAR_387);
+                    varName.prepend((struct string*)&varName,____BAH_COMPILER_VAR_390);
 }
-char * ____BAH_COMPILER_VAR_388 =null;
+char * ____BAH_COMPILER_VAR_391 =null;
                     {
                         long int currStrOff = 0;
                         long int strLen_0 = strlen(fnName);
 long int strLen_1 = strlen("(");
 ;                            
-                        ____BAH_COMPILER_VAR_388 = memoryAlloc(1 + strLen_0 + strLen_1);
+                        ____BAH_COMPILER_VAR_391 = memoryAlloc(1 + strLen_0 + strLen_1);
                         
-                        strncpy(____BAH_COMPILER_VAR_388+currStrOff, fnName, strLen_0);
+                        strncpy(____BAH_COMPILER_VAR_391+currStrOff, fnName, strLen_0);
                         currStrOff += strLen_0;
                         
-                        strncpy(____BAH_COMPILER_VAR_388+currStrOff, "(", strLen_1);
+                        strncpy(____BAH_COMPILER_VAR_391+currStrOff, "(", strLen_1);
                         currStrOff += strLen_1;
                         
                     }
-                    ot.cont =  ____BAH_COMPILER_VAR_388;
+                    ot.cont =  ____BAH_COMPILER_VAR_391;
 array(struct variable*)* fnArgs =  fn->args;
 long int paramIndex =  0;
 array(struct Tok)* memory = memoryAlloc(sizeof(array(struct Tok)));
@@ -7855,17 +7941,17 @@ array(struct Tok)* memory = memoryAlloc(sizeof(array(struct Tok)));
 memory->length = 0;
 memory->elemSize = sizeof(struct Tok);
 if ((varName.length>0)) {
-struct Tok ____BAH_COMPILER_VAR_389 = {};
-____BAH_COMPILER_VAR_389.cont = "";
-____BAH_COMPILER_VAR_389.ogCont = "";
-____BAH_COMPILER_VAR_389.type = TOKEN_NO_TYPE;
-____BAH_COMPILER_VAR_389.pos = 0;
-____BAH_COMPILER_VAR_389.line = 1;
-____BAH_COMPILER_VAR_389.bahType = "";
-____BAH_COMPILER_VAR_389.isValue = false;
-____BAH_COMPILER_VAR_389.isFunc = false;
-____BAH_COMPILER_VAR_389.isOper = false;
-struct Tok tk =  ____BAH_COMPILER_VAR_389;
+struct Tok ____BAH_COMPILER_VAR_392 = {};
+____BAH_COMPILER_VAR_392.cont = "";
+____BAH_COMPILER_VAR_392.ogCont = "";
+____BAH_COMPILER_VAR_392.type = TOKEN_NO_TYPE;
+____BAH_COMPILER_VAR_392.pos = 0;
+____BAH_COMPILER_VAR_392.line = 1;
+____BAH_COMPILER_VAR_392.bahType = "";
+____BAH_COMPILER_VAR_392.isValue = false;
+____BAH_COMPILER_VAR_392.isFunc = false;
+____BAH_COMPILER_VAR_392.isOper = false;
+struct Tok tk =  ____BAH_COMPILER_VAR_392;
 tk.cont =  varName.str((struct string*)&varName);
 tk.bahType =  arg1->type;
 tk.type =  TOKEN_TYPE_VAR;
@@ -7886,17 +7972,17 @@ memory->data[len(memory)] =  tk;
 };
 nt =  l->data[i];
 if ((strcmp(nt.cont, ")") != 0)) {
-struct Tok ____BAH_COMPILER_VAR_390 = {};
-____BAH_COMPILER_VAR_390.cont = "";
-____BAH_COMPILER_VAR_390.ogCont = "";
-____BAH_COMPILER_VAR_390.type = TOKEN_NO_TYPE;
-____BAH_COMPILER_VAR_390.pos = 0;
-____BAH_COMPILER_VAR_390.line = 1;
-____BAH_COMPILER_VAR_390.bahType = "";
-____BAH_COMPILER_VAR_390.isValue = false;
-____BAH_COMPILER_VAR_390.isFunc = false;
-____BAH_COMPILER_VAR_390.isOper = false;
-tk =  ____BAH_COMPILER_VAR_390;
+struct Tok ____BAH_COMPILER_VAR_393 = {};
+____BAH_COMPILER_VAR_393.cont = "";
+____BAH_COMPILER_VAR_393.ogCont = "";
+____BAH_COMPILER_VAR_393.type = TOKEN_NO_TYPE;
+____BAH_COMPILER_VAR_393.pos = 0;
+____BAH_COMPILER_VAR_393.line = 1;
+____BAH_COMPILER_VAR_393.bahType = "";
+____BAH_COMPILER_VAR_393.isValue = false;
+____BAH_COMPILER_VAR_393.isFunc = false;
+____BAH_COMPILER_VAR_393.isOper = false;
+tk =  ____BAH_COMPILER_VAR_393;
 tk.cont =  ",";
 tk.type =  TOKEN_TYPE_SYNTAX;
 tk.isValue =  false;
@@ -7948,26 +8034,26 @@ if ((strcmp(fnName, "noCheck") == 0)) {
 long int j =  0;
 while ((j<len(memory))) {
 struct Tok t =  memory->data[j];
-char * ____BAH_COMPILER_VAR_391 =null;
+char * ____BAH_COMPILER_VAR_394 =null;
                     {
                         long int currStrOff = 0;
                         long int strLen_0 = strlen(ot.cont);
 long int strLen_1 = strlen(" ");
 long int strLen_2 = strlen(t.cont);
 ;                            
-                        ____BAH_COMPILER_VAR_391 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2);
+                        ____BAH_COMPILER_VAR_394 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2);
                         
-                        strncpy(____BAH_COMPILER_VAR_391+currStrOff, ot.cont, strLen_0);
+                        strncpy(____BAH_COMPILER_VAR_394+currStrOff, ot.cont, strLen_0);
                         currStrOff += strLen_0;
                         
-                        strncpy(____BAH_COMPILER_VAR_391+currStrOff, " ", strLen_1);
+                        strncpy(____BAH_COMPILER_VAR_394+currStrOff, " ", strLen_1);
                         currStrOff += strLen_1;
                         
-                        strncpy(____BAH_COMPILER_VAR_391+currStrOff, t.cont, strLen_2);
+                        strncpy(____BAH_COMPILER_VAR_394+currStrOff, t.cont, strLen_2);
                         currStrOff += strLen_2;
                         
                     }
-                    ot.cont =  ____BAH_COMPILER_VAR_391;
+                    ot.cont =  ____BAH_COMPILER_VAR_394;
 j =  j + 1;
 };
 ot.cont =  ot.cont;
@@ -8006,7 +8092,7 @@ t =  parseReflect(t,tt,elems,false,t.cont,"0");
 tt =  "reflectElement";
 }
 if ((compTypes(tt,arg->type)==false)) {
-char * ____BAH_COMPILER_VAR_392 =null;
+char * ____BAH_COMPILER_VAR_395 =null;
                     {
                         long int currStrOff = 0;
                         long int strLen_0 = strlen("Cannot use {TOKEN} (");
@@ -8015,49 +8101,49 @@ long int strLen_2 = strlen(") as ");
 long int strLen_3 = strlen(arg->type);
 long int strLen_4 = strlen(" in function call.");
 ;                            
-                        ____BAH_COMPILER_VAR_392 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2 + strLen_3 + strLen_4);
+                        ____BAH_COMPILER_VAR_395 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2 + strLen_3 + strLen_4);
                         
-                        strncpy(____BAH_COMPILER_VAR_392+currStrOff, "Cannot use {TOKEN} (", strLen_0);
+                        strncpy(____BAH_COMPILER_VAR_395+currStrOff, "Cannot use {TOKEN} (", strLen_0);
                         currStrOff += strLen_0;
                         
-                        strncpy(____BAH_COMPILER_VAR_392+currStrOff, tt, strLen_1);
+                        strncpy(____BAH_COMPILER_VAR_395+currStrOff, tt, strLen_1);
                         currStrOff += strLen_1;
                         
-                        strncpy(____BAH_COMPILER_VAR_392+currStrOff, ") as ", strLen_2);
+                        strncpy(____BAH_COMPILER_VAR_395+currStrOff, ") as ", strLen_2);
                         currStrOff += strLen_2;
                         
-                        strncpy(____BAH_COMPILER_VAR_392+currStrOff, arg->type, strLen_3);
+                        strncpy(____BAH_COMPILER_VAR_395+currStrOff, arg->type, strLen_3);
                         currStrOff += strLen_3;
                         
-                        strncpy(____BAH_COMPILER_VAR_392+currStrOff, " in function call.", strLen_4);
+                        strncpy(____BAH_COMPILER_VAR_395+currStrOff, " in function call.", strLen_4);
                         currStrOff += strLen_4;
                         
                     }
-                    throwErr(&t,____BAH_COMPILER_VAR_392);
+                    throwErr(&t,____BAH_COMPILER_VAR_395);
 }
 if (((t.type==TOKEN_TYPE_FUNC)&&(strHasPrefix(t.cont,"noCheck(")==false))) {
-struct string ____BAH_COMPILER_VAR_393 =string(t.cont);char * afnName =  splitStringBefore(____BAH_COMPILER_VAR_393,"(");
+struct string ____BAH_COMPILER_VAR_396 =string(t.cont);char * afnName =  splitStringBefore(____BAH_COMPILER_VAR_396,"(");
 struct func* afn =  searchFunc(afnName,elems,true);
 if (((afn!=null)&&(isRCPtype(afn->returns->type,elems)==true))) {
 t.cont =  registerRCPvar(afn->returns->type,t.cont,elems);
 }
 }
-char * ____BAH_COMPILER_VAR_394 =null;
+char * ____BAH_COMPILER_VAR_397 =null;
                     {
                         long int currStrOff = 0;
                         long int strLen_0 = strlen(ot.cont);
 long int strLen_1 = strlen(t.cont);
 ;                            
-                        ____BAH_COMPILER_VAR_394 = memoryAlloc(1 + strLen_0 + strLen_1);
+                        ____BAH_COMPILER_VAR_397 = memoryAlloc(1 + strLen_0 + strLen_1);
                         
-                        strncpy(____BAH_COMPILER_VAR_394+currStrOff, ot.cont, strLen_0);
+                        strncpy(____BAH_COMPILER_VAR_397+currStrOff, ot.cont, strLen_0);
                         currStrOff += strLen_0;
                         
-                        strncpy(____BAH_COMPILER_VAR_394+currStrOff, t.cont, strLen_1);
+                        strncpy(____BAH_COMPILER_VAR_397+currStrOff, t.cont, strLen_1);
                         currStrOff += strLen_1;
                         
                     }
-                    ot.cont =  ____BAH_COMPILER_VAR_394;
+                    ot.cont =  ____BAH_COMPILER_VAR_397;
 j =  j + 1;
 t =  memory->data[j];
 if ((strcmp(t.cont, ",") != 0)) {
@@ -8072,22 +8158,22 @@ throwErr(&t,"Expected separator between values, not {TOKEN} in function call.");
 }
 else {
 paramIndex =  paramIndex + 1;
-char * ____BAH_COMPILER_VAR_395 =null;
+char * ____BAH_COMPILER_VAR_398 =null;
                     {
                         long int currStrOff = 0;
                         long int strLen_0 = strlen(ot.cont);
 long int strLen_1 = strlen(",");
 ;                            
-                        ____BAH_COMPILER_VAR_395 = memoryAlloc(1 + strLen_0 + strLen_1);
+                        ____BAH_COMPILER_VAR_398 = memoryAlloc(1 + strLen_0 + strLen_1);
                         
-                        strncpy(____BAH_COMPILER_VAR_395+currStrOff, ot.cont, strLen_0);
+                        strncpy(____BAH_COMPILER_VAR_398+currStrOff, ot.cont, strLen_0);
                         currStrOff += strLen_0;
                         
-                        strncpy(____BAH_COMPILER_VAR_395+currStrOff, ",", strLen_1);
+                        strncpy(____BAH_COMPILER_VAR_398+currStrOff, ",", strLen_1);
                         currStrOff += strLen_1;
                         
                     }
-                    ot.cont =  ____BAH_COMPILER_VAR_395;
+                    ot.cont =  ____BAH_COMPILER_VAR_398;
 }
 j =  j + 1;
 };
@@ -8100,22 +8186,22 @@ if ((strcmp(fn->name, "ser") == 0)) {
 ot.cont =  parseSerialize(memory->data[0],elems);
 }
 else {
-char * ____BAH_COMPILER_VAR_396 =null;
+char * ____BAH_COMPILER_VAR_399 =null;
                     {
                         long int currStrOff = 0;
                         long int strLen_0 = strlen(ot.cont);
 long int strLen_1 = strlen(")");
 ;                            
-                        ____BAH_COMPILER_VAR_396 = memoryAlloc(1 + strLen_0 + strLen_1);
+                        ____BAH_COMPILER_VAR_399 = memoryAlloc(1 + strLen_0 + strLen_1);
                         
-                        strncpy(____BAH_COMPILER_VAR_396+currStrOff, ot.cont, strLen_0);
+                        strncpy(____BAH_COMPILER_VAR_399+currStrOff, ot.cont, strLen_0);
                         currStrOff += strLen_0;
                         
-                        strncpy(____BAH_COMPILER_VAR_396+currStrOff, ")", strLen_1);
+                        strncpy(____BAH_COMPILER_VAR_399+currStrOff, ")", strLen_1);
                         currStrOff += strLen_1;
                         
                     }
-                    ot.cont =  ____BAH_COMPILER_VAR_396;
+                    ot.cont =  ____BAH_COMPILER_VAR_399;
 }
 ot.type =  TOKEN_TYPE_FUNC;
 ot.bahType =  fn->returns->type;
@@ -8155,8 +8241,8 @@ nl->data[len(nl)] =  ot;
 };
 i =  i + 1;
 };
-array(struct Tok)* ____BAH_COMPILER_VAR_397 = nl;
-return ____BAH_COMPILER_VAR_397;
+array(struct Tok)* ____BAH_COMPILER_VAR_400 = nl;
+return ____BAH_COMPILER_VAR_400;
 };
 void parseVar(__BAH_ARR_TYPE_Tok l,struct Elems* elems){
 struct Tok ft =  l->data[0];
@@ -8166,22 +8252,22 @@ throwErr(&l->data[len(l)-1],"Not expecting {TOKEN} after function call.");
 }
 ft =  l->data[0];
 int parsed =  true;
-char * ____BAH_COMPILER_VAR_398 =null;
+char * ____BAH_COMPILER_VAR_401 =null;
                     {
                         long int currStrOff = 0;
                         long int strLen_0 = strlen(ft.cont);
 long int strLen_1 = strlen(";\n");
 ;                            
-                        ____BAH_COMPILER_VAR_398 = memoryAlloc(1 + strLen_0 + strLen_1);
+                        ____BAH_COMPILER_VAR_401 = memoryAlloc(1 + strLen_0 + strLen_1);
                         
-                        strncpy(____BAH_COMPILER_VAR_398+currStrOff, ft.cont, strLen_0);
+                        strncpy(____BAH_COMPILER_VAR_401+currStrOff, ft.cont, strLen_0);
                         currStrOff += strLen_0;
                         
-                        strncpy(____BAH_COMPILER_VAR_398+currStrOff, ";\n", strLen_1);
+                        strncpy(____BAH_COMPILER_VAR_401+currStrOff, ";\n", strLen_1);
                         currStrOff += strLen_1;
                         
                     }
-                    OUTPUT =  OUTPUT->add(OUTPUT, rope(____BAH_COMPILER_VAR_398));
+                    OUTPUT =  OUTPUT->add(OUTPUT, rope(____BAH_COMPILER_VAR_401));
 return;
 }
 l =  parseStructType(l,elems);
@@ -8230,26 +8316,26 @@ continue;
 }
 }
 if ((isEqual==false)) {
-char * ____BAH_COMPILER_VAR_400 =null;
+char * ____BAH_COMPILER_VAR_403 =null;
                     {
                         long int currStrOff = 0;
                         long int strLen_0 = strlen(currentType);
 long int strLen_1 = strlen(" ");
 long int strLen_2 = strlen(t.cont);
 ;                            
-                        ____BAH_COMPILER_VAR_400 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2);
+                        ____BAH_COMPILER_VAR_403 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2);
                         
-                        strncpy(____BAH_COMPILER_VAR_400+currStrOff, currentType, strLen_0);
+                        strncpy(____BAH_COMPILER_VAR_403+currStrOff, currentType, strLen_0);
                         currStrOff += strLen_0;
                         
-                        strncpy(____BAH_COMPILER_VAR_400+currStrOff, " ", strLen_1);
+                        strncpy(____BAH_COMPILER_VAR_403+currStrOff, " ", strLen_1);
                         currStrOff += strLen_1;
                         
-                        strncpy(____BAH_COMPILER_VAR_400+currStrOff, t.cont, strLen_2);
+                        strncpy(____BAH_COMPILER_VAR_403+currStrOff, t.cont, strLen_2);
                         currStrOff += strLen_2;
                         
                     }
-                    currentType =  ____BAH_COMPILER_VAR_400;
+                    currentType =  ____BAH_COMPILER_VAR_403;
 }
 else {
 if ((strcmp(t.cont, "new") == 0)) {
@@ -8273,42 +8359,42 @@ throwErr(&t,"Unknown struct {TOKEN}.");
 }
 struct string vect =  getCType(s->name,elems);
 char * vectStr =  vect.content;
-char * ____BAH_COMPILER_VAR_401 =null;
+char * ____BAH_COMPILER_VAR_404 =null;
                     {
                         long int currStrOff = 0;
                         long int strLen_0 = strlen("memoryAlloc(sizeof(");
 long int strLen_1 = strlen(vectStr);
 long int strLen_2 = strlen("))");
 ;                            
-                        ____BAH_COMPILER_VAR_401 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2);
+                        ____BAH_COMPILER_VAR_404 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2);
                         
-                        strncpy(____BAH_COMPILER_VAR_401+currStrOff, "memoryAlloc(sizeof(", strLen_0);
+                        strncpy(____BAH_COMPILER_VAR_404+currStrOff, "memoryAlloc(sizeof(", strLen_0);
                         currStrOff += strLen_0;
                         
-                        strncpy(____BAH_COMPILER_VAR_401+currStrOff, vectStr, strLen_1);
+                        strncpy(____BAH_COMPILER_VAR_404+currStrOff, vectStr, strLen_1);
                         currStrOff += strLen_1;
                         
-                        strncpy(____BAH_COMPILER_VAR_401+currStrOff, "))", strLen_2);
+                        strncpy(____BAH_COMPILER_VAR_404+currStrOff, "))", strLen_2);
                         currStrOff += strLen_2;
                         
                     }
-                    code =  ____BAH_COMPILER_VAR_401;
-char * ____BAH_COMPILER_VAR_402 =null;
+                    code =  ____BAH_COMPILER_VAR_404;
+char * ____BAH_COMPILER_VAR_405 =null;
                     {
                         long int currStrOff = 0;
                         long int strLen_0 = strlen(s->name);
 long int strLen_1 = strlen("*");
 ;                            
-                        ____BAH_COMPILER_VAR_402 = memoryAlloc(1 + strLen_0 + strLen_1);
+                        ____BAH_COMPILER_VAR_405 = memoryAlloc(1 + strLen_0 + strLen_1);
                         
-                        strncpy(____BAH_COMPILER_VAR_402+currStrOff, s->name, strLen_0);
+                        strncpy(____BAH_COMPILER_VAR_405+currStrOff, s->name, strLen_0);
                         currStrOff += strLen_0;
                         
-                        strncpy(____BAH_COMPILER_VAR_402+currStrOff, "*", strLen_1);
+                        strncpy(____BAH_COMPILER_VAR_405+currStrOff, "*", strLen_1);
                         currStrOff += strLen_1;
                         
                     }
-                    v->type =  ____BAH_COMPILER_VAR_402;
+                    v->type =  ____BAH_COMPILER_VAR_405;
 NEXT_LINE =  declareStructMethods(v,s,elems);
 break;
 }
@@ -8318,7 +8404,7 @@ throwErr(&t,"Cannot use {TOKEN} as value in var declaration.");
 char * tp =  getTypeFromToken(&t,true,elems);
 if ((exists==true)) {
 if ((compTypes(tp,v->type)==false)) {
-char * ____BAH_COMPILER_VAR_403 =null;
+char * ____BAH_COMPILER_VAR_406 =null;
                     {
                         long int currStrOff = 0;
                         long int strLen_0 = strlen("Cannot use {TOKEN} (");
@@ -8327,25 +8413,25 @@ long int strLen_2 = strlen(") as ");
 long int strLen_3 = strlen(v->type);
 long int strLen_4 = strlen(".");
 ;                            
-                        ____BAH_COMPILER_VAR_403 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2 + strLen_3 + strLen_4);
+                        ____BAH_COMPILER_VAR_406 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2 + strLen_3 + strLen_4);
                         
-                        strncpy(____BAH_COMPILER_VAR_403+currStrOff, "Cannot use {TOKEN} (", strLen_0);
+                        strncpy(____BAH_COMPILER_VAR_406+currStrOff, "Cannot use {TOKEN} (", strLen_0);
                         currStrOff += strLen_0;
                         
-                        strncpy(____BAH_COMPILER_VAR_403+currStrOff, tp, strLen_1);
+                        strncpy(____BAH_COMPILER_VAR_406+currStrOff, tp, strLen_1);
                         currStrOff += strLen_1;
                         
-                        strncpy(____BAH_COMPILER_VAR_403+currStrOff, ") as ", strLen_2);
+                        strncpy(____BAH_COMPILER_VAR_406+currStrOff, ") as ", strLen_2);
                         currStrOff += strLen_2;
                         
-                        strncpy(____BAH_COMPILER_VAR_403+currStrOff, v->type, strLen_3);
+                        strncpy(____BAH_COMPILER_VAR_406+currStrOff, v->type, strLen_3);
                         currStrOff += strLen_3;
                         
-                        strncpy(____BAH_COMPILER_VAR_403+currStrOff, ".", strLen_4);
+                        strncpy(____BAH_COMPILER_VAR_406+currStrOff, ".", strLen_4);
                         currStrOff += strLen_4;
                         
                     }
-                    throwErr(&t,____BAH_COMPILER_VAR_403);
+                    throwErr(&t,____BAH_COMPILER_VAR_406);
 }
 }
 else {
@@ -8355,7 +8441,7 @@ v->type =  tp;
 }
 else {
 if ((compTypes(tp,v->type)==false)) {
-char * ____BAH_COMPILER_VAR_404 =null;
+char * ____BAH_COMPILER_VAR_407 =null;
                     {
                         long int currStrOff = 0;
                         long int strLen_0 = strlen("Cannot use {TOKEN} (");
@@ -8364,50 +8450,50 @@ long int strLen_2 = strlen(") as ");
 long int strLen_3 = strlen(v->type);
 long int strLen_4 = strlen(".");
 ;                            
-                        ____BAH_COMPILER_VAR_404 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2 + strLen_3 + strLen_4);
+                        ____BAH_COMPILER_VAR_407 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2 + strLen_3 + strLen_4);
                         
-                        strncpy(____BAH_COMPILER_VAR_404+currStrOff, "Cannot use {TOKEN} (", strLen_0);
+                        strncpy(____BAH_COMPILER_VAR_407+currStrOff, "Cannot use {TOKEN} (", strLen_0);
                         currStrOff += strLen_0;
                         
-                        strncpy(____BAH_COMPILER_VAR_404+currStrOff, tp, strLen_1);
+                        strncpy(____BAH_COMPILER_VAR_407+currStrOff, tp, strLen_1);
                         currStrOff += strLen_1;
                         
-                        strncpy(____BAH_COMPILER_VAR_404+currStrOff, ") as ", strLen_2);
+                        strncpy(____BAH_COMPILER_VAR_407+currStrOff, ") as ", strLen_2);
                         currStrOff += strLen_2;
                         
-                        strncpy(____BAH_COMPILER_VAR_404+currStrOff, v->type, strLen_3);
+                        strncpy(____BAH_COMPILER_VAR_407+currStrOff, v->type, strLen_3);
                         currStrOff += strLen_3;
                         
-                        strncpy(____BAH_COMPILER_VAR_404+currStrOff, ".", strLen_4);
+                        strncpy(____BAH_COMPILER_VAR_407+currStrOff, ".", strLen_4);
                         currStrOff += strLen_4;
                         
                     }
-                    throwErr(&t,____BAH_COMPILER_VAR_404);
+                    throwErr(&t,____BAH_COMPILER_VAR_407);
 }
 }
 }
 }
 if (((strlen(t.cont)>0)&&(strHasPrefix(t.cont,"{")==false))) {
-char * ____BAH_COMPILER_VAR_405 =null;
+char * ____BAH_COMPILER_VAR_408 =null;
                     {
                         long int currStrOff = 0;
                         long int strLen_0 = strlen(code);
 long int strLen_1 = strlen(" ");
 long int strLen_2 = strlen(t.cont);
 ;                            
-                        ____BAH_COMPILER_VAR_405 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2);
+                        ____BAH_COMPILER_VAR_408 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2);
                         
-                        strncpy(____BAH_COMPILER_VAR_405+currStrOff, code, strLen_0);
+                        strncpy(____BAH_COMPILER_VAR_408+currStrOff, code, strLen_0);
                         currStrOff += strLen_0;
                         
-                        strncpy(____BAH_COMPILER_VAR_405+currStrOff, " ", strLen_1);
+                        strncpy(____BAH_COMPILER_VAR_408+currStrOff, " ", strLen_1);
                         currStrOff += strLen_1;
                         
-                        strncpy(____BAH_COMPILER_VAR_405+currStrOff, t.cont, strLen_2);
+                        strncpy(____BAH_COMPILER_VAR_408+currStrOff, t.cont, strLen_2);
                         currStrOff += strLen_2;
                         
                     }
-                    code =  ____BAH_COMPILER_VAR_405;
+                    code =  ____BAH_COMPILER_VAR_408;
 if (((t.isOper==false)&&(RCPavailable()==true))) {
 struct variable* iv =  searchVar(t.cont,elems);
 if (((iv!=null)&&(iv->isConst==false))) {
@@ -8416,7 +8502,7 @@ isPointedVar =  strHasPrefix(t.cont,"&");
 struct cStruct* s =  searchStruct(iv->type,elems);
 if ((((s!=null)&&(strCount(iv->type,"*")==0))&&(s->isBinding==false))) {
 if ((strCount(iv->name,"*")==0)) {
-char * ____BAH_COMPILER_VAR_406 =null;
+char * ____BAH_COMPILER_VAR_409 =null;
                     {
                         long int currStrOff = 0;
                         long int strLen_0 = strlen(code);
@@ -8424,50 +8510,50 @@ long int strLen_1 = strlen("; RCP_incrCounter(");
 long int strLen_2 = strlen(iv->name);
 long int strLen_3 = strlen(".__RCP_counter)");
 ;                            
-                        ____BAH_COMPILER_VAR_406 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2 + strLen_3);
+                        ____BAH_COMPILER_VAR_409 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2 + strLen_3);
                         
-                        strncpy(____BAH_COMPILER_VAR_406+currStrOff, code, strLen_0);
+                        strncpy(____BAH_COMPILER_VAR_409+currStrOff, code, strLen_0);
                         currStrOff += strLen_0;
                         
-                        strncpy(____BAH_COMPILER_VAR_406+currStrOff, "; RCP_incrCounter(", strLen_1);
+                        strncpy(____BAH_COMPILER_VAR_409+currStrOff, "; RCP_incrCounter(", strLen_1);
                         currStrOff += strLen_1;
                         
-                        strncpy(____BAH_COMPILER_VAR_406+currStrOff, iv->name, strLen_2);
+                        strncpy(____BAH_COMPILER_VAR_409+currStrOff, iv->name, strLen_2);
                         currStrOff += strLen_2;
                         
-                        strncpy(____BAH_COMPILER_VAR_406+currStrOff, ".__RCP_counter)", strLen_3);
+                        strncpy(____BAH_COMPILER_VAR_409+currStrOff, ".__RCP_counter)", strLen_3);
                         currStrOff += strLen_3;
                         
                     }
-                    code =  ____BAH_COMPILER_VAR_406;
+                    code =  ____BAH_COMPILER_VAR_409;
 }
 else {
 struct string ivn =  string(iv->name);
 ivn.replace((struct string*)&ivn,"*","");
-char * ____BAH_COMPILER_VAR_407 =ivn.str((struct string*)&ivn);char * ____BAH_COMPILER_VAR_408 =null;
+char * ____BAH_COMPILER_VAR_410 =ivn.str((struct string*)&ivn);char * ____BAH_COMPILER_VAR_411 =null;
                     {
                         long int currStrOff = 0;
                         long int strLen_0 = strlen(code);
 long int strLen_1 = strlen("; RCP_incr(");
-long int strLen_2 = strlen(____BAH_COMPILER_VAR_407);
+long int strLen_2 = strlen(____BAH_COMPILER_VAR_410);
 long int strLen_3 = strlen(")");
 ;                            
-                        ____BAH_COMPILER_VAR_408 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2 + strLen_3);
+                        ____BAH_COMPILER_VAR_411 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2 + strLen_3);
                         
-                        strncpy(____BAH_COMPILER_VAR_408+currStrOff, code, strLen_0);
+                        strncpy(____BAH_COMPILER_VAR_411+currStrOff, code, strLen_0);
                         currStrOff += strLen_0;
                         
-                        strncpy(____BAH_COMPILER_VAR_408+currStrOff, "; RCP_incr(", strLen_1);
+                        strncpy(____BAH_COMPILER_VAR_411+currStrOff, "; RCP_incr(", strLen_1);
                         currStrOff += strLen_1;
                         
-                        strncpy(____BAH_COMPILER_VAR_408+currStrOff, ____BAH_COMPILER_VAR_407, strLen_2);
+                        strncpy(____BAH_COMPILER_VAR_411+currStrOff, ____BAH_COMPILER_VAR_410, strLen_2);
                         currStrOff += strLen_2;
                         
-                        strncpy(____BAH_COMPILER_VAR_408+currStrOff, ")", strLen_3);
+                        strncpy(____BAH_COMPILER_VAR_411+currStrOff, ")", strLen_3);
                         currStrOff += strLen_3;
                         
                     }
-                    code =  ____BAH_COMPILER_VAR_408;
+                    code =  ____BAH_COMPILER_VAR_411;
 }
 }
 }
@@ -8477,26 +8563,26 @@ break;
 if (strHasPrefix(v->type,"[]")) {
 struct string arrType =  getCType(v->type,elems);
 arrType.trimRight((struct string*)&arrType,1);
-char * ____BAH_COMPILER_VAR_409 =arrType.str((struct string*)&arrType);char * ____BAH_COMPILER_VAR_410 =null;
+char * ____BAH_COMPILER_VAR_412 =arrType.str((struct string*)&arrType);char * ____BAH_COMPILER_VAR_413 =null;
                     {
                         long int currStrOff = 0;
                         long int strLen_0 = strlen("memoryAlloc(sizeof(");
-long int strLen_1 = strlen(____BAH_COMPILER_VAR_409);
+long int strLen_1 = strlen(____BAH_COMPILER_VAR_412);
 long int strLen_2 = strlen("))");
 ;                            
-                        ____BAH_COMPILER_VAR_410 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2);
+                        ____BAH_COMPILER_VAR_413 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2);
                         
-                        strncpy(____BAH_COMPILER_VAR_410+currStrOff, "memoryAlloc(sizeof(", strLen_0);
+                        strncpy(____BAH_COMPILER_VAR_413+currStrOff, "memoryAlloc(sizeof(", strLen_0);
                         currStrOff += strLen_0;
                         
-                        strncpy(____BAH_COMPILER_VAR_410+currStrOff, ____BAH_COMPILER_VAR_409, strLen_1);
+                        strncpy(____BAH_COMPILER_VAR_413+currStrOff, ____BAH_COMPILER_VAR_412, strLen_1);
                         currStrOff += strLen_1;
                         
-                        strncpy(____BAH_COMPILER_VAR_410+currStrOff, "))", strLen_2);
+                        strncpy(____BAH_COMPILER_VAR_413+currStrOff, "))", strLen_2);
                         currStrOff += strLen_2;
                         
                     }
-                    code =  ____BAH_COMPILER_VAR_410;
+                    code =  ____BAH_COMPILER_VAR_413;
 arrType.trimLeft((struct string*)&arrType,6);
 arrType.trimRight((struct string*)&arrType,1);
 char * elemTypeStr =  arrType.str((struct string*)&arrType);
@@ -8538,7 +8624,7 @@ while ((i<len(memory))) {
 t =  memory->data[i];
 char * tt =  getTypeFromToken(&t,true,elems);
 if ((compTypes(tt,elemBahTypeStr)==false)) {
-char * ____BAH_COMPILER_VAR_411 =null;
+char * ____BAH_COMPILER_VAR_414 =null;
                     {
                         long int currStrOff = 0;
                         long int strLen_0 = strlen("Cannot use {TOKEN} (");
@@ -8546,48 +8632,48 @@ long int strLen_1 = strlen(tt);
 long int strLen_2 = strlen(") as ");
 long int strLen_3 = strlen(elemBahTypeStr);
 ;                            
-                        ____BAH_COMPILER_VAR_411 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2 + strLen_3);
+                        ____BAH_COMPILER_VAR_414 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2 + strLen_3);
                         
-                        strncpy(____BAH_COMPILER_VAR_411+currStrOff, "Cannot use {TOKEN} (", strLen_0);
+                        strncpy(____BAH_COMPILER_VAR_414+currStrOff, "Cannot use {TOKEN} (", strLen_0);
                         currStrOff += strLen_0;
                         
-                        strncpy(____BAH_COMPILER_VAR_411+currStrOff, tt, strLen_1);
+                        strncpy(____BAH_COMPILER_VAR_414+currStrOff, tt, strLen_1);
                         currStrOff += strLen_1;
                         
-                        strncpy(____BAH_COMPILER_VAR_411+currStrOff, ") as ", strLen_2);
+                        strncpy(____BAH_COMPILER_VAR_414+currStrOff, ") as ", strLen_2);
                         currStrOff += strLen_2;
                         
-                        strncpy(____BAH_COMPILER_VAR_411+currStrOff, elemBahTypeStr, strLen_3);
+                        strncpy(____BAH_COMPILER_VAR_414+currStrOff, elemBahTypeStr, strLen_3);
                         currStrOff += strLen_3;
                         
                     }
-                    throwErr(&t,____BAH_COMPILER_VAR_411);
+                    throwErr(&t,____BAH_COMPILER_VAR_414);
 }
 char * strArrayLength =  intToStr(arrayLength);
 arrayLength =  arrayLength + 1;
 if ((strcmp(tt, "cpstring") == 0)) {
-char * ____BAH_COMPILER_VAR_412 =null;
+char * ____BAH_COMPILER_VAR_415 =null;
                     {
                         long int currStrOff = 0;
                         long int strLen_0 = strlen("__STR(");
 long int strLen_1 = strlen(t.cont);
 long int strLen_2 = strlen(")");
 ;                            
-                        ____BAH_COMPILER_VAR_412 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2);
+                        ____BAH_COMPILER_VAR_415 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2);
                         
-                        strncpy(____BAH_COMPILER_VAR_412+currStrOff, "__STR(", strLen_0);
+                        strncpy(____BAH_COMPILER_VAR_415+currStrOff, "__STR(", strLen_0);
                         currStrOff += strLen_0;
                         
-                        strncpy(____BAH_COMPILER_VAR_412+currStrOff, t.cont, strLen_1);
+                        strncpy(____BAH_COMPILER_VAR_415+currStrOff, t.cont, strLen_1);
                         currStrOff += strLen_1;
                         
-                        strncpy(____BAH_COMPILER_VAR_412+currStrOff, ")", strLen_2);
+                        strncpy(____BAH_COMPILER_VAR_415+currStrOff, ")", strLen_2);
                         currStrOff += strLen_2;
                         
                     }
-                    t.cont =  ____BAH_COMPILER_VAR_412;
+                    t.cont =  ____BAH_COMPILER_VAR_415;
 }
-char * ____BAH_COMPILER_VAR_413 =null;
+char * ____BAH_COMPILER_VAR_416 =null;
                     {
                         long int currStrOff = 0;
                         long int strLen_0 = strlen(NEXT_LINE);
@@ -8598,31 +8684,31 @@ long int strLen_4 = strlen("] = ");
 long int strLen_5 = strlen(t.cont);
 long int strLen_6 = strlen(";\n");
 ;                            
-                        ____BAH_COMPILER_VAR_413 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2 + strLen_3 + strLen_4 + strLen_5 + strLen_6);
+                        ____BAH_COMPILER_VAR_416 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2 + strLen_3 + strLen_4 + strLen_5 + strLen_6);
                         
-                        strncpy(____BAH_COMPILER_VAR_413+currStrOff, NEXT_LINE, strLen_0);
+                        strncpy(____BAH_COMPILER_VAR_416+currStrOff, NEXT_LINE, strLen_0);
                         currStrOff += strLen_0;
                         
-                        strncpy(____BAH_COMPILER_VAR_413+currStrOff, v->name, strLen_1);
+                        strncpy(____BAH_COMPILER_VAR_416+currStrOff, v->name, strLen_1);
                         currStrOff += strLen_1;
                         
-                        strncpy(____BAH_COMPILER_VAR_413+currStrOff, "->data[", strLen_2);
+                        strncpy(____BAH_COMPILER_VAR_416+currStrOff, "->data[", strLen_2);
                         currStrOff += strLen_2;
                         
-                        strncpy(____BAH_COMPILER_VAR_413+currStrOff, strArrayLength, strLen_3);
+                        strncpy(____BAH_COMPILER_VAR_416+currStrOff, strArrayLength, strLen_3);
                         currStrOff += strLen_3;
                         
-                        strncpy(____BAH_COMPILER_VAR_413+currStrOff, "] = ", strLen_4);
+                        strncpy(____BAH_COMPILER_VAR_416+currStrOff, "] = ", strLen_4);
                         currStrOff += strLen_4;
                         
-                        strncpy(____BAH_COMPILER_VAR_413+currStrOff, t.cont, strLen_5);
+                        strncpy(____BAH_COMPILER_VAR_416+currStrOff, t.cont, strLen_5);
                         currStrOff += strLen_5;
                         
-                        strncpy(____BAH_COMPILER_VAR_413+currStrOff, ";\n", strLen_6);
+                        strncpy(____BAH_COMPILER_VAR_416+currStrOff, ";\n", strLen_6);
                         currStrOff += strLen_6;
                         
                     }
-                    NEXT_LINE =  ____BAH_COMPILER_VAR_413;
+                    NEXT_LINE =  ____BAH_COMPILER_VAR_416;
 i =  i + 1;
 t =  memory->data[i];
 if ((strcmp(t.cont, ",") != 0)) {
@@ -8636,7 +8722,7 @@ else {
 allocLength =  50;
 }
 char * allocLengthStr =  intToStr(allocLength);
-char * ____BAH_COMPILER_VAR_414 =null;
+char * ____BAH_COMPILER_VAR_417 =null;
                     {
                         long int currStrOff = 0;
                         long int strLen_0 = strlen(v->name);
@@ -8647,31 +8733,31 @@ long int strLen_4 = strlen(allocLengthStr);
 long int strLen_5 = strlen(");");
 long int strLen_6 = strlen(NEXT_LINE);
 ;                            
-                        ____BAH_COMPILER_VAR_414 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2 + strLen_3 + strLen_4 + strLen_5 + strLen_6);
+                        ____BAH_COMPILER_VAR_417 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2 + strLen_3 + strLen_4 + strLen_5 + strLen_6);
                         
-                        strncpy(____BAH_COMPILER_VAR_414+currStrOff, v->name, strLen_0);
+                        strncpy(____BAH_COMPILER_VAR_417+currStrOff, v->name, strLen_0);
                         currStrOff += strLen_0;
                         
-                        strncpy(____BAH_COMPILER_VAR_414+currStrOff, "->data = memoryAlloc(sizeof(", strLen_1);
+                        strncpy(____BAH_COMPILER_VAR_417+currStrOff, "->data = memoryAlloc(sizeof(", strLen_1);
                         currStrOff += strLen_1;
                         
-                        strncpy(____BAH_COMPILER_VAR_414+currStrOff, elemTypeStr, strLen_2);
+                        strncpy(____BAH_COMPILER_VAR_417+currStrOff, elemTypeStr, strLen_2);
                         currStrOff += strLen_2;
                         
-                        strncpy(____BAH_COMPILER_VAR_414+currStrOff, ") * ", strLen_3);
+                        strncpy(____BAH_COMPILER_VAR_417+currStrOff, ") * ", strLen_3);
                         currStrOff += strLen_3;
                         
-                        strncpy(____BAH_COMPILER_VAR_414+currStrOff, allocLengthStr, strLen_4);
+                        strncpy(____BAH_COMPILER_VAR_417+currStrOff, allocLengthStr, strLen_4);
                         currStrOff += strLen_4;
                         
-                        strncpy(____BAH_COMPILER_VAR_414+currStrOff, ");", strLen_5);
+                        strncpy(____BAH_COMPILER_VAR_417+currStrOff, ");", strLen_5);
                         currStrOff += strLen_5;
                         
-                        strncpy(____BAH_COMPILER_VAR_414+currStrOff, NEXT_LINE, strLen_6);
+                        strncpy(____BAH_COMPILER_VAR_417+currStrOff, NEXT_LINE, strLen_6);
                         currStrOff += strLen_6;
                         
                     }
-                    NEXT_LINE =  ____BAH_COMPILER_VAR_414;
+                    NEXT_LINE =  ____BAH_COMPILER_VAR_417;
 break;
 }
 else {
@@ -8682,7 +8768,7 @@ i =  i + 1;
 };
 }
 char * strArrayLength =  intToStr(arrayLength);
-char * ____BAH_COMPILER_VAR_415 =null;
+char * ____BAH_COMPILER_VAR_418 =null;
                     {
                         long int currStrOff = 0;
                         long int strLen_0 = strlen("\n");
@@ -8696,40 +8782,40 @@ long int strLen_7 = strlen(elemTypeStr);
 long int strLen_8 = strlen(");\n");
 long int strLen_9 = strlen(NEXT_LINE);
 ;                            
-                        ____BAH_COMPILER_VAR_415 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2 + strLen_3 + strLen_4 + strLen_5 + strLen_6 + strLen_7 + strLen_8 + strLen_9);
+                        ____BAH_COMPILER_VAR_418 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2 + strLen_3 + strLen_4 + strLen_5 + strLen_6 + strLen_7 + strLen_8 + strLen_9);
                         
-                        strncpy(____BAH_COMPILER_VAR_415+currStrOff, "\n", strLen_0);
+                        strncpy(____BAH_COMPILER_VAR_418+currStrOff, "\n", strLen_0);
                         currStrOff += strLen_0;
                         
-                        strncpy(____BAH_COMPILER_VAR_415+currStrOff, v->name, strLen_1);
+                        strncpy(____BAH_COMPILER_VAR_418+currStrOff, v->name, strLen_1);
                         currStrOff += strLen_1;
                         
-                        strncpy(____BAH_COMPILER_VAR_415+currStrOff, "->length = ", strLen_2);
+                        strncpy(____BAH_COMPILER_VAR_418+currStrOff, "->length = ", strLen_2);
                         currStrOff += strLen_2;
                         
-                        strncpy(____BAH_COMPILER_VAR_415+currStrOff, strArrayLength, strLen_3);
+                        strncpy(____BAH_COMPILER_VAR_418+currStrOff, strArrayLength, strLen_3);
                         currStrOff += strLen_3;
                         
-                        strncpy(____BAH_COMPILER_VAR_415+currStrOff, ";\n", strLen_4);
+                        strncpy(____BAH_COMPILER_VAR_418+currStrOff, ";\n", strLen_4);
                         currStrOff += strLen_4;
                         
-                        strncpy(____BAH_COMPILER_VAR_415+currStrOff, v->name, strLen_5);
+                        strncpy(____BAH_COMPILER_VAR_418+currStrOff, v->name, strLen_5);
                         currStrOff += strLen_5;
                         
-                        strncpy(____BAH_COMPILER_VAR_415+currStrOff, "->elemSize = sizeof(", strLen_6);
+                        strncpy(____BAH_COMPILER_VAR_418+currStrOff, "->elemSize = sizeof(", strLen_6);
                         currStrOff += strLen_6;
                         
-                        strncpy(____BAH_COMPILER_VAR_415+currStrOff, elemTypeStr, strLen_7);
+                        strncpy(____BAH_COMPILER_VAR_418+currStrOff, elemTypeStr, strLen_7);
                         currStrOff += strLen_7;
                         
-                        strncpy(____BAH_COMPILER_VAR_415+currStrOff, ");\n", strLen_8);
+                        strncpy(____BAH_COMPILER_VAR_418+currStrOff, ");\n", strLen_8);
                         currStrOff += strLen_8;
                         
-                        strncpy(____BAH_COMPILER_VAR_415+currStrOff, NEXT_LINE, strLen_9);
+                        strncpy(____BAH_COMPILER_VAR_418+currStrOff, NEXT_LINE, strLen_9);
                         currStrOff += strLen_9;
                         
                     }
-                    NEXT_LINE =  ____BAH_COMPILER_VAR_415;
+                    NEXT_LINE =  ____BAH_COMPILER_VAR_418;
 break;
 }
 isStruct =  true;
@@ -8737,26 +8823,26 @@ long int max =  i + 1;
 if ((max!=len(l))) {
 throwErr(&l->data[i + 1],"{TOKEN} not expected after struct initialization.");
 }
-char * ____BAH_COMPILER_VAR_416 =null;
+char * ____BAH_COMPILER_VAR_419 =null;
                     {
                         long int currStrOff = 0;
                         long int strLen_0 = strlen(code);
 long int strLen_1 = strlen(" ");
 long int strLen_2 = strlen(t.cont);
 ;                            
-                        ____BAH_COMPILER_VAR_416 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2);
+                        ____BAH_COMPILER_VAR_419 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2);
                         
-                        strncpy(____BAH_COMPILER_VAR_416+currStrOff, code, strLen_0);
+                        strncpy(____BAH_COMPILER_VAR_419+currStrOff, code, strLen_0);
                         currStrOff += strLen_0;
                         
-                        strncpy(____BAH_COMPILER_VAR_416+currStrOff, " ", strLen_1);
+                        strncpy(____BAH_COMPILER_VAR_419+currStrOff, " ", strLen_1);
                         currStrOff += strLen_1;
                         
-                        strncpy(____BAH_COMPILER_VAR_416+currStrOff, t.cont, strLen_2);
+                        strncpy(____BAH_COMPILER_VAR_419+currStrOff, t.cont, strLen_2);
                         currStrOff += strLen_2;
                         
                     }
-                    code =  ____BAH_COMPILER_VAR_416;
+                    code =  ____BAH_COMPILER_VAR_419;
 }
 i =  i + 1;
 };
@@ -8766,76 +8852,76 @@ throwErr(&ft,"Cannot re-declare {TOKEN}.");
 }
 if ((strlen(currentType)>0)) {
 struct Tok st =  l->data[1];
-char * ____BAH_COMPILER_VAR_417 =null;
+char * ____BAH_COMPILER_VAR_420 =null;
                     {
                         long int currStrOff = 0;
                         long int strLen_0 = strlen("Cannot change the type of already declared var '");
 long int strLen_1 = strlen(ft.cont);
 long int strLen_2 = strlen("' to {TOKEN}.");
 ;                            
-                        ____BAH_COMPILER_VAR_417 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2);
+                        ____BAH_COMPILER_VAR_420 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2);
                         
-                        strncpy(____BAH_COMPILER_VAR_417+currStrOff, "Cannot change the type of already declared var '", strLen_0);
+                        strncpy(____BAH_COMPILER_VAR_420+currStrOff, "Cannot change the type of already declared var '", strLen_0);
                         currStrOff += strLen_0;
                         
-                        strncpy(____BAH_COMPILER_VAR_417+currStrOff, ft.cont, strLen_1);
+                        strncpy(____BAH_COMPILER_VAR_420+currStrOff, ft.cont, strLen_1);
                         currStrOff += strLen_1;
                         
-                        strncpy(____BAH_COMPILER_VAR_417+currStrOff, "' to {TOKEN}.", strLen_2);
+                        strncpy(____BAH_COMPILER_VAR_420+currStrOff, "' to {TOKEN}.", strLen_2);
                         currStrOff += strLen_2;
                         
                     }
-                    throwErr(&st,____BAH_COMPILER_VAR_417);
+                    throwErr(&st,____BAH_COMPILER_VAR_420);
 }
 if ((isStruct==false)) {
 if (((isRCPpointerType(v->type)&&(isPointedVar==false))&&(RCPavailable()==true))) {
 struct string cType =  getCType(v->type,elems);
 if ((toVar==true)) {
 if ((RCPselfRef(v)==false)) {
-char * ____BAH_COMPILER_VAR_418 =cType.str((struct string*)&cType);char * ____BAH_COMPILER_VAR_419 =cType.str((struct string*)&cType);char * ____BAH_COMPILER_VAR_420 =null;
+char * ____BAH_COMPILER_VAR_421 =cType.str((struct string*)&cType);char * ____BAH_COMPILER_VAR_422 =cType.str((struct string*)&cType);char * ____BAH_COMPILER_VAR_423 =null;
                     {
                         long int currStrOff = 0;
                         long int strLen_0 = strlen("*(");
-long int strLen_1 = strlen(____BAH_COMPILER_VAR_418);
+long int strLen_1 = strlen(____BAH_COMPILER_VAR_421);
 long int strLen_2 = strlen("*)RCP_decrIL(&");
 long int strLen_3 = strlen(v->name);
 long int strLen_4 = strlen(") = *(");
-long int strLen_5 = strlen(____BAH_COMPILER_VAR_419);
+long int strLen_5 = strlen(____BAH_COMPILER_VAR_422);
 long int strLen_6 = strlen("*)RCP_incrIL(&");
 long int strLen_7 = strlen(code);
 long int strLen_8 = strlen(")");
 ;                            
-                        ____BAH_COMPILER_VAR_420 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2 + strLen_3 + strLen_4 + strLen_5 + strLen_6 + strLen_7 + strLen_8);
+                        ____BAH_COMPILER_VAR_423 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2 + strLen_3 + strLen_4 + strLen_5 + strLen_6 + strLen_7 + strLen_8);
                         
-                        strncpy(____BAH_COMPILER_VAR_420+currStrOff, "*(", strLen_0);
+                        strncpy(____BAH_COMPILER_VAR_423+currStrOff, "*(", strLen_0);
                         currStrOff += strLen_0;
                         
-                        strncpy(____BAH_COMPILER_VAR_420+currStrOff, ____BAH_COMPILER_VAR_418, strLen_1);
+                        strncpy(____BAH_COMPILER_VAR_423+currStrOff, ____BAH_COMPILER_VAR_421, strLen_1);
                         currStrOff += strLen_1;
                         
-                        strncpy(____BAH_COMPILER_VAR_420+currStrOff, "*)RCP_decrIL(&", strLen_2);
+                        strncpy(____BAH_COMPILER_VAR_423+currStrOff, "*)RCP_decrIL(&", strLen_2);
                         currStrOff += strLen_2;
                         
-                        strncpy(____BAH_COMPILER_VAR_420+currStrOff, v->name, strLen_3);
+                        strncpy(____BAH_COMPILER_VAR_423+currStrOff, v->name, strLen_3);
                         currStrOff += strLen_3;
                         
-                        strncpy(____BAH_COMPILER_VAR_420+currStrOff, ") = *(", strLen_4);
+                        strncpy(____BAH_COMPILER_VAR_423+currStrOff, ") = *(", strLen_4);
                         currStrOff += strLen_4;
                         
-                        strncpy(____BAH_COMPILER_VAR_420+currStrOff, ____BAH_COMPILER_VAR_419, strLen_5);
+                        strncpy(____BAH_COMPILER_VAR_423+currStrOff, ____BAH_COMPILER_VAR_422, strLen_5);
                         currStrOff += strLen_5;
                         
-                        strncpy(____BAH_COMPILER_VAR_420+currStrOff, "*)RCP_incrIL(&", strLen_6);
+                        strncpy(____BAH_COMPILER_VAR_423+currStrOff, "*)RCP_incrIL(&", strLen_6);
                         currStrOff += strLen_6;
                         
-                        strncpy(____BAH_COMPILER_VAR_420+currStrOff, code, strLen_7);
+                        strncpy(____BAH_COMPILER_VAR_423+currStrOff, code, strLen_7);
                         currStrOff += strLen_7;
                         
-                        strncpy(____BAH_COMPILER_VAR_420+currStrOff, ")", strLen_8);
+                        strncpy(____BAH_COMPILER_VAR_423+currStrOff, ")", strLen_8);
                         currStrOff += strLen_8;
                         
                     }
-                    code =  ____BAH_COMPILER_VAR_420;
+                    code =  ____BAH_COMPILER_VAR_423;
 }
 else {
 struct variable* tmpV = memoryAlloc(sizeof(struct variable));
@@ -8848,10 +8934,10 @@ tmpV->outterScope = false;
 tmpV->name =  genCompilerVar();
 tmpV->type =  v->type;
 struct rope* dv =  decrVar(tmpV,elems);
-char * ____BAH_COMPILER_VAR_421 =cType.str((struct string*)&cType);char * ____BAH_COMPILER_VAR_422 =cType.str((struct string*)&cType);char * ____BAH_COMPILER_VAR_423 =dv->toStr((struct rope*)dv);char * ____BAH_COMPILER_VAR_424 =null;
+char * ____BAH_COMPILER_VAR_424 =cType.str((struct string*)&cType);char * ____BAH_COMPILER_VAR_425 =cType.str((struct string*)&cType);char * ____BAH_COMPILER_VAR_426 =dv->toStr((struct rope*)dv);char * ____BAH_COMPILER_VAR_427 =null;
                     {
                         long int currStrOff = 0;
-                        long int strLen_0 = strlen(____BAH_COMPILER_VAR_421);
+                        long int strLen_0 = strlen(____BAH_COMPILER_VAR_424);
 long int strLen_1 = strlen(" ");
 long int strLen_2 = strlen(tmpV->name);
 long int strLen_3 = strlen(" = ");
@@ -8859,86 +8945,15 @@ long int strLen_4 = strlen(v->name);
 long int strLen_5 = strlen("; ");
 long int strLen_6 = strlen(v->name);
 long int strLen_7 = strlen(" = *(");
-long int strLen_8 = strlen(____BAH_COMPILER_VAR_422);
+long int strLen_8 = strlen(____BAH_COMPILER_VAR_425);
 long int strLen_9 = strlen("*)RCP_incrIL(&");
 long int strLen_10 = strlen(code);
 long int strLen_11 = strlen(");");
-long int strLen_12 = strlen(____BAH_COMPILER_VAR_423);
+long int strLen_12 = strlen(____BAH_COMPILER_VAR_426);
 ;                            
-                        ____BAH_COMPILER_VAR_424 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2 + strLen_3 + strLen_4 + strLen_5 + strLen_6 + strLen_7 + strLen_8 + strLen_9 + strLen_10 + strLen_11 + strLen_12);
+                        ____BAH_COMPILER_VAR_427 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2 + strLen_3 + strLen_4 + strLen_5 + strLen_6 + strLen_7 + strLen_8 + strLen_9 + strLen_10 + strLen_11 + strLen_12);
                         
-                        strncpy(____BAH_COMPILER_VAR_424+currStrOff, ____BAH_COMPILER_VAR_421, strLen_0);
-                        currStrOff += strLen_0;
-                        
-                        strncpy(____BAH_COMPILER_VAR_424+currStrOff, " ", strLen_1);
-                        currStrOff += strLen_1;
-                        
-                        strncpy(____BAH_COMPILER_VAR_424+currStrOff, tmpV->name, strLen_2);
-                        currStrOff += strLen_2;
-                        
-                        strncpy(____BAH_COMPILER_VAR_424+currStrOff, " = ", strLen_3);
-                        currStrOff += strLen_3;
-                        
-                        strncpy(____BAH_COMPILER_VAR_424+currStrOff, v->name, strLen_4);
-                        currStrOff += strLen_4;
-                        
-                        strncpy(____BAH_COMPILER_VAR_424+currStrOff, "; ", strLen_5);
-                        currStrOff += strLen_5;
-                        
-                        strncpy(____BAH_COMPILER_VAR_424+currStrOff, v->name, strLen_6);
-                        currStrOff += strLen_6;
-                        
-                        strncpy(____BAH_COMPILER_VAR_424+currStrOff, " = *(", strLen_7);
-                        currStrOff += strLen_7;
-                        
-                        strncpy(____BAH_COMPILER_VAR_424+currStrOff, ____BAH_COMPILER_VAR_422, strLen_8);
-                        currStrOff += strLen_8;
-                        
-                        strncpy(____BAH_COMPILER_VAR_424+currStrOff, "*)RCP_incrIL(&", strLen_9);
-                        currStrOff += strLen_9;
-                        
-                        strncpy(____BAH_COMPILER_VAR_424+currStrOff, code, strLen_10);
-                        currStrOff += strLen_10;
-                        
-                        strncpy(____BAH_COMPILER_VAR_424+currStrOff, ");", strLen_11);
-                        currStrOff += strLen_11;
-                        
-                        strncpy(____BAH_COMPILER_VAR_424+currStrOff, ____BAH_COMPILER_VAR_423, strLen_12);
-                        currStrOff += strLen_12;
-                        
-                    }
-                    code =  ____BAH_COMPILER_VAR_424;
-}
-}
-else {
-struct variable* tmpV = memoryAlloc(sizeof(struct variable));
-tmpV->name = "";
-tmpV->type = "";
-tmpV->isConst = false;
-tmpV->isArray = false;
-tmpV->from = "";
-tmpV->outterScope = false;
-tmpV->name =  genCompilerVar();
-tmpV->type =  v->type;
-struct rope* dv =  decrVar(tmpV,elems);
-char * ____BAH_COMPILER_VAR_425 =cType.str((struct string*)&cType);char * ____BAH_COMPILER_VAR_426 =dv->toStr((struct rope*)dv);char * ____BAH_COMPILER_VAR_427 =null;
-                    {
-                        long int currStrOff = 0;
-                        long int strLen_0 = strlen(____BAH_COMPILER_VAR_425);
-long int strLen_1 = strlen(" ");
-long int strLen_2 = strlen(tmpV->name);
-long int strLen_3 = strlen(" = ");
-long int strLen_4 = strlen(v->name);
-long int strLen_5 = strlen("; ");
-long int strLen_6 = strlen(v->name);
-long int strLen_7 = strlen(" = ");
-long int strLen_8 = strlen(code);
-long int strLen_9 = strlen(";");
-long int strLen_10 = strlen(____BAH_COMPILER_VAR_426);
-;                            
-                        ____BAH_COMPILER_VAR_427 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2 + strLen_3 + strLen_4 + strLen_5 + strLen_6 + strLen_7 + strLen_8 + strLen_9 + strLen_10);
-                        
-                        strncpy(____BAH_COMPILER_VAR_427+currStrOff, ____BAH_COMPILER_VAR_425, strLen_0);
+                        strncpy(____BAH_COMPILER_VAR_427+currStrOff, ____BAH_COMPILER_VAR_424, strLen_0);
                         currStrOff += strLen_0;
                         
                         strncpy(____BAH_COMPILER_VAR_427+currStrOff, " ", strLen_1);
@@ -8959,27 +8974,97 @@ long int strLen_10 = strlen(____BAH_COMPILER_VAR_426);
                         strncpy(____BAH_COMPILER_VAR_427+currStrOff, v->name, strLen_6);
                         currStrOff += strLen_6;
                         
-                        strncpy(____BAH_COMPILER_VAR_427+currStrOff, " = ", strLen_7);
+                        strncpy(____BAH_COMPILER_VAR_427+currStrOff, " = *(", strLen_7);
                         currStrOff += strLen_7;
                         
-                        strncpy(____BAH_COMPILER_VAR_427+currStrOff, code, strLen_8);
+                        strncpy(____BAH_COMPILER_VAR_427+currStrOff, ____BAH_COMPILER_VAR_425, strLen_8);
                         currStrOff += strLen_8;
                         
-                        strncpy(____BAH_COMPILER_VAR_427+currStrOff, ";", strLen_9);
+                        strncpy(____BAH_COMPILER_VAR_427+currStrOff, "*)RCP_incrIL(&", strLen_9);
                         currStrOff += strLen_9;
                         
-                        strncpy(____BAH_COMPILER_VAR_427+currStrOff, ____BAH_COMPILER_VAR_426, strLen_10);
+                        strncpy(____BAH_COMPILER_VAR_427+currStrOff, code, strLen_10);
                         currStrOff += strLen_10;
+                        
+                        strncpy(____BAH_COMPILER_VAR_427+currStrOff, ");", strLen_11);
+                        currStrOff += strLen_11;
+                        
+                        strncpy(____BAH_COMPILER_VAR_427+currStrOff, ____BAH_COMPILER_VAR_426, strLen_12);
+                        currStrOff += strLen_12;
                         
                     }
                     code =  ____BAH_COMPILER_VAR_427;
 }
 }
 else {
+struct variable* tmpV = memoryAlloc(sizeof(struct variable));
+tmpV->name = "";
+tmpV->type = "";
+tmpV->isConst = false;
+tmpV->isArray = false;
+tmpV->from = "";
+tmpV->outterScope = false;
+tmpV->name =  genCompilerVar();
+tmpV->type =  v->type;
+struct rope* dv =  decrVar(tmpV,elems);
+char * ____BAH_COMPILER_VAR_428 =cType.str((struct string*)&cType);char * ____BAH_COMPILER_VAR_429 =dv->toStr((struct rope*)dv);char * ____BAH_COMPILER_VAR_430 =null;
+                    {
+                        long int currStrOff = 0;
+                        long int strLen_0 = strlen(____BAH_COMPILER_VAR_428);
+long int strLen_1 = strlen(" ");
+long int strLen_2 = strlen(tmpV->name);
+long int strLen_3 = strlen(" = ");
+long int strLen_4 = strlen(v->name);
+long int strLen_5 = strlen("; ");
+long int strLen_6 = strlen(v->name);
+long int strLen_7 = strlen(" = ");
+long int strLen_8 = strlen(code);
+long int strLen_9 = strlen(";");
+long int strLen_10 = strlen(____BAH_COMPILER_VAR_429);
+;                            
+                        ____BAH_COMPILER_VAR_430 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2 + strLen_3 + strLen_4 + strLen_5 + strLen_6 + strLen_7 + strLen_8 + strLen_9 + strLen_10);
+                        
+                        strncpy(____BAH_COMPILER_VAR_430+currStrOff, ____BAH_COMPILER_VAR_428, strLen_0);
+                        currStrOff += strLen_0;
+                        
+                        strncpy(____BAH_COMPILER_VAR_430+currStrOff, " ", strLen_1);
+                        currStrOff += strLen_1;
+                        
+                        strncpy(____BAH_COMPILER_VAR_430+currStrOff, tmpV->name, strLen_2);
+                        currStrOff += strLen_2;
+                        
+                        strncpy(____BAH_COMPILER_VAR_430+currStrOff, " = ", strLen_3);
+                        currStrOff += strLen_3;
+                        
+                        strncpy(____BAH_COMPILER_VAR_430+currStrOff, v->name, strLen_4);
+                        currStrOff += strLen_4;
+                        
+                        strncpy(____BAH_COMPILER_VAR_430+currStrOff, "; ", strLen_5);
+                        currStrOff += strLen_5;
+                        
+                        strncpy(____BAH_COMPILER_VAR_430+currStrOff, v->name, strLen_6);
+                        currStrOff += strLen_6;
+                        
+                        strncpy(____BAH_COMPILER_VAR_430+currStrOff, " = ", strLen_7);
+                        currStrOff += strLen_7;
+                        
+                        strncpy(____BAH_COMPILER_VAR_430+currStrOff, code, strLen_8);
+                        currStrOff += strLen_8;
+                        
+                        strncpy(____BAH_COMPILER_VAR_430+currStrOff, ";", strLen_9);
+                        currStrOff += strLen_9;
+                        
+                        strncpy(____BAH_COMPILER_VAR_430+currStrOff, ____BAH_COMPILER_VAR_429, strLen_10);
+                        currStrOff += strLen_10;
+                        
+                    }
+                    code =  ____BAH_COMPILER_VAR_430;
+}
+}
+else {
 struct cStruct* s =  searchStruct(v->type,elems);
-if (((s!=null)&&(RCPavailable()==true))) {
-if ((RCPselfRef(v)==false)) {
-char * ____BAH_COMPILER_VAR_428 =null;
+if (((((s!=null)&&(RCPavailable()==true))&&(RCPselfRef(v)==false))&&(s->isBinding==false))) {
+char * ____BAH_COMPILER_VAR_431 =null;
                     {
                         long int currStrOff = 0;
                         long int strLen_0 = strlen("RCP_decrCounter(");
@@ -8989,77 +9074,76 @@ long int strLen_3 = strlen(v->name);
 long int strLen_4 = strlen(" = ");
 long int strLen_5 = strlen(code);
 ;                            
-                        ____BAH_COMPILER_VAR_428 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2 + strLen_3 + strLen_4 + strLen_5);
+                        ____BAH_COMPILER_VAR_431 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2 + strLen_3 + strLen_4 + strLen_5);
                         
-                        strncpy(____BAH_COMPILER_VAR_428+currStrOff, "RCP_decrCounter(", strLen_0);
+                        strncpy(____BAH_COMPILER_VAR_431+currStrOff, "RCP_decrCounter(", strLen_0);
                         currStrOff += strLen_0;
                         
-                        strncpy(____BAH_COMPILER_VAR_428+currStrOff, v->name, strLen_1);
+                        strncpy(____BAH_COMPILER_VAR_431+currStrOff, v->name, strLen_1);
                         currStrOff += strLen_1;
                         
-                        strncpy(____BAH_COMPILER_VAR_428+currStrOff, ".__RCP_counter); ", strLen_2);
+                        strncpy(____BAH_COMPILER_VAR_431+currStrOff, ".__RCP_counter); ", strLen_2);
                         currStrOff += strLen_2;
                         
-                        strncpy(____BAH_COMPILER_VAR_428+currStrOff, v->name, strLen_3);
+                        strncpy(____BAH_COMPILER_VAR_431+currStrOff, v->name, strLen_3);
                         currStrOff += strLen_3;
                         
-                        strncpy(____BAH_COMPILER_VAR_428+currStrOff, " = ", strLen_4);
+                        strncpy(____BAH_COMPILER_VAR_431+currStrOff, " = ", strLen_4);
                         currStrOff += strLen_4;
                         
-                        strncpy(____BAH_COMPILER_VAR_428+currStrOff, code, strLen_5);
+                        strncpy(____BAH_COMPILER_VAR_431+currStrOff, code, strLen_5);
                         currStrOff += strLen_5;
                         
                     }
-                    code =  ____BAH_COMPILER_VAR_428;
-}
+                    code =  ____BAH_COMPILER_VAR_431;
 }
 else {
-char * ____BAH_COMPILER_VAR_429 =null;
+char * ____BAH_COMPILER_VAR_432 =null;
                     {
                         long int currStrOff = 0;
                         long int strLen_0 = strlen(v->name);
 long int strLen_1 = strlen(" = ");
 long int strLen_2 = strlen(code);
 ;                            
-                        ____BAH_COMPILER_VAR_429 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2);
+                        ____BAH_COMPILER_VAR_432 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2);
                         
-                        strncpy(____BAH_COMPILER_VAR_429+currStrOff, v->name, strLen_0);
+                        strncpy(____BAH_COMPILER_VAR_432+currStrOff, v->name, strLen_0);
                         currStrOff += strLen_0;
                         
-                        strncpy(____BAH_COMPILER_VAR_429+currStrOff, " = ", strLen_1);
+                        strncpy(____BAH_COMPILER_VAR_432+currStrOff, " = ", strLen_1);
                         currStrOff += strLen_1;
                         
-                        strncpy(____BAH_COMPILER_VAR_429+currStrOff, code, strLen_2);
+                        strncpy(____BAH_COMPILER_VAR_432+currStrOff, code, strLen_2);
                         currStrOff += strLen_2;
                         
                     }
-                    code =  ____BAH_COMPILER_VAR_429;
+                    code =  ____BAH_COMPILER_VAR_432;
 }
 }
 }
 else {
 strTrim(&code);
 if ((strHasPrefix(code,"{")==false)) {
-char * ____BAH_COMPILER_VAR_430 =null;
+char * ____BAH_COMPILER_VAR_433 =null;
                     {
                         long int currStrOff = 0;
                         long int strLen_0 = strlen(v->name);
 long int strLen_1 = strlen(" = ");
 long int strLen_2 = strlen(code);
 ;                            
-                        ____BAH_COMPILER_VAR_430 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2);
+                        ____BAH_COMPILER_VAR_433 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2);
                         
-                        strncpy(____BAH_COMPILER_VAR_430+currStrOff, v->name, strLen_0);
+                        strncpy(____BAH_COMPILER_VAR_433+currStrOff, v->name, strLen_0);
                         currStrOff += strLen_0;
                         
-                        strncpy(____BAH_COMPILER_VAR_430+currStrOff, " = ", strLen_1);
+                        strncpy(____BAH_COMPILER_VAR_433+currStrOff, " = ", strLen_1);
                         currStrOff += strLen_1;
                         
-                        strncpy(____BAH_COMPILER_VAR_430+currStrOff, code, strLen_2);
+                        strncpy(____BAH_COMPILER_VAR_433+currStrOff, code, strLen_2);
                         currStrOff += strLen_2;
                         
                     }
-                    code =  ____BAH_COMPILER_VAR_430;
+                    code =  ____BAH_COMPILER_VAR_433;
 }
 }
 if ((v->isArray==true)) {
@@ -9089,7 +9173,7 @@ n.trimRight((struct string*)&n,tamm + 6);
 char * nstr =  n.str((struct string*)&n);
 struct string elemType =  getCType(v->type,elems);
 char * elemTypeStr =  elemType.str((struct string*)&elemType);
-char * ____BAH_COMPILER_VAR_431 =null;
+char * ____BAH_COMPILER_VAR_434 =null;
                     {
                         long int currStrOff = 0;
                         long int strLen_0 = strlen("\n{\nlong nLength = ");
@@ -9110,61 +9194,61 @@ long int strLen_14 = strlen("->length = nLength+1;\n} else {\n");
 long int strLen_15 = strlen(code);
 long int strLen_16 = strlen(";\n}\n}");
 ;                            
-                        ____BAH_COMPILER_VAR_431 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2 + strLen_3 + strLen_4 + strLen_5 + strLen_6 + strLen_7 + strLen_8 + strLen_9 + strLen_10 + strLen_11 + strLen_12 + strLen_13 + strLen_14 + strLen_15 + strLen_16);
+                        ____BAH_COMPILER_VAR_434 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2 + strLen_3 + strLen_4 + strLen_5 + strLen_6 + strLen_7 + strLen_8 + strLen_9 + strLen_10 + strLen_11 + strLen_12 + strLen_13 + strLen_14 + strLen_15 + strLen_16);
                         
-                        strncpy(____BAH_COMPILER_VAR_431+currStrOff, "\n{\nlong nLength = ", strLen_0);
+                        strncpy(____BAH_COMPILER_VAR_434+currStrOff, "\n{\nlong nLength = ", strLen_0);
                         currStrOff += strLen_0;
                         
-                        strncpy(____BAH_COMPILER_VAR_431+currStrOff, nLengthStr, strLen_1);
+                        strncpy(____BAH_COMPILER_VAR_434+currStrOff, nLengthStr, strLen_1);
                         currStrOff += strLen_1;
                         
-                        strncpy(____BAH_COMPILER_VAR_431+currStrOff, ";\nif (", strLen_2);
+                        strncpy(____BAH_COMPILER_VAR_434+currStrOff, ";\nif (", strLen_2);
                         currStrOff += strLen_2;
                         
-                        strncpy(____BAH_COMPILER_VAR_431+currStrOff, nstr, strLen_3);
+                        strncpy(____BAH_COMPILER_VAR_434+currStrOff, nstr, strLen_3);
                         currStrOff += strLen_3;
                         
-                        strncpy(____BAH_COMPILER_VAR_431+currStrOff, "->length < nLength+1) {\nif ((nLength+1) % 50 == 0 || nLength == 0) {\nvoid * newPtr = memoryRealloc(", strLen_4);
+                        strncpy(____BAH_COMPILER_VAR_434+currStrOff, "->length < nLength+1) {\nif ((nLength+1) % 50 == 0 || nLength == 0) {\nvoid * newPtr = memoryRealloc(", strLen_4);
                         currStrOff += strLen_4;
                         
-                        strncpy(____BAH_COMPILER_VAR_431+currStrOff, nstr, strLen_5);
+                        strncpy(____BAH_COMPILER_VAR_434+currStrOff, nstr, strLen_5);
                         currStrOff += strLen_5;
                         
-                        strncpy(____BAH_COMPILER_VAR_431+currStrOff, "->data, (nLength+50)*sizeof(", strLen_6);
+                        strncpy(____BAH_COMPILER_VAR_434+currStrOff, "->data, (nLength+50)*sizeof(", strLen_6);
                         currStrOff += strLen_6;
                         
-                        strncpy(____BAH_COMPILER_VAR_431+currStrOff, elemTypeStr, strLen_7);
+                        strncpy(____BAH_COMPILER_VAR_434+currStrOff, elemTypeStr, strLen_7);
                         currStrOff += strLen_7;
                         
-                        strncpy(____BAH_COMPILER_VAR_431+currStrOff, "));\n", strLen_8);
+                        strncpy(____BAH_COMPILER_VAR_434+currStrOff, "));\n", strLen_8);
                         currStrOff += strLen_8;
                         
-                        strncpy(____BAH_COMPILER_VAR_431+currStrOff, nstr, strLen_9);
+                        strncpy(____BAH_COMPILER_VAR_434+currStrOff, nstr, strLen_9);
                         currStrOff += strLen_9;
                         
-                        strncpy(____BAH_COMPILER_VAR_431+currStrOff, "->data = newPtr;\n}\n", strLen_10);
+                        strncpy(____BAH_COMPILER_VAR_434+currStrOff, "->data = newPtr;\n}\n", strLen_10);
                         currStrOff += strLen_10;
                         
-                        strncpy(____BAH_COMPILER_VAR_431+currStrOff, code, strLen_11);
+                        strncpy(____BAH_COMPILER_VAR_434+currStrOff, code, strLen_11);
                         currStrOff += strLen_11;
                         
-                        strncpy(____BAH_COMPILER_VAR_431+currStrOff, ";\n", strLen_12);
+                        strncpy(____BAH_COMPILER_VAR_434+currStrOff, ";\n", strLen_12);
                         currStrOff += strLen_12;
                         
-                        strncpy(____BAH_COMPILER_VAR_431+currStrOff, nstr, strLen_13);
+                        strncpy(____BAH_COMPILER_VAR_434+currStrOff, nstr, strLen_13);
                         currStrOff += strLen_13;
                         
-                        strncpy(____BAH_COMPILER_VAR_431+currStrOff, "->length = nLength+1;\n} else {\n", strLen_14);
+                        strncpy(____BAH_COMPILER_VAR_434+currStrOff, "->length = nLength+1;\n} else {\n", strLen_14);
                         currStrOff += strLen_14;
                         
-                        strncpy(____BAH_COMPILER_VAR_431+currStrOff, code, strLen_15);
+                        strncpy(____BAH_COMPILER_VAR_434+currStrOff, code, strLen_15);
                         currStrOff += strLen_15;
                         
-                        strncpy(____BAH_COMPILER_VAR_431+currStrOff, ";\n}\n}", strLen_16);
+                        strncpy(____BAH_COMPILER_VAR_434+currStrOff, ";\n}\n}", strLen_16);
                         currStrOff += strLen_16;
                         
                     }
-                    code =  ____BAH_COMPILER_VAR_431;
+                    code =  ____BAH_COMPILER_VAR_434;
 }
 }
 else {
@@ -9186,74 +9270,74 @@ long int j =  0;
 while ((j<len(tmpfn->args))) {
 struct variable* arg =  tmpfn->args->data[j];
 struct string ct =  getCType(arg->type,elems);
-char * ____BAH_COMPILER_VAR_432 =ct.str((struct string*)&ct);char * ____BAH_COMPILER_VAR_433 =null;
+char * ____BAH_COMPILER_VAR_435 =ct.str((struct string*)&ct);char * ____BAH_COMPILER_VAR_436 =null;
                     {
                         long int currStrOff = 0;
                         long int strLen_0 = strlen(tmpfnArgsCType);
-long int strLen_1 = strlen(____BAH_COMPILER_VAR_432);
+long int strLen_1 = strlen(____BAH_COMPILER_VAR_435);
 ;                            
-                        ____BAH_COMPILER_VAR_433 = memoryAlloc(1 + strLen_0 + strLen_1);
+                        ____BAH_COMPILER_VAR_436 = memoryAlloc(1 + strLen_0 + strLen_1);
                         
-                        strncpy(____BAH_COMPILER_VAR_433+currStrOff, tmpfnArgsCType, strLen_0);
+                        strncpy(____BAH_COMPILER_VAR_436+currStrOff, tmpfnArgsCType, strLen_0);
                         currStrOff += strLen_0;
                         
-                        strncpy(____BAH_COMPILER_VAR_433+currStrOff, ____BAH_COMPILER_VAR_432, strLen_1);
+                        strncpy(____BAH_COMPILER_VAR_436+currStrOff, ____BAH_COMPILER_VAR_435, strLen_1);
                         currStrOff += strLen_1;
                         
                     }
-                    tmpfnArgsCType =  ____BAH_COMPILER_VAR_433;
+                    tmpfnArgsCType =  ____BAH_COMPILER_VAR_436;
 j =  j + 1;
 if ((j<len(tmpfn->args))) {
-char * ____BAH_COMPILER_VAR_434 =null;
+char * ____BAH_COMPILER_VAR_437 =null;
                     {
                         long int currStrOff = 0;
                         long int strLen_0 = strlen(tmpfnArgsCType);
 long int strLen_1 = strlen(",");
 ;                            
-                        ____BAH_COMPILER_VAR_434 = memoryAlloc(1 + strLen_0 + strLen_1);
+                        ____BAH_COMPILER_VAR_437 = memoryAlloc(1 + strLen_0 + strLen_1);
                         
-                        strncpy(____BAH_COMPILER_VAR_434+currStrOff, tmpfnArgsCType, strLen_0);
+                        strncpy(____BAH_COMPILER_VAR_437+currStrOff, tmpfnArgsCType, strLen_0);
                         currStrOff += strLen_0;
                         
-                        strncpy(____BAH_COMPILER_VAR_434+currStrOff, ",", strLen_1);
+                        strncpy(____BAH_COMPILER_VAR_437+currStrOff, ",", strLen_1);
                         currStrOff += strLen_1;
                         
                     }
-                    tmpfnArgsCType =  ____BAH_COMPILER_VAR_434;
+                    tmpfnArgsCType =  ____BAH_COMPILER_VAR_437;
 }
 };
-char * ____BAH_COMPILER_VAR_435 =tmpfnRetCType.str((struct string*)&tmpfnRetCType);char * ____BAH_COMPILER_VAR_436 =null;
+char * ____BAH_COMPILER_VAR_438 =tmpfnRetCType.str((struct string*)&tmpfnRetCType);char * ____BAH_COMPILER_VAR_439 =null;
                     {
                         long int currStrOff = 0;
-                        long int strLen_0 = strlen(____BAH_COMPILER_VAR_435);
+                        long int strLen_0 = strlen(____BAH_COMPILER_VAR_438);
 long int strLen_1 = strlen(" (*");
 long int strLen_2 = strlen(v->name);
 long int strLen_3 = strlen(")(");
 long int strLen_4 = strlen(tmpfnArgsCType);
 long int strLen_5 = strlen(")");
 ;                            
-                        ____BAH_COMPILER_VAR_436 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2 + strLen_3 + strLen_4 + strLen_5);
+                        ____BAH_COMPILER_VAR_439 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2 + strLen_3 + strLen_4 + strLen_5);
                         
-                        strncpy(____BAH_COMPILER_VAR_436+currStrOff, ____BAH_COMPILER_VAR_435, strLen_0);
+                        strncpy(____BAH_COMPILER_VAR_439+currStrOff, ____BAH_COMPILER_VAR_438, strLen_0);
                         currStrOff += strLen_0;
                         
-                        strncpy(____BAH_COMPILER_VAR_436+currStrOff, " (*", strLen_1);
+                        strncpy(____BAH_COMPILER_VAR_439+currStrOff, " (*", strLen_1);
                         currStrOff += strLen_1;
                         
-                        strncpy(____BAH_COMPILER_VAR_436+currStrOff, v->name, strLen_2);
+                        strncpy(____BAH_COMPILER_VAR_439+currStrOff, v->name, strLen_2);
                         currStrOff += strLen_2;
                         
-                        strncpy(____BAH_COMPILER_VAR_436+currStrOff, ")(", strLen_3);
+                        strncpy(____BAH_COMPILER_VAR_439+currStrOff, ")(", strLen_3);
                         currStrOff += strLen_3;
                         
-                        strncpy(____BAH_COMPILER_VAR_436+currStrOff, tmpfnArgsCType, strLen_4);
+                        strncpy(____BAH_COMPILER_VAR_439+currStrOff, tmpfnArgsCType, strLen_4);
                         currStrOff += strLen_4;
                         
-                        strncpy(____BAH_COMPILER_VAR_436+currStrOff, ")", strLen_5);
+                        strncpy(____BAH_COMPILER_VAR_439+currStrOff, ")", strLen_5);
                         currStrOff += strLen_5;
                         
                     }
-                    vct =  ____BAH_COMPILER_VAR_436;
+                    vct =  ____BAH_COMPILER_VAR_439;
 }
 else {
 vct =  setCType(v,elems);
@@ -9261,80 +9345,80 @@ vct =  setCType(v,elems);
 if ((strlen(code)>0)) {
 if ((((isRCPpointerType(v->type)&&(RCPavailable()==true))&&(toVar==true))&&(isPointedVar==false))) {
 struct string cType =  getCType(v->type,elems);
-char * ____BAH_COMPILER_VAR_437 =cType.str((struct string*)&cType);char * ____BAH_COMPILER_VAR_438 =null;
+char * ____BAH_COMPILER_VAR_440 =cType.str((struct string*)&cType);char * ____BAH_COMPILER_VAR_441 =null;
                     {
                         long int currStrOff = 0;
                         long int strLen_0 = strlen(vct);
 long int strLen_1 = strlen(" = *(");
-long int strLen_2 = strlen(____BAH_COMPILER_VAR_437);
+long int strLen_2 = strlen(____BAH_COMPILER_VAR_440);
 long int strLen_3 = strlen("*)RCP_incrIL(&");
 long int strLen_4 = strlen(code);
 long int strLen_5 = strlen(")");
 ;                            
-                        ____BAH_COMPILER_VAR_438 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2 + strLen_3 + strLen_4 + strLen_5);
+                        ____BAH_COMPILER_VAR_441 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2 + strLen_3 + strLen_4 + strLen_5);
                         
-                        strncpy(____BAH_COMPILER_VAR_438+currStrOff, vct, strLen_0);
+                        strncpy(____BAH_COMPILER_VAR_441+currStrOff, vct, strLen_0);
                         currStrOff += strLen_0;
                         
-                        strncpy(____BAH_COMPILER_VAR_438+currStrOff, " = *(", strLen_1);
+                        strncpy(____BAH_COMPILER_VAR_441+currStrOff, " = *(", strLen_1);
                         currStrOff += strLen_1;
                         
-                        strncpy(____BAH_COMPILER_VAR_438+currStrOff, ____BAH_COMPILER_VAR_437, strLen_2);
+                        strncpy(____BAH_COMPILER_VAR_441+currStrOff, ____BAH_COMPILER_VAR_440, strLen_2);
                         currStrOff += strLen_2;
                         
-                        strncpy(____BAH_COMPILER_VAR_438+currStrOff, "*)RCP_incrIL(&", strLen_3);
+                        strncpy(____BAH_COMPILER_VAR_441+currStrOff, "*)RCP_incrIL(&", strLen_3);
                         currStrOff += strLen_3;
                         
-                        strncpy(____BAH_COMPILER_VAR_438+currStrOff, code, strLen_4);
+                        strncpy(____BAH_COMPILER_VAR_441+currStrOff, code, strLen_4);
                         currStrOff += strLen_4;
                         
-                        strncpy(____BAH_COMPILER_VAR_438+currStrOff, ")", strLen_5);
+                        strncpy(____BAH_COMPILER_VAR_441+currStrOff, ")", strLen_5);
                         currStrOff += strLen_5;
                         
                     }
-                    code =  ____BAH_COMPILER_VAR_438;
+                    code =  ____BAH_COMPILER_VAR_441;
 }
 else {
-char * ____BAH_COMPILER_VAR_439 =null;
+char * ____BAH_COMPILER_VAR_442 =null;
                     {
                         long int currStrOff = 0;
                         long int strLen_0 = strlen(vct);
 long int strLen_1 = strlen(" = ");
 long int strLen_2 = strlen(code);
 ;                            
-                        ____BAH_COMPILER_VAR_439 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2);
+                        ____BAH_COMPILER_VAR_442 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2);
                         
-                        strncpy(____BAH_COMPILER_VAR_439+currStrOff, vct, strLen_0);
+                        strncpy(____BAH_COMPILER_VAR_442+currStrOff, vct, strLen_0);
                         currStrOff += strLen_0;
                         
-                        strncpy(____BAH_COMPILER_VAR_439+currStrOff, " = ", strLen_1);
+                        strncpy(____BAH_COMPILER_VAR_442+currStrOff, " = ", strLen_1);
                         currStrOff += strLen_1;
                         
-                        strncpy(____BAH_COMPILER_VAR_439+currStrOff, code, strLen_2);
+                        strncpy(____BAH_COMPILER_VAR_442+currStrOff, code, strLen_2);
                         currStrOff += strLen_2;
                         
                     }
-                    code =  ____BAH_COMPILER_VAR_439;
+                    code =  ____BAH_COMPILER_VAR_442;
 }
 }
 else {
 if (isRCPpointerType(v->type)) {
-char * ____BAH_COMPILER_VAR_440 =null;
+char * ____BAH_COMPILER_VAR_443 =null;
                     {
                         long int currStrOff = 0;
                         long int strLen_0 = strlen(vct);
 long int strLen_1 = strlen("= null");
 ;                            
-                        ____BAH_COMPILER_VAR_440 = memoryAlloc(1 + strLen_0 + strLen_1);
+                        ____BAH_COMPILER_VAR_443 = memoryAlloc(1 + strLen_0 + strLen_1);
                         
-                        strncpy(____BAH_COMPILER_VAR_440+currStrOff, vct, strLen_0);
+                        strncpy(____BAH_COMPILER_VAR_443+currStrOff, vct, strLen_0);
                         currStrOff += strLen_0;
                         
-                        strncpy(____BAH_COMPILER_VAR_440+currStrOff, "= null", strLen_1);
+                        strncpy(____BAH_COMPILER_VAR_443+currStrOff, "= null", strLen_1);
                         currStrOff += strLen_1;
                         
                     }
-                    code =  ____BAH_COMPILER_VAR_440;
+                    code =  ____BAH_COMPILER_VAR_443;
 }
 else {
 code =  vct;
@@ -9356,22 +9440,22 @@ vars->data[len(vars)] =  v;
 }
 };
 }
-char * ____BAH_COMPILER_VAR_441 =null;
+char * ____BAH_COMPILER_VAR_444 =null;
                     {
                         long int currStrOff = 0;
                         long int strLen_0 = strlen(code);
 long int strLen_1 = strlen(";\n");
 ;                            
-                        ____BAH_COMPILER_VAR_441 = memoryAlloc(1 + strLen_0 + strLen_1);
+                        ____BAH_COMPILER_VAR_444 = memoryAlloc(1 + strLen_0 + strLen_1);
                         
-                        strncpy(____BAH_COMPILER_VAR_441+currStrOff, code, strLen_0);
+                        strncpy(____BAH_COMPILER_VAR_444+currStrOff, code, strLen_0);
                         currStrOff += strLen_0;
                         
-                        strncpy(____BAH_COMPILER_VAR_441+currStrOff, ";\n", strLen_1);
+                        strncpy(____BAH_COMPILER_VAR_444+currStrOff, ";\n", strLen_1);
                         currStrOff += strLen_1;
                         
                     }
-                    OUTPUT =  OUTPUT->add(OUTPUT, rope(____BAH_COMPILER_VAR_441));
+                    OUTPUT =  OUTPUT->add(OUTPUT, rope(____BAH_COMPILER_VAR_444));
 };
 char * getCfunctionType(struct string cfrt,char * elemName,struct Elems* elems){
 struct func* tmpfn =  parseFnType(cfrt);
@@ -9381,75 +9465,75 @@ long int j =  0;
 while ((j<len(tmpfn->args))) {
 struct variable* arg =  tmpfn->args->data[j];
 struct string ct =  getCType(arg->type,elems);
-char * ____BAH_COMPILER_VAR_442 =ct.str((struct string*)&ct);char * ____BAH_COMPILER_VAR_443 =null;
+char * ____BAH_COMPILER_VAR_445 =ct.str((struct string*)&ct);char * ____BAH_COMPILER_VAR_446 =null;
                     {
                         long int currStrOff = 0;
                         long int strLen_0 = strlen(tmpfnArgsCType);
-long int strLen_1 = strlen(____BAH_COMPILER_VAR_442);
+long int strLen_1 = strlen(____BAH_COMPILER_VAR_445);
 ;                            
-                        ____BAH_COMPILER_VAR_443 = memoryAlloc(1 + strLen_0 + strLen_1);
+                        ____BAH_COMPILER_VAR_446 = memoryAlloc(1 + strLen_0 + strLen_1);
                         
-                        strncpy(____BAH_COMPILER_VAR_443+currStrOff, tmpfnArgsCType, strLen_0);
+                        strncpy(____BAH_COMPILER_VAR_446+currStrOff, tmpfnArgsCType, strLen_0);
                         currStrOff += strLen_0;
                         
-                        strncpy(____BAH_COMPILER_VAR_443+currStrOff, ____BAH_COMPILER_VAR_442, strLen_1);
+                        strncpy(____BAH_COMPILER_VAR_446+currStrOff, ____BAH_COMPILER_VAR_445, strLen_1);
                         currStrOff += strLen_1;
                         
                     }
-                    tmpfnArgsCType =  ____BAH_COMPILER_VAR_443;
+                    tmpfnArgsCType =  ____BAH_COMPILER_VAR_446;
 j =  j + 1;
 if ((j<len(tmpfn->args))) {
-char * ____BAH_COMPILER_VAR_444 =null;
+char * ____BAH_COMPILER_VAR_447 =null;
                     {
                         long int currStrOff = 0;
                         long int strLen_0 = strlen(tmpfnArgsCType);
 long int strLen_1 = strlen(",");
 ;                            
-                        ____BAH_COMPILER_VAR_444 = memoryAlloc(1 + strLen_0 + strLen_1);
+                        ____BAH_COMPILER_VAR_447 = memoryAlloc(1 + strLen_0 + strLen_1);
                         
-                        strncpy(____BAH_COMPILER_VAR_444+currStrOff, tmpfnArgsCType, strLen_0);
+                        strncpy(____BAH_COMPILER_VAR_447+currStrOff, tmpfnArgsCType, strLen_0);
                         currStrOff += strLen_0;
                         
-                        strncpy(____BAH_COMPILER_VAR_444+currStrOff, ",", strLen_1);
+                        strncpy(____BAH_COMPILER_VAR_447+currStrOff, ",", strLen_1);
                         currStrOff += strLen_1;
                         
                     }
-                    tmpfnArgsCType =  ____BAH_COMPILER_VAR_444;
+                    tmpfnArgsCType =  ____BAH_COMPILER_VAR_447;
 }
 };
-char * ____BAH_COMPILER_VAR_445 =tmpfnRetCType.str((struct string*)&tmpfnRetCType);char * ____BAH_COMPILER_VAR_446 =null;
+char * ____BAH_COMPILER_VAR_448 =tmpfnRetCType.str((struct string*)&tmpfnRetCType);char * ____BAH_COMPILER_VAR_449 =null;
                     {
                         long int currStrOff = 0;
-                        long int strLen_0 = strlen(____BAH_COMPILER_VAR_445);
+                        long int strLen_0 = strlen(____BAH_COMPILER_VAR_448);
 long int strLen_1 = strlen(" (*");
 long int strLen_2 = strlen(elemName);
 long int strLen_3 = strlen(")(");
 long int strLen_4 = strlen(tmpfnArgsCType);
 long int strLen_5 = strlen(")");
 ;                            
-                        ____BAH_COMPILER_VAR_446 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2 + strLen_3 + strLen_4 + strLen_5);
+                        ____BAH_COMPILER_VAR_449 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2 + strLen_3 + strLen_4 + strLen_5);
                         
-                        strncpy(____BAH_COMPILER_VAR_446+currStrOff, ____BAH_COMPILER_VAR_445, strLen_0);
+                        strncpy(____BAH_COMPILER_VAR_449+currStrOff, ____BAH_COMPILER_VAR_448, strLen_0);
                         currStrOff += strLen_0;
                         
-                        strncpy(____BAH_COMPILER_VAR_446+currStrOff, " (*", strLen_1);
+                        strncpy(____BAH_COMPILER_VAR_449+currStrOff, " (*", strLen_1);
                         currStrOff += strLen_1;
                         
-                        strncpy(____BAH_COMPILER_VAR_446+currStrOff, elemName, strLen_2);
+                        strncpy(____BAH_COMPILER_VAR_449+currStrOff, elemName, strLen_2);
                         currStrOff += strLen_2;
                         
-                        strncpy(____BAH_COMPILER_VAR_446+currStrOff, ")(", strLen_3);
+                        strncpy(____BAH_COMPILER_VAR_449+currStrOff, ")(", strLen_3);
                         currStrOff += strLen_3;
                         
-                        strncpy(____BAH_COMPILER_VAR_446+currStrOff, tmpfnArgsCType, strLen_4);
+                        strncpy(____BAH_COMPILER_VAR_449+currStrOff, tmpfnArgsCType, strLen_4);
                         currStrOff += strLen_4;
                         
-                        strncpy(____BAH_COMPILER_VAR_446+currStrOff, ")", strLen_5);
+                        strncpy(____BAH_COMPILER_VAR_449+currStrOff, ")", strLen_5);
                         currStrOff += strLen_5;
                         
                     }
-                    char * ____BAH_COMPILER_VAR_447 = ____BAH_COMPILER_VAR_446;
-return ____BAH_COMPILER_VAR_447;
+                    char * ____BAH_COMPILER_VAR_450 = ____BAH_COMPILER_VAR_449;
+return ____BAH_COMPILER_VAR_450;
 };
 char * parseFnHeader(char * prev,__BAH_ARR_TYPE_Tok l,long int* i,struct func* fn,struct Elems* elems){
 long int j =  *i;
@@ -9458,42 +9542,42 @@ char * tpdf =  "";
 if ((ft.type!=TOKEN_TYPE_VAR)) {
 throwErr(&ft,"Cannot use {TOKEN} as function name.");
 }
-char * ____BAH_COMPILER_VAR_448 =null;
+char * ____BAH_COMPILER_VAR_451 =null;
                     {
                         long int currStrOff = 0;
                         long int strLen_0 = strlen(prev);
 long int strLen_1 = strlen(ft.cont);
 ;                            
-                        ____BAH_COMPILER_VAR_448 = memoryAlloc(1 + strLen_0 + strLen_1);
+                        ____BAH_COMPILER_VAR_451 = memoryAlloc(1 + strLen_0 + strLen_1);
                         
-                        strncpy(____BAH_COMPILER_VAR_448+currStrOff, prev, strLen_0);
+                        strncpy(____BAH_COMPILER_VAR_451+currStrOff, prev, strLen_0);
                         currStrOff += strLen_0;
                         
-                        strncpy(____BAH_COMPILER_VAR_448+currStrOff, ft.cont, strLen_1);
+                        strncpy(____BAH_COMPILER_VAR_451+currStrOff, ft.cont, strLen_1);
                         currStrOff += strLen_1;
                         
                     }
-                    fn->name =  ____BAH_COMPILER_VAR_448;
+                    fn->name =  ____BAH_COMPILER_VAR_451;
 array(struct variable*)* arguments = memoryAlloc(sizeof(array(struct variable*)));
 
 arguments->length = 0;
 arguments->elemSize = sizeof(struct variable*);
-char * ____BAH_COMPILER_VAR_449 =null;
+char * ____BAH_COMPILER_VAR_452 =null;
                     {
                         long int currStrOff = 0;
                         long int strLen_0 = strlen(fn->name);
 long int strLen_1 = strlen("(");
 ;                            
-                        ____BAH_COMPILER_VAR_449 = memoryAlloc(1 + strLen_0 + strLen_1);
+                        ____BAH_COMPILER_VAR_452 = memoryAlloc(1 + strLen_0 + strLen_1);
                         
-                        strncpy(____BAH_COMPILER_VAR_449+currStrOff, fn->name, strLen_0);
+                        strncpy(____BAH_COMPILER_VAR_452+currStrOff, fn->name, strLen_0);
                         currStrOff += strLen_0;
                         
-                        strncpy(____BAH_COMPILER_VAR_449+currStrOff, "(", strLen_1);
+                        strncpy(____BAH_COMPILER_VAR_452+currStrOff, "(", strLen_1);
                         currStrOff += strLen_1;
                         
                     }
-                    char * code =  ____BAH_COMPILER_VAR_449;
+                    char * code =  ____BAH_COMPILER_VAR_452;
 j =  j + 2;
 struct Tok t =  l->data[j];
 if ((strcmp(t.cont, ")") != 0)) {
@@ -9526,22 +9610,22 @@ if (((strcmp(t.cont, ")") == 0)&&(nbPars==0))) {
 break;
 }
 else {
-char * ____BAH_COMPILER_VAR_450 =null;
+char * ____BAH_COMPILER_VAR_453 =null;
                     {
                         long int currStrOff = 0;
                         long int strLen_0 = strlen(argType);
 long int strLen_1 = strlen(t.cont);
 ;                            
-                        ____BAH_COMPILER_VAR_450 = memoryAlloc(1 + strLen_0 + strLen_1);
+                        ____BAH_COMPILER_VAR_453 = memoryAlloc(1 + strLen_0 + strLen_1);
                         
-                        strncpy(____BAH_COMPILER_VAR_450+currStrOff, argType, strLen_0);
+                        strncpy(____BAH_COMPILER_VAR_453+currStrOff, argType, strLen_0);
                         currStrOff += strLen_0;
                         
-                        strncpy(____BAH_COMPILER_VAR_450+currStrOff, t.cont, strLen_1);
+                        strncpy(____BAH_COMPILER_VAR_453+currStrOff, t.cont, strLen_1);
                         currStrOff += strLen_1;
                         
                     }
-                    argType =  ____BAH_COMPILER_VAR_450;
+                    argType =  ____BAH_COMPILER_VAR_453;
 }
 }
 else {
@@ -9582,22 +9666,22 @@ if (cfrt.hasSuffix((struct string*)&cfrt,"*")) {
 long int nbast =  cfrt.count((struct string*)&cfrt,"*");
 cfrt.trimRight((struct string*)&cfrt,nbast);
 }
-char * ____BAH_COMPILER_VAR_451 =cfrt.str((struct string*)&cfrt);char * ____BAH_COMPILER_VAR_452 =null;
+char * ____BAH_COMPILER_VAR_454 =cfrt.str((struct string*)&cfrt);char * ____BAH_COMPILER_VAR_455 =null;
                     {
                         long int currStrOff = 0;
                         long int strLen_0 = strlen("__BAH_ARR_TYPE_");
-long int strLen_1 = strlen(____BAH_COMPILER_VAR_451);
+long int strLen_1 = strlen(____BAH_COMPILER_VAR_454);
 ;                            
-                        ____BAH_COMPILER_VAR_452 = memoryAlloc(1 + strLen_0 + strLen_1);
+                        ____BAH_COMPILER_VAR_455 = memoryAlloc(1 + strLen_0 + strLen_1);
                         
-                        strncpy(____BAH_COMPILER_VAR_452+currStrOff, "__BAH_ARR_TYPE_", strLen_0);
+                        strncpy(____BAH_COMPILER_VAR_455+currStrOff, "__BAH_ARR_TYPE_", strLen_0);
                         currStrOff += strLen_0;
                         
-                        strncpy(____BAH_COMPILER_VAR_452+currStrOff, ____BAH_COMPILER_VAR_451, strLen_1);
+                        strncpy(____BAH_COMPILER_VAR_455+currStrOff, ____BAH_COMPILER_VAR_454, strLen_1);
                         currStrOff += strLen_1;
                         
                     }
-                    newArgType =  ____BAH_COMPILER_VAR_452;
+                    newArgType =  ____BAH_COMPILER_VAR_455;
 array(char *)* csatd =  compilerState.arrTypesDecl;
 if ((inArrayStr(newArgType,csatd)==false)) {
 
@@ -9614,60 +9698,60 @@ csatd->length = nLength+1;
 csatd->data[len(csatd)] =  newArgType;
 }
 };
-char * ____BAH_COMPILER_VAR_453 =argCType.str((struct string*)&argCType);char * ____BAH_COMPILER_VAR_454 =null;
+char * ____BAH_COMPILER_VAR_456 =argCType.str((struct string*)&argCType);char * ____BAH_COMPILER_VAR_457 =null;
                     {
                         long int currStrOff = 0;
                         long int strLen_0 = strlen(tpdf);
 long int strLen_1 = strlen("typedef ");
-long int strLen_2 = strlen(____BAH_COMPILER_VAR_453);
+long int strLen_2 = strlen(____BAH_COMPILER_VAR_456);
 long int strLen_3 = strlen(" ");
 long int strLen_4 = strlen(newArgType);
 long int strLen_5 = strlen(";\n");
 ;                            
-                        ____BAH_COMPILER_VAR_454 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2 + strLen_3 + strLen_4 + strLen_5);
+                        ____BAH_COMPILER_VAR_457 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2 + strLen_3 + strLen_4 + strLen_5);
                         
-                        strncpy(____BAH_COMPILER_VAR_454+currStrOff, tpdf, strLen_0);
+                        strncpy(____BAH_COMPILER_VAR_457+currStrOff, tpdf, strLen_0);
                         currStrOff += strLen_0;
                         
-                        strncpy(____BAH_COMPILER_VAR_454+currStrOff, "typedef ", strLen_1);
+                        strncpy(____BAH_COMPILER_VAR_457+currStrOff, "typedef ", strLen_1);
                         currStrOff += strLen_1;
                         
-                        strncpy(____BAH_COMPILER_VAR_454+currStrOff, ____BAH_COMPILER_VAR_453, strLen_2);
+                        strncpy(____BAH_COMPILER_VAR_457+currStrOff, ____BAH_COMPILER_VAR_456, strLen_2);
                         currStrOff += strLen_2;
                         
-                        strncpy(____BAH_COMPILER_VAR_454+currStrOff, " ", strLen_3);
+                        strncpy(____BAH_COMPILER_VAR_457+currStrOff, " ", strLen_3);
                         currStrOff += strLen_3;
                         
-                        strncpy(____BAH_COMPILER_VAR_454+currStrOff, newArgType, strLen_4);
+                        strncpy(____BAH_COMPILER_VAR_457+currStrOff, newArgType, strLen_4);
                         currStrOff += strLen_4;
                         
-                        strncpy(____BAH_COMPILER_VAR_454+currStrOff, ";\n", strLen_5);
+                        strncpy(____BAH_COMPILER_VAR_457+currStrOff, ";\n", strLen_5);
                         currStrOff += strLen_5;
                         
                     }
-                    tpdf =  ____BAH_COMPILER_VAR_454;
+                    tpdf =  ____BAH_COMPILER_VAR_457;
 }
 }
 if ((cfrt.hasPrefix((struct string*)&cfrt,"function(")==1)) {
-char * ____BAH_COMPILER_VAR_455 =getCfunctionType(cfrt,argName,elems);char * ____BAH_COMPILER_VAR_456 =null;
+char * ____BAH_COMPILER_VAR_458 =getCfunctionType(cfrt,argName,elems);char * ____BAH_COMPILER_VAR_459 =null;
                     {
                         long int currStrOff = 0;
                         long int strLen_0 = strlen(code);
-long int strLen_1 = strlen(____BAH_COMPILER_VAR_455);
+long int strLen_1 = strlen(____BAH_COMPILER_VAR_458);
 ;                            
-                        ____BAH_COMPILER_VAR_456 = memoryAlloc(1 + strLen_0 + strLen_1);
+                        ____BAH_COMPILER_VAR_459 = memoryAlloc(1 + strLen_0 + strLen_1);
                         
-                        strncpy(____BAH_COMPILER_VAR_456+currStrOff, code, strLen_0);
+                        strncpy(____BAH_COMPILER_VAR_459+currStrOff, code, strLen_0);
                         currStrOff += strLen_0;
                         
-                        strncpy(____BAH_COMPILER_VAR_456+currStrOff, ____BAH_COMPILER_VAR_455, strLen_1);
+                        strncpy(____BAH_COMPILER_VAR_459+currStrOff, ____BAH_COMPILER_VAR_458, strLen_1);
                         currStrOff += strLen_1;
                         
                     }
-                    code =  ____BAH_COMPILER_VAR_456;
+                    code =  ____BAH_COMPILER_VAR_459;
 }
 else {
-char * ____BAH_COMPILER_VAR_457 =null;
+char * ____BAH_COMPILER_VAR_460 =null;
                     {
                         long int currStrOff = 0;
                         long int strLen_0 = strlen(code);
@@ -9675,80 +9759,80 @@ long int strLen_1 = strlen(newArgType);
 long int strLen_2 = strlen(" ");
 long int strLen_3 = strlen(argName);
 ;                            
-                        ____BAH_COMPILER_VAR_457 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2 + strLen_3);
+                        ____BAH_COMPILER_VAR_460 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2 + strLen_3);
                         
-                        strncpy(____BAH_COMPILER_VAR_457+currStrOff, code, strLen_0);
+                        strncpy(____BAH_COMPILER_VAR_460+currStrOff, code, strLen_0);
                         currStrOff += strLen_0;
                         
-                        strncpy(____BAH_COMPILER_VAR_457+currStrOff, newArgType, strLen_1);
+                        strncpy(____BAH_COMPILER_VAR_460+currStrOff, newArgType, strLen_1);
                         currStrOff += strLen_1;
                         
-                        strncpy(____BAH_COMPILER_VAR_457+currStrOff, " ", strLen_2);
+                        strncpy(____BAH_COMPILER_VAR_460+currStrOff, " ", strLen_2);
                         currStrOff += strLen_2;
                         
-                        strncpy(____BAH_COMPILER_VAR_457+currStrOff, argName, strLen_3);
+                        strncpy(____BAH_COMPILER_VAR_460+currStrOff, argName, strLen_3);
                         currStrOff += strLen_3;
                         
                     }
-                    code =  ____BAH_COMPILER_VAR_457;
+                    code =  ____BAH_COMPILER_VAR_460;
 }
 if ((isComa==true)) {
-char * ____BAH_COMPILER_VAR_458 =null;
+char * ____BAH_COMPILER_VAR_461 =null;
                     {
                         long int currStrOff = 0;
                         long int strLen_0 = strlen(code);
 long int strLen_1 = strlen(",");
 ;                            
-                        ____BAH_COMPILER_VAR_458 = memoryAlloc(1 + strLen_0 + strLen_1);
+                        ____BAH_COMPILER_VAR_461 = memoryAlloc(1 + strLen_0 + strLen_1);
                         
-                        strncpy(____BAH_COMPILER_VAR_458+currStrOff, code, strLen_0);
+                        strncpy(____BAH_COMPILER_VAR_461+currStrOff, code, strLen_0);
                         currStrOff += strLen_0;
                         
-                        strncpy(____BAH_COMPILER_VAR_458+currStrOff, ",", strLen_1);
+                        strncpy(____BAH_COMPILER_VAR_461+currStrOff, ",", strLen_1);
                         currStrOff += strLen_1;
                         
                     }
-                    code =  ____BAH_COMPILER_VAR_458;
+                    code =  ____BAH_COMPILER_VAR_461;
 }
 else {
-char * ____BAH_COMPILER_VAR_459 =null;
+char * ____BAH_COMPILER_VAR_462 =null;
                     {
                         long int currStrOff = 0;
                         long int strLen_0 = strlen(code);
 long int strLen_1 = strlen(")");
 ;                            
-                        ____BAH_COMPILER_VAR_459 = memoryAlloc(1 + strLen_0 + strLen_1);
+                        ____BAH_COMPILER_VAR_462 = memoryAlloc(1 + strLen_0 + strLen_1);
                         
-                        strncpy(____BAH_COMPILER_VAR_459+currStrOff, code, strLen_0);
+                        strncpy(____BAH_COMPILER_VAR_462+currStrOff, code, strLen_0);
                         currStrOff += strLen_0;
                         
-                        strncpy(____BAH_COMPILER_VAR_459+currStrOff, ")", strLen_1);
+                        strncpy(____BAH_COMPILER_VAR_462+currStrOff, ")", strLen_1);
                         currStrOff += strLen_1;
                         
                     }
-                    code =  ____BAH_COMPILER_VAR_459;
+                    code =  ____BAH_COMPILER_VAR_462;
 break;
 }
 j =  j + 1;
 };
 }
 else {
-char * ____BAH_COMPILER_VAR_460 =null;
+char * ____BAH_COMPILER_VAR_463 =null;
                     {
                         long int currStrOff = 0;
                         long int strLen_0 = strlen(code);
 long int strLen_1 = strlen(")");
 ;                            
-                        ____BAH_COMPILER_VAR_460 = memoryAlloc(1 + strLen_0 + strLen_1);
+                        ____BAH_COMPILER_VAR_463 = memoryAlloc(1 + strLen_0 + strLen_1);
                         
-                        strncpy(____BAH_COMPILER_VAR_460+currStrOff, code, strLen_0);
+                        strncpy(____BAH_COMPILER_VAR_463+currStrOff, code, strLen_0);
                         currStrOff += strLen_0;
                         
-                        strncpy(____BAH_COMPILER_VAR_460+currStrOff, ")", strLen_1);
+                        strncpy(____BAH_COMPILER_VAR_463+currStrOff, ")", strLen_1);
                         currStrOff += strLen_1;
                         
                     }
-                    code =  ____BAH_COMPILER_VAR_460;
+                    code =  ____BAH_COMPILER_VAR_463;
 }
 j =  j + 1;
 struct variable* returns = memoryAlloc(sizeof(struct variable));
@@ -9764,22 +9848,22 @@ t =  l->data[j];
 if ((strcmp(t.cont, "{") == 0)) {
 break;
 }
-char * ____BAH_COMPILER_VAR_461 =null;
+char * ____BAH_COMPILER_VAR_464 =null;
                     {
                         long int currStrOff = 0;
                         long int strLen_0 = strlen(returns->type);
 long int strLen_1 = strlen(t.cont);
 ;                            
-                        ____BAH_COMPILER_VAR_461 = memoryAlloc(1 + strLen_0 + strLen_1);
+                        ____BAH_COMPILER_VAR_464 = memoryAlloc(1 + strLen_0 + strLen_1);
                         
-                        strncpy(____BAH_COMPILER_VAR_461+currStrOff, returns->type, strLen_0);
+                        strncpy(____BAH_COMPILER_VAR_464+currStrOff, returns->type, strLen_0);
                         currStrOff += strLen_0;
                         
-                        strncpy(____BAH_COMPILER_VAR_461+currStrOff, t.cont, strLen_1);
+                        strncpy(____BAH_COMPILER_VAR_464+currStrOff, t.cont, strLen_1);
                         currStrOff += strLen_1;
                         
                     }
-                    returns->type =  ____BAH_COMPILER_VAR_461;
+                    returns->type =  ____BAH_COMPILER_VAR_464;
 j =  j + 1;
 };
 if (strlen(returns->type)) {
@@ -9800,22 +9884,22 @@ if (cfrt.hasSuffix((struct string*)&cfrt,"*")) {
 long int nbast =  cfrt.count((struct string*)&cfrt,"*");
 cfrt.trimRight((struct string*)&cfrt,nbast);
 }
-char * ____BAH_COMPILER_VAR_462 =cfrt.str((struct string*)&cfrt);char * ____BAH_COMPILER_VAR_463 =null;
+char * ____BAH_COMPILER_VAR_465 =cfrt.str((struct string*)&cfrt);char * ____BAH_COMPILER_VAR_466 =null;
                     {
                         long int currStrOff = 0;
                         long int strLen_0 = strlen("__BAH_ARR_TYPE_");
-long int strLen_1 = strlen(____BAH_COMPILER_VAR_462);
+long int strLen_1 = strlen(____BAH_COMPILER_VAR_465);
 ;                            
-                        ____BAH_COMPILER_VAR_463 = memoryAlloc(1 + strLen_0 + strLen_1);
+                        ____BAH_COMPILER_VAR_466 = memoryAlloc(1 + strLen_0 + strLen_1);
                         
-                        strncpy(____BAH_COMPILER_VAR_463+currStrOff, "__BAH_ARR_TYPE_", strLen_0);
+                        strncpy(____BAH_COMPILER_VAR_466+currStrOff, "__BAH_ARR_TYPE_", strLen_0);
                         currStrOff += strLen_0;
                         
-                        strncpy(____BAH_COMPILER_VAR_463+currStrOff, ____BAH_COMPILER_VAR_462, strLen_1);
+                        strncpy(____BAH_COMPILER_VAR_466+currStrOff, ____BAH_COMPILER_VAR_465, strLen_1);
                         currStrOff += strLen_1;
                         
                     }
-                    newFnRetType =  ____BAH_COMPILER_VAR_463;
+                    newFnRetType =  ____BAH_COMPILER_VAR_466;
 array(char *)* csatd =  compilerState.arrTypesDecl;
 if ((inArrayStr(newFnRetType,csatd)==false)) {
 
@@ -9832,41 +9916,41 @@ csatd->length = nLength+1;
 csatd->data[len(csatd)] =  newFnRetType;
 }
 };
-char * ____BAH_COMPILER_VAR_464 =fnRetType.str((struct string*)&fnRetType);char * ____BAH_COMPILER_VAR_465 =null;
+char * ____BAH_COMPILER_VAR_467 =fnRetType.str((struct string*)&fnRetType);char * ____BAH_COMPILER_VAR_468 =null;
                     {
                         long int currStrOff = 0;
                         long int strLen_0 = strlen(tpdf);
 long int strLen_1 = strlen("typedef ");
-long int strLen_2 = strlen(____BAH_COMPILER_VAR_464);
+long int strLen_2 = strlen(____BAH_COMPILER_VAR_467);
 long int strLen_3 = strlen(" ");
 long int strLen_4 = strlen(newFnRetType);
 long int strLen_5 = strlen(";\n");
 ;                            
-                        ____BAH_COMPILER_VAR_465 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2 + strLen_3 + strLen_4 + strLen_5);
+                        ____BAH_COMPILER_VAR_468 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2 + strLen_3 + strLen_4 + strLen_5);
                         
-                        strncpy(____BAH_COMPILER_VAR_465+currStrOff, tpdf, strLen_0);
+                        strncpy(____BAH_COMPILER_VAR_468+currStrOff, tpdf, strLen_0);
                         currStrOff += strLen_0;
                         
-                        strncpy(____BAH_COMPILER_VAR_465+currStrOff, "typedef ", strLen_1);
+                        strncpy(____BAH_COMPILER_VAR_468+currStrOff, "typedef ", strLen_1);
                         currStrOff += strLen_1;
                         
-                        strncpy(____BAH_COMPILER_VAR_465+currStrOff, ____BAH_COMPILER_VAR_464, strLen_2);
+                        strncpy(____BAH_COMPILER_VAR_468+currStrOff, ____BAH_COMPILER_VAR_467, strLen_2);
                         currStrOff += strLen_2;
                         
-                        strncpy(____BAH_COMPILER_VAR_465+currStrOff, " ", strLen_3);
+                        strncpy(____BAH_COMPILER_VAR_468+currStrOff, " ", strLen_3);
                         currStrOff += strLen_3;
                         
-                        strncpy(____BAH_COMPILER_VAR_465+currStrOff, newFnRetType, strLen_4);
+                        strncpy(____BAH_COMPILER_VAR_468+currStrOff, newFnRetType, strLen_4);
                         currStrOff += strLen_4;
                         
-                        strncpy(____BAH_COMPILER_VAR_465+currStrOff, ";\n", strLen_5);
+                        strncpy(____BAH_COMPILER_VAR_468+currStrOff, ";\n", strLen_5);
                         currStrOff += strLen_5;
                         
                     }
-                    tpdf =  ____BAH_COMPILER_VAR_465;
+                    tpdf =  ____BAH_COMPILER_VAR_468;
 }
 }
-char * ____BAH_COMPILER_VAR_466 =null;
+char * ____BAH_COMPILER_VAR_469 =null;
                     {
                         long int currStrOff = 0;
                         long int strLen_0 = strlen(tpdf);
@@ -9874,24 +9958,24 @@ long int strLen_1 = strlen(newFnRetType);
 long int strLen_2 = strlen(" ");
 long int strLen_3 = strlen(code);
 ;                            
-                        ____BAH_COMPILER_VAR_466 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2 + strLen_3);
+                        ____BAH_COMPILER_VAR_469 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2 + strLen_3);
                         
-                        strncpy(____BAH_COMPILER_VAR_466+currStrOff, tpdf, strLen_0);
+                        strncpy(____BAH_COMPILER_VAR_469+currStrOff, tpdf, strLen_0);
                         currStrOff += strLen_0;
                         
-                        strncpy(____BAH_COMPILER_VAR_466+currStrOff, newFnRetType, strLen_1);
+                        strncpy(____BAH_COMPILER_VAR_469+currStrOff, newFnRetType, strLen_1);
                         currStrOff += strLen_1;
                         
-                        strncpy(____BAH_COMPILER_VAR_466+currStrOff, " ", strLen_2);
+                        strncpy(____BAH_COMPILER_VAR_469+currStrOff, " ", strLen_2);
                         currStrOff += strLen_2;
                         
-                        strncpy(____BAH_COMPILER_VAR_466+currStrOff, code, strLen_3);
+                        strncpy(____BAH_COMPILER_VAR_469+currStrOff, code, strLen_3);
                         currStrOff += strLen_3;
                         
                     }
-                    code =  ____BAH_COMPILER_VAR_466;
-char * ____BAH_COMPILER_VAR_467 = code;
-return ____BAH_COMPILER_VAR_467;
+                    code =  ____BAH_COMPILER_VAR_469;
+char * ____BAH_COMPILER_VAR_470 = code;
+return ____BAH_COMPILER_VAR_470;
 };
 void parseStruct(__BAH_ARR_TYPE_Tok l,struct Elems* elems){
 struct cStruct* s = memoryAlloc(sizeof(struct cStruct));
@@ -9976,74 +10060,74 @@ j =  0;
 while ((j<len(tmpfn->args))) {
 struct variable* arg =  tmpfn->args->data[j];
 struct string ct =  getCType(arg->type,elems);
-char * ____BAH_COMPILER_VAR_468 =ct.str((struct string*)&ct);char * ____BAH_COMPILER_VAR_469 =null;
+char * ____BAH_COMPILER_VAR_471 =ct.str((struct string*)&ct);char * ____BAH_COMPILER_VAR_472 =null;
                     {
                         long int currStrOff = 0;
                         long int strLen_0 = strlen(tmpfnArgsCType);
-long int strLen_1 = strlen(____BAH_COMPILER_VAR_468);
+long int strLen_1 = strlen(____BAH_COMPILER_VAR_471);
 ;                            
-                        ____BAH_COMPILER_VAR_469 = memoryAlloc(1 + strLen_0 + strLen_1);
+                        ____BAH_COMPILER_VAR_472 = memoryAlloc(1 + strLen_0 + strLen_1);
                         
-                        strncpy(____BAH_COMPILER_VAR_469+currStrOff, tmpfnArgsCType, strLen_0);
+                        strncpy(____BAH_COMPILER_VAR_472+currStrOff, tmpfnArgsCType, strLen_0);
                         currStrOff += strLen_0;
                         
-                        strncpy(____BAH_COMPILER_VAR_469+currStrOff, ____BAH_COMPILER_VAR_468, strLen_1);
+                        strncpy(____BAH_COMPILER_VAR_472+currStrOff, ____BAH_COMPILER_VAR_471, strLen_1);
                         currStrOff += strLen_1;
                         
                     }
-                    tmpfnArgsCType =  ____BAH_COMPILER_VAR_469;
+                    tmpfnArgsCType =  ____BAH_COMPILER_VAR_472;
 j =  j + 1;
 if ((j<len(tmpfn->args))) {
-char * ____BAH_COMPILER_VAR_470 =null;
+char * ____BAH_COMPILER_VAR_473 =null;
                     {
                         long int currStrOff = 0;
                         long int strLen_0 = strlen(tmpfnArgsCType);
 long int strLen_1 = strlen(",");
 ;                            
-                        ____BAH_COMPILER_VAR_470 = memoryAlloc(1 + strLen_0 + strLen_1);
+                        ____BAH_COMPILER_VAR_473 = memoryAlloc(1 + strLen_0 + strLen_1);
                         
-                        strncpy(____BAH_COMPILER_VAR_470+currStrOff, tmpfnArgsCType, strLen_0);
+                        strncpy(____BAH_COMPILER_VAR_473+currStrOff, tmpfnArgsCType, strLen_0);
                         currStrOff += strLen_0;
                         
-                        strncpy(____BAH_COMPILER_VAR_470+currStrOff, ",", strLen_1);
+                        strncpy(____BAH_COMPILER_VAR_473+currStrOff, ",", strLen_1);
                         currStrOff += strLen_1;
                         
                     }
-                    tmpfnArgsCType =  ____BAH_COMPILER_VAR_470;
+                    tmpfnArgsCType =  ____BAH_COMPILER_VAR_473;
 }
 };
-char * ____BAH_COMPILER_VAR_471 =tmpfnRetCType.str((struct string*)&tmpfnRetCType);char * ____BAH_COMPILER_VAR_472 =null;
+char * ____BAH_COMPILER_VAR_474 =tmpfnRetCType.str((struct string*)&tmpfnRetCType);char * ____BAH_COMPILER_VAR_475 =null;
                     {
                         long int currStrOff = 0;
-                        long int strLen_0 = strlen(____BAH_COMPILER_VAR_471);
+                        long int strLen_0 = strlen(____BAH_COMPILER_VAR_474);
 long int strLen_1 = strlen(" (*");
 long int strLen_2 = strlen(em->name);
 long int strLen_3 = strlen(")(");
 long int strLen_4 = strlen(tmpfnArgsCType);
 long int strLen_5 = strlen(")");
 ;                            
-                        ____BAH_COMPILER_VAR_472 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2 + strLen_3 + strLen_4 + strLen_5);
+                        ____BAH_COMPILER_VAR_475 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2 + strLen_3 + strLen_4 + strLen_5);
                         
-                        strncpy(____BAH_COMPILER_VAR_472+currStrOff, ____BAH_COMPILER_VAR_471, strLen_0);
+                        strncpy(____BAH_COMPILER_VAR_475+currStrOff, ____BAH_COMPILER_VAR_474, strLen_0);
                         currStrOff += strLen_0;
                         
-                        strncpy(____BAH_COMPILER_VAR_472+currStrOff, " (*", strLen_1);
+                        strncpy(____BAH_COMPILER_VAR_475+currStrOff, " (*", strLen_1);
                         currStrOff += strLen_1;
                         
-                        strncpy(____BAH_COMPILER_VAR_472+currStrOff, em->name, strLen_2);
+                        strncpy(____BAH_COMPILER_VAR_475+currStrOff, em->name, strLen_2);
                         currStrOff += strLen_2;
                         
-                        strncpy(____BAH_COMPILER_VAR_472+currStrOff, ")(", strLen_3);
+                        strncpy(____BAH_COMPILER_VAR_475+currStrOff, ")(", strLen_3);
                         currStrOff += strLen_3;
                         
-                        strncpy(____BAH_COMPILER_VAR_472+currStrOff, tmpfnArgsCType, strLen_4);
+                        strncpy(____BAH_COMPILER_VAR_475+currStrOff, tmpfnArgsCType, strLen_4);
                         currStrOff += strLen_4;
                         
-                        strncpy(____BAH_COMPILER_VAR_472+currStrOff, ")", strLen_5);
+                        strncpy(____BAH_COMPILER_VAR_475+currStrOff, ")", strLen_5);
                         currStrOff += strLen_5;
                         
                     }
-                    membDeclStr =  ____BAH_COMPILER_VAR_472;
+                    membDeclStr =  ____BAH_COMPILER_VAR_475;
 }
 else {
 if (isRCPpointerType(em->type)) {
@@ -10088,51 +10172,51 @@ long int k =  0;
 while ((k<len(extdS->methods))) {
 struct func* emt =  extdS->methods->data[k];
 struct string mthdDecl =  getCType(emt->returns->type,elems);
-char * ____BAH_COMPILER_VAR_473 =null;
+char * ____BAH_COMPILER_VAR_476 =null;
                     {
                         long int currStrOff = 0;
                         long int strLen_0 = strlen("(*");
 long int strLen_1 = strlen(emt->name);
 long int strLen_2 = strlen(")(");
 ;                            
-                        ____BAH_COMPILER_VAR_473 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2);
+                        ____BAH_COMPILER_VAR_476 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2);
                         
-                        strncpy(____BAH_COMPILER_VAR_473+currStrOff, "(*", strLen_0);
+                        strncpy(____BAH_COMPILER_VAR_476+currStrOff, "(*", strLen_0);
                         currStrOff += strLen_0;
                         
-                        strncpy(____BAH_COMPILER_VAR_473+currStrOff, emt->name, strLen_1);
+                        strncpy(____BAH_COMPILER_VAR_476+currStrOff, emt->name, strLen_1);
                         currStrOff += strLen_1;
                         
-                        strncpy(____BAH_COMPILER_VAR_473+currStrOff, ")(", strLen_2);
+                        strncpy(____BAH_COMPILER_VAR_476+currStrOff, ")(", strLen_2);
                         currStrOff += strLen_2;
                         
                     }
-                    mthdDecl.append((struct string*)&mthdDecl,____BAH_COMPILER_VAR_473);
+                    mthdDecl.append((struct string*)&mthdDecl,____BAH_COMPILER_VAR_476);
 j =  0;
 while ((j<len(emt->args))) {
 struct variable* a =  emt->args->data[j];
 struct string tp =  getCType(a->type,elems);
-char * ____BAH_COMPILER_VAR_474 =null;
+char * ____BAH_COMPILER_VAR_477 =null;
                     {
                         long int currStrOff = 0;
                         long int strLen_0 = strlen(" ");
 long int strLen_1 = strlen(a->name);
 ;                            
-                        ____BAH_COMPILER_VAR_474 = memoryAlloc(1 + strLen_0 + strLen_1);
+                        ____BAH_COMPILER_VAR_477 = memoryAlloc(1 + strLen_0 + strLen_1);
                         
-                        strncpy(____BAH_COMPILER_VAR_474+currStrOff, " ", strLen_0);
+                        strncpy(____BAH_COMPILER_VAR_477+currStrOff, " ", strLen_0);
                         currStrOff += strLen_0;
                         
-                        strncpy(____BAH_COMPILER_VAR_474+currStrOff, a->name, strLen_1);
+                        strncpy(____BAH_COMPILER_VAR_477+currStrOff, a->name, strLen_1);
                         currStrOff += strLen_1;
                         
                     }
-                    tp.append((struct string*)&tp,____BAH_COMPILER_VAR_474);
+                    tp.append((struct string*)&tp,____BAH_COMPILER_VAR_477);
 long int max =  len(emt->args) - 1;
 if ((j!=max)) {
 tp.append((struct string*)&tp,",");
 }
-char * ____BAH_COMPILER_VAR_475 =tp.str((struct string*)&tp);mthdDecl.append((struct string*)&mthdDecl,____BAH_COMPILER_VAR_475);
+char * ____BAH_COMPILER_VAR_478 =tp.str((struct string*)&tp);mthdDecl.append((struct string*)&mthdDecl,____BAH_COMPILER_VAR_478);
 j =  j + 1;
 };
 mthdDecl.append((struct string*)&mthdDecl,")");
@@ -10201,22 +10285,22 @@ if ((strcmp(t.cont, "(") != 0)) {
 throwErr(&t,"Member name should be followed by ':' not {TOKEN}.");
 }
 else {
-char * ____BAH_COMPILER_VAR_476 =null;
+char * ____BAH_COMPILER_VAR_479 =null;
                     {
                         long int currStrOff = 0;
                         long int strLen_0 = strlen(s->name);
 long int strLen_1 = strlen("__");
 ;                            
-                        ____BAH_COMPILER_VAR_476 = memoryAlloc(1 + strLen_0 + strLen_1);
+                        ____BAH_COMPILER_VAR_479 = memoryAlloc(1 + strLen_0 + strLen_1);
                         
-                        strncpy(____BAH_COMPILER_VAR_476+currStrOff, s->name, strLen_0);
+                        strncpy(____BAH_COMPILER_VAR_479+currStrOff, s->name, strLen_0);
                         currStrOff += strLen_0;
                         
-                        strncpy(____BAH_COMPILER_VAR_476+currStrOff, "__", strLen_1);
+                        strncpy(____BAH_COMPILER_VAR_479+currStrOff, "__", strLen_1);
                         currStrOff += strLen_1;
                         
                     }
-                    char * fnPrefix =  ____BAH_COMPILER_VAR_476;
+                    char * fnPrefix =  ____BAH_COMPILER_VAR_479;
 struct func* fn = memoryAlloc(sizeof(struct func));
 fn->name = "";
 fn->args = memoryAlloc(sizeof(array(struct variable*)));
@@ -10270,22 +10354,22 @@ nl->data[len(nl)] =  t;
 }
 };
 t.type =  TOKEN_TYPE_VAR;
-char * ____BAH_COMPILER_VAR_477 =null;
+char * ____BAH_COMPILER_VAR_480 =null;
                     {
                         long int currStrOff = 0;
                         long int strLen_0 = strlen(s->name);
 long int strLen_1 = strlen("*");
 ;                            
-                        ____BAH_COMPILER_VAR_477 = memoryAlloc(1 + strLen_0 + strLen_1);
+                        ____BAH_COMPILER_VAR_480 = memoryAlloc(1 + strLen_0 + strLen_1);
                         
-                        strncpy(____BAH_COMPILER_VAR_477+currStrOff, s->name, strLen_0);
+                        strncpy(____BAH_COMPILER_VAR_480+currStrOff, s->name, strLen_0);
                         currStrOff += strLen_0;
                         
-                        strncpy(____BAH_COMPILER_VAR_477+currStrOff, "*", strLen_1);
+                        strncpy(____BAH_COMPILER_VAR_480+currStrOff, "*", strLen_1);
                         currStrOff += strLen_1;
                         
                     }
-                    t.cont =  ____BAH_COMPILER_VAR_477;
+                    t.cont =  ____BAH_COMPILER_VAR_480;
 t.isValue =  true;
 
 {
@@ -10326,7 +10410,7 @@ j =  j + 1;
 };
 i =  i - 1;
 long int nli =  0;
-char * ____BAH_COMPILER_VAR_478 =parseFnHeader(fnPrefix,nl,&nli,fn,elems);struct rope* code =  rope(____BAH_COMPILER_VAR_478);
+char * ____BAH_COMPILER_VAR_481 =parseFnHeader(fnPrefix,nl,&nli,fn,elems);struct rope* code =  rope(____BAH_COMPILER_VAR_481);
 i =  i + nli;
 i =  i - 2;
 struct variable* returns =  fn->returns;
@@ -10444,95 +10528,95 @@ parseLines(tokens,fnElems);
 currentFn =  null;
 if ((fn->returned==false)) {
 if ((strlen(fn->returns->type)>0)) {
-char * ____BAH_COMPILER_VAR_479 =null;
+char * ____BAH_COMPILER_VAR_482 =null;
                     {
                         long int currStrOff = 0;
                         long int strLen_0 = strlen("Function '");
 long int strLen_1 = strlen(fn->name);
 long int strLen_2 = strlen("' is not returned.");
 ;                            
-                        ____BAH_COMPILER_VAR_479 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2);
+                        ____BAH_COMPILER_VAR_482 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2);
                         
-                        strncpy(____BAH_COMPILER_VAR_479+currStrOff, "Function '", strLen_0);
+                        strncpy(____BAH_COMPILER_VAR_482+currStrOff, "Function '", strLen_0);
                         currStrOff += strLen_0;
                         
-                        strncpy(____BAH_COMPILER_VAR_479+currStrOff, fn->name, strLen_1);
+                        strncpy(____BAH_COMPILER_VAR_482+currStrOff, fn->name, strLen_1);
                         currStrOff += strLen_1;
                         
-                        strncpy(____BAH_COMPILER_VAR_479+currStrOff, "' is not returned.", strLen_2);
+                        strncpy(____BAH_COMPILER_VAR_482+currStrOff, "' is not returned.", strLen_2);
                         currStrOff += strLen_2;
                         
                     }
-                    throwErr(&l->data[len(l)-1],____BAH_COMPILER_VAR_479);
+                    throwErr(&l->data[len(l)-1],____BAH_COMPILER_VAR_482);
 }
 endRCPscope(fnElems,null);
 }
 code =  code->add(code, OUTPUT)->add(code->add(code, OUTPUT), rope("};\n"));
 }
 if ((doesOutput==true)) {
-char * ____BAH_COMPILER_VAR_480 =code->toStr((struct rope*)code);char * ____BAH_COMPILER_VAR_481 =null;
+char * ____BAH_COMPILER_VAR_483 =code->toStr((struct rope*)code);char * ____BAH_COMPILER_VAR_484 =null;
                     {
                         long int currStrOff = 0;
                         long int strLen_0 = strlen(nextLine);
-long int strLen_1 = strlen(____BAH_COMPILER_VAR_480);
+long int strLen_1 = strlen(____BAH_COMPILER_VAR_483);
 ;                            
-                        ____BAH_COMPILER_VAR_481 = memoryAlloc(1 + strLen_0 + strLen_1);
+                        ____BAH_COMPILER_VAR_484 = memoryAlloc(1 + strLen_0 + strLen_1);
                         
-                        strncpy(____BAH_COMPILER_VAR_481+currStrOff, nextLine, strLen_0);
+                        strncpy(____BAH_COMPILER_VAR_484+currStrOff, nextLine, strLen_0);
                         currStrOff += strLen_0;
                         
-                        strncpy(____BAH_COMPILER_VAR_481+currStrOff, ____BAH_COMPILER_VAR_480, strLen_1);
+                        strncpy(____BAH_COMPILER_VAR_484+currStrOff, ____BAH_COMPILER_VAR_483, strLen_1);
                         currStrOff += strLen_1;
                         
                     }
-                    nextLine =  ____BAH_COMPILER_VAR_481;
+                    nextLine =  ____BAH_COMPILER_VAR_484;
 }
 struct string mthdDecl =  getCType(fn->returns->type,elems);
-char * ____BAH_COMPILER_VAR_482 =null;
+char * ____BAH_COMPILER_VAR_485 =null;
                     {
                         long int currStrOff = 0;
                         long int strLen_0 = strlen("(*");
 long int strLen_1 = strlen(mfn->name);
 long int strLen_2 = strlen(")(");
 ;                            
-                        ____BAH_COMPILER_VAR_482 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2);
+                        ____BAH_COMPILER_VAR_485 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2);
                         
-                        strncpy(____BAH_COMPILER_VAR_482+currStrOff, "(*", strLen_0);
+                        strncpy(____BAH_COMPILER_VAR_485+currStrOff, "(*", strLen_0);
                         currStrOff += strLen_0;
                         
-                        strncpy(____BAH_COMPILER_VAR_482+currStrOff, mfn->name, strLen_1);
+                        strncpy(____BAH_COMPILER_VAR_485+currStrOff, mfn->name, strLen_1);
                         currStrOff += strLen_1;
                         
-                        strncpy(____BAH_COMPILER_VAR_482+currStrOff, ")(", strLen_2);
+                        strncpy(____BAH_COMPILER_VAR_485+currStrOff, ")(", strLen_2);
                         currStrOff += strLen_2;
                         
                     }
-                    mthdDecl.append((struct string*)&mthdDecl,____BAH_COMPILER_VAR_482);
+                    mthdDecl.append((struct string*)&mthdDecl,____BAH_COMPILER_VAR_485);
 j =  0;
 while ((j<len(arguments))) {
 struct variable* a =  arguments->data[j];
 struct string tp =  getCType(a->type,elems);
-char * ____BAH_COMPILER_VAR_483 =null;
+char * ____BAH_COMPILER_VAR_486 =null;
                     {
                         long int currStrOff = 0;
                         long int strLen_0 = strlen(" ");
 long int strLen_1 = strlen(a->name);
 ;                            
-                        ____BAH_COMPILER_VAR_483 = memoryAlloc(1 + strLen_0 + strLen_1);
+                        ____BAH_COMPILER_VAR_486 = memoryAlloc(1 + strLen_0 + strLen_1);
                         
-                        strncpy(____BAH_COMPILER_VAR_483+currStrOff, " ", strLen_0);
+                        strncpy(____BAH_COMPILER_VAR_486+currStrOff, " ", strLen_0);
                         currStrOff += strLen_0;
                         
-                        strncpy(____BAH_COMPILER_VAR_483+currStrOff, a->name, strLen_1);
+                        strncpy(____BAH_COMPILER_VAR_486+currStrOff, a->name, strLen_1);
                         currStrOff += strLen_1;
                         
                     }
-                    tp.append((struct string*)&tp,____BAH_COMPILER_VAR_483);
+                    tp.append((struct string*)&tp,____BAH_COMPILER_VAR_486);
 max =  len(arguments) - 1;
 if ((j!=max)) {
 tp.append((struct string*)&tp,",");
 }
-char * ____BAH_COMPILER_VAR_484 =tp.str((struct string*)&tp);mthdDecl.append((struct string*)&mthdDecl,____BAH_COMPILER_VAR_484);
+char * ____BAH_COMPILER_VAR_487 =tp.str((struct string*)&tp);mthdDecl.append((struct string*)&mthdDecl,____BAH_COMPILER_VAR_487);
 j =  j + 1;
 };
 mthdDecl.append((struct string*)&mthdDecl,")");
@@ -10567,22 +10651,22 @@ if ((t.line!=currentLine)) {
 i =  i - 1;
 break;
 }
-char * ____BAH_COMPILER_VAR_485 =null;
+char * ____BAH_COMPILER_VAR_488 =null;
                     {
                         long int currStrOff = 0;
                         long int strLen_0 = strlen(mbmType);
 long int strLen_1 = strlen(t.cont);
 ;                            
-                        ____BAH_COMPILER_VAR_485 = memoryAlloc(1 + strLen_0 + strLen_1);
+                        ____BAH_COMPILER_VAR_488 = memoryAlloc(1 + strLen_0 + strLen_1);
                         
-                        strncpy(____BAH_COMPILER_VAR_485+currStrOff, mbmType, strLen_0);
+                        strncpy(____BAH_COMPILER_VAR_488+currStrOff, mbmType, strLen_0);
                         currStrOff += strLen_0;
                         
-                        strncpy(____BAH_COMPILER_VAR_485+currStrOff, t.cont, strLen_1);
+                        strncpy(____BAH_COMPILER_VAR_488+currStrOff, t.cont, strLen_1);
                         currStrOff += strLen_1;
                         
                     }
-                    mbmType =  ____BAH_COMPILER_VAR_485;
+                    mbmType =  ____BAH_COMPILER_VAR_488;
 i =  i + 1;
 };
 memb->type =  mbmType;
@@ -10597,7 +10681,7 @@ throwErr(&t,"Cannot use {TOKEN} as default value for member.");
 }
 char * tt =  getTypeFromToken(&t,true,elems);
 if ((compTypes(tt,memb->type)==false)) {
-char * ____BAH_COMPILER_VAR_486 =null;
+char * ____BAH_COMPILER_VAR_489 =null;
                     {
                         long int currStrOff = 0;
                         long int strLen_0 = strlen("Cannot use {TOKEN} (");
@@ -10606,25 +10690,25 @@ long int strLen_2 = strlen(") as ");
 long int strLen_3 = strlen(memb->type);
 long int strLen_4 = strlen(" for member.");
 ;                            
-                        ____BAH_COMPILER_VAR_486 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2 + strLen_3 + strLen_4);
+                        ____BAH_COMPILER_VAR_489 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2 + strLen_3 + strLen_4);
                         
-                        strncpy(____BAH_COMPILER_VAR_486+currStrOff, "Cannot use {TOKEN} (", strLen_0);
+                        strncpy(____BAH_COMPILER_VAR_489+currStrOff, "Cannot use {TOKEN} (", strLen_0);
                         currStrOff += strLen_0;
                         
-                        strncpy(____BAH_COMPILER_VAR_486+currStrOff, tt, strLen_1);
+                        strncpy(____BAH_COMPILER_VAR_489+currStrOff, tt, strLen_1);
                         currStrOff += strLen_1;
                         
-                        strncpy(____BAH_COMPILER_VAR_486+currStrOff, ") as ", strLen_2);
+                        strncpy(____BAH_COMPILER_VAR_489+currStrOff, ") as ", strLen_2);
                         currStrOff += strLen_2;
                         
-                        strncpy(____BAH_COMPILER_VAR_486+currStrOff, memb->type, strLen_3);
+                        strncpy(____BAH_COMPILER_VAR_489+currStrOff, memb->type, strLen_3);
                         currStrOff += strLen_3;
                         
-                        strncpy(____BAH_COMPILER_VAR_486+currStrOff, " for member.", strLen_4);
+                        strncpy(____BAH_COMPILER_VAR_489+currStrOff, " for member.", strLen_4);
                         currStrOff += strLen_4;
                         
                     }
-                    throwErr(&t,____BAH_COMPILER_VAR_486);
+                    throwErr(&t,____BAH_COMPILER_VAR_489);
 }
 memb->def =  t.cont;
 }
@@ -10659,93 +10743,93 @@ long int j =  0;
 while ((j<len(tmpfn->args))) {
 struct variable* arg =  tmpfn->args->data[j];
 struct string ct =  getCType(arg->type,elems);
-char * ____BAH_COMPILER_VAR_487 =ct.str((struct string*)&ct);char * ____BAH_COMPILER_VAR_488 =null;
+char * ____BAH_COMPILER_VAR_490 =ct.str((struct string*)&ct);char * ____BAH_COMPILER_VAR_491 =null;
                     {
                         long int currStrOff = 0;
                         long int strLen_0 = strlen(tmpfnArgsCType);
-long int strLen_1 = strlen(____BAH_COMPILER_VAR_487);
+long int strLen_1 = strlen(____BAH_COMPILER_VAR_490);
 ;                            
-                        ____BAH_COMPILER_VAR_488 = memoryAlloc(1 + strLen_0 + strLen_1);
+                        ____BAH_COMPILER_VAR_491 = memoryAlloc(1 + strLen_0 + strLen_1);
                         
-                        strncpy(____BAH_COMPILER_VAR_488+currStrOff, tmpfnArgsCType, strLen_0);
+                        strncpy(____BAH_COMPILER_VAR_491+currStrOff, tmpfnArgsCType, strLen_0);
                         currStrOff += strLen_0;
                         
-                        strncpy(____BAH_COMPILER_VAR_488+currStrOff, ____BAH_COMPILER_VAR_487, strLen_1);
+                        strncpy(____BAH_COMPILER_VAR_491+currStrOff, ____BAH_COMPILER_VAR_490, strLen_1);
                         currStrOff += strLen_1;
                         
                     }
-                    tmpfnArgsCType =  ____BAH_COMPILER_VAR_488;
+                    tmpfnArgsCType =  ____BAH_COMPILER_VAR_491;
 j =  j + 1;
 if ((j<len(tmpfn->args))) {
-char * ____BAH_COMPILER_VAR_489 =null;
+char * ____BAH_COMPILER_VAR_492 =null;
                     {
                         long int currStrOff = 0;
                         long int strLen_0 = strlen(tmpfnArgsCType);
 long int strLen_1 = strlen(",");
 ;                            
-                        ____BAH_COMPILER_VAR_489 = memoryAlloc(1 + strLen_0 + strLen_1);
+                        ____BAH_COMPILER_VAR_492 = memoryAlloc(1 + strLen_0 + strLen_1);
                         
-                        strncpy(____BAH_COMPILER_VAR_489+currStrOff, tmpfnArgsCType, strLen_0);
+                        strncpy(____BAH_COMPILER_VAR_492+currStrOff, tmpfnArgsCType, strLen_0);
                         currStrOff += strLen_0;
                         
-                        strncpy(____BAH_COMPILER_VAR_489+currStrOff, ",", strLen_1);
+                        strncpy(____BAH_COMPILER_VAR_492+currStrOff, ",", strLen_1);
                         currStrOff += strLen_1;
                         
                     }
-                    tmpfnArgsCType =  ____BAH_COMPILER_VAR_489;
+                    tmpfnArgsCType =  ____BAH_COMPILER_VAR_492;
 }
 };
-char * ____BAH_COMPILER_VAR_490 =tmpfnRetCType.str((struct string*)&tmpfnRetCType);char * ____BAH_COMPILER_VAR_491 =null;
+char * ____BAH_COMPILER_VAR_493 =tmpfnRetCType.str((struct string*)&tmpfnRetCType);char * ____BAH_COMPILER_VAR_494 =null;
                     {
                         long int currStrOff = 0;
-                        long int strLen_0 = strlen(____BAH_COMPILER_VAR_490);
+                        long int strLen_0 = strlen(____BAH_COMPILER_VAR_493);
 long int strLen_1 = strlen(" (*");
 long int strLen_2 = strlen(memb->name);
 long int strLen_3 = strlen(")(");
 long int strLen_4 = strlen(tmpfnArgsCType);
 long int strLen_5 = strlen(")");
 ;                            
-                        ____BAH_COMPILER_VAR_491 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2 + strLen_3 + strLen_4 + strLen_5);
+                        ____BAH_COMPILER_VAR_494 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2 + strLen_3 + strLen_4 + strLen_5);
                         
-                        strncpy(____BAH_COMPILER_VAR_491+currStrOff, ____BAH_COMPILER_VAR_490, strLen_0);
+                        strncpy(____BAH_COMPILER_VAR_494+currStrOff, ____BAH_COMPILER_VAR_493, strLen_0);
                         currStrOff += strLen_0;
                         
-                        strncpy(____BAH_COMPILER_VAR_491+currStrOff, " (*", strLen_1);
+                        strncpy(____BAH_COMPILER_VAR_494+currStrOff, " (*", strLen_1);
                         currStrOff += strLen_1;
                         
-                        strncpy(____BAH_COMPILER_VAR_491+currStrOff, memb->name, strLen_2);
+                        strncpy(____BAH_COMPILER_VAR_494+currStrOff, memb->name, strLen_2);
                         currStrOff += strLen_2;
                         
-                        strncpy(____BAH_COMPILER_VAR_491+currStrOff, ")(", strLen_3);
+                        strncpy(____BAH_COMPILER_VAR_494+currStrOff, ")(", strLen_3);
                         currStrOff += strLen_3;
                         
-                        strncpy(____BAH_COMPILER_VAR_491+currStrOff, tmpfnArgsCType, strLen_4);
+                        strncpy(____BAH_COMPILER_VAR_494+currStrOff, tmpfnArgsCType, strLen_4);
                         currStrOff += strLen_4;
                         
-                        strncpy(____BAH_COMPILER_VAR_491+currStrOff, ")", strLen_5);
+                        strncpy(____BAH_COMPILER_VAR_494+currStrOff, ")", strLen_5);
                         currStrOff += strLen_5;
                         
                     }
-                    membDeclStr =  ____BAH_COMPILER_VAR_491;
+                    membDeclStr =  ____BAH_COMPILER_VAR_494;
 }
 else {
 struct string membDecl =  getCType(memb->type,elems);
-char * ____BAH_COMPILER_VAR_492 =null;
+char * ____BAH_COMPILER_VAR_495 =null;
                     {
                         long int currStrOff = 0;
                         long int strLen_0 = strlen(" ");
 long int strLen_1 = strlen(memb->name);
 ;                            
-                        ____BAH_COMPILER_VAR_492 = memoryAlloc(1 + strLen_0 + strLen_1);
+                        ____BAH_COMPILER_VAR_495 = memoryAlloc(1 + strLen_0 + strLen_1);
                         
-                        strncpy(____BAH_COMPILER_VAR_492+currStrOff, " ", strLen_0);
+                        strncpy(____BAH_COMPILER_VAR_495+currStrOff, " ", strLen_0);
                         currStrOff += strLen_0;
                         
-                        strncpy(____BAH_COMPILER_VAR_492+currStrOff, memb->name, strLen_1);
+                        strncpy(____BAH_COMPILER_VAR_495+currStrOff, memb->name, strLen_1);
                         currStrOff += strLen_1;
                         
                     }
-                    membDecl.append((struct string*)&membDecl,____BAH_COMPILER_VAR_492);
+                    membDecl.append((struct string*)&membDecl,____BAH_COMPILER_VAR_495);
 membDeclStr =  membDecl.str((struct string*)&membDecl);
 }
 
@@ -10768,45 +10852,45 @@ s->members =  members;
 if ((doesOutput==true)) {
 OUTPUT =  OOUT;
 NEXT_LINE =  nextLine;
-char * ____BAH_COMPILER_VAR_493 =null;
+char * ____BAH_COMPILER_VAR_496 =null;
                     {
                         long int currStrOff = 0;
                         long int strLen_0 = strlen("struct ");
 long int strLen_1 = strlen(s->name);
 long int strLen_2 = strlen(" {\n");
 ;                            
-                        ____BAH_COMPILER_VAR_493 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2);
+                        ____BAH_COMPILER_VAR_496 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2);
                         
-                        strncpy(____BAH_COMPILER_VAR_493+currStrOff, "struct ", strLen_0);
+                        strncpy(____BAH_COMPILER_VAR_496+currStrOff, "struct ", strLen_0);
                         currStrOff += strLen_0;
                         
-                        strncpy(____BAH_COMPILER_VAR_493+currStrOff, s->name, strLen_1);
+                        strncpy(____BAH_COMPILER_VAR_496+currStrOff, s->name, strLen_1);
                         currStrOff += strLen_1;
                         
-                        strncpy(____BAH_COMPILER_VAR_493+currStrOff, " {\n", strLen_2);
+                        strncpy(____BAH_COMPILER_VAR_496+currStrOff, " {\n", strLen_2);
                         currStrOff += strLen_2;
                         
                     }
-                    struct rope* code =  rope(____BAH_COMPILER_VAR_493);
+                    struct rope* code =  rope(____BAH_COMPILER_VAR_496);
 i =  0;
 while ((i<len(allMembs))) {
 char * m =  allMembs->data[i];
-char * ____BAH_COMPILER_VAR_494 =null;
+char * ____BAH_COMPILER_VAR_497 =null;
                     {
                         long int currStrOff = 0;
                         long int strLen_0 = strlen(m);
 long int strLen_1 = strlen(";\n");
 ;                            
-                        ____BAH_COMPILER_VAR_494 = memoryAlloc(1 + strLen_0 + strLen_1);
+                        ____BAH_COMPILER_VAR_497 = memoryAlloc(1 + strLen_0 + strLen_1);
                         
-                        strncpy(____BAH_COMPILER_VAR_494+currStrOff, m, strLen_0);
+                        strncpy(____BAH_COMPILER_VAR_497+currStrOff, m, strLen_0);
                         currStrOff += strLen_0;
                         
-                        strncpy(____BAH_COMPILER_VAR_494+currStrOff, ";\n", strLen_1);
+                        strncpy(____BAH_COMPILER_VAR_497+currStrOff, ";\n", strLen_1);
                         currStrOff += strLen_1;
                         
                     }
-                    code =  code->add(code, rope(____BAH_COMPILER_VAR_494));
+                    code =  code->add(code, rope(____BAH_COMPILER_VAR_497));
 i =  i + 1;
 };
 if ((RCPavailable()==true)) {
@@ -10859,22 +10943,22 @@ fns->data[len(fns)] =  fn;
 }
 };
 if ((doesOutput==true)) {
-char * ____BAH_COMPILER_VAR_495 =null;
+char * ____BAH_COMPILER_VAR_498 =null;
                     {
                         long int currStrOff = 0;
                         long int strLen_0 = strlen(code);
 long int strLen_1 = strlen(";\n");
 ;                            
-                        ____BAH_COMPILER_VAR_495 = memoryAlloc(1 + strLen_0 + strLen_1);
+                        ____BAH_COMPILER_VAR_498 = memoryAlloc(1 + strLen_0 + strLen_1);
                         
-                        strncpy(____BAH_COMPILER_VAR_495+currStrOff, code, strLen_0);
+                        strncpy(____BAH_COMPILER_VAR_498+currStrOff, code, strLen_0);
                         currStrOff += strLen_0;
                         
-                        strncpy(____BAH_COMPILER_VAR_495+currStrOff, ";\n", strLen_1);
+                        strncpy(____BAH_COMPILER_VAR_498+currStrOff, ";\n", strLen_1);
                         currStrOff += strLen_1;
                         
                     }
-                    OUTPUT =  OUTPUT->add(OUTPUT, rope(____BAH_COMPILER_VAR_495));
+                    OUTPUT =  OUTPUT->add(OUTPUT, rope(____BAH_COMPILER_VAR_498));
 }
 }
 else {
@@ -10887,7 +10971,7 @@ throwErr(&ft,"Cannot use {TOKEN} as new type name.");
 struct string cTypeNewType =  getCType(st.cont,elems);
 char * cTypeNewTypeStr =  cTypeNewType.str((struct string*)&cTypeNewType);
 if ((doesOutput==true)) {
-char * ____BAH_COMPILER_VAR_496 =null;
+char * ____BAH_COMPILER_VAR_499 =null;
                     {
                         long int currStrOff = 0;
                         long int strLen_0 = strlen("typedef ");
@@ -10896,25 +10980,25 @@ long int strLen_2 = strlen(" ");
 long int strLen_3 = strlen(ft.cont);
 long int strLen_4 = strlen(";\n");
 ;                            
-                        ____BAH_COMPILER_VAR_496 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2 + strLen_3 + strLen_4);
+                        ____BAH_COMPILER_VAR_499 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2 + strLen_3 + strLen_4);
                         
-                        strncpy(____BAH_COMPILER_VAR_496+currStrOff, "typedef ", strLen_0);
+                        strncpy(____BAH_COMPILER_VAR_499+currStrOff, "typedef ", strLen_0);
                         currStrOff += strLen_0;
                         
-                        strncpy(____BAH_COMPILER_VAR_496+currStrOff, cTypeNewTypeStr, strLen_1);
+                        strncpy(____BAH_COMPILER_VAR_499+currStrOff, cTypeNewTypeStr, strLen_1);
                         currStrOff += strLen_1;
                         
-                        strncpy(____BAH_COMPILER_VAR_496+currStrOff, " ", strLen_2);
+                        strncpy(____BAH_COMPILER_VAR_499+currStrOff, " ", strLen_2);
                         currStrOff += strLen_2;
                         
-                        strncpy(____BAH_COMPILER_VAR_496+currStrOff, ft.cont, strLen_3);
+                        strncpy(____BAH_COMPILER_VAR_499+currStrOff, ft.cont, strLen_3);
                         currStrOff += strLen_3;
                         
-                        strncpy(____BAH_COMPILER_VAR_496+currStrOff, ";\n", strLen_4);
+                        strncpy(____BAH_COMPILER_VAR_499+currStrOff, ";\n", strLen_4);
                         currStrOff += strLen_4;
                         
                     }
-                    OUTPUT =  OUTPUT->add(OUTPUT, rope(____BAH_COMPILER_VAR_496));
+                    OUTPUT =  OUTPUT->add(OUTPUT, rope(____BAH_COMPILER_VAR_499));
 }
 array(char *)* tps =  elems->types;
 
@@ -11018,7 +11102,7 @@ vars->length = nLength+1;
 vars->data[len(vars)] =  v;
 }
 };
-char * ____BAH_COMPILER_VAR_497 =null;
+char * ____BAH_COMPILER_VAR_500 =null;
                     {
                         long int currStrOff = 0;
                         long int strLen_0 = strlen("#define ");
@@ -11027,25 +11111,25 @@ long int strLen_2 = strlen(" ");
 long int strLen_3 = strlen(valt.cont);
 long int strLen_4 = strlen("\n");
 ;                            
-                        ____BAH_COMPILER_VAR_497 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2 + strLen_3 + strLen_4);
+                        ____BAH_COMPILER_VAR_500 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2 + strLen_3 + strLen_4);
                         
-                        strncpy(____BAH_COMPILER_VAR_497+currStrOff, "#define ", strLen_0);
+                        strncpy(____BAH_COMPILER_VAR_500+currStrOff, "#define ", strLen_0);
                         currStrOff += strLen_0;
                         
-                        strncpy(____BAH_COMPILER_VAR_497+currStrOff, v->name, strLen_1);
+                        strncpy(____BAH_COMPILER_VAR_500+currStrOff, v->name, strLen_1);
                         currStrOff += strLen_1;
                         
-                        strncpy(____BAH_COMPILER_VAR_497+currStrOff, " ", strLen_2);
+                        strncpy(____BAH_COMPILER_VAR_500+currStrOff, " ", strLen_2);
                         currStrOff += strLen_2;
                         
-                        strncpy(____BAH_COMPILER_VAR_497+currStrOff, valt.cont, strLen_3);
+                        strncpy(____BAH_COMPILER_VAR_500+currStrOff, valt.cont, strLen_3);
                         currStrOff += strLen_3;
                         
-                        strncpy(____BAH_COMPILER_VAR_497+currStrOff, "\n", strLen_4);
+                        strncpy(____BAH_COMPILER_VAR_500+currStrOff, "\n", strLen_4);
                         currStrOff += strLen_4;
                         
                     }
-                    OUTPUT =  OUTPUT->add(OUTPUT, rope(____BAH_COMPILER_VAR_497));
+                    OUTPUT =  OUTPUT->add(OUTPUT, rope(____BAH_COMPILER_VAR_500));
 };
 void parseReturn(__BAH_ARR_TYPE_Tok l,struct Elems* elems){
 if ((len(l)>2)) {
@@ -11057,26 +11141,26 @@ throwErr(&l->data[0],"Cannot return a value outside of a function.");
 char * rv =  "";
 if ((len(l)==1)) {
 if ((strlen(currentFn->returns->type)!=0)) {
-char * ____BAH_COMPILER_VAR_498 =null;
+char * ____BAH_COMPILER_VAR_501 =null;
                     {
                         long int currStrOff = 0;
                         long int strLen_0 = strlen("Cannot return nothing as ");
 long int strLen_1 = strlen(currentFn->returns->type);
 long int strLen_2 = strlen(".");
 ;                            
-                        ____BAH_COMPILER_VAR_498 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2);
+                        ____BAH_COMPILER_VAR_501 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2);
                         
-                        strncpy(____BAH_COMPILER_VAR_498+currStrOff, "Cannot return nothing as ", strLen_0);
+                        strncpy(____BAH_COMPILER_VAR_501+currStrOff, "Cannot return nothing as ", strLen_0);
                         currStrOff += strLen_0;
                         
-                        strncpy(____BAH_COMPILER_VAR_498+currStrOff, currentFn->returns->type, strLen_1);
+                        strncpy(____BAH_COMPILER_VAR_501+currStrOff, currentFn->returns->type, strLen_1);
                         currStrOff += strLen_1;
                         
-                        strncpy(____BAH_COMPILER_VAR_498+currStrOff, ".", strLen_2);
+                        strncpy(____BAH_COMPILER_VAR_501+currStrOff, ".", strLen_2);
                         currStrOff += strLen_2;
                         
                     }
-                    throwErr(&l->data[0],____BAH_COMPILER_VAR_498);
+                    throwErr(&l->data[0],____BAH_COMPILER_VAR_501);
 }
 }
 else {
@@ -11093,7 +11177,7 @@ OUTPUT =  OUTPUT->add(OUTPUT, incrVar(v,elems));
 rv =  rvt.cont;
 char * tt =  getTypeFromToken(&rvt,true,elems);
 if ((compTypes(tt,currentFn->returns->type)==false)) {
-char * ____BAH_COMPILER_VAR_499 =null;
+char * ____BAH_COMPILER_VAR_502 =null;
                     {
                         long int currStrOff = 0;
                         long int strLen_0 = strlen("Cannot return {TOKEN} (");
@@ -11102,25 +11186,25 @@ long int strLen_2 = strlen(") as ");
 long int strLen_3 = strlen(currentFn->returns->type);
 long int strLen_4 = strlen(".");
 ;                            
-                        ____BAH_COMPILER_VAR_499 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2 + strLen_3 + strLen_4);
+                        ____BAH_COMPILER_VAR_502 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2 + strLen_3 + strLen_4);
                         
-                        strncpy(____BAH_COMPILER_VAR_499+currStrOff, "Cannot return {TOKEN} (", strLen_0);
+                        strncpy(____BAH_COMPILER_VAR_502+currStrOff, "Cannot return {TOKEN} (", strLen_0);
                         currStrOff += strLen_0;
                         
-                        strncpy(____BAH_COMPILER_VAR_499+currStrOff, tt, strLen_1);
+                        strncpy(____BAH_COMPILER_VAR_502+currStrOff, tt, strLen_1);
                         currStrOff += strLen_1;
                         
-                        strncpy(____BAH_COMPILER_VAR_499+currStrOff, ") as ", strLen_2);
+                        strncpy(____BAH_COMPILER_VAR_502+currStrOff, ") as ", strLen_2);
                         currStrOff += strLen_2;
                         
-                        strncpy(____BAH_COMPILER_VAR_499+currStrOff, currentFn->returns->type, strLen_3);
+                        strncpy(____BAH_COMPILER_VAR_502+currStrOff, currentFn->returns->type, strLen_3);
                         currStrOff += strLen_3;
                         
-                        strncpy(____BAH_COMPILER_VAR_499+currStrOff, ".", strLen_4);
+                        strncpy(____BAH_COMPILER_VAR_502+currStrOff, ".", strLen_4);
                         currStrOff += strLen_4;
                         
                     }
-                    throwErr(&rvt,____BAH_COMPILER_VAR_499);
+                    throwErr(&rvt,____BAH_COMPILER_VAR_502);
 }
 }
 if ((compilerState.isBranch==false)) {
@@ -11129,59 +11213,59 @@ currentFn->returned =  true;
 char * rvar =  genCompilerVar();
 struct string cType =  getCType(currentFn->returns->type,elems);
 if ((strlen(rv)>0)) {
-char * ____BAH_COMPILER_VAR_500 =cType.str((struct string*)&cType);char * ____BAH_COMPILER_VAR_501 =null;
+char * ____BAH_COMPILER_VAR_503 =cType.str((struct string*)&cType);char * ____BAH_COMPILER_VAR_504 =null;
                     {
                         long int currStrOff = 0;
-                        long int strLen_0 = strlen(____BAH_COMPILER_VAR_500);
+                        long int strLen_0 = strlen(____BAH_COMPILER_VAR_503);
 long int strLen_1 = strlen(" ");
 long int strLen_2 = strlen(rvar);
 long int strLen_3 = strlen(" = ");
 long int strLen_4 = strlen(rv);
 long int strLen_5 = strlen(";\n");
 ;                            
-                        ____BAH_COMPILER_VAR_501 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2 + strLen_3 + strLen_4 + strLen_5);
+                        ____BAH_COMPILER_VAR_504 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2 + strLen_3 + strLen_4 + strLen_5);
                         
-                        strncpy(____BAH_COMPILER_VAR_501+currStrOff, ____BAH_COMPILER_VAR_500, strLen_0);
+                        strncpy(____BAH_COMPILER_VAR_504+currStrOff, ____BAH_COMPILER_VAR_503, strLen_0);
                         currStrOff += strLen_0;
                         
-                        strncpy(____BAH_COMPILER_VAR_501+currStrOff, " ", strLen_1);
+                        strncpy(____BAH_COMPILER_VAR_504+currStrOff, " ", strLen_1);
                         currStrOff += strLen_1;
                         
-                        strncpy(____BAH_COMPILER_VAR_501+currStrOff, rvar, strLen_2);
+                        strncpy(____BAH_COMPILER_VAR_504+currStrOff, rvar, strLen_2);
                         currStrOff += strLen_2;
                         
-                        strncpy(____BAH_COMPILER_VAR_501+currStrOff, " = ", strLen_3);
+                        strncpy(____BAH_COMPILER_VAR_504+currStrOff, " = ", strLen_3);
                         currStrOff += strLen_3;
                         
-                        strncpy(____BAH_COMPILER_VAR_501+currStrOff, rv, strLen_4);
+                        strncpy(____BAH_COMPILER_VAR_504+currStrOff, rv, strLen_4);
                         currStrOff += strLen_4;
                         
-                        strncpy(____BAH_COMPILER_VAR_501+currStrOff, ";\n", strLen_5);
+                        strncpy(____BAH_COMPILER_VAR_504+currStrOff, ";\n", strLen_5);
                         currStrOff += strLen_5;
                         
                     }
-                    OUTPUT =  OUTPUT->add(OUTPUT, rope(____BAH_COMPILER_VAR_501));
+                    OUTPUT =  OUTPUT->add(OUTPUT, rope(____BAH_COMPILER_VAR_504));
 endRCPscope(elems,null);
-char * ____BAH_COMPILER_VAR_502 =null;
+char * ____BAH_COMPILER_VAR_505 =null;
                     {
                         long int currStrOff = 0;
                         long int strLen_0 = strlen("return ");
 long int strLen_1 = strlen(rvar);
 long int strLen_2 = strlen(";\n");
 ;                            
-                        ____BAH_COMPILER_VAR_502 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2);
+                        ____BAH_COMPILER_VAR_505 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2);
                         
-                        strncpy(____BAH_COMPILER_VAR_502+currStrOff, "return ", strLen_0);
+                        strncpy(____BAH_COMPILER_VAR_505+currStrOff, "return ", strLen_0);
                         currStrOff += strLen_0;
                         
-                        strncpy(____BAH_COMPILER_VAR_502+currStrOff, rvar, strLen_1);
+                        strncpy(____BAH_COMPILER_VAR_505+currStrOff, rvar, strLen_1);
                         currStrOff += strLen_1;
                         
-                        strncpy(____BAH_COMPILER_VAR_502+currStrOff, ";\n", strLen_2);
+                        strncpy(____BAH_COMPILER_VAR_505+currStrOff, ";\n", strLen_2);
                         currStrOff += strLen_2;
                         
                     }
-                    OUTPUT =  OUTPUT->add(OUTPUT, rope(____BAH_COMPILER_VAR_502));
+                    OUTPUT =  OUTPUT->add(OUTPUT, rope(____BAH_COMPILER_VAR_505));
 }
 else {
 endRCPscope(elems,null);
@@ -11227,26 +11311,26 @@ tokens->data[len(tokens)] =  t;
 };
 i =  i + 1;
 };
-char * ____BAH_COMPILER_VAR_503 =null;
+char * ____BAH_COMPILER_VAR_506 =null;
                     {
                         long int currStrOff = 0;
                         long int strLen_0 = strlen("if (");
 long int strLen_1 = strlen(condt.cont);
 long int strLen_2 = strlen(") {\n");
 ;                            
-                        ____BAH_COMPILER_VAR_503 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2);
+                        ____BAH_COMPILER_VAR_506 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2);
                         
-                        strncpy(____BAH_COMPILER_VAR_503+currStrOff, "if (", strLen_0);
+                        strncpy(____BAH_COMPILER_VAR_506+currStrOff, "if (", strLen_0);
                         currStrOff += strLen_0;
                         
-                        strncpy(____BAH_COMPILER_VAR_503+currStrOff, condt.cont, strLen_1);
+                        strncpy(____BAH_COMPILER_VAR_506+currStrOff, condt.cont, strLen_1);
                         currStrOff += strLen_1;
                         
-                        strncpy(____BAH_COMPILER_VAR_503+currStrOff, ") {\n", strLen_2);
+                        strncpy(____BAH_COMPILER_VAR_506+currStrOff, ") {\n", strLen_2);
                         currStrOff += strLen_2;
                         
                     }
-                    OUTPUT =  OUTPUT->add(OUTPUT, rope(____BAH_COMPILER_VAR_503));
+                    OUTPUT =  OUTPUT->add(OUTPUT, rope(____BAH_COMPILER_VAR_506));
 struct Elems* ifElems =  dupElems(elems);
 int oldIB =  compilerState.isBranch;
 compilerState.isBranch =  true;
@@ -11367,26 +11451,26 @@ tokens->data[len(tokens)] =  t;
 };
 i =  i + 1;
 };
-char * ____BAH_COMPILER_VAR_504 =null;
+char * ____BAH_COMPILER_VAR_507 =null;
                     {
                         long int currStrOff = 0;
                         long int strLen_0 = strlen("while (");
 long int strLen_1 = strlen(condt.cont);
 long int strLen_2 = strlen(") {\n");
 ;                            
-                        ____BAH_COMPILER_VAR_504 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2);
+                        ____BAH_COMPILER_VAR_507 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2);
                         
-                        strncpy(____BAH_COMPILER_VAR_504+currStrOff, "while (", strLen_0);
+                        strncpy(____BAH_COMPILER_VAR_507+currStrOff, "while (", strLen_0);
                         currStrOff += strLen_0;
                         
-                        strncpy(____BAH_COMPILER_VAR_504+currStrOff, condt.cont, strLen_1);
+                        strncpy(____BAH_COMPILER_VAR_507+currStrOff, condt.cont, strLen_1);
                         currStrOff += strLen_1;
                         
-                        strncpy(____BAH_COMPILER_VAR_504+currStrOff, ") {\n", strLen_2);
+                        strncpy(____BAH_COMPILER_VAR_507+currStrOff, ") {\n", strLen_2);
                         currStrOff += strLen_2;
                         
                     }
-                    OUTPUT =  OUTPUT->add(OUTPUT, rope(____BAH_COMPILER_VAR_504));
+                    OUTPUT =  OUTPUT->add(OUTPUT, rope(____BAH_COMPILER_VAR_507));
 struct Elems* ifElems =  dupElems(elems);
 int oldIB =  compilerState.isBranch;
 int oldIF =  compilerState.isFor;
@@ -11407,25 +11491,39 @@ if ((len(l)!=1)) {
 throwErr(&ft,"Nothing expected after {TOKEN}.");
 }
 endRCPscope(elems,null);
-char * ____BAH_COMPILER_VAR_505 =null;
+char * ____BAH_COMPILER_VAR_508 =null;
                     {
                         long int currStrOff = 0;
                         long int strLen_0 = strlen(ft.cont);
 long int strLen_1 = strlen(";\n");
 ;                            
-                        ____BAH_COMPILER_VAR_505 = memoryAlloc(1 + strLen_0 + strLen_1);
+                        ____BAH_COMPILER_VAR_508 = memoryAlloc(1 + strLen_0 + strLen_1);
                         
-                        strncpy(____BAH_COMPILER_VAR_505+currStrOff, ft.cont, strLen_0);
+                        strncpy(____BAH_COMPILER_VAR_508+currStrOff, ft.cont, strLen_0);
                         currStrOff += strLen_0;
                         
-                        strncpy(____BAH_COMPILER_VAR_505+currStrOff, ";\n", strLen_1);
+                        strncpy(____BAH_COMPILER_VAR_508+currStrOff, ";\n", strLen_1);
                         currStrOff += strLen_1;
                         
                     }
-                    OUTPUT =  OUTPUT->add(OUTPUT, rope(____BAH_COMPILER_VAR_505));
+                    OUTPUT =  OUTPUT->add(OUTPUT, rope(____BAH_COMPILER_VAR_508));
 };
 void parsePreKeyword(__BAH_ARR_TYPE_Tok l,struct Elems* elems){
 struct Tok ft =  l->data[0];
+if ((strcmp(ft.cont, "#warning") == 0)) {
+if ((len(l)!=2)) {
+throwErr(&ft,"Invalid usage of {TOKEN} '#warning \"message\"'.");
+}
+struct Tok mt =  l->data[1];
+if ((mt.type!=TOKEN_TYPE_STR)) {
+throwErr(&mt,"Cannot use {TOKEN} as a string.");
+}
+struct string msg =  string(mt.cont);
+msg.trimLeft((struct string*)&msg,1);
+msg.trimRight((struct string*)&msg,1);
+char * ____BAH_COMPILER_VAR_509 =msg.str((struct string*)&msg);throwWarning(____BAH_COMPILER_VAR_509);
+return;
+}
 if ((len(l)<3)) {
 throwErr(&ft,"Invalid usage of keyword {TOKEN}.");
 }
@@ -11535,7 +11633,7 @@ compilerState.cLibs->data[len(compilerState.cLibs)] =  "lpthread";
 struct string sFnT =  string(fnT.cont);
 array(struct string)* fnNameParts =  splitString(sFnT,"(");
 struct string fnName =  fnNameParts->data[0];
-char * ____BAH_COMPILER_VAR_513 =fnName.str((struct string*)&fnName);struct func* fn =  searchFunc(____BAH_COMPILER_VAR_513,elems,true);
+char * ____BAH_COMPILER_VAR_518 =fnName.str((struct string*)&fnName);struct func* fn =  searchFunc(____BAH_COMPILER_VAR_518,elems,true);
 if ((fn==null)) {
 throwErr(&fnT,"Internal compiler error.\n Error in async parsing, arround {TOKEN}.");
 }
@@ -11545,99 +11643,99 @@ i =  0;
 while ((i<len(fn->args))) {
 struct variable* a =  fn->args->data[i];
 struct string cType =  getCType(a->type,elems);
-char * ____BAH_COMPILER_VAR_514 =cType.str((struct string*)&cType);char * ____BAH_COMPILER_VAR_515 =null;
+char * ____BAH_COMPILER_VAR_519 =cType.str((struct string*)&cType);char * ____BAH_COMPILER_VAR_520 =null;
                     {
                         long int currStrOff = 0;
                         long int strLen_0 = strlen(sMembs);
-long int strLen_1 = strlen(____BAH_COMPILER_VAR_514);
+long int strLen_1 = strlen(____BAH_COMPILER_VAR_519);
 long int strLen_2 = strlen(" ");
 long int strLen_3 = strlen(a->name);
 long int strLen_4 = strlen(";\n");
 ;                            
-                        ____BAH_COMPILER_VAR_515 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2 + strLen_3 + strLen_4);
+                        ____BAH_COMPILER_VAR_520 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2 + strLen_3 + strLen_4);
                         
-                        strncpy(____BAH_COMPILER_VAR_515+currStrOff, sMembs, strLen_0);
+                        strncpy(____BAH_COMPILER_VAR_520+currStrOff, sMembs, strLen_0);
                         currStrOff += strLen_0;
                         
-                        strncpy(____BAH_COMPILER_VAR_515+currStrOff, ____BAH_COMPILER_VAR_514, strLen_1);
+                        strncpy(____BAH_COMPILER_VAR_520+currStrOff, ____BAH_COMPILER_VAR_519, strLen_1);
                         currStrOff += strLen_1;
                         
-                        strncpy(____BAH_COMPILER_VAR_515+currStrOff, " ", strLen_2);
+                        strncpy(____BAH_COMPILER_VAR_520+currStrOff, " ", strLen_2);
                         currStrOff += strLen_2;
                         
-                        strncpy(____BAH_COMPILER_VAR_515+currStrOff, a->name, strLen_3);
+                        strncpy(____BAH_COMPILER_VAR_520+currStrOff, a->name, strLen_3);
                         currStrOff += strLen_3;
                         
-                        strncpy(____BAH_COMPILER_VAR_515+currStrOff, ";\n", strLen_4);
+                        strncpy(____BAH_COMPILER_VAR_520+currStrOff, ";\n", strLen_4);
                         currStrOff += strLen_4;
                         
                     }
-                    sMembs =  ____BAH_COMPILER_VAR_515;
-char * ____BAH_COMPILER_VAR_516 =null;
+                    sMembs =  ____BAH_COMPILER_VAR_520;
+char * ____BAH_COMPILER_VAR_521 =null;
                     {
                         long int currStrOff = 0;
                         long int strLen_0 = strlen(unSerMembs);
 long int strLen_1 = strlen("args->");
 long int strLen_2 = strlen(a->name);
 ;                            
-                        ____BAH_COMPILER_VAR_516 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2);
+                        ____BAH_COMPILER_VAR_521 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2);
                         
-                        strncpy(____BAH_COMPILER_VAR_516+currStrOff, unSerMembs, strLen_0);
+                        strncpy(____BAH_COMPILER_VAR_521+currStrOff, unSerMembs, strLen_0);
                         currStrOff += strLen_0;
                         
-                        strncpy(____BAH_COMPILER_VAR_516+currStrOff, "args->", strLen_1);
+                        strncpy(____BAH_COMPILER_VAR_521+currStrOff, "args->", strLen_1);
                         currStrOff += strLen_1;
                         
-                        strncpy(____BAH_COMPILER_VAR_516+currStrOff, a->name, strLen_2);
+                        strncpy(____BAH_COMPILER_VAR_521+currStrOff, a->name, strLen_2);
                         currStrOff += strLen_2;
                         
                     }
-                    unSerMembs =  ____BAH_COMPILER_VAR_516;
+                    unSerMembs =  ____BAH_COMPILER_VAR_521;
 i =  i + 1;
 if ((i<len(fn->args))) {
-char * ____BAH_COMPILER_VAR_517 =null;
+char * ____BAH_COMPILER_VAR_522 =null;
                     {
                         long int currStrOff = 0;
                         long int strLen_0 = strlen(unSerMembs);
 long int strLen_1 = strlen(", ");
 ;                            
-                        ____BAH_COMPILER_VAR_517 = memoryAlloc(1 + strLen_0 + strLen_1);
+                        ____BAH_COMPILER_VAR_522 = memoryAlloc(1 + strLen_0 + strLen_1);
                         
-                        strncpy(____BAH_COMPILER_VAR_517+currStrOff, unSerMembs, strLen_0);
+                        strncpy(____BAH_COMPILER_VAR_522+currStrOff, unSerMembs, strLen_0);
                         currStrOff += strLen_0;
                         
-                        strncpy(____BAH_COMPILER_VAR_517+currStrOff, ", ", strLen_1);
+                        strncpy(____BAH_COMPILER_VAR_522+currStrOff, ", ", strLen_1);
                         currStrOff += strLen_1;
                         
                     }
-                    unSerMembs =  ____BAH_COMPILER_VAR_517;
+                    unSerMembs =  ____BAH_COMPILER_VAR_522;
 }
 };
-char * ____BAH_COMPILER_VAR_518 =null;
+char * ____BAH_COMPILER_VAR_523 =null;
                     {
                         long int currStrOff = 0;
                         long int strLen_0 = strlen("struct {\n");
 long int strLen_1 = strlen(sMembs);
 long int strLen_2 = strlen("}");
 ;                            
-                        ____BAH_COMPILER_VAR_518 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2);
+                        ____BAH_COMPILER_VAR_523 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2);
                         
-                        strncpy(____BAH_COMPILER_VAR_518+currStrOff, "struct {\n", strLen_0);
+                        strncpy(____BAH_COMPILER_VAR_523+currStrOff, "struct {\n", strLen_0);
                         currStrOff += strLen_0;
                         
-                        strncpy(____BAH_COMPILER_VAR_518+currStrOff, sMembs, strLen_1);
+                        strncpy(____BAH_COMPILER_VAR_523+currStrOff, sMembs, strLen_1);
                         currStrOff += strLen_1;
                         
-                        strncpy(____BAH_COMPILER_VAR_518+currStrOff, "}", strLen_2);
+                        strncpy(____BAH_COMPILER_VAR_523+currStrOff, "}", strLen_2);
                         currStrOff += strLen_2;
                         
                     }
-                    char * tmpArgsStruct =  ____BAH_COMPILER_VAR_518;
+                    char * tmpArgsStruct =  ____BAH_COMPILER_VAR_523;
 char * fnWrapper =  genCompilerVar();
 char * tmpArgs =  genCompilerVar();
 sFnT.trimLeft((struct string*)&sFnT,fnName.length + 1);
 sFnT.trimRight((struct string*)&sFnT,1);
-char * ____BAH_COMPILER_VAR_519 =fnName.str((struct string*)&fnName);char * ____BAH_COMPILER_VAR_520 =sFnT.str((struct string*)&sFnT);char * ____BAH_COMPILER_VAR_521 =null;
+char * ____BAH_COMPILER_VAR_524 =fnName.str((struct string*)&fnName);char * ____BAH_COMPILER_VAR_525 =sFnT.str((struct string*)&sFnT);char * ____BAH_COMPILER_VAR_526 =null;
                     {
                         long int currStrOff = 0;
                         long int strLen_0 = strlen("\n    void ");
@@ -11645,7 +11743,7 @@ long int strLen_1 = strlen(fnWrapper);
 long int strLen_2 = strlen("(");
 long int strLen_3 = strlen(tmpArgsStruct);
 long int strLen_4 = strlen("* args) {\n        ");
-long int strLen_5 = strlen(____BAH_COMPILER_VAR_519);
+long int strLen_5 = strlen(____BAH_COMPILER_VAR_524);
 long int strLen_6 = strlen("(");
 long int strLen_7 = strlen(unSerMembs);
 long int strLen_8 = strlen(");\n    };\n    {\n        ");
@@ -11653,74 +11751,74 @@ long int strLen_9 = strlen(tmpArgsStruct);
 long int strLen_10 = strlen(" ");
 long int strLen_11 = strlen(tmpArgs);
 long int strLen_12 = strlen(" = {");
-long int strLen_13 = strlen(____BAH_COMPILER_VAR_520);
+long int strLen_13 = strlen(____BAH_COMPILER_VAR_525);
 long int strLen_14 = strlen("};\n        pthread_t id;\n        pthread_create(&id, 0, ");
 long int strLen_15 = strlen(fnWrapper);
 long int strLen_16 = strlen(", &");
 long int strLen_17 = strlen(tmpArgs);
 long int strLen_18 = strlen(");\n    }; \n    \n    ");
 ;                            
-                        ____BAH_COMPILER_VAR_521 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2 + strLen_3 + strLen_4 + strLen_5 + strLen_6 + strLen_7 + strLen_8 + strLen_9 + strLen_10 + strLen_11 + strLen_12 + strLen_13 + strLen_14 + strLen_15 + strLen_16 + strLen_17 + strLen_18);
+                        ____BAH_COMPILER_VAR_526 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2 + strLen_3 + strLen_4 + strLen_5 + strLen_6 + strLen_7 + strLen_8 + strLen_9 + strLen_10 + strLen_11 + strLen_12 + strLen_13 + strLen_14 + strLen_15 + strLen_16 + strLen_17 + strLen_18);
                         
-                        strncpy(____BAH_COMPILER_VAR_521+currStrOff, "\n    void ", strLen_0);
+                        strncpy(____BAH_COMPILER_VAR_526+currStrOff, "\n    void ", strLen_0);
                         currStrOff += strLen_0;
                         
-                        strncpy(____BAH_COMPILER_VAR_521+currStrOff, fnWrapper, strLen_1);
+                        strncpy(____BAH_COMPILER_VAR_526+currStrOff, fnWrapper, strLen_1);
                         currStrOff += strLen_1;
                         
-                        strncpy(____BAH_COMPILER_VAR_521+currStrOff, "(", strLen_2);
+                        strncpy(____BAH_COMPILER_VAR_526+currStrOff, "(", strLen_2);
                         currStrOff += strLen_2;
                         
-                        strncpy(____BAH_COMPILER_VAR_521+currStrOff, tmpArgsStruct, strLen_3);
+                        strncpy(____BAH_COMPILER_VAR_526+currStrOff, tmpArgsStruct, strLen_3);
                         currStrOff += strLen_3;
                         
-                        strncpy(____BAH_COMPILER_VAR_521+currStrOff, "* args) {\n        ", strLen_4);
+                        strncpy(____BAH_COMPILER_VAR_526+currStrOff, "* args) {\n        ", strLen_4);
                         currStrOff += strLen_4;
                         
-                        strncpy(____BAH_COMPILER_VAR_521+currStrOff, ____BAH_COMPILER_VAR_519, strLen_5);
+                        strncpy(____BAH_COMPILER_VAR_526+currStrOff, ____BAH_COMPILER_VAR_524, strLen_5);
                         currStrOff += strLen_5;
                         
-                        strncpy(____BAH_COMPILER_VAR_521+currStrOff, "(", strLen_6);
+                        strncpy(____BAH_COMPILER_VAR_526+currStrOff, "(", strLen_6);
                         currStrOff += strLen_6;
                         
-                        strncpy(____BAH_COMPILER_VAR_521+currStrOff, unSerMembs, strLen_7);
+                        strncpy(____BAH_COMPILER_VAR_526+currStrOff, unSerMembs, strLen_7);
                         currStrOff += strLen_7;
                         
-                        strncpy(____BAH_COMPILER_VAR_521+currStrOff, ");\n    };\n    {\n        ", strLen_8);
+                        strncpy(____BAH_COMPILER_VAR_526+currStrOff, ");\n    };\n    {\n        ", strLen_8);
                         currStrOff += strLen_8;
                         
-                        strncpy(____BAH_COMPILER_VAR_521+currStrOff, tmpArgsStruct, strLen_9);
+                        strncpy(____BAH_COMPILER_VAR_526+currStrOff, tmpArgsStruct, strLen_9);
                         currStrOff += strLen_9;
                         
-                        strncpy(____BAH_COMPILER_VAR_521+currStrOff, " ", strLen_10);
+                        strncpy(____BAH_COMPILER_VAR_526+currStrOff, " ", strLen_10);
                         currStrOff += strLen_10;
                         
-                        strncpy(____BAH_COMPILER_VAR_521+currStrOff, tmpArgs, strLen_11);
+                        strncpy(____BAH_COMPILER_VAR_526+currStrOff, tmpArgs, strLen_11);
                         currStrOff += strLen_11;
                         
-                        strncpy(____BAH_COMPILER_VAR_521+currStrOff, " = {", strLen_12);
+                        strncpy(____BAH_COMPILER_VAR_526+currStrOff, " = {", strLen_12);
                         currStrOff += strLen_12;
                         
-                        strncpy(____BAH_COMPILER_VAR_521+currStrOff, ____BAH_COMPILER_VAR_520, strLen_13);
+                        strncpy(____BAH_COMPILER_VAR_526+currStrOff, ____BAH_COMPILER_VAR_525, strLen_13);
                         currStrOff += strLen_13;
                         
-                        strncpy(____BAH_COMPILER_VAR_521+currStrOff, "};\n        pthread_t id;\n        pthread_create(&id, 0, ", strLen_14);
+                        strncpy(____BAH_COMPILER_VAR_526+currStrOff, "};\n        pthread_t id;\n        pthread_create(&id, 0, ", strLen_14);
                         currStrOff += strLen_14;
                         
-                        strncpy(____BAH_COMPILER_VAR_521+currStrOff, fnWrapper, strLen_15);
+                        strncpy(____BAH_COMPILER_VAR_526+currStrOff, fnWrapper, strLen_15);
                         currStrOff += strLen_15;
                         
-                        strncpy(____BAH_COMPILER_VAR_521+currStrOff, ", &", strLen_16);
+                        strncpy(____BAH_COMPILER_VAR_526+currStrOff, ", &", strLen_16);
                         currStrOff += strLen_16;
                         
-                        strncpy(____BAH_COMPILER_VAR_521+currStrOff, tmpArgs, strLen_17);
+                        strncpy(____BAH_COMPILER_VAR_526+currStrOff, tmpArgs, strLen_17);
                         currStrOff += strLen_17;
                         
-                        strncpy(____BAH_COMPILER_VAR_521+currStrOff, ");\n    }; \n    \n    ", strLen_18);
+                        strncpy(____BAH_COMPILER_VAR_526+currStrOff, ");\n    }; \n    \n    ", strLen_18);
                         currStrOff += strLen_18;
                         
                     }
-                    OUTPUT =  OUTPUT->add(OUTPUT, rope(____BAH_COMPILER_VAR_521));
+                    OUTPUT =  OUTPUT->add(OUTPUT, rope(____BAH_COMPILER_VAR_526));
 };
 void addRCPvars(__BAH_ARR_TYPE_Tok l,lineType ltp,struct Elems* elems){
 long int i =  0;
@@ -11821,8 +11919,8 @@ fl->data[len(fl)] =  line->data[i];
 i =  i + 1;
 };
 }
-array(struct Tok)* ____BAH_COMPILER_VAR_522 = fl;
-return ____BAH_COMPILER_VAR_522;
+array(struct Tok)* ____BAH_COMPILER_VAR_527 = fl;
+return ____BAH_COMPILER_VAR_527;
 };
 void parseFnDeclare(__BAH_ARR_TYPE_Tok l,struct Elems* elems){
 long int i =  0;
@@ -11844,7 +11942,7 @@ struct func* ogFn =  searchFunc(fn->name,elems,false);
 if ((ogFn!=null)) {
 if ((ogFn->isBinding==false)) {
 char * lineStr =  intToStr(ogFn->line);
-char * ____BAH_COMPILER_VAR_523 =null;
+char * ____BAH_COMPILER_VAR_528 =null;
                     {
                         long int currStrOff = 0;
                         long int strLen_0 = strlen("Cannot redeclare function {TOKEN}, previous declaration: ");
@@ -11853,25 +11951,25 @@ long int strLen_2 = strlen(":");
 long int strLen_3 = strlen(lineStr);
 long int strLen_4 = strlen(".");
 ;                            
-                        ____BAH_COMPILER_VAR_523 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2 + strLen_3 + strLen_4);
+                        ____BAH_COMPILER_VAR_528 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2 + strLen_3 + strLen_4);
                         
-                        strncpy(____BAH_COMPILER_VAR_523+currStrOff, "Cannot redeclare function {TOKEN}, previous declaration: ", strLen_0);
+                        strncpy(____BAH_COMPILER_VAR_528+currStrOff, "Cannot redeclare function {TOKEN}, previous declaration: ", strLen_0);
                         currStrOff += strLen_0;
                         
-                        strncpy(____BAH_COMPILER_VAR_523+currStrOff, ogFn->file, strLen_1);
+                        strncpy(____BAH_COMPILER_VAR_528+currStrOff, ogFn->file, strLen_1);
                         currStrOff += strLen_1;
                         
-                        strncpy(____BAH_COMPILER_VAR_523+currStrOff, ":", strLen_2);
+                        strncpy(____BAH_COMPILER_VAR_528+currStrOff, ":", strLen_2);
                         currStrOff += strLen_2;
                         
-                        strncpy(____BAH_COMPILER_VAR_523+currStrOff, lineStr, strLen_3);
+                        strncpy(____BAH_COMPILER_VAR_528+currStrOff, lineStr, strLen_3);
                         currStrOff += strLen_3;
                         
-                        strncpy(____BAH_COMPILER_VAR_523+currStrOff, ".", strLen_4);
+                        strncpy(____BAH_COMPILER_VAR_528+currStrOff, ".", strLen_4);
                         currStrOff += strLen_4;
                         
                     }
-                    throwErr(&ft,____BAH_COMPILER_VAR_523);
+                    throwErr(&ft,____BAH_COMPILER_VAR_528);
 }
 }
 if ((strcmp(fn->name, "main") == 0)) {
@@ -11887,22 +11985,22 @@ if ((compTypes(fa->type,"[]cpstring")==false)) {
 throwErr(&ft,"{TOKEN} function should take []cpstring as argument. Should be: \n            'main(args []cpstring) int'");
 }
 }
-char * ____BAH_COMPILER_VAR_524 =null;
+char * ____BAH_COMPILER_VAR_529 =null;
                     {
                         long int currStrOff = 0;
                         long int strLen_0 = strlen(code);
 long int strLen_1 = strlen("{\n");
 ;                            
-                        ____BAH_COMPILER_VAR_524 = memoryAlloc(1 + strLen_0 + strLen_1);
+                        ____BAH_COMPILER_VAR_529 = memoryAlloc(1 + strLen_0 + strLen_1);
                         
-                        strncpy(____BAH_COMPILER_VAR_524+currStrOff, code, strLen_0);
+                        strncpy(____BAH_COMPILER_VAR_529+currStrOff, code, strLen_0);
                         currStrOff += strLen_0;
                         
-                        strncpy(____BAH_COMPILER_VAR_524+currStrOff, "{\n", strLen_1);
+                        strncpy(____BAH_COMPILER_VAR_529+currStrOff, "{\n", strLen_1);
                         currStrOff += strLen_1;
                         
                     }
-                    code =  ____BAH_COMPILER_VAR_524;
+                    code =  ____BAH_COMPILER_VAR_529;
 OUTPUT =  OUTPUT->add(OUTPUT, rope(code));
 struct Elems* fnElems =  dupElems(elems);
 array(struct variable*)* vs =  fnElems->vars;
@@ -11981,26 +12079,26 @@ parseLines(tokens,fnElems);
 currentFn =  null;
 if ((fn->returned==false)) {
 if ((strlen(fn->returns->type)>0)) {
-char * ____BAH_COMPILER_VAR_526 =null;
+char * ____BAH_COMPILER_VAR_531 =null;
                     {
                         long int currStrOff = 0;
                         long int strLen_0 = strlen("Function '");
 long int strLen_1 = strlen(fn->name);
 long int strLen_2 = strlen("' is not returned.");
 ;                            
-                        ____BAH_COMPILER_VAR_526 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2);
+                        ____BAH_COMPILER_VAR_531 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2);
                         
-                        strncpy(____BAH_COMPILER_VAR_526+currStrOff, "Function '", strLen_0);
+                        strncpy(____BAH_COMPILER_VAR_531+currStrOff, "Function '", strLen_0);
                         currStrOff += strLen_0;
                         
-                        strncpy(____BAH_COMPILER_VAR_526+currStrOff, fn->name, strLen_1);
+                        strncpy(____BAH_COMPILER_VAR_531+currStrOff, fn->name, strLen_1);
                         currStrOff += strLen_1;
                         
-                        strncpy(____BAH_COMPILER_VAR_526+currStrOff, "' is not returned.", strLen_2);
+                        strncpy(____BAH_COMPILER_VAR_531+currStrOff, "' is not returned.", strLen_2);
                         currStrOff += strLen_2;
                         
                     }
-                    throwErr(&l->data[len(l)-1],____BAH_COMPILER_VAR_526);
+                    throwErr(&l->data[len(l)-1],____BAH_COMPILER_VAR_531);
 }
 endRCPscope(fnElems,null);
 }
@@ -12053,22 +12151,22 @@ throwErr(&line->data[len(line)-1],"Not expecting {TOKEN} after function call.");
 }
 struct Tok ft =  line->data[0];
 parsed =  true;
-char * ____BAH_COMPILER_VAR_529 =null;
+char * ____BAH_COMPILER_VAR_534 =null;
                     {
                         long int currStrOff = 0;
                         long int strLen_0 = strlen(ft.cont);
 long int strLen_1 = strlen(";\n");
 ;                            
-                        ____BAH_COMPILER_VAR_529 = memoryAlloc(1 + strLen_0 + strLen_1);
+                        ____BAH_COMPILER_VAR_534 = memoryAlloc(1 + strLen_0 + strLen_1);
                         
-                        strncpy(____BAH_COMPILER_VAR_529+currStrOff, ft.cont, strLen_0);
+                        strncpy(____BAH_COMPILER_VAR_534+currStrOff, ft.cont, strLen_0);
                         currStrOff += strLen_0;
                         
-                        strncpy(____BAH_COMPILER_VAR_529+currStrOff, ";\n", strLen_1);
+                        strncpy(____BAH_COMPILER_VAR_534+currStrOff, ";\n", strLen_1);
                         currStrOff += strLen_1;
                         
                     }
-                    OUTPUT =  OUTPUT->add(OUTPUT, rope(____BAH_COMPILER_VAR_529));
+                    OUTPUT =  OUTPUT->add(OUTPUT, rope(____BAH_COMPILER_VAR_534));
 }
 else if ((ltp==LINE_TYPE_FN_DECL)) {
 parsed =  true;
@@ -12212,25 +12310,25 @@ throwErr(&ft,"Missing closing token, line ending by {TOKEN}.");
 }
 };
 long int main(__BAH_ARR_TYPE_cpstring args){
-struct flags ____BAH_COMPILER_VAR_531 = {};
-____BAH_COMPILER_VAR_531.flags = memoryAlloc(sizeof(array(struct flag*)));
-            ____BAH_COMPILER_VAR_531.flags->length = 0;
-            ____BAH_COMPILER_VAR_531.flags->elemSize = sizeof(struct flag*);
-            ____BAH_COMPILER_VAR_531.args = memoryAlloc(sizeof(array(char *)));
-            ____BAH_COMPILER_VAR_531.args->length = 0;
-            ____BAH_COMPILER_VAR_531.args->elemSize = sizeof(char *);
-            ____BAH_COMPILER_VAR_531.addString = flags__addString;
-____BAH_COMPILER_VAR_531.addBool = flags__addBool;
-____BAH_COMPILER_VAR_531.addInt = flags__addInt;
-____BAH_COMPILER_VAR_531.addFloat = flags__addFloat;
-____BAH_COMPILER_VAR_531.invalidate = flags__invalidate;
-____BAH_COMPILER_VAR_531.getFlag = flags__getFlag;
-____BAH_COMPILER_VAR_531.get = flags__get;
-____BAH_COMPILER_VAR_531.getInt = flags__getInt;
-____BAH_COMPILER_VAR_531.getFloat = flags__getFloat;
-____BAH_COMPILER_VAR_531.isSet = flags__isSet;
-____BAH_COMPILER_VAR_531.parse = flags__parse;
-flags =  ____BAH_COMPILER_VAR_531;
+struct flags ____BAH_COMPILER_VAR_536 = {};
+____BAH_COMPILER_VAR_536.flags = memoryAlloc(sizeof(array(struct flag*)));
+            ____BAH_COMPILER_VAR_536.flags->length = 0;
+            ____BAH_COMPILER_VAR_536.flags->elemSize = sizeof(struct flag*);
+            ____BAH_COMPILER_VAR_536.args = memoryAlloc(sizeof(array(char *)));
+            ____BAH_COMPILER_VAR_536.args->length = 0;
+            ____BAH_COMPILER_VAR_536.args->elemSize = sizeof(char *);
+            ____BAH_COMPILER_VAR_536.addString = flags__addString;
+____BAH_COMPILER_VAR_536.addBool = flags__addBool;
+____BAH_COMPILER_VAR_536.addInt = flags__addInt;
+____BAH_COMPILER_VAR_536.addFloat = flags__addFloat;
+____BAH_COMPILER_VAR_536.invalidate = flags__invalidate;
+____BAH_COMPILER_VAR_536.getFlag = flags__getFlag;
+____BAH_COMPILER_VAR_536.get = flags__get;
+____BAH_COMPILER_VAR_536.getInt = flags__getInt;
+____BAH_COMPILER_VAR_536.getFloat = flags__getFloat;
+____BAH_COMPILER_VAR_536.isSet = flags__isSet;
+____BAH_COMPILER_VAR_536.parse = flags__parse;
+flags =  ____BAH_COMPILER_VAR_536;
 flags.addString((struct flags*)&flags,"o","Name of the file to output.");
 flags.addBool((struct flags*)&flags,"c","Translate bah file to C instead of compiling it.");
 flags.addBool((struct flags*)&flags,"v","Show version of the compiler.");
@@ -12240,28 +12338,28 @@ flags.addBool((struct flags*)&flags,"rcp","Enables RCP (reference counter) inste
 flags.parse((struct flags*)&flags,args);
 RCPenabled =  (flags.isSet((struct flags*)&flags,"rcp")==1);
 if ((flags.isSet((struct flags*)&flags,"v")==1)) {
-char * ____BAH_COMPILER_VAR_532 =null;
+char * ____BAH_COMPILER_VAR_537 =null;
                     {
                         long int currStrOff = 0;
                         long int strLen_0 = strlen("Bah compiler version: ");
 long int strLen_1 = strlen(BAH_VERSION);
 long int strLen_2 = strlen(".\n© Alois Laurent Boe");
 ;                            
-                        ____BAH_COMPILER_VAR_532 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2);
+                        ____BAH_COMPILER_VAR_537 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2);
                         
-                        strncpy(____BAH_COMPILER_VAR_532+currStrOff, "Bah compiler version: ", strLen_0);
+                        strncpy(____BAH_COMPILER_VAR_537+currStrOff, "Bah compiler version: ", strLen_0);
                         currStrOff += strLen_0;
                         
-                        strncpy(____BAH_COMPILER_VAR_532+currStrOff, BAH_VERSION, strLen_1);
+                        strncpy(____BAH_COMPILER_VAR_537+currStrOff, BAH_VERSION, strLen_1);
                         currStrOff += strLen_1;
                         
-                        strncpy(____BAH_COMPILER_VAR_532+currStrOff, ".\n© Alois Laurent Boe", strLen_2);
+                        strncpy(____BAH_COMPILER_VAR_537+currStrOff, ".\n© Alois Laurent Boe", strLen_2);
                         currStrOff += strLen_2;
                         
                     }
-                    println(____BAH_COMPILER_VAR_532);
-long int ____BAH_COMPILER_VAR_533 = 0;
-return ____BAH_COMPILER_VAR_533;
+                    println(____BAH_COMPILER_VAR_537);
+long int ____BAH_COMPILER_VAR_538 = 0;
+return ____BAH_COMPILER_VAR_538;
 }
 if (((flags.isSet((struct flags*)&flags,"c")==1)&&(flags.isSet((struct flags*)&flags,"l")==1))) {
 panic("Cannot use -c (to translate to C code) and -l (to compile as a library) at the same time.");
@@ -12277,47 +12375,47 @@ if ((RCPenabled==true)) {
 OUTPUT =  OUTPUT->add(OUTPUT, rope("\n        int main(int argc, char ** argv) {\n        RCP_init();\n        array(char*) * args = malloc(sizeof(array(char*)));\n        args->data = malloc(sizeof(char*)*argc);\n        memcpy(args->data, argv, sizeof(char*)*argc);\n        args->elemSize = sizeof(char*);\n        args->length = argc;\n        long int r =  __BAH__main((__BAH_ARR_TYPE_cpstring)args);\n        free(args->data);\n        free(args);\n        RCP_shutdown();\n        return r;\n        };\n        #define main(v) __BAH__main(v)\n        "));
 }
 else {
-char * ____BAH_COMPILER_VAR_534 =null;
+char * ____BAH_COMPILER_VAR_539 =null;
                     {
                         long int currStrOff = 0;
                         long int strLen_0 = strlen("\n        #include \"");
 long int strLen_1 = strlen(BAH_DIR);
 long int strLen_2 = strlen("libs/include/gc.h\"\n        int main(int argc, char ** argv) {\n        GC_INIT();\n        array(char*) * args = GC_MALLOC(sizeof(array(char*)));\n        args->data = GC_MALLOC(sizeof(char*)*argc);\n        memcpy(args->data, argv, sizeof(char*)*argc);\n        args->elemSize = sizeof(char*);\n        args->length = argc;\n        long int r =  __BAH__main((__BAH_ARR_TYPE_cpstring)args);\n        GC_FREE(args->data);\n        GC_FREE(args);\n        return r;\n        };\n        #define main(v) __BAH__main(v)\n        ");
 ;                            
-                        ____BAH_COMPILER_VAR_534 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2);
+                        ____BAH_COMPILER_VAR_539 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2);
                         
-                        strncpy(____BAH_COMPILER_VAR_534+currStrOff, "\n        #include \"", strLen_0);
+                        strncpy(____BAH_COMPILER_VAR_539+currStrOff, "\n        #include \"", strLen_0);
                         currStrOff += strLen_0;
                         
-                        strncpy(____BAH_COMPILER_VAR_534+currStrOff, BAH_DIR, strLen_1);
+                        strncpy(____BAH_COMPILER_VAR_539+currStrOff, BAH_DIR, strLen_1);
                         currStrOff += strLen_1;
                         
-                        strncpy(____BAH_COMPILER_VAR_534+currStrOff, "libs/include/gc.h\"\n        int main(int argc, char ** argv) {\n        GC_INIT();\n        array(char*) * args = GC_MALLOC(sizeof(array(char*)));\n        args->data = GC_MALLOC(sizeof(char*)*argc);\n        memcpy(args->data, argv, sizeof(char*)*argc);\n        args->elemSize = sizeof(char*);\n        args->length = argc;\n        long int r =  __BAH__main((__BAH_ARR_TYPE_cpstring)args);\n        GC_FREE(args->data);\n        GC_FREE(args);\n        return r;\n        };\n        #define main(v) __BAH__main(v)\n        ", strLen_2);
+                        strncpy(____BAH_COMPILER_VAR_539+currStrOff, "libs/include/gc.h\"\n        int main(int argc, char ** argv) {\n        GC_INIT();\n        array(char*) * args = GC_MALLOC(sizeof(array(char*)));\n        args->data = GC_MALLOC(sizeof(char*)*argc);\n        memcpy(args->data, argv, sizeof(char*)*argc);\n        args->elemSize = sizeof(char*);\n        args->length = argc;\n        long int r =  __BAH__main((__BAH_ARR_TYPE_cpstring)args);\n        GC_FREE(args->data);\n        GC_FREE(args);\n        return r;\n        };\n        #define main(v) __BAH__main(v)\n        ", strLen_2);
                         currStrOff += strLen_2;
                         
                     }
-                    OUTPUT =  OUTPUT->add(OUTPUT, rope(____BAH_COMPILER_VAR_534));
+                    OUTPUT =  OUTPUT->add(OUTPUT, rope(____BAH_COMPILER_VAR_539));
 }
 }
-struct compilerStateTag ____BAH_COMPILER_VAR_535 = {};
-____BAH_COMPILER_VAR_535.includes = memoryAlloc(sizeof(array(char *)));
-            ____BAH_COMPILER_VAR_535.includes->length = 0;
-            ____BAH_COMPILER_VAR_535.includes->elemSize = sizeof(char *);
-            ____BAH_COMPILER_VAR_535.cLibs = memoryAlloc(sizeof(array(char *)));
-            ____BAH_COMPILER_VAR_535.cLibs->length = 0;
-            ____BAH_COMPILER_VAR_535.cLibs->elemSize = sizeof(char *);
-            ____BAH_COMPILER_VAR_535.currentFile= null;
-____BAH_COMPILER_VAR_535.currentDir = "./";
-____BAH_COMPILER_VAR_535.isBranch = false;
-____BAH_COMPILER_VAR_535.isFor = false;
-____BAH_COMPILER_VAR_535.arrTypesDecl = memoryAlloc(sizeof(array(char *)));
-            ____BAH_COMPILER_VAR_535.arrTypesDecl->length = 0;
-            ____BAH_COMPILER_VAR_535.arrTypesDecl->elemSize = sizeof(char *);
-            ____BAH_COMPILER_VAR_535.haveEntryPoint = false;
-____BAH_COMPILER_VAR_535.RCPvars = memoryAlloc(sizeof(array(struct variable*)));
-            ____BAH_COMPILER_VAR_535.RCPvars->length = 0;
-            ____BAH_COMPILER_VAR_535.RCPvars->elemSize = sizeof(struct variable*);
-            compilerState =  ____BAH_COMPILER_VAR_535;
+struct compilerStateTag ____BAH_COMPILER_VAR_540 = {};
+____BAH_COMPILER_VAR_540.includes = memoryAlloc(sizeof(array(char *)));
+            ____BAH_COMPILER_VAR_540.includes->length = 0;
+            ____BAH_COMPILER_VAR_540.includes->elemSize = sizeof(char *);
+            ____BAH_COMPILER_VAR_540.cLibs = memoryAlloc(sizeof(array(char *)));
+            ____BAH_COMPILER_VAR_540.cLibs->length = 0;
+            ____BAH_COMPILER_VAR_540.cLibs->elemSize = sizeof(char *);
+            ____BAH_COMPILER_VAR_540.currentFile= null;
+____BAH_COMPILER_VAR_540.currentDir = "./";
+____BAH_COMPILER_VAR_540.isBranch = false;
+____BAH_COMPILER_VAR_540.isFor = false;
+____BAH_COMPILER_VAR_540.arrTypesDecl = memoryAlloc(sizeof(array(char *)));
+            ____BAH_COMPILER_VAR_540.arrTypesDecl->length = 0;
+            ____BAH_COMPILER_VAR_540.arrTypesDecl->elemSize = sizeof(char *);
+            ____BAH_COMPILER_VAR_540.haveEntryPoint = false;
+____BAH_COMPILER_VAR_540.RCPvars = memoryAlloc(sizeof(array(struct variable*)));
+            ____BAH_COMPILER_VAR_540.RCPvars->length = 0;
+            ____BAH_COMPILER_VAR_540.RCPvars->elemSize = sizeof(struct variable*);
+            compilerState =  ____BAH_COMPILER_VAR_540;
 
 {
 long nLength = 0;
@@ -12334,36 +12432,58 @@ compilerState.arrTypesDecl->data[0] =  "__BAH_ARR_TYPE_cpstring";
 };
 char * fileName =  args->data[1];
 compilerState.currentFile =  fileName;
-struct fileMap ____BAH_COMPILER_VAR_536 = {};
-____BAH_COMPILER_VAR_536.open = fileMap__open;
-____BAH_COMPILER_VAR_536.isValid = fileMap__isValid;
-____BAH_COMPILER_VAR_536.close = fileMap__close;
-struct fileMap fm =  ____BAH_COMPILER_VAR_536;
+struct fileMap ____BAH_COMPILER_VAR_541 = {};
+____BAH_COMPILER_VAR_541.open = fileMap__open;
+____BAH_COMPILER_VAR_541.isValid = fileMap__isValid;
+____BAH_COMPILER_VAR_541.close = fileMap__close;
+struct fileMap fm =  ____BAH_COMPILER_VAR_541;
 char * f =  fm.open((struct fileMap*)&fm,fileName);
+if ((fm.isValid((struct fileMap*)&fm)==0)) {
+char * ____BAH_COMPILER_VAR_542 =null;
+                    {
+                        long int currStrOff = 0;
+                        long int strLen_0 = strlen("Could not open file '");
+long int strLen_1 = strlen(fileName);
+long int strLen_2 = strlen("'.");
+;                            
+                        ____BAH_COMPILER_VAR_542 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2);
+                        
+                        strncpy(____BAH_COMPILER_VAR_542+currStrOff, "Could not open file '", strLen_0);
+                        currStrOff += strLen_0;
+                        
+                        strncpy(____BAH_COMPILER_VAR_542+currStrOff, fileName, strLen_1);
+                        currStrOff += strLen_1;
+                        
+                        strncpy(____BAH_COMPILER_VAR_542+currStrOff, "'.", strLen_2);
+                        currStrOff += strLen_2;
+                        
+                    }
+                    panic(____BAH_COMPILER_VAR_542);
+}
 long int startTime =  getTimeUnix();
 array(struct Tok)* tokens =  lexer(f);
 fm.close((struct fileMap*)&fm);
 if ((len(tokens)==0)) {
-char * ____BAH_COMPILER_VAR_537 =null;
+char * ____BAH_COMPILER_VAR_543 =null;
                     {
                         long int currStrOff = 0;
                         long int strLen_0 = strlen("File '");
 long int strLen_1 = strlen(fileName);
 long int strLen_2 = strlen("' not recognized.");
 ;                            
-                        ____BAH_COMPILER_VAR_537 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2);
+                        ____BAH_COMPILER_VAR_543 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2);
                         
-                        strncpy(____BAH_COMPILER_VAR_537+currStrOff, "File '", strLen_0);
+                        strncpy(____BAH_COMPILER_VAR_543+currStrOff, "File '", strLen_0);
                         currStrOff += strLen_0;
                         
-                        strncpy(____BAH_COMPILER_VAR_537+currStrOff, fileName, strLen_1);
+                        strncpy(____BAH_COMPILER_VAR_543+currStrOff, fileName, strLen_1);
                         currStrOff += strLen_1;
                         
-                        strncpy(____BAH_COMPILER_VAR_537+currStrOff, "' not recognized.", strLen_2);
+                        strncpy(____BAH_COMPILER_VAR_543+currStrOff, "' not recognized.", strLen_2);
                         currStrOff += strLen_2;
                         
                     }
-                    panic(____BAH_COMPILER_VAR_537);
+                    panic(____BAH_COMPILER_VAR_543);
 }
 struct Elems* elems = memoryAlloc(sizeof(struct Elems));
 elems->vars = memoryAlloc(sizeof(array(struct variable*)));
@@ -12379,66 +12499,66 @@ elems->vars = memoryAlloc(sizeof(array(struct variable*)));
             elems->fns->length = 0;
             elems->fns->elemSize = sizeof(struct func*);
             if ((includeFile("builtin.bah",elems)==false)) {
-char * ____BAH_COMPILER_VAR_538 =null;
+char * ____BAH_COMPILER_VAR_544 =null;
                     {
                         long int currStrOff = 0;
                         long int strLen_0 = strlen("Could not find std-libs, please check '");
 long int strLen_1 = strlen(BAH_DIR);
 long int strLen_2 = strlen("'");
 ;                            
-                        ____BAH_COMPILER_VAR_538 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2);
+                        ____BAH_COMPILER_VAR_544 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2);
                         
-                        strncpy(____BAH_COMPILER_VAR_538+currStrOff, "Could not find std-libs, please check '", strLen_0);
+                        strncpy(____BAH_COMPILER_VAR_544+currStrOff, "Could not find std-libs, please check '", strLen_0);
                         currStrOff += strLen_0;
                         
-                        strncpy(____BAH_COMPILER_VAR_538+currStrOff, BAH_DIR, strLen_1);
+                        strncpy(____BAH_COMPILER_VAR_544+currStrOff, BAH_DIR, strLen_1);
                         currStrOff += strLen_1;
                         
-                        strncpy(____BAH_COMPILER_VAR_538+currStrOff, "'", strLen_2);
+                        strncpy(____BAH_COMPILER_VAR_544+currStrOff, "'", strLen_2);
                         currStrOff += strLen_2;
                         
                     }
-                    panic(____BAH_COMPILER_VAR_538);
+                    panic(____BAH_COMPILER_VAR_544);
 }
 compilerState.currentDir =  getDirFromFile(fileName);
 parseLines(tokens,elems);
 long int totalTime =  getTimeUnix() - startTime;
-char * ____BAH_COMPILER_VAR_539 =intToStr(totalLines);char * ____BAH_COMPILER_VAR_540 =intToStr(totalTime / 1000000);char * ____BAH_COMPILER_VAR_541 =intToStr(totalLexerTime / 1000000);char * ____BAH_COMPILER_VAR_542 =null;
+char * ____BAH_COMPILER_VAR_545 =intToStr(totalLines);char * ____BAH_COMPILER_VAR_546 =intToStr(totalTime / 1000000);char * ____BAH_COMPILER_VAR_547 =intToStr(totalLexerTime / 1000000);char * ____BAH_COMPILER_VAR_548 =null;
                     {
                         long int currStrOff = 0;
                         long int strLen_0 = strlen("Parsed. (");
-long int strLen_1 = strlen(____BAH_COMPILER_VAR_539);
+long int strLen_1 = strlen(____BAH_COMPILER_VAR_545);
 long int strLen_2 = strlen(" lines, total time: ");
-long int strLen_3 = strlen(____BAH_COMPILER_VAR_540);
+long int strLen_3 = strlen(____BAH_COMPILER_VAR_546);
 long int strLen_4 = strlen("ms, lexer time: ");
-long int strLen_5 = strlen(____BAH_COMPILER_VAR_541);
+long int strLen_5 = strlen(____BAH_COMPILER_VAR_547);
 long int strLen_6 = strlen("ms)\e[0m");
 ;                            
-                        ____BAH_COMPILER_VAR_542 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2 + strLen_3 + strLen_4 + strLen_5 + strLen_6);
+                        ____BAH_COMPILER_VAR_548 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2 + strLen_3 + strLen_4 + strLen_5 + strLen_6);
                         
-                        strncpy(____BAH_COMPILER_VAR_542+currStrOff, "Parsed. (", strLen_0);
+                        strncpy(____BAH_COMPILER_VAR_548+currStrOff, "Parsed. (", strLen_0);
                         currStrOff += strLen_0;
                         
-                        strncpy(____BAH_COMPILER_VAR_542+currStrOff, ____BAH_COMPILER_VAR_539, strLen_1);
+                        strncpy(____BAH_COMPILER_VAR_548+currStrOff, ____BAH_COMPILER_VAR_545, strLen_1);
                         currStrOff += strLen_1;
                         
-                        strncpy(____BAH_COMPILER_VAR_542+currStrOff, " lines, total time: ", strLen_2);
+                        strncpy(____BAH_COMPILER_VAR_548+currStrOff, " lines, total time: ", strLen_2);
                         currStrOff += strLen_2;
                         
-                        strncpy(____BAH_COMPILER_VAR_542+currStrOff, ____BAH_COMPILER_VAR_540, strLen_3);
+                        strncpy(____BAH_COMPILER_VAR_548+currStrOff, ____BAH_COMPILER_VAR_546, strLen_3);
                         currStrOff += strLen_3;
                         
-                        strncpy(____BAH_COMPILER_VAR_542+currStrOff, "ms, lexer time: ", strLen_4);
+                        strncpy(____BAH_COMPILER_VAR_548+currStrOff, "ms, lexer time: ", strLen_4);
                         currStrOff += strLen_4;
                         
-                        strncpy(____BAH_COMPILER_VAR_542+currStrOff, ____BAH_COMPILER_VAR_541, strLen_5);
+                        strncpy(____BAH_COMPILER_VAR_548+currStrOff, ____BAH_COMPILER_VAR_547, strLen_5);
                         currStrOff += strLen_5;
                         
-                        strncpy(____BAH_COMPILER_VAR_542+currStrOff, "ms)\e[0m", strLen_6);
+                        strncpy(____BAH_COMPILER_VAR_548+currStrOff, "ms)\e[0m", strLen_6);
                         currStrOff += strLen_6;
                         
                     }
-                    println(____BAH_COMPILER_VAR_542);
+                    println(____BAH_COMPILER_VAR_548);
 if ((flags.isSet((struct flags*)&flags,"o")==1)) {
 fileName =  flags.get((struct flags*)&flags,"o");
 }
@@ -12457,136 +12577,136 @@ long int i =  0;
 while ((i<9)) {
 long int nb =  randomInRange(0,99);
 char * s =  intToStr(nb);
-char * ____BAH_COMPILER_VAR_543 =null;
+char * ____BAH_COMPILER_VAR_549 =null;
                     {
                         long int currStrOff = 0;
                         long int strLen_0 = strlen(randFileName);
 long int strLen_1 = strlen(s);
 ;                            
-                        ____BAH_COMPILER_VAR_543 = memoryAlloc(1 + strLen_0 + strLen_1);
+                        ____BAH_COMPILER_VAR_549 = memoryAlloc(1 + strLen_0 + strLen_1);
                         
-                        strncpy(____BAH_COMPILER_VAR_543+currStrOff, randFileName, strLen_0);
+                        strncpy(____BAH_COMPILER_VAR_549+currStrOff, randFileName, strLen_0);
                         currStrOff += strLen_0;
                         
-                        strncpy(____BAH_COMPILER_VAR_543+currStrOff, s, strLen_1);
+                        strncpy(____BAH_COMPILER_VAR_549+currStrOff, s, strLen_1);
                         currStrOff += strLen_1;
                         
                     }
-                    randFileName =  ____BAH_COMPILER_VAR_543;
+                    randFileName =  ____BAH_COMPILER_VAR_549;
 i =  i + 1;
 };
-char * ____BAH_COMPILER_VAR_544 =null;
+char * ____BAH_COMPILER_VAR_550 =null;
                     {
                         long int currStrOff = 0;
                         long int strLen_0 = strlen(randFileName);
 long int strLen_1 = strlen(".c");
 ;                            
-                        ____BAH_COMPILER_VAR_544 = memoryAlloc(1 + strLen_0 + strLen_1);
+                        ____BAH_COMPILER_VAR_550 = memoryAlloc(1 + strLen_0 + strLen_1);
                         
-                        strncpy(____BAH_COMPILER_VAR_544+currStrOff, randFileName, strLen_0);
+                        strncpy(____BAH_COMPILER_VAR_550+currStrOff, randFileName, strLen_0);
                         currStrOff += strLen_0;
                         
-                        strncpy(____BAH_COMPILER_VAR_544+currStrOff, ".c", strLen_1);
+                        strncpy(____BAH_COMPILER_VAR_550+currStrOff, ".c", strLen_1);
                         currStrOff += strLen_1;
                         
                     }
-                    randFileName =  ____BAH_COMPILER_VAR_544;
-struct fileStream ____BAH_COMPILER_VAR_545 = {};
-____BAH_COMPILER_VAR_545.handle= null;
-____BAH_COMPILER_VAR_545.isValid = fileStream__isValid;
-____BAH_COMPILER_VAR_545.open = fileStream__open;
-____BAH_COMPILER_VAR_545.close = fileStream__close;
-____BAH_COMPILER_VAR_545.getPos = fileStream__getPos;
-____BAH_COMPILER_VAR_545.setPos = fileStream__setPos;
-____BAH_COMPILER_VAR_545.getSize = fileStream__getSize;
-____BAH_COMPILER_VAR_545.rewind = fileStream__rewind;
-____BAH_COMPILER_VAR_545.getChar = fileStream__getChar;
-____BAH_COMPILER_VAR_545.setChar = fileStream__setChar;
-____BAH_COMPILER_VAR_545.createFile = fileStream__createFile;
-____BAH_COMPILER_VAR_545.writeFile = fileStream__writeFile;
-____BAH_COMPILER_VAR_545.writePtr = fileStream__writePtr;
-____BAH_COMPILER_VAR_545.readPtr = fileStream__readPtr;
-____BAH_COMPILER_VAR_545.readContent = fileStream__readContent;
-____BAH_COMPILER_VAR_545.readBytes = fileStream__readBytes;
-____BAH_COMPILER_VAR_545.writeBytes = fileStream__writeBytes;
-struct fileStream fs =  ____BAH_COMPILER_VAR_545;
+                    randFileName =  ____BAH_COMPILER_VAR_550;
+struct fileStream ____BAH_COMPILER_VAR_551 = {};
+____BAH_COMPILER_VAR_551.handle= null;
+____BAH_COMPILER_VAR_551.isValid = fileStream__isValid;
+____BAH_COMPILER_VAR_551.open = fileStream__open;
+____BAH_COMPILER_VAR_551.close = fileStream__close;
+____BAH_COMPILER_VAR_551.getPos = fileStream__getPos;
+____BAH_COMPILER_VAR_551.setPos = fileStream__setPos;
+____BAH_COMPILER_VAR_551.getSize = fileStream__getSize;
+____BAH_COMPILER_VAR_551.rewind = fileStream__rewind;
+____BAH_COMPILER_VAR_551.getChar = fileStream__getChar;
+____BAH_COMPILER_VAR_551.setChar = fileStream__setChar;
+____BAH_COMPILER_VAR_551.createFile = fileStream__createFile;
+____BAH_COMPILER_VAR_551.writeFile = fileStream__writeFile;
+____BAH_COMPILER_VAR_551.writePtr = fileStream__writePtr;
+____BAH_COMPILER_VAR_551.readPtr = fileStream__readPtr;
+____BAH_COMPILER_VAR_551.readContent = fileStream__readContent;
+____BAH_COMPILER_VAR_551.readBytes = fileStream__readBytes;
+____BAH_COMPILER_VAR_551.writeBytes = fileStream__writeBytes;
+struct fileStream fs =  ____BAH_COMPILER_VAR_551;
 fs.open((struct fileStream*)&fs,randFileName,"w");
-char * ____BAH_COMPILER_VAR_546 =OUTPUT->toStr((struct rope*)OUTPUT);fs.writeFile((struct fileStream*)&fs,____BAH_COMPILER_VAR_546);
+char * ____BAH_COMPILER_VAR_552 =OUTPUT->toStr((struct rope*)OUTPUT);fs.writeFile((struct fileStream*)&fs,____BAH_COMPILER_VAR_552);
 fs.close((struct fileStream*)&fs);
-char * ____BAH_COMPILER_VAR_547 =null;
+char * ____BAH_COMPILER_VAR_553 =null;
                     {
                         long int currStrOff = 0;
                         long int strLen_0 = strlen("gcc ");
 long int strLen_1 = strlen(randFileName);
 long int strLen_2 = strlen(" ");
 long int strLen_3 = strlen(isStatic);
-long int strLen_4 = strlen(" -w -o ");
+long int strLen_4 = strlen(" -w -O1 -o ");
 long int strLen_5 = strlen(fileName);
 ;                            
-                        ____BAH_COMPILER_VAR_547 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2 + strLen_3 + strLen_4 + strLen_5);
+                        ____BAH_COMPILER_VAR_553 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2 + strLen_3 + strLen_4 + strLen_5);
                         
-                        strncpy(____BAH_COMPILER_VAR_547+currStrOff, "gcc ", strLen_0);
+                        strncpy(____BAH_COMPILER_VAR_553+currStrOff, "gcc ", strLen_0);
                         currStrOff += strLen_0;
                         
-                        strncpy(____BAH_COMPILER_VAR_547+currStrOff, randFileName, strLen_1);
+                        strncpy(____BAH_COMPILER_VAR_553+currStrOff, randFileName, strLen_1);
                         currStrOff += strLen_1;
                         
-                        strncpy(____BAH_COMPILER_VAR_547+currStrOff, " ", strLen_2);
+                        strncpy(____BAH_COMPILER_VAR_553+currStrOff, " ", strLen_2);
                         currStrOff += strLen_2;
                         
-                        strncpy(____BAH_COMPILER_VAR_547+currStrOff, isStatic, strLen_3);
+                        strncpy(____BAH_COMPILER_VAR_553+currStrOff, isStatic, strLen_3);
                         currStrOff += strLen_3;
                         
-                        strncpy(____BAH_COMPILER_VAR_547+currStrOff, " -w -o ", strLen_4);
+                        strncpy(____BAH_COMPILER_VAR_553+currStrOff, " -w -O1 -o ", strLen_4);
                         currStrOff += strLen_4;
                         
-                        strncpy(____BAH_COMPILER_VAR_547+currStrOff, fileName, strLen_5);
+                        strncpy(____BAH_COMPILER_VAR_553+currStrOff, fileName, strLen_5);
                         currStrOff += strLen_5;
                         
                     }
-                    char * gccArgs =  ____BAH_COMPILER_VAR_547;
+                    char * gccArgs =  ____BAH_COMPILER_VAR_553;
 if ((flags.isSet((struct flags*)&flags,"l")==1)) {
-char * ____BAH_COMPILER_VAR_548 =null;
+char * ____BAH_COMPILER_VAR_554 =null;
                     {
                         long int currStrOff = 0;
                         long int strLen_0 = strlen(gccArgs);
 long int strLen_1 = strlen(" -c");
 ;                            
-                        ____BAH_COMPILER_VAR_548 = memoryAlloc(1 + strLen_0 + strLen_1);
+                        ____BAH_COMPILER_VAR_554 = memoryAlloc(1 + strLen_0 + strLen_1);
                         
-                        strncpy(____BAH_COMPILER_VAR_548+currStrOff, gccArgs, strLen_0);
+                        strncpy(____BAH_COMPILER_VAR_554+currStrOff, gccArgs, strLen_0);
                         currStrOff += strLen_0;
                         
-                        strncpy(____BAH_COMPILER_VAR_548+currStrOff, " -c", strLen_1);
+                        strncpy(____BAH_COMPILER_VAR_554+currStrOff, " -c", strLen_1);
                         currStrOff += strLen_1;
                         
                     }
-                    gccArgs =  ____BAH_COMPILER_VAR_548;
+                    gccArgs =  ____BAH_COMPILER_VAR_554;
 }
 array(char *)* cLibs =  compilerState.cLibs;
 i =  0;
 while ((i<len(cLibs))) {
 char * l =  cLibs->data[i];
-char * ____BAH_COMPILER_VAR_549 =null;
+char * ____BAH_COMPILER_VAR_555 =null;
                     {
                         long int currStrOff = 0;
                         long int strLen_0 = strlen(gccArgs);
 long int strLen_1 = strlen(" -");
 long int strLen_2 = strlen(l);
 ;                            
-                        ____BAH_COMPILER_VAR_549 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2);
+                        ____BAH_COMPILER_VAR_555 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2);
                         
-                        strncpy(____BAH_COMPILER_VAR_549+currStrOff, gccArgs, strLen_0);
+                        strncpy(____BAH_COMPILER_VAR_555+currStrOff, gccArgs, strLen_0);
                         currStrOff += strLen_0;
                         
-                        strncpy(____BAH_COMPILER_VAR_549+currStrOff, " -", strLen_1);
+                        strncpy(____BAH_COMPILER_VAR_555+currStrOff, " -", strLen_1);
                         currStrOff += strLen_1;
                         
-                        strncpy(____BAH_COMPILER_VAR_549+currStrOff, l, strLen_2);
+                        strncpy(____BAH_COMPILER_VAR_555+currStrOff, l, strLen_2);
                         currStrOff += strLen_2;
                         
                     }
-                    gccArgs =  ____BAH_COMPILER_VAR_549;
+                    gccArgs =  ____BAH_COMPILER_VAR_555;
 i =  i + 1;
 };
 struct command cmd =  command(gccArgs);
@@ -12598,7 +12718,7 @@ println("\e[1;31m[GCC-ERROR]\e[0m\nCould not compiled.");
 exit(1);
 }
 if ((flags.isSet((struct flags*)&flags,"l")==1)) {
-char * ____BAH_COMPILER_VAR_550 =null;
+char * ____BAH_COMPILER_VAR_556 =null;
                     {
                         long int currStrOff = 0;
                         long int strLen_0 = strlen("ar rcs ");
@@ -12606,162 +12726,162 @@ long int strLen_1 = strlen(fileName);
 long int strLen_2 = strlen(".a ");
 long int strLen_3 = strlen(fileName);
 ;                            
-                        ____BAH_COMPILER_VAR_550 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2 + strLen_3);
+                        ____BAH_COMPILER_VAR_556 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2 + strLen_3);
                         
-                        strncpy(____BAH_COMPILER_VAR_550+currStrOff, "ar rcs ", strLen_0);
+                        strncpy(____BAH_COMPILER_VAR_556+currStrOff, "ar rcs ", strLen_0);
                         currStrOff += strLen_0;
                         
-                        strncpy(____BAH_COMPILER_VAR_550+currStrOff, fileName, strLen_1);
+                        strncpy(____BAH_COMPILER_VAR_556+currStrOff, fileName, strLen_1);
                         currStrOff += strLen_1;
                         
-                        strncpy(____BAH_COMPILER_VAR_550+currStrOff, ".a ", strLen_2);
+                        strncpy(____BAH_COMPILER_VAR_556+currStrOff, ".a ", strLen_2);
                         currStrOff += strLen_2;
                         
-                        strncpy(____BAH_COMPILER_VAR_550+currStrOff, fileName, strLen_3);
+                        strncpy(____BAH_COMPILER_VAR_556+currStrOff, fileName, strLen_3);
                         currStrOff += strLen_3;
                         
                     }
-                    cmd =  command(____BAH_COMPILER_VAR_550);
+                    cmd =  command(____BAH_COMPILER_VAR_556);
 cmd.run((struct command*)&cmd);
 }
 }
 else {
 if ((flags.isSet((struct flags*)&flags,"o")==0)) {
-char * ____BAH_COMPILER_VAR_551 =null;
+char * ____BAH_COMPILER_VAR_557 =null;
                     {
                         long int currStrOff = 0;
                         long int strLen_0 = strlen(fileName);
 long int strLen_1 = strlen(".c");
 ;                            
-                        ____BAH_COMPILER_VAR_551 = memoryAlloc(1 + strLen_0 + strLen_1);
+                        ____BAH_COMPILER_VAR_557 = memoryAlloc(1 + strLen_0 + strLen_1);
                         
-                        strncpy(____BAH_COMPILER_VAR_551+currStrOff, fileName, strLen_0);
+                        strncpy(____BAH_COMPILER_VAR_557+currStrOff, fileName, strLen_0);
                         currStrOff += strLen_0;
                         
-                        strncpy(____BAH_COMPILER_VAR_551+currStrOff, ".c", strLen_1);
+                        strncpy(____BAH_COMPILER_VAR_557+currStrOff, ".c", strLen_1);
                         currStrOff += strLen_1;
                         
                     }
-                    fileName =  ____BAH_COMPILER_VAR_551;
+                    fileName =  ____BAH_COMPILER_VAR_557;
 }
-char * ____BAH_COMPILER_VAR_552 =null;
+char * ____BAH_COMPILER_VAR_558 =null;
                     {
                         long int currStrOff = 0;
                         long int strLen_0 = strlen("gcc ");
 long int strLen_1 = strlen(fileName);
 long int strLen_2 = strlen(" ");
 long int strLen_3 = strlen(isStatic);
-long int strLen_4 = strlen(" -w ");
+long int strLen_4 = strlen(" -O1 -w ");
 ;                            
-                        ____BAH_COMPILER_VAR_552 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2 + strLen_3 + strLen_4);
+                        ____BAH_COMPILER_VAR_558 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2 + strLen_3 + strLen_4);
                         
-                        strncpy(____BAH_COMPILER_VAR_552+currStrOff, "gcc ", strLen_0);
+                        strncpy(____BAH_COMPILER_VAR_558+currStrOff, "gcc ", strLen_0);
                         currStrOff += strLen_0;
                         
-                        strncpy(____BAH_COMPILER_VAR_552+currStrOff, fileName, strLen_1);
+                        strncpy(____BAH_COMPILER_VAR_558+currStrOff, fileName, strLen_1);
                         currStrOff += strLen_1;
                         
-                        strncpy(____BAH_COMPILER_VAR_552+currStrOff, " ", strLen_2);
+                        strncpy(____BAH_COMPILER_VAR_558+currStrOff, " ", strLen_2);
                         currStrOff += strLen_2;
                         
-                        strncpy(____BAH_COMPILER_VAR_552+currStrOff, isStatic, strLen_3);
+                        strncpy(____BAH_COMPILER_VAR_558+currStrOff, isStatic, strLen_3);
                         currStrOff += strLen_3;
                         
-                        strncpy(____BAH_COMPILER_VAR_552+currStrOff, " -w ", strLen_4);
+                        strncpy(____BAH_COMPILER_VAR_558+currStrOff, " -O1 -w ", strLen_4);
                         currStrOff += strLen_4;
                         
                     }
-                    char * gccArgs =  ____BAH_COMPILER_VAR_552;
+                    char * gccArgs =  ____BAH_COMPILER_VAR_558;
 array(char *)* cLibs =  compilerState.cLibs;
 long int i =  0;
 while ((i<len(cLibs))) {
 char * l =  cLibs->data[i];
-char * ____BAH_COMPILER_VAR_553 =null;
+char * ____BAH_COMPILER_VAR_559 =null;
                     {
                         long int currStrOff = 0;
                         long int strLen_0 = strlen(gccArgs);
 long int strLen_1 = strlen(" -");
 long int strLen_2 = strlen(l);
 ;                            
-                        ____BAH_COMPILER_VAR_553 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2);
+                        ____BAH_COMPILER_VAR_559 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2);
                         
-                        strncpy(____BAH_COMPILER_VAR_553+currStrOff, gccArgs, strLen_0);
+                        strncpy(____BAH_COMPILER_VAR_559+currStrOff, gccArgs, strLen_0);
                         currStrOff += strLen_0;
                         
-                        strncpy(____BAH_COMPILER_VAR_553+currStrOff, " -", strLen_1);
+                        strncpy(____BAH_COMPILER_VAR_559+currStrOff, " -", strLen_1);
                         currStrOff += strLen_1;
                         
-                        strncpy(____BAH_COMPILER_VAR_553+currStrOff, l, strLen_2);
+                        strncpy(____BAH_COMPILER_VAR_559+currStrOff, l, strLen_2);
                         currStrOff += strLen_2;
                         
                     }
-                    gccArgs =  ____BAH_COMPILER_VAR_553;
+                    gccArgs =  ____BAH_COMPILER_VAR_559;
 i =  i + 1;
 };
-char * ____BAH_COMPILER_VAR_554 =null;
+char * ____BAH_COMPILER_VAR_560 =null;
                     {
                         long int currStrOff = 0;
                         long int strLen_0 = strlen("//COMPILE WITH: '");
 long int strLen_1 = strlen(gccArgs);
 long int strLen_2 = strlen("'\n");
 ;                            
-                        ____BAH_COMPILER_VAR_554 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2);
+                        ____BAH_COMPILER_VAR_560 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2);
                         
-                        strncpy(____BAH_COMPILER_VAR_554+currStrOff, "//COMPILE WITH: '", strLen_0);
+                        strncpy(____BAH_COMPILER_VAR_560+currStrOff, "//COMPILE WITH: '", strLen_0);
                         currStrOff += strLen_0;
                         
-                        strncpy(____BAH_COMPILER_VAR_554+currStrOff, gccArgs, strLen_1);
+                        strncpy(____BAH_COMPILER_VAR_560+currStrOff, gccArgs, strLen_1);
                         currStrOff += strLen_1;
                         
-                        strncpy(____BAH_COMPILER_VAR_554+currStrOff, "'\n", strLen_2);
+                        strncpy(____BAH_COMPILER_VAR_560+currStrOff, "'\n", strLen_2);
                         currStrOff += strLen_2;
                         
                     }
-                    struct rope* ____BAH_COMPILER_VAR_555 =rope(____BAH_COMPILER_VAR_554);OUTPUT =  concatenateRopes(____BAH_COMPILER_VAR_555,OUTPUT);
-struct fileStream ____BAH_COMPILER_VAR_556 = {};
-____BAH_COMPILER_VAR_556.handle= null;
-____BAH_COMPILER_VAR_556.isValid = fileStream__isValid;
-____BAH_COMPILER_VAR_556.open = fileStream__open;
-____BAH_COMPILER_VAR_556.close = fileStream__close;
-____BAH_COMPILER_VAR_556.getPos = fileStream__getPos;
-____BAH_COMPILER_VAR_556.setPos = fileStream__setPos;
-____BAH_COMPILER_VAR_556.getSize = fileStream__getSize;
-____BAH_COMPILER_VAR_556.rewind = fileStream__rewind;
-____BAH_COMPILER_VAR_556.getChar = fileStream__getChar;
-____BAH_COMPILER_VAR_556.setChar = fileStream__setChar;
-____BAH_COMPILER_VAR_556.createFile = fileStream__createFile;
-____BAH_COMPILER_VAR_556.writeFile = fileStream__writeFile;
-____BAH_COMPILER_VAR_556.writePtr = fileStream__writePtr;
-____BAH_COMPILER_VAR_556.readPtr = fileStream__readPtr;
-____BAH_COMPILER_VAR_556.readContent = fileStream__readContent;
-____BAH_COMPILER_VAR_556.readBytes = fileStream__readBytes;
-____BAH_COMPILER_VAR_556.writeBytes = fileStream__writeBytes;
-struct fileStream fs =  ____BAH_COMPILER_VAR_556;
+                    struct rope* ____BAH_COMPILER_VAR_561 =rope(____BAH_COMPILER_VAR_560);OUTPUT =  concatenateRopes(____BAH_COMPILER_VAR_561,OUTPUT);
+struct fileStream ____BAH_COMPILER_VAR_562 = {};
+____BAH_COMPILER_VAR_562.handle= null;
+____BAH_COMPILER_VAR_562.isValid = fileStream__isValid;
+____BAH_COMPILER_VAR_562.open = fileStream__open;
+____BAH_COMPILER_VAR_562.close = fileStream__close;
+____BAH_COMPILER_VAR_562.getPos = fileStream__getPos;
+____BAH_COMPILER_VAR_562.setPos = fileStream__setPos;
+____BAH_COMPILER_VAR_562.getSize = fileStream__getSize;
+____BAH_COMPILER_VAR_562.rewind = fileStream__rewind;
+____BAH_COMPILER_VAR_562.getChar = fileStream__getChar;
+____BAH_COMPILER_VAR_562.setChar = fileStream__setChar;
+____BAH_COMPILER_VAR_562.createFile = fileStream__createFile;
+____BAH_COMPILER_VAR_562.writeFile = fileStream__writeFile;
+____BAH_COMPILER_VAR_562.writePtr = fileStream__writePtr;
+____BAH_COMPILER_VAR_562.readPtr = fileStream__readPtr;
+____BAH_COMPILER_VAR_562.readContent = fileStream__readContent;
+____BAH_COMPILER_VAR_562.readBytes = fileStream__readBytes;
+____BAH_COMPILER_VAR_562.writeBytes = fileStream__writeBytes;
+struct fileStream fs =  ____BAH_COMPILER_VAR_562;
 fs.open((struct fileStream*)&fs,fileName,"w");
-char * ____BAH_COMPILER_VAR_557 =OUTPUT->toStr((struct rope*)OUTPUT);fs.writeFile((struct fileStream*)&fs,____BAH_COMPILER_VAR_557);
+char * ____BAH_COMPILER_VAR_563 =OUTPUT->toStr((struct rope*)OUTPUT);fs.writeFile((struct fileStream*)&fs,____BAH_COMPILER_VAR_563);
 fs.close((struct fileStream*)&fs);
 }
 totalTime =  getTimeUnix() - startTime;
-char * ____BAH_COMPILER_VAR_558 =intToStr(totalTime / 1000000);char * ____BAH_COMPILER_VAR_559 =null;
+char * ____BAH_COMPILER_VAR_564 =intToStr(totalTime / 1000000);char * ____BAH_COMPILER_VAR_565 =null;
                     {
                         long int currStrOff = 0;
                         long int strLen_0 = strlen("\e[1;32mDone. (compiled in ");
-long int strLen_1 = strlen(____BAH_COMPILER_VAR_558);
+long int strLen_1 = strlen(____BAH_COMPILER_VAR_564);
 long int strLen_2 = strlen("ms)\e[0m");
 ;                            
-                        ____BAH_COMPILER_VAR_559 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2);
+                        ____BAH_COMPILER_VAR_565 = memoryAlloc(1 + strLen_0 + strLen_1 + strLen_2);
                         
-                        strncpy(____BAH_COMPILER_VAR_559+currStrOff, "\e[1;32mDone. (compiled in ", strLen_0);
+                        strncpy(____BAH_COMPILER_VAR_565+currStrOff, "\e[1;32mDone. (compiled in ", strLen_0);
                         currStrOff += strLen_0;
                         
-                        strncpy(____BAH_COMPILER_VAR_559+currStrOff, ____BAH_COMPILER_VAR_558, strLen_1);
+                        strncpy(____BAH_COMPILER_VAR_565+currStrOff, ____BAH_COMPILER_VAR_564, strLen_1);
                         currStrOff += strLen_1;
                         
-                        strncpy(____BAH_COMPILER_VAR_559+currStrOff, "ms)\e[0m", strLen_2);
+                        strncpy(____BAH_COMPILER_VAR_565+currStrOff, "ms)\e[0m", strLen_2);
                         currStrOff += strLen_2;
                         
                     }
-                    println(____BAH_COMPILER_VAR_559);
-long int ____BAH_COMPILER_VAR_560 = 0;
-return ____BAH_COMPILER_VAR_560;
+                    println(____BAH_COMPILER_VAR_565);
+long int ____BAH_COMPILER_VAR_566 = 0;
+return ____BAH_COMPILER_VAR_566;
 };

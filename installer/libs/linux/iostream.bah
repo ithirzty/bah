@@ -169,10 +169,13 @@ struct fileStream {
 
 struct! stat {
     st_size: int
+    st_mtime: int
+    st_ctime: int
 }
 #define! open(fn cpstring, flags int, mode int) int
 #define! close(fd int)
 #define! fstat(fd int, fs stat*)
+#define! stat(path cpstring, s stat*)
 
 //A wrapper to make file direct operation, wihtout needing to write file on changes.
 //**This is way faster than the fileStream** but every modification made to the returned string will be directly made to the file.
@@ -256,6 +259,13 @@ removeFile(name cpstring) bool {
         return true
     }
     return false
+}
+
+//Get the timestamp of the last modification of a file.
+getLastModified(name cpstring) int {
+    attr stat
+    stat(name, &attr)
+    return attr.st_ctime
 }
 
 #define! getenv(s cpstring) cpstring

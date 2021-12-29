@@ -9,7 +9,7 @@
 const BAH_DIR = "/opt/bah/"
 const BAH_OS = "darwin"
 //////////////////////BUILD SPECIFIC THINGS//////////////////////
-const BAH_VERSION = "v1.1 (build 37)"
+const BAH_VERSION = "v1.1 (build 38)"
 
 #include "./globals.bah"
 
@@ -124,6 +124,7 @@ long int __BAH__main(__BAH_ARR_TYPE_cpstring);
     if includeFile("builtin.bah", elems) == false {
         panic("Could not find std-libs, please check '"+BAH_DIR+"'")
     }
+    compilerState.currentDir = getDirFromFile(fileName)
     parseLines(tokens, elems)
 
     totalTime = getTimeUnix() - startTime
@@ -152,7 +153,7 @@ long int __BAH__main(__BAH_ARR_TYPE_cpstring);
         fs.writeFile(OUTPUT.toStr())
         fs.close()
 
-        gccArgs = "clang "+ randFileName+ " -w -o "+fileName
+        gccArgs = "clang "+ randFileName+ " -w -O1 -o "+fileName
         
         if flags.isSet("l") == 1 {
             gccArgs = gccArgs + " -c"
@@ -184,7 +185,7 @@ long int __BAH__main(__BAH_ARR_TYPE_cpstring);
             fileName = fileName + ".c"
         }
 
-        gccArgs = "gcc "+ fileName+ " -w "
+        gccArgs = "gcc "+ fileName+ " -O1 -w "
         cLibs = compilerState.cLibs
         i=0;for i < len(cLibs) {
             l = cLibs[i]
