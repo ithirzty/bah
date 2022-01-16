@@ -62,6 +62,10 @@ decrVar(v variable*, elems Elems*) rope* {
 
 incrVar(v variable*, elems Elems*) rope* {
 
+    if strCount(v.name, "*") > 0 {
+        return rope("")
+    }
+
     s = searchStruct(v.type, elems)
     if s != null && isRCPpointerType(v.type) == false && s.isBinding == false {
         return rope("RCP_incrCounter("+v.name+".__RCP_counter);")

@@ -1,5 +1,6 @@
 #include "iostream.bah"
 #include "string.bah"
+#include "path.bah"
 
 #include "./lexer.bah"
 #include "./var.bah"
@@ -228,7 +229,7 @@ includeFile(ccstr cpstring, elems Elems*) bool {
     fileName = BAH_DIR + ccstr
     f = fm.open(fileName)
     if fm.isValid() == 0 {
-        fileName = compilerState.currentDir + ccstr
+        fileName = absPath(compilerState.currentDir + ccstr)
         f = fm.open(fileName)
         if fm.isValid() == 0 {
             return false
@@ -859,10 +860,13 @@ parseArrayVars(l []Tok, elems Elems*) []Tok {
         return l
     }
 
+    ft = l[0]
+
     i=0; for i < len(l) {
         t = l[i]
 
         if t.type == TOKEN_TYPE_VAR {
+            ti = i
             i =i + 1
             if i < len(l) {
                 nt = l[i]
@@ -904,6 +908,15 @@ parseArrayVars(l []Tok, elems Elems*) []Tok {
                         mt = memory[j]
                         cont = cont + mt.cont
                         j =j + 1
+                    }
+
+                    if ti > 0 && ft.cont != "else" {
+                        OUTPUT = OUTPUT + rope("
+                        if ("+t.cont+"->length <= "+cont+") {
+                            printf(\"array ("+compilerState.currentFile+":"+intToStr(t.line)+"): "+t.cont+"[%d] with length %d\\n\", "+cont+", "+t.cont+"->length);
+                            exit(1);
+                        };
+                        ")
                     }
 
                     t.cont = t.cont + "->data[" + cont + "]"
@@ -1464,6 +1477,7 @@ parseVar(l []Tok, elems Elems*) {
     }
 
     if exists == true {
+        // oCode = code
         if strlen(code) == 0 {
             throwErr(&ft, "Cannot re-declare {TOKEN}.")
         }
@@ -1493,7 +1507,7 @@ parseVar(l []Tok, elems Elems*) {
                 }
             } else {
                 s = searchStruct(v.type, elems)
-                if s != null && RCPavailable() == true && RCPselfRef(v) == false && s.isBinding == false {
+                if s != null && RCPavailable() == true && RCPselfRef(v) == false && s.isBinding == false  && strCount(v.name, "*") == 0 {
                         code = "RCP_decrCounter("+v.name+".__RCP_counter); " + v.name + " = " + code
                 } else {
                     code = v.name + " = " + code
@@ -2529,6 +2543,12 @@ parseAsync(l []Tok, elems Elems*) {
     sFnT.trimLeft(fnName.length+1)
     sFnT.trimRight(1)
 
+    tCreate = "pthread_create"
+    if RCPavailable() == false {
+        tCreate = "GC_pthread_create"
+    }
+
+
     OUTPUT = OUTPUT + rope("
     void "+fnWrapper+"("+tmpArgsStruct+"* args) {
         "+fnName.str()+"("+unSerMembs+");
@@ -2536,7 +2556,7 @@ parseAsync(l []Tok, elems Elems*) {
     {
         "+tmpArgsStruct+" "+tmpArgs+" = {"+sFnT.str()+"};
         pthread_t id;
-        pthread_create(&id, 0, "+fnWrapper+", &"+tmpArgs+");
+        "+tCreate+"(&id, 0, "+fnWrapper+", &"+tmpArgs+");
     }; 
     
     ")
