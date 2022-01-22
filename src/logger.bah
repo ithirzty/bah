@@ -1,0 +1,89 @@
+#include "iostream.bah"
+#include "json.bah"
+
+struct debugFunctionArgument {
+    name: cpstring
+    type: cpstring
+}
+
+struct debugFunction {
+    name: cpstring
+    returns: cpstring
+    args: []variable*
+}
+
+struct debugStruct {
+    name: cpstring
+    membs: []variable*
+}
+
+struct debugType {
+    name: cpstring
+    refers: cpstring
+}
+
+debugStart() {
+    println("[")
+}
+
+debugPrint(name cpstring, line int, e reflectElement) {
+    if debug == false {
+        return
+    }
+    println("
+    {
+        \"name\": "+toJson(name)+",
+        \"path\": \""+compilerState.currentFile+":" + intToStr(line)+"\",
+        \"element\": "+toJson(e)+"
+    },
+    ")    
+}
+
+debugError(name cpstring, line int, from int, to int, e reflectElement) {
+    if debug == false {
+        return
+    }
+    println("
+    {
+        \"name\": "+toJson(name)+",
+        \"path\": \""+compilerState.currentFile+":" + intToStr(line)+"\",
+        \"range\": [
+            "+intToStr(from)+",
+            "+intToStr(to)+"
+        ],
+        \"element\": "+toJson(e)+"
+    },
+    ")
+}
+
+debugEnd() {
+    println("
+    {
+        \"name\": \"file_end\"
+    }
+    ]
+    ")
+}
+
+
+debugExit() {
+    println("
+    {
+        \"name\": \"error_end\"
+    }
+    ]
+    ")
+}
+
+debugEndScope(line int, elems Elems*) {
+    if debug == false {
+        return
+    }
+    i=0; for i < len(elems.vars) {
+        v = elems.vars[i]
+        if v.outterScope == false && v.isConst == false {
+            debugPrint("var_end", line, v)
+        }
+        i = i + 1
+    }
+}

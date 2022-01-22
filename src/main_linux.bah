@@ -11,6 +11,8 @@ const BAH_OS = "linux"
 //////////////////////BUILD SPECIFIC THINGS//////////////////////
 const BAH_VERSION = "v1.1 (build 38)"
 
+debug = false
+
 #include "./globals.bah"
 
 #include "./lexer.bah"
@@ -20,7 +22,6 @@ const BAH_VERSION = "v1.1 (build 38)"
 
 #cLib "O1"
 
-
 main(args []cpstring) int {
     flags = flags{}
     flags.addString("o", "Name of the file to output.")
@@ -29,7 +30,14 @@ main(args []cpstring) int {
     flags.addBool("l", "Compile as a library.")
     flags.addBool("d", "Compile as a dynamic executable. (useful if you are using a library that is only available shared but might reduce portability).")
     flags.addBool("rcp", "Enables RCP (reference counter) instead of the garbage collector. Warning: if you are using self-reference, this will lead to memory leaks!")
+    flags.addBool("debug", "Enables verbose json output.")
     flags.parse(args)
+
+    debug = flags.isSet("debug") == 1
+
+    if debug == true {
+        debugStart()
+    }
 
     RCPenabled = flags.isSet("rcp") == 1
 
@@ -101,7 +109,7 @@ long int __BAH__main(__BAH_ARR_TYPE_cpstring);
     compilerState = compilerStateTag{}
     compilerState.arrTypesDecl[0] = "__BAH_ARR_TYPE_cpstring"
     
-    fileName = args[1]
+    fileName = absPath(args[1])
     compilerState.currentFile = fileName
     fm = fileMap{}
     f = fm.open(fileName)
@@ -111,6 +119,7 @@ long int __BAH__main(__BAH_ARR_TYPE_cpstring);
     startTime = getTimeUnix()
     tokens = lexer(f)
     fm.close()
+
 
     if len(tokens) == 0 {
         panic("File '"+fileName+"' not recognized.")
@@ -123,8 +132,10 @@ long int __BAH__main(__BAH_ARR_TYPE_cpstring);
     compilerState.currentDir = getDirFromFile(fileName)
     parseLines(tokens, elems)
 
-    totalTime = getTimeUnix() - startTime
-    println("Parsed. ("+intToStr(totalLines)+" lines, total time: "+intToStr(totalTime / 1000000)+"ms, lexer time: "+intToStr(totalLexerTime / 1000000)+"ms)\e[0m")
+    if debug == false {
+        totalTime = getTimeUnix() - startTime
+        println("Parsed. ("+intToStr(totalLines)+" lines, total time: "+intToStr(totalTime / 1000000)+"ms, lexer time: "+intToStr(totalLexerTime / 1000000)+"ms)\e[0m")
+    }
 
     if flags.isSet("o") == 1 {
         fileName = flags.get("o")
@@ -201,8 +212,13 @@ long int __BAH__main(__BAH_ARR_TYPE_cpstring);
         fs.close()
     }
 
-    totalTime = getTimeUnix() - startTime
-    println("\e[1;32mDone. (compiled in "+intToStr(totalTime / 1000000)+"ms)\e[0m")
+    if debug == false {
+        totalTime = getTimeUnix() - startTime
+        println("\e[1;32mDone. (compiled in "+intToStr(totalTime / 1000000)+"ms)\e[0m")
+    } else {
+        debugEnd()
+    }
 
+ 
     return 0
 }

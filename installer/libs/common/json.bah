@@ -459,7 +459,13 @@ toJson__inner(e reflectElement, isMember bool, tabs int) cpstring {
             arr = []ptr
             // arrPtr ptr* = e.value
             // arr = *arrPtr
-            arr = e.value
+            if isMember == false {
+                arr = e.value
+            } else {
+                ev ptr* = e.value
+                arr = *ev
+            }
+            
             i=0; for i < len(arr) {
                 arrElem = arr[i]
                 ae.value = arrElem

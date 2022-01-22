@@ -139,3 +139,16 @@ unser(data []char) ptr {
     return r
 }
 
+#gc {
+    #define! GC_malloc_atomic(s int) ptr
+    memoryAllocSTR(s int) cpstring {
+        r = GC_malloc_atomic(s)
+        memset(r, 0, s)
+        return r
+    }
+}
+#rcp {
+    memoryAllocSTR(s int) cpstring {
+        return memoryAlloc(s)
+    }
+}

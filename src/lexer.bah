@@ -25,6 +25,7 @@ struct Tok {
     type: tokenType = TOKEN_NO_TYPE
     pos: int = 0
     line: int = 1
+    begLine: int = 1
     bahType: cpstring = ""
     isValue: bool = false
     isFunc: bool = false
@@ -147,6 +148,7 @@ lexer(os cpstring) []Tok {
         //token is a string
         if c == <char>34 {
             pos = i
+            begLine = lineNb
             memory[0] = c
             i = i + 1
             for i < codeLength {
@@ -159,6 +161,7 @@ lexer(os cpstring) []Tok {
                     }
                 }
                 if c == <char>10 {
+                    lineNb = lineNb + 1
                     if pc != <char>92 {
                         memory[len(memory)] = <char>92
                         c = 'n'
@@ -168,6 +171,9 @@ lexer(os cpstring) []Tok {
                 i = i + 1
             }
             tokens[len(tokens)] = makeToken(pos, lineNb, memory, TOKEN_TYPE_STR)
+            lt = tokens[len(tokens) - 1]
+            lt.begLine = begLine
+            tokens[len(tokens) - 1] = lt
         } else if isNumber(c) || isMinus(c, nc) {
         //token is a number
             memory[0] = c

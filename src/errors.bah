@@ -2,11 +2,13 @@
 #include "string.bah"
 
 #include "./lexer.bah"
+#include "./logger.bah"
 
 throwErr(tp ptr, format cpstring) {
     //println(OUTPUT)
     str = ""
     info = ""
+    pos = 0
     if tp != null {
     fm = fileMap{}
     fileSrcStr = fm.open(compilerState.currentFile)
@@ -31,7 +33,7 @@ throwErr(tp ptr, format cpstring) {
         beg =beg - 1
     }
 
-    pos = t.pos - beg
+    pos = t.pos - beg + 1
 
     i=beg; for i < fileSrc.length {
         c = fileSrc.charAt(i)
@@ -52,9 +54,17 @@ throwErr(tp ptr, format cpstring) {
     }
 
     str = arrToStr(line)
-    info = intToStr(t.line)
+    info = intToStr(t.line) + ":" + intToStr(pos)
     }
-    println("\e[1;31m[ERROR]\e[0m "+compilerState.currentFile+":" + info + "\n\e[1;37m\t" + str + "\e[0m\n" + format)
+
+    if debug == true {
+        t Tok* = tp
+        debugError("error", t.line, pos, pos+strlen(t.ogCont), format)
+        debugExit()
+    } else {
+        println("\e[1;31m[ERROR]\e[0m "+compilerState.currentFile+":" + info + "\n\e[1;37m\t" + str + "\e[0m\n" + format)
+    }
+
     exit(1)
 
 }
