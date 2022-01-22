@@ -1,0 +1,57 @@
+
+declareFunc(fn func*, elems Elems*) {
+    tmpfnRetCType = getCType(fn.returns.type, elems)
+    tmpfnArgsCType = ""
+    j=0; for j < len(fn.args) {
+        arg = fn.args[j]
+        ct = getCType(arg.type, elems)
+        tmpfnArgsCType = tmpfnArgsCType + ct.str() + " " + arg.name
+        j = j + 1
+        if j < len(fn.args) {
+            tmpfnArgsCType = tmpfnArgsCType + ", "
+        }
+    }
+
+    OUTPUT = OUTPUT + rope(tmpfnRetCType.str() + " " + fn.name + "("+tmpfnArgsCType+");\n")
+}
+
+declareVar(v variable*, elems Elems*) {
+    if v.isConst == true {
+        OUTPUT = OUTPUT + rope("#define "+v.name+" "+v.constVal+"\n")
+    } else {
+        cType = getCType(v.type, elems)
+        OUTPUT = OUTPUT + rope(cType.str() + " " + v.name+";\n")
+    }
+}
+
+declareAll(elems Elems*) {
+
+    OUTPUT = rope("
+#define noCheck(v) v
+#define array(type)	\
+struct{	\
+type *data; \
+long int length; \
+long int elemSize; \
+}
+typedef array(char*)* __BAH_ARR_TYPE_cpstring;
+long int __BAH__main(__BAH_ARR_TYPE_cpstring);
+")
+
+    i=0; for i < len(compilerState.cIncludes), i++ {
+        OUTPUT = OUTPUT + rope("#include "+compilerState.cIncludes[i]+"\n")
+    }
+
+    i=0; for i < len(elems.vars), i++ {
+        v = elems.vars[i]
+        declareVar(v, elems)
+    }
+
+    i=0; for i < len(elems.fns), i++ {
+        fn = elems.fns[i]
+        if fn.isBinding == true {
+            continue
+        }
+        declareFunc(fn, elems)
+    }
+}

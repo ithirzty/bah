@@ -390,3 +390,13 @@ varInArr(v variable*, arr []variable*) bool {
     }
     return false
 }
+
+makeInit() {
+    OUTPUT = OUTPUT + rope("
+    void __BAH_init() {
+
+        ") + INIT + rope("
+
+    };
+    ")
+}

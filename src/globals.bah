@@ -4,10 +4,13 @@
 OUTPUT rope*
 NEXT_LINE = ""
 
+INIT rope*
+
 struct variable {
     name: cpstring = ""
     type: cpstring = ""
     isConst: bool = false
+    constVal: cpstring = ""
     isArray: bool = false
     from: cpstring = ""
     outterScope: bool = false
@@ -50,6 +53,7 @@ struct Elems {
 
 struct compilerStateTag {
     includes: []cpstring
+    cIncludes: []cpstring
     cLibs: []cpstring
     currentFile: cpstring
     currentDir: cpstring = "./"
@@ -66,7 +70,7 @@ currentCStruct cStruct*
 
 threadCount = 0
 
-currentFn func*
+currentFn func* = null
 
 totalLines = 0
 

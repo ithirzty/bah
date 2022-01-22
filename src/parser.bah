@@ -267,6 +267,7 @@ parseInclude(l []Tok, elems Elems*) {
     strTrimRight(&sc, 1)
     if strHasPrefix(sc, "<") || strHasSuffix(sc, ".h") || strHasSuffix(sc, ".c") {
         OUTPUT = OUTPUT + rope("#include "+sc+"\n")
+        compilerState.cIncludes[len(compilerState.cIncludes)] = sc
     } else {
         if includeFile(sc, elems) == false {
             throwErr(&strt, "Could not find file {TOKEN}.")
@@ -295,6 +296,23 @@ parseOperations(line []Tok, elems Elems*) []Tok {
                 continue
             }
             
+            if nt.type == TOKEN_TYPE_SYNTAX && nt.cont == t.cont {
+                c = t.cont + nt.cont
+                tl = t.line
+                tp = t.pos
+                tmpT = Tok{
+                    cont: c
+                    ogCont: c
+                    isValue: false
+                    line: tl
+                    pos: tp
+                    type: TOKEN_TYPE_SYNTAX
+                }
+                nl[len(nl)] = tmpT
+                i = i + 2
+                continue
+            }
+
             ptt = getTypeFromToken(&pt, true, elems)
             ntt = getTypeFromToken(&nt, true, elems)
             if compTypes(ptt, ntt) == false {
@@ -354,7 +372,7 @@ parseOperations(line []Tok, elems Elems*) []Tok {
                         j = j + 1
                     }
 
-                    OUTPUT = OUTPUT + rope("
+                    res = rope("
                     {
                         long int currStrOff = 0;
                         "+lens+";                            
@@ -362,6 +380,15 @@ parseOperations(line []Tok, elems Elems*) []Tok {
                         ")+cats+rope("
                     }
                     ")
+
+                    if isGlobal() {
+                        INIT = INIT + res
+                    } else {
+                        OUTPUT = OUTPUT + res
+                    }
+
+
+
                     t.cont = rstr
 
                     t.type = TOKEN_TYPE_VAR
@@ -537,7 +564,11 @@ parseStructType(line []Tok, elems Elems*) []Tok {
                         k = k + 1
                     }
 
-                    OUTPUT = OUTPUT + r
+                    if isGlobal() {
+                        INIT = INIT + r
+                    } else {
+                        OUTPUT = OUTPUT + r
+                    }
 
                     t.bahType = s.name
                     t.cont = rvn
@@ -1305,6 +1336,50 @@ parseVar(l []Tok, elems Elems*) {
     }
     code = ""
     arrayLength = 0
+
+    if exists == true && isGlobal() {
+        throwErr(&ft, "Cannot redeclare global variable {TOKEN}.")
+    }
+
+    if len(l) == 2 {
+        lt = l[1]
+        if lt.type == TOKEN_TYPE_SYNTAX && lt.cont == "++" || lt.cont == "--" {
+            if exists == false {
+                throwErr(&ft, "Cannot use '"+lt.cont+"' on non declared {TOKEN} variable.")
+            }
+            nl = []Tok
+            nl[0] = l[0]
+
+            nl[1] = Tok{
+                type: TOKEN_TYPE_SYNTAX
+                cont: "="
+                isValue: false
+            }
+            
+            c = ""
+            if lt.cont == "++" {
+                c = ft.cont+"+1"
+            } else if lt.cont == "--" {
+                c = ft.cont+"-1"
+            }
+            
+            ltl = lt.line
+            ltp = lt.pos
+            ltc = lt.cont
+
+            nl[2] = Tok{
+                type: TOKEN_TYPE_INT
+                cont: c
+                line: ltl
+                ogCont: ltc
+                pos: ltp
+                isOper: true
+                isValue: true
+            }
+            l = nl
+        }
+    }
+
     i=1; for i < len(l) {
         t = l[i]
         if t.type == TOKEN_TYPE_SYNTAX {
@@ -1320,11 +1395,6 @@ parseVar(l []Tok, elems Elems*) {
             }
         }
         if isEqual == false {
-            // if t.type != TOKEN_TYPE_VAR {
-            //     if t.cont != "*" {
-            //         throwErr(&t, "Cannot use {TOKEN} as type for a variable.")
-            //     }
-            // }
             currentType = currentType + " " + t.cont
         } else {
             if t.cont == "new" {
@@ -1598,9 +1668,17 @@ void * newPtr = memoryRealloc("+nstr+"->data, (nLength+50)*sizeof("+elemTypeStr+
         if strlen(code) > 0 {
             if isRCPpointerType(v.type) && RCPavailable() == true && toVar == true  && isPointedVar == false {
                 cType = getCType(v.type, elems)
-                code = vct+" = *("+cType.str()+"*)RCP_incrIL(&"+code+")"
+                if isGlobal() {
+                    INIT = INIT + rope(v.name + " = *("+cType.str()+"*)RCP_incrIL(&"+code+");\n")
+                } else {
+                    code = vct+" = *("+cType.str()+"*)RCP_incrIL(&"+code+")"
+                }
             } else {
-                code = vct + " = " + code
+                if isGlobal() {
+                    INIT = INIT + rope(v.name + " = " + code+";\n")
+                } else {
+                    code = vct + " = " + code
+                }
             }
         } else {
             if isRCPpointerType(v.type) {
@@ -1614,9 +1692,19 @@ void * newPtr = memoryRealloc("+nstr+"->data, (nLength+50)*sizeof("+elemTypeStr+
 
         debugPrint("var_declaration", ft.line, v)
 
+        if isGlobal() {
+            OUTPUT = OUTPUT + rope(vct+";\n")
+        }
 
     }
-    OUTPUT = OUTPUT + rope(code + ";\n")
+
+    if isGlobal() {
+        INIT = INIT + rope(NEXT_LINE)
+        NEXT_LINE = ""
+    } else {
+        OUTPUT = OUTPUT + rope(code + ";\n")
+    }
+
 
 }
 
@@ -2237,7 +2325,6 @@ parseClib(line []Tok) {
 }
 
 parseConst(l []Tok, elems Elems*) {
-
     l = parseCast(l, elems)
     if len(l) != 4 {
         throwErr(&l[0], "Invalid usage of {TOKEN}, must be 'const <constName> = <constValue>'. ")
@@ -2256,6 +2343,7 @@ parseConst(l []Tok, elems Elems*) {
     }
     v = new variable
     v.isConst = true
+    v.constVal = valt.cont
     v.name = vart.cont
     v.type = getTypeFromToken(&valt, true, elems)
     vars = elems.vars
@@ -2400,30 +2488,99 @@ parseElse(l []Tok, elems Elems*) {
 
 }
 
+#define parseLine(l []Tok, elems Elems*)
+
 parseFor(l []Tok, elems Elems*) {
 
     if len(l) < 4 {
         throwErr(&l[0], "Invalid usage of {TOKEN}.")
     }
-    condt = l[1]
-    if condt.bahType != "bool" {
-        if condt.bahType != "int" {
-            throwErr(&condt, "Cannot use {TOKEN} as condition in for statement.")
-        }
-    }
-    t = l[2]
-    if t.cont != "{" {
-        throwErr(&t, "Expected '{' not {TOKEN} after condtition in for statement.")
-    }
-    tokens = []Tok
-    max = len(l) - 1
-    i=3;for i < max {
-        t = l[i]
-        tokens[len(tokens)] = t
-        i =i + 1
-    }
-    OUTPUT = OUTPUT + rope("while ("+condt.cont+") {\n")
 
+    nbComas = 0
+    i=1; for i < len(l) {
+        t = l[i]
+        if t.cont == "{" {
+            break
+        }
+        if t.type == TOKEN_TYPE_SYNTAX && t.cont == "," {
+            if nbComas == 1 {
+                throwErr(&t, "Invalid line separation of for, cannot set more than 2 lines: {TOKEN}.")
+            }
+            nbComas = nbComas + 1
+        }
+        i = i + 1
+    }
+
+    tokens = []Tok
+    if nbComas > 0 {
+        if nbComas != 1 {
+            t = l[0]
+            throwErr(&t, "Invalid usage of {TOKEN}, can only partition line in 2 using 'for <condition>, <insctruction> {<code>}'.")
+        }
+
+        inst = []Tok
+        condt = l[1]
+
+        if condt.bahType != "bool" {
+            if condt.bahType != "int" {
+                throwErr(&condt, "Cannot use {TOKEN} as condition in for statement.")
+            }
+        }
+
+        st = l[2]
+
+        if st.type != TOKEN_TYPE_SYNTAX || st.cont != "," {
+            throwErr(&st, "Cannot use {TOKEN}, need ',' to split for loop instructions.")
+        }
+
+        i=3; for i < len(l), i++ {
+            t = l[i]
+            if t.type == TOKEN_TYPE_ENCL && t.cont == "{" {
+                break
+            }
+            inst[len(inst)] = t
+        }
+
+        oldOut = OUTPUT
+        OUTPUT = rope("")
+
+        parseLine(inst, elems)
+
+        instC = string(OUTPUT.toStr())
+        OUTPUT = oldOut
+        instC.trimRight(2)
+
+        t = l[i]
+        if t.cont != "{" {
+            throwErr(&t, "Expected '{' not {TOKEN} after '<condition>,<instruction>' in for statement.")
+        }
+
+        max = len(l) - 1
+        i=i+1;for i < max, i++ {
+            t = l[i]
+            tokens[len(tokens)] = t
+        }
+
+        OUTPUT = OUTPUT + rope("for (; "+condt.cont+"; "+instC.str()+") {\n")
+
+    } else {
+        condt = l[1]
+        if condt.bahType != "bool" {
+            if condt.bahType != "int" {
+                throwErr(&condt, "Cannot use {TOKEN} as condition in for statement.")
+            }
+        }
+        t = l[2]
+        if t.cont != "{" {
+            throwErr(&t, "Expected '{' not {TOKEN} after condtition in for statement.")
+        }
+        max = len(l) - 1
+        i=3;for i < max, i++ {
+            t = l[i]
+            tokens[len(tokens)] = t
+        }
+        OUTPUT = OUTPUT + rope("while ("+condt.cont+") {\n")
+    }
     ifElems = dupElems(elems)
 
     oldIB = compilerState.isBranch

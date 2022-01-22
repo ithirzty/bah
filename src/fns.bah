@@ -3,3 +3,6 @@
 
 #include "./globals.bah"
 
+isGlobal() bool {
+    return currentFn == null
+}

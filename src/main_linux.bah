@@ -19,6 +19,7 @@ debug = false
 #include "./type.bah"
 #include "./errors.bah"
 #include "./parser.bah"
+#include "./declarative.bah"
 
 #cLib "O1"
 
@@ -50,8 +51,10 @@ main(args []cpstring) int {
         panic("Cannot use -c (to translate to C code) and -l (to compile as a library) at the same time.")
     }
 
-    OUTPUT = rope("
+    INIT = rope("")
 
+    OUTPUT = rope("
+void __BAH_init();
 #define noCheck(v) v
 #define array(type)	\
 struct{	\
@@ -75,6 +78,7 @@ long int __BAH__main(__BAH_ARR_TYPE_cpstring);
         memcpy(args->data, argv, sizeof(char*)*argc);
         args->elemSize = sizeof(char*);
         args->length = argc;
+        __BAH_init();
         long int r =  __BAH__main((__BAH_ARR_TYPE_cpstring)args);
         free(args->data);
         free(args);
@@ -94,6 +98,7 @@ long int __BAH__main(__BAH_ARR_TYPE_cpstring);
         memcpy(args->data, argv, sizeof(char*)*argc);
         args->elemSize = sizeof(char*);
         args->length = argc;
+        __BAH_init();
         long int r =  __BAH__main((__BAH_ARR_TYPE_cpstring)args);
         GC_FREE(args->data);
         GC_FREE(args);
@@ -129,8 +134,16 @@ long int __BAH__main(__BAH_ARR_TYPE_cpstring);
     if includeFile("builtin.bah", elems) == false {
         panic("Could not find std-libs, please check '"+BAH_DIR+"'")
     }
+
+    if flags.isSet("l") == 1 {
+        OUTPUT = rope("")
+        declareAll(elems)
+    }
+
     compilerState.currentDir = getDirFromFile(fileName)
     parseLines(tokens, elems)
+
+    makeInit()
 
     if debug == false {
         totalTime = getTimeUnix() - startTime
@@ -168,6 +181,7 @@ long int __BAH__main(__BAH_ARR_TYPE_cpstring);
         gccArgs = "gcc "+ randFileName+ " "+isStatic+" -w -O1 -o "+fileName
         
         if flags.isSet("l") == 1 {
+            println(OUTPUT.toStr())
             gccArgs = gccArgs + " -c"
         }
 
