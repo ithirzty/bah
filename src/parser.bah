@@ -213,7 +213,11 @@ includeFile(ccstr cpstring, elems Elems*) bool {
 
     if ccstr == "BAH_MEM_COLLECTOR" {
         if RCPenabled == true {
-            ccstr = "rcp.bah"
+            if flags.isSet("rcp") {
+                ccstr = "rcp.bah"
+            } else if flags.isSet("fastrcp") {
+                ccstr = "fastrcp.bah"
+            }
         } else {
             ccstr = "gc.bah"
         }
@@ -2264,13 +2268,15 @@ parseDefine(l []Tok, elems Elems*) {
         }
 
     } else {
-        if st.type != TOKEN_TYPE_VAR {
-            throwErr(&st, "Cannot use {TOKEN} as type.")
+        tp = ""
+        i++; for i < len(l), i++ {
+            t = l[i]
+            tp = tp + t.cont
         }
         if ft.type != TOKEN_TYPE_VAR {
             throwErr(&ft, "Cannot use {TOKEN} as new type name.")
         }
-        cTypeNewType = getCType(st.cont, elems)
+        cTypeNewType = getCType(tp, elems)
         cTypeNewTypeStr = cTypeNewType.str()
         if doesOutput == true {
             OUTPUT = OUTPUT + rope("typedef " + cTypeNewTypeStr + " " + ft.cont + ";\n")
@@ -2279,7 +2285,7 @@ parseDefine(l []Tok, elems Elems*) {
         if debug == true {
             dt = new debugType
             dt.name = ft.cont
-            dt.refers = st.cont
+            dt.refers = tp
             debugPrint("type_declare", ft.line, dt)
         }
 

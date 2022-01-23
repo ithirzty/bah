@@ -31,6 +31,7 @@ main(args []cpstring) int {
     flags.addBool("l", "Compile as a library.")
     flags.addBool("d", "Compile as a dynamic executable. (useful if you are using a library that is only available shared but might reduce portability).")
     flags.addBool("rcp", "Enables RCP (reference counter) instead of the garbage collector. Warning: if you are using self-reference, this will lead to memory leaks!")
+    flags.addBool("fastrcp", "Enables RCP without leak detection. It is recommended to test you programs with the -rcp flag to test for leak detection before using this flag.")
     flags.addBool("debug", "Enables verbose json output.")
     flags.parse(args)
 
@@ -40,7 +41,7 @@ main(args []cpstring) int {
         debugStart()
     }
 
-    RCPenabled = flags.isSet("rcp") == 1
+    RCPenabled = flags.isSet("rcp") == 1 || flags.isSet("fastrcp")
 
     if flags.isSet("v") == 1 {
         println("Bah compiler version: "+BAH_VERSION+".\n© Alois Laurent Boe")
@@ -181,7 +182,6 @@ long int __BAH__main(__BAH_ARR_TYPE_cpstring);
         gccArgs = "gcc "+ randFileName+ " "+isStatic+" -w -O1 -o "+fileName
         
         if flags.isSet("l") == 1 {
-            println(OUTPUT.toStr())
             gccArgs = gccArgs + " -c"
         }
 

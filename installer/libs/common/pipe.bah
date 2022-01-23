@@ -1,0 +1,65 @@
+#include "iostream.bah"
+
+#define! pipe(fd ptr)
+#define! fcntl(fd ptr, m int, f int) int
+
+struct pipe {
+    fd: []int32
+    openned: bool = false
+
+    shouldBlock(b bool) {
+        if this.openned == false {
+            panic("pipe: cannot .shouldBlock() on closed pipe.")
+        }
+        if b == false {
+            flags = fcntl(this.fd[0], noCheck(F_GETFL), 0)
+            fcntl(this.fd[0], noCheck(F_SETFL), noCheck(flags | O_NONBLOCK))
+        }
+    }
+
+    open() {
+        allocateArray(this.fd, 2)
+        pipe(cArr(this.fd))
+        flags = fcntl(this.fd[0], noCheck(F_GETFL), 0)
+        fcntl(this.fd[0], noCheck(F_SETFL), noCheck(flags | O_NONBLOCK))
+        this.openned = true
+    }
+
+    close() {
+        rp = this.fd[0]
+        wp = this.fd[1]
+        close(<ptr>rp)
+        close(<ptr>wp)
+        this.openned = false
+    }
+
+    write(d []char) {
+        wp ptr = this.fd[1]
+        write(wp, cArr(d), len(d))
+    }
+
+    read() []char {
+        r = []char
+        rp ptr = this.fd[0]
+        buff cpstring = memoryAlloc(1024)
+
+        success = false
+        for 1 == 1 {
+            memset(buff, 0, 1023)
+            s = read(rp, buff, 1023)
+            if s == -1 {
+                if success == true {
+                    break
+                }
+            } else {
+                success = true
+                a = strAsArr(buff)
+                i=0; for i < len(a), i++ {
+                    r[len(r)] = a[i]
+                }
+            }
+        }
+        return r
+    }
+
+}

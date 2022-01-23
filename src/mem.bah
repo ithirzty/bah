@@ -75,7 +75,7 @@ incrVar(v variable*, elems Elems*) rope* {
 }
 
 RCPavailable() bool {
-    return compilerState.currentFile != BAH_DIR+"rcp.bah" && RCPenabled == true
+    return compilerState.currentFile != BAH_DIR+"rcp.bah" && compilerState.currentFile != BAH_DIR+"fastrcp.bah" && RCPenabled == true
 }
 
 

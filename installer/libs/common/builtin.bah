@@ -53,6 +53,7 @@ __STR(a cpstring) cpstring {
 #include "<fcntl.h>"
 
 #define! write(fd FILE*, t cpstring, l int)
+#define! read(fd FILE*, t cpstring, l int) int
 
 //Prints text to the terminal.
 print(s cpstring) {
@@ -66,4 +67,10 @@ panic(e cpstring) {
         print("\n")
 		cleanShutDown()
     }
+}
+
+//Converts a bah array to a C array.
+cArr(arr ptr) ptr {
+	noCheck(array(void*)*a = arr)
+	return noCheck(a->data)
 }
