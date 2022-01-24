@@ -59,7 +59,8 @@ Files containing bah code have the `.bah` extenstion.
 - To get the current installed version, use `bah -v`.
 - To compile as a static library, use `bah myFile.bah -l`.
 - To compile your program as a dynamically linked program, use `bah myFile.bah -d`.
-- To compile your program using the reference counter instead of the garbage collector, use `bah myFile.bah -rcp`.
+- To compile your program using the reference counter instead of the garbage collector, use `bah myFile.bah -rcp`. **Still in progress, may leak in certain cases.**
+- To compile your program using the FASTER reference counter instead of the garbage collector, use `bah myFile.bah -fastrcp`. **This reference counter will not check for memory leaks.**
 
 ### Hello, world!
 ```c
@@ -93,9 +94,9 @@ As well as being easy to learn, you can create
 
 ### Awesome features
 Bah also supports awesome features like 
-- reflection (simillar to Go approach),
-- reference counting,
-- async calls (execute function call in a new thread)...
+- **reflection** (approach simillar to Go, enabling easy JSON marshalling),
+- **reference counting** (-rcp or -fastrcp flags),
+- **async calls** (execute function call in a new thread)...
 
 This enables you to do things that would be impossible in C
 such as scanning JSON content to a variable (event structs and arrays), and marshalling vars to JSON.
