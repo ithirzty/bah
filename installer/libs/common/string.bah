@@ -392,7 +392,9 @@ strToArr(str cpstring) []char {
 //This is faster but changing the content of the returnend cpstring will change the content of the array.
 //You can see this operation as linkning the same data through two different interfaces, the only difference between these two interfaces are their type.
 arrAsStr(arr []char) cpstring {
-    // RCP_incr(noCheck(arr->data))
+    #rcp {
+        RCP_incr(noCheck(arr->data))
+    }
     return noCheck(arr->data)
 }
 
@@ -401,6 +403,9 @@ arrAsStr(arr []char) cpstring {
 //This could lead to memory corruption if the cpstring is not heap allocated.
 //Make sure that the array is null terminated if editting it.
 strAsArr(str cpstring) []char {
+    #rcp {
+        RCP_incr(str)
+    }
     l = strlen(str)
     arr = []char
     noCheck(arr->length = l)
@@ -408,24 +413,50 @@ strAsArr(str cpstring) []char {
     return arr
 }
 
+//Converts an int into a cpstring.
+intToStr(i int) cpstring {
+    if i == 0 {
+        return "0"
+    }
+
+    s = []char
+
+    subZero = i < 0
+
+    if subZero == true {
+        i = 0-i
+    }
+
+    for i != 0, i = i / 10 {
+        conv = i % 10
+        conv = conv + 48
+        s[len(s)] = <char>conv
+    }
+
+    if subZero == true {
+        s[len(s)] = '-'
+    }
+    ls = len(s)
+    i=0; for i < ls/2, i++ {
+        ii = ls-i-1
+        osi = s[i]
+        s[i] = s[ii]
+        s[ii] = osi
+    }
+
+    s[len(s)] = <char>0
+
+    return arrAsStr(s)
+}
 
 //Used to convert an integer into a string.
 //*It returns a string, not a cpstring*
 intToString(i int) string {
-    buff cpstring = memoryAlloc(65)
-    ptri = <ptr>i
-    sprintf(buff, "%d", ptri)
-    r = string(buff)
+    r = string(intToStr(i))
     return r
 }
 
-//Converts an int into a cpstring.
-//This is faster than intToString.
-intToStr(i int) cpstring {
-    buff cpstring = memoryAlloc(50)
-    sprintf(buff, "%ld", i)
-    return buff
-}
+
 
 //Converts a float to a cpstring.
 floatToStr(f float) cpstring {

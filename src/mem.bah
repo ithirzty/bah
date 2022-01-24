@@ -17,8 +17,8 @@ decrVar(v variable*, elems Elems*) rope* {
                     for(int arrElemIndex=len("+v.name+")-1; arrElemIndex >= 0; arrElemIndex--) {
                         ")+decrVar(arrElem, elems)+rope("
                     };
-                    RCP_decrRCP(arrDataRCP);
                 }
+                RCP_decrRCP(arrDataRCP);
             }
             RCP_decrRCP(arrRCP);
             };//////////////////////
@@ -30,9 +30,7 @@ decrVar(v variable*, elems Elems*) rope* {
             if (arrRCP != null) {
                 if (arrRCP->c == 1) {
                     struct RCP * arrDataRCP = RCP_request("+v.name+"->data);
-                    if (arrDataRCP != null && arrDataRCP->c == 1) {
-                        RCP_decrRCP(arrDataRCP);
-                    }
+                    RCP_decrRCP(arrDataRCP);
                 }
                 RCP_decrRCP(arrRCP);
             }

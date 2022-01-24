@@ -228,6 +228,13 @@ memoryAlloc(s int) ptr {
     return noCheck(r + noCheck(sizeof(struct RCP)))
 }
 
+memoryAllocNZ(s int) ptr {
+    r char* = malloc(s + noCheck(sizeof(struct RCP)))
+    RCPstate.heapTop = sbrk(0)
+    RCP_register(r, s)
+    return noCheck(r + noCheck(sizeof(struct RCP)))
+}
+
 
 //Will realloc memory to a specified pointer.
 memoryRealloc(p ptr, s int) ptr {
@@ -235,7 +242,7 @@ memoryRealloc(p ptr, s int) ptr {
         return memoryAlloc(s)
     }
     or = RCPstate.getByPtr(p)
-    r = memoryAlloc(s)
+    r = memoryAllocNZ(s)
 
     ns = or.s
     if or.s >= s {
@@ -246,7 +253,7 @@ memoryRealloc(p ptr, s int) ptr {
     }
 
     memcpy(r, p, ns)
-    RCP_remove(p)
+    RCP_decrRCP(or)
     return r
 }
 
