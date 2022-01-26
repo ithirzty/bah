@@ -52,6 +52,12 @@ struct RCPstate {
 
     getByPtr(p ptr) RCP* {
         if p > this.heapTop || p < this.heapBottom {
+            noCheck(printf("skipping "))
+            if p < this.heapBottom {
+                noCheck(printf("on the stack\n"))
+            } else {
+                noCheck(printf("...\n"))
+            }
             return null
         }
         if p == null {
@@ -70,13 +76,13 @@ RCPstate RCPstate
 RCP_init() {
     RCPstate = RCPstate{}
     RCPstate.heapTop = sbrk(0)
-    RCPstate.heapBottom = malloc(0)
+    RCPstate.heapBottom = malloc(8)
 }
 
 #define! exit(e int)
 
 RCP_shutdown() {
-    
+    free(RCPstate.heapBottom)
 }
 
 cleanShutDown() {

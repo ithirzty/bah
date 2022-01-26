@@ -140,8 +140,10 @@ fillDBresponse(data ptr, argc int, argv cpstring*, azColName cpstring*) int {
     dbr dbResponse* = data
     row = new dbResponseRow
     i=0; for i < argc {
-        col cpstring = noCheck(azColName[i])
-        arg cpstring = noCheck(argv[i])
+        col = memoryAlloc(strlen(noCheck(azColName[i])) + 1)
+        strcpy(col, noCheck(azColName[i]))
+        arg = memoryAlloc(strlen(noCheck(argv[i])) + 1)
+        strcpy(arg, noCheck(argv[i]))
         row.cols[i] = __STR(col)
         row.argv[i] = __STR(arg) 
         i = i + 1

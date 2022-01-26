@@ -92,6 +92,16 @@ lexerErr(line int, pos int, msg cpstring) {
     exit(1)
 }
 
+enclavers = []char{'(', ')', '{', '}', '[', ']'}
+syntaxes = []char{'!', '=', '|', <char>38, '%', '+', '-', '*', '/', ',', '<', '>', ':', <char>59}
+                                    //&                                                    //;
+keywords = []cpstring{"if", "else", "for", "struct", "const", "return", "extend", "new", "break", "continue", "default", "switch", "case", "while", "typedef", "function", "async", "in"}
+                    //  x      x      x        x        x         x         x       x       x          x          -          -        -       -         -           x         x
+                    // x: done
+                    //  : not done
+                    // -: not planned
+varChars = []char{'_'}
+seps = []char{'.'}
 
 lexer(os cpstring) []Tok {
     dur = getTimeUnix()
@@ -105,16 +115,6 @@ lexer(os cpstring) []Tok {
 
     lineNb = 1
 
-    enclavers = []char{'(', ')', '{', '}', '[', ']'}
-    syntaxes = []char{'!', '=', '|', <char>38, '%', '+', '-', '*', '/', ',', '<', '>', ':', <char>59}
-                                     //&                                                    //;
-    keywords = []cpstring{"if", "else", "for", "struct", "const", "return", "extend", "new", "break", "continue", "default", "switch", "case", "while", "typedef", "function", "async"}
-                        //  x      x      x        x        x         x         x       x       x          x          -          -        -       -         -           x         x
-                        // x: done
-                        //  : not done
-                        // -: not planned
-    varChars = []char{'_'}
-    seps = []char{'.'}
 
 
     i=0; for i < codeLength {

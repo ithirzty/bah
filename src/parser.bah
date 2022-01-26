@@ -280,9 +280,10 @@ parseInclude(l []Tok, elems Elems*) {
 
 }
 
+signs = []cpstring{"|", "&", "%", "+", "-", "*", "/"}
+
 parseOperations(line []Tok, elems Elems*) []Tok {
 
-    signs = []cpstring{"|", "&", "%", "+", "-", "*", "/"}
     nl = []Tok{line[0]}
 
     i=1; for i < len(line) {
@@ -703,12 +704,13 @@ parseArrayType(line []Tok, elems Elems*) []Tok {
     return nl
 }
 
+comparators = []cpstring{"==", "!=", ">", "<", "<=", ">=", "in"}
+compSep = []cpstring{"||", "&&"}
+
 parseBool(line []Tok, elems Elems*) []Tok {
 
     nl = []Tok
 
-    comparators = []cpstring{"==", "!=", ">", "<", "<=", ">="}
-    compSep = []cpstring{"||", "&&"}
 
     i=0; for i < len(line) {
         t = line[i]
@@ -737,25 +739,57 @@ parseBool(line []Tok, elems Elems*) []Tok {
             nt = line[i+1]
             ptt = getTypeFromToken(&pt, true, elems)
             ntt = getTypeFromToken(&nt, true, elems)
-            if compTypes(ptt, ntt) == false {
-                throwErr(&nt, "Cannot compare {TOKEN} ("+ntt+") to "+ptt+".")
-            }
-            if ptt == "cpstring" {
-                if t.cont == "==" {
-                    pt.cont = "(strcmp("+pt.cont+", "+nt.cont+") == 0)"
-                } else if t.cont == "!=" {
-                    pt.cont = "(strcmp("+pt.cont+", "+nt.cont+") != 0)"
-                } else if t.cont == ">" {
-                    pt.cont = "(strlen("+pt.cont+") > srtlen("+nt.cont+"))"
-                } else if t.cont == "<" {
-                    pt.cont = "(strlen("+pt.cont+") < srtlen("+nt.cont+"))"
-                } else if t.cont == ">=" {
-                    pt.cont = "(strlen("+pt.cont+") >= srtlen("+nt.cont+"))"
-                } else if t.cont == "<=" {
-                    pt.cont = "(strlen("+pt.cont+") <= srtlen("+nt.cont+"))"
+
+            if t.cont == "in" {
+                arrT = string(ntt)
+                if arrT.hasPrefix("[]") == 0 {
+                    throwErr(&nt, "Cannot use {TOKEN} ("+ntt+") as an array.")
                 }
+                arrT.trimLeft(2)
+                if compTypes(ptt, arrT.str()) == false {
+                    throwErr(&pt, "Cannot search for {TOKEN} ("+ptt+") inside array of type "+ntt+".")
+                }
+                compVar = genCompilerVar()
+
+                comp = ""
+
+                if ptt == "cpstring" {
+                    comp = "strcmp("+nt.cont+"->data[i], "+pt.cont+") == 0"
+                } else {
+                    comp = nt.cont+"->data[i] == "+pt.cont
+                }
+
+                OUTPUT = OUTPUT + rope("
+                int "+compVar+" = 0;
+                for(int i=len("+nt.cont+")-1; i != -1; i--) {
+                    if ("+comp+") {
+                        "+compVar+" = 1;
+                        break;
+                    };
+                };
+                ")
+                pt.cont = compVar
             } else {
-                pt.cont = "(" + pt.cont + t.cont + nt.cont + ")"
+                if compTypes(ptt, ntt) == false {
+                    throwErr(&nt, "Cannot compare {TOKEN} ("+ntt+") to "+ptt+".")
+                }
+                if ptt == "cpstring" {
+                    if t.cont == "==" {
+                        pt.cont = "(strcmp("+pt.cont+", "+nt.cont+") == 0)"
+                    } else if t.cont == "!=" {
+                        pt.cont = "(strcmp("+pt.cont+", "+nt.cont+") != 0)"
+                    } else if t.cont == ">" {
+                        pt.cont = "(strlen("+pt.cont+") > srtlen("+nt.cont+"))"
+                    } else if t.cont == "<" {
+                        pt.cont = "(strlen("+pt.cont+") < srtlen("+nt.cont+"))"
+                    } else if t.cont == ">=" {
+                        pt.cont = "(strlen("+pt.cont+") >= srtlen("+nt.cont+"))"
+                    } else if t.cont == "<=" {
+                        pt.cont = "(strlen("+pt.cont+") <= srtlen("+nt.cont+"))"
+                    }
+                } else {
+                    pt.cont = "(" + pt.cont + t.cont + nt.cont + ")"
+                }
             }
             pt.bahType = "bool"
             nl[len(nl)-1] = pt
