@@ -8,6 +8,8 @@
 #include "<openssl/ssl.h>"
 #include "<openssl/err.h>"
 #include "<openssl/bio.h>"
+#include "<sys/select.h>"
+#include "<sys/time.h>"
 
 #include "cBinds.bah"
 
@@ -15,6 +17,8 @@
 #include "string.bah"
 #include "exec.bah"
 #include "thread.bah"
+
+//sockets
 
 #define! socklen_t uint
 #define! pid_t int
@@ -48,12 +52,12 @@ struct! sockaddr_in {
     sin_zero: char*
 }
 
-struct http_url {
-    path: string
-    host: string
-    proto: string
-    port: string
+struct! timeval {
+    tv_sec: int
+    tv_usec: int
 }
+
+#define! fd_set ptr
 
 #define! socket(a int, b int, c int) int
 #define! gethostbyname(h cpstring) hostent*
@@ -68,6 +72,143 @@ struct http_url {
 #define! memset(str ptr, w int, s int)
 #define! accept(sockfd int, cliaddr sockaddr_in*, clilen int*) int
 #define! shutdown(fd int, flags int)
+#define! setsockopt(fd int, w int, flag int, val int*, flagSize int) bool
+
+#define! fcntl(fd int, oper int, flag int)
+#define! FD_ZERO(s ptr)
+#define! FD_SET(sock int, s ptr)
+#define! select(sock int, ws ptr, rs ptr, ex ptr, timeout timeval*) int
+
+struct http_socket {
+    sockfd: int = -1
+    timeout: int = 0
+
+    isOpened() bool {
+        return this.sockfd > 0
+    }
+
+    open() bool {
+        this.sockfd = socket(2, 1, 0)
+        return this.isOpened()
+    }
+
+    reach(host cpstring, port int) bool {
+        serv_addr sockaddr_in
+        if this.isOpened() == false {
+            return false
+        }
+        server hostent* = gethostbyname(host)
+        if server == null {
+            return false
+        }
+        serv_addr.sin_port = htons(port)
+        serv_addr.sin_family = 2
+        ha = server.h_addr
+        saddr = in_addr{}
+        saddr.s_addr = *ha
+        serv_addr.sin_addr = saddr
+        res = -1
+        if this.timeout > 0 {
+            fcntl(this.sockfd, noCheck(F_SETFL), noCheck(O_NONBLOCK))
+            set fd_set
+            timeout = timeval{}
+            timeout.tv_sec = this.timeout
+            FD_ZERO(&set)
+            FD_SET(this.sockfd, &set)
+            res = connect(this.sockfd,&serv_addr,16)
+            res = select(this.sockfd, null, &set, null, &timeout)
+        } else {
+            res = connect(this.sockfd,&serv_addr,16)
+        }
+
+        if res == -1 {
+            return false
+        }
+        return true
+    }
+
+    close() {
+        close(this.sockfd)
+        this.sockfd = -1
+    }
+
+    terminate() {
+        shutdown(this.sockfd, noCheck(SHUT_RDWR))
+        this.sockfd = -1
+    }
+
+    listen(port int) bool {
+        //binding
+        servaddr sockaddr_in
+        servaddr.sin_family = 2
+        saddr = in_addr{}
+        saddr.s_addr = htonl(0)
+        servaddr.sin_addr = saddr
+        servaddr.sin_port = htons(port)
+        if bind(this.sockfd, &servaddr, 16) == -1 {
+            println("binding error")
+            return false
+        }
+        //listenning
+        if listen(this.sockfd,1024) < 0 {
+            return false
+        }
+        optVal = 1
+        setsockopt(this.sockfd, noCheck(SOL_SOCKET), noCheck(SO_REUSEADDR), &optVal, SIZE_OF_INT)
+        return true
+    }
+
+    accept() http_socket {
+        s = http_socket{}
+        s.sockfd = accept(this.sockfd, null, null)
+        println("opened: "+intToStr(s.sockfd))
+        return s
+    }
+
+    send(s cpstring) bool {
+        return send(this.sockfd, s, strlen(s), 0) > 0
+    }
+
+    sendBytes(bytes []char) {
+        send(this.sockfd, arrAsStr(bytes), len(bytes), 0)
+    }
+
+    receive() cpstring {
+        buffer cpstring = memoryAlloc(1025)
+        response = string("")
+        nDataLength = recv(this.sockfd,buffer,1024,0)
+        if nDataLength < 1024 {
+            response.append(buffer)
+        } else {
+            for nDataLength > 0 {
+                response.append(buffer)
+                if nDataLength < 1024 {
+                    trimAmm = 1024 - nDataLength
+                    response.trimRight(trimAmm)
+                    break
+                } else {
+                    nDataLength = recv(this.sockfd,buffer,1024,0)
+                }
+            }
+        }
+        return response.str()
+    }
+
+}
+
+isSocket(s http_socket) bool {
+    return s.sockfd > 0
+}
+
+
+struct http_url {
+    path: string
+    host: string
+    proto: string
+    port: string
+}
+
+
 
 //Used for parsing an URL.
 parseUrl(cps cpstring) http_url* {    
@@ -191,12 +332,8 @@ urlDecode(encoded cpstring) cpstring {
 
 
 
-//Used for closing a socket.
-closeSocket(sockfd int) {
-    shutdown(sockfd, noCheck(SHUT_RDWR))
-}
-
 //web server
+
 
 sigchld_handler(signo int) {
     status int
@@ -215,13 +352,21 @@ const HTTP_SERVER_SOCKET_ERROR = <http_serverError>1
 const HTTP_SERVER_BIND_ERROR = <http_serverError>2
 const HTTP_SERVER_LISTEN_ERROR = <http_serverError>3
 
+globalHTTPsockets = []http_socket
 
+http_quit_handler(signo int) {
+    i=0; for i < len(globalHTTPsockets), i++ {
+        s = globalHTTPsockets[i]
+        s.close()
+    }
+    exit(0)
+}
 
 //A wrapper for a http web server.
 struct http_server {
     port: int
     running: int = 1
-    sockfd:int = -1
+    socket: http_socket
     error: http_serverError = HTTP_SERVER_NO_ERROR
 
     //Event lisstener for when receiving connections.
@@ -232,12 +377,12 @@ struct http_server {
 
     //To stop the server.
     stop() {
-        if this.sockfd == -1 {
+        if this.socket.isOpened() == false {
             println("cannot stop http_server, not running")
             return
         }
         this.running = 0
-        closeSocket(this.sockfd)
+        this.socket.close()
     }
 
 
@@ -245,74 +390,68 @@ struct http_server {
     //To start the server.
     listenAndServe() {
         this.error = HTTP_SERVER_NO_ERROR
-        port = this.port
-        servaddr sockaddr_in
-        cliaddr sockaddr_in
-        sa sigaction
+        this.socket = http_socket{}
 
-        sockfd int = socket(2, 1, 0)
 
-        if sockfd < 0 {
+        this.socket.open()
+        
+        if this.socket.isOpened() == false {
             println("http: error opening socket")
             this.error = HTTP_SERVER_SOCKET_ERROR
             return
         }
 
-        servaddr.sin_family = 2
-        saddr = in_addr{}
-        saddr.s_addr = htonl(0)
-        servaddr.sin_addr = saddr
-        servaddr.sin_port = htons(port)
-
-        isBind = bind(sockfd, &servaddr, 16)
-        if isBind != 0 {
-            close(sockfd)
-            println("http: failed to bind port: '"+intToStr(port)+"'")
-            this.error = HTTP_SERVER_BIND_ERROR
-            return
-        }
-
-        isListening = listen(sockfd,1024)
-        this.sockfd = sockfd
-
-        if isListening < 0 {
-            close(sockfd)
+        if this.socket.listen(this.port) == false {
+            this.socket.close()
             println("http: failed to start listening")
             this.error = HTTP_SERVER_LISTEN_ERROR
             return
         }
+
+        globalHTTPsockets[len(globalHTTPsockets)] = this.socket
+
+        sa sigaction
         memset(<ptr>&sa, 0, 152)
         sa.sa_handler = sigchld_handler
         sigaction(17, &sa, 0)
+
+        memset(<ptr>&sa, 0, 152)
+        sa.sa_handler = http_quit_handler
+        sigaction(2, &sa, 0)
+
+
+
+
         if this.done != null {
             async this.done()
         }
+
         for this.running == 1 {
-            clilen = 16
-            connfd = accept(sockfd, &cliaddr, &clilen)
-            
-            if connfd < 0 {
+            client = this.socket.accept()
+
+            if client.isOpened() == false {
                 continue
             }
 
             childpid = fork()
             if childpid < 0 {
                 println("http: failed to fork client handler")
-                close(connfd)
+                client.close()
                 continue
             }
 
             if childpid == 0 {
-                close(sockfd)
-                this.handle(connfd)
+                this.socket.close()
+                this.handle(client.sockfd)
+                client.close()
                 exit(0)
             }
 
-            close(connfd)
+            client.close()
 
         }
 
-            this.stop()
+        this.stop()
 
     }
 
@@ -362,7 +501,7 @@ const HTTP_PARTIAL_CONTENT = 206
 
 
 struct http_transport {
-    connfd: int = -1
+    socket: http_socket
     headers: []string*
     code: int = HTTP_OK
     body: string*
@@ -415,35 +554,6 @@ struct http_transport {
 
 }
 
-openSocket(host cpstring, port int) int {
-    serv_addr sockaddr_in
-    sockfd = socket(2, 1, 0)
-    if sockfd < 0 {
-        panic("http: error opening socket")
-    }
-
-    server hostent* = gethostbyname(host)
-    if server == null {
-        panic("http: error resolving host")
-    }
-
-    serv_addr.sin_port = htons(port)
-    serv_addr.sin_family = 2
-    ha = server.h_addr
-    saddr = in_addr{}
-    saddr.s_addr = *ha
-    serv_addr.sin_addr = saddr
-        
-        
-    canConnect = connect(sockfd,&serv_addr,16)
-    if canConnect < 0 {
-        panic("error: error connecting socket")
-    }
-    return sockfd
-}
-
-
-
 
 //A wrapper for HTTP responses. You will be able to set/retreive the headers sent/receive.
 //You will encounter this when doing a request or sending a response to the client.
@@ -475,7 +585,7 @@ struct http_response extend http_transport {
             
             for i < len(this.headers) {
                 e = this.headers[i]
-                s.append(e.content)
+                s.append(e.str())
                 s.append("\r\n")
                 i = i + 1
             }
@@ -483,12 +593,12 @@ struct http_response extend http_transport {
             s.append("\r\n")
 
             
-            s.append(this.body.content)
+            s.append(this.body.str())
             this.body.set("")
-            http_send(this.connfd, s.content)
+            this.socket.send(s.str())
             headersSent = true
         } else {
-            http_send(this.connfd, this.body.str())
+            this.socket.send(this.body.str())
             this.body.set("")
         }
 
@@ -497,9 +607,8 @@ struct http_response extend http_transport {
     //Used for flushing content rather than sending it fully.
     //Useful for sending large files, websockets, SSE, etc...
     flush(bytes []char) {
-        send(this.connfd, arrAsStr(bytes), len(bytes), 0)
+        this.socket.sendBytes(bytes)
     }
-
 
 }
 
@@ -507,7 +616,7 @@ struct http_response extend http_transport {
 //You will need to populate it before sending it to the client.
 http_response(connfd int) http_response {
     resp = http_response{}
-    resp.connfd = connfd
+    resp.socket = http_socket{sockfd: connfd}
 
     resp.setHeader("Server", "bah-http-framework")
     resp.setHeader("Connection", "close")
@@ -645,16 +754,20 @@ makeRespFromBody(response string) http_response* {
 #define! BIO_read(bio BIO*, buff cpstring, size int) int
 #define! BIO_free_all(bio BIO*)
 #define! SSL_CTX_free(ctx SSL_CTX*)
+#define! SSL_CTX_set_timeout(ctx SSL_CTX*, t int) int
 #define! BIO_get_ssl(bio BIO*, ssl SSL**)
 #define! SSL_set_mode(ssl SSL*, mode int)
 
 //Used for making TLS requests.
 //*This is an internal function, you should know what you're doing if you decide to use it.*
-makeRawHttpsRequest(host cpstring, message cpstring) cpstring {
+makeRawHttpsRequest(host cpstring, message cpstring, timeout int) cpstring {
     
     SSL_library_init()
     ssl SSL*
     ctx = SSL_CTX_new(SSLv23_client_method())
+    if timeout > 0 {
+        SSL_CTX_set_timeout(ctx, timeout)
+    }
 
     if ctx == null {
         panic("http: cannot initialize ssl context")
@@ -702,12 +815,17 @@ makeRawHttpsRequest(host cpstring, message cpstring) cpstring {
 struct http_request extend http_transport {
     request: cpstring
     form: []string
+    timeout: int = 0
+    
 
     send() http_response* {
         socketWasOpenned = true
         isTLS = false
         host = ""
-        if this.connfd == -1 {
+        if isSocket(this.socket) == false {
+            this.socket = http_socket{}
+            this.socket.open()
+            this.socket.timeout = this.timeout
             if this.url != null {
                 socketWasOpenned = false
                 if strlen(this.path) == 0 {
@@ -723,9 +841,9 @@ struct http_request extend http_transport {
                     if this.url.port.length == 0 {
                         this.url.port.set("80")
                     }
-                    this.connfd = openSocket(this.url.host.str(), atoi(this.url.port.str()))
+                    this.socket.reach(this.url.host.str(), strToInt(this.url.port.str()))
                 }
-                    this.setHeader("host", this.url.host.str()+":"+this.url.port.str())
+                    this.setHeader("host", this.url.host.str())
             } else {
                 return null
             }            
@@ -756,28 +874,17 @@ struct http_request extend http_transport {
 
         response = string("")
         if isTLS == true {
-            response.set(makeRawHttpsRequest(host, message))
+            response.set(makeRawHttpsRequest(host, message, this.timeout))
         } else {
-
-            if send(this.connfd, message, strlen(message), 0) <= 0 {
+            if this.socket.send(message) == false {
                 panic("http: error sending trought socket")
             }
 
-            buffer cpstring = memoryAlloc(1025)
-            nDataLength = recv(this.connfd,buffer,1024,0)
-            for nDataLength > 0 {
-                response.append(buffer)
-                if nDataLength < 1024 {
-                    trimAmm = 1024 - nDataLength
-                    response.trimRight(trimAmm)
-                }
-                nDataLength = recv(this.connfd,buffer,1024,0)
-            }
-
+            response.set(this.socket.receive())
         }
 
         if socketWasOpenned == false {
-            closeSocket(this.connfd)
+            this.socket.close()
         }
 
         return makeRespFromBody(response)
@@ -850,7 +957,7 @@ struct http_request extend http_transport {
     getIP() cpstring {
         addr sockaddr_in
         addrSize int = noCheck(sizeof(struct sockaddr_in))
-        getpeername(this.connfd, &addr, &addrSize)
+        getpeername(this.socket.sockfd, &addr, &addrSize)
         return __STR(inet_ntoa(addr.sin_addr))
     }
 
@@ -859,8 +966,8 @@ struct http_request extend http_transport {
 //Used for parsing the request
 http_request(connfd int) http_request {
     r = http_request{}
-    r.connfd = connfd
-    reqcps = http_receive(connfd)
+    r.socket = http_socket{sockfd: connfd}
+    reqcps = r.socket.receive()
     req = string(reqcps)
     i = 0
     //parse method (GET, POST, PUT, DELETE...)
@@ -971,52 +1078,26 @@ makeRawRequest(method cpstring, u http_url*, args []cpstring) http_response {
     
 
     if proto.compare("https") {
-        resp = makeRawHttpsRequest(host.str(), message.str())
+        resp = makeRawHttpsRequest(host.str(), message.str(), 0)
         response.set(resp)
 
     } else {
 
-        sockfd = socket(2, 1, 0)
-        if sockfd < 0 {
+        sock = http_socket{}
+        if sock.open() == false {
             panic("http: error opening socket")
         }
 
-        server hostent* = gethostbyname(host.content)
-        if server == null {
-            panic("http: error resolving host")
+        if sock.reach(host.str(), portno) == false {
+            panic("http: error resolving host '"+host.str()+"'.")
         }
 
-        serv_addr.sin_port = htons(portno)
-        serv_addr.sin_family = 2
-        ha = server.h_addr
-        saddr = in_addr{}
-        saddr.s_addr = *ha
-        serv_addr.sin_addr = saddr
-        
-        
-        canConnect = connect(sockfd,&serv_addr,16)
-        if canConnect < 0 {
-            panic("error: error connecting socket")
-        }
-
-        isSend = send(sockfd, message.content, message.length, 0)
-
-        if isSend <= 0 {
+        if sock.send(message.str()) == false {
             panic("http: error sending trought socket")
         }
 
-        buffer cpstring = memoryAlloc(1025)
-        nDataLength = recv(sockfd,buffer,1024,0)
-        for nDataLength > 0 {
-            response.append(buffer)
-            if nDataLength < 1024 {
-                trimAmm = 1024 - nDataLength
-                response.trimRight(trimAmm)
-            }
-            nDataLength = recv(sockfd,buffer,1024,0)
-        }
-
-        close(sockfd)
+        response.set(sock.receive())
+        sock.close()
 
     }
 
