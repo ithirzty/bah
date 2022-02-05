@@ -7,39 +7,62 @@
 //**The channel will need to be destroyed after its utilization.**
 //*Note: a queue/channel can only take pointers.*
 struct channel {
-    mutex: mutex
+    m_mut: pthread_mutex_t
+
+    w_cond: pthread_cond_t
+    r_cond: pthread_cond_t
+
+    w_waitting: int = 0
+    r_waitting: int = 0
+
     queue: queue*
     cap: int = -1
 
     //To send data to the channel.
     //This can only send pointers.
     send(data ptr) {
+        pthread_mutex_lock(&this.m_mut)
         if this.cap != -1 {
-            for this.queue.length >= this.cap {
+            for this.queue.length == this.cap {
+                this.w_waitting++
+                pthread_cond_wait(&this.w_cond, &this.m_mut)
+                this.w_waitting--
             }
         }
-        this.mutex.lock()
         this.queue.insert(data)
-
-        this.mutex.unlock()
+        if this.r_waitting > 0 {
+            pthread_cond_signal(&this.r_cond)
+        }
+        pthread_mutex_unlock(&this.m_mut)
     }
 
     //To receive data (a pointer) from the channel.
     //Note that this is a blockant operation.
     //If no data is available the function will pause the execution of the current thread.
     receive() ptr {
+        pthread_mutex_lock(&this.m_mut)
         for this.queue.length == 0 {
-
+            this.r_waitting++
+            pthread_cond_wait(&this.r_cond, &this.m_mut)
+            this.r_waitting--
         }
-        this.mutex.lock()
         data = this.queue.pop()
-        this.mutex.unlock()
+        if this.w_waitting > 0 {
+            pthread_cond_signal(&this.w_cond)
+        }
+        pthread_mutex_unlock(&this.m_mut)
+
+        if data == null {
+            return this.receive()
+        }
         return data
     }
 
     //To destroy a channel after using it. Not destroying it could result in memory leaks.
     destroy() {
-        this.mutex.destroy()
+        pthread_mutex_destroy(&this.m_mut)
+        pthread_cond_destroy(&this.w_cond)
+        pthread_cond_destroy(&this.r_cond)
     }
 
     //To get the length of the current channel.
@@ -53,9 +76,11 @@ struct channel {
 
 //To initiate a channel
 //*Do not use channel{}, this will not initiate the mutex and the queue.*
-channel() channel {
-    c = channel{}
-    c.mutex = mutex()
+channel() channel* {
+    c = new channel
+    pthread_mutex_init(&c.m_mut, 0)
+    pthread_cond_init(&c.w_cond, 0)
+    pthread_cond_init(&c.r_cond, 0)
     c.queue = new queue
 
     return c

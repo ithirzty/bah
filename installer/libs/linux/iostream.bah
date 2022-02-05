@@ -20,8 +20,8 @@ stdinput(len int) cpstring {
 
 //Prints text to the terminal and adds a line return at the end.
 println(s cpstring) {
-    write(<ptr>1, s, strlen(s))
-    write(<ptr>1, "\n", 1)
+    write(<ptr>1, s+"\n", strlen(s)+1)
+    // write(<ptr>1, "\n", 1)
 }
 
 #define! fwrite(w ptr, s int, f int, hndl FILE*)
@@ -173,7 +173,7 @@ struct! stat {
     st_ctime: int
 }
 #define! open(fn cpstring, flags int, mode int) int
-#define! close(fd int)
+#define! close(fd int) int
 #define! fstat(fd int, fs stat*)
 #define! stat(path cpstring, s stat*)
 

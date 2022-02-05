@@ -43,6 +43,11 @@ struct dbResponseRow {
     scan(e reflectElement) {
         if e.isStruct == true {
             i=0; for i < len(this.cols) {
+                pc = this.cols[i]
+                if <ptr>pc == null {
+                    i++
+                    continue
+                }
                 j=0; for j < len(e.structLayout) {
                     m = e.structLayout[j]
                     m.value = m.calculateOffset(e.value)
@@ -140,6 +145,10 @@ fillDBresponse(data ptr, argc int, argv cpstring*, azColName cpstring*) int {
     dbr dbResponse* = data
     row = new dbResponseRow
     i=0; for i < argc {
+        if noCheck(azColName[i]) == null || noCheck(argv[i]) == null {
+            i++
+            continue
+        }
         col = memoryAlloc(strlen(noCheck(azColName[i])) + 1)
         strcpy(col, noCheck(azColName[i]))
         arg = memoryAlloc(strlen(noCheck(argv[i])) + 1)

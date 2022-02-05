@@ -2,6 +2,10 @@
 #include "memory.bah"
 #include "<time.h>"
 
+const TIME_MS  = 1000000
+const TIME_S   = 1000000000
+const TIME_MIN = 60000000000
+
 //This is a wrapper that makes time manipulations easier.
 //By default, its .timestamp field is set to the current time.
 struct time {

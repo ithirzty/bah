@@ -154,7 +154,7 @@ long int __BAH__main(__BAH_ARR_TYPE_cpstring);
     if flags.isSet("o") == 1 {
         fileName = flags.get("o")
     } else {
-        outFileName = string(fileName)
+        outFileName = string(args[1])
         outFileName.trimRight(4)
         fileName = outFileName.str()
     }
