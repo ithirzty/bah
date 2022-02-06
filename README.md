@@ -96,7 +96,8 @@ As well as being easy to learn, you can create
 Bah also supports awesome features like 
 - **reflection** (approach simillar to Go, enabling easy JSON marshalling),
 - **reference counting** (-rcp or -fastrcp flags),
-- **async calls** (execute function call in a new thread)...
+- **async calls** (execute function call in a new thread),
+- **channels** (thread safe pipes to send data)...
 
 This enables you to do things that would be impossible in C
 such as scanning JSON content to a variable (event structs and arrays), and marshalling vars to JSON.

@@ -95,8 +95,8 @@ lexerErr(line int, pos int, msg cpstring) {
 enclavers = []char{'(', ')', '{', '}', '[', ']'}
 syntaxes = []char{'!', '=', '|', <char>38, '%', '+', '-', '*', '/', ',', '<', '>', ':', <char>59}
                                     //&                                                    //;
-keywords = []cpstring{"if", "else", "for", "struct", "const", "return", "extend", "new", "break", "continue", "default", "switch", "case", "while", "typedef", "function", "async", "in"}
-                    //  x      x      x        x        x         x         x       x       x          x          -          -        -       -         -           x         x
+keywords = []cpstring{"if", "else", "for", "struct", "const", "return", "extend", "new", "break", "continue", "default", "switch", "case", "while", "typedef", "function", "async", "in", "chan"}
+                    //  x      x      x        x        x         x         x       x       x          x          -          -        -       -         -           x         x       x      
                     // x: done
                     //  : not done
                     // -: not planned
@@ -235,7 +235,11 @@ lexer(os cpstring) []Tok {
                 if inArray(c, syntaxes) == false {
                     break
                 }
-                if c == '|' {
+                if fc == '<' {
+                    if c != '-' && c != '=' {
+                        break
+                    }
+                } else if c == '|' {
                     if fc != c {
                         break
                     }

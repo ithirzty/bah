@@ -74,3 +74,15 @@ cArr(arr ptr) ptr {
 	noCheck(array(void*)*a = arr)
 	return noCheck(a->data)
 }
+
+__checkString(s cpstring, l cpstring) bool {
+
+	if <ptr>s == null {
+		print("cpstring ("+l+") is null \n")
+		exit(1)
+	}
+
+	return true
+}
+
+#include "channel.bah"

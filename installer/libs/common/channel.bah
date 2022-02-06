@@ -36,6 +36,24 @@ struct channel {
         pthread_mutex_unlock(&this.m_mut)
     }
 
+    sendAny(data ptr, len int) {
+        pthread_mutex_lock(&this.m_mut)
+        if this.cap != -1 {
+            for this.queue.length == this.cap {
+                this.w_waitting++
+                pthread_cond_wait(&this.w_cond, &this.m_mut)
+                this.w_waitting--
+            }
+        }
+        p = memoryAlloc(len)
+        memcpy(p, data, len)
+        this.queue.insert(p)
+        if this.r_waitting > 0 {
+            pthread_cond_signal(&this.r_cond)
+        }
+        pthread_mutex_unlock(&this.m_mut)
+    }
+
     //To receive data (a pointer) from the channel.
     //Note that this is a blockant operation.
     //If no data is available the function will pause the execution of the current thread.
@@ -52,9 +70,9 @@ struct channel {
         }
         pthread_mutex_unlock(&this.m_mut)
 
-        if data == null {
-            return this.receive()
-        }
+        // if data == null {
+        //     return this.receive()
+        // }
         return data
     }
 
@@ -84,4 +102,10 @@ channel() channel* {
     c.queue = new queue
 
     return c
+}
+
+
+setChanCap(c ptr, cap int) {
+    cp channel* = c
+    cp.cap = cap
 }

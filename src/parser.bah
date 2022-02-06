@@ -754,7 +754,7 @@ parseBool(line []Tok, elems Elems*) []Tok {
                 comp = ""
 
                 if ptt == "cpstring" {
-                    comp = "strcmp("+nt.cont+"->data[i], "+pt.cont+") == 0"
+                    comp = nt.cont+"->data[i] != 0 && strcmp("+nt.cont+"->data[i], "+pt.cont+") == 0"
                 } else {
                     comp = nt.cont+"->data[i] == "+pt.cont
                 }
@@ -774,18 +774,25 @@ parseBool(line []Tok, elems Elems*) []Tok {
                     throwErr(&nt, "Cannot compare {TOKEN} ("+ntt+") to "+ptt+".")
                 }
                 if ptt == "cpstring" {
+                    check = ""
+                    if pt.type != TOKEN_TYPE_STR {
+                        check = "__checkString("+pt.cont+", \""+compilerState.currentFile+":"+intToStr(t.line)+" "+pt.cont+" \")==1&&"
+                    }
+                    if nt.type != TOKEN_TYPE_STR {
+                        check = check + "__checkString("+nt.cont+", \""+compilerState.currentFile+":"+intToStr(t.line)+" "+nt.cont+"\")==1&&"
+                    }
                     if t.cont == "==" {
-                        pt.cont = "(strcmp("+pt.cont+", "+nt.cont+") == 0)"
+                        pt.cont = "(" + check + "strcmp("+pt.cont+", "+nt.cont+") == 0)"
                     } else if t.cont == "!=" {
-                        pt.cont = "(strcmp("+pt.cont+", "+nt.cont+") != 0)"
+                        pt.cont = "(" + check + "strcmp("+pt.cont+", "+nt.cont+") != 0)"
                     } else if t.cont == ">" {
-                        pt.cont = "(strlen("+pt.cont+") > srtlen("+nt.cont+"))"
+                        pt.cont = "(" + check + "strlen("+pt.cont+") > srtlen("+nt.cont+"))"
                     } else if t.cont == "<" {
-                        pt.cont = "(strlen("+pt.cont+") < srtlen("+nt.cont+"))"
+                        pt.cont = "(" + check + "strlen("+pt.cont+") < srtlen("+nt.cont+"))"
                     } else if t.cont == ">=" {
-                        pt.cont = "(strlen("+pt.cont+") >= srtlen("+nt.cont+"))"
+                        pt.cont = "(" + check + "strlen("+pt.cont+") >= srtlen("+nt.cont+"))"
                     } else if t.cont == "<=" {
-                        pt.cont = "(strlen("+pt.cont+") <= srtlen("+nt.cont+"))"
+                        pt.cont = "(" + check + "strlen("+pt.cont+") <= srtlen("+nt.cont+"))"
                     }
                 } else {
                     pt.cont = "(" + pt.cont + t.cont + nt.cont + ")"
@@ -1460,6 +1467,20 @@ parseVar(l []Tok, elems Elems*) {
                 v.type = s.name + "*"
                 NEXT_LINE = declareStructMethods(v, s, elems)
                 break
+            } else if t.cont == "chan" {
+                if i >= len(l) {
+                    throwErr(&t, "Cannot declare a {TOKEN} without a type (chan <type>).")
+                }
+                i++
+                nt = l[i]
+                v.type = "chan:" + nt.cont
+                code = "channel()"
+                if i+1 != len(l) {
+                    errT = l[i+1]
+                    throwErr(&errT, "{TOKEN} not expected after channel declaration.")
+                }
+                break
+
             }
             if t.isValue == false {
                 throwErr(&t, "Cannot use {TOKEN} as value in var declaration.")
@@ -2820,6 +2841,92 @@ addRCPvars(l []Tok, ltp lineType, elems Elems*) {
 
 }
 
+
+parseChan(l []Tok, elems Elems*) []Tok {
+    nl = []Tok
+    i=0; for i < len(l), i++ {
+        t = l[i]
+        if t.type == TOKEN_TYPE_SYNTAX && t.cont == "->" || t.cont == "<-" {
+            //receive
+            if t.cont == "<-" {
+                i++
+                if i < len(l) {
+                    nt = l[i]
+                    if nt.type != TOKEN_TYPE_VAR {
+                        throwErr(&nt, "Cannot use {TOKEN} as channel.")
+                    }
+                    ntt = string(getTypeFromToken(&nt, true, elems))
+                    if ntt.hasPrefix("chan:") == 0 {
+                        throwErr(&nt, "Cannot use var {TOKEN} ("+ntt.str()+") as channel.")
+                    }
+                    ntt.trimLeft(5)
+
+                    if isGlobal() {
+                        throwErr(&t, "Cannot receive ({TOKEN}) from a channel outside of a function.")
+                    }
+
+                    if isRCPpointerType(ntt.str()) {
+                        ct = getCType(ntt.str(), elems)
+                        t.cont = "("+ct.str()+")"+nt.cont+"->receive("+nt.cont+")"
+                    } else {
+                        ct = getCType(ntt.str(), elems)
+                        t.cont = "*("+ct.str()+"*)"+nt.cont+"->receive("+nt.cont+")"
+                    }
+                    t.isFunc = true
+                    t.type = TOKEN_TYPE_FUNC
+                    t.isValue = true
+                    t.bahType = ntt.str()
+                } else {
+                    throwErr(&t, "Cannot use {TOKEN} on nothing")
+                }
+            } else {
+                if i == 0 {
+                    throwErr(&t, "Cannot une {TOKEN} on nothing.")
+                }
+                if i+1 >= len(l) {
+                    throwErr(&t, "Cannot send ({TOKEN}) to nothing.")
+                }
+                pt = l[i+1]
+                nt = l[i-1]
+                ntt = getTypeFromToken(&nt, true, elems)
+
+                if pt.type != TOKEN_TYPE_VAR {
+                    throwErr(&pt, "Cannot use {TOKEN} as channel.")
+                }
+                ptt = string(getTypeFromToken(&pt, true, elems))
+                if ptt.hasPrefix("chan:") == 0 {
+                    throwErr(&pt, "Cannot use var {TOKEN} ("+ntt+") as channel.")
+                }
+                ptt.trimLeft(5)
+
+                if isGlobal() {
+                    throwErr(&t, "Cannot send ({TOKEN}) to a channel outside of a function.")
+                }
+
+                if compTypes(ptt.str(), ntt) == false {
+                    throwErr(&nt, "Cannot send {TOKEN} ("+ntt+") to channel of type "+ptt.str()+".")
+                }
+
+                i++
+                if isRCPpointerType(ptt.str()) {
+                    OUTPUT = OUTPUT + rope(pt.cont+"->send("+pt.cont+", "+nt.cont+");\n")
+                } else {
+                    ct = getCType(ntt, elems)
+                    tmpV = genCompilerVar()
+                    OUTPUT = OUTPUT + rope("
+                    "+ct.str()+" "+tmpV+" = "+nt.cont+";
+                    "+pt.cont+"->sendAny("+pt.cont+", &"+tmpV+", sizeof("+tmpV+"));\n")
+                }
+
+                nl = []Tok
+                return nl
+            }
+        }
+        nl[len(nl)] = t
+    }
+    return nl
+}
+
 prePross(line []Tok, ltp lineType, elems Elems*) []Tok {
 
     fl = []Tok
@@ -2854,6 +2961,7 @@ prePross(line []Tok, ltp lineType, elems Elems*) []Tok {
     addRCPvars(fl, ltp, elems)
     fl = parseOperations(fl, elems)
     fl = parseBool(fl, elems)
+    fl = parseChan(fl, elems)
 
     if ltp != <lineType>-1 {
         for i < len(line) {
@@ -2992,6 +3100,9 @@ parseLine(line []Tok, elems Elems*) {
         return
     } else if ltp != LINE_TYPE_FN_DECL {
         line = prePross(line, ltp, elems)
+        if len(line) == 0 {
+            return
+        }
     }
     if ltp == LINE_TYPE_VAR {
         parsed = true
@@ -3029,7 +3140,7 @@ parseLine(line []Tok, elems Elems*) {
         parsed = true
     }
     
-    if parsed == false {
+    if parsed == false{
         ft = line[0]
         throwErr(&ft, "{TOKEN} not expected.")
     }

@@ -44,11 +44,13 @@ getCType(t cpstring, elems Elems*) string {
         return string(r)
     }
     
+
     ctp = tp
     ctp.replace("*", "")
-    
 
-    if ctp.compare("int") {
+    if tp.hasPrefix("chan:") == 1 {
+        tp.set("struct channel *")
+    } else if ctp.compare("int") {
         tp.replace("int", "long int")
     } else if ctp.compare("int32") {
         tp.replace("int32", "int")
