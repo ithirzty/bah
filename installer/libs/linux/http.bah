@@ -91,7 +91,7 @@ struct! timeval {
 #define! memset(str ptr, w int, s int)
 #define! accept(sockfd int, cliaddr sockaddr_in*, clilen int*) int
 #define! shutdown(fd int, flags int) int
-#define! setsockopt(fd int, w int, flag int, val int*, flagSize int) bool
+#define! setsockopt(fd int, w int, flag int, val ptr, flagSize int) int
 #define! getsockopt(fd int, t int, w int, e ptr, el int*) int
 #define! fcntl(fd int, oper int, flag int) int
 #define! FD_ZERO(s ptr)
@@ -110,14 +110,25 @@ struct! pollfd {
 
 #define! poll(fds pollfd*, nfd int, timeout int) int
 
+#include "<net/if.h>"
+
+struct! ifreq {
+    ifr_name: cpstring
+}
+
+#define! snprintf(s cpstring, s int, format cpstring)
+
 struct http_socket {
     sockfd: int = -1
     timeout: int = 0
 
+    //To check if a socket is opened.
     isOpened() bool {
         return this.sockfd > 0
     }
 
+    //To open a socket.
+    //If a socket is opened, it must be closed.
     open() bool {
         this.sockfd = socket(2, 1, 0)
         if this.isOpened() {
@@ -128,10 +139,21 @@ struct http_socket {
         return false
     }
 
+    //To set the linux network interface on which the socket should operate.
+    setInterface(s cpstring) bool {
+        ifr ifreq
+        
+        memset(&ifr, 0, noCheck(sizeof(ifr)))
+        snprintf(ifr.ifr_name, noCheck(sizeof(ifr.ifr_name)), s)
+        return setsockopt(this.sockfd, noCheck(SOL_SOCKET), noCheck(SO_BINDTODEVICE), &ifr, noCheck(sizeof(ifr))) == 0
+    }
+
+    //To terminate a socket.
     terminate() bool {
         return shutdown(this.sockfd, noCheck(SHUT_RDWR)) != -1
     }
 
+    //To close a socket.
     close() bool {
         if this.sockfd < 0 {
             return true
@@ -161,44 +183,12 @@ struct http_socket {
         return r
     }
 
+    //To reach a host by port.
+    //Used for making requests.
     reach(host cpstring, port int) bool {
         if <ptr>host == null {
             return false
         }
-        // serv_addr sockaddr_in
-        // memset(&serv_addr, 0, noCheck(sizeof(struct sockaddr_in)))
-        // if this.isOpened() == false {
-        //     return false
-        // }
-        // __httpDNSmutex.lock()
-        // serverTMP = gethostbyname(host)
-        // if serverTMP == null {
-        //     return false
-        // }
-        // server hostent* = memoryAlloc(noCheck(sizeof(struct hostent)))
-        // memcpy(server, serverTMP, noCheck(sizeof(struct hostent)))
-        // serv_addr.sin_port = htons(port)
-        // serv_addr.sin_family = 2
-        // if server.h_addrtype != noCheck(AF_INET) {
-        //     println("FOUNT INVALID ADDRESS TYPE!")
-        //     return false
-        // } 
-        // if server.h_length < 1 {
-        //     println("FOUND TINY ADDRESS LENGTH!")
-        //     return false
-        // } 
-        // if <ptr>server.h_addr_list == null {
-        //     return false
-        // }
-        
-        // hl in_addr** = server.h_addr_list
-        // hap = *hl
-        // if hap == null {
-        //     return false
-        // }
-        // noCheck(serv_addr.sin_addr = *hap)
-        // __httpDNSmutex.unlock()
-
         addrsup = addrinfo{}
         hints = addrinfo{}
         hints.ai_family = noCheck(AF_INET)
@@ -235,21 +225,6 @@ struct http_socket {
             }
 
             return true
-            // flags = fcntl(this.sockfd, noCheck(F_GETFL), 0)
-            // fcntl(this.sockfd, noCheck(F_SETFL), noCheck(flags | O_NONBLOCK))
-            // set fd_set
-            // memset(&set, 0, noCheck(sizeof(fd_set)))
-            // timeout = timeval{}
-            // timeout.tv_sec = this.timeout
-            // FD_ZERO(&set)
-            // FD_SET(this.sockfd, &set)
-            // res = connect(this.sockfd,&serv_addr,16)
-            // res = select(this.sockfd+1, null, &set, null, &timeout)
-            // if res <= 0 {
-            //     this.close()
-            //     return false
-            // }
-            // fcntl(this.sockfd, noCheck(F_SETFL), noCheck(flags))
         } else {
             res = connect(this.sockfd,addrs.ai_addr, addrs.ai_addrlen)
         }
@@ -262,6 +237,7 @@ struct http_socket {
         return true
     }
 
+    //To listen on a specific port.
     listen(port int) bool {
         //binding
         servaddr sockaddr_in
@@ -281,20 +257,24 @@ struct http_socket {
         return true
     }
 
+    //To accept a connection after listenning.
     accept() int {
         cliaddr sockaddr_in
         clilen = 16
         return  accept(this.sockfd, &cliaddr, &clilen)
     }
 
+    //To send data through the socket.
     send(s cpstring) bool {
         return send(this.sockfd, s, strlen(s), 0) > 0
     }
 
+    //To send data as bytes through the socket.
     sendBytes(bytes []char) {
         send(this.sockfd, arrAsStr(bytes), len(bytes), 0)
     }
 
+    //To receive data through the socket.
     receive() cpstring {
         buffer cpstring = memoryAlloc(1025)
         response = string("")
@@ -318,6 +298,7 @@ struct http_socket {
         return response.str()
     }
 
+    //To receive data as bytes through the socket.
     receiveBytes() []char {
         buffer cpstring = memoryAlloc(1025)
         response = string("")
@@ -349,6 +330,7 @@ struct http_socket {
 
 }
 
+//To check if a socket is opened.
 isSocket(s http_socket) bool {
     return s.sockfd > 0
 }
@@ -522,6 +504,8 @@ struct http_server {
     socket: http_socket
     error: http_serverError = HTTP_SERVER_NO_ERROR
 
+    linux_interface: cpstring = ""
+
     //Event lisstener for when receiving connections.
     handle: function(http_server*, int)
     
@@ -545,9 +529,13 @@ struct http_server {
         this.error = HTTP_SERVER_NO_ERROR
         this.socket = http_socket{}
 
-
         this.socket.open()
-        
+
+        if strlen(this.linux_interface) > 0 && this.socket.setInterface(this.linux_interface) == false {
+            panic("http: error setting server's linux interface")
+        } 
+
+
         if this.socket.isOpened() == false {
             println("http: error opening socket")
             this.error = HTTP_SERVER_SOCKET_ERROR
