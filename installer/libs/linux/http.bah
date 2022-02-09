@@ -302,13 +302,13 @@ struct http_socket {
     receiveBytes() []char {
         buffer cpstring = memoryAlloc(1025)
         response = string("")
-        totalLength = 0
         nDataLength = recv(this.sockfd,buffer,1024,0)
-        totalLength = totalLength + nDataLength
+        totalLength = nDataLength
         if nDataLength < 1024 {
             response.append(buffer)
         } else {
             for nDataLength > 0 {
+                totalLength = totalLength + nDataLength
                 response.append(buffer)
                 if nDataLength < 1024 {
                     trimAmm = 1024 - nDataLength
@@ -318,12 +318,10 @@ struct http_socket {
                     break
                 } else {
                     nDataLength = recv(this.sockfd,buffer,1024,0)
-                    totalLength = totalLength + nDataLength
                 }
             }
         }
-        r = strAsArr(response.str())
-        println(intToStr(totalLength))
+        r = strAsArr(response.content)
         noCheck(r->length = totalLength)
         return r
     }
@@ -346,7 +344,7 @@ struct http_url {
 
 
 //Used for parsing an URL.
-parseUrl(cps cpstring) http_url* {    
+parseUrl(cps cpstring) http_url* {
     u = new http_url
     s = string(cps)
     

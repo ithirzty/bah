@@ -3,6 +3,7 @@
 
 #define! popen(cmd cpstring, type cpstring) FILE*
 #define! pclose(hndl FILE*) int
+#define! fileno(f FILE*) int
 
 //A wrapper for executting command.
 //This is will return the output of the command.
@@ -35,6 +36,46 @@ struct command {
         }
         this.status = pclose(this.handle)
         return res
+    }
+
+    runBytes() []char {
+        arr = []char
+        cm = this.command
+        if this.error == false {
+            cm = cm + " 2>/dev/null"
+        } else {
+            cm = cm + " 2>&1"
+        }
+        this.handle = popen(cm, "r")
+        if this.handle == null {
+            return arr
+        }
+        
+        buffer cpstring = memoryAlloc(1025)
+        response = string("")
+        total = 0
+        fd = fileno(this.handle)
+        nDataLength = read(<ptr>fd,buffer,1024)
+        if nDataLength < 1024 {
+            total = nDataLength
+            response.append(buffer)
+        } else {
+            for nDataLength > 0 {
+                total = total + nDataLength
+                response.append(buffer)
+                if nDataLength < 1024 {
+                    trimAmm = 1024 - nDataLength
+                    response.trimRight(trimAmm)
+                    break
+                } else {
+                    nDataLength = read(<ptr>fd,buffer,1024)
+                }
+            }
+        }
+        this.status = pclose(this.handle)
+        noCheck(arr->data = response.content)
+        noCheck(arr->length = total)
+        return arr
     }
 
 }

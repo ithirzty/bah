@@ -1133,6 +1133,10 @@ parseReflect(t Tok, tt cpstring, elems Elems*, parsedPointer bool, ogName cpstri
 
     cType = getCType(tt, elems)
 
+    if cType.hasPrefix("struct ") {
+        cType.replace("*", "")
+    }
+
     if cType.length == 0 {
         cType.set("0")
     }
@@ -1144,7 +1148,7 @@ parseReflect(t Tok, tt cpstring, elems Elems*, parsedPointer bool, ogName cpstri
     elems.vars[len(elems.vars)] = rv
 
     OUTPUT = OUTPUT + rope("struct reflectElement "+rv.name+" = __reflect("+amp+t.cont+", sizeof("+cType.str()+"), \""+tt+"\", \""+name.str()+"\", "+isArr+", "+arrElem+", "+isStruct+", "+structLayout+", "+offset+");\n")
-                        //  value                  size             type           name            isArr       arrE        isStruct      structLayout      offset
+                        //                                                    value                  size             type           name            isArr       arrE        isStruct      structLayout      offset
     t.cont = rv.name
 
     return t

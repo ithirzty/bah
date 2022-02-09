@@ -367,7 +367,13 @@ jsonEscapeStr(s cpstring) cpstring {
 //*Note: this is an internal function*
 toJson__inner(e reflectElement, isMember bool, tabs int) cpstring {
     v ptr* = e.value
-    if *v == null || e.value == null {
+    if e.value == null || *v == null {
+        if e.type == "int" || e.type == "float" {
+            return "0"
+        }
+        if e.type == "bool" {
+            return "false"
+        }
         return "null"
     }
     if e.isStruct == true {
@@ -403,12 +409,12 @@ toJson__inner(e reflectElement, isMember bool, tabs int) cpstring {
         return floatToStr(*fp)
     } else if e.type == "cpstring" {
         if isMember == false {
-            s = string(e.value)
-            return "\""+jsonEscapeStr(s.str())+"\""
+            s = e.value
+            return "\""+jsonEscapeStr(s)+"\""
         } else {
             sp cpstring* = e.value
-            s = string(*sp)
-            return "\""+jsonEscapeStr(s.str())+"\""
+            s cpstring = *sp
+            return "\""+jsonEscapeStr(s)+"\""
         }
     } else if e.type == "bool" {
         bp bool* = e.value

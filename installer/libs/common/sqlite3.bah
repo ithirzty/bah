@@ -16,15 +16,16 @@
 
 //Scans a row element to a variable.
 dbResponse_scan_inner(e reflectElement, val cpstring) {
-    if <ptr>val == null {
-        return
-    }
     if e.type == "int" {
         ep int* = e.value
         *ep = strToInt(val)
     } else if e.type == "cpstring" {
         ep cpstring* = e.value
-        *ep = val
+        if <ptr>val == null {
+            *ep = null
+        } else {
+            *ep = val
+        }
     } else if e.type == "float" {
         ep float* = e.value
         *ep = strToFloat(val)
@@ -51,6 +52,7 @@ struct dbResponseRow {
                 j=0; for j < len(e.structLayout) {
                     m = e.structLayout[j]
                     m.value = m.calculateOffset(e.value)
+                    e.structLayout[j] = m
                     if m.name == this.cols[i] {
                         dbResponse_scan_inner(m, this.argv[i])
                         break
@@ -90,7 +92,8 @@ struct dbResponse {
                 arr = []ptr; arr = e.value
                 i=0; for i < len(this.rows) {
                     r = this.rows[i]
-                    ae.value = memoryAlloc(ae.size)
+                    ae.value = memoryAlloc(56)
+                    memset(ae.value, 0, ae.size)
                     r.scan(*ae)
                     arr[i] = ae.value
                     i = i + 1
