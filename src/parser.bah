@@ -1063,12 +1063,23 @@ parseReflect(t Tok, tt cpstring, elems Elems*, parsedPointer bool, ogName cpstri
 
     isArr = "0"
 
+    if t.type != TOKEN_TYPE_VAR || t.type != TOKEN_TYPE_FUNC {
+        cType = getCType(tt, elems)
+        v = genCompilerVar()
+        OUTPUT = OUTPUT + rope(cType.str()+" "+v+" = "+t.cont+";\n")
+        t.cont = v
+        if t.type == TOKEN_TYPE_STR {
+            ogName = "[bah cpstring]"
+        }
+    }
+
     arrElem = "0"
     if strHasPrefix(tt, "[]") {
         isArr = "1"
         aet = string(tt)
         aet.trimLeft(2)
         tmpT = Tok{}
+        tmpT.type = TOKEN_TYPE_VAR
         tmpT.cont = "0"
         rt = parseReflect(tmpT, aet.str(), elems, true, "", "0")
         
@@ -1100,6 +1111,7 @@ parseReflect(t Tok, tt cpstring, elems Elems*, parsedPointer bool, ogName cpstri
         i=0; for i < len(ts.members) {
             m = ts.members[i]
             tmpT = Tok{}
+            tmpT.type = TOKEN_TYPE_VAR
             sep = "->"
             if strCount(tt, "*") == 0 {
                 sep = "."

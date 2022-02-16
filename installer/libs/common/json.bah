@@ -9,8 +9,9 @@ const JSON_TYPE_FLOAT = 2
 const JSON_TYPE_ARRAY = 3
 const JSON_TYPE_MAP = 4
 
-    #define toJson(e reflectElement) cpstring
+#define toJson(e reflectElement) cpstring
 
+#define json_scan_inner(this ptr, e reflectElement, isMember bool)
 
 //A single element of a json document.
 //This can be a map, an array, an int, a float or a string.
@@ -58,12 +59,19 @@ struct jsonElement {
 
     //Used for scanning the JSON element in a var.
     scan(e reflectElement) {
-        if e.isStruct == true {
+        json_scan_inner(this, e, false)
+    }
+
+}
+
+json_scan_inner(thisp ptr, e reflectElement, isMember bool) {
+    this jsonElement* = thisp
+    if e.isStruct == true {
             i=0; for i < len(e.structLayout) {
                 m = e.structLayout[i]
                 ov = this.map(m.name)
                 if ov != null {
-                    ov.scan(m)
+                    json_scan_inner(ov, m, true)
                 }
                 i = i + 1
             }
@@ -72,7 +80,7 @@ struct jsonElement {
             *ep = strToInt(this.content)
         } else if e.type == "cpstring" {
             ep cpstring* = e.value
-            *ep = memoryAlloc(strlen(this.content))
+            *ep = memoryAlloc(strlen(this.content) + 1)
             strcpy(*ep, this.content)
         } else if e.type == "float" {
             ep float* = e.value
@@ -85,11 +93,19 @@ struct jsonElement {
                 *ep = false
             }
         } else if e.isArray == true {
+            if len(this.children) == 0 {
+                return
+            }
+            
             ae = e.arrayElem
             if ae.type == "int" {
                 arr = []int
-                arrPtr ptr* = e.value
-                arr = *arrPtr
+                if isMember == true {
+                    arrPtr ptr* = e.value
+                    arr = *arrPtr
+                } else {
+                    arr = e.value
+                }
                 i=0; for i < len(this.children) {
                     c = this.children[i]
                     arr[i] = strToInt(c.content)
@@ -97,8 +113,12 @@ struct jsonElement {
                 }
             } else if ae.type == "float" {
                 arr = []float
-                arrPtr ptr* = e.value
-                arr = *arrPtr
+                if isMember == true {
+                    arrPtr ptr* = e.value
+                    arr = *arrPtr
+                } else {
+                    arr = e.value
+                }
                 i=0; for i < len(this.children) {
                     c = this.children[i]
                     arr[i] = strToFloat(c.content)
@@ -106,19 +126,26 @@ struct jsonElement {
                 }
             } else if ae.type == "cpstring" {
                 arr = []cpstring
-                arrPtr ptr* = e.value
-                arr = *arrPtr
+                if isMember == true {
+                    arrPtr ptr* = e.value
+                    arr = *arrPtr
+                } else {
+                    arr = e.value
+                }
                 i=0; for i < len(this.children) {
                     c = this.children[i]
-                    arr[i] = memoryAlloc(strlen(c.content))
+                    arr[i] = memoryAlloc(strlen(c.content) + 1)
                     strcpy(arr[i], c.content)
                     i = i + 1
                 }
             } else if ae.isStruct == true {
                 arr = []ptr
-                // arrPtr ptr* = e.value
-                // arr = *arrPtr
-                arr = e.value
+                if isMember == true {
+                    arrPtr ptr* = e.value
+                    arr = *arrPtr
+                } else {
+                    arr = e.value
+                }
                 i=0; for i < len(this.children) {
                     c = this.children[i]
                     ne ptr = memoryAlloc(ae.size)
@@ -127,7 +154,7 @@ struct jsonElement {
                         m.value = m.calculateOffset(ne)
                         ov = c.map(m.name)
                         if ov != null {
-                            ov.scan(m)
+                            json_scan_inner(ov, m, true)
                         }
                         j = j + 1
                     }
@@ -136,9 +163,6 @@ struct jsonElement {
                 }
             }
         }
-
-    }
-
 }
 
 //To parse a json document.
@@ -163,12 +187,23 @@ parseJson(s cpstring) jsonElement* {
         jsonElem.type = JSON_TYPE_STRING
         ns = []char
         i = i + 1
+        start = i
         for i < lenS - 1 {
-            ns[len(ns)] = cpstringCharAt(s,i)
+            c = cpstringCharAt(s,i)
+            if i > start && cpstringCharAt(s, i-1) == <char>92 {
+                if c == 'n' {
+                    c = <char>10
+                } else if c == 'r' {
+                    c = <char>13
+                }
+                ns[len(ns)-1] = c
+            } else {
+                ns[len(ns)] = c
+            }
             i = i + 1
         }
         jsonElem.content = arrToStr(ns)
-    } else if isNumber(fc) {
+    } else if isNumber(cpstringCharAt(s, strlen(s)-1)) {
         isFloat = false
         for i < lenS {
             if cpstringCharAt(s,i) == '.' {
@@ -185,8 +220,7 @@ parseJson(s cpstring) jsonElement* {
         }
         jsonElem.content = s
     } else {
-        jsonElem.type = JSON_TYPE_STRING
-        jsonElem.content = s
+        return null
     }
 
     if jsonElem.type == JSON_TYPE_ARRAY {
@@ -239,7 +273,10 @@ parseJson(s cpstring) jsonElement* {
                 continue
             }
             if c == ',' {
-                jsonElem.children[elemIndex] = parseJson(arrToStr(currentElem))
+                child = parseJson(arrToStr(currentElem))
+                if child != null {
+                    jsonElem.children[elemIndex] = child
+                }
                 clear(currentElem)
                 elemIndex = elemIndex + 1
             } else {
@@ -251,7 +288,10 @@ parseJson(s cpstring) jsonElement* {
             }
             i = i + 1
         }
-        jsonElem.children[elemIndex] = parseJson(arrToStr(currentElem))
+        child = parseJson(arrToStr(currentElem))
+        if child != null {
+            jsonElem.children[elemIndex] = child
+        }
 
     } else if jsonElem.type == JSON_TYPE_MAP {
         i = i + 1
@@ -310,12 +350,14 @@ parseJson(s cpstring) jsonElement* {
                 isVal = 1
             }else if c == ',' {
                 elem = parseJson(arrToStr(currentElem))
-                elem.key = arrToStr(currentKey)
+                if elem != null {
+                    elem.key = arrToStr(currentKey)
+                    jsonElem.children[elemIndex] = elem
+                    elemIndex = elemIndex + 1
+                }
                 clear(currentElem)
                 clear(currentKey)
                 isVal = 0
-                jsonElem.children[elemIndex] = elem
-                elemIndex = elemIndex + 1
             } else {
                 if isSpace(c) {
                     i = i + 1
@@ -330,8 +372,10 @@ parseJson(s cpstring) jsonElement* {
             i = i + 1
         }
         elem = parseJson(arrToStr(currentElem))
-        elem.key = arrToStr(currentKey)
-        jsonElem.children[elemIndex] = elem
+        if elem != null {
+            elem.key = arrToStr(currentKey)
+            jsonElem.children[elemIndex] = elem
+        }
     }
 
     return jsonElem
@@ -374,7 +418,9 @@ toJson__inner(e reflectElement, isMember bool, tabs int) cpstring {
         if e.type == "bool" {
             return "false"
         }
-        return "null"
+        if e.type == "ptr" || e.type == "cpstring" || strCount(e.type, "*") != 0 {
+            return "null"
+        }
     }
     if e.isStruct == true {
         tabs = tabs + 1

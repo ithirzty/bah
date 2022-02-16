@@ -426,6 +426,7 @@ compileRegex(cpexpr cpstring) regex* {
         
         if i > 0 {
             if expr.charAt(i-1) == <char>92 {
+                c = expr.charAt(i)
                 if c == 'w' {
                     tk.type = REGEX_TYPE_WORD
                 } else if c == 'W' {
@@ -446,9 +447,12 @@ compileRegex(cpexpr cpstring) regex* {
                 } else if c == 'S' {
                     tk.type = REGEX_TYPE_SPACE
                     tk.invert = 1
+                } else if c == '.' {
+                    tk.type = REGEX_TYPE_TEXT
+                    tk.content = c
                 } else {
-                    rz = null
-                    return rz
+                    panic("VA TE FAIRE FOUTRE BORDEL (pos: "+intToStr(i)+")")
+                    return null
                 }
 
             }
@@ -479,14 +483,12 @@ compileRegex(cpexpr cpstring) regex* {
                                 isMin = 0
                             } else if isMin == 1 {
                                 if isNumber(c) == 0 {
-                                    zr = <ptr>0
-                                    return zr
+                                    return null
                                 }
                                 min.append(charToString(c))
                             } else {
                                 if isNumber(c) == 0 {
-                                    zr = <ptr>0
-                                    return zr
+                                    return null
                                 }
                                 max.append(charToString(c))
                             }

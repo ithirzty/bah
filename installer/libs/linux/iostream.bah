@@ -10,12 +10,27 @@
 #define! FILE ptr
 
 
-//Returns the text inputted by the user inside the terminal.
-//The returned cpstring will have the specified length.
-stdinput(len int) cpstring {
-    buff cpstring = memoryAlloc(len)
-    fgets(buff, len, noCheck(stdin))
-    return buff
+//Returns the text inputed by the user inside the terminal.
+stdinput() cpstring {
+    buffer cpstring = memoryAlloc(1025)
+    response = string("")
+    nDataLength = read(<ptr>0,buffer,1024)
+    if nDataLength < 1024 {
+        response.append(buffer)
+    } else {
+        for nDataLength > 0 {
+            response.append(buffer)
+            if nDataLength < 1024 {
+                trimAmm = 1024 - nDataLength
+                response.trimRight(trimAmm)
+                break
+            } else {
+                nDataLength = read(<ptr>0,buffer,1024)
+            }
+        }
+    }
+    response.trimRight(1)
+    return response.str()
 }
 
 //Prints text to the terminal and adds a line return at the end.
@@ -176,12 +191,14 @@ struct! stat {
 #define! close(fd int) int
 #define! fstat(fd int, fs stat*)
 #define! stat(path cpstring, s stat*)
+#define! munmap(p ptr, l int)
 
 //A wrapper to make file direct operation, wihtout needing to write file on changes.
 //**This is way faster than the fileStream** but every modification made to the returned string will be directly made to the file.
 struct fileMap {
-    handle: int
+    handle: int = -1
     size:int
+    p: ptr
 
     //To open a file inside the fileMap.
     //It returns the content of the file as cpstring.
@@ -190,8 +207,8 @@ struct fileMap {
         sb = stat{}
         fstat(this.handle, &sb)
         this.size = sb.st_size
-        file cpstring = mmap(0, sb.st_size, noCheck(PROT_READ | PROT_WRITE), noCheck(MAP_SHARED), this.handle, 0)
-        return file
+        this.p = mmap(0, sb.st_size, noCheck(PROT_READ | PROT_WRITE), noCheck(MAP_SHARED), this.handle, 0)
+        return this.p
     }
 
     //Check if file is valid or not.
@@ -204,6 +221,10 @@ struct fileMap {
 
     //To close a file after you are done working on it.
     close() {
+        if this.handle == -1 {
+            return
+        }
+        munmap(this.p, this.size)
         close(this.handle)
     }
 }

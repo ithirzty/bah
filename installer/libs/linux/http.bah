@@ -118,6 +118,29 @@ struct! ifreq {
 
 #define! snprintf(s cpstring, s int, format cpstring)
 
+struct response_buffer {
+    data: cpstring
+    len: int
+
+    str() cpstring {
+        return this.data
+    }
+
+    arr() []char {
+        a = []char
+        noCheck(a->data = this.data)
+        noCheck(a->length = this.len)
+        return a
+    }
+
+    append(buff cpstring, s int) {
+        this.data = memoryRealloc(this.data, this.len + s)
+        memcpy(noCheck(this.data + this.len), buff, s)
+        this.len = this.len + s
+    }
+
+}
+
 struct http_socket {
     sockfd: int = -1
     timeout: int = 0
@@ -157,12 +180,6 @@ struct http_socket {
     close() bool {
         if this.sockfd < 0 {
             return true
-        }
-
-        n = 1
-        discard = memoryAlloc(99)
-        for n > 0 {
-            n = recv(this.sockfd,discard,99,0)
         }
 
         flags = fcntl(this.sockfd, noCheck(F_GETFL), 0)
@@ -274,56 +291,30 @@ struct http_socket {
         send(this.sockfd, arrAsStr(bytes), len(bytes), 0)
     }
 
+    receiveBuff() response_buffer {
+        buffer cpstring = memoryAlloc(1025)
+        rep = response_buffer{}
+
+        for 1 == 1 {
+            nDataLength = recv(this.sockfd,buffer,1024,0)
+            if nDataLength <= 0 {
+                break
+            }
+            rep.append(buffer, nDataLength)
+        }
+        return rep
+    }
+
     //To receive data through the socket.
     receive() cpstring {
-        buffer cpstring = memoryAlloc(1025)
-        response = string("")
-        nDataLength = recv(this.sockfd,buffer,1024,0)
-        if nDataLength < 1024 {
-            response.append(buffer)
-        } else {
-            for nDataLength > 0 {
-                response.append(buffer)
-                if nDataLength < 1024 {
-                    trimAmm = 1024 - nDataLength
-                    if response.length > trimAmm {
-                        response.trimRight(trimAmm)
-                    }
-                    break
-                } else {
-                    nDataLength = recv(this.sockfd,buffer,1024,0)
-                }
-            }
-        }
-        return response.str()
+        r = this.receiveBuff()
+        return r.str()
     }
 
     //To receive data as bytes through the socket.
     receiveBytes() []char {
-        buffer cpstring = memoryAlloc(1025)
-        response = string("")
-        nDataLength = recv(this.sockfd,buffer,1024,0)
-        totalLength = nDataLength
-        if nDataLength < 1024 {
-            response.append(buffer)
-        } else {
-            for nDataLength > 0 {
-                totalLength = totalLength + nDataLength
-                response.append(buffer)
-                if nDataLength < 1024 {
-                    trimAmm = 1024 - nDataLength
-                    if response.length > trimAmm {
-                        response.trimRight(trimAmm)
-                    }
-                    break
-                } else {
-                    nDataLength = recv(this.sockfd,buffer,1024,0)
-                }
-            }
-        }
-        r = strAsArr(response.content)
-        noCheck(r->length = totalLength)
-        return r
+        r = this.receiveBuff()
+        return r.arr()
     }
 
 }
@@ -643,6 +634,7 @@ struct http_transport {
     headers: []string*
     code: int = HTTP_OK
     body: string*
+    file: []char
     url: http_url*
     method: cpstring = ""
     path: cpstring = ""
@@ -767,108 +759,108 @@ http_response(connfd int) http_response {
     return resp
 }
 
-
-
-makeRespFromBody(response string) http_response* {
+makeRespFromBody(response response_buffer) http_response* {
+    if response.len == 0 {
+        return null
+    }
 
     resp = new http_response
+    resp.file = []char
     resp.body = new string
 
-    lines = splitString(response, "\r\n")
-    if len(lines) == 0 {
-        return resp
-    }
+    arr = response.arr()
 
+    tmp = []char
 
-    i = 0 
-    head = lines[0]
-    for i < head.length {
-        c = head.charAt(i)
+    //HTTP version
+    i=0; for i < len(arr), i++ {
+        c = arr[i]
         if c == ' ' {
-            i = i + 1
+            tmp[i] = null
+            i++
             break
         }
-        i = i + 1
+        tmp[i] = c
     }
-
-    httpCode = string("")
-    for i < head.length {
-        c = head.charAt(i)
-        httpCode.append(charToString(c))
-        if c == ' ' {
-            break
-        }
-        i = i + 1
-    }
-    httpCodeInt = stringToInt(httpCode)
-    resp.code = httpCodeInt
-    
-    isBody = 0
-    
-    max = len(lines) - 1
-    body = string("")
-    i = 1; for i < len(lines) {
-
-        line = lines[i]
-        if isBody == 1 {
-            s = string(line.str())
-            if i < max {
-                s.append("\r\n")
-            }
-            body.append(s.str())
-            i = i + 1
-            continue
-        }
-        if i > 0 {
-            pl = lines[i-1]
-            if strlen(pl.str()) == 0 {
-                isBody = 1
-                if line.length > 2 {
-                    line.trimLeft(2)
-                }
-                continue
-            }
-        }
-
-        header = new string
-        headerName = string(splitStringBefore(line, ":"))
-        if headerName.length > 0 {
-            headerName = toLower(headerName)
-            line.trimLeft(headerName.length)
-            line.prepend(headerName.str())
-        }
-        header.set(line.str())
-        lrh = len(resp.headers)
-        resp.headers[lrh] = header
-
-        i = i + 1
-    }
-
-    transferEncoding = resp.getHeader("Transfer-Encoding")
-    if strcmp(transferEncoding, "chunked") == 0 {
+    if strHasPrefix(arrAsStr(tmp), "HTTP/") == false {
         return null
-        resp.body.set("")
+    }
+
+    //HTTP code
+    offset = i
+    for i < len(arr), i++ {
+        c = arr[i]
+        if c == ' ' {
+            tmp[i - offset] = null
+            i++
+            break
+        }
+        tmp[i - offset] = c
+    }
+    resp.code = strToInt(arrAsStr(tmp))
+
+    //Skip Text version of the code
+    for i < len(arr), i++ {
+        if arr[i-1] == <char>13 && arr[i] == <char>10 {
+            i++
+            break
+        }
+    }
+
+    //Headers
+    for i < len(arr), i++ {
         
-        for true == true {
-            chunkLen = splitStringBefore(body, "\r\n")
-            if strcmp(chunkLen, "0") == 0 {
+        headerName = []char
+        headerCont = []char
+        //Read header name until ':'
+        for i < len(arr), i++ {
+            c = arr[i]
+            if c == ':' {
+                i++
                 break
             }
-            l = strtol(chunkLen, noCheck(0), 16)
-            l = l
-            body.trimLeft(strlen(chunkLen)+2)
-            chunk cpstring = memoryAlloc(l+1)
-            memcpy(chunk, body.content, l)
-            resp.body.append(chunk)
-            body.trimLeft(l+2)
+            headerName[len(headerName)] = c
         }
 
-    } else {
-        resp.body.set(body.str())
+        //Read header content until "\r\n"
+        for i < len(arr), i++ {
+            c = arr[i]
+            if c == <char>13 {
+                if i+1 < len(arr) {
+                    if arr[i+1] == <char>10 {
+                        i = i + 2
+                        break
+                    }
+                }
+            }
+            headerCont[len(headerCont)] = c
+        }
+
+        headerName[len(headerName)] = null
+        headerCont[len(headerCont)] = null
+        resp.setHeader(arrAsStr(headerName), arrAsStr(headerCont))
+
+        //If "\r\n", end of headers, beggining of body
+        if arr[i] == <char>13 {
+            if i+1 < len(arr) {
+                if arr[i+1] == <char>10 {
+                    i = i + 2
+                    break
+                }
+            }
+        }
     }
+
+    //Reading body to file array
+    offset = i
+    for i < len(arr), i++ {
+        resp.file[i-offset] = arr[i]
+    }
+
+    //Setting body to content of file array + null character.
+    resp.body.set(arrToStr(resp.file))
+
     return resp
-
-
 }
 
 
@@ -901,7 +893,7 @@ makeRespFromBody(response string) http_response* {
 
 //Used for making TLS requests.
 //*This is an internal function, you should know what you're doing if you decide to use it.*
-makeRawHttpsRequest(host cpstring, message cpstring, timeout int) cpstring {
+makeRawHttpsRequest(host cpstring, message cpstring, timeout int) response_buffer {
     
     SSL_library_init()
     ssl SSL*
@@ -910,8 +902,10 @@ makeRawHttpsRequest(host cpstring, message cpstring, timeout int) cpstring {
         SSL_CTX_set_timeout(ctx, timeout)
     }
 
+    resp = response_buffer{}
     if ctx == null {
-        panic("http: cannot initialize ssl context")
+        println("http: cannot initialize ssl context")
+        return resp
     }
 
     bio = BIO_new_ssl_connect(ctx)
@@ -921,29 +915,29 @@ makeRawHttpsRequest(host cpstring, message cpstring, timeout int) cpstring {
 
     BIO_set_conn_hostname(bio, host)
     if BIO_do_connect(bio) <= 0 {
-        panic("http: error connecting through ssl to '"+host+"'")
+        println("http: error connecting through ssl to '"+host+"'")
+        return resp
     }
     success = BIO_write(bio, message, strlen(message))
 
     if success <= 0 {
         if BIO_should_retry(bio) == 0 {
-            panic("http: failed sending request")
+            println("http: failed sending request")
+            return resp
         }
     }
 
     buff cpstring = memoryAlloc(1025)
-    resp = string("")
     for true == true {
-        memset(<ptr>buff, 0, 1025)
         size = BIO_read(bio, buff, 1025)
         if size <= 0 {
             break
         }
-        resp.append(buff)
+        resp.append(buff, size)
     }
     BIO_free_all(bio)
     SSL_CTX_free(ctx)
-    return resp.str()
+    return resp
 
 }
 
@@ -982,11 +976,13 @@ struct http_request extend http_transport {
                         this.url.port.set("80")
                     }
                     if this.socket.reach(this.url.host.str(), strToInt(this.url.port.str())) == false {
+                        this.socket.close()
                         return null
                     }
                 }
                     this.setHeader("host", this.url.host.str())
             } else {
+                this.socket.close()
                 return null
             }            
         }
@@ -1014,22 +1010,25 @@ struct http_request extend http_transport {
             message = message + this.body.str()
         }
 
-        response = string("")
+        resp response_buffer
         if isTLS == true {
-            response.set(makeRawHttpsRequest(host, message, this.timeout))
+            resp = makeRawHttpsRequest(host, message, this.timeout)
         } else {
             if this.socket.send(message) == false {
+                if socketWasOpenned == false {
+                    this.socket.close()
+                }
                 return null
             }
 
-            response.set(this.socket.receive())
+            resp = this.socket.receiveBuff()
         }
 
         if socketWasOpenned == false {
             this.socket.close()
         }
 
-        return makeRespFromBody(response)
+        return makeRespFromBody(resp)
     }
 
     //Call this to parse the post data form.
@@ -1181,178 +1180,179 @@ http_request(connfd int) http_request {
 
 //Used for making any request.
 //Method is either http or https. The arguments (args) are the variables to pass (can be post or get variable) formatted as: name=value.
-makeRawRequest(method cpstring, u http_url*, args []cpstring) http_response {
-    proto = u.proto
-    host = u.host
-    path = u.path
+// makeRawRequest(method cpstring, u http_url*, args []cpstring) http_response {
+//     proto = u.proto
+//     host = u.host
+//     path = u.path
     
-    serv_addr sockaddr_in
+//     serv_addr sockaddr_in
 
-    portno = 80
-    if u.port.length > 0 {
-        portno = atoi(u.port.content)
-    }
-    response = string("")
+//     portno = 80
+//     if u.port.length > 0 {
+//         portno = atoi(u.port.content)
+//     }
+//     response = string("")
     
-    message = string(" ")
-    message.prepend(method)
-    message.append(path.str())
-    serialArgs = string("?")
-    largs = len(args)
-    max = largs - 1
-    i = 0; for i < largs {
-        serialArgs.append(args[i])
-        if i < max {
-            serialArgs.append("&")
-        }
-        i = i + 1
-    }
-    if largs > 0 {
-        message.append(serialArgs.str())
-    }
-    message.append(" HTTP/1.0\r\nHost: ")
+//     message = string(" ")
+//     message.prepend(method)
+//     message.append(path.str())
+//     serialArgs = string("?")
+//     largs = len(args)
+//     max = largs - 1
+//     i = 0; for i < largs {
+//         serialArgs.append(args[i])
+//         if i < max {
+//             serialArgs.append("&")
+//         }
+//         i = i + 1
+//     }
+//     if largs > 0 {
+//         message.append(serialArgs.str())
+//     }
+//     message.append(" HTTP/1.0\r\nHost: ")
     
-    if proto.compare("https") {
-        host.append(":443")
-    }
+//     if proto.compare("https") {
+//         host.append(":443")
+//     }
     
-    message.append(host.str())
-    message.append("\r\nConnection: close\r\n\r\n")
+//     message.append(host.str())
+//     message.append("\r\nConnection: close\r\n\r\n")
     
 
-    if proto.compare("https") {
-        resp = makeRawHttpsRequest(host.str(), message.str(), 0)
-        response.set(resp)
+//     if proto.compare("https") {
+//         resp = makeRawHttpsRequest(host.str(), message.str(), 0)
+//         response.set(resp)
 
-    } else {
+//     } else {
 
-        sock = http_socket{}
-        if sock.open() == false {
-            panic("http: error opening socket")
-        }
+//         sock = http_socket{}
+//         if sock.open() == false {
+//             panic("http: error opening socket")
+//         }
 
-        if sock.reach(host.str(), portno) == false {
-            panic("http: error resolving host '"+host.str()+"'.")
-        }
+//         if sock.reach(host.str(), portno) == false {
+//             panic("http: error resolving host '"+host.str()+"'.")
+//         }
 
-        if sock.send(message.str()) == false {
-            panic("http: error sending trought socket")
-        }
+//         if sock.send(message.str()) == false {
+//             panic("http: error sending trought socket")
+//         }
 
-        response.set(sock.receive())
-        sock.close()
+//         response.set(sock.receive())
+//         sock.close()
 
-    }
+//     }
 
-    resp = http_response{}
-    resp.body = new string
+//     resp = http_response{}
+//     resp.body = new string
 
-    lines = splitString(response, "\r\n")
-    if len(lines) == 0 {
-        return resp
-    }
+//     lines = splitString(response, "\r\n")
+//     if len(lines) == 0 {
+//         return resp
+//     }
 
 
-    i = 0 
-    head = lines[0]
-    for i < head.length {
-        c = head.charAt(i)
-        if c == ' ' {
-            i = i + 1
-            break
-        }
-        i = i + 1
-    }
+//     i = 0 
+//     head = lines[0]
+//     for i < head.length {
+//         c = head.charAt(i)
+//         if c == ' ' {
+//             i = i + 1
+//             break
+//         }
+//         i = i + 1
+//     }
 
-    httpCode = string("")
-    for i < head.length {
-        c = head.charAt(i)
-        httpCode.append(charToString(c))
-        if c == ' ' {
-            break
-        }
-        i = i + 1
-    }
-    httpCodeInt = stringToInt(httpCode)
-    resp.code = httpCodeInt
+//     httpCode = string("")
+//     for i < head.length {
+//         c = head.charAt(i)
+//         httpCode.append(charToString(c))
+//         if c == ' ' {
+//             break
+//         }
+//         i = i + 1
+//     }
+//     httpCodeInt = stringToInt(httpCode)
+//     resp.code = httpCodeInt
     
-    isBody = 0
+//     isBody = 0
     
-    max = len(lines) - 1
-    body = string("")
-    i = 1; for i < len(lines) {
+//     max = len(lines) - 1
+//     body = string("")
+//     i = 1; for i < len(lines) {
 
-        line = lines[i]
-        if isBody == 1 {
-            s = string(line.str())
-            if i < max {
-                s.append("\r\n")
-            }
-            body.append(s.str())
-            i = i + 1
-            continue
-        }
-        if i > 0 {
-            pl = lines[i-1]
-            if strlen(pl.str()) == 0 {
-                isBody = 1
-                line.trimLeft(2)
-                continue
-            }
-        }
+//         line = lines[i]
+//         if isBody == 1 {
+//             s = string(line.str())
+//             if i < max {
+//                 s.append("\r\n")
+//             }
+//             body.append(s.str())
+//             i = i + 1
+//             continue
+//         }
+//         if i > 0 {
+//             pl = lines[i-1]
+//             if strlen(pl.str()) == 0 {
+//                 isBody = 1
+//                 line.trimLeft(2)
+//                 continue
+//             }
+//         }
 
-        header = new string
-        headerName = string(splitStringBefore(line, ":"))
-        if headerName.length > 0 {
-            headerName = toLower(headerName)
-            line.trimLeft(headerName.length)
-            line.prepend(headerName.str())
-        }
-        header.set(line.str())
-        lrh = len(resp.headers)
-        resp.headers[lrh] = header
+//         header = new string
+//         headerName = string(splitStringBefore(line, ":"))
+//         if headerName.length > 0 {
+//             headerName = toLower(headerName)
+//             line.trimLeft(headerName.length)
+//             line.prepend(headerName.str())
+//         }
+//         header.set(line.str())
+//         lrh = len(resp.headers)
+//         resp.headers[lrh] = header
 
-        i = i + 1
-    }
+//         i = i + 1
+//     }
 
-    transferEncoding = resp.getHeader("Transfer-Encoding")
-    if strcmp(transferEncoding, "chunked") == 0 {
+//     transferEncoding = resp.getHeader("Transfer-Encoding")
+//     if strcmp(transferEncoding, "chunked") == 0 {
         
-        resp.body.set("")
+//         resp.body.set("")
         
-        for true == true {
-            chunkLen = splitStringBefore(body, "\r\n")
-            if strcmp(chunkLen, "0") == 0 {
-                break
-            }
-            l = strtol(chunkLen, noCheck(0), 16)
-            l = l
-            body.trimLeft(strlen(chunkLen)+2)
-            chunk cpstring = memoryAlloc(l+1)
-            memcpy(chunk, body.content, l)
-            resp.body.append(chunk)
-            body.trimLeft(l+2)
-        }
+//         for true == true {
+//             chunkLen = splitStringBefore(body, "\r\n")
+//             if strcmp(chunkLen, "0") == 0 {
+//                 break
+//             }
+//             l = strtol(chunkLen, noCheck(0), 16)
+//             l = l
+//             body.trimLeft(strlen(chunkLen)+2)
+//             chunk cpstring = memoryAlloc(l+1)
+//             memcpy(chunk, body.content, l)
+//             resp.body.append(chunk)
+//             body.trimLeft(l+2)
+//         }
 
-    } else {
-        resp.body.set(body.str())
-    }
+//     } else {
+//         resp.body.set(body.str())
+//     }
 
 
-    return resp
+//     return resp
 
-}
+// }
 
 //Used for making simple get request.
 get(url cpstring) http_response {
-    args = []cpstring
-    r = makeRawRequest("GET", parseUrl(url), args)
+    panic("Deprecated get() call")
+    r = http_response{}
     return r
 }
 
 //Used for making simple post request with variables (args) formatted as name=value.
 post(url cpstring, args []cpstring) http_response {
-    r = makeRawRequest("POST", parseUrl(url), args)
+    panic("Deprecated post() call")
+    r = http_response{}
     return r
 }
 
