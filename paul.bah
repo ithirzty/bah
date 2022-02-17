@@ -1,8 +1,0 @@
-#include "iostream.bah"
-
-main(args []cpstring) int {
-
-	println("paul")
-
-	return 0
-}
