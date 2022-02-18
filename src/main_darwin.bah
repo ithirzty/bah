@@ -9,7 +9,10 @@
 const BAH_DIR = "/opt/bah/"
 const BAH_OS = "darwin"
 //////////////////////BUILD SPECIFIC THINGS//////////////////////
-const BAH_VERSION = "v1.1 (build 38)"
+const BAH_VERSION = "v1.1 (build 46)"
+
+debug = false
+verboseRuntime = false
 
 #include "./globals.bah"
 
@@ -17,6 +20,7 @@ const BAH_VERSION = "v1.1 (build 38)"
 #include "./type.bah"
 #include "./errors.bah"
 #include "./parser.bah"
+#include "./declarative.bah"
 
 #cLib "O1"
 
@@ -28,9 +32,20 @@ main(args []cpstring) int {
     flags.addBool("v", "Show version of the compiler.")
     flags.addBool("l", "Compile as a library.")
     flags.addBool("rcp", "Enables RCP (reference counter) instead of the garbage collector. Warning: if you are using self-reference, this will lead to memory leaks!")
+    flags.addBool("fastrcp", "Enables RCP without leak detection. It is recommended to test you programs with the -rcp flag to test for leak detection before using this flag.")
+    flags.addBool("debug", "Enables verbose json output.")
+    flags.addBool("verboseRuntime", "Enables verbose runtime, a debug mode of the compiled program.")
     flags.parse(args)
 
-    RCPenabled = flags.isSet("rcp") == 1
+    verboseRuntime = flags.isSet("verboseRuntime") == 1
+
+    debug = flags.isSet("debug") == 1
+
+    if debug == true {
+        debugStart()
+    }
+
+    RCPenabled = flags.isSet("rcp") == 1 || flags.isSet("fastrcp")
 
     if flags.isSet("v") == 1 {
         println("Bah compiler version: "+BAH_VERSION+".\n© Alois Laurent Boe")
@@ -41,8 +56,10 @@ main(args []cpstring) int {
         panic("Cannot use -c (to translate to C code) and -l (to compile as a library) at the same time.")
     }
 
-    OUTPUT = rope("
+    INIT = rope("")
 
+    OUTPUT = rope("
+void __BAH_init();
 #define noCheck(v) v
 #define array(type)	\
 struct{	\
@@ -71,6 +88,7 @@ long int __BAH__main(__BAH_ARR_TYPE_cpstring);
         memcpy(args->data, argv, sizeof(char*)*argc);
         args->elemSize = sizeof(char*);
         args->length = argc;
+        __BAH_init();
         long int r =  __BAH__main((__BAH_ARR_TYPE_cpstring)args);
         free(args->data);
         free(args);
@@ -90,6 +108,7 @@ long int __BAH__main(__BAH_ARR_TYPE_cpstring);
         memcpy(args->data, argv, sizeof(char*)*argc);
         args->elemSize = sizeof(char*);
         args->length = argc;
+        __BAH_init();
         long int r =  __BAH__main((__BAH_ARR_TYPE_cpstring)args);
         GC_FREE(args->data);
         GC_FREE(args);
@@ -105,7 +124,7 @@ long int __BAH__main(__BAH_ARR_TYPE_cpstring);
     compilerState = compilerStateTag{}
     compilerState.arrTypesDecl[0] = "__BAH_ARR_TYPE_cpstring"
     
-    fileName = args[1]
+    fileName = absPath(args[1])
     compilerState.currentFile = fileName
     fm = fileMap{}
     f = fm.open(fileName)
@@ -116,6 +135,7 @@ long int __BAH__main(__BAH_ARR_TYPE_cpstring);
     tokens = lexer(f)
     fm.close()
 
+
     if len(tokens) == 0 {
         panic("File '"+fileName+"' not recognized.")
     }
@@ -124,19 +144,29 @@ long int __BAH__main(__BAH_ARR_TYPE_cpstring);
     if includeFile("builtin.bah", elems) == false {
         panic("Could not find std-libs, please check '"+BAH_DIR+"'")
     }
+
+    if flags.isSet("l") == 1 {
+        OUTPUT = rope("")
+        declareAll(elems)
+    }
+
     compilerState.currentDir = getDirFromFile(fileName)
     parseLines(tokens, elems)
 
+makeInit()
+
+    if debug == false {
     totalTime = getTimeUnix() - startTime
     println("Parsed. ("+intToStr(totalLines)+" lines, total time: "+intToStr(totalTime / 1000000)+"ms, lexer time: "+intToStr(totalLexerTime / 1000000)+"ms)\e[0m")
 
     if flags.isSet("o") == 1 {
         fileName = flags.get("o")
     } else {
-        outFileName = string(fileName)
+        outFileName = string(args[1])
         outFileName.trimRight(4)
         fileName = outFileName.str()
     }
+
 
     if flags.isSet("c") == 0 {
         randFileName = "TMP_C_FILE_"
