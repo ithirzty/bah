@@ -18,8 +18,10 @@ noVOfns = []cpstring{
 }
 
 verboseOutGuard() bool {
-    if currentFn != null && currentFn.name in noVOfns {
-        return false
+    if currentFn != null {
+        if currentFn.name in noVOfns {
+            return false
+        }
     }
     return true
 }
@@ -86,6 +88,9 @@ verboseOutFunc(fn func*, args []Tok, lineNb int, elems Elems*) {
     }
     nameColor = ASCII_YELLOW
     if fn.isBinding == true {
+        if strHasPrefix(compilerState.currentFile, BAH_DIR) {
+            return
+        }
         nameColor = ASCII_GREY
     }
 
