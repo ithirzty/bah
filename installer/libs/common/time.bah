@@ -2,6 +2,10 @@
 #include "memory.bah"
 #include "<time.h>"
 
+const TIME_MS  = 1000000
+const TIME_S   = 1000000000
+const TIME_MIN = 60000000000
+
 //This is a wrapper that makes time manipulations easier.
 //By default, its .timestamp field is set to the current time.
 struct time {
@@ -36,13 +40,32 @@ struct! timespec {
     tv_nsec: int
 }
 
-#define! clock_gettime(w int, t timespec*) int
+#linux {
+    #define! timespec_get(ts timespec*, mode int)
+}
+
+#darwin {
+    #define! clock_gettime(w int, t timespec*) int
+}
+
+#windows {
+    #define! clock_gettime(w int, t timespec*) int
+}
+
 
 //Returns the current timestamp in nanoseconds.
 //One nano second looks like this: 0000000000000000001.
 getTimeUnix() int {
     ts = timespec{}
-    s = clock_gettime(noCheck(CLOCK_REALTIME), &ts)
+    #linux {
+        timespec_get(&ts, noCheck(TIME_UTC))
+    }
+    #darwin {
+        s = clock_gettime(noCheck(CLOCK_REALTIME), &ts)
+    }
+    #windows {
+        s = clock_gettime(noCheck(CLOCK_REALTIME), &ts)
+    }
     s = ts.tv_sec * 1000000000 + ts.tv_nsec
     return s
 }

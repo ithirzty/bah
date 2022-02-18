@@ -158,7 +158,8 @@ makeInit()
     if debug == false {
     totalTime = getTimeUnix() - startTime
     println("Parsed. ("+intToStr(totalLines)+" lines, total time: "+intToStr(totalTime / 1000000)+"ms, lexer time: "+intToStr(totalLexerTime / 1000000)+"ms)\e[0m")
-
+    }
+    
     if flags.isSet("o") == 1 {
         fileName = flags.get("o")
     } else {

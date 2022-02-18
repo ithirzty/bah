@@ -1,6 +1,18 @@
-#include "</opt/bah/libs/include/gc.h>"
+#linux {
+    #include "</opt/bah/libs/include/gc.h>"
+    #cLib "w /opt/bah/libs/libgc.a" "lpthread"
+}
 
-#cLib "w /opt/bah/libs/libgc.a" "lpthread"
+#darwin {
+    #include "</opt/bah/libs/include/gc.h>"
+    #cLib "w /opt/bah/libs/libgc.a" "lpthread"
+}
+
+#windows {
+    #include "<C:/Bah/libs/include/gc.h>"
+    #cLib "w C:/Bah/libs/gc.a" "lpthread"
+}
+
 
 #define! GC_INIT()
 #define! GC_MALLOC(s int) ptr
@@ -36,5 +48,6 @@ memoryRealloc(p ptr, s int) ptr {
 }
 
 cleanShutDown() {
+    exit(1)
     return
 }

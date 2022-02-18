@@ -1,4 +1,8 @@
 #include "<stdlib.h>"
+#windows {
+    #include "<wincrypt.h>"
+}
+
 #include "time.bah"
 #include "iostream.bah"
 
@@ -15,9 +19,10 @@ seedRandom(i int) {
 
 //This generates a pseudo random integer in the range of min and max.
 //*Note: this is not cryptographically safe. This output of this function can be predicted.*
+//*Note: `max` should not be equal to `0`.*
 randomInRange(min int, max int) int {
     if RAND_SEEDED == 0 {
-        srand(time(0))
+        srand(time(0)+getTimeUnix())
         RAND_SEEDED = 1
     }
 
@@ -29,15 +34,35 @@ randomInRange(min int, max int) int {
     return i
 }
 
+#windows {
+    #define! HCRYPTPROV int
+    #define! CryptGenRandom(hp HCRYPTPROV, l int, buff int*)
+}
+
 //Used for generating a random integer.
 //The ouput of this function uses the os specified way of generating a random int.
 //This is slower than the PRNG but cannot be predicted. It does not need to be seeded.
 cryptoRand() int {
-    fs = fileStream{}
-    fs.open("/dev/urandom", "r")
-    c = fs.getChar()
-    fs.close()
-    i = <int>c
+    #linux {
+        fs = fileStream{}
+        fs.open("/dev/urandom", "r")
+        c = fs.getChar()
+        fs.close()
+        i = <int>c
+    }
+    #darwin {
+        fs = fileStream{}
+        fs.open("/dev/urandom", "r")
+        c = fs.getChar()
+        fs.close()
+        i = <int>c
+    }
+    #windows {
+        hp HCRYPTPROV
+        buff int* = memoryAlloc(SIZE_OF_INT)
+        CryptGenRandom(hp, 1, buff)
+        i = *buff
+    }
     return i
 }
 

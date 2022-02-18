@@ -191,7 +191,12 @@ struct! stat {
 #define! close(fd int) int
 #define! fstat(fd int, fs stat*)
 #define! stat(path cpstring, s stat*)
-#define! munmap(p ptr, l int)
+#linux {
+    #define! munmap(p ptr, l int)
+}
+#darwin {
+    #define! munmap(p ptr, l int)
+}
 
 //A wrapper to make file direct operation, wihtout needing to write file on changes.
 //**This is way faster than the fileStream** but every modification made to the returned string will be directly made to the file.
@@ -203,12 +208,38 @@ struct fileMap {
     //To open a file inside the fileMap.
     //It returns the content of the file as cpstring.
     open(fileName cpstring) cpstring {
-        this.handle = open(fileName, noCheck(O_RDWR), noCheck(S_IRUSR | S_IWUSR))
-        sb = stat{}
-        fstat(this.handle, &sb)
-        this.size = sb.st_size
-        this.p = mmap(0, sb.st_size, noCheck(PROT_READ | PROT_WRITE), noCheck(MAP_SHARED), this.handle, 0)
-        return this.p
+        #linux {
+            this.handle = open(fileName, noCheck(O_RDWR), noCheck(S_IRUSR | S_IWUSR))
+            sb = stat{}
+            fstat(this.handle, &sb)
+            this.size = sb.st_size
+            this.p = mmap(0, sb.st_size, noCheck(PROT_READ | PROT_WRITE), noCheck(MAP_SHARED), this.handle, 0)
+            return this.p
+        }
+        #darwin {
+            this.handle = open(fileName, noCheck(O_RDWR), noCheck(S_IRUSR | S_IWUSR))
+            sb = stat{}
+            fstat(this.handle, &sb)
+            this.size = sb.st_size
+            this.p = mmap(0, sb.st_size, noCheck(PROT_READ | PROT_WRITE), noCheck(MAP_SHARED), this.handle, 0)
+            return this.p
+        }
+
+        #windows {
+            fs = fileStream{}
+            fs.open(fileName, "r+")
+            iv = fs.isValid()
+            if iv == 1 {
+                this.handle = 0
+            } else {
+                this.handle = -1
+            }
+            file = fs.readContent()
+            fs.close()
+            //file cpstring = mmap(0, sb.st_size, noCheck(PROT_READ | PROT_WRITE), noCheck(MAP_SHARED), this.handle, 0)
+            return file
+        }
+
     }
 
     //Check if file is valid or not.
@@ -221,11 +252,20 @@ struct fileMap {
 
     //To close a file after you are done working on it.
     close() {
-        if this.handle == -1 {
-            return
+        #linux {
+            if this.handle == -1 {
+                return
+            }
+            munmap(this.p, this.size)
+            close(this.handle)
         }
-        munmap(this.p, this.size)
-        close(this.handle)
+        #darwin {
+            if this.handle == -1 {
+                return
+            }
+            munmap(this.p, this.size)
+            close(this.handle)
+        }
     }
 }
 

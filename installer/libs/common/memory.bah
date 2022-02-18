@@ -1,7 +1,17 @@
-#include "<windows.h>"
-#include "<stdio.h>"
-#include "<conio.h>"
-#include "<tchar.h>"
+#linux {
+    #include "<sys/mman.h>"
+}
+
+#darwin {
+    #include "<sys/mman.h>"
+}
+
+#windows {
+    #include "<windows.h>"
+    #include "<stdio.h>"
+    #include "<conio.h>"
+    #include "<tchar.h>"
+}
 
 
 #define! void ptr
@@ -72,17 +82,39 @@ copy(a ptr, b ptr) {
     noCheck(arrA->length = arrB->length)
 }
 
-#define! CreateFileMapping(ihv ptr, sec int, rw int, mos int, bs int, fn cpstring) ptr
-#define! MapViewOfFile(f ptr, sec int, mi1 int, mi2 int, bs int) ptr
-#define! CloseHandle(mf ptr)
+#windows {
+    #define! CreateFileMapping(ihv ptr, sec int, rw int, mos int, bs int, fn cpstring) ptr
+    #define! MapViewOfFile(f ptr, sec int, mi1 int, mi2 int, bs int) ptr
+    #define! CloseHandle(mf ptr)
 
-#define! printf(s cpstring)
-#define! exit(code int)
+    #define! printf(s cpstring)
+    #define! exit(code int)
 
-const PROT_READ = 2
-const PROT_READWRITE = 4
+    const PROT_READ = 2
+    const PROT_READWRITE = 4
 
-GLOBAL_MAPPED_MEMORY_FILE ptr
+    GLOBAL_MAPPED_MEMORY_FILE ptr
+}
+
+#linux {
+    #define! mmap(addr int, ps int, prot int, flags int, fd int, offset int) ptr
+    const PROT_READ = 1
+    const PROT_WRITE = 2
+    const PROT_READWRITE = 3
+    const MAP_SHARED = 1
+    const MAP_ANONYMOUS = 32
+}
+
+#darwin {
+    #define! mmap(addr int, ps int, prot int, flags int, fd int, offset int) ptr
+    const PROT_READ = 1
+    const PROT_WRITE = 2
+    const PROT_READWRITE = 3
+    const MAP_SHARED = 1
+    const MAP_ANONYMOUS = 32
+}
+
+
 
 //Will allocate a page of shared memory and returns a pointer to it.
 //The size should be an multiple of 4096. A size of 0 will set the page size to the default (4096).
@@ -91,21 +123,31 @@ sharedMemory(size int) ptr {
     if size == 0 {
         size = 4096
     }
-    if GLOBAL_MAPPED_MEMORY_FILE == null {
-        GLOBAL_MAPPED_MEMORY_FILE = CreateFileMapping(-1, 0, PROT_READWRITE, 0, size, "Global\\BahFileMap")
+    #linux {
+        r = mmap(0, size, PROT_READ + PROT_WRITE, MAP_SHARED + MAP_ANONYMOUS, -1, 0)
     }
-    if GLOBAL_MAPPED_MEMORY_FILE == null {
-        printf("sharedMemory: could not make map file.")
-        exit(1)
+    #darwin {
+        r = mmap(0, size, PROT_READ + PROT_WRITE, MAP_SHARED + MAP_ANONYMOUS, -1, 0)
     }
-    r = MapViewOfFile(GLOBAL_MAPPED_MEMORY_FILE, noCheck(FILE_MAP_ALL_ACCESS), 0, 0, size)
+    #windows {
+        if GLOBAL_MAPPED_MEMORY_FILE == null {
+            GLOBAL_MAPPED_MEMORY_FILE = CreateFileMapping(-1, 0, PROT_READWRITE, 0, size, "Global\\BahFileMap")
+        }
+        if GLOBAL_MAPPED_MEMORY_FILE == null {
+            printf("sharedMemory: could not make map file.")
+            exit(1)
+        }
+        r = MapViewOfFile(GLOBAL_MAPPED_MEMORY_FILE, noCheck(FILE_MAP_ALL_ACCESS), 0, 0, size)
+    }
     return r
 }
 
-//On windows, you will need to close the mapped file.
-//*This is a windows only thing.*
-closeSharedMemory() {
-    CloseHandle(GLOBAL_MAPPED_MEMORY_FILE)
+#windows {
+    //On windows, you will need to close the mapped file.
+    //*This is a windows only thing.*
+    closeSharedMemory() {
+        CloseHandle(GLOBAL_MAPPED_MEMORY_FILE)
+    }
 }
 
 //Used for pre-allocating a number of element to an array.
@@ -156,3 +198,16 @@ unser(data []char) ptr {
     return r
 }
 
+#gc {
+    #define! GC_malloc_atomic(s int) ptr
+    memoryAllocSTR(s int) cpstring {
+        r = GC_malloc_atomic(s)
+        memset(r, 0, s)
+        return r
+    }
+}
+#rcp {
+    memoryAllocSTR(s int) cpstring {
+        return memoryAlloc(s)
+    }
+}
