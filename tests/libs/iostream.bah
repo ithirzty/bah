@@ -1,17 +1,15 @@
 #include "iostream.bah"
 
 testIostream() bool {
-    ISTRM_SELF_PATH = "./libs/iostream.bah"
-    fm = fileMap{}
-    fa = fm.open(ISTRM_SELF_PATH)
-    fm.close()
+    const ISTRM_SELF_PATH = "./libs/iostream.bah"
+
 
     fs = fileStream{}
     fs.open(ISTRM_SELF_PATH, "r")
-    fb = fs.readContent()
+    f = fs.readContent()
     fs.close()
 
-    if fa != fb {
+    if f == "" {
         return false
     }
 

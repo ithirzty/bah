@@ -3,16 +3,12 @@
 #include "http.bah"
 
 testHttp() bool {
-    respTLS = get("https://example.com")
-    respTTP = get("http://example.com")
-    if respTLS.body.str() != respTTP.body.str() {
-        return false
+    req = http_request{
+        timeout: 2
     }
 
-    ctntp = respTLS.getHeader("Content-Type")
-    if ctntp != "text/html; charset=UTF-8"{
-        return false
-    }
+    req.url = parseUrl("http://example.com")
+    resp = req.send()
 
-    return true
+    return resp.body.length > 0
 }

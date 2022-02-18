@@ -1,0 +1,139 @@
+
+//ASCII COLORS
+const ASCII_RESET = "\\033[0m"
+
+const ASCII_YELLOW = "\\033[33m"
+const ASCII_BLUE = "\\033[36m"
+const ASCII_GREEN = "\\033[32m"
+const ASCII_MAGENTA = "\\033[35m"
+const ASCII_GREY = "\\033[2m"
+
+struct verboseOutVar {
+    markup: cpstring
+    content: cpstring
+}
+
+noVOfns = []cpstring{
+    "__Bah_safe_string"
+}
+
+verboseOutGuard() bool {
+    if currentFn != null && currentFn.name in noVOfns {
+        return false
+    }
+    return true
+}
+
+verboseOutTransformVar(v variable*, cont cpstring, elems Elems*) verboseOutVar {
+    rv = verboseOutVar{}
+    ogCont = cont
+    if v.type == "cpstring" {
+        cont = "__Bah_safe_string("+cont+")"
+    }
+    cont = ", "+cont
+    ct = ""
+    if v.type == "cpstring" {
+        ct = "%s"
+    } else if v.type == "int" {
+        ct = "%li"
+    } else if v.type == "float" {
+        ct = "%d"
+    } else if isRCPpointerType(v.type) == true {
+        ct = "%p"
+    } else {
+        s = searchStruct(v.type, elems)
+        if s == null {
+            ct = "%li"
+        } else {
+            ct = ASCII_RESET + "{"
+            cont = ""
+            i=0; for i < len(s.members), i++ {
+                m variable* = s.members[i]
+                mv = verboseOutTransformVar(m, "("+ogCont+")"+"."+m.name, elems)
+                if i != 0 {
+                    ct = ct + ", "
+                }
+                ct = ct + mv.markup
+                cont = cont + mv.content
+            }
+            ct = ct + "}"
+        }
+    }
+
+
+    rv.markup = ASCII_BLUE + v.name + ASCII_RESET + " = " + ASCII_MAGENTA + ct + ASCII_RESET
+
+    rv.content = cont
+
+    return rv
+}
+
+verboseOutTransformTok(t Tok, elems Elems*) verboseOutVar {
+    if t.type == TOKEN_TYPE_VAR {
+        v = searchVar(t.cont, elems)
+        return verboseOutTransformVar(v, t.cont, elems)
+    }
+    v = variable{
+        name: "(value)"
+        type: getTypeFromToken(&t, true, elems)
+    }
+    return verboseOutTransformVar(&v, t.cont, elems)
+}
+
+verboseOutFunc(fn func*, args []Tok, lineNb int, elems Elems*) {
+    if verboseOutGuard() == false {
+        return
+    }
+    nameColor = ASCII_YELLOW
+    if fn.isBinding == true {
+        nameColor = ASCII_GREY
+    }
+
+    fnArgs = ""
+    fnArgsValues = ""
+    j=0; for j < len(fn.args), j++ {
+        a = fn.args[j]
+        if j != 0 {
+            fnArgs = fnArgs + ", "
+        }
+        
+        t = args[j]
+        v = verboseOutTransformVar(a, t.cont, elems)
+        fnArgs = fnArgs + v.markup
+        fnArgsValues = fnArgsValues + v.content
+    }
+    line = compilerState.currentFile + ":" + intToStr(lineNb)
+    verboseOut = rope("
+    //Verbose Runtime
+        printf(\"[VO] calling: "+nameColor+fn.name+ASCII_RESET+"("+fnArgs+") -> "+ASCII_GREEN+line+ASCII_RESET+"\\n\""+fnArgsValues+");
+    //
+    ")
+    if isGlobal() {
+        INIT = INIT + verboseOut
+    } else {
+        OUTPUT = OUTPUT + verboseOut
+    }
+}
+
+
+verboseOutOper(pt Tok, nt Tok, lineNb int, elems Elems*) {
+    if verboseOutGuard() == false {
+        return
+    }
+    pvo = verboseOutTransformTok(pt, elems)
+    nvo = verboseOutTransformTok(nt, elems)
+
+    values = pvo.content + nvo.content
+
+    line = compilerState.currentFile + ":" + intToStr(lineNb)
+    verboseOut = rope("
+    //Verbose Runtime
+        printf(\"[VO]    oper: "+pvo.markup+" AND "+nvo.markup+" -> "+ASCII_GREEN+line+ASCII_RESET+"\\n\""+values+");
+    //
+    ")
+    if isGlobal() {
+        INIT = INIT + verboseOut
+    } else {
+        OUTPUT = OUTPUT + verboseOut
+    }
+}

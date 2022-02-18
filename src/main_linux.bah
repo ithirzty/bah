@@ -9,9 +9,10 @@
 const BAH_DIR = "/opt/bah/"
 const BAH_OS = "linux"
 //////////////////////BUILD SPECIFIC THINGS//////////////////////
-const BAH_VERSION = "v1.1 (build 44)"
+const BAH_VERSION = "v1.1 (build 45)"
 
 debug = false
+verboseRuntime = false
 
 #include "./globals.bah"
 
@@ -33,7 +34,10 @@ main(args []cpstring) int {
     flags.addBool("rcp", "Enables RCP (reference counter) instead of the garbage collector. Warning: if you are using self-reference, this will lead to memory leaks!")
     flags.addBool("fastrcp", "Enables RCP without leak detection. It is recommended to test you programs with the -rcp flag to test for leak detection before using this flag.")
     flags.addBool("debug", "Enables verbose json output.")
+    flags.addBool("verboseRuntime", "Enables verbose runtime, a debug mode of the compiled program.")
     flags.parse(args)
+
+    verboseRuntime = flags.isSet("verboseRuntime") == 1
 
     debug = flags.isSet("debug") == 1
 

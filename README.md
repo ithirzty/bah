@@ -61,6 +61,7 @@ Files containing bah code have the `.bah` extenstion.
 - To compile your program as a dynamically linked program, use `bah myFile.bah -d`.
 - To compile your program using the reference counter instead of the garbage collector, use `bah myFile.bah -rcp`. **Still in progress, may leak in certain cases.**
 - To compile your program using the FASTER reference counter instead of the garbage collector, use `bah myFile.bah -fastrcp`. **This reference counter will not check for memory leaks.**
+- To compile your program using builtin debugging tools, use `bah myFile.bah -verboseRuntime`. **This will outputs a lot of data.**
 
 ### Hello, world!
 ```c
@@ -95,10 +96,13 @@ As well as being easy to learn, you can create
 
 ### Awesome features
 Bah also supports awesome features like 
-- **reflection** (approach simillar to Go, enabling easy JSON marshalling),
+- **reflection** (approach similar to Go, enabling easy JSON marshalling),
 - **reference counting** (-rcp or -fastrcp flags),
 - **async calls** (execute function call in a new thread),
-- **channels** (thread safe pipes to send data)...
+- **channels** (thread safe pipes to send data),
+- **verbose runtime** (an included tool for debugging)...
+
+![verbose runtime](extra/verboseRuntime.png)
 
 This enables you to do things that would be impossible in C
 such as scanning JSON content to a variable (event structs and arrays), and marshalling vars to JSON.

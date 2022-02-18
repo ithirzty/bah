@@ -1,6 +1,8 @@
 #include "<signal.h>"
 #include "<string.h>"
 
+#define __Bah_safe_string(s cpstring) cpstring
+
 const null = <ptr>0
 
 const true = <bool>1
@@ -60,15 +62,6 @@ print(s cpstring) {
     write(<ptr>1, s, strlen(s))
 }
 
-//Print an error to the terminal and exits the program.
-panic(e cpstring) {
-    if strlen(e) {
-        print(e)
-        print("\n")
-		cleanShutDown()
-    }
-}
-
 //Converts a bah array to a C array.
 cArr(arr ptr) ptr {
 	noCheck(array(void*)*a = arr)
@@ -86,3 +79,39 @@ __checkString(s cpstring, l cpstring) bool {
 }
 
 #include "channel.bah"
+__BAH_panic_chan chan:cpstring = null
+
+//Print an error to the terminal and exits the program.
+panic(e cpstring) {
+    if strlen(e) {
+        print(e)
+        print("\n")
+		cleanShutDown()
+    }
+}
+
+__BAH_panic(e cpstring, line cpstring) {
+	if __BAH_panic_chan != null {
+		e -> __BAH_panic_chan
+		return
+	}
+
+	print("panic ("+line+"): "+e+"\n")
+	cleanShutDown()
+}
+
+//Used for recovering from a panic instead exitting the program.
+//It needs a  pointer to a non null cpstring which will get the message.
+recover(s cpstring*) bool {
+	__BAH_panic_chan = chan cpstring
+	err = <- __BAH_panic_chan
+	*s = err
+	return true
+}
+
+__Bah_safe_string(s cpstring) cpstring {
+	if <ptr>s == null {
+		return "(nil)"
+	}
+	return "\""+s+"\""
+}

@@ -6,6 +6,7 @@
 #include "./lexer.bah"
 #include "./var.bah"
 #include "./mem.bah"
+#include "./verboseOut.bah"
 
 debugLine(line []Tok) {
     cont = ""
@@ -282,7 +283,7 @@ parseInclude(l []Tok, elems Elems*) {
 
 signs = []cpstring{"|", "&", "%", "+", "-", "*", "/"}
 
-parseOperations(line []Tok, elems Elems*) []Tok {
+parseOperations(line []Tok, ltp lineType, elems Elems*) []Tok {
 
     nl = []Tok{line[0]}
 
@@ -324,6 +325,13 @@ parseOperations(line []Tok, elems Elems*) []Tok {
                 throwErr(&nt, "Cannot use {TOKEN} ("+ntt+") as "+ptt+".")
             }
             t.isValue = true
+
+            if verboseRuntime == true && ltp != LINE_TYPE_ELSE {
+                if isRCPpointerType(ntt) || isRCPpointerType(ptt) {
+                    verboseOutOper(pt, nt, pt.line, elems)
+                }
+            }
+
             if compTypes(ptt, "cpstring") {
                 if t.cont != "+" {
                     throwErr(&t, "Can only do concatenation (+) on cpstrings, not {TOKEN}.")
@@ -500,7 +508,11 @@ parseStructType(line []Tok, elems Elems*) []Tok {
                         memory[len(memory)] = t
                         i = i + 1
                     }
-                    
+
+                    if len(memory) > 0 {
+                        memory = prePross(memory, <lineType>-1, elems)
+                    }
+
                     declType = 0
                     rvn = genCompilerVar()
                     tmpV = new variable
@@ -1166,7 +1178,7 @@ parseReflect(t Tok, tt cpstring, elems Elems*, parsedPointer bool, ogName cpstri
     return t
 }
 
-parseFnCall(l []Tok, elems Elems*) []Tok {
+parseFnCall(l []Tok, ltp lineType, elems Elems*) []Tok {
 
     nl = []Tok
 
@@ -1232,7 +1244,6 @@ parseFnCall(l []Tok, elems Elems*) []Tok {
 
                     }
                     ot.cont = fnName+"("
-                    fnArgs = fn.args
                     paramIndex = 0
                     memory = []Tok
                     if varName.length > 0 {
@@ -1281,18 +1292,41 @@ parseFnCall(l []Tok, elems Elems*) []Tok {
                         continue
                     }
 
-                    memory = prePross(memory, <lineType>-1, elems)
+                    if fnName == "panic" {
+                        currLine = "\""+compilerState.currentFile + ":" + intToStr(ot.line)+"\""
+                        par = memory[len(memory)-1]
+                        cl = par.line
+                        memory[len(memory)-1] = Tok{
+                            type: TOKEN_TYPE_SYNTAX
+                            cont: ","
+                            line: cl
+                        }
+                        memory[len(memory)] = Tok{
+                            type: TOKEN_TYPE_STR
+                            cont: currLine
+                            line: cl
+                        }
+                        memory[len(memory)] = par
+                        fnName = "__BAH_panic"
+                        ot.cont = fnName+"("
+                        fn = searchFunc(fnName, elems, true)
+                    }
+
+                    memory = prePross(memory, ltp, elems)
 
                     ft = memory[0]
+                    //for verboseOutput
+                    fnArgs = []Tok
+
                     if ft.cont != ")" {
 
                         j=0;for j < len(memory) {
                             t = memory[j]
                             
-                            if paramIndex >= len(fnArgs) {
+                            if paramIndex >= len(fn.args) {
                                 throwErr(&t, "Too many arguments in function call.")
                             }
-                            arg = fnArgs[paramIndex]
+                            arg = fn.args[paramIndex]
                             tt = getTypeFromToken(&t, true, elems)
                             //Used for runtime reflection (in reflect.bah)
                             if arg.type == "reflectElement" && tt != "reflectElement" {
@@ -1310,6 +1344,10 @@ parseFnCall(l []Tok, elems Elems*) []Tok {
                                 if afn != null && isRCPtype(afn.returns.type, elems) == true {
                                     t.cont = registerRCPvar(afn.returns.type, t.cont, elems)
                                 }
+                            }
+
+                            if verboseRuntime == true {
+                                fnArgs[len(fnArgs)] = t
                             }
 
                             ot.cont = ot.cont + t.cont
@@ -1333,7 +1371,7 @@ parseFnCall(l []Tok, elems Elems*) []Tok {
 
                     }
                     
-                    if paramIndex < len(fnArgs) {
+                    if paramIndex < len(fn.args) {
                         ot.cont = fnName
                         throwErr(&ot, "Not enough arguments in function call, ending by {TOKEN}.")
                     }
@@ -1346,6 +1384,12 @@ parseFnCall(l []Tok, elems Elems*) []Tok {
                     ot.bahType = fn.returns.type
                     ot.isFunc = true
                     nl[len(nl)] = ot
+
+                    ft = l[0]
+                    if verboseRuntime == true && ltp != LINE_TYPE_ELSE {
+                        verboseOutFunc(fn, fnArgs, ft.line, elems)
+                    }
+
                     continue
                 }
             }
@@ -2969,13 +3013,13 @@ prePross(line []Tok, ltp lineType, elems Elems*) []Tok {
     }
 
     fl = parseStructVars(fl, elems)
-    fl = parseFnCall(fl, elems)
+    fl = parseFnCall(fl, ltp, elems)
     fl = parseArrayVars(fl, elems)
     fl = parseArrayType(fl, elems)
     fl = parseStructType(fl, elems)
     fl = parseCast(fl, elems)
     addRCPvars(fl, ltp, elems)
-    fl = parseOperations(fl, elems)
+    fl = parseOperations(fl, ltp, elems)
     fl = parseBool(fl, elems)
     fl = parseChan(fl, elems)
 
