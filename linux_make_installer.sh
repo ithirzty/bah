@@ -28,13 +28,13 @@ cp /opt/bah/thread.bah ./libs/common/
 cp /opt/bah/rope.bah ./libs/common/
 cp /opt/bah/matrix.bah ./libs/common/
 cp /opt/bah/sqlite3.bah ./libs/common/
+cp /opt/bah/gc.bah ./libs/common/
+cp /opt/bah/iostream.bah ./libs/common/
+cp /opt/bah/time.bah ./libs/common/
+cp /opt/bah/rand.bah ./libs/common/
+cp /opt/bah/memory.bah ./libs/common/
 #linux specific libs
-cp /opt/bah/gc.bah ./libs/linux/
-cp /opt/bah/iostream.bah ./libs/linux/
-cp /opt/bah/time.bah ./libs/linux/
 cp /opt/bah/http.bah ./libs/linux/
-cp /opt/bah/rand.bah ./libs/linux/
 cp /opt/bah/window.bah ./libs/linux/
-cp /opt/bah/memory.bah ./libs/linux/
 #static libs
 cp -r /opt/bah/libs/* ./libs/linux/libs/

@@ -136,42 +136,42 @@ return ____BAH_COMPILER_VAR_7;
 long int serlen(__BAH_ARR_TYPE_char data){
 
                         if (data->length <= 0) {
-                            printf("array (/opt/bah/memory.bah:130): data[%d] with length %d\n", 0, data->length);
+                            printf("array (/opt/bah/memory.bah:189): data[%d] with length %d\n", 0, data->length);
                             exit(1);
                         };
                         
                         if (data->length <= 1) {
-                            printf("array (/opt/bah/memory.bah:130): data[%d] with length %d\n", 1, data->length);
+                            printf("array (/opt/bah/memory.bah:189): data[%d] with length %d\n", 1, data->length);
                             exit(1);
                         };
                         
                         if (data->length <= 2) {
-                            printf("array (/opt/bah/memory.bah:130): data[%d] with length %d\n", 2, data->length);
+                            printf("array (/opt/bah/memory.bah:189): data[%d] with length %d\n", 2, data->length);
                             exit(1);
                         };
                         
                         if (data->length <= 3) {
-                            printf("array (/opt/bah/memory.bah:130): data[%d] with length %d\n", 3, data->length);
+                            printf("array (/opt/bah/memory.bah:189): data[%d] with length %d\n", 3, data->length);
                             exit(1);
                         };
                         
                         if (data->length <= 4) {
-                            printf("array (/opt/bah/memory.bah:130): data[%d] with length %d\n", 4, data->length);
+                            printf("array (/opt/bah/memory.bah:189): data[%d] with length %d\n", 4, data->length);
                             exit(1);
                         };
                         
                         if (data->length <= 5) {
-                            printf("array (/opt/bah/memory.bah:130): data[%d] with length %d\n", 5, data->length);
+                            printf("array (/opt/bah/memory.bah:189): data[%d] with length %d\n", 5, data->length);
                             exit(1);
                         };
                         
                         if (data->length <= 6) {
-                            printf("array (/opt/bah/memory.bah:130): data[%d] with length %d\n", 6, data->length);
+                            printf("array (/opt/bah/memory.bah:189): data[%d] with length %d\n", 6, data->length);
                             exit(1);
                         };
                         
                         if (data->length <= 7) {
-                            printf("array (/opt/bah/memory.bah:130): data[%d] with length %d\n", 7, data->length);
+                            printf("array (/opt/bah/memory.bah:189): data[%d] with length %d\n", 7, data->length);
                             exit(1);
                         };
                         array(char)* sarr = memoryAlloc(sizeof(array(char)));
@@ -258,6 +258,8 @@ int ____BAH_COMPILER_VAR_15 = true;
 return ____BAH_COMPILER_VAR_15;
 };
 #include <pthread.h>
+#define __thread_create GC_pthread_create
+#define __thread_join GC_pthread_join
 struct mutex {
 pthread_mutex_t id;
 void(*init)(struct mutex* this);
@@ -316,16 +318,16 @@ void(*createWithArg)(struct thread* this,void * arg);
 void(*wait)(struct thread* this);
 };
 void thread__create(struct thread* this){
-GC_pthread_create(&this->id,null,this->handle,null);
+__thread_create(&this->id,null,this->handle,null);
 };
 void thread__createWithArg(struct thread* this,void * arg){
-GC_pthread_create(&this->id,null,this->handle,arg);
+__thread_create(&this->id,null,this->handle,arg);
 };
 void thread__wait(struct thread* this){
 if ((this->id==-1)) {
 return;
 }
-GC_pthread_join(this->id,null);
+__thread_join(this->id,null);
 };
 struct mutex mutex(){
 struct mutex ____BAH_COMPILER_VAR_19 = {};
@@ -5510,8 +5512,7 @@ long int strLen_4 = strlen("\e[0m");
 };
 #include <stdlib.h>
 char * absPath(char * path){
-char * z =  (char *)0;
-char * p =  realpath(path,z);
+char * p =  realpath(path,null);
 char * ____BAH_COMPILER_VAR_321 = p;
 return ____BAH_COMPILER_VAR_321;
 };

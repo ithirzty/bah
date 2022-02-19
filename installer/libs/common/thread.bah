@@ -3,13 +3,31 @@
 #cLib "lpthread"
 
 #gc {
-    #define! GC_pthread_create(id int*, attr ptr, func ptr, args ptr)
-    #define! GC_pthread_join(id int, ret ptr)
+    #linux {
+        #define! GC_pthread_create(id int*, attr ptr, func ptr, args ptr)
+        #define! GC_pthread_join(id int, ret ptr)
+        const __thread_create = GC_pthread_create
+        const __thread_join = GC_pthread_join
+    }
+    #darwin {
+        #define! GC_pthread_create(id int*, attr ptr, func ptr, args ptr)
+        #define! GC_pthread_join(id int, ret ptr)
+        const __thread_create = GC_pthread_create
+        const __thread_join = GC_pthread_join
+    }
+    #windows {
+        #define! pthread_create(id int*, attr ptr, func ptr, args ptr)
+        #define! pthread_join(id int, ret ptr)
+        const __thread_create = pthread_create
+        const __thread_join = pthread_join 
+    }
 }
 
 #rcp {
     #define! pthread_create(id int*, attr ptr, func ptr, args ptr)
     #define! pthread_join(id int, ret ptr)
+    const __thread_create = pthread_create
+    const __thread_join = pthread_join
 }
 
 #define! pthread_mutex_t int
@@ -92,23 +110,13 @@ struct thread {
 
     //This will launch the thread.
     create() {
-        #gc {
-            GC_pthread_create(&this.id, null, this.handle, null)   
-        }
-        #rcp {
-            pthread_create(&this.id, null, this.handle, null)   
-        }
+        __thread_create(&this.id, null, this.handle, null)   
     }
 
     //This will launch the thread by passing to its entry point funtion an argument.
     //The argument can only be a pointer.
     createWithArg(arg ptr) {
-        #gc {
-            GC_pthread_create(&this.id, null, this.handle, arg) 
-        }  
-        #rcp {
-            pthread_create(&this.id, null, this.handle, arg) 
-        }
+        __thread_create(&this.id, null, this.handle, arg) 
     }
 
     //This waits until the thread has finished executting.
@@ -116,12 +124,7 @@ struct thread {
         if this.id == -1 {
             return
         }
-        #gc {
-            GC_pthread_join(this.id, null)
-        }
-        #rcp {
-            pthread_join(this.id, null)
-        }
+        __thread_join(this.id, null)
     }
 }
 

@@ -1,11 +1,32 @@
 #include "<stdlib.h>"
 #include "string.bah"
 
+#windows {
+    #define! _fullpath(buff cpstring, rel cpstring, l int) cpstring
+}
+
 //Used for getting the absolute path of a file/directory.
 //An absolute path is a path that goes all the way to the root.
 absPath(path cpstring) cpstring {
-    z = <cpstring>0
-    p = realpath(path, z)
+    #linux {
+        p = realpath(path, null)
+    }
+    #darwin {
+        p = realpath(path, null)
+    }
+    #windows {
+        buff cpstring = memoryAlloc(4096)
+        p = _fullpath(buff, path, 4095)
+        if p != null {
+            arr = strAsArr(p)
+            i=0; for i < len(arr), i++ {
+                c = arr[i]
+                if c == <char>92 {
+                    arr[i] = '/'
+                }
+            }
+        }
+    }
     return p
 }
 
