@@ -1,18 +1,18 @@
+
 #linux {
-    #include "</opt/bah/libs/include/gc.h>"
-    #cLib "w /opt/bah/libs/libgc.a" "lpthread"
+    #include "<gc.h>"
+    #cLib "lgc" "lpthread"
 }
 
 #darwin {
-    #include "</opt/bah/libs/include/gc.h>"
-    #cLib "w /opt/bah/libs/libgc.a" "lpthread"
+    #include "<gc.h>"
+    #cLib "lgc" "lpthread"
 }
 
 #windows {
-    #include "<C:/Bah/libs/include/gc.h>"
-    #cLib "w C:/Bah/libs/gc.a" "lpthread"
+    #include "<gc.h>"
+    #cLib "l:gc.a" "lpthread"
 }
-
 
 #define! GC_INIT()
 #define! GC_MALLOC(s int) ptr

@@ -1,6 +1,10 @@
 #include "<signal.h>"
 #include "<string.h>"
 
+#darwin {
+    #include "<mach/mach.h>"
+}
+
 #define __Bah_safe_string(s cpstring) cpstring
 
 const null = <ptr>0
@@ -82,12 +86,22 @@ __checkString(s cpstring, l cpstring) bool {
 __BAH_panic_chan chan:cpstring = null
 
 //Print an error to the terminal and exits the program.
-panic(e cpstring) {
+__Bah_common_panic(e cpstring) {
     if strlen(e) {
         print(e)
         print("\n")
 		cleanShutDown()
     }
+}
+
+#linux {
+	const panic = __Bah_common_panic
+}
+#windows {
+	const panic = __Bah_common_panic
+}
+#darwin {
+	const panic = __Bah_common_panic
 }
 
 __BAH_panic(e cpstring, line cpstring) {

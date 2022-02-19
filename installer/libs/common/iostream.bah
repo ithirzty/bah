@@ -333,6 +333,14 @@ getLastModified(name cpstring) int {
 #define! mkdir(s cpstring, m int) int
 #define! rename(o cpstring, n cpstring)
 
+
+#windows {
+    __windows_mkdir(s cpstring, m int) int {
+        return noCheck(mkdir(s))
+    }
+    const mkdir = __windows_mkdir
+}
+
 //Example
 // #include "iostream.bah"
 // main() {

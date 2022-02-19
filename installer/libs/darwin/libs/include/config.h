@@ -103,7 +103,7 @@
 #define HAVE_DLFCN_H 1
 
 /* Define to 1 if you have the `dl_iterate_phdr' function. */
-/* #undef HAVE_DL_ITERATE_PHDR */
+#define HAVE_DL_ITERATE_PHDR 1
 
 /* Define to 1 if you have the <inttypes.h> header file. */
 #define HAVE_INTTYPES_H 1
@@ -112,10 +112,10 @@
 /* #undef HAVE_LOCKFREE_AO_OR */
 
 /* Define to use 'pthread_setname_np(const char*)' function. */
-#define HAVE_PTHREAD_SETNAME_NP_WITHOUT_TID 1
+/* #undef HAVE_PTHREAD_SETNAME_NP_WITHOUT_TID */
 
 /* Define to use 'pthread_setname_np(pthread_t, const char*)' function. */
-/* #undef HAVE_PTHREAD_SETNAME_NP_WITH_TID */
+#define HAVE_PTHREAD_SETNAME_NP_WITH_TID 1
 
 /* Define to use 'pthread_setname_np(pthread_t, const char*, void *)'
    function. */

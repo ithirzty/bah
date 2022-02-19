@@ -2,6 +2,11 @@
 #include "memory.bah"
 #include "<time.h>"
 
+#darwin {
+    #include "<sys/time.h>"
+    #include "<mach/clock.h>"
+}
+
 const TIME_MS  = 1000000
 const TIME_S   = 1000000000
 const TIME_MIN = 60000000000
@@ -45,7 +50,13 @@ struct! timespec {
 }
 
 #darwin {
-    #define! clock_gettime(w int, t timespec*) int
+    #define! clock_serv_t ptr
+    #define! mach_timespec_t ptr
+    #define! mach_host_self() ptr
+    #define! mach_task_self() ptr
+    #define! host_get_clock_service(mach ptr, type int, clock clock_serv_t*)
+    #define! clock_get_time(clock clock_serv_t, mts mach_timespec_t*)
+    #define! mach_port_deallocate(mach ptr, clock clock_serv_t)
 }
 
 #windows {
@@ -61,7 +72,14 @@ getTimeUnix() int {
         timespec_get(&ts, noCheck(TIME_UTC))
     }
     #darwin {
-        s = clock_gettime(noCheck(CLOCK_REALTIME), &ts)
+        cclock clock_serv_t
+        mts mach_timespec_t
+        host_get_clock_service(mach_host_self(), noCheck(CALENDAR_CLOCK), &cclock)
+        clock_get_time(cclock, &mts)
+        mach_port_deallocate(mach_task_self(), cclock)
+        mtsp = &mts
+        ts.tv_sec = noCheck(mtsp->tv_sec)
+        ts.tv_nsec = noCheck(mtsp->tv_nsec)
     }
     #windows {
         s = clock_gettime(noCheck(CLOCK_REALTIME), &ts)

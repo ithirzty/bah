@@ -33,8 +33,10 @@ cp /opt/bah/iostream.bah ./libs/common/
 cp /opt/bah/time.bah ./libs/common/
 cp /opt/bah/rand.bah ./libs/common/
 cp /opt/bah/memory.bah ./libs/common/
+cp /opt/bah/http.bah ./libs/common/
 #linux specific libs
-cp /opt/bah/http.bah ./libs/linux/
-cp /opt/bah/window.bah ./libs/linux/
+# cp /opt/bah/window.bah ./libs/linux/
 #static libs
-cp -r /opt/bah/libs/* ./libs/linux/libs/
+cp -r /opt/bah/libs/linux/* ./libs/linux/libs/
+cp -r /opt/bah/libs/windows/* ./libs/windows/libs/
+cp -r /opt/bah/libs/darwin/* ./libs/darwin/libs/
