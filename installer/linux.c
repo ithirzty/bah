@@ -1,4 +1,4 @@
-//COMPILE WITH: 'gcc -I "/opt/bah//libs/linux/include/" -L "/opt/bah//libs/linux/" linux.c -static -O1 -w  -lgc -lpthread -lm -O1'
+//COMPILE WITH: 'gcc -I "/opt/bah/libs/linuxinclude/" -L "/opt/bah//libs/linux/" ../installer/linux.c -static -O1 -w  -lgc -lpthread -lm'
 
 void __BAH_init();
 #define noCheck(v) v
@@ -2583,7 +2583,7 @@ return ____BAH_COMPILER_VAR_180;
 char * BAH_DIR;
 char * BAH_OS;
 char * BAH_CC;
-#define BAH_VERSION "v1.1 (build 49)"
+#define BAH_VERSION "v1.1 (build 50)"
 int debug;
 int verboseRuntime;
 struct rope* OUTPUT;
@@ -18202,7 +18202,7 @@ BAH_DIR =  flags.get((struct flags*)&flags,"bahDir");
 array(char)* bahDirArr =  strAsArr(BAH_DIR);
 
                         if (bahDirArr->length <= len(bahDirArr)-1) {
-                            printf("array (/home/alois/Documents/bah-bah/src/main_linux.bah:53): bahDirArr[%d] with length %d\n", len(bahDirArr)-1, bahDirArr->length);
+                            printf("array (/home/alois/Documents/bah-bah/src/main.bah:72): bahDirArr[%d] with length %d\n", len(bahDirArr)-1, bahDirArr->length);
                             exit(1);
                         };
                         if ((bahDirArr->data[len(bahDirArr)-1]!=47)) {
@@ -18290,7 +18290,7 @@ long int ____BAH_COMPILER_VAR_850 = 0;
 return ____BAH_COMPILER_VAR_850;
 }
 if (((flags.isSet((struct flags*)&flags,"c")==1)&&(flags.isSet((struct flags*)&flags,"l")==1))) {
-__BAH_panic("Cannot use -c (to translate to C code) and -l (to compile as a library) at the same time.","/home/alois/Documents/bah-bah/src/main_linux.bah:79");
+__BAH_panic("Cannot use -c (to translate to C code) and -l (to compile as a library) at the same time.","/home/alois/Documents/bah-bah/src/main.bah:98");
 }
 INIT =  rope("");
 OUTPUT =  rope("\nvoid __BAH_init();\n#define noCheck(v) v\n#define array(type)	\
@@ -18301,7 +18301,7 @@ long int elemSize; \
 }\ntypedef array(char*)* __BAH_ARR_TYPE_cpstring;\nlong int __BAH__main(__BAH_ARR_TYPE_cpstring);\n");
 if ((flags.isSet((struct flags*)&flags,"l")==0)) {
 if ((RCPenabled==true)) {
-OUTPUT =  OUTPUT->add(OUTPUT, rope("\n        int main(int argc, char ** argv) {\n        RCP_init();\n        array(char*) * args = malloc(sizeof(array(char*)));\n        args->data = malloc(sizeof(char*)*argc);\n        memcpy(args->data, argv, sizeof(char*)*argc);\n        args->elemSize = sizeof(char*);\n        args->length = argc;\n        __BAH_init();\n        long int r =  __BAH__main((__BAH_ARR_TYPE_cpstring)args);\n        free(args->data);\n        free(args);\n        RCP_shutdown();\n        return r;\n        };\n        #define main(v) __BAH__main(v)\n        "));
+OUTPUT =  OUTPUT->add(OUTPUT, rope("\n\n        void RCP_init();\n        void RCP_shutdown();\n        void free(void*);\n        \n        int main(int argc, char ** argv) {\n        RCP_init();\n        array(char*) * args = malloc(sizeof(array(char*)));\n        args->data = malloc(sizeof(char*)*argc);\n        memcpy(args->data, argv, sizeof(char*)*argc);\n        args->elemSize = sizeof(char*);\n        args->length = argc;\n        __BAH_init();\n        long int r =  __BAH__main((__BAH_ARR_TYPE_cpstring)args);\n        free(args->data);\n        free(args);\n        RCP_shutdown();\n        return r;\n        };\n        #define main(v) __BAH__main(v)\n        "));
 }
 else {
 OUTPUT =  OUTPUT->add(OUTPUT, rope("\n        #include <gc.h>\n        int main(int argc, char ** argv) {\n        GC_INIT();\n        array(char*) * args = GC_MALLOC(sizeof(array(char*)));\n        args->data = GC_MALLOC(sizeof(char*)*argc);\n        memcpy(args->data, argv, sizeof(char*)*argc);\n        args->elemSize = sizeof(char*);\n        args->length = argc;\n        __BAH_init();\n        long int r =  __BAH__main((__BAH_ARR_TYPE_cpstring)args);\n        GC_FREE(args->data);\n        GC_FREE(args);\n        return r;\n        };\n        #define main(v) __BAH__main(v)\n        "));
@@ -18373,7 +18373,7 @@ long int strLen_2 = strlen("'.");
                         currStrOff += strLen_2;
                         
                     }
-                    __BAH_panic(____BAH_COMPILER_VAR_853,"/home/alois/Documents/bah-bah/src/main_linux.bah:150");
+                    __BAH_panic(____BAH_COMPILER_VAR_853,"/home/alois/Documents/bah-bah/src/main.bah:174");
 }
 long int startTime =  getTimeUnix();
 array(struct Tok)* tokens =  lexer(f);
@@ -18398,7 +18398,7 @@ long int strLen_2 = strlen("' not recognized.");
                         currStrOff += strLen_2;
                         
                     }
-                    __BAH_panic(____BAH_COMPILER_VAR_854,"/home/alois/Documents/bah-bah/src/main_linux.bah:158");
+                    __BAH_panic(____BAH_COMPILER_VAR_854,"/home/alois/Documents/bah-bah/src/main.bah:182");
 }
 struct Elems* elems = memoryAlloc(sizeof(struct Elems));
 elems->vars = memoryAlloc(sizeof(array(struct variable*)));
@@ -18433,7 +18433,7 @@ long int strLen_2 = strlen("'");
                         currStrOff += strLen_2;
                         
                     }
-                    __BAH_panic(____BAH_COMPILER_VAR_855,"/home/alois/Documents/bah-bah/src/main_linux.bah:163");
+                    __BAH_panic(____BAH_COMPILER_VAR_855,"/home/alois/Documents/bah-bah/src/main.bah:187");
 }
 if ((flags.isSet((struct flags*)&flags,"l")==1)) {
 OUTPUT =  rope("");
@@ -18490,7 +18490,7 @@ outFileName.trimRight((struct string*)&outFileName,4);
 fileName =  outFileName.str((struct string*)&outFileName);
 }
 char * isStatic =  "-static";
-if (((flags.isSet((struct flags*)&flags,"d")==1)||(__checkString(BAH_OS, "/home/alois/Documents/bah-bah/src/main_linux.bah:190 BAH_OS ")==1&&strcmp(BAH_OS, "darwin") == 0))) {
+if (((flags.isSet((struct flags*)&flags,"d")==1)||(__checkString(BAH_OS, "/home/alois/Documents/bah-bah/src/main.bah:214 BAH_OS ")==1&&strcmp(BAH_OS, "darwin") == 0))) {
 isStatic =  "";
 }
 if ((flags.isSet((struct flags*)&flags,"c")==0)) {
@@ -18561,11 +18561,11 @@ char * ____BAH_COMPILER_VAR_864 =null;
                         long int strLen_0 = strlen(BAH_CC);
 long int strLen_1 = strlen(" -I \"");
 long int strLen_2 = strlen(BAH_DIR);
-long int strLen_3 = strlen("/libs/");
+long int strLen_3 = strlen("libs/");
 long int strLen_4 = strlen(BAH_OS);
 long int strLen_5 = strlen("/include/\" -L \"");
 long int strLen_6 = strlen(BAH_DIR);
-long int strLen_7 = strlen("/libs/");
+long int strLen_7 = strlen("libs/");
 long int strLen_8 = strlen(BAH_OS);
 long int strLen_9 = strlen("/\" ");
 long int strLen_10 = strlen(randFileName);
@@ -18585,7 +18585,7 @@ long int strLen_14 = strlen(fileName);
                         strncpy(____BAH_COMPILER_VAR_864+currStrOff, BAH_DIR, strLen_2);
                         currStrOff += strLen_2;
                         
-                        strncpy(____BAH_COMPILER_VAR_864+currStrOff, "/libs/", strLen_3);
+                        strncpy(____BAH_COMPILER_VAR_864+currStrOff, "libs/", strLen_3);
                         currStrOff += strLen_3;
                         
                         strncpy(____BAH_COMPILER_VAR_864+currStrOff, BAH_OS, strLen_4);
@@ -18597,7 +18597,7 @@ long int strLen_14 = strlen(fileName);
                         strncpy(____BAH_COMPILER_VAR_864+currStrOff, BAH_DIR, strLen_6);
                         currStrOff += strLen_6;
                         
-                        strncpy(____BAH_COMPILER_VAR_864+currStrOff, "/libs/", strLen_7);
+                        strncpy(____BAH_COMPILER_VAR_864+currStrOff, "libs/", strLen_7);
                         currStrOff += strLen_7;
                         
                         strncpy(____BAH_COMPILER_VAR_864+currStrOff, BAH_OS, strLen_8);
@@ -18646,7 +18646,7 @@ i =  0;
 while ((i<len(cLibs))) {
 
                         if (cLibs->length <= i) {
-                            printf("array (/home/alois/Documents/bah-bah/src/main_linux.bah:218): cLibs[%d] with length %d\n", i, cLibs->length);
+                            printf("array (/home/alois/Documents/bah-bah/src/main.bah:242): cLibs[%d] with length %d\n", i, cLibs->length);
                             exit(1);
                         };
                         char * l =  cLibs->data[i];
@@ -18733,9 +18733,9 @@ char * ____BAH_COMPILER_VAR_869 =null;
                         long int strLen_0 = strlen(BAH_CC);
 long int strLen_1 = strlen(" -I \"");
 long int strLen_2 = strlen(BAH_DIR);
-long int strLen_3 = strlen("/libs/");
+long int strLen_3 = strlen("libs/");
 long int strLen_4 = strlen(BAH_OS);
-long int strLen_5 = strlen("/include/\" -L \"");
+long int strLen_5 = strlen("include/\" -L \"");
 long int strLen_6 = strlen(BAH_DIR);
 long int strLen_7 = strlen("/libs/");
 long int strLen_8 = strlen(BAH_OS);
@@ -18756,13 +18756,13 @@ long int strLen_13 = strlen(" -O1 -w ");
                         strncpy(____BAH_COMPILER_VAR_869+currStrOff, BAH_DIR, strLen_2);
                         currStrOff += strLen_2;
                         
-                        strncpy(____BAH_COMPILER_VAR_869+currStrOff, "/libs/", strLen_3);
+                        strncpy(____BAH_COMPILER_VAR_869+currStrOff, "libs/", strLen_3);
                         currStrOff += strLen_3;
                         
                         strncpy(____BAH_COMPILER_VAR_869+currStrOff, BAH_OS, strLen_4);
                         currStrOff += strLen_4;
                         
-                        strncpy(____BAH_COMPILER_VAR_869+currStrOff, "/include/\" -L \"", strLen_5);
+                        strncpy(____BAH_COMPILER_VAR_869+currStrOff, "include/\" -L \"", strLen_5);
                         currStrOff += strLen_5;
                         
                         strncpy(____BAH_COMPILER_VAR_869+currStrOff, BAH_DIR, strLen_6);
@@ -18796,7 +18796,7 @@ long int i =  0;
 while ((i<len(cLibs))) {
 
                         if (cLibs->length <= i) {
-                            printf("array (/home/alois/Documents/bah-bah/src/main_linux.bah:245): cLibs[%d] with length %d\n", i, cLibs->length);
+                            printf("array (/home/alois/Documents/bah-bah/src/main.bah:271): cLibs[%d] with length %d\n", i, cLibs->length);
                             exit(1);
                         };
                         char * l =  cLibs->data[i];
