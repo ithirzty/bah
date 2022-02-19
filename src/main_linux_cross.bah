@@ -6,8 +6,9 @@
 #include "rope.bah"
 
 ///////////////////////OS SPECIFIC THINGS////////////////////////
-const BAH_DIR = "C:/Bah/"
-const BAH_OS = "windows"
+BAH_DIR = ""
+BAH_OS = ""
+BAH_CC = ""
 //////////////////////BUILD SPECIFIC THINGS//////////////////////
 const BAH_VERSION = "v1.1 (build 46)"
 
@@ -36,6 +37,15 @@ main(args []cpstring) int {
     flags.addBool("debug", "Enables verbose json output.")
     flags.addBool("verboseRuntime", "Enables verbose runtime, a debug mode of the compiled program.")
     flags.parse(args)
+
+    print("Bah path (/opt/bah/ ...)\n>")
+    BAH_DIR = stdinput()
+
+    print("Bah OS (linux, darwin, windows)\n>")
+    BAH_OS = stdinput()
+
+    print("C compiler (gcc, x86_64-w64-mingw32-gcc, clang ...)\n>")
+    BAH_CC = stdinput()
 
     verboseRuntime = flags.isSet("verboseRuntime") == 1
 
@@ -149,7 +159,7 @@ long int __BAH__main(__BAH_ARR_TYPE_cpstring);
     parseLines(tokens, elems)
 
     makeInit()
-    
+
     if debug == false {
         totalTime = getTimeUnix() - startTime
         println("Parsed. ("+intToStr(totalLines)+" lines, total time: "+intToStr(totalTime / 1000000)+"ms, lexer time: "+intToStr(totalLexerTime / 1000000)+"ms)\e[0m")
@@ -183,7 +193,7 @@ long int __BAH__main(__BAH_ARR_TYPE_cpstring);
         fs.writeFile(OUTPUT.toStr())
         fs.close()
 
-        gccArgs = "gcc "+ randFileName+ " "+isStatic+" -w -O1 -o "+fileName
+        gccArgs = BAH_CC+" "+ randFileName+ " "+isStatic+" -w -O1 -o "+fileName
         
         if flags.isSet("l") == 1 {
             gccArgs = gccArgs + " -c"
@@ -198,14 +208,14 @@ long int __BAH__main(__BAH_ARR_TYPE_cpstring);
         }
 
         cmd = command(gccArgs)
-        //cmd.error = false
+        cmd.error = false
         cmd.run()
         removeFile(randFileName)
         if cmd.status != 0 {   
             println("\e[1;31m[GCC-ERROR]\e[0m\nCould not compiled.")
             exit(1)
         }
-   
+
         if flags.isSet("l") == 1 {
             cmd = command("ar rcs "+fileName+".a "+fileName)
             cmd.run()
@@ -216,7 +226,7 @@ long int __BAH__main(__BAH_ARR_TYPE_cpstring);
             fileName = fileName + ".c"
         }
 
-        gccArgs = "gcc "+ fileName+ " "+isStatic+" -O1 -w "
+        gccArgs = BAH_CC+" "+ fileName+ " "+isStatic+" -O1 -w "
         cLibs = compilerState.cLibs
         i=0;for i < len(cLibs) {
             l = cLibs[i]
@@ -237,6 +247,6 @@ long int __BAH__main(__BAH_ARR_TYPE_cpstring);
         debugEnd()
     }
 
-    
+ 
     return 0
 }
