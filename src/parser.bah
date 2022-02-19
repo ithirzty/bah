@@ -233,16 +233,22 @@ includeFile(ccstr cpstring, elems Elems*) bool {
     }
     fm = fileMap{}
     fileName = BAH_DIR + ccstr
+    isBahDir = true
     f = fm.open(fileName)
     if fm.isValid() == 0 {
         fileName = absPath(compilerState.currentDir + ccstr)
         f = fm.open(fileName)
+        isBahDir = false
         if fm.isValid() == 0 {
             return false
         }
     }
     oDir = compilerState.currentDir
-    compilerState.currentDir = compilerState.currentDir + getDirFromFile(ccstr)
+    if isBahDir == false {
+        compilerState.currentDir = compilerState.currentDir + getDirFromFile(ccstr)
+    } else {
+        compilerState.currentDir = BAH_DIR + getDirFromFile(ccstr)
+    }
     oFile = compilerState.currentFile
     compilerState.currentFile = fileName
     includes[len(includes)] = ccstr
