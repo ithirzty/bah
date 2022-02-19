@@ -17,7 +17,14 @@ cd ./installer
 sudo mkdir /opt
 sudo mkdir /opt/bah
 sudo mkdir /opt/bah/libs
-sudo cp -r ./libs/darwin/* /opt/bah/
+sudo mkdir /opt/bah/libs/darwin
+sudo mkdir /opt/bah/libs/windows
+sudo mkdir /opt/bah/libs/linux
+sudo cp -r ./libs/darwin/libs/* /opt/bah/libs/darwin
+sudo cp -r ./libs/windows/libs/* /opt/bah/libs/windows
+sudo cp -r ./libs/linux/libs/* /opt/bah/libs/linux
+
+#sudo cp -r ./libs/darwin/* /opt/bah/
 sudo cp ./libs/common/* /opt/bah/
 sudo chmod 777 /opt/bah/*
 
