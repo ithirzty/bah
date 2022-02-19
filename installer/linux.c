@@ -2583,7 +2583,7 @@ return ____BAH_COMPILER_VAR_180;
 char * BAH_DIR;
 char * BAH_OS;
 char * BAH_CC;
-#define BAH_VERSION "v1.1 (build 50)"
+#define BAH_VERSION "v1.1 (build 51)"
 int debug;
 int verboseRuntime;
 struct rope* OUTPUT;
@@ -18735,9 +18735,9 @@ long int strLen_1 = strlen(" -I \"");
 long int strLen_2 = strlen(BAH_DIR);
 long int strLen_3 = strlen("libs/");
 long int strLen_4 = strlen(BAH_OS);
-long int strLen_5 = strlen("include/\" -L \"");
+long int strLen_5 = strlen("/include/\" -L \"");
 long int strLen_6 = strlen(BAH_DIR);
-long int strLen_7 = strlen("/libs/");
+long int strLen_7 = strlen("libs/");
 long int strLen_8 = strlen(BAH_OS);
 long int strLen_9 = strlen("/\" ");
 long int strLen_10 = strlen(fileName);
@@ -18762,13 +18762,13 @@ long int strLen_13 = strlen(" -O1 -w ");
                         strncpy(____BAH_COMPILER_VAR_869+currStrOff, BAH_OS, strLen_4);
                         currStrOff += strLen_4;
                         
-                        strncpy(____BAH_COMPILER_VAR_869+currStrOff, "include/\" -L \"", strLen_5);
+                        strncpy(____BAH_COMPILER_VAR_869+currStrOff, "/include/\" -L \"", strLen_5);
                         currStrOff += strLen_5;
                         
                         strncpy(____BAH_COMPILER_VAR_869+currStrOff, BAH_DIR, strLen_6);
                         currStrOff += strLen_6;
                         
-                        strncpy(____BAH_COMPILER_VAR_869+currStrOff, "/libs/", strLen_7);
+                        strncpy(____BAH_COMPILER_VAR_869+currStrOff, "libs/", strLen_7);
                         currStrOff += strLen_7;
                         
                         strncpy(____BAH_COMPILER_VAR_869+currStrOff, BAH_OS, strLen_8);
