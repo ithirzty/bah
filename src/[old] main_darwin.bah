@@ -6,24 +6,10 @@
 #include "rope.bah"
 
 ///////////////////////OS SPECIFIC THINGS////////////////////////
-#linux {
-    BAH_DIR = "/opt/bah/"
-    BAH_OS = "linux"
-    BAH_CC = "gcc"
-}
-#darwin {
-    BAH_DIR = "/opt/bah/"
-    BAH_OS = "darwin"
-    BAH_CC = "clang"
-}
-
-#windows {
-    BAH_DIR = "C:/Bah/"
-    BAH_OS = "windows"
-    BAH_CC = "gcc"
-}
+const BAH_DIR = "/opt/bah/"
+const BAH_OS = "darwin"
 //////////////////////BUILD SPECIFIC THINGS//////////////////////
-const BAH_VERSION = "v1.1 (build 49)"
+const BAH_VERSION = "v1.1 (build 46)"
 
 debug = false
 verboseRuntime = false
@@ -36,7 +22,7 @@ verboseRuntime = false
 #include "./parser.bah"
 #include "./declarative.bah"
 
-
+#cLib "O1"
 
 
 main(args []cpstring) int {
@@ -45,39 +31,11 @@ main(args []cpstring) int {
     flags.addBool("c", "Translate bah file to C instead of compiling it.")
     flags.addBool("v", "Show version of the compiler.")
     flags.addBool("l", "Compile as a library.")
-    #linux {
-        flags.addBool("d", "Compile as a dynamic executable. (useful if you are using a library that is only available shared but might reduce portability).")
-    }
-    #windows {
-        flags.addBool("d", "Compile as a dynamic executable. (useful if you are using a library that is only available shared but might reduce portability).")
-    }
     flags.addBool("rcp", "Enables RCP (reference counter) instead of the garbage collector. Warning: if you are using self-reference, this will lead to memory leaks!")
     flags.addBool("fastrcp", "Enables RCP without leak detection. It is recommended to test you programs with the -rcp flag to test for leak detection before using this flag.")
     flags.addBool("debug", "Enables verbose json output.")
     flags.addBool("verboseRuntime", "Enables verbose runtime, a debug mode of the compiled program.")
-
-    //cross compiler
-    flags.addString("target", "Select the target OS for cross compilling (linux, windows, darwin), default: "+BAH_OS+".")
-    flags.addString("bahDir", "If your Bah directory is not the default one ("+BAH_DIR+").")
-    flags.addString("CC", "To change the C compiler used, default: "+BAH_CC+".")
     flags.parse(args)
-
-    if flags.isSet("target") == 1 {
-        BAH_OS = flags.get("target")
-        println("Build target: "+BAH_OS)
-    }
-    if flags.isSet("bahDir") == 1 {
-        BAH_DIR = flags.get("bahDir")
-        bahDirArr = strAsArr(BAH_DIR)
-        if bahDirArr[len(bahDirArr)-1] != '/' {
-            BAH_DIR = BAH_DIR + "/"
-        }
-        println("Bah directory: "+BAH_DIR)
-    }
-    if flags.isSet("CC") == 1 {
-        BAH_CC = flags.get("CC")
-        println("C compiler: "+BAH_CC)
-    }
 
     verboseRuntime = flags.isSet("verboseRuntime") == 1
 
@@ -119,10 +77,10 @@ long int __BAH__main(__BAH_ARR_TYPE_cpstring);
 
             OUTPUT = OUTPUT + rope("
 
-        void RCP_init();
-        void RCP_shutdown();
-        void free(void*);
-        
+	void RCP_init();
+	void RCP_shutdown();
+	void free(void*);
+
         int main(int argc, char ** argv) {
         RCP_init();
         array(char*) * args = malloc(sizeof(array(char*)));
@@ -142,7 +100,7 @@ long int __BAH__main(__BAH_ARR_TYPE_cpstring);
 
         } else {
         OUTPUT = OUTPUT + rope("
-        #include <gc.h>
+        #include \""+BAH_DIR+"libs/include/gc.h\"
         int main(int argc, char ** argv) {
         GC_INIT();
         array(char*) * args = GC_MALLOC(sizeof(array(char*)));
@@ -195,13 +153,13 @@ long int __BAH__main(__BAH_ARR_TYPE_cpstring);
     compilerState.currentDir = getDirFromFile(fileName)
     parseLines(tokens, elems)
 
-    makeInit()
+makeInit()
 
     if debug == false {
-        totalTime = getTimeUnix() - startTime
-        println("Parsed. ("+intToStr(totalLines)+" lines, total time: "+intToStr(totalTime / 1000000)+"ms, lexer time: "+intToStr(totalLexerTime / 1000000)+"ms)\e[0m")
+    totalTime = getTimeUnix() - startTime
+    println("Parsed. ("+intToStr(totalLines)+" lines, total time: "+intToStr(totalTime / 1000000)+"ms, lexer time: "+intToStr(totalLexerTime / 1000000)+"ms)\e[0m")
     }
-
+    
     if flags.isSet("o") == 1 {
         fileName = flags.get("o")
     } else {
@@ -210,10 +168,6 @@ long int __BAH__main(__BAH_ARR_TYPE_cpstring);
         fileName = outFileName.str()
     }
 
-    isStatic = "-static"
-    if flags.isSet("d") == 1 || BAH_OS == "darwin" {
-        isStatic = ""
-    }
 
     if flags.isSet("c") == 0 {
         randFileName = "TMP_C_FILE_"
@@ -230,7 +184,7 @@ long int __BAH__main(__BAH_ARR_TYPE_cpstring);
         fs.writeFile(OUTPUT.toStr())
         fs.close()
 
-        gccArgs = BAH_CC+" -I \""+BAH_DIR+"libs/"+BAH_OS+"/include/\" -L \""+BAH_DIR+"libs/"+BAH_OS+"/\" "+ randFileName+ " "+isStatic+" -w -O1 -o "+fileName
+        gccArgs = "clang "+ randFileName+ " -w -O1 -o "+fileName
         
         if flags.isSet("l") == 1 {
             gccArgs = gccArgs + " -c"
@@ -245,13 +199,10 @@ long int __BAH__main(__BAH_ARR_TYPE_cpstring);
         }
 
         cmd = command(gccArgs)
-        #linux {
-            cmd.error = false
-        }
-        cmd.run()
+        gccOut = cmd.run()
         removeFile(randFileName)
-        if cmd.status != 0 {   
-            println("\e[1;31m[GCC-ERROR]\e[0m\nCould not compiled.")
+        if strlen(gccOut) > 0 {   
+            println("\e[1;31m[CLANG-ERROR]\e[0m\nCould not compiled.")
             exit(1)
         }
 
@@ -265,7 +216,7 @@ long int __BAH__main(__BAH_ARR_TYPE_cpstring);
             fileName = fileName + ".c"
         }
 
-        gccArgs = BAH_CC+" -I \""+BAH_DIR+"libs/"+BAH_OS+"include/\" -L \""+BAH_DIR+"/libs/"+BAH_OS+"/\" "+ fileName+ " "+isStatic+" -O1 -w "
+        gccArgs = "gcc "+ fileName+ " -O1 -w "
         cLibs = compilerState.cLibs
         i=0;for i < len(cLibs) {
             l = cLibs[i]
@@ -279,13 +230,8 @@ long int __BAH__main(__BAH_ARR_TYPE_cpstring);
         fs.close()
     }
 
-    if debug == false {
-        totalTime = getTimeUnix() - startTime
-        println("\e[1;32mDone. (compiled in "+intToStr(totalTime / 1000000)+"ms)\e[0m")
-    } else {
-        debugEnd()
-    }
+    totalTime = getTimeUnix() - startTime
+    println("\e[1;32mDone. (compiled in "+intToStr(totalTime / 1000000)+"ms)\e[0m")
 
- 
     return 0
 }
