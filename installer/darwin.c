@@ -2658,7 +2658,7 @@ return ____BAH_COMPILER_VAR_183;
 char * BAH_DIR;
 char * BAH_OS;
 char * BAH_CC;
-#define BAH_VERSION "v1.1 (build 54)"
+#define BAH_VERSION "v1.1 (build 55)"
 int debug;
 int verboseRuntime;
 struct rope* OUTPUT;

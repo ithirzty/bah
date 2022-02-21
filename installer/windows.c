@@ -2664,7 +2664,7 @@ return ____BAH_COMPILER_VAR_180;
 char * BAH_DIR;
 char * BAH_OS;
 char * BAH_CC;
-#define BAH_VERSION "v1.1 (build 54)"
+#define BAH_VERSION "v1.1 (build 55)"
 int debug;
 int verboseRuntime;
 struct rope* OUTPUT;
@@ -5582,7 +5582,7 @@ long int strLen_4 = strlen("\e[0m");
 char * absPath(char * path){
 char * buff =  memoryAlloc(4096);
 char * p =  _fullpath(buff,path,4095);
-if ((__checkString(p, "/opt/bah/path.bah:20 p ")==1&&__checkString(null, "/opt/bah/path.bah:20 null")==1&&strcmp(p, null) != 0)) {
+if (((void *)p!=null)) {
 array(char)* arr =  strAsArr(p);
 long int i =  0;
 for (; (i<len(arr)); i =  i+1) {
