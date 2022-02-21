@@ -1516,10 +1516,6 @@ parseArrayDecl(v variable*, l []Tok, i int, max int, elems Elems*) cpstring {
             strArrayLength = intToStr(arrayLength)
             arrayLength =arrayLength + 1
 
-            if tt == "cpstring" {
-                t.cont = "__STR("+t.cont+")"
-            }
-
             NEXT_LINE = NEXT_LINE + v.name + "->data[" + strArrayLength + "] = " + t.cont + ";\n"
             i++
             t = memory[i]
@@ -1550,6 +1546,8 @@ parseArrayDecl(v variable*, l []Tok, i int, max int, elems Elems*) cpstring {
 " + NEXT_LINE
     return code
 }
+
+equalsTokens = []cpstring{"=", "+=", "-=", "*=", "/="}
 
 parseVar(l []Tok, elems Elems*) {
     ft = l[0]
@@ -1627,6 +1625,75 @@ parseVar(l []Tok, elems Elems*) {
             l = nl
         }
     }
+
+    operT = l[1]
+    if operT.cont in equalsTokens && operT.cont != "=" {
+        nl = []Tok{l[0]}
+        if 2 == len(l) {
+            throwErr(&operT, "Cannot use {TOKEN} on nothing.")
+        }
+        oper = string(operT.cont)
+        oper.trimRight(1)
+        operTok = operT
+        operTok.cont = oper.str()
+
+        tmpL = []Tok {
+            ft,
+            operTok,
+            l[2]
+        }
+
+        tmpL = parseOperations(tmpL, LINE_TYPE_VAR, elems)
+
+        operT.cont = "="
+        nl[len(nl)] = operT
+
+        j=0; for j < len(tmpL), j++ {
+            nl[len(nl)] = tmpL[j]
+        }
+
+
+        l = nl
+    }
+
+
+    // i=1; for i < len(l), i++ {
+    //     t = l[i]
+    //     if t.cont in equalsTokens {
+    //         if strlen(t.cont) == 1 {
+    //             nl = l
+    //             break
+    //         }
+
+    //         if i+1 == len(l) {
+    //             throwErr(&t, "Cannot use {TOKEN} on nothing.")
+    //         }
+
+    //         oper = string(t.cont)
+    //         oper.trimRight(1)
+    //         operTok = t
+    //         operTok.cont = oper.str()
+
+    //         tmpL = []Tok {
+    //             ft,
+    //             operTok,
+    //             l[i+1]
+    //         }
+
+    //         tmpL = parseOperations(tmpL, LINE_TYPE_VAR, elems)
+
+    //         t.cont = "="
+    //         nl[len(nl)] = t
+
+    //         j=0; for j < len(tmpL), j++ {
+    //             nl[len(nl)] = tmpL[j]
+    //         }
+
+    //         break
+    //     }
+    //     nl[len(nl)] = t
+    // }
+    // l = nl
 
     i=1; for i < len(l) {
         t = l[i]
