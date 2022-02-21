@@ -293,6 +293,35 @@ parseOperations(line []Tok, ltp lineType, elems Elems*) []Tok {
 
     nl = []Tok{line[0]}
 
+    unNestedLine = []Tok{line[0]}
+    i=1; for i < len(line), i++ {
+        t = line[i]
+        if t.cont == "(" {
+            nbPars = 1
+            i++
+            mem = []Tok
+            for i < len(line), i++ {
+                t = line[i]
+                if t.cont == "(" {
+                    nbPars++
+                } else if t.cont == ")" {
+                    nbPars--
+                }
+                if nbPars == 0 {
+                    break
+                }
+                mem[len(mem)] = t
+            }
+            tmpL = parseOperations(mem, ltp, elems)
+            nestedT = tmpL[0]
+            nestedT.cont = "("+nestedT.cont+")"
+            unNestedLine[len(unNestedLine)] = nestedT
+            continue
+        }
+        unNestedLine[len(unNestedLine)] = t
+    }
+    line = unNestedLine
+
     i=1; for i < len(line) {
         t = line[i]
         if t.type == TOKEN_TYPE_SYNTAX && inArrayStr(t.cont, signs) {
