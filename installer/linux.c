@@ -2648,7 +2648,7 @@ return ____BAH_COMPILER_VAR_181;
 char * BAH_DIR;
 char * BAH_OS;
 char * BAH_CC;
-#define BAH_VERSION "v1.1 (build 53)"
+#define BAH_VERSION "v1.1 (build 54)"
 int debug;
 int verboseRuntime;
 struct rope* OUTPUT;
@@ -10772,8 +10772,8 @@ array(char *)* ptrOpers = memoryAlloc(sizeof(array(char *)));
 
 ptrOpers->length = 2;
 ptrOpers->elemSize = sizeof(char *);
-ptrOpers->data = memoryAlloc(sizeof(char *) * 50);ptrOpers->data[0] = __STR("&");
-ptrOpers->data[1] = __STR("*");
+ptrOpers->data = memoryAlloc(sizeof(char *) * 50);ptrOpers->data[0] = "&";
+ptrOpers->data[1] = "*";
 long int i =  0;
 while ((i<len(l))) {
 
@@ -17200,9 +17200,17 @@ char * fnWrapper =  genCompilerVar();
 char * tmpArgs =  genCompilerVar();
 sFnT.trimLeft((struct string*)&sFnT,fnName.length + 1);
 sFnT.trimRight((struct string*)&sFnT,1);
-char * tCreate =  "pthread_create";
-if ((RCPavailable()==false)) {
+char * tCreate =  "";
+if ((__checkString(BAH_OS, "/home/alois/Documents/bah-bah/src/parser.bah:3013 BAH_OS ")==1&&strcmp(BAH_OS, "windows") == 0)) {
+tCreate =  "pthread_create";
+}
+else {
+if (RCPavailable()) {
+tCreate =  "pthread_create";
+}
+else {
 tCreate =  "GC_pthread_create";
+}
 }
 char * ____BAH_COMPILER_VAR_780 =fnName.str((struct string*)&fnName);char * ____BAH_COMPILER_VAR_781 =sFnT.str((struct string*)&sFnT);char * ____BAH_COMPILER_VAR_782 =null;
                     {
@@ -17305,7 +17313,7 @@ i =  1;
 while ((i<len(l))) {
 
                 if (l->length <= i) {
-                    printf("array (/home/alois/Documents/bah-bah/src/parser.bah:3037): l[%d] with length %d\n", i, l->length);
+                    printf("array (/home/alois/Documents/bah-bah/src/parser.bah:3042): l[%d] with length %d\n", i, l->length);
                     exit(1);
                 };
                 struct Tok t =  l->data[i];
@@ -17340,17 +17348,17 @@ long int i =  0;
 for (; (i<len(l)); i =  i+1) {
 
                 if (l->length <= i) {
-                    printf("array (/home/alois/Documents/bah-bah/src/parser.bah:3053): l[%d] with length %d\n", i, l->length);
+                    printf("array (/home/alois/Documents/bah-bah/src/parser.bah:3058): l[%d] with length %d\n", i, l->length);
                     exit(1);
                 };
                 struct Tok t =  l->data[i];
-if ((((t.type==TOKEN_TYPE_SYNTAX)&&(__checkString(t.cont, "/home/alois/Documents/bah-bah/src/parser.bah:3054 t.cont ")==1&&strcmp(t.cont, "->") == 0))||(__checkString(t.cont, "/home/alois/Documents/bah-bah/src/parser.bah:3054 t.cont ")==1&&strcmp(t.cont, "<-") == 0))) {
-if ((__checkString(t.cont, "/home/alois/Documents/bah-bah/src/parser.bah:3056 t.cont ")==1&&strcmp(t.cont, "<-") == 0)) {
+if ((((t.type==TOKEN_TYPE_SYNTAX)&&(__checkString(t.cont, "/home/alois/Documents/bah-bah/src/parser.bah:3059 t.cont ")==1&&strcmp(t.cont, "->") == 0))||(__checkString(t.cont, "/home/alois/Documents/bah-bah/src/parser.bah:3059 t.cont ")==1&&strcmp(t.cont, "<-") == 0))) {
+if ((__checkString(t.cont, "/home/alois/Documents/bah-bah/src/parser.bah:3061 t.cont ")==1&&strcmp(t.cont, "<-") == 0)) {
 i =  i+1;
 if ((i<len(l))) {
 
                 if (l->length <= i) {
-                    printf("array (/home/alois/Documents/bah-bah/src/parser.bah:3059): l[%d] with length %d\n", i, l->length);
+                    printf("array (/home/alois/Documents/bah-bah/src/parser.bah:3064): l[%d] with length %d\n", i, l->length);
                     exit(1);
                 };
                 struct Tok nt =  l->data[i];
@@ -17480,13 +17488,13 @@ throwErr(&t,"Cannot send ({TOKEN}) to nothing.");
 }
 
                 if (l->length <= i + 1) {
-                    printf("array (/home/alois/Documents/bah-bah/src/parser.bah:3094): l[%d] with length %d\n", i + 1, l->length);
+                    printf("array (/home/alois/Documents/bah-bah/src/parser.bah:3099): l[%d] with length %d\n", i + 1, l->length);
                     exit(1);
                 };
                 struct Tok pt =  l->data[i + 1];
 
                 if (l->length <= i-1) {
-                    printf("array (/home/alois/Documents/bah-bah/src/parser.bah:3095): l[%d] with length %d\n", i-1, l->length);
+                    printf("array (/home/alois/Documents/bah-bah/src/parser.bah:3100): l[%d] with length %d\n", i-1, l->length);
                     exit(1);
                 };
                 struct Tok nt =  l->data[i-1];
@@ -17695,20 +17703,20 @@ if ((ltp!=(lineType)-1)) {
 while ((i<len(line))) {
 
                 if (line->length <= i) {
-                    printf("array (/home/alois/Documents/bah-bah/src/parser.bah:3142): line[%d] with length %d\n", i, line->length);
+                    printf("array (/home/alois/Documents/bah-bah/src/parser.bah:3147): line[%d] with length %d\n", i, line->length);
                     exit(1);
                 };
                 struct Tok t =  line->data[i];
-if ((__checkString(t.cont, "/home/alois/Documents/bah-bah/src/parser.bah:3143 t.cont ")==1&&strcmp(t.cont, "(") == 0)) {
+if ((__checkString(t.cont, "/home/alois/Documents/bah-bah/src/parser.bah:3148 t.cont ")==1&&strcmp(t.cont, "(") == 0)) {
 nbPar =  nbPar + 1;
 }
-else if ((__checkString(t.cont, "/home/alois/Documents/bah-bah/src/parser.bah:3145 t.cont ")==1&&strcmp(t.cont, ")") == 0)) {
+else if ((__checkString(t.cont, "/home/alois/Documents/bah-bah/src/parser.bah:3150 t.cont ")==1&&strcmp(t.cont, ")") == 0)) {
 nbPar =  nbPar - 1;
 }
-else if (((nbPar==0)&&(__checkString(t.cont, "/home/alois/Documents/bah-bah/src/parser.bah:3147 t.cont ")==1&&strcmp(t.cont, "{") == 0))) {
+else if (((nbPar==0)&&(__checkString(t.cont, "/home/alois/Documents/bah-bah/src/parser.bah:3152 t.cont ")==1&&strcmp(t.cont, "{") == 0))) {
 
                 if (line->length <= i + 1) {
-                    printf("array (/home/alois/Documents/bah-bah/src/parser.bah:3148): line[%d] with length %d\n", i + 1, line->length);
+                    printf("array (/home/alois/Documents/bah-bah/src/parser.bah:3153): line[%d] with length %d\n", i + 1, line->length);
                     exit(1);
                 };
                 struct Tok nt =  line->data[i + 1];
@@ -17750,7 +17758,7 @@ if ((ltp!=(lineType)-1)) {
 while ((i<len(line))) {
 
                 if (line->length <= i) {
-                    printf("array (/home/alois/Documents/bah-bah/src/parser.bah:3173): line[%d] with length %d\n", i, line->length);
+                    printf("array (/home/alois/Documents/bah-bah/src/parser.bah:3178): line[%d] with length %d\n", i, line->length);
                     exit(1);
                 };
                 
@@ -17787,7 +17795,7 @@ fn->file = "";
 fn->line = 1;
 
                 if (l->length <= 0) {
-                    printf("array (/home/alois/Documents/bah-bah/src/parser.bah:3185): l[%d] with length %d\n", 0, l->length);
+                    printf("array (/home/alois/Documents/bah-bah/src/parser.bah:3190): l[%d] with length %d\n", 0, l->length);
                     exit(1);
                 };
                 struct Tok ft =  l->data[0];
@@ -17828,7 +17836,7 @@ long int strLen_4 = strlen(".");
                     throwErr(&ft,____BAH_COMPILER_VAR_805);
 }
 }
-if ((__checkString(fn->name, "/home/alois/Documents/bah-bah/src/parser.bah:3197 fn->name ")==1&&strcmp(fn->name, "main") == 0)) {
+if ((__checkString(fn->name, "/home/alois/Documents/bah-bah/src/parser.bah:3202 fn->name ")==1&&strcmp(fn->name, "main") == 0)) {
 compilerState.haveEntryPoint =  true;
 if ((compTypes(fn->returns->type,"int")==false)) {
 throwErr(&ft,"{TOKEN} function should return 'int'.");
@@ -17838,7 +17846,7 @@ throwErr(&ft,"{TOKEN} function should take one []cpstring argument. Should be: \
 }
 
                 if (fn->args->length <= 0) {
-                    printf("array (/home/alois/Documents/bah-bah/src/parser.bah:3206): fn->args[%d] with length %d\n", 0, fn->args->length);
+                    printf("array (/home/alois/Documents/bah-bah/src/parser.bah:3211): fn->args[%d] with length %d\n", 0, fn->args->length);
                     exit(1);
                 };
                 struct variable* fa =  fn->args->data[0];
@@ -17869,7 +17877,7 @@ long int j =  0;
 while ((j<len(fn->args))) {
 
                 if (fn->args->length <= j) {
-                    printf("array (/home/alois/Documents/bah-bah/src/parser.bah:3220): fn->args[%d] with length %d\n", j, fn->args->length);
+                    printf("array (/home/alois/Documents/bah-bah/src/parser.bah:3225): fn->args[%d] with length %d\n", j, fn->args->length);
                     exit(1);
                 };
                 struct variable* a =  fn->args->data[j];
@@ -17921,7 +17929,7 @@ long int max =  len(l)-1;
 while ((i<max)) {
 
                 if (l->length <= i) {
-                    printf("array (/home/alois/Documents/bah-bah/src/parser.bah:3239): l[%d] with length %d\n", i, l->length);
+                    printf("array (/home/alois/Documents/bah-bah/src/parser.bah:3244): l[%d] with length %d\n", i, l->length);
                     exit(1);
                 };
                 struct Tok t =  l->data[i];
@@ -18033,7 +18041,7 @@ struct reflectElement ____BAH_COMPILER_VAR_835 = __reflect(____BAH_COMPILER_VAR_
 debugPrint("fn_declare",ft.line,____BAH_COMPILER_VAR_835);
 
                 if (l->length <= len(l)-1) {
-                    printf("array (/home/alois/Documents/bah-bah/src/parser.bah:3268): l[%d] with length %d\n", len(l)-1, l->length);
+                    printf("array (/home/alois/Documents/bah-bah/src/parser.bah:3273): l[%d] with length %d\n", len(l)-1, l->length);
                     exit(1);
                 };
                 struct Tok lt =  l->data[len(l)-1];
@@ -18090,7 +18098,7 @@ throwErr(&line->data[len(line)-1],"Not expecting {TOKEN} after function call.");
 }
 
                 if (line->length <= 0) {
-                    printf("array (/home/alois/Documents/bah-bah/src/parser.bah:3319): line[%d] with length %d\n", 0, line->length);
+                    printf("array (/home/alois/Documents/bah-bah/src/parser.bah:3324): line[%d] with length %d\n", 0, line->length);
                     exit(1);
                 };
                 struct Tok ft =  line->data[0];
@@ -18147,7 +18155,7 @@ parsed =  true;
 if ((parsed==false)) {
 
                 if (line->length <= 0) {
-                    printf("array (/home/alois/Documents/bah-bah/src/parser.bah:3349): line[%d] with length %d\n", 0, line->length);
+                    printf("array (/home/alois/Documents/bah-bah/src/parser.bah:3354): line[%d] with length %d\n", 0, line->length);
                     exit(1);
                 };
                 struct Tok ft =  line->data[0];
@@ -18169,7 +18177,7 @@ line->length = 0;
 line->elemSize = sizeof(struct Tok);
 
                 if (tokens->length <= 0) {
-                    printf("array (/home/alois/Documents/bah-bah/src/parser.bah:3368): tokens[%d] with length %d\n", 0, tokens->length);
+                    printf("array (/home/alois/Documents/bah-bah/src/parser.bah:3373): tokens[%d] with length %d\n", 0, tokens->length);
                     exit(1);
                 };
                 struct Tok ft =  tokens->data[0];
@@ -18179,27 +18187,27 @@ long int i =  0;
 while ((i<len(tokens))) {
 
                 if (tokens->length <= i) {
-                    printf("array (/home/alois/Documents/bah-bah/src/parser.bah:3372): tokens[%d] with length %d\n", i, tokens->length);
+                    printf("array (/home/alois/Documents/bah-bah/src/parser.bah:3377): tokens[%d] with length %d\n", i, tokens->length);
                     exit(1);
                 };
                 struct Tok t =  tokens->data[i];
 if ((t.type==TOKEN_TYPE_ENCL)) {
-if ((__checkString(t.cont, "/home/alois/Documents/bah-bah/src/parser.bah:3375 t.cont ")==1&&strcmp(t.cont, "(") == 0)) {
+if ((__checkString(t.cont, "/home/alois/Documents/bah-bah/src/parser.bah:3380 t.cont ")==1&&strcmp(t.cont, "(") == 0)) {
 nbEncl =  nbEncl + 1;
 }
-else if ((__checkString(t.cont, "/home/alois/Documents/bah-bah/src/parser.bah:3377 t.cont ")==1&&strcmp(t.cont, ")") == 0)) {
+else if ((__checkString(t.cont, "/home/alois/Documents/bah-bah/src/parser.bah:3382 t.cont ")==1&&strcmp(t.cont, ")") == 0)) {
 nbEncl =  nbEncl - 1;
 }
-else if ((__checkString(t.cont, "/home/alois/Documents/bah-bah/src/parser.bah:3379 t.cont ")==1&&strcmp(t.cont, "{") == 0)) {
+else if ((__checkString(t.cont, "/home/alois/Documents/bah-bah/src/parser.bah:3384 t.cont ")==1&&strcmp(t.cont, "{") == 0)) {
 nbEncl =  nbEncl + 1;
 }
-else if ((__checkString(t.cont, "/home/alois/Documents/bah-bah/src/parser.bah:3381 t.cont ")==1&&strcmp(t.cont, "}") == 0)) {
+else if ((__checkString(t.cont, "/home/alois/Documents/bah-bah/src/parser.bah:3386 t.cont ")==1&&strcmp(t.cont, "}") == 0)) {
 nbEncl =  nbEncl - 1;
 }
-else if ((__checkString(t.cont, "/home/alois/Documents/bah-bah/src/parser.bah:3383 t.cont ")==1&&strcmp(t.cont, "[") == 0)) {
+else if ((__checkString(t.cont, "/home/alois/Documents/bah-bah/src/parser.bah:3388 t.cont ")==1&&strcmp(t.cont, "[") == 0)) {
 nbEncl =  nbEncl + 1;
 }
-else if ((__checkString(t.cont, "/home/alois/Documents/bah-bah/src/parser.bah:3385 t.cont ")==1&&strcmp(t.cont, "]") == 0)) {
+else if ((__checkString(t.cont, "/home/alois/Documents/bah-bah/src/parser.bah:3390 t.cont ")==1&&strcmp(t.cont, "]") == 0)) {
 nbEncl =  nbEncl - 1;
 }
 }
@@ -18225,7 +18233,7 @@ line->data[len(line)] =  t;
 };
 
                 if (tokens->length <= i-1) {
-                    printf("array (/home/alois/Documents/bah-bah/src/parser.bah:3398): tokens[%d] with length %d\n", i-1, tokens->length);
+                    printf("array (/home/alois/Documents/bah-bah/src/parser.bah:3403): tokens[%d] with length %d\n", i-1, tokens->length);
                     exit(1);
                 };
                 struct Tok pt =  tokens->data[i-1];
@@ -18241,7 +18249,7 @@ i =  i + 1;
 continue;
 }
 }
-else if ((__checkString(t.cont, "/home/alois/Documents/bah-bah/src/parser.bah:3409 t.cont ")==1&&strcmp(t.cont, ";") == 0)) {
+else if ((__checkString(t.cont, "/home/alois/Documents/bah-bah/src/parser.bah:3414 t.cont ")==1&&strcmp(t.cont, ";") == 0)) {
 currentLine =  t.line;
 parseLine(line,elems);
 clear(line);
@@ -18273,7 +18281,7 @@ clear(line);
 else {
 
                 if (line->length <= len(line)-1) {
-                    printf("array (/home/alois/Documents/bah-bah/src/parser.bah:3427): line[%d] with length %d\n", len(line)-1, line->length);
+                    printf("array (/home/alois/Documents/bah-bah/src/parser.bah:3432): line[%d] with length %d\n", len(line)-1, line->length);
                     exit(1);
                 };
                 ft =  line->data[len(line)-1];
@@ -19390,25 +19398,25 @@ keywords = memoryAlloc(sizeof(array(char *)));
 
 keywords->length = 19;
 keywords->elemSize = sizeof(char *);
-keywords->data = memoryAlloc(sizeof(char *) * 50);keywords->data[0] = __STR("if");
-keywords->data[1] = __STR("else");
-keywords->data[2] = __STR("for");
-keywords->data[3] = __STR("struct");
-keywords->data[4] = __STR("const");
-keywords->data[5] = __STR("return");
-keywords->data[6] = __STR("extend");
-keywords->data[7] = __STR("new");
-keywords->data[8] = __STR("break");
-keywords->data[9] = __STR("continue");
-keywords->data[10] = __STR("default");
-keywords->data[11] = __STR("switch");
-keywords->data[12] = __STR("case");
-keywords->data[13] = __STR("while");
-keywords->data[14] = __STR("typedef");
-keywords->data[15] = __STR("function");
-keywords->data[16] = __STR("async");
-keywords->data[17] = __STR("in");
-keywords->data[18] = __STR("chan");
+keywords->data = memoryAlloc(sizeof(char *) * 50);keywords->data[0] = "if";
+keywords->data[1] = "else";
+keywords->data[2] = "for";
+keywords->data[3] = "struct";
+keywords->data[4] = "const";
+keywords->data[5] = "return";
+keywords->data[6] = "extend";
+keywords->data[7] = "new";
+keywords->data[8] = "break";
+keywords->data[9] = "continue";
+keywords->data[10] = "default";
+keywords->data[11] = "switch";
+keywords->data[12] = "case";
+keywords->data[13] = "while";
+keywords->data[14] = "typedef";
+keywords->data[15] = "function";
+keywords->data[16] = "async";
+keywords->data[17] = "in";
+keywords->data[18] = "chan";
 varChars = memoryAlloc(sizeof(array(char)));
 
 varChars->length = 1;
@@ -19424,45 +19432,45 @@ noVOfns = memoryAlloc(sizeof(array(char *)));
 
 noVOfns->length = 1;
 noVOfns->elemSize = sizeof(char *);
-noVOfns->data = memoryAlloc(sizeof(char *) * 50);noVOfns->data[0] = __STR("__Bah_safe_string");
+noVOfns->data = memoryAlloc(sizeof(char *) * 50);noVOfns->data[0] = "__Bah_safe_string";
 prevLine =  (lineType)-1;
 signs = memoryAlloc(sizeof(array(char *)));
 
 signs->length = 7;
 signs->elemSize = sizeof(char *);
-signs->data = memoryAlloc(sizeof(char *) * 50);signs->data[0] = __STR("|");
-signs->data[1] = __STR("&");
-signs->data[2] = __STR("%");
-signs->data[3] = __STR("+");
-signs->data[4] = __STR("-");
-signs->data[5] = __STR("*");
-signs->data[6] = __STR("/");
+signs->data = memoryAlloc(sizeof(char *) * 50);signs->data[0] = "|";
+signs->data[1] = "&";
+signs->data[2] = "%";
+signs->data[3] = "+";
+signs->data[4] = "-";
+signs->data[5] = "*";
+signs->data[6] = "/";
 comparators = memoryAlloc(sizeof(array(char *)));
 
 comparators->length = 7;
 comparators->elemSize = sizeof(char *);
-comparators->data = memoryAlloc(sizeof(char *) * 50);comparators->data[0] = __STR("==");
-comparators->data[1] = __STR("!=");
-comparators->data[2] = __STR(">");
-comparators->data[3] = __STR("<");
-comparators->data[4] = __STR("<=");
-comparators->data[5] = __STR(">=");
-comparators->data[6] = __STR("in");
+comparators->data = memoryAlloc(sizeof(char *) * 50);comparators->data[0] = "==";
+comparators->data[1] = "!=";
+comparators->data[2] = ">";
+comparators->data[3] = "<";
+comparators->data[4] = "<=";
+comparators->data[5] = ">=";
+comparators->data[6] = "in";
 compSep = memoryAlloc(sizeof(array(char *)));
 
 compSep->length = 2;
 compSep->elemSize = sizeof(char *);
-compSep->data = memoryAlloc(sizeof(char *) * 50);compSep->data[0] = __STR("||");
-compSep->data[1] = __STR("&&");
+compSep->data = memoryAlloc(sizeof(char *) * 50);compSep->data[0] = "||";
+compSep->data[1] = "&&";
 equalsTokens = memoryAlloc(sizeof(array(char *)));
 
 equalsTokens->length = 5;
 equalsTokens->elemSize = sizeof(char *);
-equalsTokens->data = memoryAlloc(sizeof(char *) * 50);equalsTokens->data[0] = __STR("=");
-equalsTokens->data[1] = __STR("+=");
-equalsTokens->data[2] = __STR("-=");
-equalsTokens->data[3] = __STR("*=");
-equalsTokens->data[4] = __STR("/=");
+equalsTokens->data = memoryAlloc(sizeof(char *) * 50);equalsTokens->data[0] = "=";
+equalsTokens->data[1] = "+=";
+equalsTokens->data[2] = "-=";
+equalsTokens->data[3] = "*=";
+equalsTokens->data[4] = "/=";
 
 
     };

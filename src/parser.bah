@@ -3009,11 +3009,16 @@ parseAsync(l []Tok, elems Elems*) {
     sFnT.trimLeft(fnName.length+1)
     sFnT.trimRight(1)
 
-    tCreate = "pthread_create"
-    if RCPavailable() == false {
-        tCreate = "GC_pthread_create"
+    tCreate = ""
+    if BAH_OS == "windows" {
+        tCreate = "pthread_create"
+    } else {
+        if RCPavailable() {
+            tCreate = "pthread_create"
+        } else {
+            tCreate = "GC_pthread_create"
+        }
     }
-
 
     OUTPUT = OUTPUT + rope("
     void "+fnWrapper+"("+tmpArgsStruct+"* args) {

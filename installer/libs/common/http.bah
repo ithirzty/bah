@@ -1,17 +1,32 @@
 #include "<unistd.h>"
 #include "<signal.h>"
-#include "<sys/types.h>"
-#include "<sys/socket.h>"
-#include "<sys/ioctl.h>"
-#include "<arpa/inet.h>"
-#include "<netinet/in.h>"
-#include "<netdb.h>"
-#include "<openssl/ssl.h>"
-#include "<openssl/err.h>"
-#include "<openssl/bio.h>"
-#include "<sys/select.h>"
-#include "<sys/time.h>"
-#include "<poll.h>"
+
+#linux {
+    #include "<sys/types.h>"
+    #include "<sys/socket.h>"
+    #include "<sys/ioctl.h>"
+    #include "<arpa/inet.h>"
+    #include "<netinet/in.h>"
+    #include "<netdb.h>"
+    #include "<openssl/ssl.h>"
+    #include "<openssl/err.h>"
+    #include "<openssl/bio.h>"
+    #include "<sys/select.h>"
+    #include "<sys/time.h>"
+    #include "<poll.h>"
+    #include "<net/if.h>"
+}
+
+#windows {
+    #include "<windows.h>"
+    #include "<winsock2.h>"
+    #include "<openssl/ssl.h>"
+    #include "<openssl/err.h>"
+    #include "<openssl/bio.h>"
+
+    //#warning "Don't forget to copy the ssleay32.dll and libeay32.dll in your application path."
+}
+
 
 #include "cBinds.bah"
 
@@ -54,7 +69,7 @@ struct! sockaddr_in {
     sin_family: int
     sin_port: uint
     sin_addr: in_addr
-    sin_zero: char*
+    // sin_zero: char*
 }
 
 struct! addrinfo {
@@ -110,13 +125,28 @@ struct! pollfd {
 
 #define! poll(fds pollfd*, nfd int, timeout int) int
 
-#include "<net/if.h>"
 
 struct! ifreq {
     ifr_name: cpstring
 }
 
 #define! snprintf(s cpstring, s int, format cpstring)
+
+#windows {
+    #define! WSADATA ptr
+    #define! MAKEWORD(a int, b int) ptr
+    #define! WSAStartup(w ptr, d WSADATA*) int
+    #define! closesocket(sockfd int)
+    #define! hostname_to_ip(host cpstring, ip cpstring)
+
+    __Bah_win32_WSA_init() bool {
+        wsadata WSADATA
+        WSAStartup(MAKEWORD(1,1), &wsadata)
+        return true
+    }
+
+    __Bah_win32_WSA_is_init = __Bah_win32_WSA_init()
+}
 
 struct response_buffer {
     data: cpstring
@@ -164,16 +194,25 @@ struct http_socket {
 
     //To set the linux network interface on which the socket should operate.
     setInterface(s cpstring) bool {
-        ifr ifreq
-        
-        memset(&ifr, 0, noCheck(sizeof(ifr)))
-        snprintf(ifr.ifr_name, noCheck(sizeof(ifr.ifr_name)), s)
-        return setsockopt(this.sockfd, noCheck(SOL_SOCKET), noCheck(SO_BINDTODEVICE), &ifr, noCheck(sizeof(ifr))) == 0
+        #linux {
+            ifr ifreq
+            memset(&ifr, 0, noCheck(sizeof(ifr)))
+            snprintf(ifr.ifr_name, noCheck(sizeof(ifr.ifr_name)), s)
+            return setsockopt(this.sockfd, noCheck(SOL_SOCKET), noCheck(SO_BINDTODEVICE), &ifr, noCheck(sizeof(ifr))) == 0
+        }
+        #windows {
+            return false
+        }
     }
 
     //To terminate a socket.
     terminate() bool {
-        return shutdown(this.sockfd, noCheck(SHUT_RDWR)) != -1
+        #linux {
+            return shutdown(this.sockfd, noCheck(SHUT_RDWR)) != -1
+        }
+        #windows {
+            return false
+        }
     }
 
     //To close a socket.
@@ -182,18 +221,20 @@ struct http_socket {
             return true
         }
 
-        flags = fcntl(this.sockfd, noCheck(F_GETFL), 0)
-        fcntl(this.sockfd, noCheck(F_SETFL), noCheck(flags | FD_CLOEXEC))
-
-        err = 0
-        errlen = SIZE_OF_INT
-        getsockopt(this.sockfd, noCheck(SOL_SOCKET), noCheck(SO_ERROR), &err, &errlen)
-
-
-
-        r = true
-        if this.terminate() == false {
-            r = close(this.sockfd) != -1
+        #linux {
+            flags = fcntl(this.sockfd, noCheck(F_GETFL), 0)
+            fcntl(this.sockfd, noCheck(F_SETFL), noCheck(flags | FD_CLOEXEC))
+            err = 0
+            errlen = SIZE_OF_INT
+            getsockopt(this.sockfd, noCheck(SOL_SOCKET), noCheck(SO_ERROR), &err, &errlen)
+            r = true
+            if this.terminate() == false {
+                r = close(this.sockfd) != -1
+            }
+        }
+        #windows {
+            closesocket(this.sockfd)
+            r = true
         }
 
         this.sockfd = -1
@@ -206,51 +247,71 @@ struct http_socket {
         if <ptr>host == null {
             return false
         }
-        addrsup = addrinfo{}
-        hints = addrinfo{}
-        hints.ai_family = noCheck(AF_INET)
-        hints.ai_socktype = noCheck(SOCK_STREAM)
-        hints.ai_protocol = noCheck(IPPROTO_TCP)
+        #linux {
+            addrsup = addrinfo{}
+            hints = addrinfo{}
+            hints.ai_family = noCheck(AF_INET)
+            hints.ai_socktype = noCheck(SOCK_STREAM)
+            hints.ai_protocol = noCheck(IPPROTO_TCP)
 
-        addrs = &addrsup
+            addrs = &addrsup
 
-        err = getaddrinfo(host, intToStr(port), &hints, &addrs)
-        if err != 0 {
-            return false
-        }
-
-        res = -1
-        if this.timeout > 0 {
-            iMode = 1
-            ioctl(this.sockfd, noCheck(FIONBIO), &iMode)
-            if connect(this.sockfd, addrs.ai_addr, addrs.ai_addrlen) == 0 {
-                freeaddrinfo(addrs)
+            err = getaddrinfo(host, intToStr(port), &hints, &addrs)
+            if err != 0 {
                 return false
             }
-            iMode = 0
-            ioctl(this.sockfd, noCheck(FIONBIO), &iMode)
-            
-            pfd = pollfd{}
-            pfd.fd = this.sockfd
-            pfd.events = noCheck(POLLOUT)
+
+            res = -1
+            if this.timeout > 0 {
+                iMode = 1
+                ioctl(this.sockfd, noCheck(FIONBIO), &iMode)
+                if connect(this.sockfd, addrs.ai_addr, addrs.ai_addrlen) == 0 {
+                    freeaddrinfo(addrs)
+                    return false
+                }
+                iMode = 0
+                ioctl(this.sockfd, noCheck(FIONBIO), &iMode)
+                
+                pfd = pollfd{}
+                pfd.fd = this.sockfd
+                pfd.events = noCheck(POLLOUT)
 
 
-            res = poll(&pfd, 1, this.timeout * 1000)
+                res = poll(&pfd, 1, this.timeout * 1000)
+                if res <= 0 {
+                    freeaddrinfo(addrs)
+                    return false
+                }
+
+                return true
+            } else {
+                res = connect(this.sockfd,addrs.ai_addr, addrs.ai_addrlen)
+            }
+
             if res <= 0 {
-                freeaddrinfo(addrs)
+            freeaddrinfo(addrs)
+                return false
+            }
+            freeaddrinfo(addrs)
+        }
+        #windows {
+            ip cpstring = memoryAlloc(20)
+            server = sockaddr_in{}
+            server.sin_family = noCheck(AF_INET)
+            server.sin_port = htons(port)
+            __httpDNSmutex.lock()
+            he = gethostbyname(host)
+            if he == null {
+                __httpDNSmutex.unlock()
+                addr = he.h_addr
+                server.sin_addr.s_addr = <char>*addr
                 return false
             }
 
-            return true
-        } else {
-            res = connect(this.sockfd,addrs.ai_addr, addrs.ai_addrlen)
-        }
+            __httpDNSmutex.unlock()
 
-        if res <= 0 {
-        freeaddrinfo(addrs)
-            return false
+            return connect(this.sockfd, &server, noCheck(sizeof(server))) >= 0
         }
-        freeaddrinfo(addrs)
         return true
     }
 
@@ -459,14 +520,14 @@ urlDecode(encoded cpstring) cpstring {
 //web server
 
 
-sigchld_handler(signo int) {
-    status int
-    pid int
-    pid = waitpid(-1, &status, 1)
-    for pid > 0 {
-        pid = waitpid(-1, &status, 1)
-    }
-}
+// sigchld_handler(signo int) {
+//     status int
+//     pid int
+//     pid = waitpid(-1, &status, 1)
+//     for pid > 0 {
+//         pid = waitpid(-1, &status, 1)
+//     }
+// }
 
 //A type difinning http server erros.
 #define http_serverError int
@@ -540,14 +601,16 @@ struct http_server {
 
         globalHTTPsockets[len(globalHTTPsockets)] = this.socket
 
-        sa sigaction
-        memset(<ptr>&sa, 0, 152)
-        sa.sa_handler = sigchld_handler
-        sigaction(17, &sa, 0)
+        #linux {
+            sa sigaction
+            memset(<ptr>&sa, 0, 152)
+            sa.sa_handler = sigchld_handler
+            sigaction(17, &sa, 0)
 
-        memset(<ptr>&sa, 0, 152)
-        sa.sa_handler = http_quit_handler
-        sigaction(2, &sa, 0)
+            memset(<ptr>&sa, 0, 152)
+            sa.sa_handler = http_quit_handler
+            sigaction(2, &sa, 0)        
+        }
 
 
 
@@ -563,18 +626,20 @@ struct http_server {
                 continue
             }
 
-            childpid = fork()
-            if childpid < 0 {
-                println("http: failed to fork client handler")
-                close(cli)
-                continue
-            }
+            async this.handle(cli)
 
-            if childpid == 0 {
-                this.handle(cli)
-                close(cli)
-                exit(0)
-            }
+            // childpid = fork()
+            // if childpid < 0 {
+            //     println("http: failed to fork client handler")
+            //     close(cli)
+            //     continue
+            // }
+
+            // if childpid == 0 {
+            //     this.handle(cli)
+            //     close(cli)
+            //     exit(0)
+            // }
 
             close(cli)
 
@@ -869,8 +934,15 @@ makeRespFromBody(response response_buffer) http_response* {
 
 //SSL - TLS (https)
 
-//#cLib "lssl" "lcrypto"
-#cLib "w /opt/bah/libs/libssl.a" "w /opt/bah/libs/libcrypto.a"
+#cLib "lssl" "lcrypto"
+
+#windows {
+    #cLib "lws2_32"
+}
+
+// #linux {
+//     #cLib "w /opt/bah/libs/libssl.a" "w /opt/bah/libs/libcrypto.a"
+// }
 
 #define! BIO int
 #define! SSL int
