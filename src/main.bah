@@ -55,6 +55,7 @@ main(args []cpstring) int {
     flags.addBool("fastrcp", "Enables RCP without leak detection. It is recommended to test you programs with the -rcp flag to test for leak detection before using this flag.")
     flags.addBool("debug", "Enables verbose json output.")
     flags.addBool("verboseRuntime", "Enables verbose runtime, a debug mode of the compiled program.")
+    flags.addBool("verboseCC", "Enables verbose C compiler output, USE IN LAST RESORT.")
 
     //cross compiler
     flags.addString("target", "Select the target OS for cross compilling (linux, windows, darwin), default: "+BAH_OS+".")
@@ -246,9 +247,15 @@ long int __BAH__main(__BAH_ARR_TYPE_cpstring);
 
         cmd = command(gccArgs)
         #linux {
-            cmd.error = false
+            if flags.isSet("verboseCC") == 0 {
+                cmd.error = false
+            }
         }
-        cmd.run()
+        if flags.isSet("verboseCC") == 1 {
+            println(cmd.run())
+        } else {
+            cmd.run()
+        }
         removeFile(randFileName)
         if cmd.status != 0 {   
             println("\e[1;31m[GCC-ERROR]\e[0m\nCould not compiled.")

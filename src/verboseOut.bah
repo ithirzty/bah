@@ -71,9 +71,11 @@ verboseOutTransformVar(v variable*, cont cpstring, elems Elems*) verboseOutVar {
 }
 
 verboseOutTransformTok(t Tok, elems Elems*) verboseOutVar {
-    if t.type == TOKEN_TYPE_VAR {
+    if t.type == TOKEN_TYPE_VAR && t.isOper == false {
         v = searchVar(t.cont, elems)
-        return verboseOutTransformVar(v, t.cont, elems)
+        if v == null {
+            return verboseOutTransformVar(v, t.cont, elems)
+        }
     }
     v = variable{
         name: "(value)"
@@ -92,6 +94,19 @@ verboseOutFunc(fn func*, args []Tok, lineNb int, elems Elems*) {
             return
         }
         nameColor = ASCII_GREY
+    }
+    if strHasPrefix(fn.file, BAH_DIR) {
+        hasPtr = false
+        i=0; for i < len(fn.args), i++ {
+            a = fn.args[i]
+            if isRCPpointerType(a.type) == true {
+                hasPtr = true
+                break
+            }
+        }
+        if hasPtr == false {
+            return
+        }
     }
 
     fnArgs = ""

@@ -6,6 +6,7 @@ cd ../src
 echo -e "\n---> LINUX BUILD\n"
 bah ./main.bah -o ../bin/linux_amd64
 bah ./main.bah -o ../installer/linux.c -c
+sudo cp ../bin/linux_amd64 /opt/bah/bah
 
 # windows
 echo -e "\n---> WINDOWS BUILD\n"

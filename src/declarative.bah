@@ -42,6 +42,14 @@ long int __BAH__main(__BAH_ARR_TYPE_cpstring);
         OUTPUT = OUTPUT + rope("#include "+compilerState.cIncludes[i]+"\n")
     }
 
+    i=1; for i < len(compilerState.arrTypesDecl), i++ {
+        t = compilerState.arrTypesDecl[i]
+        elemType = string(t)
+        elemType.trimLeft(15)
+        elemCtype = getCType(elemType.str(), elems)
+        OUTPUT = OUTPUT + rope("typedef array("+elemCtype.str()+")* "+t+";\n")
+    }
+
     i=0; for i < len(elems.vars), i++ {
         v = elems.vars[i]
         declareVar(v, elems)
