@@ -100,12 +100,8 @@ json_scan_inner(thisp ptr, e reflectElement, isMember bool) {
             ae = e.arrayElem
             if ae.type == "int" {
                 arr = []int
-                if isMember == true {
-                    arrPtr ptr* = e.value
-                    arr = *arrPtr
-                } else {
-                    arr = e.value
-                }
+                arrPtr ptr* = e.value
+                arr = *arrPtr
                 i=0; for i < len(this.children) {
                     c = this.children[i]
                     arr[i] = strToInt(c.content)
@@ -126,12 +122,8 @@ json_scan_inner(thisp ptr, e reflectElement, isMember bool) {
                 }
             } else if ae.type == "cpstring" {
                 arr = []cpstring
-                if isMember == true {
-                    arrPtr ptr* = e.value
-                    arr = *arrPtr
-                } else {
-                    arr = e.value
-                }
+                arrPtr ptr* = e.value
+                arr = *arrPtr
                 i=0; for i < len(this.children) {
                     c = this.children[i]
                     arr[i] = memoryAlloc(strlen(c.content) + 1)
@@ -140,12 +132,8 @@ json_scan_inner(thisp ptr, e reflectElement, isMember bool) {
                 }
             } else if ae.isStruct == true {
                 arr = []ptr
-                if isMember == true {
-                    arrPtr ptr* = e.value
-                    arr = *arrPtr
-                } else {
-                    arr = e.value
-                }
+                arrPtr ptr* = e.value
+                arr = *arrPtr
                 i=0; for i < len(this.children) {
                     c = this.children[i]
                     ne ptr = memoryAlloc(ae.size)

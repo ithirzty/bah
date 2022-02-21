@@ -26,6 +26,9 @@ const SIZE_OF_FLOAT = 8
 //Will return the length of an array.
 //This only works on arrays.
 len(a ptr) int {
+    if a == null {
+        return 0
+    }
     i = 0
     noCheck(array(void*) * arr = a)
     noCheck(i = arr->length)

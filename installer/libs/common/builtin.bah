@@ -5,6 +5,7 @@
     #include "<mach/mach.h>"
 }
 
+
 #define __Bah_safe_string(s cpstring) cpstring
 
 const null = <ptr>0
@@ -123,9 +124,22 @@ recover(s cpstring*) bool {
 	return true
 }
 
+#define strAsArr(s cpstring) []char
+
 __Bah_safe_string(s cpstring) cpstring {
 	if <ptr>s == null {
 		return "(nil)"
 	}
+	if strlen(s) > 50 {
+		s = __STR(s)
+		a = strAsArr(s)
+		a[47] = '.'
+		a[48] = '.'
+		a[49] = '.'
+		a[50] = <char>0
+	}
+
 	return "\""+s+"\""
 }
+
+#include "iostream.bah"

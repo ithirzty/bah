@@ -1,13 +1,7 @@
 #!/bin/bash
 
-# Making C source code
-cd ./src
-bah ./main_linux.bah -c -o linux.c
-mv ./linux.c ../installer/
-
-
 # Copying librairies
-cd ../installer
+cd installer
 #common librairies
 cp /opt/bah/builtin.bah ./libs/common/
 cp /opt/bah/rcp.bah ./libs/common/
