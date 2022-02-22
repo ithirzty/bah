@@ -290,7 +290,6 @@ parseInclude(l []Tok, elems Elems*) {
 signs = []cpstring{"|", "&", "%", "+", "-", "*", "/"}
 
 parseOperations(line []Tok, ltp lineType, elems Elems*) []Tok {
-
     nl = []Tok{line[0]}
 
     unNestedLine = []Tok{line[0]}
@@ -300,6 +299,7 @@ parseOperations(line []Tok, ltp lineType, elems Elems*) []Tok {
             nbPars = 1
             i++
             mem = []Tok
+            ft = t
             for i < len(line), i++ {
                 t = line[i]
                 if t.cont == "(" {
@@ -311,6 +311,12 @@ parseOperations(line []Tok, ltp lineType, elems Elems*) []Tok {
                     break
                 }
                 mem[len(mem)] = t
+            }
+            if len(mem) == 0 {
+                unNestedLine[len(unNestedLine)] = ft
+                unNestedLine[len(unNestedLine)] = t
+                
+                continue
             }
             tmpL = parseOperations(mem, ltp, elems)
             nestedT = tmpL[0]
@@ -513,7 +519,11 @@ parseOperations(line []Tok, ltp lineType, elems Elems*) []Tok {
 #define prePross(line []Tok, ltp lineType, elems Elems*) []Tok
 
 
-parseStructType(line []Tok, elems Elems*) []Tok {
+parseStructType(line []Tok, ltp lineType, elems Elems*) []Tok {
+
+    if ltp == LINE_TYPE_VAR {
+        return line
+    }
 
     nl = []Tok
 
@@ -526,9 +536,47 @@ parseStructType(line []Tok, elems Elems*) []Tok {
                 continue
             }
             i =i + 1
+            nt = Tok{
+                cont: ""
+            }
+            if i < len(line) {
+                nt = line[i]
+            }
+            if i == len(line) || nt.cont != "{" {
+                if i-2 >= 0 {
+                    newTk = line[i-2]
+                    if newTk.cont == "new" {
+                        s = searchStruct(t.cont, elems)
+                        if s == null {
+                            throwErr(&t, "Cannot initialize new unknown struct {TOKEN}.")
+                        }
+                        t.cont = genCompilerVar()
+                        tmpV = new variable
+                        tmpV.name = t.cont
+                        tmpV.type = s.name + "*"
+                        cType = getCType(tmpV.type, elems)
+                        structType = getCType(s.name, elems)
+                        elems.vars[len(elems.vars)] = tmpV
+
+                        OUTPUT = OUTPUT + rope(cType.str()+" "+t.cont+" = memoryAlloc(sizeof("+structType.str()+"));\n"+declareStructMethods(tmpV, s, elems))
+
+                        nl[len(nl)-1] = t
+                        continue
+                    }
+                }
+            }
             if i < len(line) {
                 nt = line[i]
                 if nt.cont == "{" {
+                    isHeap = false
+                    sep = "."
+                    if i-2 >= 0 {
+                        newTk = line[i-2]
+                        if newTk.cont == "new" {
+                            isHeap = true
+                            sep = "->"
+                        }
+                    }
                     i = i + 1
                     s = searchStruct(t.cont, elems)
                     if s == null {
@@ -552,9 +600,21 @@ parseStructType(line []Tok, elems Elems*) []Tok {
                     rvn = genCompilerVar()
                     tmpV = new variable
                     tmpV.name = rvn
-                    tmpV.type = s.name
-                    rst = getCType(s.name, elems)
-                    r = rope(rst.str()+" "+rvn+" = "+"{};\n"+declareStructMethods(tmpV, s, elems))
+                    if isHeap == true {
+                        tmpV.type = s.name+"*"
+                        elems.vars[len(elems.vars)] = tmpV
+                    } else {
+                        tmpV.type = s.name
+                    }
+                    rst = getCType(tmpV.type, elems)
+                    r rope*
+                    if isHeap == true {
+                        structType = string(rst.str())
+                        structType.trimRight(1)
+                        r = rope(rst.str()+" "+rvn+" = memoryAlloc(sizeof("+structType.str()+"));\n"+declareStructMethods(tmpV, s, elems))
+                    } else {
+                        r = rope(rst.str()+" "+rvn+" = {};\n"+declareStructMethods(tmpV, s, elems))
+                    }
                     j=0;k=0; for k < len(memory) {
                         t = memory[k]
                         if k+2 < len(memory) {
@@ -578,7 +638,7 @@ parseStructType(line []Tok, elems Elems*) []Tok {
                                     if compTypes(vlt, m.type) == false {
                                         throwErr(&vl, "Cannot use {TOKEN} ("+vlt+") as '"+m.type+"'.")
                                     }
-                                    r = r + rope(rvn+"."+m.name+" = "+vl.cont+";\n")
+                                    r = r + rope(rvn+sep+m.name+" = "+vl.cont+";\n")
                                     break
                                 }
                                 if j == len(s.members) {
@@ -604,7 +664,7 @@ parseStructType(line []Tok, elems Elems*) []Tok {
                             throwErr(&t, "Cannot use {TOKEN} ("+tt+") as '"+m.type+"'.")
                         }
 
-                        r = r + rope(rvn+"."+m.name+" = "+t.cont+";\n")
+                        r = r + rope(rvn+sep+m.name+" = "+t.cont+";\n")
 
                         if k+1 < len(memory) {
                             k = k + 1
@@ -622,10 +682,14 @@ parseStructType(line []Tok, elems Elems*) []Tok {
                         OUTPUT = OUTPUT + r
                     }
 
-                    t.bahType = s.name
+                    t.bahType = tmpV.type
                     t.cont = rvn
                     t.isValue = true
-                    nl[len(nl)] = t
+                    if isHeap == true {
+                        nl[len(nl)-1] = t
+                    } else {
+                        nl[len(nl)] = t
+                    }
                     i =i + 1
                     continue
                     
@@ -637,7 +701,6 @@ parseStructType(line []Tok, elems Elems*) []Tok {
         nl[len(nl)] = t
         i =i + 1
     }
-
 
     return nl
 }
@@ -1560,7 +1623,7 @@ parseVar(l []Tok, elems Elems*) {
         OUTPUT = OUTPUT + rope(ft.cont + ";\n")
         return
     }
-    l = parseStructType(l, elems)
+    l = parseStructType(l, <lineType>-1, elems)
     isEqual = false
     toVar = false
     isPointedVar = false
@@ -1712,32 +1775,33 @@ parseVar(l []Tok, elems Elems*) {
         if isEqual == false {
             currentType = currentType + " " + t.cont
         } else {
-            if t.cont == "new" {
-                isStruct = true
-                max = i + 1
-                if max >= len(l) {
-                    throwErr(&t, "Cannot initiate {TOKEN} struct without specifying struct name.")
-                }
-                max = max + 1
-                if max < len(l) {
-                    t = l[i+2]
-                    throwErr(&t, "{TOKEN} not expected after initiating new struct.")
-                }
-                t = l[i+1]
-                if t.type != TOKEN_TYPE_VAR {
-                    throwErr(&t, "Cannot use {TOKEN} as a struct name.")
-                }
-                s = searchStruct(t.cont, elems)
-                if s == null {
-                    throwErr(&t, "Unknown struct {TOKEN}.")
-                }
-                vect = getCType(s.name, elems)
-                vectStr = vect.content
-                code = "memoryAlloc(sizeof("+vectStr+"))"
-                v.type = s.name + "*"
-                NEXT_LINE = declareStructMethods(v, s, elems)
-                break
-            } else if t.cont == "chan" {
+            // if t.cont == "new" {
+            //     isStruct = true
+            //     max = i + 1
+            //     if max >= len(l) {
+            //         throwErr(&t, "Cannot initiate {TOKEN} struct without specifying struct name.")
+            //     }
+            //     max = max + 1
+            //     if max < len(l) {
+            //         t = l[i+2]
+            //         throwErr(&t, "{TOKEN} not expected after initiating new struct.")
+            //     }
+            //     t = l[i+1]
+            //     if t.type != TOKEN_TYPE_VAR {
+            //         throwErr(&t, "Cannot use {TOKEN} as a struct name.")
+            //     }
+            //     s = searchStruct(t.cont, elems)
+            //     if s == null {
+            //         throwErr(&t, "Unknown struct {TOKEN}.")
+            //     }
+            //     vect = getCType(s.name, elems)
+            //     vectStr = vect.content
+            //     code = "memoryAlloc(sizeof("+vectStr+"))"
+            //     v.type = s.name + "*"
+            //     NEXT_LINE = declareStructMethods(v, s, elems)
+            //     break
+            // } else 
+            if t.cont == "chan" {
                 if i >= len(l) {
                     throwErr(&t, "Cannot declare a {TOKEN} without a type (chan <type>).")
                 }
@@ -3166,7 +3230,7 @@ prePross(line []Tok, ltp lineType, elems Elems*) []Tok {
     fl = parseFnCall(fl, ltp, elems)
     fl = parseArrayVars(fl, elems)
     fl = parseArrayType(fl, elems)
-    fl = parseStructType(fl, elems)
+    fl = parseStructType(fl, ltp, elems)
     fl = parseCast(fl, elems)
     addRCPvars(fl, ltp, elems)
     fl = parseOperations(fl, ltp, elems)
