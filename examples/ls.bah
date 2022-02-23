@@ -1,0 +1,28 @@
+// This program prints file's name of a directory to the terminal.
+//
+//
+//
+//
+// © Aloïs Laurent Boë - Bah examples - 2022
+
+#include "iostream.bah" //for: listFiles(), println()
+
+//'main' is the entry point of the program.
+//it takes an array of arguments (passed by the terminal) and returns an exit code.
+main(args []cpstring) int {
+
+    //While i is less than the length of arguments,
+    //in other word, for every argument.
+    //i starts at 1 because args[0] is the program name.
+    i=1; for i < len(args), i++ {
+        //get the files present in the directory args[i]
+        files = listFiles(args[i])
+        //for every file in files
+        j=0; for j < len(files), j++ {
+            println(files[j]) //print the file name + a new line
+        }
+    }
+
+
+    return 0 //returns with code 0 (no error)
+}

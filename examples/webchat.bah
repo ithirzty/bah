@@ -1,0 +1,140 @@
+// This hosts a webserver where you can send messages,
+// and receive them in realtime (a chat).
+//
+//
+//
+// © Aloïs Laurent Boë - Bah examples - 2022
+
+
+#include "iostream.bah" //for: println(), string{}, intToStr(), arrToStr(), fileStream{}
+#include "thread.bah"   //for: mutex{}
+#include "json.bah"     //for: toJson()
+#include "http.bah"     //for: http_server{}, http_request{}, http_server{}
+
+//This is the structure that will represent a message.
+struct message {
+    author: cpstring
+    msg: cpstring
+}
+
+listeners = []ptr //This is the array that will contain every client that currently need to receive messages.
+
+listenersMut = mutex() //This will ensure that not two threads read/write at the same time the 'listeners' variable.
+
+//This will be called every time a client makes a request to the server.
+//where 's' is a pointer to the server structure
+//and 'connfd' is the socket file descriptor
+serv(s http_server*, connfd int) {
+    req = http_request(connfd) //this will parse the request made by the client
+    resp = http_response(connfd) //this will prepare the response that will be sent to the client
+
+    //if the requested path is /
+    if req.path == "/" {
+
+        resp.setHeader("content-type", "text/html") //set the content-type header to html
+        fs = fileStream{} //initiates a new fileStream structure
+        fs.open("./assets/webchat.html", "r") //opens webchat.html in read mode
+        resp.write(fs.readContent()) //write to the response the content of the file.
+        fs.close() //closes the opened file in the fileStream
+        resp.send() //send the response to the client
+
+    } else if req.path == "/send" { //if the requested path is /send
+        //if the request method is not post, that means that it doesnt contain a form
+        //so exit the function
+        if req.method != "POST" {
+            return
+        }
+        //parse the form to be able to extract its values
+        req.parseForm()
+
+        //make a new message
+        m = new message {
+            author: req.getFormValue("from") //get the form value 'from' and put it in m.author
+            msg: req.getFormValue("msg") //get the form value 'msg' and put it in m.msg
+        }
+
+        //lock the mutex so that only one thread/client can execute this part of code at the same time.
+        listenersMut.lock() 
+        //for every listeners
+        i=0; for i < len(listeners), i++ {
+            //get their channel
+            l chan:message* = listeners[i]
+            //if the channel is not null
+            if l != null {
+                m -> l //send the message to the channel
+            }
+        }
+        listenersMut.unlock() //unlock the mutex
+
+        resp.write("ok!") //write 'ok!' to the response
+        resp.send() //send the response
+
+
+    } else if req.path == "/receive" { //if the requested path is /receive
+
+        resp.setHeader("content-type", "text/event-stream") //set the content type to event-stream
+        resp.write("\n\n") //write two line returns (to tell the browser the connection has been made)
+        resp.send() //sends the response to the client
+
+        receiveChan = chan message* //makes a new channel for the client
+
+        //lock the mutex so that only one thread/client can execute this part of code at the same time.
+        listenersMut.lock() 
+        //for every listeners
+        i=0; for i < len(listeners), i++ {
+            l = listeners[i]
+            //if the listener is equal to null
+            if l == null {
+                listeners[i] = receiveChan //replace it by the client channel
+                break //exit the lopp
+            }
+        }
+        //if we iterated through all the listeners without breaking
+        if i == len(listeners) {
+            listeners[i] = receiveChan //append the client channel to the end of listeners
+        }
+        listenersMut.unlock() //unlock the mutex
+
+        //run the loop forever
+        for 1 == 1 {
+
+            m = <- receiveChan //wait for a message 'm' to go through the client channel
+
+            j = string(toJson(m)) //initiate a string structure 'j' with the json encoded message
+            j.replace("\n", " ") //replace every line return by a space in 'j'
+
+            //try to send the encoded message to the client
+            //if this fail, the client is no longer listening
+            if resp.flush(strToArr("data: "+j.str()+"\n\n")) == false {
+                break //if the client is no longer listening, break from the loop
+            }
+        }
+
+        //if we get to this point, the loop has been exitted and the client is no longer listening
+        listenersMut.lock() //lock the mutex
+        listeners[i] = null //set the current listener as null
+        listenersMut.unlock() //unlock the mutex
+
+    }
+
+}
+
+//This will be called when the server is launched
+done(s http_server*) {
+    println("Server launched! http://localhost:"+intToStr(s.port)) //print to the terminal that the server is launched
+}
+
+//'main' is the entry point of the program.
+//it takes an array of arguments (passed by the terminal) and returns an exit code.
+main(args []cpstring) int {
+
+    s = http_server{} //initiates a new http_server structure
+    s.port = 8080 //set its port to 8080
+    s.handle = serv //set its handle to 'serv' (this will be called on every client request)
+    s.done = done //set its done callback to 'done' (this will be called when the server is launched)
+    s.listenAndServe() //make the server listen
+
+    //we should get to this point only if the server has stopped listenning (may be because of an error)
+
+    return 0 //returns with code 0 (no error)
+}

@@ -344,17 +344,32 @@ struct http_socket {
 
     //To send data through the socket.
     send(s cpstring) bool {
+        if this.isOpened() == false {
+            return false
+        }
         return send(this.sockfd, s, strlen(s), 0) > 0
     }
 
     //To send data as bytes through the socket.
-    sendBytes(bytes []char) {
-        send(this.sockfd, arrAsStr(bytes), len(bytes), 0)
+    sendBytes(bytes []char) bool {
+        if this.isOpened() == false {
+            return false
+        }
+        return send(this.sockfd, arrAsStr(bytes), len(bytes), 0) > 0
     }
 
     receiveBuff() response_buffer {
         buffer cpstring = memoryAlloc(1025)
         rep = response_buffer{}
+
+        #linux {
+            iMode = 0
+            ioctl(this.sockfd, noCheck(FIONBIO), &iMode)
+            nDataLength = recv(this.sockfd,buffer,1024,0)
+            rep.append(buffer, nDataLength)
+            iMode = 1
+            ioctl(this.sockfd, noCheck(FIONBIO), &iMode)
+        }
 
         for 1 == 1 {
             nDataLength = recv(this.sockfd,buffer,1024,0)
@@ -519,15 +534,18 @@ urlDecode(encoded cpstring) cpstring {
 
 //web server
 
+#linux {
+    sigchld_handler(signo int) {
+        status int
+        pid int
+        pid = waitpid(-1, &status, 1)
+        for pid > 0 {
+            pid = waitpid(-1, &status, 1)
+        }
+    }
+}
 
-// sigchld_handler(signo int) {
-//     status int
-//     pid int
-//     pid = waitpid(-1, &status, 1)
-//     for pid > 0 {
-//         pid = waitpid(-1, &status, 1)
-//     }
-// }
+#define __Bah_http_handle_client(s ptr, cli int)
 
 //A type difinning http server erros.
 #define http_serverError int
@@ -545,6 +563,10 @@ http_quit_handler(signo int) {
         s.close()
     }
     exit(0)
+}
+
+http_broken_pipe(signo int) {
+    println("http: warning, trying to send data to a closed socket.")
 }
 
 //A wrapper for a http web server.
@@ -609,7 +631,11 @@ struct http_server {
 
             memset(<ptr>&sa, 0, 152)
             sa.sa_handler = http_quit_handler
-            sigaction(2, &sa, 0)        
+            sigaction(2, &sa, 0)    
+
+            memset(<ptr>&sa, 0, 152)
+            sa.sa_handler = http_broken_pipe
+            sigaction(noCheck(SIGPIPE), &sa, 0)        
         }
 
 
@@ -626,22 +652,29 @@ struct http_server {
                 continue
             }
 
-            async this.handle(cli)
 
-            // childpid = fork()
-            // if childpid < 0 {
-            //     println("http: failed to fork client handler")
-            //     close(cli)
-            //     continue
-            // }
+            #windows {
+                async __Bah_http_handle_client(this, cli)
+            }
 
-            // if childpid == 0 {
-            //     this.handle(cli)
-            //     close(cli)
-            //     exit(0)
-            // }
+            #linux {
+                async __Bah_http_handle_client(this, cli)
+                // childpid = fork()
+                // if childpid < 0 {
+                //     println("http: failed to fork client handler")
+                //     close(cli)
+                //     continue
+                // }
 
-            close(cli)
+                // if childpid == 0 {
+                //     this.handle(cli)
+                //     close(cli)
+                //     exit(0)
+                // }
+                // close(cli)
+
+            }
+
 
         }
 
@@ -649,6 +682,22 @@ struct http_server {
 
     }
 
+}
+
+#windows {
+    __Bah_http_handle_client(sp ptr, cli int) {
+        s http_server* = sp
+        s.handle(cli)
+        closesocket(cli)
+    }
+}
+
+#linux {
+    __Bah_http_handle_client(sp ptr, cli int) {
+        s http_server* = sp
+        s.handle(cli)
+        close(cli)
+    }
 }
 
 //To send a cpstring through the specified socket.
@@ -790,10 +839,14 @@ struct http_response extend http_transport {
             
             s.append(this.body.str())
             this.body.set("")
-            this.socket.send(s.str())
+            if this.socket.send(s.str()) == false {
+                this.socket.close()
+            }
             headersSent = true
         } else {
-            this.socket.send(this.body.str())
+            if this.socket.send(this.body.str()) == false {
+                this.socket.close()
+            }
             this.body.set("")
         }
 
@@ -801,8 +854,12 @@ struct http_response extend http_transport {
 
     //Used for flushing content rather than sending it fully.
     //Useful for sending large files, websockets, SSE, etc...
-    flush(bytes []char) {
-        this.socket.sendBytes(bytes)
+    flush(bytes []char) bool {
+        if this.socket.sendBytes(bytes) == false {
+            this.socket.close()
+            return false
+        }
+        return true
     }
 
 }

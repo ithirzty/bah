@@ -2,36 +2,38 @@
 
 #cLib "lpthread"
 
+#define! pthread_mutex_t int
+#define! pthread_t int
+#define! pthread_cond_t int
+
 #gc {
     #linux {
-        #define! GC_pthread_create(id int*, attr ptr, func ptr, args ptr)
-        #define! GC_pthread_join(id int, ret ptr)
+        #define! GC_pthread_create(id pthread_t*, attr ptr, func ptr, args ptr)
+        #define! GC_pthread_join(id pthread_t, ret ptr)
         const __thread_create = GC_pthread_create
         const __thread_join = GC_pthread_join
     }
     #darwin {
-        #define! GC_pthread_create(id int*, attr ptr, func ptr, args ptr)
-        #define! GC_pthread_join(id int, ret ptr)
+        #define! GC_pthread_create(id pthread_t*, attr ptr, func ptr, args ptr)
+        #define! GC_pthread_join(id pthread_t, ret ptr)
         const __thread_create = GC_pthread_create
         const __thread_join = GC_pthread_join
     }
     #windows {
-        #define! pthread_create(id int*, attr ptr, func ptr, args ptr)
-        #define! pthread_join(id int, ret ptr)
-        const __thread_create = pthread_create
-        const __thread_join = pthread_join 
+        #define! GC_pthread_create(id pthread_t*, attr ptr, func ptr, args ptr)
+        #define! GC_pthread_join(id pthread_t, ret ptr)
+        const __thread_create = GC_pthread_create
+        const __thread_join = GC_pthread_join 
     }
 }
 
 #rcp {
-    #define! pthread_create(id int*, attr ptr, func ptr, args ptr)
-    #define! pthread_join(id int, ret ptr)
+    #define! pthread_create(id pthread_t*, attr ptr, func ptr, args ptr)
+    #define! pthread_join(id pthread_t, ret ptr)
     const __thread_create = pthread_create
     const __thread_join = pthread_join
 }
 
-#define! pthread_mutex_t int
-#define! pthread_cond_t int
 
 #define! pthread_mutex_init(lock pthread_mutex_t*, m int)
 #define! pthread_mutex_lock(lock pthread_mutex_t*)
@@ -102,7 +104,7 @@ mutexCondition() mutexCondition {
 
 //A wrapper for a thread.
 struct thread {
-    id: int = -1
+    id: pthread_t
     
     //This will need to ne set by the user.
     //The specified function will be the entry point for the thread.
@@ -121,9 +123,6 @@ struct thread {
 
     //This waits until the thread has finished executting.
     wait() {
-        if this.id == -1 {
-            return
-        }
         __thread_join(this.id, null)
     }
 }

@@ -1,0 +1,27 @@
+// This program prints files to the terminal.
+//
+//
+//
+//
+// © Aloïs Laurent Boë - Bah examples - 2022
+
+#include "iostream.bah" //for: fileStream{}, print()
+
+//'main' is the entry point of the program.
+//it takes an array of arguments (passed by the terminal) and returns an exit code.
+main(args []cpstring) int {
+
+    fs = fileStream{} //initiates a new fileStream structure
+
+    //While i is less than the length of arguments,
+    //in other word, for every argument.
+    //i starts at 1 because args[0] is the program name.
+    i=1; for i < len(args), i++ {
+        fs.open(args[i], "r") //open the file args[i] in read mode in the fileStream
+        print(fs.readContent()) //read its content and print it
+        fs.close() //close the opened fileStream
+    }
+
+
+    return 0 //returns with code 0 (no error)
+}

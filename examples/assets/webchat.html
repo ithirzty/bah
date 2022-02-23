@@ -1,0 +1,121 @@
+<html>
+<head></head>
+
+<body>
+
+<style>
+    html, body {
+        margin: 0;
+        padding:0;
+        overflow-x: hidden;
+    }
+    #msgs {
+        height: 50vh;
+        overflow-y: scroll;
+        width: 100%;
+        padding: 10px;
+    }
+    .message {
+        background-color: #49abff;
+        padding: 5px 20px;
+        margin-top: 10px;
+        border-radius: 4px;
+        width: fit-content;
+    }
+    form {
+        width: 100vw;
+        background-color: whitesmoke;
+        padding: 20px 0px;
+    }
+    input {
+        border: none;
+        padding: 10px;
+        border-radius: 4px;
+        width: 80%;
+        margin: 5px 10%;
+    }
+    input[type=submit] {
+        background-color: #cdcdcd;
+        width: 50px;
+        margin-left: calc(50vw - 25px);
+        margin-right: auto;
+        cursor: pointer;
+    }
+</style>
+
+<div id="msgs">
+</div>
+
+<form method="post" action="send" id="sendForm">
+<input type="text" name="from" placeholder="Your name" />
+<input type="text" name="msg" placeholder="Your message" />
+<input type="submit" value="Send" />
+
+</form>
+
+<script>
+
+    function safeHTML(text){
+        var table = {
+            '<': 'lt',
+            '>': 'gt',
+            '"': 'quot',
+            '\'': 'apos',
+            '&': 'amp',
+            '\r': '#10',
+            '\n': '#13'
+        };
+        
+        return text.toString().replace(/[<>"'\r\n&]/g, function(chr){
+            return '&' + table[chr] + ';';
+        });
+    }
+
+    window.onload = ()=>{
+
+        
+        evtSrc = new EventSource("/receive")
+        evtSrc.onmessage = (d)=>{
+            data = JSON.parse(d.data)
+            document.querySelector("#msgs").innerHTML += `
+            <div class="message">
+            <p>
+            <b>${safeHTML(data.author)}</b><br>
+            ${safeHTML(data.msg)}
+            </p>
+            </div>
+            `
+            document.querySelector("#msgs").scrollTop = document.querySelector("#msgs").scrollHeight
+        }
+        
+
+        form = document.querySelector("#sendForm")
+
+        form.onsubmit = (e)=>{
+            e.preventDefault()
+            msg = form.querySelector("input[name=msg]")
+            from = form.querySelector("input[name=from]")
+
+            if (msg.value.length == 0 || from.value.length == 0) {
+                return
+            }
+
+            fetch("/send", {
+            body: "msg="+encodeURIComponent(msg.value)
+            +"&from="+encodeURIComponent(from.value),
+            headers: {
+                "Content-Type": "application/x-www-form-urlencoded",
+            },
+            method: "post",
+            })
+            msg.value = ""
+
+        }
+    }
+    
+
+
+</script>
+</body>
+
+</html>
