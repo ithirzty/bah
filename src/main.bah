@@ -23,10 +23,16 @@
     BAH_CC = "gcc"
 }
 //////////////////////BUILD SPECIFIC THINGS//////////////////////
-const BAH_VERSION = "v1.1 (build 56)"
+const BAH_VERSION = "v1.1 (build 57)"
 
 debug = false
 verboseRuntime = false
+isObject = false
+
+execName = "bah"
+defaultFile = ""
+isSubObject = false
+
 
 #include "./globals.bah"
 
@@ -37,9 +43,9 @@ verboseRuntime = false
 #include "./declarative.bah"
 
 
-
-
 main(args []cpstring) int {
+    execName = args[0]
+    defaultFile = args[1]
     flags = flags{}
     flags.addString("o", "Name of the file to output.")
     flags.addBool("c", "Translate bah file to C instead of compiling it.")
@@ -61,6 +67,7 @@ main(args []cpstring) int {
     flags.addString("target", "Select the target OS for cross compilling (linux, windows, darwin), default: "+BAH_OS+".")
     flags.addString("bahDir", "If your Bah directory is not the default one ("+BAH_DIR+").")
     flags.addString("CC", "To change the C compiler used, default: "+BAH_CC+".")
+    flags.addBool("object", "Compile as an object.")
     flags.parse(args)
 
     if flags.isSet("target") == 1 {
@@ -83,6 +90,8 @@ main(args []cpstring) int {
     verboseRuntime = flags.isSet("verboseRuntime") == 1
 
     debug = flags.isSet("debug") == 1
+
+    isObject = flags.isSet("object") == 1
 
     if debug == true {
         debugStart()
@@ -184,9 +193,26 @@ long int __BAH__main(__BAH_ARR_TYPE_cpstring);
     }
 
     elems = new Elems
+
+    if isObject == true {
+        OUTPUT = rope("
+#define noCheck(v) v
+#define array(type)	\
+struct{	\
+type *data; \
+long int length; \
+long int elemSize; \
+}
+typedef array(char*)* __BAH_ARR_TYPE_cpstring;
+long int __BAH__main(__BAH_ARR_TYPE_cpstring);
+")
+        shouldOnlyDecl = true
+    }
+
     if includeFile("builtin.bah", elems) == false {
         panic("Could not find std-libs, please check '"+BAH_DIR+"'")
     }
+    shouldOnlyDecl = false
 
     if flags.isSet("l") == 1 {
         OUTPUT = rope("")
@@ -231,7 +257,13 @@ long int __BAH__main(__BAH_ARR_TYPE_cpstring);
         fs.writeFile(OUTPUT.toStr())
         fs.close()
 
-        gccArgs = BAH_CC+" -I \""+BAH_DIR+"libs/"+BAH_OS+"/include/\" -L \""+BAH_DIR+"libs/"+BAH_OS+"/\" "+ randFileName+ " "+isStatic+" -w -O1 -o "+fileName
+        obj = ""
+        if flags.isSet("object") == 1 {
+            fileName = fileName + ".o"
+            obj = "-c"
+        }
+
+        gccArgs = BAH_CC+" -I \""+BAH_DIR+"libs/"+BAH_OS+"/include/\" -L \""+BAH_DIR+"libs/"+BAH_OS+"/\" "+ randFileName+ " "+isStatic+" "+obj+" -w -O1 -o "+fileName
         
         if flags.isSet("l") == 1 {
             gccArgs = gccArgs + " -c"

@@ -14,6 +14,6 @@ bah ./main.bah -o ../bin/windows.exe -CC x86_64-w64-mingw32-gcc -target windows
 bah ./main.bah -o ../installer/windows.c -CC x86_64-w64-mingw32-gcc -target windows -c
 
 # dariwn (not working at the moment)
-echo "\n---> DARWIN BUILD\n"
+echo -e "\n---> DARWIN BUILD\n"
 # bah ./main.bah -o ../bin/darwin_amd64 -CC ../builder/osxcross/target/bin/x86_64h-apple-darwin14-clang -target darwin
 bah ./main.bah -o ../installer/darwin.c -CC ../builder/osxcross/target/bin/x86_64h-apple-darwin14-clang -target darwin -c

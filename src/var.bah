@@ -1,6 +1,7 @@
 #include "iostream.bah"
 #include "string.bah"
 
+#include "./globals.bah"
 
 
 #include "./errors.bah"
@@ -391,9 +392,28 @@ varInArr(v variable*, arr []variable*) bool {
     return false
 }
 
+pathToVarName(p cpstring) cpstring {
+    a = strToArr(p)
+    i=0; for i < len(a), i++ {
+        c int = a[i]
+        c -= <int>'a'
+        if c < 0 {
+            c = 0 - c
+        }
+        c = c % (<int>'z' - <int>'a')
+        c += <int>'a'
+        a[i] = <char>c
+    }
+    return arrToStr(a)
+}
+
 makeInit() {
+    name = "__BAH_init"
+    if isObject == true {
+        name += pathToVarName(compilerState.currentFile)
+    }
     OUTPUT = OUTPUT + rope("
-    void __BAH_init() {
+    void "+name+"() {
 
         ") + INIT + rope("
 

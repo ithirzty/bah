@@ -7,6 +7,7 @@
 #include "./var.bah"
 #include "./mem.bah"
 #include "./verboseOut.bah"
+#include "./cache.bah"
 
 debugLine(line []Tok) {
     cont = ""
@@ -81,6 +82,7 @@ const LINE_TYPE_FOR = <lineType>12
 const LINE_TYPE_FOR_OPERATOR = <lineType>13
 const LINE_TYPE_PRE_KEYWORD = <lineType>14
 const LINE_TYPE_ASYNC = <lineType>15
+const LINE_TYPE_IMPORT = <lineType>16
 
 prevLine = <lineType>-1
 
@@ -94,6 +96,8 @@ getLineType(line []Tok) lineType {
     if ft.type == TOKEN_TYPE_KEYWORD {
         if ft.cont == "#include" {
             return LINE_TYPE_INCLUDE
+        } else if ft.cont == "#import" {
+            return LINE_TYPE_IMPORT
         } else if ft.cont == "#define" {
             return LINE_TYPE_DEFINE
         } else if ft.cont == "const" {
@@ -257,11 +261,125 @@ includeFile(ccstr cpstring, elems Elems*) bool {
     if len(tokens) == 0 {
         panic("File '"+ccstr+"' not recognized.")
     }
+
+    oshd = shouldOnlyDecl
+    if isObject == true && isInside(oDir, fileName) == false {
+        shouldOnlyDecl = true
+    } else if isSubObject == true {
+        if isInside(oDir, fileName) == false {
+            shouldOnlyDecl = false
+        } else {
+            println(fileName)
+        }
+    }
+
     parseLines(tokens, elems)
+
+    shouldOnlyDecl = oshd
+
     compilerState.currentFile = oFile 
     compilerState.currentDir = oDir
 
     return true
+}
+
+parseImport(l []Tok, elems Elems*) {
+    if len(l) != 2 {
+        throwErr(&l[0], "Invalid usage of {TOKEN}.")
+    }
+
+    strt = l[1]
+    if strt.type != TOKEN_TYPE_STR {
+        throwErr(&strt, "Cannot use {TOKEN} as file name (#import \"file\")")
+    }
+
+    fileName = string(strt.cont)
+    fileName.trimLeft(1)
+    fileName.trimRight(1)
+
+
+    includes = compilerState.includes
+    i=0; for i < len(includes) {
+        if includes[i] == fileName.str() {
+            throwWarning("Imported object '"+fileName.str()+"' has already been include/imported.")
+            return
+        }
+        i =i + 1
+    }
+
+    includes[len(includes)] = fileName.str()
+
+    fn = absPath(fileName.str())
+    if <ptr>fn == null {
+        fn = absPath(BAH_DIR + fileName.str())
+        if <ptr>fn == null {
+            throwErr(&strt, "Unknown file {TOKEN}.")
+        }
+    }
+
+    of = compilerState.currentFile
+    od = compilerState.currentDir
+
+    compilerState.currentFile = fn
+    compilerState.currentDir = getDirFromFile(fn)
+
+
+
+
+
+    fs = fileStream{}
+    fs.open(fn, "r")
+    f = fs.readContent()
+    fs.close()
+
+    tokens = lexer(f)
+
+    osod = shouldOnlyDecl
+    shouldOnlyDecl = true
+    oiso = isSubObject
+    isSubObject = true
+
+
+    oName = BAH_DIR+"cache/"+pathToVarName(fn)+".o"
+    compilerState.cLibs[len(compilerState.cLibs)] = "w "+oName+".o"
+    parseLines(tokens, elems)
+
+    readCache()
+    cf = getCacheFile(fn)
+    wrkd = getCurrentPath()
+    if isValidCacheFile(cf) == false {
+        println("Compilling object: '"+fileName.str()+"'")
+        setCurrentPath(compilerState.currentDir)
+        verboseCC = ""
+        if flags.isSet("verboseCC") == 1 {
+            verboseCC = "-verboseCC"
+        }
+        cmd = command(execName + " "+fn+" -object "+verboseCC+" -o "+oName)
+        res = cmd.run()
+        setCurrentPath(wrkd)
+        if cmd.status != 0 {
+            print(res)
+            exit(1)
+        }
+        if cf == null {
+            makeCacheFile(fn)
+        } else {
+            updateCacheFile(cf)
+        }
+    }
+
+    INIT += rope("__BAH_init"+pathToVarName(fn)+"();\n")
+
+    writeCache()
+
+
+    shouldOnlyDecl = osod
+    isSubObject = oiso
+    compilerState.currentFile = of
+    compilerState.currentDir = od
+
+    
+
 }
 
 parseInclude(l []Tok, elems Elems*) {
@@ -1480,6 +1598,9 @@ parseFnCall(l []Tok, ltp lineType, elems Elems*) []Tok {
                     } else {
                         ot.cont = ot.cont + ")"
                     }
+
+                    // registerFunc(&fileDeps, fn, elems)
+
                     ot.type = TOKEN_TYPE_FUNC
                     ot.bahType = fn.returns.type
                     ot.isFunc = true
@@ -1993,7 +2114,8 @@ void * newPtr = memoryRealloc("+nstr+"->data, (nLength+50)*sizeof("+elemTypeStr+
         } else {
             vct = setCType(v, elems)
         }
-        if strlen(code) > 0 {
+        if strlen(code) > 0 && shouldOnlyDecl == false {
+            
             if isRCPpointerType(v.type) && RCPavailable() == true && toVar == true  && isPointedVar == false {
                 cType = getCType(v.type, elems)
                 if isGlobal() {
@@ -2009,16 +2131,22 @@ void * newPtr = memoryRealloc("+nstr+"->data, (nLength+50)*sizeof("+elemTypeStr+
                 }
             }
         } else {
-            if isRCPpointerType(v.type) {
+            if isRCPpointerType(v.type) && shouldOnlyDecl == false  {
                 code = vct + "= null"
             } else {
                 code = vct
             }
         }
+
+        if shouldOnlyDecl == true {
+            vct = "extern "+vct
+        }
+
         vars = elems.vars
         vars[len(vars)] = v
 
         debugPrint("var_declaration", ft.line, v)
+        // registerType(&fileDeps, v.type, elems)
 
         if isGlobal() {
             OUTPUT = OUTPUT + rope(vct+";\n")
@@ -2269,6 +2397,7 @@ parseStruct(l []Tok, elems Elems*) {
                     membDecl.append(" ")
                     membDecl.append(em.name)
                     membDeclStr = membDecl.content
+                    // registerType(&fileDeps, em.type, elems)
                 }
                 allMembs[len(allMembs)] = membDeclStr
                 members[len(members)] = em
@@ -2276,7 +2405,7 @@ parseStruct(l []Tok, elems Elems*) {
             }
             k=0; for k < len(extdS.methods) {
                 emt = extdS.methods[k]
-
+                // registerFunc(&fileDeps, emt, elems)
                 mthdDecl = getCType(emt.returns.type, elems)
                 mthdDecl.append("(*" + emt.name + ")(")
                 j=0; for j < len(emt.args) {
@@ -2374,7 +2503,11 @@ parseStruct(l []Tok, elems Elems*) {
                 returns = fn.returns
                 arguments = fn.args
                 fn.from = s.name
-                code = code + rope("{\n")
+                if shouldOnlyDecl == true {
+                    code = code + rope(";\n")
+                } else {
+                    code = code + rope("{\n")
+                }
                 
                 fnElems = dupElems(elems)
                 j=0; for j < len(arguments) {
@@ -2417,22 +2550,26 @@ parseStruct(l []Tok, elems Elems*) {
                 strTrimLeft(&mfn.name, strlen(fnPrefix))
 
                 methds[len(methds)] = mfn
+                // registerFunc(&fileDeps, mfn, elems)
 
-                if len(tokens) == 0 {
-                    code = code + rope("};\n")
-                } else {
-                    OUTPUT = rope("")
-                    currentFn = fn
-                    parseLines(tokens, fnElems)
-                    currentFn = null
-                    if fn.returned == false {
-                        if strlen(fn.returns.type) > 0 {
-                            throwErr(&l[len(l)-1], "Function '"+fn.name+"' is not returned.")
+                if shouldOnlyDecl == false {
+                    if len(tokens) == 0 {
+                        code = code + rope("};\n")
+                    } else {
+                        OUTPUT = rope("")
+                        currentFn = fn
+                        parseLines(tokens, fnElems)
+                        currentFn = null
+                        if fn.returned == false {
+                            if strlen(fn.returns.type) > 0 {
+                                throwErr(&l[len(l)-1], "Function '"+fn.name+"' is not returned.")
+                            }
+                            endRCPscope(fnElems, null)
                         }
-                        endRCPscope(fnElems, null)
+                        code = code + OUTPUT + rope("};\n")
                     }
-                    code = code + OUTPUT + rope("};\n")
                 }
+
                 if doesOutput == true {
                     nextLine = nextLine + code.toStr()
                 }
@@ -2499,6 +2636,7 @@ parseStruct(l []Tok, elems Elems*) {
             s.hasRCPmemb = true
         }
         members[len(members)] = memb
+        // registerType(&fileDeps, memb.type, elems)
         membDeclStr cpstring
         cmt = string(memb.type)
         if cmt.hasPrefix("function(") == 1 {
@@ -3279,6 +3417,15 @@ parseFnDeclare(l []Tok, elems Elems*) {
         }
     }
 
+    if shouldOnlyDecl == true {
+        if ogFn != null {
+            fn.isBinding = false
+        }
+        elems.fns[len(elems.fns)] = fn
+        OUTPUT = OUTPUT + rope(code+";\n")
+        return
+    }
+
     code = code + "{\n"
     OUTPUT = OUTPUT + rope(code)
 
@@ -3358,6 +3505,9 @@ parseLine(line []Tok, elems Elems*) {
     if ltp == LINE_TYPE_INCLUDE {
         parsed = true
         parseInclude(line, elems)
+    } else if ltp == LINE_TYPE_IMPORT {
+        parsed = true
+        parseImport(line, elems)
     } else if ltp == LINE_TYPE_DEFINE {
         parsed = true
         parseDefine(line, elems)

@@ -20,10 +20,10 @@
         const __thread_join = GC_pthread_join
     }
     #windows {
-        #define! GC_pthread_create(id pthread_t*, attr ptr, func ptr, args ptr)
-        #define! GC_pthread_join(id pthread_t, ret ptr)
-        const __thread_create = GC_pthread_create
-        const __thread_join = GC_pthread_join 
+        #define! pthread_create(id pthread_t*, attr ptr, func ptr, args ptr)
+        #define! pthread_join(id pthread_t, ret ptr)
+        const __thread_create = pthread_create
+        const __thread_join = pthread_join 
     }
 }
 

@@ -1,0 +1,84 @@
+#include "json.bah"
+#include "time.bah"
+
+struct cacheFile {
+    file: cpstring
+    last: int
+    ver: cpstring
+    date: int
+    files: []cpstring
+}
+
+cache = []cacheFile*
+
+readCache()  {
+    fs = fileStream{}
+    fs.open(BAH_DIR + "cache/cache.json", "r")
+    if fs.isValid() == 0 {
+        mkdir(BAH_DIR + "cache", noCheck(S_IRWXU))
+        fs.createFile(BAH_DIR + "cache/cache.json")
+        return
+    }
+    j = parseJson(fs.readContent())
+    fs.close()
+    j.scan(&cache)
+
+    if cache != null {
+        // t = getTimeUnix()
+        // i=0; for i < len(cache), i++ {
+        //     c = cache[i]
+        //     if t - c.date > TIME_MIN * 60 * 24 * 7 {
+
+        //     }
+        // }
+    }
+
+}
+
+getCacheFile(s cpstring) cacheFile* {
+    if cache == null {
+        return null
+    }
+    i=0; for i < len(cache), i++ {
+        c = cache[i]
+        if c.file == s {
+            return c
+        }
+    }
+    return null
+}
+
+updateCacheFile(c cacheFile*) {
+    c.last = getLastModified(c.file)
+    c.ver = BAH_VERSION
+    c.date = getTimeUnix()
+}
+
+makeCacheFile(f cpstring) {
+    c = new cacheFile
+    c.file = f
+    c.ver = BAH_VERSION
+    c.date = getTimeUnix()
+    c.last = getLastModified(f)
+    if cache == null {
+        cache = []cacheFile*
+    }
+    cache[len(cache)] = c
+}
+
+writeCache() {
+    fs = fileStream{}
+    fs.open(BAH_DIR + "cache/cache.json", "w")
+    fs.writeFile(toJson(cache))
+    fs.close()
+}
+
+isValidCacheFile(cf cacheFile*) bool {
+    if cf == null || cf.last != getLastModified(cf.file) {
+        return false
+    }
+    if fileExists(BAH_DIR+"cache/"+pathToVarName(cf.file)+".o.o") == 0 {
+        return false
+    }
+    return true
+}

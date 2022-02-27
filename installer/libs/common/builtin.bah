@@ -143,3 +143,25 @@ __Bah_safe_string(s cpstring) cpstring {
 }
 
 #include "iostream.bah"
+
+//Used for deleting an element from an array by its index.
+//This will keep the order of the elements.
+delete(a ptr, i int) {
+    arr = []ptr
+    arr = a
+    length = len(arr)
+    if i >= length || i < 0 {
+        panic("delete: cannot delete array element ["+intToStr(i)+"] of array with length: "+intToStr(length)+".")
+    }
+    elemSize int = noCheck(arr->elemSize)
+    data char* = noCheck(arr->data)
+    destOffset ptr = elemSize * i
+    i++
+    offset ptr = elemSize * i
+    src char* = <int>data + <int>offset
+    dest char* = <int>data + <int>destOffset
+    rightNB = length - (i-1)
+    memmove(dest, src, rightNB * elemSize)
+    noCheck(arr->length = length - 1)
+}
+

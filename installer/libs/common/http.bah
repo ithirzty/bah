@@ -366,6 +366,9 @@ struct http_socket {
             iMode = 0
             ioctl(this.sockfd, noCheck(FIONBIO), &iMode)
             nDataLength = recv(this.sockfd,buffer,1024,0)
+            if nDataLength == -1 {
+                return rep
+            }
             rep.append(buffer, nDataLength)
             iMode = 1
             ioctl(this.sockfd, noCheck(FIONBIO), &iMode)

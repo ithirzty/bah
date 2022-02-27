@@ -64,6 +64,8 @@ struct compilerStateTag {
     RCPvars: []variable*
 }
 
+shouldOnlyDecl = false
+
 compilerState compilerStateTag
 
 currentCStruct cStruct*

@@ -35,6 +35,8 @@ len(a ptr) int {
     return i
 }
 
+#define! memmove(dest ptr, src ptr, size int)
+
 #define! memset(p ptr, v int, s int)
 
 #include "BAH_MEM_COLLECTOR"
