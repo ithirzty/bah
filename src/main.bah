@@ -23,7 +23,7 @@
     BAH_CC = "gcc"
 }
 //////////////////////BUILD SPECIFIC THINGS//////////////////////
-const BAH_VERSION = "v1.1 (build 57)"
+const BAH_VERSION = "v1.1 (build 58)"
 
 debug = false
 verboseRuntime = false
@@ -225,8 +225,10 @@ long int __BAH__main(__BAH_ARR_TYPE_cpstring);
     makeInit()
 
     if debug == false {
-        totalTime = getTimeUnix() - startTime
-        println("Parsed. ("+intToStr(totalLines)+" lines, total time: "+intToStr(totalTime / 1000000)+"ms, lexer time: "+intToStr(totalLexerTime / 1000000)+"ms)\e[0m")
+        if isObject == false {
+            totalTime = getTimeUnix() - startTime
+            println("Parsed. ("+intToStr(totalLines)+" lines, total time: "+intToStr(totalTime / 1000000)+"ms, lexer time: "+intToStr(totalLexerTime / 1000000)+"ms)\e[0m")
+        }
     }
 
     if flags.isSet("o") == 1 {
@@ -319,8 +321,10 @@ long int __BAH__main(__BAH_ARR_TYPE_cpstring);
     }
 
     if debug == false {
-        totalTime = getTimeUnix() - startTime
-        println("\e[1;32mDone. (compiled in "+intToStr(totalTime / 1000000)+"ms)\e[0m")
+        if isObject == false {
+            totalTime = getTimeUnix() - startTime
+            println("\e[1;32mDone. (compiled in "+intToStr(totalTime / 1000000)+"ms)\e[0m")
+        }
     } else {
         debugEnd()
     }

@@ -268,8 +268,6 @@ includeFile(ccstr cpstring, elems Elems*) bool {
     } else if isSubObject == true {
         if isInside(oDir, fileName) == false {
             shouldOnlyDecl = false
-        } else {
-            println(fileName)
         }
     }
 
@@ -348,7 +346,6 @@ parseImport(l []Tok, elems Elems*) {
     cf = getCacheFile(fn)
     wrkd = getCurrentPath()
     if isValidCacheFile(cf) == false {
-        println("Compilling object: '"+fileName.str()+"'")
         setCurrentPath(compilerState.currentDir)
         verboseCC = ""
         if flags.isSet("verboseCC") == 1 {
@@ -1012,25 +1009,25 @@ parseBool(line []Tok, elems Elems*) []Tok {
                     throwErr(&nt, "Cannot compare {TOKEN} ("+ntt+") to "+ptt+".")
                 }
                 if ptt == "cpstring" {
-                    check = ""
-                    if pt.type != TOKEN_TYPE_STR {
-                        check = "__checkString("+pt.cont+", \""+compilerState.currentFile+":"+intToStr(t.line)+" "+pt.cont+" \")==1&&"
-                    }
-                    if nt.type != TOKEN_TYPE_STR {
-                        check = check + "__checkString("+nt.cont+", \""+compilerState.currentFile+":"+intToStr(t.line)+" "+nt.cont+"\")==1&&"
-                    }
+                    // check = ""
+                    // if pt.type != TOKEN_TYPE_STR {
+                    //     check = "__checkString("+pt.cont+", \""+compilerState.currentFile+":"+intToStr(t.line)+" "+pt.cont+" \")==1&&"
+                    // }
+                    // if nt.type != TOKEN_TYPE_STR {
+                    //     check = check + "__checkString("+nt.cont+", \""+compilerState.currentFile+":"+intToStr(t.line)+" "+nt.cont+"\")==1&&"
+                    // }
                     if t.cont == "==" {
-                        pt.cont = "(" + check + "strcmp("+pt.cont+", "+nt.cont+") == 0)"
+                        pt.cont = "(strcmp("+pt.cont+", "+nt.cont+") == 0)"
                     } else if t.cont == "!=" {
-                        pt.cont = "(" + check + "strcmp("+pt.cont+", "+nt.cont+") != 0)"
+                        pt.cont = "(strcmp("+pt.cont+", "+nt.cont+") != 0)"
                     } else if t.cont == ">" {
-                        pt.cont = "(" + check + "strlen("+pt.cont+") > srtlen("+nt.cont+"))"
+                        pt.cont = "(strlen("+pt.cont+") > srtlen("+nt.cont+"))"
                     } else if t.cont == "<" {
-                        pt.cont = "(" + check + "strlen("+pt.cont+") < srtlen("+nt.cont+"))"
+                        pt.cont = "(strlen("+pt.cont+") < srtlen("+nt.cont+"))"
                     } else if t.cont == ">=" {
-                        pt.cont = "(" + check + "strlen("+pt.cont+") >= srtlen("+nt.cont+"))"
+                        pt.cont = "(strlen("+pt.cont+") >= srtlen("+nt.cont+"))"
                     } else if t.cont == "<=" {
-                        pt.cont = "(" + check + "strlen("+pt.cont+") <= srtlen("+nt.cont+"))"
+                        pt.cont = "(strlen("+pt.cont+") <= srtlen("+nt.cont+"))"
                     }
                 } else {
                     pt.cont = "(" + pt.cont + t.cont + nt.cont + ")"
@@ -1188,10 +1185,7 @@ parseArrayVars(l []Tok, elems Elems*) []Tok {
                 continue
             }
             tt = getTypeFromToken(&lt, true, elems)
-            if strHasPrefix(tt, "[]") == false {
-                throwErr(&lt, "Cannot use {TOKEN} ("+tt+") as an array.")
-            }
-            strTrimLeft(&tt, 2)
+
 
             memory = []Tok
             i =i + 1
@@ -1219,6 +1213,20 @@ parseArrayVars(l []Tok, elems Elems*) []Tok {
                 mt = memory[j]
                 cont = cont + mt.cont
             }
+
+            if tt == "cpstring" {
+                lt.cont = "cpstringCharAt("+lt.cont + "," + cont + ")"
+                lt.isFunc = true
+                lt.bahType = "char"
+                nl[len(nl)-1] = lt
+                continue
+            }
+
+            if strHasPrefix(tt, "[]") == false {
+                throwErr(&lt, "Cannot use {TOKEN} ("+tt+") as an array.")
+            }
+            strTrimLeft(&tt, 2)
+
 
             if ti > 0 && ft.cont != "else" {
                 OUTPUT = OUTPUT + rope("
@@ -2155,7 +2163,9 @@ void * newPtr = memoryRealloc("+nstr+"->data, (nLength+50)*sizeof("+elemTypeStr+
     }
 
     if isGlobal() {
-        INIT = INIT + rope(NEXT_LINE)
+        if isSubObject == false {
+            INIT = INIT + rope(NEXT_LINE)
+        }
         NEXT_LINE = ""
     } else {
         OUTPUT = OUTPUT + rope(code + ";\n")
@@ -3136,6 +3146,14 @@ parsePreKeyword(l []Tok, elems Elems*) {
         }
     } else if ft.cont == "#exec" {
         if flags.isSet("l") == 1 {
+            return
+        }
+    } else if ft.cont == "#imported" {
+        if isSubObject == false || isObject == false {
+            return
+        }
+    } else if ft.cont == "#included" {
+        if isSubObject == true || isObject == true {
             return
         }
     } else {

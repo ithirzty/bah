@@ -17,6 +17,7 @@ const false = <bool>0
 
 #include "memory.bah"
 
+
 #cLib "lm"
 
 #define! signal(sig int, hdl ptr)
@@ -165,3 +166,24 @@ delete(a ptr, i int) {
     noCheck(arr->length = length - 1)
 }
 
+
+__bah_strcmp(a cpstring, b cpstring) int {
+    if <ptr>a == null {
+        a = ""
+    }
+    if <ptr>b == null {
+        b = ""
+    }
+    return strcmp(a, b)
+}
+
+const strcmp = __bah_strcmp
+
+__bah_strlen(s cpstring) int {
+    if <ptr>s == null {
+        return 0
+    }
+    return strlen(s)
+}
+
+const strlen = __bah_strlen

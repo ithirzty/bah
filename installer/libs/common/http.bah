@@ -1,6 +1,10 @@
 #include "<unistd.h>"
 #include "<signal.h>"
 
+#included {
+    #warning "http.bah can be imported instead of included to gain compile time performances."
+}
+
 #linux {
     #include "<sys/types.h>"
     #include "<sys/socket.h>"
@@ -507,6 +511,38 @@ parseUrl(cps cpstring) http_url* {
     u.path = path
 
     return u
+}
+
+__HTTP_urlSafeChars = []char{
+    '.',
+    '!'
+}
+
+//Used for encoding a string to a safe url format.
+//Encoded strings can be used as url parameter without being interpreted as path.
+urlEncode(s cpstring) cpstring {
+    a = strAsArr(s)
+    r = []char
+    tmps cpstring = memoryAlloc(4)
+
+    i=0; for i < len(a), i++ {
+        c = a[i]
+        if isAlphaNumeric(c) || c in __HTTP_urlSafeChars {
+            r[len(r)] = c
+        } else {
+            r[len(r)] = '%'
+            sprintf(tmps, "%x", c)
+            n = strAsArr(tmps)
+            j=0; for j < len(n), j++ {
+                r[len(r)] = n[j]
+            }
+            
+        }
+    }
+
+    r[len(r)] = <char>0
+
+    return arrAsStr(r)
 }
 
 //Used for decoding an url encoded string.
