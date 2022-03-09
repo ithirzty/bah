@@ -73,6 +73,14 @@ evalRaw(code cpstring) ptr {
                     *p = strToInt(arrAsStr(currArg))
                     args[len(args)] = p
                 }
+            } else if arrAsStr(currArg) == "true" || arrAsStr(currArg) == "false" || arrAsStr(currArg) == "null" {
+                    p int* = memoryAlloc(SIZE_OF_INT)
+                    if arrAsStr(currArg) == "true" {
+                        *p = 1
+                    } else {
+                        *p = 0
+                    }
+                    args[len(args)] = p                
             }
             currArg = []char
             isStr = false
@@ -93,6 +101,10 @@ evalRaw(code cpstring) ptr {
 eval(code cpstring, r reflectElement) {
     
     fnReturns = evalRaw(code)
+
+    if r.name == "null" || r.value == null {
+        return
+    }
 
     if r.type == "int*" || r.type == "bool*" {
         p int* = r.value

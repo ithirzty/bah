@@ -1,0 +1,88 @@
+ 
+#include "json.bah"
+
+DEBUG_ENABLED = false
+
+#define breakPoint()
+
+__parse_debug_cmd(syms []reflectElement) {
+    for 1 == 1 {
+        print("> ")
+        cmd = stdinput()
+        if cmd == "list" {
+            println("Listting all symbols.")
+            i=0; for i < len(syms), i++ {
+                s = syms[i]
+                println("\t"+s.name + " ("+s.type+")")
+            }
+        } else if cmd == "continue" || cmd == "c" {
+            println("Resuming execution.")
+            break
+        } else if cmd == "quit" || cmd == "q" {
+            println("Exitting program")
+            exit(0)
+        } else if strHasPrefix(cmd, "print ") || strHasPrefix(cmd, "p ") {
+            args = splitString(string(cmd), " ")
+            i=1; for i < len(args), i++ {
+                a = args[i]
+                j=0; for j < len(syms), j++ {
+                    s = syms[j]
+                    if s.name == a.str() {
+                        if s.type == "cpstring" {
+                            p ptr* = s.value
+                            s.value = *p
+                        }
+                        println(toJson(s))
+                        break
+                    }
+                }
+            }
+        } else if strHasPrefix(cmd, "set ") {
+            cmdS = string(cmd)
+            cmdS.trimLeft(4)
+            a = string(splitStringBefore(cmdS, "="))
+            v = string(cmdS.str())
+            v.trimLeft(a.length + 1)
+            a.trim()
+            v.trim()
+
+            i=a.length-1; for i != 0 {
+                if isSpace(a.charAt(i)) {
+                    a.trimRight(1)
+                } else {
+                    break
+                }
+            }
+
+            j=0; for j < len(syms), j++ {
+                s = syms[j]
+                if s.name == a.str() {
+                    println("Setting "+a.str())
+                    json = parseJson(v.str())
+                    json.scan(s)
+                    break
+                }
+            }
+            if j == len(syms) {
+                println("Unknown var '"+a.str()+"'.")
+            }
+        } else {
+            println("Unknown command '"+cmd+"'.
+            Here are all available commands:
+            - list (Lists all symbols)
+            - continue [c] (Continue execution of the program)
+            - print [p] <var> (Prints the content of a variable)
+            - quit [q] (Exit the program)")
+        }
+    }
+}
+
+breakPoint__inner(syms []reflectElement, line cpstring) {
+    if DEBUG_ENABLED == false {
+        return
+    }
+    println("============")
+    println("BREAKPOINT: "+line)
+    __parse_debug_cmd(syms)
+    println("============")
+}

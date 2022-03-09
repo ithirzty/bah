@@ -102,6 +102,7 @@ Bah also supports awesome features like:
 - **async calls** (execute function call in a new thread),
 - **channels** (thread safe pipes to send data),
 - **runtime evaluation** (for evaluating code at runtime `eval.bah`),
+- **embedded debugger** (for setting breakpoints),
 - **verbose runtime** (an included tool for debugging)...
 
 ![verbose runtime](extra/verboseRuntime.png)

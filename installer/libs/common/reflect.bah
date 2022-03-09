@@ -51,6 +51,12 @@ __reflect(v ptr, s int, t cpstring, n cpstring, isArr bool, ae reflectElement*, 
     return re
 }
 
+#define reflectSymbols ptr
+
+__dumpSymbols(syms []reflectElement) []reflectElement {
+    return syms
+}
+
 //Example
 // #include "iostream.bah"
 // #include "reflect.bah"

@@ -1299,7 +1299,12 @@ parseReflect(t Tok, tt cpstring, elems Elems*, parsedPointer bool, ogName cpstri
     isArr = "0"
 
     if t.type != TOKEN_TYPE_VAR || t.type != TOKEN_TYPE_FUNC {
-        cType = getCType(tt, elems)
+        cType string
+        if strHasPrefix(tt, "function(") {
+            cType = string("void*")
+        } else {
+            cType = getCType(tt, elems)
+        }
         v = genCompilerVar()
         if parsedPointer == true {
             cType.append("*")
@@ -1381,7 +1386,14 @@ parseReflect(t Tok, tt cpstring, elems Elems*, parsedPointer bool, ogName cpstri
         name = splitStructSepAfter(name)
     }
 
-    cType = getCType(tt, elems)
+    cType string
+
+    if strHasPrefix(tt, "function(") {
+        cType = string("void*")
+    } else {
+        cType = getCType(tt, elems)
+    }
+
 
     if cType.hasPrefix("struct ") {
         cType.replace("*", "")
@@ -1534,6 +1546,107 @@ parseFnCall(l []Tok, ltp lineType, elems Elems*) []Tok {
                         }
                         memory[len(memory)] = par
                         fnName = "__BAH_panic"
+                        ot.cont = fnName+"("
+                        fn = searchFunc(fnName, elems, true)
+                    }
+
+                    if fnName == "__dumpSymbols" {
+                        currLine = "\""+compilerState.currentFile + ":" + intToStr(ot.line)+"\""
+                        par = memory[len(memory)-1]
+                        cl = par.line
+                        memory = []Tok
+
+                        symbols = []variable*
+                        j=0; for j < len(elems.vars), j++ {
+                            v = elems.vars[j]
+                            if v.isConst == false {
+                                symbols[len(symbols)] = v
+                            }
+                        }
+
+                        tmpV = new variable {
+                            name: genCompilerVar()
+                            type: "[]reflectElement"
+                            isArray: true
+                        }
+                        elems.vars[len(elems.vars)] = tmpV
+
+                        decls = ""
+                        j=0; for j < len(symbols), j++ {
+                            v = symbols[j]
+                            vname = v.name
+                            if strCount(v.type, "*") == 0 {
+                                vname = "&"+v.name
+                            }
+                            tmpT = Tok{
+                                type: TOKEN_TYPE_VAR
+                                cont: vname
+                                bahType: v.type
+                                isValue: true
+                            }
+                            tmpT = parseReflect(tmpT, v.type, elems, true, v.name, "0")
+                            decls += tmpV.name+"->data["+intToStr(j)+"] = " + tmpT.cont + ";\n"
+                        }
+
+
+                        OUTPUT = OUTPUT + rope("
+                        array(struct reflectElement)* "+tmpV.name+" = memoryAlloc(sizeof(array(struct reflectElement)));
+                        "+tmpV.name+"->data = memoryAlloc(sizeof(struct reflectElement) * "+intToStr(len(symbols))+");
+                        "+tmpV.name+"->length = "+intToStr(len(symbols))+";
+                        "+tmpV.name+"->elemSize = sizeof(struct reflectElement);
+                        
+                        "+decls+"
+
+                        ")
+
+
+                        memory[0] = Tok{
+                            type: TOKEN_TYPE_VAR
+                            cont: tmpV.name
+                            line: cl
+                            isValue: true
+                        }
+                        memory[1] = par
+                    }
+
+                    if fnName == "breakPoint" {
+                        currLine = "\""+compilerState.currentFile + ":" + intToStr(ot.line)+"\""
+                        par = memory[len(memory)-1]
+                        cl = par.line
+                        
+                        memory = []Tok{
+                            Tok{
+                                type: TOKEN_TYPE_VAR
+                                cont: "__dumpSymbols"
+                                line: cl
+                            },
+                            Tok{
+                                type: TOKEN_TYPE_SYNTAX
+                                cont: "("
+                                line: cl
+                            },
+                            Tok{
+                                type: TOKEN_TYPE_SYNTAX
+                                cont: ")"
+                                line: cl
+                            }
+                        }
+
+                        memory = parseFnCall(memory, <lineType>-1, elems)
+                        memory[len(memory)] = Tok{
+                            type: TOKEN_TYPE_SYNTAX
+                            cont: ","
+                            line: cl
+                        }
+                        memory[len(memory)] = Tok{
+                            type: TOKEN_TYPE_STR
+                            cont: currLine
+                            line: cl
+                        }
+
+                        memory[len(memory)] = par
+
+                        fnName = "breakPoint__inner"
                         ot.cont = fnName+"("
                         fn = searchFunc(fnName, elems, true)
                     }

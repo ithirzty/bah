@@ -191,3 +191,5 @@ __bah_strlen(s cpstring) int {
 }
 
 const strlen = __bah_strlen
+
+#include "debug.bah"
