@@ -21,5 +21,6 @@ Here is a list of most of the features supported by the Bah compiler.
 | Return | When declaring a function, you can make it return a value while stopping its execution using the `return` keyword followed by a value. | Fully suported. | `return "I'm a return value."` |
 | Async | Make a function call in a new thread. | Supported, still early, may contain memory corruption. | `async myFunction()` |
 | Channels | Make a thread safe channel. | Supported, still early, may have edge cases. | `c = chan cpstring; "Hi!"->c; println(<-c)` |
+| Evaluation | Evaluate code at runtime. <br>-> Use `#eval myFunction` to make a function evaluable. <br>-> Evaluate a function using `eval(code, result)`, `result = evalRaw(code)` or `evalCall(functionName, arguments)` (where arguments are an array of pointers). | Supported, still early, may have edge cases. | `myFunc(s cpstrnig) int {...}; #eval myFunc; i=0;eval("myFunc(\"this is a string\")", &i)` |
 
 If **you find any bug** with the features listed above or you feel a **feature should be detailed in the table above**, you can open an issue on the [repository](https://github.com/ithirzty/bah) or by [contacting me](mailto:alois@alois.xyz).

@@ -86,6 +86,7 @@ As well as being easy to learn, you can create
     - [bah-lang doc](https://github.com/ithirzty/bah-website)
 - libraries
     - [BahDB](https://github.com/ithirzty/bahdb), a relational database written in Bah.
+    - [Javel](https://github.com/ithirzty/javel), a HTTP server framework written in Bah.
     - [BPM](https://github.com/ithirzty/bpm), the Bah Package Manager.
     - [vbah](https://github.com/ithirzty/vbah), a graphics library.
     - [bah-bmp](https://github.com/ithirzty/bah-bmp), an image edition library.
@@ -95,11 +96,12 @@ As well as being easy to learn, you can create
 
 
 ### Awesome features
-Bah also supports awesome features like 
+Bah also supports awesome features like:
 - **reflection** (approach similar to Go, enabling easy JSON marshalling),
 - **reference counting** (-rcp or -fastrcp flags),
 - **async calls** (execute function call in a new thread),
 - **channels** (thread safe pipes to send data),
+- **runtime evaluation** (for evaluating code at runtime `eval.bah`),
 - **verbose runtime** (an included tool for debugging)...
 
 ![verbose runtime](extra/verboseRuntime.png)
