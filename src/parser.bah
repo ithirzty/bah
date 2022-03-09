@@ -1538,6 +1538,17 @@ parseFnCall(l []Tok, ltp lineType, elems Elems*) []Tok {
                         fn = searchFunc(fnName, elems, true)
                     }
 
+                    // if fnName == "eval" {
+                    //     if "eval.bah" in compilerState.includes == false {
+                    //         throwErr(&ot, "Cannot call {TOKEN} without including 'eval.bah'.")
+                    //     }
+                    //     fnName = "__Bah_eval_"+
+                    //     fn = searchFunc(fnName, elems, false)
+                    //     if fn == null {
+                    //         throwErr(&ot, "Function")
+                    //     }
+                    // }
+
                     memory = prePross(memory, ltp, elems)
 
                     ft = memory[0]
@@ -3111,6 +3122,91 @@ parsePreKeyword(l []Tok, elems Elems*) {
 
 
         throwWarning(msg.str())
+        return
+    }
+
+
+    if ft.cont == "#eval" {
+
+        if "eval.bah" in compilerState.includes == false {
+            if includeFile("eval.bah", elems) == false {
+                throwErr(&l[0], "Could not find file 'eval.bah'. Check your bah directory ("+BAH_DIR+").")
+            }
+        }
+
+        if len(l) != 2 || isGlobal() == false {
+            throwErr(&l[0], "Invalid usage of {TOKEN} <#eval fnName>.")
+        }
+
+        fnT = l[1]
+        fn = searchFunc(fnT.cont, elems, false)
+        if fn == null {
+            throwErr(&fnT, "Unknown function {TOKEN}.")
+        }
+
+        if fn.name in compilerState.evals {
+            return
+        }
+
+        efn = new func{
+            name: "__Bah_eval_"+fn.name
+        }
+        efn.returns = new variable {
+            type: "ptr"
+        }
+
+        efn.args = []variable*{
+            new variable{
+                name: "fnArgs"
+                type: "[]ptr"
+            }
+        }
+
+        fnBinding = ""
+        fnCall = fn.name+"("
+        i=0; for i < len(fn.args), i++ {
+            a = fn.args[i]
+            v = genCompilerVar()
+            cType = getCType(a.type, elems)
+            if isRCPpointerType(a.type) == false {
+                cType.append("*")
+            }
+            fnBinding += cType.str() + " " + v + " = fnArgs->data[" + intToStr(i) + "];"
+            if i != 0 {
+                fnCall += ", "
+            }
+            if isRCPpointerType(a.type) {
+                fnCall += v
+            } else {
+                fnCall += "*"+v
+            }
+        }
+
+        setReturnValue = "void* r = 0;"
+        if isRCPpointerType(fn.returns.type) {
+            setReturnValue = "void* r = "
+        } else {
+            cType = getCType(fn.returns.type, elems)
+            if cType.str() != "void" {
+                setReturnValue = cType.str()+"* r = memoryAlloc(sizeof("+cType.str()+"));*r = "
+            }
+        }
+
+        currLine = "\""+compilerState.currentFile + ":" + intToStr(fnT.line)+"\""
+
+        OUTPUT += rope("void* "+efn.name+"(array(void*)* fnArgs) {
+            if (fnArgs->length != "+intToStr(len(fn.args))+") {
+                __BAH_panic(\"eval: calling function "+fn.name+"() with the wrong number of arguments.\", "+currLine+");
+            }
+            "+fnBinding+"
+            "+setReturnValue+fnCall+");
+            return (void*)r;
+        };")
+
+        compilerState.evals[len(compilerState.evals)] = fn.name
+
+        elems.fns[len(elems.fns)] = efn
+
         return
     }
     

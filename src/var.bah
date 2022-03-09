@@ -412,11 +412,24 @@ makeInit() {
     if isObject == true {
         name += pathToVarName(compilerState.currentFile)
     }
+
+    evals = "__evals_bindings = memoryAlloc("+intToStr(len(compilerState.evals))+" * sizeof(struct __eval_binding));\n"
+    i=0; for i < len(compilerState.evals), i++ {
+        e = compilerState.evals[i]
+        evals += "__evals_bindings["+intToStr(i)+"].name = \""+e+"\";
+        __evals_bindings["+intToStr(i)+"].evalFn = __Bah_eval_"+e+";\n"
+    }
+
+    if len(compilerState.evals) != 0 {
+        evals += "__evals_length = "+intToStr(len(compilerState.evals))+";"
+    } else {
+        evals = ""
+    }
+
     OUTPUT = OUTPUT + rope("
     void "+name+"() {
-
         ") + INIT + rope("
-
+        "+evals+"
     };
     ")
 }

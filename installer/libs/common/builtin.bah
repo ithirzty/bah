@@ -154,6 +154,10 @@ delete(a ptr, i int) {
     if i >= length || i < 0 {
         panic("delete: cannot delete array element ["+intToStr(i)+"] of array with length: "+intToStr(length)+".")
     }
+	if length == 1 {
+		noCheck(arr->length = 0)
+		return
+	}
     elemSize int = noCheck(arr->elemSize)
     data char* = noCheck(arr->data)
     destOffset ptr = elemSize * i

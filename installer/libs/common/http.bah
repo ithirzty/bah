@@ -1278,6 +1278,9 @@ http_request(connfd int) http_request {
     r.socket = http_socket{}
     r.socket.sockfd = connfd
     reqcps = r.socket.receive()
+    if reqcps == null {
+        return r
+    }
     req = string(reqcps)
     i = 0
     //parse method (GET, POST, PUT, DELETE...)

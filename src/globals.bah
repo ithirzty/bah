@@ -62,6 +62,7 @@ struct compilerStateTag {
     arrTypesDecl: []cpstring
     haveEntryPoint: bool = false
     RCPvars: []variable*
+    evals: []cpstring
 }
 
 shouldOnlyDecl = false

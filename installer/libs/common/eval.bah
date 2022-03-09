@@ -1,0 +1,117 @@
+#include "reflect.bah"
+
+struct __eval_binding {
+    name: cpstring
+    evalFn: ptr
+}
+
+__evals_bindings __eval_binding*
+__evals_length = 0
+
+evalCall(fn cpstring, args []ptr) ptr {
+    i=0; for i < __evals_length, i++ {
+        e __eval_binding = noCheck(__evals_bindings[i])
+        if e.name == fn {
+            bfn function(ptr)ptr = e.evalFn
+            r = bfn(args)
+            return r
+        }
+    }
+    panic("eval: unknown/not evaluable function "+fn+"()")
+    return null
+}
+
+evalRaw(code cpstring) ptr {
+    scode = string(code)
+    fnName = splitStringBefore(scode, "(")
+
+
+    args = []ptr
+    currArg = []char
+    isStr = false
+    i=strlen(fnName)+1; for i < strlen(code), i++ {
+        c = code[i]
+        if c == ',' || c == ')' || c == '(' {
+            if len(currArg) == 0 {
+                continue
+            }
+
+            if c == '(' {
+                nbPar = 0
+                for i < strlen(code), i++ {
+                    c = code[i]
+                    if c == '(' {
+                        nbPar++
+                    } else if c == ')' {
+                        nbPar--
+                    }
+                    currArg[len(currArg)] = c
+                    if nbPar == 0 {
+                        break
+                    }
+                }
+                currArg[len(currArg)] = <char>0
+                args[len(args)] = evalRaw(arrAsStr(currArg))
+                
+                currArg = []char
+                isStr = false
+                continue
+            }
+
+            currArg[len(currArg)] = <char>0
+            if isStr == true {
+                delete(currArg, 0)
+                currArg[len(currArg)-2] = <char>0
+                args[len(args)] = arrToStr(currArg)
+            } else if isNumber(currArg[0]) {
+                if '.' in currArg {
+                    p float* = memoryAlloc(SIZE_OF_FLOAT)
+                    *p = strToFloat(arrAsStr(currArg))
+                    args[len(args)] = p
+                } else {
+                    p int* = memoryAlloc(SIZE_OF_INT)
+                    *p = strToInt(arrAsStr(currArg))
+                    args[len(args)] = p
+                }
+            }
+            currArg = []char
+            isStr = false
+            continue
+        }
+        if c == <char>34 {
+            isStr = true
+        }
+        if isStr == false && isSpace(c) {
+            continue
+        }
+        currArg[len(currArg)] = c
+    }
+
+    return evalCall(fnName, args)
+}
+
+eval(code cpstring, r reflectElement) {
+    
+    fnReturns = evalRaw(code)
+
+    if r.type == "int*" || r.type == "bool*" {
+        p int* = r.value
+        fr int* = fnReturns
+        *p = *fr
+    } else if r.type == "float*" {
+        p float* = r.value
+        fr float* = fnReturns
+        *p = *fr
+    } else if r.type == "cpstring*" {
+        p cpstring* = r.value
+        fr cpstring = fnReturns
+        *p = fr
+    } else if r.type == "ptr" {
+        p ptr* = r.value
+        *p = fnReturns
+    } else {
+        p ptr = r.value
+        memcpy(p, fnReturns, r.size)
+    }
+
+}
