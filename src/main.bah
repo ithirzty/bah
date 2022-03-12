@@ -23,7 +23,7 @@
     BAH_CC = "gcc"
 }
 //////////////////////BUILD SPECIFIC THINGS//////////////////////
-const BAH_VERSION = "v1.1 (build 61)"
+const BAH_VERSION = "v1.1 (build 62)"
 
 debug = false
 verboseRuntime = false
@@ -254,16 +254,18 @@ long int __BAH__main(__BAH_ARR_TYPE_cpstring);
         }
         randFileName = randFileName + ".c"
 
-        fs = fileStream{}
-        fs.open(randFileName, "w")
-        fs.writeFile(OUTPUT.toStr())
-        fs.close()
+        // fs = fileStream{}
+        // fs.open(randFileName, "w")
+        // fs.writeFile(OUTPUT.toStr())
+        // fs.close()
 
         obj = ""
         if flags.isSet("object") == 1 {
             fileName = fileName + ".o"
             obj = "-c"
         }
+
+        randFileName = "-x c -"
 
         gccArgs = BAH_CC+" -I \""+BAH_DIR+"libs/"+BAH_OS+"/include/\" -L \""+BAH_DIR+"libs/"+BAH_OS+"/\" "+ randFileName+ " "+isStatic+" "+obj+" -w -O1 -o "+fileName
         
@@ -280,6 +282,7 @@ long int __BAH__main(__BAH_ARR_TYPE_cpstring);
         }
 
         cmd = command(gccArgs)
+        cmd.input = OUTPUT.toStr()
         #linux {
             if flags.isSet("verboseCC") == 0 {
                 cmd.error = false
@@ -290,7 +293,7 @@ long int __BAH__main(__BAH_ARR_TYPE_cpstring);
         } else {
             cmd.run()
         }
-        removeFile(randFileName)
+        // removeFile(randFileName)
         if cmd.status != 0 {   
             println("\e[1;31m[GCC-ERROR]\e[0m\nCould not compiled.")
             exit(1)

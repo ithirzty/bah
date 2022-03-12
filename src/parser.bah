@@ -1470,6 +1470,9 @@ parseFnCall(l []Tok, ltp lineType, elems Elems*) []Tok {
                         fnarg1t = getCType(arg1.type, elems)
                         varName = fnStr
                         realFn = splitStructSepAfter(fnStr)
+                        sName = string(arg1.type)
+                        sName.replace("*", "")
+                        fnName = sName.str()+"__"+realFn.str()
                         varName.trimRight(realFn.length)
                         c = varName.charAt(varName.length - 1)
                         if c == '.' {
@@ -2993,11 +2996,14 @@ parseReturn(l []Tok, elems Elems*) {
     if compilerState.isBranch == false {
         currentFn.returned = true
     }
-    rvar = genCompilerVar()
-    cType = getCType(currentFn.returns.type, elems)
 
     if strlen(rv) > 0 {
-        OUTPUT = OUTPUT + rope(cType.str() + " " + rvar + " = "+rv+";\n")
+        rvar = rv
+        if RCPavailable() == true && isRCPpointerType(currentFn.returns.type) {
+            rvar = genCompilerVar()
+            cType = getCType(currentFn.returns.type, elems)
+            OUTPUT = OUTPUT + rope(cType.str() + " " + rvar + " = "+rv+";\n")
+        }
         endRCPscope(elems, null)
         OUTPUT = OUTPUT + rope("return "+rvar+";\n")
     } else {
