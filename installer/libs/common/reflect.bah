@@ -57,6 +57,37 @@ __dumpSymbols(syms []reflectElement) []reflectElement {
     return syms
 }
 
+__debug_get_sym(syms []reflectElement, a string) reflectElement {
+    if a.count(".") > 0 {
+        parts = splitString(a, ".")
+        p1 = parts[0]
+        p2 = parts[1]
+        j=0; for j < len(syms), j++ {
+            s = syms[j]
+            if s.name == p1.str() {
+                k=0; for k < len(s.structLayout), k++ {
+                    m = s.structLayout[k]
+                    if m.name == p2.str() {
+                        m.value = m.calculateOffset(s.value)
+                        return m
+                    }
+                }
+                break
+            }
+        }
+    } else {
+        j=0; for j < len(syms), j++ {
+            s = syms[j]
+            if s.name == a.str() {
+                return s
+            }
+        }
+    }
+    ns = reflectElement{}
+    return ns
+}
+
+
 //Example
 // #include "iostream.bah"
 // #include "reflect.bah"

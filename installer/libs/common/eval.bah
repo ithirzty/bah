@@ -21,7 +21,7 @@ evalCall(fn cpstring, args []ptr) ptr {
     return null
 }
 
-evalRaw(code cpstring) ptr {
+evalRaw(code cpstring, syms []reflectElement) ptr {
     scode = string(code)
     fnName = splitStringBefore(scode, "(")
 
@@ -51,7 +51,7 @@ evalRaw(code cpstring) ptr {
                     }
                 }
                 currArg[len(currArg)] = <char>0
-                args[len(args)] = evalRaw(arrAsStr(currArg))
+                args[len(args)] = evalRaw(arrAsStr(currArg), syms)
                 
                 currArg = []char
                 isStr = false
@@ -63,7 +63,7 @@ evalRaw(code cpstring) ptr {
                 delete(currArg, 0)
                 currArg[len(currArg)-2] = <char>0
                 args[len(args)] = arrToStr(currArg)
-            } else if isNumber(currArg[0]) {
+            } else if isNumber(currArg[0]) || currArg[0] == '-' {
                 if '.' in currArg {
                     p float* = memoryAlloc(SIZE_OF_FLOAT)
                     *p = strToFloat(arrAsStr(currArg))
@@ -81,6 +81,16 @@ evalRaw(code cpstring) ptr {
                         *p = 0
                     }
                     args[len(args)] = p                
+            } else if isLetter(currArg[0]) {
+                if syms != null {
+                    sym = __debug_get_sym(syms, string(arrAsStr(currArg)))
+                    if sym.type == "cpstring" {
+                        p ptr* = sym.value
+                        args[len(args)] = *p
+                    } else {
+                        args[len(args)] = sym.value
+                    }
+                }
             }
             currArg = []char
             isStr = false
@@ -100,7 +110,7 @@ evalRaw(code cpstring) ptr {
 
 eval(code cpstring, r reflectElement) {
     
-    fnReturns = evalRaw(code)
+    fnReturns = evalRaw(code, null)
 
     if r.name == "null" || r.value == null {
         return

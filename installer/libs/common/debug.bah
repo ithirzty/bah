@@ -1,5 +1,6 @@
  
 #include "json.bah"
+#include "eval.bah"
 
 DEBUG_ENABLED = false
 
@@ -25,17 +26,12 @@ __parse_debug_cmd(syms []reflectElement) {
             args = splitString(string(cmd), " ")
             i=1; for i < len(args), i++ {
                 a = args[i]
-                j=0; for j < len(syms), j++ {
-                    s = syms[j]
-                    if s.name == a.str() {
-                        if s.type == "cpstring" {
-                            p ptr* = s.value
-                            s.value = *p
-                        }
-                        println(toJson(s))
-                        break
-                    }
+                sym = __debug_get_sym(syms, a)
+                if sym.type == "cpstring" {
+                    p ptr* = sym.value
+                    sym.value = *p
                 }
+                println(toJson(sym))
             }
         } else if strHasPrefix(cmd, "set ") {
             cmdS = string(cmd)
@@ -54,25 +50,24 @@ __parse_debug_cmd(syms []reflectElement) {
                 }
             }
 
-            j=0; for j < len(syms), j++ {
-                s = syms[j]
-                if s.name == a.str() {
-                    println("Setting "+a.str())
-                    json = parseJson(v.str())
-                    json.scan(s)
-                    break
-                }
-            }
-            if j == len(syms) {
-                println("Unknown var '"+a.str()+"'.")
-            }
+            s = __debug_get_sym(syms, a)
+            println("Setting "+a.str())
+            json = parseJson(v.str())
+            json.scan(s)
+        } else if strHasPrefix(cmd, "eval ") {
+            cmdS = string(cmd)
+            cmdS.trimLeft(5)
+            cmdS.trim()
+
+            evalRaw(cmdS.str(), syms)
         } else {
             println("Unknown command '"+cmd+"'.
-            Here are all available commands:
-            - list (Lists all symbols)
-            - continue [c] (Continue execution of the program)
-            - print [p] <var> (Prints the content of a variable)
-            - quit [q] (Exit the program)")
+Here are all available commands:
+- list (Lists all symbols)
+- continue [c] (Continue execution of the program)
+- print [p] <var> (Prints the content of a variable)
+- set <var> = <val> (Sets the content of a variable)
+- quit [q] (Exit the program)")
         }
     }
 }

@@ -410,14 +410,16 @@ parseOperations(line []Tok, ltp lineType, elems Elems*) []Tok {
     unNestedLine = []Tok{line[0]}
     i=1; for i < len(line), i++ {
         t = line[i]
-        if t.cont == "(" {
+        pt = line[i-1]
+        if t.cont == "(" && pt.type != TOKEN_TYPE_KEYWORD {
             nbPars = 1
             i++
             mem = []Tok
             ft = t
             for i < len(line), i++ {
                 t = line[i]
-                if t.cont == "(" {
+                pt = line[i-1]
+                if t.cont == "(" && pt.type != TOKEN_TYPE_KEYWORD {
                     nbPars++
                 } else if t.cont == ")" {
                     nbPars--
@@ -1351,8 +1353,14 @@ parseReflect(t Tok, tt cpstring, elems Elems*, parsedPointer bool, ogName cpstri
 
         dataLayout = rope("")
 
-        i=0; for i < len(ts.members) {
+        i=0; for i < len(ts.members), i++ {
             m = ts.members[i]
+            if m.type == tt {
+                nm = new structMemb
+                *nm = *m
+                m = nm
+                m.type = "ptr"
+            }
             tmpT = Tok{}
             tmpT.type = TOKEN_TYPE_VAR
             sep = "->"
@@ -1365,7 +1373,6 @@ parseReflect(t Tok, tt cpstring, elems Elems*, parsedPointer bool, ogName cpstri
             tmpT.cont = "("+mCtype.str()+"*)((char*)("+t.cont+") + offsetof(struct "+offsetTT.str()+", "+m.name+"))"
             rt = parseReflect(tmpT, m.type, elems, true, m.name, "offsetof(struct "+offsetTT.str()+", "+m.name+")")
             dataLayout = dataLayout + rope(structLayout+"->data["+intToStr(i)+"] = "+rt.cont+";\n")
-            i = i + 1
         }
 
         OUTPUT = OUTPUT + rope("
@@ -1594,9 +1601,7 @@ parseFnCall(l []Tok, ltp lineType, elems Elems*) []Tok {
                         "+tmpV.name+"->data = memoryAlloc(sizeof(struct reflectElement) * "+intToStr(len(symbols))+");
                         "+tmpV.name+"->length = "+intToStr(len(symbols))+";
                         "+tmpV.name+"->elemSize = sizeof(struct reflectElement);
-                        
                         "+decls+"
-
                         ")
 
 
@@ -3216,6 +3221,68 @@ parseForOp(l []Tok, elems Elems*) {
 
 }
 
+makeEvalFunc(fn func*, elems Elems*) {
+    if fn.name in compilerState.evals {
+        return
+    }
+
+    efn = new func{
+        name: "__Bah_eval_"+fn.name
+    }
+    efn.returns = new variable {
+        type: "ptr"
+    }
+
+    efn.args = []variable*{
+        new variable{
+            name: "fnArgs"
+            type: "[]ptr"
+        }
+    }
+
+    fnBinding = ""
+    fnCall = fn.name+"("
+    i=0; for i < len(fn.args), i++ {
+        a = fn.args[i]
+        v = genCompilerVar()
+        cType = getCType(a.type, elems)
+        if isRCPpointerType(a.type) == false {
+            cType.append("*")
+        }
+        fnBinding += cType.str() + " " + v + " = fnArgs->data[" + intToStr(i) + "];"
+        if i != 0 {
+            fnCall += ", "
+        }
+        if isRCPpointerType(a.type) {
+            fnCall += v
+        } else {
+            fnCall += "*"+v
+        }
+    }
+
+    setReturnValue = "void* r = 0;"
+    if isRCPpointerType(fn.returns.type) {
+        setReturnValue = "void* r = "
+    } else {
+        cType = getCType(fn.returns.type, elems)
+        if cType.str() != "void" {
+            setReturnValue = cType.str()+"* r = memoryAlloc(sizeof("+cType.str()+"));*r = "
+        }
+    }
+
+    OUTPUT += rope("void* __attribute__((optimize(\"O0\"))) "+efn.name+"(array(void*)* fnArgs) {
+        if (fnArgs->length != "+intToStr(len(fn.args))+") {
+            __BAH_panic(\"eval: calling function "+fn.name+"() with the wrong number of arguments.\", \"BAH_COMPILER_INTERNAL\");
+        }
+        "+fnBinding+"
+        "+setReturnValue+fnCall+");
+        return (void*)r;
+    };")
+
+    compilerState.evals[len(compilerState.evals)] = fn.name
+    elems.fns[len(elems.fns)] = efn
+}
+
 parsePreKeyword(l []Tok, elems Elems*) {
 
     ft = l[0]
@@ -3257,69 +3324,18 @@ parsePreKeyword(l []Tok, elems Elems*) {
             throwErr(&fnT, "Unknown function {TOKEN}.")
         }
 
-        if fn.name in compilerState.evals {
-            return
-        }
+        makeEvalFunc(fn, elems)
 
-        efn = new func{
-            name: "__Bah_eval_"+fn.name
-        }
-        efn.returns = new variable {
-            type: "ptr"
-        }
+        return
+    }
 
-        efn.args = []variable*{
-            new variable{
-                name: "fnArgs"
-                type: "[]ptr"
+    if ft.cont == "#evalAll" {
+        i=0; for i < len(elems.fns), i++ {
+            fn = elems.fns[i]
+            if fn.isBinding == false && strHasPrefix(fn.name, "__Bah_eval_") == false {
+                makeEvalFunc(fn, elems)
             }
         }
-
-        fnBinding = ""
-        fnCall = fn.name+"("
-        i=0; for i < len(fn.args), i++ {
-            a = fn.args[i]
-            v = genCompilerVar()
-            cType = getCType(a.type, elems)
-            if isRCPpointerType(a.type) == false {
-                cType.append("*")
-            }
-            fnBinding += cType.str() + " " + v + " = fnArgs->data[" + intToStr(i) + "];"
-            if i != 0 {
-                fnCall += ", "
-            }
-            if isRCPpointerType(a.type) {
-                fnCall += v
-            } else {
-                fnCall += "*"+v
-            }
-        }
-
-        setReturnValue = "void* r = 0;"
-        if isRCPpointerType(fn.returns.type) {
-            setReturnValue = "void* r = "
-        } else {
-            cType = getCType(fn.returns.type, elems)
-            if cType.str() != "void" {
-                setReturnValue = cType.str()+"* r = memoryAlloc(sizeof("+cType.str()+"));*r = "
-            }
-        }
-
-        currLine = "\""+compilerState.currentFile + ":" + intToStr(fnT.line)+"\""
-
-        OUTPUT += rope("void* "+efn.name+"(array(void*)* fnArgs) {
-            if (fnArgs->length != "+intToStr(len(fn.args))+") {
-                __BAH_panic(\"eval: calling function "+fn.name+"() with the wrong number of arguments.\", "+currLine+");
-            }
-            "+fnBinding+"
-            "+setReturnValue+fnCall+");
-            return (void*)r;
-        };")
-
-        compilerState.evals[len(compilerState.evals)] = fn.name
-
-        elems.fns[len(elems.fns)] = efn
-
         return
     }
     
