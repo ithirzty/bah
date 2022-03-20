@@ -75,6 +75,7 @@ Here are all available commands:
 - continue [c] (Continue execution of the program)
 - print [p] <var> (Prints the content of a variable)
 - set <var> = <val> (Sets the content of a variable)
+- eval <code> (Evaluates code)
 - quit [q] (Exit the program)")
         }
     }
