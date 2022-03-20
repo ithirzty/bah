@@ -83,7 +83,44 @@ evalRaw(code cpstring, syms []reflectElement) ptr {
                     args[len(args)] = p                
             } else if isLetter(currArg[0]) {
                 if syms != null {
-                    sym = __debug_get_sym(syms, string(arrAsStr(currArg)))
+                    sym reflectElement
+                    if '[' in currArg {
+                        name = []char
+                        ind = []char
+                        j=0; for j < len(currArg), j++ {
+                            if currArg[j] == '[' {
+                                name[j] = <char>0
+                                j++
+                                for j < len(currArg), j++ {
+                                    if currArg[j] == ']' {
+                                        break
+                                    }
+                                    ind[len(ind)] = currArg[j]
+                                }
+                                ind[len(ind)] = <char>0
+                                break
+                            }
+                            name[j] = currArg[j]
+                        }
+                        symArr = __debug_get_sym(syms, string(arrAsStr(name)))
+                        if symArr.isArray == false {
+                            panic("eval: cannot use '"+arrAsStr(name)+"' as an array.")
+                        }
+
+                        p ptr* = symArr.value
+                        tmpArr = []ptr
+                        tmpArr = *p
+
+                        es int = noCheck(tmpArr->elemSize)
+                        offset = es * strToInt(arrAsStr(ind))
+
+                        ae = symArr.arrayElem
+                        sym = *ae
+                        base char* = noCheck(tmpArr->data)
+                        sym.value = noCheck(base + offset)
+                    } else {
+                        sym = __debug_get_sym(syms, string(arrAsStr(currArg)))
+                    }
                     if sym.type == "cpstring" {
                         p ptr* = sym.value
                         args[len(args)] = *p
@@ -105,6 +142,22 @@ evalRaw(code cpstring, syms []reflectElement) ptr {
         currArg[len(currArg)] = c
     }
 
+    if strCount(fnName, ".") > 0 {
+        sFnName = string(fnName)
+        vName = string(splitStringBefore(sFnName, "."))
+        sym = __debug_get_sym(syms, vName)
+        sFnName.trimLeft(vName.length + 1)
+        vType = string(sym.type)
+        isPtr = vType.count("*") > 0
+        vType.replace("*", "")
+        fnName = vType.str() + "__" + sFnName.str()
+        nArgs = []ptr{sym.value}
+        i=0; for i < len(args), i++ {
+            nArgs[i+1] = args[i]
+        }
+        args = nArgs
+    }
+
     return evalCall(fnName, args)
 }
 
@@ -112,7 +165,7 @@ eval(code cpstring, r reflectElement) {
     
     fnReturns = evalRaw(code, null)
 
-    if r.name == "null" || r.value == null {
+    if r.name == "null" || r.value == null || fnReturns == null {
         return
     }
 

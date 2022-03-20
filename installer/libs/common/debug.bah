@@ -6,6 +6,14 @@ DEBUG_ENABLED = false
 
 #define breakPoint()
 
+const __debug_ASCII_RESET = "\033[0m"
+
+const __debug_ASCII_YELLOW = "\033[33m"
+const __debug_ASCII_BLUE = "\033[36m"
+const __debug_ASCII_GREEN = "\033[32m"
+const __debug_ASCII_MAGENTA = "\033[35m"
+const __debug_ASCII_GREY = "\033[2m"
+
 __parse_debug_cmd(syms []reflectElement) {
     for 1 == 1 {
         print("> ")
@@ -14,7 +22,7 @@ __parse_debug_cmd(syms []reflectElement) {
             println("Listting all symbols.")
             i=0; for i < len(syms), i++ {
                 s = syms[i]
-                println("\t"+s.name + " ("+s.type+")")
+                println("\t"+__debug_ASCII_BLUE+s.name +__debug_ASCII_RESET+ " ("+__debug_ASCII_MAGENTA+s.type+__debug_ASCII_RESET+")")
             }
         } else if cmd == "continue" || cmd == "c" {
             println("Resuming execution.")
@@ -77,7 +85,7 @@ breakPoint__inner(syms []reflectElement, line cpstring) {
         return
     }
     println("============")
-    println("BREAKPOINT: "+line)
+    println("BREAKPOINT: "+__debug_ASCII_GREEN+line+__debug_ASCII_RESET)
     __parse_debug_cmd(syms)
     println("============")
 }
