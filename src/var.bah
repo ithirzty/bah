@@ -279,6 +279,7 @@ searchFunc(name cpstring, elems Elems*, inclCurr bool) func* {
                 panic("\e[1;31m[INTERNAL COMPILER ERROR]\e[0m\n Please report the bug as 'compiler searching '"+name+"' resulting in null func'.")    
         }
         if fn.name == name {
+            fn.used = true
             return fn
         }
         i = i + 1
@@ -286,6 +287,7 @@ searchFunc(name cpstring, elems Elems*, inclCurr bool) func* {
 
     if inclCurr == true {
         if currentFn.name == name {
+            currentFn.used = true
             return currentFn
         }
     }

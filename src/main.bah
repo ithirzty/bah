@@ -23,7 +23,7 @@
     BAH_CC = "gcc"
 }
 //////////////////////BUILD SPECIFIC THINGS//////////////////////
-const BAH_VERSION = "v1.1 (build 63)"
+const BAH_VERSION = "v1.1 (build 64)"
 
 debug = false
 verboseRuntime = false
@@ -223,6 +223,15 @@ long int __BAH__main(__BAH_ARR_TYPE_cpstring);
     parseLines(tokens, elems)
 
     makeInit()
+
+    if isObject == false {
+        i=0; for i < len(elems.fns), i++ {
+            fn = elems.fns[i]
+            if fn.used == false && fn.code != null && fn.name != "main" {
+                ropeSet(fn.code, "//optimized out: "+fn.name+"\n")
+            }
+        }
+    }
 
     if debug == false {
         if isObject == false {

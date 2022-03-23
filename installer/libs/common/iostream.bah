@@ -5,7 +5,7 @@
 
 #include "cBinds.bah"
 #include "memory.bah"
-#include "string.bah"
+// #include "string.bah"
 
 #define! FILE ptr
 
@@ -13,24 +13,24 @@
 //Returns the text inputed by the user inside the terminal.
 stdinput() cpstring {
     buffer cpstring = memoryAlloc(1025)
-    response = string("")
+    response = ""
     nDataLength = read(<ptr>0,buffer,1024)
     if nDataLength < 1024 {
-        response.append(buffer)
+        response += buffer
     } else {
         for nDataLength > 0 {
-            response.append(buffer)
+            response += buffer
             if nDataLength < 1024 {
                 trimAmm = 1024 - nDataLength
-                response.trimRight(trimAmm)
+                strTrimRight(&response, trimAmm)
                 break
             } else {
                 nDataLength = read(<ptr>0,buffer,1024)
             }
         }
     }
-    response.trimRight(1)
-    return response.str()
+    strTrimRight(&response, 1)
+    return response
 }
 
 //Prints text to the terminal and adds a line return at the end.

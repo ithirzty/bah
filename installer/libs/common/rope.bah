@@ -96,6 +96,14 @@ createRopeStructure(par rope*, a cpstring, l int, r int) rope* {
     return tmp
 }
 
+ropeSet(r rope*, a cpstring) {
+    n1 = strlen(a)
+    nr = createRopeStructure(null, a, 0, n1-1)
+    nr.totalLen = n1
+    nr.len = n1
+    *r = *nr
+}
+
 //Old way of concatenating ropes by specifying in order the ropes to concatenate.
 concatenateRopes(root1 rope*, root2 rope*) rope* {
     n1 = root1.len

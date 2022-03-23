@@ -15,7 +15,6 @@
 //#define! malloc(size int) ptr
 #define! strcpy(dest cpstring, source cpstring)
 #define! strcat(dest cpstring, source cpstring)
-#define! strcmp(a cpstring, b cpstring) int
 #define! sprintf(buff cpstring, format cpstring, v ptr)
 #define! atoi(s cpstring) int
 #define! itoa(i int, s cpstring, base int) cpstring

@@ -14,6 +14,30 @@ const true = <bool>1
 const false = <bool>0
 
 #define! exit(i int)
+#define! strcmp(a cpstring, b cpstring) int
+#define! strlen(a cpstring) int
+
+
+__bah_strcmp(a cpstring, b cpstring) int {
+    if <ptr>a == null {
+        a = ""
+    }
+    if <ptr>b == null {
+        b = ""
+    }
+    return strcmp(a, b)
+}
+
+const strcmp = __bah_strcmp
+
+__bah_strlen(s cpstring) int {
+    if <ptr>s == null {
+        return 0
+    }
+    return strlen(s)
+}
+
+const strlen = __bah_strlen
 
 #include "memory.bah"
 
@@ -125,7 +149,7 @@ recover(s cpstring*) bool {
 	return true
 }
 
-#define strAsArr(s cpstring) []char
+// #define strAsArr(s cpstring) []char
 
 __Bah_safe_string(s cpstring) cpstring {
 	if <ptr>s == null {
@@ -142,54 +166,3 @@ __Bah_safe_string(s cpstring) cpstring {
 
 	return "\""+s+"\""
 }
-
-#include "iostream.bah"
-
-//Used for deleting an element from an array by its index.
-//This will keep the order of the elements.
-delete(a ptr, i int) {
-    arr = []ptr
-    arr = a
-    length = len(arr)
-    if i >= length || i < 0 {
-        panic("delete: cannot delete array element ["+intToStr(i)+"] of array with length: "+intToStr(length)+".")
-    }
-	if length == 1 {
-		noCheck(arr->length = 0)
-		return
-	}
-    elemSize int = noCheck(arr->elemSize)
-    data char* = noCheck(arr->data)
-    destOffset ptr = elemSize * i
-    i++
-    offset ptr = elemSize * i
-    src char* = <int>data + <int>offset
-    dest char* = <int>data + <int>destOffset
-    rightNB = length - (i-1)
-    memmove(dest, src, rightNB * elemSize)
-    noCheck(arr->length = length - 1)
-}
-
-
-__bah_strcmp(a cpstring, b cpstring) int {
-    if <ptr>a == null {
-        a = ""
-    }
-    if <ptr>b == null {
-        b = ""
-    }
-    return strcmp(a, b)
-}
-
-const strcmp = __bah_strcmp
-
-__bah_strlen(s cpstring) int {
-    if <ptr>s == null {
-        return 0
-    }
-    return strlen(s)
-}
-
-const strlen = __bah_strlen
-
-#include "debug.bah"

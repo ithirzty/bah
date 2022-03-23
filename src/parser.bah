@@ -52,13 +52,14 @@ dupElems(elems Elems*) Elems* {
     }
 
     //fns
-    j=0; for j < len(elems.fns) {
-        f = elems.fns[j]
-        nf = new func
-        *nf = *f
-        nElems.fns[j] = nf
-        j = j + 1
-    }
+    nElems.fns = elems.fns
+    // j=0; for j < len(elems.fns) {
+    //     f = elems.fns[j]
+    //     nf = new func
+    //     *nf = *f
+    //     nElems.fns[j] = nf
+    //     j = j + 1
+    // }
 
 
     return nElems
@@ -2951,6 +2952,14 @@ parseConst(l []Tok, elems Elems*) {
     if valt.isValue == false {
         throwErr(&equt, "Must be a value, not {TOKEN}.")
     }
+
+    if valt.type == TOKEN_TYPE_VAR {
+        fn = searchFunc(valt.cont, elems, true)
+        if fn != null {
+            fn.used = true
+        }
+    }
+
     v = new variable
     v.isConst = true
     v.constVal = valt.cont
@@ -3676,7 +3685,9 @@ parseFnDeclare(l []Tok, elems Elems*) {
     }
 
     code = code + "{\n"
-    OUTPUT = OUTPUT + rope(code)
+
+    fn.code = rope(code)
+
 
     fnElems = dupElems(elems)
     
@@ -3691,6 +3702,7 @@ parseFnDeclare(l []Tok, elems Elems*) {
     
     if ogFn != null {
         ogFn.isBinding = false
+        ogFn.used = true
         ogFn = fn
     } else {
         fns = elems.fns
@@ -3707,12 +3719,21 @@ parseFnDeclare(l []Tok, elems Elems*) {
     }
 
     if len(tokens) == 0 {
-        OUTPUT = OUTPUT + rope("};\n")
+        fn.code += rope("};\n")
+        OUTPUT = OUTPUT + fn.code
         return
     }
 
     currentFn = fn
+
+    oOut = OUTPUT
+    OUTPUT = rope("")
+
     parseLines(tokens, fnElems)
+    
+    fn.code += OUTPUT
+
+    OUTPUT = oOut
 
     currentFn = null
     if fn.returned == false {
@@ -3722,7 +3743,10 @@ parseFnDeclare(l []Tok, elems Elems*) {
         endRCPscope(fnElems, null)
     }
 
-    OUTPUT = OUTPUT + rope("};\n")
+    fn.code += rope("};\n")
+
+
+    OUTPUT += fn.code
 
     if debug == true {
         df = new debugFunction

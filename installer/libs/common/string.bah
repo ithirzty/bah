@@ -368,51 +368,6 @@ string(s cpstring) string {
     return a
 }
 
-//Used to convert an array of characters to a cpstring.
-arrToStr(arr []char) cpstring {
-    strLen = len(arr)
-    str cpstring = memoryAlloc(strLen+1)
-    noCheck(memcpy(str, arr->data, strLen))
-    return str
-}
-
-//Used to convert a cpstring into an array of characters.
-strToArr(str cpstring) []char {
-    strLen = strlen(str)
-    arr = []char
-    noCheck(arr->data = memoryAlloc(strLen+1))
-    noCheck(memcpy(arr->data, str, strLen))
-    noCheck(arr->length = strLen)
-    
-    return arr
-}
-
-//Used to get a pointer to an array data as a cpstring.
-//Unlike arrToStr, this does not copy the content of the array to a cpstring.
-//This is faster but changing the content of the returnend cpstring will change the content of the array.
-//You can see this operation as linkning the same data through two different interfaces, the only difference between these two interfaces are their type.
-arrAsStr(arr []char) cpstring {
-    #rcp {
-        RCP_incr(noCheck(arr->data))
-    }
-    return noCheck(arr->data)
-}
-
-//Used to get a cpstring as an array of chars.
-//This is faster than strToArr() but changing the content of the array will change the content of the cpstring.
-//This could lead to memory corruption if the cpstring is not heap allocated.
-//Make sure that the array is null terminated if editting it.
-strAsArr(str cpstring) []char {
-    #rcp {
-        RCP_incr(str)
-    }
-    l = strlen(str)
-    arr = []char
-    noCheck(arr->length = l)
-    noCheck(arr->data = str)
-    return arr
-}
-
 //Converts an int into a cpstring.
 intToStr(i int) cpstring {
     if i == 0 {
@@ -643,20 +598,6 @@ strHasSuffix(s cpstring, need cpstring) bool {
         i = i + 1
     }
     return true
-}
-
-strTrimLeft(s cpstring*, i int) {
-    ls = strlen(*s)
-    ns cpstring = memoryAlloc(ls - i + 1)
-    memcpy(ns, noCheck(*s+i), ls - i)
-    *s = ns
-}
-
-strTrimRight(s cpstring*, i int) {
-    ls = strlen(*s)
-    ns cpstring = memoryAlloc(ls - i + 1)
-    memcpy(ns, *s, ls - i)
-    *s = ns
 }
 
 strTrim(s cpstring*) {

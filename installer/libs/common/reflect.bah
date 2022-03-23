@@ -87,6 +87,10 @@ __debug_get_sym(syms []reflectElement, a string) reflectElement {
     return ns
 }
 
+const __bah_reflect = __reflect
+const __bah_dump_symbols = __dumpSymbols
+const __bah_debug_get_sym = __debug_get_sym
+
 
 //Example
 // #include "iostream.bah"
