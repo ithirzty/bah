@@ -143,6 +143,7 @@ searchVar(name cpstring, elems Elems*) variable* {
                     nv.type = nv.type + ","
                 }
             }
+            fn.used = true
             nv.type = nv.type + ")" + fn.returns.type
             return nv
         }

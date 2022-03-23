@@ -1471,9 +1471,6 @@ parseFnCall(l []Tok, ltp lineType, elems Elems*) []Tok {
                         fnarg1t = getCType(arg1.type, elems)
                         varName = fnStr
                         realFn = splitStructSepAfter(fnStr)
-                        sName = string(arg1.type)
-                        sName.replace("*", "")
-                        fnName = sName.str()+"__"+realFn.str()
                         varName.trimRight(realFn.length)
                         c = varName.charAt(varName.length - 1)
                         if c == '.' {
@@ -3446,7 +3443,7 @@ parseAsync(l []Tok, elems Elems*) {
     fn = searchFunc(fnName.str(), elems, true)
     
     if fn == null {
-        throwErr(&fnT, "Internal compiler error.\n Error in async parsing, arround {TOKEN}.")
+        throwErr(&fnT, "Internal compiler error.\n Error parsing async call for function '"+fnName.str()+"', arround {TOKEN}.")
     }
     sMembs = ""
     unSerMembs = ""
