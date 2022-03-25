@@ -333,6 +333,14 @@ declareStructMethods(v variable*, s cStruct*, elems Elems*) cpstring {
             "+v.name+sep+m.name+"->elemSize = sizeof("+elemCTypeStr+");
             "
             declared = true
+        } else if cmpt.hasPrefix("map:") == 1 {
+            cmpt.trimLeft(4)
+            code += v.name + sep + m.name + " = mapWrapper();\n"
+            declared = true
+        } else if cmpt.hasPrefix("chan:") == 1 {
+            cmpt.trimLeft(5)
+            code += v.name + sep + m.name + " = channel();\n"
+            declared = true
         }
 
         if isRCPpointerType(m.type) && declared == false {

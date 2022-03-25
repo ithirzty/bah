@@ -1390,6 +1390,18 @@ parseReflect(t Tok, tt cpstring, elems Elems*, parsedPointer bool, ogName cpstri
         ")
 
         arrElem = "&"+aev
+    } else if strHasPrefix(tt, "map:") {
+        aet = string(tt)
+        aet.trimLeft(4)
+        tmpT = Tok{}
+        tmpT.type = TOKEN_TYPE_VAR
+        tmpT.cont = "0"
+        rt = parseReflect(tmpT, aet.str(), elems, true, "", "0")
+        aev = genCompilerVar()
+        OUTPUT = OUTPUT + rope("
+        struct reflectElement "+aev+" = "+rt.cont+";
+        ")
+        arrElem = "&"+aev
     }
 
     isStruct = "0"
