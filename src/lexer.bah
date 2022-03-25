@@ -2,7 +2,7 @@
 
 #include "./globals.bah"
 
-
+//tokens types
 #define tokenType int
 
 const TOKEN_NO_TYPE =      <tokenType>-1
@@ -18,7 +18,7 @@ const TOKEN_TYPE_BOOL =    <tokenType>8
 const TOKEN_TYPE_SYNTAX =  <tokenType>10
 const TOKEN_TYPE_FUNC =    <tokenType>11
 
-
+//a token (the atomic unit for describing the inputed Bah file)
 struct Tok {
     cont: cpstring = ""
     ogCont: cpstring = ""
@@ -26,11 +26,12 @@ struct Tok {
     pos: int = 0
     line: int = 1
     begLine: int = 1
-    bahType: cpstring = ""
+    bahType: cpstring = "" //shortcut for getting the type of a token
     isValue: bool = false
     isFunc: bool = false
     isOper: bool = false
 }
+
 
 inArray(needle char, arr []char) bool {
     i=0; for i < len(arr) {
@@ -77,12 +78,7 @@ makeToken(pos int, lineNb int, cont []char, type tokenType) Tok {
 }
 
 isMinus(c char, nc char) bool {
-    if c == '-' {
-        if isNumber(nc) {
-            return true
-        }
-    }
-    return false
+    return c == '-' && isNumber(nc)
 }
 
 lexerErr(line int, pos int, msg cpstring) {
@@ -95,8 +91,8 @@ lexerErr(line int, pos int, msg cpstring) {
 enclavers = []char{'(', ')', '{', '}', '[', ']'}
 syntaxes = []char{'!', '=', '|', <char>38, '%', '+', '-', '*', '/', ',', '<', '>', ':', <char>59}
                                     //&                                                    //;
-keywords = []cpstring{"if", "else", "for", "struct", "const", "return", "extend", "new", "break", "continue", "default", "switch", "case", "while", "typedef", "function", "async", "in", "chan"}
-                    //  x      x      x        x        x         x         x       x       x          x          -          -        -       -         -           x         x       x      
+keywords = []cpstring{"if", "else", "for", "struct", "const", "return", "extend", "new", "break", "continue", "default", "switch", "case", "while", "typedef", "function", "async", "in", "chan", "map"}
+                    //  x      x      x        x        x         x         x       x       x          x          -          -        -       -         -           x         x       x     x       x
                     // x: done
                     //  : not done
                     // -: not planned
@@ -108,41 +104,39 @@ lexer(os cpstring) []Tok {
     s = strAsArr(os)
     tokens = []Tok
     
-    //code = string(s)
     codeLength = len(s)
 
     memory = []char
 
-    lineNb = 1
+    lineNb = 1 //current line number (in source file)
 
-
-
-    i=0; for i < codeLength {
+    i=0; for i < codeLength, i++ {
         c = s[i]
-        nci = i + 1
         nc char = <char>0
-        if nci < codeLength {
+        if i+1 < codeLength {
             nc = s[i+1]
         }
+        //testing for comments
         if c == '/' {
             nc = s[i+1]
             if nc == '/' {
-                for i < codeLength {
+                //ignore the content untill we hit a new line
+                for i < codeLength, i++ {
                     c = s[i]
                     if c == <char>10 {
                         break
                     }
-                    i = i + 1
                 }
-                max = codeLength - 1
-                if i >= max {
+                //file end
+                if i == codeLength {
                     break
                 }
             }
         }
 
+        //we have it the new line character
         if c == <char>10 {
-            lineNb = lineNb + 1
+            lineNb++
         }
 
         //token is a string
@@ -151,15 +145,18 @@ lexer(os cpstring) []Tok {
             begLine = lineNb
             memory[0] = c
             i = i + 1
-            for i < codeLength {
+            for i < codeLength, i++ {
                 c = s[i]
                 pc = s[i-1]
+                //string ending
                 if c == <char>34 {
+                    //except if the previous char is a backslash
                     if pc != <char>92 {
                         memory[len(memory)] = c
                         break
                     }
                 }
+                //escaping line returns
                 if c == <char>10 {
                     lineNb = lineNb + 1
                     if pc != <char>92 {
@@ -168,19 +165,17 @@ lexer(os cpstring) []Tok {
                     }
                 }
                 memory[len(memory)] = c
-                i = i + 1
             }
             tokens[len(tokens)] = makeToken(pos, lineNb, memory, TOKEN_TYPE_STR)
             lt = tokens[len(tokens) - 1]
             lt.begLine = begLine
             tokens[len(tokens) - 1] = lt
-        } else if isNumber(c) || isMinus(c, nc) {
-        //token is a number
+        } else if isNumber(c) || isMinus(c, nc) { //token is a number
             memory[0] = c
             pos = i
             i = i + 1
             currentType = TOKEN_TYPE_INT
-            for i < codeLength {
+            for i < codeLength, i++ {
                 c = s[i]
                 if c == <char>46 {
                     currentType = TOKEN_TYPE_FLOAT
@@ -188,53 +183,47 @@ lexer(os cpstring) []Tok {
                     break
                 }
                 memory[len(memory)] = c
-                i = i + 1
             }
-            i = i - 1
+            i--
             tokens[len(tokens)] = makeToken(pos, lineNb, memory, currentType)
-        } else if c == <char>39 {
-        //is a character
-            i = i + 1
+        } else if c == <char>39 { //is a character
+            i++
             n = s[i]
             toInt = intToStr(<int>nc)
             memory = strToArr(toInt)
-            i = i + 1
+            i++
             c = s[i]
             if c != <char>39 {
                 lexerErr(lineNb, i, "Missing closing tag in char declaration.")
             }
-            
             tokens[len(tokens)] = makeToken(i-1, lineNb, memory, TOKEN_TYPE_CHAR)
-        } else if c == <char>35 {
-        //is a hash keyword
+        } else if c == <char>35 { //is a hash keyword
             pos = i
             memory[0] = c
-            i = i + 1
-            for i < codeLength {
+            i++
+            for i < codeLength, i++ {
                 c = s[i]
                 if isAlphaNumeric(c) == 0 {
                     break
                 }
                 memory[len(memory)] = c
-                i = i + 1
             }
-            i = i - 1
+            i--
             tokens[len(tokens)] = makeToken(pos, lineNb, memory, TOKEN_TYPE_KEYWORD)
-        } else if inArray(c, enclavers) {
-        //token is enclaver
+        } else if inArray(c, enclavers) { //token is enclaver
             memory[0] = c
             tokens[len(tokens)] = makeToken(i, lineNb, memory, TOKEN_TYPE_ENCL)
-        } else if inArray(c, syntaxes) {
-        //token is a syntax element
+        } else if inArray(c, syntaxes) { //token is a syntax element
             memory[0] = c
             pos = i
-            i = i + 1
+            i++
             fc = c
-            for i < codeLength {
+            for i < codeLength, i++ {
                 c = s[i]
-                if inArray(c, syntaxes) == false {
+                if c in syntaxes == false {
                     break
                 }
+                //for <=, >=, ==, !=, +=, -=, && and ||
                 if fc == '<' {
                     if c != '-' && c != '=' {
                         break
@@ -253,55 +242,48 @@ lexer(os cpstring) []Tok {
                     }
                 }
                 memory[len(memory)] = c
-                i = i + 1
             }
-            i = i - 1
+            i--
             tokens[len(tokens)] = makeToken(pos, lineNb, memory, TOKEN_TYPE_SYNTAX)
-        } else if inArray(c, seps) {
+        } else if inArray(c, seps) { //token is a separator
             memory[0] = c
             tokens[len(tokens)] = makeToken(i, lineNb, memory, TOKEN_TYPE_SEP)
-        } else if isAlphaNumeric(c) || inArray(c, varChars) {
+        } else if isAlphaNumeric(c) || inArray(c, varChars) { //token is a var / keyword
             memory[0] = c
             pos = i
-            i = i + 1
-            for i < codeLength {
+            i++
+            //get full token
+            for i < codeLength, i++ {
                 c = s[i]
-
                 if isAlphaNumeric(c) == 0 {
-                    if inArray(c, varChars) == false {
+                    if c in varChars == false {
                         if c == '>' {
                             lc = memory[len(memory)-1]
                             if lc == '-' {
                                 memory[len(memory)-1] = <char>0
-                                i = i - 1
+                                i--
                                 break
                             }
                         }
-                        
                         break
                     }
                 }
 
                 memory[len(memory)] = c
-                i = i + 1
             }
-            i = i - 1
+            i--
             currentType = TOKEN_TYPE_VAR
             
             memstr = arrAsStr(memory)
             
-            if inArrayStr(memstr, keywords) {
+            //token is a keyword
+            if memstr in keywords {
                 currentType = TOKEN_TYPE_KEYWORD
             }
-            // else if inArrayStr(memstr, bools) {
-            //     currentType = TOKEN_TYPE_BOOL
-            // }
 
             tokens[len(tokens)] = makeToken(pos, lineNb, memory, currentType)
-
         }
 
-        i = i + 1
     }
     totalLines = totalLines + lineNb - 1
     dur = getTimeUnix() - dur

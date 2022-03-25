@@ -1,11 +1,12 @@
 #include "iostream.bah"
 #include "string.bah"
 
-OUTPUT rope*
-NEXT_LINE = ""
+OUTPUT rope* //the C output
+NEXT_LINE = "" //if we need to add something to the next C line
 
-INIT rope*
+INIT rope* //the C init function for initializing outter scope stuff (global vars...)
 
+//Bah variable
 struct variable {
     name: cpstring = ""
     type: cpstring = ""
@@ -16,12 +17,13 @@ struct variable {
     outterScope: bool = false
 }
 
+//Bah struct member
 struct structMemb extend variable {
     def: cpstring = ""
     isFn: bool = false
 }
 
-
+//Bah function
 struct func {
     name: cpstring = ""
     args: []variable*
@@ -35,6 +37,7 @@ struct func {
     code: rope* = null
 }
 
+//Interface between Bah struct and C struct
 struct cStruct {
     name: cpstring = ""
     members: []structMemb*
@@ -46,6 +49,7 @@ struct cStruct {
     hasRCPmemb: bool = false
 }
 
+//Every elements of the program for a specific scope
 struct Elems {
     vars: []variable*
     structs: []cStruct*
@@ -53,6 +57,7 @@ struct Elems {
     fns: []func*
 }
 
+//Additional info for the compiler no matter the scope
 struct compilerStateTag {
     includes: []cpstring
     cIncludes: []cpstring

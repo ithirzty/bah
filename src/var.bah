@@ -92,7 +92,7 @@ searchVar(name cpstring, elems Elems*) variable* {
     }
 
 
-    i=0; for i < len(elems.vars) {
+    i=len(elems.vars)-1; for i != -1, i-- {
         v = elems.vars[i]
             if v == null {
                 panic("\e[1;31m[INTERNAL COMPILER ERROR]\e[0m\n Please report the bug as 'compiler searching '"+name+"' resulting in null var'.")    
@@ -123,10 +123,6 @@ searchVar(name cpstring, elems Elems*) variable* {
 
             return nv
         }
-        // else {
-        //     println(name+" != "+v.name)
-        // }
-        i = i + 1
     }
 
     i=0; for i < len(elems.fns) {

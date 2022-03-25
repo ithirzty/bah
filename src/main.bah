@@ -23,14 +23,13 @@
     BAH_CC = "gcc"
 }
 //////////////////////BUILD SPECIFIC THINGS//////////////////////
-const BAH_VERSION = "v1.1 (build 65)"
+const BAH_VERSION = "v1.1 (build 66)"
 
 debug = false
 verboseRuntime = false
 isObject = false
 
 execName = "bah"
-defaultFile = ""
 isSubObject = false
 
 
@@ -44,8 +43,8 @@ isSubObject = false
 
 
 main(args []cpstring) int {
-    execName = args[0]
-    defaultFile = args[1]
+    execName = args[0] //for calling a sub-process for compiling imports
+
     flags = flags{}
     flags.addString("o", "Name of the file to output.")
     flags.addBool("c", "Translate bah file to C instead of compiling it.")
@@ -87,14 +86,13 @@ main(args []cpstring) int {
         println("C compiler: "+BAH_CC)
     }
 
+
     verboseRuntime = flags.isSet("verboseRuntime") == 1
-
     debug = flags.isSet("debug") == 1
-
     isObject = flags.isSet("object") == 1
 
     if debug == true {
-        debugStart()
+        debugStart() //for IDE purposes
     }
 
     RCPenabled = flags.isSet("rcp") == 1 || flags.isSet("fastrcp")
@@ -108,74 +106,71 @@ main(args []cpstring) int {
         panic("Cannot use -c (to translate to C code) and -l (to compile as a library) at the same time.")
     }
 
-    INIT = rope("")
+    INIT = rope("") //C code of the __BAH_init function
 
+    //C entry point of the program
     OUTPUT = rope("
-void __BAH_init();
-#define noCheck(v) v
-#define array(type)	\
-struct{	\
-type *data; \
-long int length; \
-long int elemSize; \
-}
-typedef array(char*)* __BAH_ARR_TYPE_cpstring;
-long int __BAH__main(__BAH_ARR_TYPE_cpstring);
-")
+    void __BAH_init();
+    #define noCheck(v) v
+    #define array(type)	\
+    struct{	\
+    type *data; \
+    long int length; \
+    long int elemSize; \
+    }
+    typedef array(char*)* __BAH_ARR_TYPE_cpstring;
+    long int __BAH__main(__BAH_ARR_TYPE_cpstring);
+    ")
 
     if flags.isSet("l") == 0 {
-
         if RCPenabled == true {
-
             OUTPUT = OUTPUT + rope("
-
-        void RCP_init();
-        void RCP_shutdown();
-        void free(void*);
-        
-        int main(int argc, char ** argv) {
-        RCP_init();
-        array(char*) * args = malloc(sizeof(array(char*)));
-        args->data = malloc(sizeof(char*)*argc);
-        memcpy(args->data, argv, sizeof(char*)*argc);
-        args->elemSize = sizeof(char*);
-        args->length = argc;
-        __BAH_init();
-        long int r =  __BAH__main((__BAH_ARR_TYPE_cpstring)args);
-        free(args->data);
-        free(args);
-        RCP_shutdown();
-        return r;
-        };
-        #define main(v) __BAH__main(v)
-        ")
+            void RCP_init();
+            void RCP_shutdown();
+            void free(void*);
+            int main(int argc, char ** argv) {
+            RCP_init();
+            array(char*) * args = malloc(sizeof(array(char*)));
+            args->data = malloc(sizeof(char*)*argc);
+            memcpy(args->data, argv, sizeof(char*)*argc);
+            args->elemSize = sizeof(char*);
+            args->length = argc;
+            __BAH_init();
+            long int r =  __BAH__main((__BAH_ARR_TYPE_cpstring)args);
+            free(args->data);
+            free(args);
+            RCP_shutdown();
+            return r;
+            };
+            #define main(v) __BAH__main(v)
+            ")
 
         } else {
-        OUTPUT = OUTPUT + rope("
-        #include <gc.h>
-        int main(int argc, char ** argv) {
-        GC_INIT();
-        array(char*) * args = GC_MALLOC(sizeof(array(char*)));
-        args->data = GC_MALLOC(sizeof(char*)*argc);
-        memcpy(args->data, argv, sizeof(char*)*argc);
-        args->elemSize = sizeof(char*);
-        args->length = argc;
-        __BAH_init();
-        long int r =  __BAH__main((__BAH_ARR_TYPE_cpstring)args);
-        GC_FREE(args->data);
-        GC_FREE(args);
-        return r;
-        };
-        #define main(v) __BAH__main(v)
-        ")
+            OUTPUT = OUTPUT + rope("
+            #include <gc.h>
+            int main(int argc, char ** argv) {
+            GC_INIT();
+            array(char*) * args = GC_MALLOC(sizeof(array(char*)));
+            args->data = GC_MALLOC(sizeof(char*)*argc);
+            memcpy(args->data, argv, sizeof(char*)*argc);
+            args->elemSize = sizeof(char*);
+            args->length = argc;
+            __BAH_init();
+            long int r =  __BAH__main((__BAH_ARR_TYPE_cpstring)args);
+            GC_FREE(args->data);
+            GC_FREE(args);
+            return r;
+            };
+            #define main(v) __BAH__main(v)
+            ")
         }
-
     }
 
-
+    //definning the []cpstring C type because it is used for the first time in the C entry point.
     compilerState = compilerStateTag{}
     compilerState.arrTypesDecl[0] = "__BAH_ARR_TYPE_cpstring"
     
+    //opening the file to compile
     fileName = absPath(args[1])
     compilerState.currentFile = fileName
     fm = fileMap{}
@@ -183,8 +178,8 @@ long int __BAH__main(__BAH_ARR_TYPE_cpstring);
     if fm.isValid() == 0 {
         panic("Could not open file '"+fileName+"'.")
     }
-    startTime = getTimeUnix()
-    tokens = lexer(f)
+    startTime = getTimeUnix() //for timming compilation time
+    tokens = lexer(f) //tokenizing the first file
     fm.close()
 
 
@@ -192,54 +187,71 @@ long int __BAH__main(__BAH_ARR_TYPE_cpstring);
         panic("File '"+fileName+"' not recognized.")
     }
 
-    elems = new Elems
+    elems = new Elems //the struct containning the state of the code (vars, funcs...) at every scopes
 
+    //if the file is an object, we dont want to declare an entry point.
     if isObject == true {
         OUTPUT = rope("
-#define noCheck(v) v
-#define array(type)	\
-struct{	\
-type *data; \
-long int length; \
-long int elemSize; \
-}
-typedef array(char*)* __BAH_ARR_TYPE_cpstring;
-long int __BAH__main(__BAH_ARR_TYPE_cpstring);
-")
+        #define noCheck(v) v
+        #define array(type)	\
+        struct{	\
+        type *data; \
+        long int length; \
+        long int elemSize; \
+        }
+        typedef array(char*)* __BAH_ARR_TYPE_cpstring;
+        long int __BAH__main(__BAH_ARR_TYPE_cpstring);
+        ")
         shouldOnlyDecl = true
     }
 
+    //includes the builtin libraries
     if includeFile("builtin.bah", elems) == false {
         panic("Could not find std-libs, please check '"+BAH_DIR+"'")
     }
-    shouldOnlyDecl = false
+    shouldOnlyDecl = false //should also set values to vars, funcs...
 
+    //if the file is being compiled as a lib, remove all its content and declare everything (builtin.bah)
     if flags.isSet("l") == 1 {
         OUTPUT = rope("")
         declareAll(elems)
     }
 
-    compilerState.currentDir = getDirFromFile(fileName)
-    parseLines(tokens, elems)
+    compilerState.currentDir = getDirFromFile(fileName) //for handling includes
+    parseLines(tokens, elems) //parse the frst file
 
-    makeInit()
+    makeInit() //makes the init function
 
+    excludeFns = []cpstring {
+        "main",
+        "cpstringCharAt",
+        "channel",
+        "mapWrapper"
+    }
+
+    //optimization: if the file is not an object, removed unused functions.
     if isObject == false {
         i=0; for i < len(elems.fns), i++ {
             fn = elems.fns[i]
-            if fn.used == false && fn.code != null && fn.name != "main" {
+            if fn.used == false && fn.code != null && fn.name in excludeFns == false {
                 ropeSet(fn.code, "//optimized out: "+fn.name+"\n")
             }
         }
     }
 
-    if debug == false {
-        if isObject == false {
-            totalTime = getTimeUnix() - startTime
-            println("Parsed. ("+intToStr(totalLines)+" lines, total time: "+intToStr(totalTime / 1000000)+"ms, lexer time: "+intToStr(totalLexerTime / 1000000)+"ms)\e[0m")
-        }
+    //if we run in debug mode, we dont want to compile the program
+    if debug == true {
+        debugEnd() //prints the file end, if not printed it will be interpreted as an error occuring
+        return 0
     }
 
+    //printing parsing statistics
+    if isObject == false {
+        totalTime = getTimeUnix() - startTime
+        println("Parsed. ("+intToStr(totalLines)+" lines, total time: "+intToStr(totalTime / 1000000)+"ms, lexer time: "+intToStr(totalLexerTime / 1000000)+"ms)\e[0m")
+    }
+
+    //setting the output name
     if flags.isSet("o") == 1 {
         fileName = flags.get("o")
     } else {
@@ -248,48 +260,37 @@ long int __BAH__main(__BAH_ARR_TYPE_cpstring);
         fileName = outFileName.str()
     }
 
+    //setting the linking mode
     isStatic = "-static"
     if flags.isSet("d") == 1 || BAH_OS == "darwin" {
         isStatic = ""
     }
 
+    //making an executable from the C code
     if flags.isSet("c") == 0 {
-        randFileName = "TMP_C_FILE_"
-        i=0; for i < 9 {
-            nb = randomInRange(0,99)
-            s = intToStr(nb)
-            randFileName = randFileName + s
-            i = i + 1
-        }
-        randFileName = randFileName + ".c"
-
-        // fs = fileStream{}
-        // fs.open(randFileName, "w")
-        // fs.writeFile(OUTPUT.toStr())
-        // fs.close()
-
+        //if file is an object, do not link it
         obj = ""
         if flags.isSet("object") == 1 {
             fileName = fileName + ".o"
             obj = "-c"
         }
 
-        randFileName = "-x c - -x none"
-
-        gccArgs = BAH_CC+" -I \""+BAH_DIR+"libs/"+BAH_OS+"/include/\" -L \""+BAH_DIR+"libs/"+BAH_OS+"/\" "+ randFileName+ " "+isStatic+" "+obj+" -w -O1 -o "+fileName
+        randFileName = "-x c - -x none" //reading from stdin
+        gccArgs = BAH_CC+" -I \""+BAH_DIR+"libs/"+BAH_OS+"/include/\" -L \""+BAH_DIR+"libs/"+BAH_OS+"/\" "+ randFileName+ " "+isStatic+" "+obj+" -w -O1 -o "+fileName //the compiler (C compiler) command
         
         if flags.isSet("l") == 1 {
             gccArgs = gccArgs + " -c"
         }
 
+        //adding C libraries
         cLibs = compilerState.cLibs
-
         i=0;for i < len(cLibs) {
             l = cLibs[i]
             gccArgs = gccArgs + " -" + l
             i = i + 1
         }
 
+        //executes the C compiler
         cmd = command(gccArgs)
         cmd.input = OUTPUT.toStr()
         #linux {
@@ -302,10 +303,10 @@ long int __BAH__main(__BAH_ARR_TYPE_cpstring);
         } else {
             cmd.run()
         }
-        // removeFile(randFileName)
+        
         if cmd.status != 0 {   
-            println("\e[1;31m[GCC-ERROR]\e[0m\nCould not compiled.")
-            exit(1)
+            println("\e[1;31m[CC-ERROR]\e[0m\nCould not compiled.")
+            return 1
         }
 
         if flags.isSet("l") == 1 {
@@ -314,6 +315,7 @@ long int __BAH__main(__BAH_ARR_TYPE_cpstring);
         }
 
     } else {
+        //making the C file without compiling it
         if flags.isSet("o") == 0 {
             fileName = fileName + ".c"
         }
@@ -325,22 +327,18 @@ long int __BAH__main(__BAH_ARR_TYPE_cpstring);
             gccArgs = gccArgs + " -" + l
             i = i + 1
         }
-        OUTPUT = concatenateRopes(rope("//COMPILE WITH: '"+gccArgs+"'\n"), OUTPUT)
+        OUTPUT = rope("//COMPILE WITH: '"+gccArgs+"'\n") + OUTPUT
         fs = fileStream{}
         fs.open(fileName, "w")
         fs.writeFile(OUTPUT.toStr())
         fs.close()
     }
 
-    if debug == false {
-        if isObject == false {
-            totalTime = getTimeUnix() - startTime
-            println("\e[1;32mDone. (compiled in "+intToStr(totalTime / 1000000)+"ms)\e[0m")
-        }
-    } else {
-        debugEnd()
+    //print that the compiler finished is job without any error
+    if isObject == false {
+        totalTime = getTimeUnix() - startTime
+        println("\e[1;32mDone. (compiled in "+intToStr(totalTime / 1000000)+"ms)\e[0m")
     }
-
  
     return 0
 }
