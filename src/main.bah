@@ -23,7 +23,7 @@
     BAH_CC = "gcc"
 }
 //////////////////////BUILD SPECIFIC THINGS//////////////////////
-const BAH_VERSION = "v1.1 (build 67)"
+const BAH_VERSION = "v1.1 (build 68)"
 
 debug = false
 verboseRuntime = false
@@ -225,8 +225,10 @@ main(args []cpstring) int {
     excludeFns = []cpstring {
         "main",
         "cpstringCharAt",
+        "cpstringSubsitute",
         "channel",
-        "mapWrapper"
+        "mapWrapper",
+        "arraySubstitute"
     }
 
     //optimization: if the file is not an object, removed unused functions.

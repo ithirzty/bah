@@ -1221,17 +1221,50 @@ parseArrayVars(l []Tok, ltp lineType, elems Elems*) []Tok {
 
             memory = prePross(memory, <lineType>-1, elems)
 
+            split = false
+            sepPos = 0
             cont = ""
             j=0; for j < len(memory), j++ {
                 mt = memory[j]
+                if mt.cont == ":" {
+                    sepPos = j
+                    split = true
+                }
                 cont = cont + mt.cont
+            }
+            from = ""
+            to = ""
+            if split == true {
+                if sepPos == 0 {
+                    from = "0"
+                } else {
+                    j=0; for j < sepPos, j++ {
+                        mt = memory[j]
+                        from += mt.cont
+                    }
+                }
+                if sepPos == len(memory) - 1 {
+                    to = "strlen("+lt.cont+")"
+                } else {
+                    j=sepPos+1; for j < len(memory), j++ {
+                        mt = memory[j]
+                        to += mt.cont
+                    }
+                }
             }
 
             if tt == "cpstring" {
-                lt.cont = "cpstringCharAt("+lt.cont + "," + cont + ")"
-                lt.isFunc = true
-                lt.bahType = "char"
-                nl[len(nl)-1] = lt
+                if split == false {
+                    lt.cont = "cpstringCharAt("+lt.cont + "," + cont + ")"
+                    lt.isFunc = true
+                    lt.bahType = "char"
+                    nl[len(nl)-1] = lt
+                } else {
+                    lt.cont = "cpstringSubsitute("+lt.cont + ", "+from+", " + to + ")"
+                    lt.isFunc = true
+                    lt.bahType = "cpstring"
+                    nl[len(nl)-1] = lt
+                }
                 continue
             }
 
@@ -1284,18 +1317,21 @@ parseArrayVars(l []Tok, ltp lineType, elems Elems*) []Tok {
             }
             strTrimLeft(&tt, 2)
 
-
-            if ti > 0 && ft.cont != "else" {
-                OUTPUT = OUTPUT + rope("
-                if ("+lt.cont+"->length <= "+cont+") {
-                    printf(\"array ("+compilerState.currentFile+":"+intToStr(lt.line)+"): "+lt.cont+"[%d] with length %d\\n\", "+cont+", "+lt.cont+"->length);
-                    exit(1);
-                };
-                ")
+            if split == false {
+                if ti > 0 && ft.cont != "else" {
+                    OUTPUT = OUTPUT + rope("
+                    if ("+lt.cont+"->length <= "+cont+") {
+                        printf(\"array ("+compilerState.currentFile+":"+intToStr(lt.line)+"): "+lt.cont+"[%d] with length %d\\n\", "+cont+", "+lt.cont+"->length);
+                        exit(1);
+                    };
+                    ")
+                }
+                lt.cont = lt.cont + "->data[" + cont + "]"
+                lt.bahType = tt
+            } else {
+                lt.bahType = "[]"+tt
+                lt.cont = "arraySubstitute("+lt.cont+", "+from+", "+to+")"
             }
-
-            lt.cont = lt.cont + "->data[" + cont + "]"
-            lt.bahType = tt
             nl[len(nl)-1] = lt
             continue
         }
