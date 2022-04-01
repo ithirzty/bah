@@ -1,0 +1,106 @@
+ 
+__Bah_map_hash(s cpstring, l int) int {
+    hash = 5381
+
+    i=0; for i < strlen(s), i++ {
+        hash = (<int>noCheck(hash << 5) + 0) + hash + <int>s[i]
+    }
+    return hash % l
+}
+
+struct mapElem {
+    key: cpstring
+    val: ptr
+}
+
+struct mapWrapper {
+    elems: []mapElem*
+    length: int
+    grow(nb int) {
+        l = len(this.elems)
+        i=l; for i < l + nb, i++ {
+            this.elems[i] = null
+        }
+    }
+
+    set(k cpstring, e ptr) {   
+        if this.length * 2 >= len(this.elems) {
+            this.grow(this.length)
+        }
+        elem = new mapElem{
+            key: k
+            val: e
+        }
+        ind = __Bah_map_hash(k, len(this.elems))
+        i=0; for i < len(this.elems), i++ {
+            j = (i + ind) % len(this.elems)
+            ce = this.elems[j]
+            if ce == null {
+                this.elems[j] = elem
+                this.length++
+                break
+            } else if ce.key == k {
+                this.elems[j] = elem
+                break
+            } 
+        }
+    }
+
+    setAny(k cpstring, e ptr, s int) {
+        if this.length == 0 {
+            this.grow(50)
+        }
+        if this.length * 2 >= len(this.elems) {
+            this.grow(this.length)
+        }
+        p = memoryAlloc(s)
+        memcpy(p, e, s)
+        elem = new mapElem{
+            key: k
+            val: p
+        }
+        ind = __Bah_map_hash(k, len(this.elems))
+        i=0; for i < len(this.elems), i++ {
+            j = (i + ind) % len(this.elems)
+            ce = this.elems[j]
+            if ce == null {
+                this.elems[j] = elem
+                this.length++
+                break
+            } else if ce.key == k {
+                this.elems[j] = elem
+                break
+            } 
+        }
+    }
+
+    delete(k cpstring) {
+        ind = __Bah_map_hash(k, len(this.elems))
+        i=0; for i < len(this.elems), i++ {
+            j = (i + ind) % len(this.elems)
+            e = this.elems[j]
+            if e != null && e.key == k {
+                this.elems[j] = null
+            }
+        }
+    }
+
+    get(k cpstring) ptr {
+        ind = __Bah_map_hash(k, len(this.elems))
+        i=0; for i < len(this.elems), i++ {
+            j = (i + ind) % len(this.elems)
+            e = this.elems[j]
+            if e != null && e.key == k {
+                return e.val
+            }
+        }
+        return null
+    }
+
+}
+
+mapWrapper() mapWrapper* {
+    m = new mapWrapper
+    m.grow(50)
+    return m
+}

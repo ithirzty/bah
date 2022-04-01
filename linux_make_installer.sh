@@ -30,6 +30,7 @@ cp /opt/bah/memory.bah ./libs/common/
 cp /opt/bah/http.bah ./libs/common/
 cp /opt/bah/eval.bah ./libs/common/
 cp /opt/bah/debug.bah ./libs/common/
+cp /opt/bah/map.bah ./libs/common/
 #linux specific libs
 # cp /opt/bah/window.bah ./libs/linux/
 #static libs
