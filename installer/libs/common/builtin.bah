@@ -166,3 +166,42 @@ __Bah_safe_string(s cpstring) cpstring {
 
 	return "\""+s+"\""
 }
+
+
+//Used for getting a character by its index inside a cpstring.
+cpstringCharAt(s cpstring, i int) char {
+    c = <char>0
+    noCheck(c = s[i])
+    return c
+}
+
+cpstringSubsitute(s cpstring, i int, l int) cpstring {
+	size = l - i
+	ns = memoryAllocSTR(size)
+	memcpy(ns, noCheck(s+i), size)
+	return ns
+}
+
+arraySubstitute(arr []ptr, i int, l int) ptr {
+	length = l - i
+	offset int = i * noCheck(arr->elemSize)
+	na = []ptr
+	noCheck(na->elemSize = arr->elemSize)
+	noCheck(na->length = length)
+
+	allocLength = length
+	if length > 50 {
+		allocLength += allocLength % 50
+	} else {
+		allocLength = 50
+	}
+	size = allocLength * noCheck(arr->elemSize)
+	realSize = length * noCheck(arr->elemSize)
+	data = memoryAlloc(size)
+	oData cpstring = noCheck(arr->data)
+	memcpy(data, noCheck(oData + offset), realSize)
+	noCheck(na->data = data)
+	return na
+}
+
+#include "map.bah"

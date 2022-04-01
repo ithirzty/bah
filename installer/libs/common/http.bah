@@ -1,9 +1,12 @@
+#include "cBinds.bah"
+
+#include "iostream.bah"
+#include "string.bah"
+#include "exec.bah"
+#include "thread.bah"
+
 #include "<unistd.h>"
 #include "<signal.h>"
-
-#included {
-    #warning "http.bah can be imported instead of included to gain compile time performances."
-}
 
 #linux {
     #include "<sys/types.h>"
@@ -32,12 +35,6 @@
 }
 
 
-#include "cBinds.bah"
-
-#include "iostream.bah"
-#include "string.bah"
-#include "exec.bah"
-#include "thread.bah"
 
 //sockets
 
@@ -1265,7 +1262,7 @@ struct http_request extend http_transport {
     //Returns the client IP address.
     getIP() cpstring {
         addr sockaddr_in
-        addrSize int = noCheck(sizeof(struct sockaddr_in))
+        addrSize int = sizeof(sockaddr_in)
         getpeername(this.socket.sockfd, &addr, &addrSize)
         return __STR(inet_ntoa(addr.sin_addr))
     }

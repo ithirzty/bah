@@ -1659,9 +1659,7 @@ parseFnCall(l []Tok, ltp lineType, elems Elems*) []Tok {
                         fnName = "__BAH_panic"
                         ot.cont = fnName+"("
                         fn = searchFunc(fnName, elems, true)
-                    }
-
-                    if fnName == "__dumpSymbols" {
+                    } else if fnName == "__dumpSymbols" {
                         currLine = "\""+compilerState.currentFile + ":" + intToStr(ot.line)+"\""
                         par = memory[len(memory)-1]
                         cl = par.line
@@ -1716,9 +1714,7 @@ parseFnCall(l []Tok, ltp lineType, elems Elems*) []Tok {
                             isValue: true
                         }
                         memory[1] = par
-                    }
-
-                    if fnName == "breakPoint" {
+                    } else if fnName == "breakPoint" {
                         currLine = "\""+compilerState.currentFile + ":" + intToStr(ot.line)+"\""
                         par = memory[len(memory)-1]
                         cl = par.line
@@ -1758,6 +1754,19 @@ parseFnCall(l []Tok, ltp lineType, elems Elems*) []Tok {
                         fnName = "breakPoint__inner"
                         ot.cont = fnName+"("
                         fn = searchFunc(fnName, elems, true)
+                    } else if fnName == "sizeof" {
+                        tp = ""
+                        j=0; for j < len(memory)-1, j++ {
+                            t = memory[j]
+                            tp += t.cont
+                        }
+                        cType = getCType(tp, elems)
+                        ot.cont += cType.str()+")"
+                        ot.type = TOKEN_TYPE_FUNC
+                        ot.isFunc = true
+                        ot.bahType = "int"
+                        nl[len(nl)] = ot
+                        continue
                     }
 
                     // if fnName == "eval" {
@@ -3386,6 +3395,7 @@ parsePreKeyword(l []Tok, elems Elems*) {
         if fn == null {
             throwErr(&fnT, "Unknown function {TOKEN}.")
         }
+        fn.used = true
 
         makeEvalFunc(fn, elems)
 
@@ -3395,6 +3405,7 @@ parsePreKeyword(l []Tok, elems Elems*) {
     if ft.cont == "#evalAll" {
         i=0; for i < len(elems.fns), i++ {
             fn = elems.fns[i]
+            fn.used = true
             if fn.isBinding == false && strHasPrefix(fn.name, "__Bah_eval_") == false {
                 makeEvalFunc(fn, elems)
             }

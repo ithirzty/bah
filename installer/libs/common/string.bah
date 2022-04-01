@@ -1,5 +1,6 @@
 #include "<string.h>"
 #include "<math.h>"
+#include "<stdlib.h>"
 
 #include "memory.bah"
 
@@ -16,14 +17,6 @@
 //Used for concatenating two known length cpstrings.
 strCatOffset(dest cpstring, destLen int, src cpstring, srcLen int) {
     memcpy(noCheck(dest+destLen), src, srcLen)
-}
-
-
-//Used for getting a character by its index inside a cpstring.
-cpstringCharAt(s cpstring, i int) char {
-    c = <char>0
-    noCheck(c = s[i])
-    return c
 }
 
 //Used for converting a char into a cpstring of length 1.
