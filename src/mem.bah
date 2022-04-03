@@ -9,7 +9,7 @@ decrVar(v variable*, elems Elems*) rope* {
             arrElem.type = at.str()
             arrElem.name = v.name+"->data[arrElemIndex]"
             r = rope("
-            {//////////RCP//////////
+            {
             struct RCP * arrRCP = RCP_request("+v.name+");
             if (arrRCP != null && arrRCP->c == 1) {
                 struct RCP * arrDataRCP = RCP_request("+v.name+"->data);
@@ -21,11 +21,11 @@ decrVar(v variable*, elems Elems*) rope* {
                 RCP_decrRCP(arrDataRCP);
             }
             RCP_decrRCP(arrRCP);
-            };//////////////////////
+            };
             ")
         } else {
             r = rope("
-            {//////////RCP//////////
+            {
             struct RCP * arrRCP = RCP_request("+v.name+");
             if (arrRCP != null) {
                 if (arrRCP->c == 1) {
@@ -34,10 +34,25 @@ decrVar(v variable*, elems Elems*) rope* {
                 }
                 RCP_decrRCP(arrRCP);
             }
-            };//////////////////////
+            };
             ")
         }
+    } else if strHasPrefix(v.type, "chan:") {
+        r = rope("{
+            struct RCP * chanRCP = RCP_request("+v.name+");
+            if (chanRCP != null && chanRCP->c == 1) {
+                "+v.name+"->destroy("+v.name+");
+                RCP_decr("+v.name+"->queue);
+            };
+            RCP_decrRCP(chanRCP);
+        };")
     } else {
+        if strHasPrefix(v.type, "map:") {
+            nv = new variable
+            *nv = *v
+            v = nv
+            v.type = "mapWrapper*"
+        }
         //var can be both a struct and a pointer
         isPointer = isRCPpointerType(v.type)
         //is a struct
@@ -73,7 +88,7 @@ incrVar(v variable*, elems Elems*) rope* {
 }
 
 RCPavailable() bool {
-    return compilerState.currentFile != BAH_DIR+"rcp.bah" && compilerState.currentFile != BAH_DIR+"fastrcp.bah" && RCPenabled == true
+    return absPath(compilerState.currentFile) != absPath(BAH_DIR+"rcp.bah") && absPath(compilerState.currentFile) != absPath(BAH_DIR+"fastrcp.bah") && RCPenabled == true
 }
 
 
@@ -81,14 +96,27 @@ endRCPscope(elems Elems*, exc []variable*) {
     if RCPavailable() == false {
         return
     }
-    i=0; for i < len(elems.vars) {
+    i=0; for i < len(elems.vars), i++ {
         v = elems.vars[i]
         if v.outterScope == false && isRCPtype(v.type, elems) == true {
             if varInArr(v, exc) == false {
                 OUTPUT = OUTPUT + decrVar(v, elems)
             }
         }
-        i = i + 1
+    }
+}
+
+endRCPnonGlobScope(elems Elems*, exc []variable*) {
+    if RCPavailable() == false {
+        return
+    }
+    i=0; for i < len(elems.vars), i++ {
+        v = elems.vars[i]
+        if isRCPtype(v.type, elems) == true {
+            if v.isGlobal == false && varInArr(v, exc) == false {
+                OUTPUT = OUTPUT + decrVar(v, elems)
+            }
+        }
     }
 }
 

@@ -8,7 +8,7 @@ isRCPpointerType(t cpstring) bool {
     if strHasPrefix(t, "function(") {
         return false
     }
-    if t == "cpstring" || t == "ptr" || strCount(t, "*") > 0 || strHasPrefix(t, "[]") == true {
+    if t == "cpstring" || t == "ptr" || strCount(t, "*") > 0 || strHasPrefix(t, "[]") == true || strHasPrefix(t, "chan:") == true || strHasPrefix(t, "map:") == true {
         return true
     }
     return false

@@ -23,7 +23,7 @@
     BAH_CC = "gcc"
 }
 //////////////////////BUILD SPECIFIC THINGS//////////////////////
-const BAH_VERSION = "v1.1 (build 69)"
+const BAH_VERSION = "v1.1 (build 70)"
 
 debug = false
 verboseRuntime = false
@@ -232,7 +232,7 @@ main(args []cpstring) int {
     }
 
     //optimization: if the file is not an object, removed unused functions.
-    if isObject == false {
+    if isObject == false && compilerState.hasImports == false {
         i=0; for i < len(elems.fns), i++ {
             fn = elems.fns[i]
             if fn.used == false && fn.code != null && fn.name in excludeFns == false {

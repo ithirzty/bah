@@ -15,6 +15,7 @@ struct variable {
     isArray: bool = false
     from: cpstring = ""
     outterScope: bool = false
+    isGlobal: bool = false
 }
 
 //Bah struct member
@@ -70,6 +71,7 @@ struct compilerStateTag {
     haveEntryPoint: bool = false
     RCPvars: []variable*
     evals: []cpstring
+    hasImports: bool = false
 }
 
 shouldOnlyDecl = false

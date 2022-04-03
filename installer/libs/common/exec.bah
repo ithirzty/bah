@@ -57,29 +57,21 @@ struct command {
         }
         
         buffer cpstring = memoryAlloc(1025)
-        response = string("")
         total = 0
         fd = fileno(this.handle)
-        nDataLength = read(<ptr>fd,buffer,1024)
-        if nDataLength < 1024 {
-            total = nDataLength
-            response.append(buffer)
-        } else {
-            for nDataLength > 0 {
-                total = total + nDataLength
-                response.append(buffer)
-                if nDataLength < 1024 {
-                    trimAmm = 1024 - nDataLength
-                    response.trimRight(trimAmm)
-                    break
-                } else {
-                    nDataLength = read(<ptr>fd,buffer,1024)
-                }
-            }
+
+        buff cpstring = memoryAlloc(1024)
+
+        response = ""
+        res ptr = fgets(buff, 1023, this.handle)
+        for res != null {
+            response += buff
+            res = fgets(buff, 1023, this.handle)
         }
+
         this.status = pclose(this.handle)
-        noCheck(arr->data = response.content)
-        noCheck(arr->length = total)
+        noCheck(arr->data = response)
+        noCheck(arr->length = strlen(response))
         return arr
     }
 

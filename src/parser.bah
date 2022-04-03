@@ -25,13 +25,12 @@ dupElems(elems Elems*) Elems* {
     nElems = new Elems
 
     //vars
-    j=0; for j < len(elems.vars) {
+    j=0; for j < len(elems.vars), j++ {
         v = elems.vars[j]
         nv = new variable
         *nv = *v
         nv.outterScope = true
         nElems.vars[j] = nv
-        j = j + 1
     }
 
     //structs
@@ -249,12 +248,10 @@ includeFile(ccstr cpstring, elems Elems*) bool {
 
     //handle declarative parsing
     oshd = shouldOnlyDecl
-    if isObject == true && isInside(oDir, fileName) == false {
+    if isObject == true {
         shouldOnlyDecl = true
     } else if isSubObject == true {
-        if isInside(oDir, fileName) == false {
-            shouldOnlyDecl = false
-        }
+        shouldOnlyDecl = false
     }
 
     parseLines(tokens, elems)
@@ -268,6 +265,7 @@ includeFile(ccstr cpstring, elems Elems*) bool {
 }
 
 parseImport(l []Tok, elems Elems*) {
+    compilerState.hasImports = true
     //basic usage check
     if len(l) != 2 {
         throwErr(&l[0], "Invalid usage of {TOKEN}.")
@@ -319,12 +317,13 @@ parseImport(l []Tok, elems Elems*) {
     oiso = isSubObject
     isSubObject = true
 
+    oName = BAH_DIR+"cache/"+pathToVarName(fn)+".o"
+    compilerState.cLibs[len(compilerState.cLibs)] = "w "+oName+".o" //adds object file to the linker
+    
     //parse file
     parseLines(tokens, elems)
     
     //checks for cache
-    oName = BAH_DIR+"cache/"+pathToVarName(fn)+".o"
-    compilerState.cLibs[len(compilerState.cLibs)] = "w "+oName+".o" //adds object file to the linker
     readCache()
     cf = getCacheFile(fn)
     wrkd = getCurrentPath()
@@ -2340,8 +2339,13 @@ void * newPtr = memoryRealloc("+nstr+"->data, (nLength+50)*sizeof("+elemTypeStr+
             vct = "extern "+vct
         }
 
-        vars = elems.vars
-        vars[len(vars)] = v
+        if isGlobal() {
+            v.isGlobal = true
+        } else {
+            v.isGlobal = false
+        }
+
+        elems.vars[len(elems.vars)] = v
 
         debugPrint("var_declaration", ft.line, v)
         // registerType(&fileDeps, v.type, elems)
@@ -3018,6 +3022,11 @@ parseConst(l []Tok, elems Elems*) {
     }
 
     v = new variable
+
+    if isGlobal() {
+        v.isGlobal = true
+    }
+
     v.isConst = true
     v.constVal = valt.cont
     v.name = vart.cont
@@ -3070,10 +3079,10 @@ parseReturn(l []Tok, elems Elems*) {
             cType = getCType(currentFn.returns.type, elems)
             OUTPUT = OUTPUT + rope(cType.str() + " " + rvar + " = "+rv+";\n")
         }
-        endRCPscope(elems, null)
+        endRCPnonGlobScope(elems, currentFn.args)
         OUTPUT = OUTPUT + rope("return "+rvar+";\n")
     } else {
-        endRCPscope(elems, null)
+        endRCPnonGlobScope(elems, currentFn.args)
         OUTPUT = OUTPUT + rope("return;\n")
     }
 }
@@ -3594,15 +3603,34 @@ parseChan(l []Tok, elems Elems*) []Tok {
                         throwErr(&t, "Cannot receive ({TOKEN}) from a channel outside of a function.")
                     }
 
+                    tmpV = ""
+
                     if isRCPpointerType(ntt.str()) {
                         ct = getCType(ntt.str(), elems)
                         t.cont = "("+ct.str()+")"+nt.cont+"->receive("+nt.cont+")"
                     } else {
                         ct = getCType(ntt.str(), elems)
-                        t.cont = "*("+ct.str()+"*)"+nt.cont+"->receive("+nt.cont+")"
+                        if RCPavailable() {
+                            tmpV = registerRCPvar(ntt.str()+"*", "("+ct.str()+"*)"+nt.cont+"->receive("+nt.cont+")", elems)
+                            t.cont = "*"+tmpV
+                        } else {
+                            t.cont = "*("+ct.str()+"*)"+nt.cont+"->receive("+nt.cont+")"
+                        }
                     }
-                    t.isFunc = true
                     t.type = TOKEN_TYPE_FUNC
+                    t.isFunc = true
+
+                    if RCPavailable() {
+                        if isRCPpointerType(ntt.str()) {
+                            tmpV = registerRCPvar(ntt.str(), t.cont, elems)
+                            t.type = TOKEN_TYPE_VAR
+                            t.isFunc = false
+                            t.cont = tmpV
+                        } else {
+
+                        }
+                    }
+
                     t.isValue = true
                     t.bahType = ntt.str()
                 } else {
@@ -3706,6 +3734,11 @@ prePross(line []Tok, ltp lineType, elems Elems*) []Tok {
 parseFnDeclare(l []Tok, elems Elems*) {
     i = 0
     fn = new func
+
+    if RCPavailable() == false && RCPenabled == true { //currently parsing a rcp file
+        fn.used = true
+    }
+
     ft = l[0]
     code = parseFnHeader("", l, &i, fn, elems)
     fn.line = ft.line
@@ -3790,9 +3823,6 @@ parseFnDeclare(l []Tok, elems Elems*) {
 
     parseLines(tokens, fnElems)
     
-    fn.code += OUTPUT
-
-    OUTPUT = oOut
 
     currentFn = null
     if fn.returned == false {
@@ -3802,6 +3832,8 @@ parseFnDeclare(l []Tok, elems Elems*) {
         endRCPscope(fnElems, null)
     }
 
+    fn.code += OUTPUT
+    OUTPUT = oOut
     fn.code += rope("};\n")
 
 

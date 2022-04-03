@@ -17,14 +17,15 @@
 #define! pthread_mutex_unlock(lock pthread_mutex_t*)
 #define! pthread_mutex_destroy(lock pthread_mutex_t*)
 
-#define! pthread_create(id int*, attr ptr, func ptr, args ptr)
-#define! pthread_join(id int, ret ptr)
+// #define! pthread_create(id int*, attr ptr, func ptr, args ptr)
+// #define! pthread_join(id int, ret ptr)
 
 
 #define RCP_register(p ptr, s int)
 #define RCP_remove(p ptr)
 #define RCP_setNewPtr(o ptr, n ptr)
 
+#define! sizeof(a ptr) int
 
 //Destroy will force to free a pointer.
 destroy(a ptr) {
@@ -66,7 +67,7 @@ struct RCP_threadSearch {
 
 RCPthreadSearch(arg ptr) RCP* {
     rts RCP_threadSearch* = arg
-    r = bsearch(&rts.p, noCheck(&rts.arr[rts.from]), rts.to - rts.from, noCheck(sizeof(struct RCP)), cmp_rcp)
+    r = bsearch(&rts.p, noCheck(&rts.arr[rts.from]), rts.to - rts.from, sizeof(RCP), cmp_rcp)
     free(arg)
     return r
 }
@@ -89,7 +90,7 @@ struct RCPstate {
 
     getSize(add int) int {
         l = this.len + add
-        return l * noCheck(sizeof(struct RCP))
+        return l * sizeof(RCP)
     }
 
     grow(i int) {
@@ -104,12 +105,12 @@ struct RCPstate {
     }
 
     sort() {
-        qsort(noCheck(&this.RCPs[0]), this.len, noCheck(sizeof(struct RCP)), cmp_rcp)
+        qsort(noCheck(&this.RCPs[0]), this.len, sizeof(RCP), cmp_rcp)
     }
 
     rcpToIndex(r RCP*) int {
         i int = <int>r - <int>noCheck(&this.RCPs[0])
-        i = i / noCheck(sizeof(struct RCP))
+        i = i / sizeof(RCP)
 
         return i
     }
@@ -173,7 +174,7 @@ struct RCPstate {
         }
         
         
-        return bsearch(&p, noCheck(&this.RCPs[0]), this.len, noCheck(sizeof(struct RCP)), cmp_rcp)
+        return bsearch(&p, noCheck(&this.RCPs[0]), this.len, sizeof(RCP), cmp_rcp)
     }
 
     resize(ns int) {
