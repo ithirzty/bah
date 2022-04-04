@@ -264,6 +264,33 @@ includeFile(ccstr cpstring, elems Elems*) bool {
     return true
 }
 
+parallelObjCompile(fn cpstring, oName cpstring, done chan:bool) {
+    readCache()
+    cf = getCacheFile(fn)
+    wrkd = getCurrentPath()
+    //file not found in cache, need to compile it
+    if isValidCacheFile(cf) == false {
+        setCurrentPath(compilerState.currentDir)
+        verboseCC = ""
+        if flags.isSet("verboseCC") == 1 {
+            verboseCC = "-verboseCC"
+        }
+        cmd = command(execName + " "+fn+" -object "+verboseCC+" -o "+oName)
+        res = cmd.run()
+        setCurrentPath(wrkd)
+        if cmd.status != 0 {
+            print(res)
+            exit(1)
+        }
+        if cf == null {
+            makeCacheFile(fn)
+        } else {
+            updateCacheFile(cf)
+        }
+    }
+    true -> done
+}
+
 parseImport(l []Tok, elems Elems*) {
     compilerState.hasImports = true
     //basic usage check
@@ -282,7 +309,6 @@ parseImport(l []Tok, elems Elems*) {
 
     //include guard
     if fileName.str() in compilerState.includes {
-        throwWarning("Imported object '"+fileName.str()+"' has already been include/imported.")
         return
     }
     compilerState.includes[len(compilerState.includes)] = fileName.str()
@@ -317,36 +343,26 @@ parseImport(l []Tok, elems Elems*) {
     oiso = isSubObject
     isSubObject = true
 
-    oName = BAH_DIR+"cache/"+pathToVarName(fn)+".o"
+    oName = BAH_DIR+"cache/"+pathToVarName(fn)+intToStr(RCPlevel)+".o"
     compilerState.cLibs[len(compilerState.cLibs)] = "w "+oName+".o" //adds object file to the linker
     
+    done = chan bool
+
+    //checks for cache
+    #linux {
+        async parallelObjCompile(fn, oName, done)
+    }
+    #darwin {
+        async parallelObjCompile(fn, oName, done)
+    }
+    #windows {
+        parallelObjCompile(fn, oName, done)
+    }
+
     //parse file
     parseLines(tokens, elems)
-    
-    //checks for cache
-    readCache()
-    cf = getCacheFile(fn)
-    wrkd = getCurrentPath()
-    //file not found in cache, need to compile it
-    if isValidCacheFile(cf) == false {
-        setCurrentPath(compilerState.currentDir)
-        verboseCC = ""
-        if flags.isSet("verboseCC") == 1 {
-            verboseCC = "-verboseCC"
-        }
-        cmd = command(execName + " "+fn+" -object "+verboseCC+" -o "+oName)
-        res = cmd.run()
-        setCurrentPath(wrkd)
-        if cmd.status != 0 {
-            print(res)
-            exit(1)
-        }
-        if cf == null {
-            makeCacheFile(fn)
-        } else {
-            updateCacheFile(cf)
-        }
-    }
+
+    ok = <- done
 
     //adds its init function
     INIT += rope("__BAH_init"+pathToVarName(fn)+"();\n")

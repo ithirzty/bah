@@ -6,10 +6,10 @@
 // © Aloïs Laurent Boë - Bah examples - 2022
 
 
-#include "iostream.bah" //for: println(), string{}, intToStr(), arrToStr(), fileStream{}
-#include "thread.bah"   //for: mutex{}
-#include "json.bah"     //for: toJson()
-#include "http.bah"     //for: http_server{}, http_request{}, http_server{}
+#import "iostream.bah" //for: println(), string{}, intToStr(), arrToStr(), fileStream{}
+#import "thread.bah"   //for: mutex{}
+#import "json.bah"     //for: toJson()
+#import "http.bah"     //for: http_server{}, http_request{}, http_server{}
 
 //This is the structure that will represent a message.
 struct message {

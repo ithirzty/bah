@@ -115,9 +115,19 @@ Bah also has a garbage collector AND a reference counter. You can choose the one
 
 ### [List of most important features](features.md)
 
-## Extras
-Here is how fast bah v1.0 (build 15) compiles itself on a ThinkPad x220 (a 16 years old machine)
-![compilation times](extra/bah_comp_time.png)
+
+## Imports and includes
+When to use `#import` and `#include`?
+
+`#import` isolates the specified file where `#include` will simply include it.<br>
+If the file to import needs the file that imports it, then importing it will fail.<br>
+For example, `a.bah` imports `b.bah` but `b.bah` needs a global variable defined in `a.bah`.
+Then, using `#import` instead of `#include` will fail.<br>
+On the other hand, `a.bah` needs `iostream.bah`. Iostream does not depend on `a.bah`.
+You can then import it.
+
+More generally, if `#import` fail, use `#include` that cannot fail.<br>
+Note that using import reduce compilation time because of its use of the cache.
 
 ## How does it work?
 Information on how a Bah compiler should operate can be found [here](how.md)

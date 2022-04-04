@@ -5,7 +5,7 @@
 //
 // © Aloïs Laurent Boë - Bah examples - 2022
 
-#include "iostream.bah" //for: listFiles(), println()
+#import "iostream.bah" //for: listFiles(), println()
 
 //'main' is the entry point of the program.
 //it takes an array of arguments (passed by the terminal) and returns an exit code.

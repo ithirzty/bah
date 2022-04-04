@@ -6,6 +6,7 @@ struct cacheFile {
     last: int
     ver: cpstring
     date: int
+    mem: int
     files: []cpstring
 }
 
@@ -41,7 +42,7 @@ getCacheFile(s cpstring) cacheFile* {
     }
     i=0; for i < len(cache), i++ {
         c = cache[i]
-        if c.file == s {
+        if c.file == s && c.mem == RCPlevel {
             return c
         }
     }
@@ -58,6 +59,7 @@ makeCacheFile(f cpstring) {
     c = new cacheFile
     c.file = f
     c.ver = BAH_VERSION
+    c.mem = RCPlevel
     c.date = getTimeUnix()
     c.last = getLastModified(f)
     if cache == null {
@@ -77,7 +79,11 @@ isValidCacheFile(cf cacheFile*) bool {
     if cf == null || cf.last != getLastModified(cf.file) {
         return false
     }
-    if fileExists(BAH_DIR+"cache/"+pathToVarName(cf.file)+".o.o") == 0 {
+    if fileExists(BAH_DIR+"cache/"+pathToVarName(cf.file)+intToStr(cf.mem)+".o.o") == 0 {
+        return false
+    }
+
+    if cf.ver != BAH_VERSION {
         return false
     }
     return true

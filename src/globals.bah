@@ -90,4 +90,6 @@ totalLexerTime = 0
 
 RCPenabled = false
 
+RCPlevel = 0
+
 flags flags
