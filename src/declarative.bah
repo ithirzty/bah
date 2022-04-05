@@ -32,7 +32,6 @@ declareAll(elems Elems*) {
 struct{	\
 type *data; \
 long int length; \
-long int realLength; \
 long int elemSize; \
 }
 typedef array(char*)* __BAH_ARR_TYPE_cpstring;

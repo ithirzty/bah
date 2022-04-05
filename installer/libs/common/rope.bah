@@ -1,4 +1,4 @@
-const ROPE_LEAF_LEN = 50
+const ROPE_LEAF_LEN = 200
 
 struct rope {
     left: rope*
@@ -85,11 +85,10 @@ createRopeStructure(par rope*, a cpstring, l int, r int) rope* {
         tmp.lCount = r - l
         j = 0
         i = l
-        arr cpstring = memoryAlloc(ROPE_LEAF_LEN+1)
+        arr cpstring = memoryAlloc(r+1)
         for i <= r {
             noCheck(arr[j] = a[i])
-            j = j + 1
-            i = i + 1
+            j++;i++
         }
         tmp.str = arr
     }

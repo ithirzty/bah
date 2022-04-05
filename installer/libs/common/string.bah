@@ -108,17 +108,30 @@ isSpace(c char) int {
 //A string wrapper to make string manipulation easier.
 struct string {
     content: cpstring
+    editable: bool
     length: int
 
     //Sets the string value to the specified cpstring.
     set(s cpstring) {
         this.length = strlen(s)
+        this.editable = false
+        this.content = s
+        // this.content = <cpstring>memoryAlloc(this.length+1)
+        // strncpy(this.content, s, this.length)
+    }
+
+    makeEditable() {
+        this.editable = true
+        old = this.content
         this.content = <cpstring>memoryAlloc(this.length+1)
-        strncpy(this.content, s, this.length)
+        strncpy(this.content, old, this.length)
     }
 
     //Appends the specified cpstring to the string.
     append(s cpstring) {
+        if this.editable == false {
+            this.makeEditable()
+        }
         sl = strlen(s)
         nl = sl + this.length
         nc = memoryRealloc(this.content, nl + 1)
@@ -132,6 +145,7 @@ struct string {
     
     //Prepends the specified cpstring to the string.
     prepend(s cpstring) {
+        this.editable = true
         sl = strlen(s)
         nl = this.length + sl
         tmpS = this.content
@@ -148,12 +162,13 @@ struct string {
 
     //Returns the char at the specified position of the string.
     charAt(i int) char {
-        c = <char>0
-        if i < this.length {
-            noCheck(c = this->content[i])
-            return c
+        if <ptr>this.content == null {
+            return null
         }
-        return c
+        if i < this.length && i >= 0 {
+            return this.content[i]
+        }
+        return null
     }
 
     //Used to know if the content of the string is the same as the specified cpstring, returns 1 if true.
@@ -167,13 +182,15 @@ struct string {
 
     //Used for getting the content of the string as a cpstring.
     str() cpstring {
-        s = this.content
-        return s
+        return this.content
     }
 
 
     //Used to replace a substring by another.
     replace(nd cpstring, rl cpstring) {
+        if this.editable == false {
+            this.makeEditable()
+        }
         needle = string{}
         needle.set(nd)
         repl = string{}
@@ -236,8 +253,21 @@ struct string {
         }
     }
 
+    countChar(need char) int {
+        c = 0
+        i=0; for i < this.length, i++ {
+            if this.charAt(i) == need {
+                c++
+            }
+        }
+        return c
+    }
+
     //Used to count the number of substring(s).
     count(need cpstring) int {
+        if strlen(need) == 1 {
+            return this.countChar(need[0])
+        }
         i = 0
         count = 0
         needle = string{}
@@ -309,13 +339,13 @@ struct string {
         if isSpace(fc) == 0 {
             return
         }
-        i = 0
-        for i < this.length {
-            c = this.charAt(i)
-            if isSpace(c) == 0 {
+        if this.editable == false {
+            this.makeEditable()
+        }
+        i=0;for i < this.length, i++ {
+            if isSpace(this.charAt(i)) == 0 {
                 break
             }
-                i = i + 1
         }
         if i > 0 {
             this.length = this.length - i
@@ -327,6 +357,9 @@ struct string {
 
     //Used to trim a specified number of charcaters from the beginning of the string.
     trimLeft(s int) {
+        if this.editable == false {
+            this.makeEditable()
+        }
         nSize = this.length - s
         tmpS = memoryAlloc(nSize)
         memcpy(tmpS, noCheck(this.content+s), nSize)
@@ -336,6 +369,9 @@ struct string {
 
     //Used to trim a specified number of charcaters from the end of the string.
     trimRight(s int) {
+        if this.editable == false {
+            this.makeEditable()
+        }
         nSize = this.length - s
         tmpS = memoryAlloc(nSize)
         memcpy(tmpS, this.content, nSize)

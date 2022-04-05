@@ -2537,7 +2537,7 @@ return cmd;
 char * BAH_DIR;
 char * BAH_OS;
 char * BAH_CC;
-#define BAH_VERSION "v1.1 (build 72)"
+#define BAH_VERSION "v1.1 (build 73)"
 char debug;
 char verboseRuntime;
 char isObject;
@@ -21568,14 +21568,13 @@ OUTPUT =  rope("\n#define noCheck(v) v\n#define array(type)	\
 struct{	\
 type *data; \
 long int length; \
-long int realLength; \
 long int elemSize; \
 }\ntypedef array(char*)* __BAH_ARR_TYPE_cpstring;\nlong int __BAH__main(__BAH_ARR_TYPE_cpstring);\n");
 long int i =  0;
 for (; (i<len(compilerState.cIncludes)); i =  i+1) {
 
                     if (compilerState.cIncludes->length <= i) {
-                        printf("array (/home/alois/Documents/bah-bah/src/declarative.bah:43): compilerState.cIncludes[%d] with length %d\n", i, compilerState.cIncludes->length);
+                        printf("array (/home/alois/Documents/bah-bah/src/declarative.bah:42): compilerState.cIncludes[%d] with length %d\n", i, compilerState.cIncludes->length);
                         exit(1);
                     };
                     char * ____BAH_COMPILER_VAR_776 =null;
@@ -21604,7 +21603,7 @@ i =  1;
 for (; (i<len(compilerState.arrTypesDecl)); i =  i+1) {
 
                     if (compilerState.arrTypesDecl->length <= i) {
-                        printf("array (/home/alois/Documents/bah-bah/src/declarative.bah:47): compilerState.arrTypesDecl[%d] with length %d\n", i, compilerState.arrTypesDecl->length);
+                        printf("array (/home/alois/Documents/bah-bah/src/declarative.bah:46): compilerState.arrTypesDecl[%d] with length %d\n", i, compilerState.arrTypesDecl->length);
                         exit(1);
                     };
                     char * t =  compilerState.arrTypesDecl->data[i];
@@ -21645,7 +21644,7 @@ i =  0;
 for (; (i<len(elems->vars)); i =  i+1) {
 
                     if (elems->vars->length <= i) {
-                        printf("array (/home/alois/Documents/bah-bah/src/declarative.bah:55): elems->vars[%d] with length %d\n", i, elems->vars->length);
+                        printf("array (/home/alois/Documents/bah-bah/src/declarative.bah:54): elems->vars[%d] with length %d\n", i, elems->vars->length);
                         exit(1);
                     };
                     struct variable* v =  elems->vars->data[i];
@@ -21655,7 +21654,7 @@ i =  0;
 for (; (i<len(elems->fns)); i =  i+1) {
 
                     if (elems->fns->length <= i) {
-                        printf("array (/home/alois/Documents/bah-bah/src/declarative.bah:60): elems->fns[%d] with length %d\n", i, elems->fns->length);
+                        printf("array (/home/alois/Documents/bah-bah/src/declarative.bah:59): elems->fns[%d] with length %d\n", i, elems->fns->length);
                         exit(1);
                     };
                     struct func* fn =  elems->fns->data[i];

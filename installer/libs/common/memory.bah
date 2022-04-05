@@ -206,8 +206,9 @@ unser(data []char) ptr {
 #gc {
     #define! GC_malloc_atomic(s int) ptr
     memoryAllocSTR(s int) cpstring {
-        r = GC_malloc_atomic(s)
-        memset(r, 0, s)
+        r cpstring = GC_malloc_atomic(s)
+        noCheck(r[s-1] = 0)
+        // memset(r, 0, s)
         return r
     }
 }
