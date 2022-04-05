@@ -81,7 +81,7 @@ getCType(t cpstring, elems Elems*) string {
     } else if ctp.compare("byte") {
         tp.replace("byte", "unsigned char")
     } else if ctp.compare("bool") {
-        tp.replace("bool", "int")
+        tp.replace("bool", "char")
     } else if ctp.compare("char") {
         //do nothing for now
     } else {

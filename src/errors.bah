@@ -10,51 +10,50 @@ throwErr(tp ptr, format cpstring) {
     info = ""
     pos = 0
     if tp != null {
-    fm = fileMap{}
-    fileSrcStr = fm.open(compilerState.currentFile)
-    fileSrc = string(fileSrcStr)
-    fm.close()
-    t Tok* = tp
-    ffmt = string(format)
-    if strlen(t.ogCont) == 0 {
-        t.ogCont = t.cont
-    }
-    ffmt.replace("{TOKEN}", "'"+t.ogCont+"'")
-    format = ffmt.str()
-
-    line = []char
-
-    beg=t.pos; for beg > 0 {
-        c = fileSrc.charAt(beg)
-        if c == <char>10 {
-            beg =beg + 1
-            break
+        fm = fileMap{}
+        fileSrcStr = fm.open(compilerState.currentFile)
+        t Tok* = tp
+        ffmt = string(format)
+        if strlen(t.ogCont) == 0 {
+            t.ogCont = t.cont
         }
-        beg =beg - 1
-    }
+        ffmt.replace("{TOKEN}", "'"+t.ogCont+"'")
+        format = ffmt.str()
 
-    pos = t.pos - beg + 1
+        line = []char
 
-    i=beg; for i < fileSrc.length {
-        c = fileSrc.charAt(i)
-        if c == <char>10 {
-            break
-        }
-        if i == t.pos {
-            errTk = strToArr("\e[1;31m"+t.ogCont+"\e[1;37m")
-            ii=0; for ii < len(errTk) {
-                line[len(line)] = errTk[ii]
-                ii =ii + 1
+        beg=t.pos; for beg > 0 {
+            c = fileSrcStr[beg]
+            if c == <char>10 {
+                beg =beg + 1
+                break
             }
-            i = i + strlen(t.ogCont)
-            continue
+            beg =beg - 1
         }
-        line[len(line)] = c
-        i =i + 1
-    }
 
-    str = arrToStr(line)
-    info = intToStr(t.line) + ":" + intToStr(pos)
+        pos = t.pos - beg + 1
+
+        i=beg; for i < fm.size {
+            c = fileSrcStr[i]
+            if c == <char>10 {
+                break
+            }
+            if i == t.pos {
+                errTk = strToArr("\e[1;31m"+t.ogCont+"\e[1;37m")
+                ii=0; for ii < len(errTk) {
+                    line[len(line)] = errTk[ii]
+                    ii =ii + 1
+                }
+                i = i + strlen(t.ogCont)
+                continue
+            }
+            line[len(line)] = c
+            i =i + 1
+        }
+
+        fm.close()
+        str = arrToStr(line)
+        info = intToStr(t.line) + ":" + intToStr(pos)
     }
 
     if debug == true {

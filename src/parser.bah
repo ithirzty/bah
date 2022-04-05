@@ -268,6 +268,14 @@ parallelObjCompile(fn cpstring, oName cpstring, done chan:bool) {
     readCache()
     cf = getCacheFile(fn)
     wrkd = getCurrentPath()
+
+    rcp = ""
+    if RCPlevel == 1 {
+        rcp = "-rcp"
+    } else if RCPlevel == 2 {
+        rcp = "-fastrcp"
+    }
+
     //file not found in cache, need to compile it
     if isValidCacheFile(cf) == false {
         setCurrentPath(compilerState.currentDir)
@@ -275,7 +283,7 @@ parallelObjCompile(fn cpstring, oName cpstring, done chan:bool) {
         if flags.isSet("verboseCC") == 1 {
             verboseCC = "-verboseCC"
         }
-        cmd = command(execName + " "+fn+" -object "+verboseCC+" -o "+oName)
+        cmd = command(execName + " "+fn+" "+rcp+" -object "+verboseCC+" -o "+oName)
         res = cmd.run()
         setCurrentPath(wrkd)
         if cmd.status != 0 {
@@ -543,7 +551,7 @@ parseOperations(line []Tok, ltp lineType, elems Elems*) []Tok {
                 j=0; for j < len(strConts), j++ {
                     js = intToStr(j)
                     cats = cats + rope("
-                    strncpy("+rstr+"+currStrOff, "+strConts[j]+", strLen_"+js+");
+                    memcpy("+rstr+"+currStrOff, "+strConts[j]+", strLen_"+js+");
                     currStrOff += strLen_"+js+";
                     ")
                 }
@@ -555,6 +563,7 @@ parseOperations(line []Tok, ltp lineType, elems Elems*) []Tok {
                     "+lens+";                            
                     "+rstr+" = memoryAllocSTR("+totStrLen+");
                     ")+cats+rope("
+                    "+rstr+"[currStrOff] = 0;
                 }
                 ")
 
@@ -2294,6 +2303,7 @@ void * newPtr = memoryRealloc("+nstr+"->data, (nLength+50)*sizeof("+elemTypeStr+
 "+code+";
 }
 }"
+
 
         }
     } else {
