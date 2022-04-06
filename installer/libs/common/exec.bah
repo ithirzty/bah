@@ -56,7 +56,6 @@ struct command {
             return arr
         }
         
-        buffer cpstring = memoryAlloc(1025)
         total = 0
         fd = fileno(this.handle)
 

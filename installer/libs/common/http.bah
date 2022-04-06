@@ -360,27 +360,27 @@ struct http_socket {
     }
 
     receiveBuff() response_buffer {
-        buffer cpstring = memoryAlloc(1025)
+        buff cpstring = memoryAlloc(1025)
         rep = response_buffer{}
 
         #linux {
             iMode = 0
             ioctl(this.sockfd, noCheck(FIONBIO), &iMode)
-            nDataLength = recv(this.sockfd,buffer,1024,0)
+            nDataLength = recv(this.sockfd,buff,1024,0)
             if nDataLength == -1 {
                 return rep
             }
-            rep.append(buffer, nDataLength)
+            rep.append(buff, nDataLength)
             iMode = 1
             ioctl(this.sockfd, noCheck(FIONBIO), &iMode)
         }
 
         for 1 == 1 {
-            nDataLength = recv(this.sockfd,buffer,1024,0)
+            nDataLength = recv(this.sockfd,buff,1024,0)
             if nDataLength <= 0 {
                 break
             }
-            rep.append(buffer, nDataLength)
+            rep.append(buff, nDataLength)
         }
         return rep
     }
@@ -743,20 +743,20 @@ http_send(connfd int, s cpstring) {
 
 //To receive from a specified socket.
 http_receive(connfd int) cpstring {
-    buffer cpstring = memoryAlloc(1025)
+    buff cpstring = memoryAlloc(1025)
     response = string("")
-    nDataLength = recv(connfd,buffer,1024,0)
+    nDataLength = recv(connfd,buff,1024,0)
     if nDataLength < 1024 {
-        response.append(buffer)
+        response.append(buff)
     } else {
         for nDataLength > 0 {
-            response.append(buffer)
+            response.append(buff)
             if nDataLength < 1024 {
                 trimAmm = 1024 - nDataLength
                 response.trimRight(trimAmm)
                 break
             } else {
-                nDataLength = recv(connfd,buffer,1024,0)
+                nDataLength = recv(connfd,buff,1024,0)
             }
         }
     }

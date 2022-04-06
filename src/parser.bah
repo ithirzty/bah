@@ -1336,6 +1336,27 @@ parseArrayVars(l []Tok, ltp lineType, elems Elems*) []Tok {
                 }
                 nl[len(nl)-1] = lt
                 continue
+            }
+            if strHasPrefix(tt, "buffer:") {
+                if split == false {
+                    amm = tt[7:]
+                    OUTPUT = OUTPUT + rope("
+                    if ("+cont+" >= "+amm+") {
+                        printf(\"buffer ("+compilerState.currentFile+":"+intToStr(lt.line)+"): "+lt.cont+"[%d] with length %d\\n\", "+cont+", "+amm+");
+                        exit(1);
+                    };
+                    ")
+                    lt.cont = lt.cont+"["+cont+"]"
+                    lt.isFunc = false
+                    lt.bahType = "char"
+                    nl[len(nl)-1] = lt
+                } else {
+                    lt.cont = "cpstringSubsitute("+lt.cont + ", "+from+", " + to + ")"
+                    lt.isFunc = true
+                    lt.bahType = "cpstring"
+                    nl[len(nl)-1] = lt
+                }
+                continue
             } else if strHasPrefix(tt, "[]") == false {
                 throwErr(&lt, "Cannot use {TOKEN} ("+tt+") as an array.")
             }
@@ -2158,7 +2179,29 @@ parseVar(l []Tok, elems Elems*) {
                     throwErr(&errT, "{TOKEN} not expected after map declaration.")
                 }
                 break
-            }
+            } else if t.cont == "buffer" {
+                if i >= len(l) {
+                    throwErr(&t, "Cannot declare a {TOKEN} without a length (buffer <length>).")
+                }
+                i++
+                nt = l[i]
+                if nt.type != TOKEN_TYPE_INT {
+                    throwErr(&nt, "Expected buffer length, not {TOKEN}.")
+                }
+                v.type = "buffer:"+nt.cont
+                av = new variable
+                av.type = "char*"
+                av.name = genCompilerVar()
+                elems.vars[len(elems.vars)] = av
+                cType = getCType(av.type, elems)
+                OUTPUT = OUTPUT + rope("char "+av.name+"["+nt.cont+"];")
+                code = av.name
+                if i+1 != len(l) {
+                    errT = l[i+1]
+                    throwErr(&errT, "{TOKEN} not expected after buffer declaration.")
+                }
+                break
+            } 
             if t.isValue == false {
                 throwErr(&t, "Cannot use {TOKEN} as value in var declaration.")
             }

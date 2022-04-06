@@ -74,8 +74,8 @@ concatCPSTRING(a cpstring, b cpstring) cpstring {
 //It allocates memory for the cpstring.
 __STR(a cpstring) cpstring {
 	lenA = strlen(a)
-	r cpstring = memoryAlloc(lenA+1)
-	strncpy(r,a,lenA)
+	r cpstring = memoryAllocSTR(lenA+1)
+	memcpy(r,a,lenA)
 	return r
 }
 
@@ -177,7 +177,7 @@ cpstringCharAt(s cpstring, i int) char {
 
 cpstringSubsitute(s cpstring, i int, l int) cpstring {
 	size = l - i
-	ns = memoryAllocSTR(size)
+	ns = memoryAllocSTR(size+1)
 	memcpy(ns, noCheck(s+i), size)
 	return ns
 }

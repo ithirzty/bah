@@ -24,18 +24,26 @@ searchVar(name cpstring, elems Elems*) variable* {
             i = i - 1
         }
         tamm = n.length - i
-        n.trimRight(tamm + 6)
+        n.trimRight(tamm)
+        isArr = n.hasSuffix("->data") == 1
+        if isArr == true {
+            n.trimRight(6)
+        }
         name = n.str()
         v = searchVar(name, elems)
         
         vt = string(v.type)
-        vt.trimLeft(2)
+        if isArr == true {
+            vt.trimLeft(2)
+        } else {
+            vt.set("char")
+        }
         vtstr = vt.str()
 
         nv = new variable
         nv.type = vtstr
         nv.name = ogName
-        nv.isArray = true
+        nv.isArray = isArr
         return nv
     }
     

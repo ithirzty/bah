@@ -403,8 +403,9 @@ intToStr(i int) cpstring {
         return "0"
     }
 
-    s = []char
-
+    s = buffer 66
+    ind = -1
+    
     subZero = i < 0
 
     if subZero == true {
@@ -414,13 +415,15 @@ intToStr(i int) cpstring {
     for i != 0, i = i / 10 {
         conv = i % 10
         conv = conv + 48
-        s[len(s)] = <char>conv
+        s[ind+1] = <char>conv
+        ind++
     }
 
     if subZero == true {
-        s[len(s)] = '-'
+        s[ind+1] = '-'
+        ind++
     }
-    ls = len(s)
+    ls = ind+1
     i=0; for i < ls/2, i++ {
         ii = ls-i-1
         osi = s[i]
@@ -428,9 +431,9 @@ intToStr(i int) cpstring {
         s[ii] = osi
     }
 
-    s[len(s)] = <char>0
+    s[ind+1] = <char>0
 
-    return arrAsStr(s)
+    return __STR(s)
 }
 
 //Used to convert an integer into a string.

@@ -12,20 +12,20 @@
 
 //Returns the text inputed by the user inside the terminal.
 stdinput() cpstring {
-    buffer cpstring = memoryAlloc(1025)
+    buff cpstring = memoryAlloc(1025)
     response = ""
-    nDataLength = read(<ptr>0,buffer,1024)
+    nDataLength = read(<ptr>0,buff,1024)
     if nDataLength < 1024 {
-        response += buffer
+        response += buff
     } else {
         for nDataLength > 0 {
-            response += buffer
+            response += buff
             if nDataLength < 1024 {
                 trimAmm = 1024 - nDataLength
                 strTrimRight(&response, trimAmm)
                 break
             } else {
-                nDataLength = read(<ptr>0,buffer,1024)
+                nDataLength = read(<ptr>0,buff,1024)
             }
         }
     }

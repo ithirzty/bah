@@ -52,6 +52,8 @@ getCType(t cpstring, elems Elems*) string {
         tp.set("struct channel *")
     } else if tp.hasPrefix("map:") == 1 {
         tp.set("struct mapWrapper *")
+    } else if tp.hasPrefix("buffer:") == 1 {
+        tp.set("char*")
     } else if ctp.compare("int") {
         tp.replace("int", "long int")
     } else if ctp.compare("int32") {
@@ -108,14 +110,16 @@ getCType(t cpstring, elems Elems*) string {
 }
 
 compTypes(a cpstring, b cpstring) bool {
-    if a == "ptr" {
+    if a == "ptr" || b == "ptr" {
         return true
     }
-    if b == "ptr" {
+
+    if a == "cpstring" && strHasPrefix(b, "buffer:") {
         return true
     }
-    if a == b {
+    if b == "cpstring" && strHasPrefix(a, "buffer:") {
         return true
     }
-    return false
+    
+    return a == b
 }
