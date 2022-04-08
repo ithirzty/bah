@@ -2506,7 +2506,7 @@ return cmd;
 char * BAH_DIR;
 char * BAH_OS;
 char * BAH_CC;
-#define BAH_VERSION "v1.1 (build 74)"
+#define BAH_VERSION "v1.1 (build 75)"
 char debug;
 char verboseRuntime;
 char isObject;
@@ -2934,10 +2934,11 @@ memory->data[0] =  c;
 long int pos =  i;
 i =  i + 1;
 tokenType currentType =  TOKEN_TYPE_INT;
+char isHex =  false;
 for (; (i<codeLength); i =  i+1) {
 
                     if (s->length <= i) {
-                        printf("array (/home/alois/Documents/bah-bah/src/lexer.bah:179): s[%d] with length %d\n", i, s->length);
+                        printf("array (/home/alois/Documents/bah-bah/src/lexer.bah:180): s[%d] with length %d\n", i, s->length);
                         exit(1);
                     };
                     c =  s->data[i];
@@ -2945,7 +2946,25 @@ if ((c==(char)46)) {
 currentType =  TOKEN_TYPE_FLOAT;
 }
 else if ((isNumber(c)==0)) {
+if ((isHex==false)) {
+if ((c==120)) {
+isHex =  true;
+}
+else {
 break;
+}
+}
+else {
+if (isUpper(c)) {
+c =  c + (char)32;
+}
+if (((c<97)||(c>102))) {
+break;
+}
+}
+if ((isHex==false)) {
+break;
+}
 }
 
 {
@@ -2982,7 +3001,7 @@ else if ((c==(char)39)) {
 i =  i+1;
 
                     if (s->length <= i) {
-                        printf("array (/home/alois/Documents/bah-bah/src/lexer.bah:191): s[%d] with length %d\n", i, s->length);
+                        printf("array (/home/alois/Documents/bah-bah/src/lexer.bah:208): s[%d] with length %d\n", i, s->length);
                         exit(1);
                     };
                     char n =  s->data[i];
@@ -2991,7 +3010,7 @@ memory =  strToArr(toInt);
 i =  i+1;
 
                     if (s->length <= i) {
-                        printf("array (/home/alois/Documents/bah-bah/src/lexer.bah:195): s[%d] with length %d\n", i, s->length);
+                        printf("array (/home/alois/Documents/bah-bah/src/lexer.bah:212): s[%d] with length %d\n", i, s->length);
                         exit(1);
                     };
                     c =  s->data[i];
@@ -3033,7 +3052,7 @@ i =  i+1;
 for (; (i<codeLength); i =  i+1) {
 
                     if (s->length <= i) {
-                        printf("array (/home/alois/Documents/bah-bah/src/lexer.bah:205): s[%d] with length %d\n", i, s->length);
+                        printf("array (/home/alois/Documents/bah-bah/src/lexer.bah:222): s[%d] with length %d\n", i, s->length);
                         exit(1);
                     };
                     c =  s->data[i];
@@ -3122,7 +3141,7 @@ char fc =  c;
 for (; (i<codeLength); i =  i+1) {
 
                     if (s->length <= i) {
-                        printf("array (/home/alois/Documents/bah-bah/src/lexer.bah:222): s[%d] with length %d\n", i, s->length);
+                        printf("array (/home/alois/Documents/bah-bah/src/lexer.bah:239): s[%d] with length %d\n", i, s->length);
                         exit(1);
                     };
                     c =  s->data[i];
@@ -3238,7 +3257,7 @@ i =  i+1;
 for (; (i<codeLength); i =  i+1) {
 
                     if (s->length <= i) {
-                        printf("array (/home/alois/Documents/bah-bah/src/lexer.bah:257): s[%d] with length %d\n", i, s->length);
+                        printf("array (/home/alois/Documents/bah-bah/src/lexer.bah:274): s[%d] with length %d\n", i, s->length);
                         exit(1);
                     };
                     c =  s->data[i];
@@ -3255,7 +3274,7 @@ if ((isAlphaNumeric(c)==0)) {
 if ((c==62)) {
 
                     if (memory->length <= len(memory)-1) {
-                        printf("array (/home/alois/Documents/bah-bah/src/lexer.bah:261): memory[%d] with length %d\n", len(memory)-1, memory->length);
+                        printf("array (/home/alois/Documents/bah-bah/src/lexer.bah:278): memory[%d] with length %d\n", len(memory)-1, memory->length);
                         exit(1);
                     };
                     char lc =  memory->data[len(memory)-1];

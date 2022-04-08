@@ -175,12 +175,29 @@ lexer(os cpstring) []Tok {
             pos = i
             i = i + 1
             currentType = TOKEN_TYPE_INT
+            isHex = false
             for i < codeLength, i++ {
                 c = s[i]
                 if c == <char>46 {
                     currentType = TOKEN_TYPE_FLOAT
                 } else if isNumber(c) == 0 {
-                    break
+                    if isHex == false {
+                        if c == 'x' {
+                            isHex = true
+                        } else {
+                            break
+                        }
+                    } else {
+                        if isUpper(c) {
+                            c += <char>32
+                        }
+                        if c < 'a' || c > 'f' {
+                            break
+                        }
+                    }
+                    if isHex == false {
+                        break
+                    }
                 }
                 memory[len(memory)] = c
             }
