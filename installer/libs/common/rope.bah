@@ -6,7 +6,7 @@ struct rope {
     parent: rope*
     str: cpstring
     lCount: int
-    len: int
+    len: int = 0
     totalLen: int
 
     //Used to get the parent of the node.
@@ -20,13 +20,16 @@ struct rope {
 
     //Used to add the content of the node to a specified cpstring.
     //*Note: this is an internal function.*
-    addStr(s cpstring*) {
+    addStr(s cpstring, offset int*) {
         if this.left == null && this.right == null {
-            strcat(*s, this.str)
+            off = *offset
+            memcpy(noCheck(s+off), this.str, this.lCount+1)
+            *offset += this.lCount+1
             return
         }
-        this.left.addStr(s)
-        this.right.addStr(s)
+        l = *offset
+        this.left.addStr(s, offset)
+        this.right.addStr(s, offset)
     }
 
     //Used to get the rope as a cpstring.
@@ -34,10 +37,10 @@ struct rope {
         if this.left == null && this.right == null {
             return this.str
         }
-        
         s cpstring = memoryAlloc(this.totalLen + 1)
-        this.left.addStr(&s)
-        this.right.addStr(&s)
+        offset = 0
+        this.left.addStr(s, &offset)
+        this.right.addStr(s, &offset)
 
         return s
     }
