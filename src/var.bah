@@ -320,8 +320,10 @@ declareStructMethods(v variable*, s cStruct*, elems Elems*) cpstring {
     members = s.members
     typec = string(v.type)
     sep = "."
+    amp = "&"
     if typec.count("*") {
         sep = "->"
+        amp = ""
     }
     i=0; for i < len(members) {
         m = members[i]
@@ -382,6 +384,25 @@ declareStructMethods(v variable*, s cStruct*, elems Elems*) cpstring {
         }
     }
 
+    if s.isBinding == false {
+        found = 0
+        i=0; for i < len(s.methods), i++ {
+            m = s.methods[i]
+            if m.name == "_init" {
+                code += v.name+sep+m.name+"("+amp+v.name+");\n"
+                found++
+            } else if m.name == "_end" {
+                if sep == "->" {
+                    code += "memoryOnEnd("+v.name+", "+v.name+sep+m.name+");\n"
+                }
+                found++
+            }
+            if found == 2 {
+                break
+            }
+        }
+    }
+
     return code
 }
 
@@ -428,7 +449,6 @@ makeInit() {
         name += pathToVarName(compilerState.currentFile)
     }
 
-    // evals = "__evals_bindings = memoryAlloc("+intToStr(len(compilerState.evals))+" * sizeof(struct __eval_binding));\n"
     evals = ""
     evalsTMPDecl = "volatile struct __eval_binding __tmp__evals_bindings["+intToStr(len(compilerState.evals))+"] = {"
     i=0; for i < len(compilerState.evals), i++ {
@@ -442,8 +462,6 @@ makeInit() {
         } else {
             evalsTMPDecl += "};"
         }
-        // evals += "__evals_bindings["+intToStr(i)+"].name = \""+e+"\";
-        // __evals_bindings["+intToStr(i)+"].evalFn = __Bah_eval_"+e+";\n"
     }
 
     if len(compilerState.evals) != 0 {

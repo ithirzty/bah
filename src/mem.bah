@@ -94,13 +94,33 @@ RCPavailable() bool {
 
 endRCPscope(elems Elems*, exc []variable*) {
     if RCPavailable() == false {
+        i=0; for i < len(elems.vars), i++ {
+            v = elems.vars[i]
+            if v.outterScope == false && varInArr(v, exc) == false && isRCPpointerType(v.type) == false {
+                s = searchStruct(v.type, elems)
+                if s != null {
+                    memb = searchStructMemb("_end", s, elems)
+                    if memb != null && memb.isFn == true {
+                        OUTPUT += rope(v.name+"._end(&"+v.name+");\n")
+                    }
+                }
+            }
+        }
         return
     }
     i=0; for i < len(elems.vars), i++ {
         v = elems.vars[i]
-        if v.outterScope == false && isRCPtype(v.type, elems) == true {
-            if varInArr(v, exc) == false {
-                OUTPUT = OUTPUT + decrVar(v, elems)
+        if v.outterScope == false && varInArr(v, exc) == false {
+            if isRCPtype(v.type, elems) == true {
+                    OUTPUT = OUTPUT + decrVar(v, elems)
+            } else {
+                s = searchStruct(v.type, elems)
+                if s != null {
+                    memb = searchStructMemb("_end", s, elems)
+                    if memb != null {
+                        OUTPUT += rope(v.name+"._end(&"+v.name+");\n")
+                    }
+                }
             }
         }
     }
@@ -108,13 +128,33 @@ endRCPscope(elems Elems*, exc []variable*) {
 
 endRCPnonGlobScope(elems Elems*, exc []variable*) {
     if RCPavailable() == false {
+        i=0; for i < len(elems.vars), i++ {
+            v = elems.vars[i]
+            if v.isGlobal == false && varInArr(v, exc) == false && isRCPpointerType(v.type) == false {
+                s = searchStruct(v.type, elems)
+                if s != null {
+                    fn = searchFunc(s.name + "___end", elems, true)
+                    if fn != null {
+                        OUTPUT += rope(v.name+"._end(&"+v.name+");\n")
+                    }
+                }
+            }
+        }
         return
     }
     i=0; for i < len(elems.vars), i++ {
         v = elems.vars[i]
-        if isRCPtype(v.type, elems) == true {
-            if v.isGlobal == false && varInArr(v, exc) == false {
+        if v.isGlobal == false && varInArr(v, exc) == false {
+            if isRCPtype(v.type, elems) == true {
                 OUTPUT = OUTPUT + decrVar(v, elems)
+            } else {
+                s = searchStruct(v.type, elems)
+                if s != null {
+                    memb = searchStructMemb("_end", s, elems)
+                    if memb != null {
+                        OUTPUT += rope(v.name+"._end(&"+v.name+");\n")
+                    }
+                }
             }
         }
     }
@@ -131,7 +171,7 @@ registerRCPvar(t cpstring, c cpstring, elems Elems*) cpstring {
 }
 
 makeRCPfuncFromStruct(s cStruct*, elems Elems*) rope* {
-    if s.isBinding == true || RCPavailable() == false {
+    if s.isBinding == true || RCPavailable() == false || isObject == true {
         return rope("")
     }
 
@@ -160,6 +200,12 @@ makeRCPfuncFromStruct(s cStruct*, elems Elems*) rope* {
         }
         i = i + 1
     }
+    endCall = ""
+    endFn = searchStructMemb("_end", s, elems)
+    if endFn != null {
+        endCall = "e->_end(e);"
+    }
+
 
     r = rope("void* __RCP_clean_"+s.name+"(struct "+s.name+"* e, int heap) {
         if(heap == 1) {
@@ -171,6 +217,7 @@ makeRCPfuncFromStruct(s cStruct*, elems Elems*) rope* {
                 RCP_decrRCP(srcp);
             }
         } else if(RCP_decrCounter((void*)e->__RCP_counter)==0) {
+            "+endCall+"
             ") + decrMembs + rope("
         }
     };\n")
