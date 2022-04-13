@@ -452,7 +452,7 @@ makeInit() {
         evalsTMPDecl = ""
     }
 
-    OUTPUT = OUTPUT + rope("
+    OUTPUT += rope("
     "+evalsTMPDecl+"
     void __attribute__((optimize(\"O0\"))) "+name+"() {
         ") + INIT + rope("

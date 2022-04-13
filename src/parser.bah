@@ -2601,7 +2601,6 @@ parseFnHeader(prev cpstring, l []Tok, i int*, fn func*, elems Elems*) cpstring {
 }
 
 parseStruct(l []Tok, elems Elems*) {
-
     s = new cStruct
     structs = elems.structs
     structs[len(structs)] = s
@@ -3116,7 +3115,7 @@ parseReturn(l []Tok, elems Elems*) {
         throwErr(&l[0], "Cannot return a value outside of a function.")
     }
     rv = ""
-
+    tt = ""
     if len(l) == 1 {
         if strlen(currentFn.returns.type) != 0 {
             throwErr(&l[0], "Cannot return nothing as "+currentFn.returns.type+".")
@@ -3149,6 +3148,9 @@ parseReturn(l []Tok, elems Elems*) {
             OUTPUT = OUTPUT + rope(cType.str() + " " + rvar + " = "+rv+";\n")
         }
         endRCPnonGlobScope(elems, currentFn.args)
+        if strHasPrefix(tt, "buffer:") {
+            rvar = "__STR("+rvar+")"
+        }
         OUTPUT = OUTPUT + rope("return "+rvar+";\n")
     } else {
         endRCPnonGlobScope(elems, currentFn.args)

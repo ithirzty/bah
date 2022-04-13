@@ -99,12 +99,11 @@ keywords = []cpstring{"if", "else", "for", "struct", "const", "return", "extend"
 varChars = []char{'_'}
 seps = []char{'.'}
 
-lexer(os cpstring) []Tok {
+lexer(s cpstring) []Tok {
     dur = getTimeUnix()
-    s = strAsArr(os)
     tokens = []Tok
     
-    codeLength = len(s)
+    codeLength = strlen(s)
 
     memory = []char
 
@@ -180,7 +179,7 @@ lexer(os cpstring) []Tok {
                 c = s[i]
                 if c == <char>46 {
                     currentType = TOKEN_TYPE_FLOAT
-                } else if isNumber(c) == 0 {
+                } else if isNumber(c) == false {
                     if isHex == false {
                         if c == 'x' {
                             isHex = true
@@ -220,7 +219,7 @@ lexer(os cpstring) []Tok {
             i++
             for i < codeLength, i++ {
                 c = s[i]
-                if isAlphaNumeric(c) == 0 {
+                if isAlphaNumeric(c) == false {
                     break
                 }
                 memory[len(memory)] = c
@@ -272,7 +271,7 @@ lexer(os cpstring) []Tok {
             //get full token
             for i < codeLength, i++ {
                 c = s[i]
-                if isAlphaNumeric(c) == 0 {
+                if isAlphaNumeric(c) == false {
                     if c in varChars == false {
                         if c == '>' {
                             lc = memory[len(memory)-1]

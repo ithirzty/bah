@@ -80,19 +80,8 @@ serv(s http_server*, connfd int) {
 
         //lock the mutex so that only one thread/client can execute this part of code at the same time.
         listenersMut.lock() 
-        //for every listeners
-        i=0; for i < len(listeners), i++ {
-            l = listeners[i]
-            //if the listener is equal to null
-            if l == null {
-                listeners[i] = receiveChan //replace it by the client channel
-                break //exit the lopp
-            }
-        }
-        //if we iterated through all the listeners without breaking
-        if i == len(listeners) {
-            listeners[i] = receiveChan //append the client channel to the end of listeners
-        }
+        i = len(listeners)
+        listeners[i] = receiveChan //append the current listener
         listenersMut.unlock() //unlock the mutex
 
         //run the loop forever
@@ -112,7 +101,7 @@ serv(s http_server*, connfd int) {
 
         //if we get to this point, the loop has been exitted and the client is no longer listening
         listenersMut.lock() //lock the mutex
-        listeners[i] = null //set the current listener as null
+        delete(listeners, i) //remove the currrent listener
         listenersMut.unlock() //unlock the mutex
 
     }
@@ -128,10 +117,11 @@ done(s http_server*) {
 //it takes an array of arguments (passed by the terminal) and returns an exit code.
 main(args []cpstring) int {
 
-    s = http_server{} //initiates a new http_server structure
-    s.port = 8080 //set its port to 8080
-    s.handle = serv //set its handle to 'serv' (this will be called on every client request)
-    s.done = done //set its done callback to 'done' (this will be called when the server is launched)
+    s = http_server { //initiates a new http_server structure
+        port: 8080 //set its port to 8080
+        handle: serv //set its handle to 'serv' (this will be called on every client request)
+        done: done //set its done callback to 'done' (this will be called when the server is launched)
+    }
     s.listenAndServe() //make the server listen
 
     //we should get to this point only if the server has stopped listenning (may be because of an error)

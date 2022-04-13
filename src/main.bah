@@ -23,7 +23,7 @@
     BAH_CC = "gcc"
 }
 //////////////////////BUILD SPECIFIC THINGS//////////////////////
-const BAH_VERSION = "v1.1 (build 76)"
+const BAH_VERSION = "v1.1 (build 77)"
 
 debug = false
 verboseRuntime = false
@@ -43,7 +43,7 @@ isSubObject = false
 
 
 main(args []cpstring) int {
-    execName = args[0] //for calling a sub-process for compiling imports
+    execName = absPath(args[0]) //for calling a sub-process for compiling imports
 
     flags = flags{}
     flags.addString("o", "Name of the file to output.")
@@ -181,8 +181,9 @@ main(args []cpstring) int {
     compilerState.currentFile = fileName
     fm = fileMap{}
     f = fm.open(fileName)
-    if fm.isValid() == 0 {
-        panic("Could not open file '"+fileName+"'.")
+    if fm.isValid() == 0 || fm.size == 0 {
+        println("Could not open file '"+fileName+"'.")
+        exit(1)
     }
     startTime = getTimeUnix() //for timming compilation time
     tokens = lexer(f) //tokenizing the first file
@@ -190,7 +191,8 @@ main(args []cpstring) int {
 
 
     if len(tokens) == 0 {
-        panic("File '"+fileName+"' not recognized.")
+        println("File '"+fileName+"' not recognized.")
+        exit(1)
     }
 
     elems = new Elems //the struct containning the state of the code (vars, funcs...) at every scopes
@@ -226,6 +228,38 @@ main(args []cpstring) int {
     compilerState.currentDir = getDirFromFile(fileName) //for handling includes
     parseLines(tokens, elems) //parse the frst file
 
+    if isObject == false {
+        l = 0
+        i=0; for i < len(elems.fns), i++ {
+            fn = elems.fns[i]
+            if fn.isBinding == true {
+                continue
+            }
+            l++
+        }
+        OUTPUT += rope("volatile struct __Bah_fnName_mapper __tmp____Bah_fnNames["+intToStr(l)+"];")
+        j=0
+        i=0; for i < len(elems.fns), i++ {
+            fn = elems.fns[i]
+            if fn.isBinding == true {
+                continue
+            }
+            name = fn.name
+            if fn.from != "" && strHasPrefix(name, fn.from+"__") {
+                n = string(name)
+                n.trimLeft(strlen(fn.from)+2)
+                name = fn.from+"."+n.str()
+            }
+            INIT += rope("
+            __tmp____Bah_fnNames["+intToStr(j)+"].n = \""+name+"\";
+            __tmp____Bah_fnNames["+intToStr(j)+"].p = "+fn.name+";\n")
+            j++
+        }
+        INIT += rope("
+        __Bah_fnNames->data = __tmp____Bah_fnNames;
+        __Bah_fnNames->length = "+intToStr(l)+";")
+    }
+
     makeInit() //makes the init function
 
     excludeFns = []cpstring {
@@ -238,14 +272,15 @@ main(args []cpstring) int {
     }
 
     //optimization: if the file is not an object, removed unused functions.
-    if isObject == false && compilerState.hasImports == false {
-        i=0; for i < len(elems.fns), i++ {
-            fn = elems.fns[i]
-            if fn.used == false && fn.code != null && fn.name in excludeFns == false {
-                ropeSet(fn.code, "//optimized out: "+fn.name+"\n")
-            }
-        }
-    }
+    // if isObject == false && compilerState.hasImports == false {
+    //     i=0; for i < len(elems.fns), i++ {
+    //         fn = elems.fns[i]
+    //         if fn.used == false && fn.code != null && fn.name in excludeFns == false {
+    //             ropeSet(fn.code, "//optimized out: "+fn.name+"\n")
+    //         }
+    //     }
+    // }
+
 
     //if we run in debug mode, we dont want to compile the program
     if debug == true {
