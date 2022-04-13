@@ -18,6 +18,8 @@
 #define! GC_MALLOC(s int) ptr
 #define! GC_REALLOC(p ptr, s int) ptr
 #define! GC_FREE(a ptr)
+#define! GC_REGISTER_FINALIZER_IGNORE_SELF(obj ptr, proc ptr, data ptr, ofn ptr, ocd ptr)
+
 
 //Used for allocating memory (malloc in c). You must specify the size of the block to allocate.
 //Will return a pointer to the allocated block. The memory is garbage collected.
@@ -50,4 +52,8 @@ memoryRealloc(p ptr, s int) ptr {
 cleanShutDown() {
     exit(1)
     return
+}
+
+memoryOnEnd(obj ptr, fn ptr) {
+    GC_REGISTER_FINALIZER_IGNORE_SELF(obj, fn, null, null, null)
 }

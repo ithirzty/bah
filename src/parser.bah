@@ -1365,8 +1365,9 @@ parseArrayVars(l []Tok, ltp lineType, elems Elems*) []Tok {
                 if ti > 0 && ft.cont != "else" {
                     OUTPUT = OUTPUT + rope("
                     if ("+lt.cont+"->length <= "+cont+") {
-                        printf(\"array ("+compilerState.currentFile+":"+intToStr(lt.line)+"): "+lt.cont+"[%d] with length %d\\n\", "+cont+", "+lt.cont+"->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, \"array: "+lt.cont+"[%d] with length %d\", "+cont+", "+lt.cont+"->length);
+                        __BAH_panic(buff, \""+compilerState.currentFile + ":" + intToStr(lt.line)+"\");
                     };
                     ")
                 }
@@ -2104,6 +2105,9 @@ parseVar(l []Tok, elems Elems*) {
         }
     }
 
+    if len(l) < 2 {
+        throwErr(&ft, "Missing '=' after {TOKEN}.")
+    }
     operT = l[1]
     if operT.cont in equalsTokens && operT.cont != "=" {
         nl = []Tok{l[0]}

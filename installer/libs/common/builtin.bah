@@ -130,6 +130,19 @@ __Bah_common_panic(e cpstring) {
 	const panic = __Bah_common_panic
 }
 
+struct __Bah_fnName_mapper {
+	p: ptr
+	n: cpstring
+}
+
+__Bah_fnNames = []__Bah_fnName_mapper
+
+__Bah_fnNames_append(fnn __Bah_fnName_mapper) {
+	__Bah_fnNames[len(__Bah_fnNames)] = fnn
+}
+
+#define! backtrace(arr ptr, l int) int
+
 __BAH_panic(e cpstring, line cpstring) {
 	if __BAH_panic_chan != null {
 		e -> __BAH_panic_chan
@@ -137,8 +150,70 @@ __BAH_panic(e cpstring, line cpstring) {
 	}
 
 	print("panic ("+line+"): "+e+"\n")
+	
+	#linux {
+		arr = []ptr
+		allocateArray(arr, 10)
+		size = backtrace(noCheck(arr->data), 10)
+	
+		print("Backtrace:\n")
+
+		min = -1
+		max = -1
+
+		i=1; for i < size, i++ {
+			p int = arr[i]
+			closest __Bah_fnName_mapper
+			dist = -1
+			j=0; for j < len(__Bah_fnNames), j++ {
+				fnn = __Bah_fnNames[j]
+				fnp int = fnn.p
+				if fnp < min || min == -1 {
+					min = fnp
+				}
+				if fnp > max || max == -1 {
+					max = fnp
+				}
+				if p > fnp {
+					if dist == -1 || p - fnp < dist {
+						dist = p - fnp
+						closest = fnn
+					}
+				}
+			}
+			if dist == -1 {
+				print("\t???\n")
+				continue
+			}
+
+			status = ""
+			fnp int = closest.p
+			if min == fnp || max == fnp {
+				if dist > 10000 {
+					continue
+				}
+				status = "?"
+			}
+			print("\t"+closest.n+"() "+status+" \n")
+			if closest.n == "main" {
+				break
+			}
+		}
+	}
+
 	cleanShutDown()
 }
+
+__Bah_segfault_handle(sig int) {
+	__BAH_panic("Memory error (segfault).", "???")
+}
+
+__Bah_init_segfaultHandle() bool {
+	signal(noCheck(SIGSEGV), __Bah_segfault_handle)
+	return true
+}
+
+__Bah_init_segfaultHandle_OK = __Bah_init_segfaultHandle()
 
 //Used for recovering from a panic instead exitting the program.
 //It needs a  pointer to a non null cpstring which will get the message.

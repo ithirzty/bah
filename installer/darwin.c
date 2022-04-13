@@ -155,43 +155,51 @@ return arr;
 long int serlen(__BAH_ARR_TYPE_char data){
 
                     if (data->length <= 0) {
-                        printf("array (/opt/bah/memory.bah:194): data[%d] with length %d\n", 0, data->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: data[%d] with length %d", 0, data->length);
+                        __BAH_panic(buff, "/opt/bah/memory.bah:194");
                     };
                     
                     if (data->length <= 1) {
-                        printf("array (/opt/bah/memory.bah:194): data[%d] with length %d\n", 1, data->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: data[%d] with length %d", 1, data->length);
+                        __BAH_panic(buff, "/opt/bah/memory.bah:194");
                     };
                     
                     if (data->length <= 2) {
-                        printf("array (/opt/bah/memory.bah:194): data[%d] with length %d\n", 2, data->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: data[%d] with length %d", 2, data->length);
+                        __BAH_panic(buff, "/opt/bah/memory.bah:194");
                     };
                     
                     if (data->length <= 3) {
-                        printf("array (/opt/bah/memory.bah:194): data[%d] with length %d\n", 3, data->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: data[%d] with length %d", 3, data->length);
+                        __BAH_panic(buff, "/opt/bah/memory.bah:194");
                     };
                     
                     if (data->length <= 4) {
-                        printf("array (/opt/bah/memory.bah:194): data[%d] with length %d\n", 4, data->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: data[%d] with length %d", 4, data->length);
+                        __BAH_panic(buff, "/opt/bah/memory.bah:194");
                     };
                     
                     if (data->length <= 5) {
-                        printf("array (/opt/bah/memory.bah:194): data[%d] with length %d\n", 5, data->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: data[%d] with length %d", 5, data->length);
+                        __BAH_panic(buff, "/opt/bah/memory.bah:194");
                     };
                     
                     if (data->length <= 6) {
-                        printf("array (/opt/bah/memory.bah:194): data[%d] with length %d\n", 6, data->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: data[%d] with length %d", 6, data->length);
+                        __BAH_panic(buff, "/opt/bah/memory.bah:194");
                     };
                     
                     if (data->length <= 7) {
-                        printf("array (/opt/bah/memory.bah:194): data[%d] with length %d\n", 7, data->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: data[%d] with length %d", 7, data->length);
+                        __BAH_panic(buff, "/opt/bah/memory.bah:194");
                     };
                     array(char)* sarr = memoryAlloc(sizeof(array(char)));
 
@@ -876,8 +884,9 @@ for (; (i<len(this->elems)); i =  i+1) {
 long int j =  (i + ind) % len(this->elems);
 
                     if (this->elems->length <= j) {
-                        printf("array (/opt/bah/map.bah:37): this->elems[%d] with length %d\n", j, this->elems->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: this->elems[%d] with length %d", j, this->elems->length);
+                        __BAH_panic(buff, "/opt/bah/map.bah:37");
                     };
                     struct mapElem* ce =  this->elems->data[j];
 if ((ce==null)) {
@@ -938,8 +947,9 @@ for (; (i<len(this->elems)); i =  i+1) {
 long int j =  (i + ind) % len(this->elems);
 
                     if (this->elems->length <= j) {
-                        printf("array (/opt/bah/map.bah:65): this->elems[%d] with length %d\n", j, this->elems->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: this->elems[%d] with length %d", j, this->elems->length);
+                        __BAH_panic(buff, "/opt/bah/map.bah:65");
                     };
                     struct mapElem* ce =  this->elems->data[j];
 if ((ce==null)) {
@@ -986,8 +996,9 @@ for (; (i<len(this->elems)); i =  i+1) {
 long int j =  (i + ind) % len(this->elems);
 
                     if (this->elems->length <= j) {
-                        printf("array (/opt/bah/map.bah:81): this->elems[%d] with length %d\n", j, this->elems->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: this->elems[%d] with length %d", j, this->elems->length);
+                        __BAH_panic(buff, "/opt/bah/map.bah:81");
                     };
                     struct mapElem* e =  this->elems->data[j];
 if (((e!=null)&&(strcmp(e->key, k) == 0))) {
@@ -1015,8 +1026,9 @@ for (; (i<len(this->elems)); i =  i+1) {
 long int j =  (i + ind) % len(this->elems);
 
                     if (this->elems->length <= j) {
-                        printf("array (/opt/bah/map.bah:92): this->elems[%d] with length %d\n", j, this->elems->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: this->elems[%d] with length %d", j, this->elems->length);
+                        __BAH_panic(buff, "/opt/bah/map.bah:92");
                     };
                     struct mapElem* e =  this->elems->data[j];
 if (((e!=null)&&(strcmp(e->key, k) == 0))) {
@@ -2007,8 +2019,9 @@ long int max =  len(a) - 1;
 while ((i<len(a))) {
 
                     if (a->length <= i) {
-                        printf("array (/opt/bah/string.bah:506): a[%d] with length %d\n", i, a->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: a[%d] with length %d", i, a->length);
+                        __BAH_panic(buff, "/opt/bah/string.bah:506");
                     };
                     struct string e =  a->data[i];
 if ((e.length==0)) {
@@ -2284,8 +2297,9 @@ long int i =  0;
 while ((i<len(this->flags))) {
 
                     if (this->flags->length <= i) {
-                        printf("array (/opt/bah/flags.bah:75): this->flags[%d] with length %d\n", i, this->flags->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: this->flags[%d] with length %d", i, this->flags->length);
+                        __BAH_panic(buff, "/opt/bah/flags.bah:75");
                     };
                     struct flag* flag =  this->flags->data[i];
 print("    -");
@@ -2313,8 +2327,9 @@ long int i =  0;
 while ((i<len(this->flags))) {
 
                     if (this->flags->length <= i) {
-                        printf("array (/opt/bah/flags.bah:98): this->flags[%d] with length %d\n", i, this->flags->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: this->flags[%d] with length %d", i, this->flags->length);
+                        __BAH_panic(buff, "/opt/bah/flags.bah:98");
                     };
                     struct flag* flag =  this->flags->data[i];
 if (name.compare((struct string*)&name,flag->name)) {
@@ -2852,8 +2867,9 @@ long int i =  0;
 while ((i<len(args))) {
 
                     if (args->length <= i) {
-                        printf("array (/opt/bah/exec.bah:96): args[%d] with length %d\n", i, args->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: args[%d] with length %d", i, args->length);
+                        __BAH_panic(buff, "/opt/bah/exec.bah:96");
                     };
                     
 {
@@ -2891,7 +2907,7 @@ return r;
 char * BAH_DIR;
 char * BAH_OS;
 char * BAH_CC;
-#define BAH_VERSION "v1.1 (build 77)"
+#define BAH_VERSION "v1.1 (build 78)"
 char debug;
 char verboseRuntime;
 char isObject;
@@ -3004,8 +3020,9 @@ long int i =  0;
 while ((i<len(arr))) {
 
                     if (arr->length <= i) {
-                        printf("array (/home/alois/Documents/bah-bah/src/lexer.bah:38): arr[%d] with length %d\n", i, arr->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: arr[%d] with length %d", i, arr->length);
+                        __BAH_panic(buff, "/home/alois/Documents/bah-bah/src/lexer.bah:38");
                     };
                     if ((needle==arr->data[i])) {
 return true;
@@ -3019,8 +3036,9 @@ long int i =  0;
 while ((i<len(arr))) {
 
                     if (arr->length <= i) {
-                        printf("array (/home/alois/Documents/bah-bah/src/lexer.bah:48): arr[%d] with length %d\n", i, arr->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: arr[%d] with length %d", i, arr->length);
+                        __BAH_panic(buff, "/home/alois/Documents/bah-bah/src/lexer.bah:48");
                     };
                     if ((strcmp(needle, arr->data[i]) == 0)) {
 return true;
@@ -3249,8 +3267,9 @@ tokens->data[len(tokens)] =  makeToken(pos,lineNb,memory,TOKEN_TYPE_STR);
 };
 
                     if (tokens->length <= len(tokens) - 1) {
-                        printf("array (/home/alois/Documents/bah-bah/src/lexer.bah:169): tokens[%d] with length %d\n", len(tokens) - 1, tokens->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: tokens[%d] with length %d", len(tokens) - 1, tokens->length);
+                        __BAH_panic(buff, "/home/alois/Documents/bah-bah/src/lexer.bah:169");
                     };
                     struct Tok lt =  tokens->data[len(tokens) - 1];
 lt.begLine =  begLine;
@@ -3597,8 +3616,9 @@ if ((isAlphaNumeric(c)==false)) {
 if ((c==62)) {
 
                     if (memory->length <= len(memory)-1) {
-                        printf("array (/home/alois/Documents/bah-bah/src/lexer.bah:277): memory[%d] with length %d\n", len(memory)-1, memory->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: memory[%d] with length %d", len(memory)-1, memory->length);
+                        __BAH_panic(buff, "/home/alois/Documents/bah-bah/src/lexer.bah:277");
                     };
                     char lc =  memory->data[len(memory)-1];
 if ((lc==45)) {
@@ -3721,8 +3741,9 @@ long int i =  0;
 while ((i<len(elems->structs))) {
 
                     if (elems->structs->length <= i) {
-                        printf("array (/home/alois/Documents/bah-bah/src/struct.bah:54): elems->structs[%d] with length %d\n", i, elems->structs->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: elems->structs[%d] with length %d", i, elems->structs->length);
+                        __BAH_panic(buff, "/home/alois/Documents/bah-bah/src/struct.bah:54");
                     };
                     struct cStruct* s =  elems->structs->data[i];
 if ((strcmp(s->name, name) == 0)) {
@@ -3758,8 +3779,9 @@ long int i =  0;
 while ((i<len(members))) {
 
                     if (members->length <= i) {
-                        printf("array (/home/alois/Documents/bah-bah/src/struct.bah:86): members[%d] with length %d\n", i, members->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: members[%d] with length %d", i, members->length);
+                        __BAH_panic(buff, "/home/alois/Documents/bah-bah/src/struct.bah:86");
                     };
                     struct structMemb* m =  members->data[i];
 if ((strcmp(m->name, name) == 0)) {
@@ -3772,8 +3794,9 @@ i =  0;
 while ((i<len(mthds))) {
 
                     if (mthds->length <= i) {
-                        printf("array (/home/alois/Documents/bah-bah/src/struct.bah:94): mthds[%d] with length %d\n", i, mthds->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: mthds[%d] with length %d", i, mthds->length);
+                        __BAH_panic(buff, "/home/alois/Documents/bah-bah/src/struct.bah:94");
                     };
                     struct func* m =  mthds->data[i];
 if ((strcmp(m->name, name) == 0)) {
@@ -3924,8 +3947,9 @@ long int i =  0;
 while ((i<len(elems->types))) {
 
                     if (elems->types->length <= i) {
-                        printf("array (/home/alois/Documents/bah-bah/src/type.bah:97): elems->types[%d] with length %d\n", i, elems->types->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: elems->types[%d] with length %d", i, elems->types->length);
+                        __BAH_panic(buff, "/home/alois/Documents/bah-bah/src/type.bah:97");
                     };
                     char * ct =  elems->types->data[i];
 if (ctp.compare((struct string*)&ctp,ct)) {
@@ -3999,22 +4023,25 @@ if ((a.count((struct string*)&a,".")>0)) {
 array(struct string)* parts =  splitString(a,".");
 
                     if (parts->length <= 0) {
-                        printf("array (/opt/bah/reflect.bah:63): parts[%d] with length %d\n", 0, parts->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: parts[%d] with length %d", 0, parts->length);
+                        __BAH_panic(buff, "/opt/bah/reflect.bah:63");
                     };
                     struct string p1 =  parts->data[0];
 
                     if (parts->length <= 1) {
-                        printf("array (/opt/bah/reflect.bah:64): parts[%d] with length %d\n", 1, parts->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: parts[%d] with length %d", 1, parts->length);
+                        __BAH_panic(buff, "/opt/bah/reflect.bah:64");
                     };
                     struct string p2 =  parts->data[1];
 long int j =  0;
 for (; (j<len(syms)); j =  j+1) {
 
                     if (syms->length <= j) {
-                        printf("array (/opt/bah/reflect.bah:66): syms[%d] with length %d\n", j, syms->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: syms[%d] with length %d", j, syms->length);
+                        __BAH_panic(buff, "/opt/bah/reflect.bah:66");
                     };
                     struct reflectElement s =  syms->data[j];
 if ((strcmp(s.name, p1.str((struct string*)&p1)) == 0)) {
@@ -4022,8 +4049,9 @@ long int k =  0;
 for (; (k<len(s.structLayout)); k =  k+1) {
 
                     if (s.structLayout->length <= k) {
-                        printf("array (/opt/bah/reflect.bah:69): s.structLayout[%d] with length %d\n", k, s.structLayout->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: s.structLayout[%d] with length %d", k, s.structLayout->length);
+                        __BAH_panic(buff, "/opt/bah/reflect.bah:69");
                     };
                     struct reflectElement m =  s.structLayout->data[k];
 if ((strcmp(m.name, p2.str((struct string*)&p2)) == 0)) {
@@ -4040,8 +4068,9 @@ long int j =  0;
 for (; (j<len(syms)); j =  j+1) {
 
                     if (syms->length <= j) {
-                        printf("array (/opt/bah/reflect.bah:80): syms[%d] with length %d\n", j, syms->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: syms[%d] with length %d", j, syms->length);
+                        __BAH_panic(buff, "/opt/bah/reflect.bah:80");
                     };
                     struct reflectElement s =  syms->data[j];
 if ((strcmp(s.name, a.str((struct string*)&a)) == 0)) {
@@ -4086,8 +4115,9 @@ long int i =  0;
 while ((i<l)) {
 
                     if (this->children->length <= i) {
-                        printf("array (/opt/bah/json.bah:29): this->children[%d] with length %d\n", i, this->children->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: this->children[%d] with length %d", i, this->children->length);
+                        __BAH_panic(buff, "/opt/bah/json.bah:29");
                     };
                     struct jsonElement* elem =  this->children->data[i];
 char fc =  cpstringCharAt(elem->key,0);
@@ -4144,8 +4174,9 @@ long int i =  0;
 while ((i<len(e.structLayout))) {
 
                     if (e.structLayout->length <= i) {
-                        printf("array (/opt/bah/json.bah:71): e.structLayout[%d] with length %d\n", i, e.structLayout->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: e.structLayout[%d] with length %d", i, e.structLayout->length);
+                        __BAH_panic(buff, "/opt/bah/json.bah:71");
                     };
                     struct reflectElement m =  e.structLayout->data[i];
 struct jsonElement* ov =  this->get((struct jsonElement*)this,m.name);
@@ -4193,8 +4224,9 @@ long int i =  0;
 while ((i<len(this->children))) {
 
                     if (this->children->length <= i) {
-                        printf("array (/opt/bah/json.bah:106): this->children[%d] with length %d\n", i, this->children->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: this->children[%d] with length %d", i, this->children->length);
+                        __BAH_panic(buff, "/opt/bah/json.bah:106");
                     };
                     struct jsonElement* c =  this->children->data[i];
 
@@ -4230,8 +4262,9 @@ long int i =  0;
 while ((i<len(this->children))) {
 
                     if (this->children->length <= i) {
-                        printf("array (/opt/bah/json.bah:119): this->children[%d] with length %d\n", i, this->children->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: this->children[%d] with length %d", i, this->children->length);
+                        __BAH_panic(buff, "/opt/bah/json.bah:119");
                     };
                     struct jsonElement* c =  this->children->data[i];
 
@@ -4262,8 +4295,9 @@ long int i =  0;
 while ((i<len(this->children))) {
 
                     if (this->children->length <= i) {
-                        printf("array (/opt/bah/json.bah:128): this->children[%d] with length %d\n", i, this->children->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: this->children[%d] with length %d", i, this->children->length);
+                        __BAH_panic(buff, "/opt/bah/json.bah:128");
                     };
                     struct jsonElement* c =  this->children->data[i];
 
@@ -4295,8 +4329,9 @@ long int i =  0;
 while ((i<len(this->children))) {
 
                     if (this->children->length <= i) {
-                        printf("array (/opt/bah/json.bah:138): this->children[%d] with length %d\n", i, this->children->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: this->children[%d] with length %d", i, this->children->length);
+                        __BAH_panic(buff, "/opt/bah/json.bah:138");
                     };
                     struct jsonElement* c =  this->children->data[i];
 void * ne =  memoryAlloc(ae->size);
@@ -4304,8 +4339,9 @@ long int j =  0;
 while ((j<len(ae->structLayout))) {
 
                     if (ae->structLayout->length <= j) {
-                        printf("array (/opt/bah/json.bah:141): ae->structLayout[%d] with length %d\n", j, ae->structLayout->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: ae->structLayout[%d] with length %d", j, ae->structLayout->length);
+                        __BAH_panic(buff, "/opt/bah/json.bah:141");
                     };
                     struct reflectElement m =  ae->structLayout->data[j];
 m.value =  m.calculateOffset((struct reflectElement*)&m,ne);
@@ -4339,8 +4375,9 @@ long int i =  0;
 for (; (i<len(this->children)); i =  i+1) {
 
                     if (this->children->length <= i) {
-                        printf("array (/opt/bah/json.bah:156): this->children[%d] with length %d\n", i, this->children->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: this->children[%d] with length %d", i, this->children->length);
+                        __BAH_panic(buff, "/opt/bah/json.bah:156");
                     };
                     struct jsonElement* c =  this->children->data[i];
 struct reflectElement* ae =  e.arrayElem;
@@ -4350,8 +4387,9 @@ long int j =  0;
 for (; (j<len(ae->structLayout)); j =  j+1) {
 
                     if (ae->structLayout->length <= j) {
-                        printf("array (/opt/bah/json.bah:161): ae->structLayout[%d] with length %d\n", j, ae->structLayout->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: ae->structLayout[%d] with length %d", j, ae->structLayout->length);
+                        __BAH_panic(buff, "/opt/bah/json.bah:161");
                     };
                     struct reflectElement m =  ae->structLayout->data[j];
 m.value =  m.calculateOffset((struct reflectElement*)&m,&v);
@@ -4803,8 +4841,9 @@ long int i =  0;
 while ((i<len(a))) {
 
                     if (a->length <= i) {
-                        printf("array (/opt/bah/json.bah:399): a[%d] with length %d\n", i, a->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: a[%d] with length %d", i, a->length);
+                        __BAH_panic(buff, "/opt/bah/json.bah:399");
                     };
                     char c =  a->data[i];
 if ((c==(char)34)) {
@@ -4946,8 +4985,9 @@ i =  0;
 while ((i<len(e.structLayout))) {
 
                     if (e.structLayout->length <= i) {
-                        printf("array (/opt/bah/json.bah:444): e.structLayout[%d] with length %d\n", i, e.structLayout->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: e.structLayout[%d] with length %d", i, e.structLayout->length);
+                        __BAH_panic(buff, "/opt/bah/json.bah:444");
                     };
                     struct reflectElement m =  e.structLayout->data[i];
 i =  i + 1;
@@ -5258,8 +5298,9 @@ long int i =  0;
 while ((i<len(arr))) {
 
                     if (arr->length <= i) {
-                        printf("array (/opt/bah/json.bah:512): arr[%d] with length %d\n", i, arr->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: arr[%d] with length %d", i, arr->length);
+                        __BAH_panic(buff, "/opt/bah/json.bah:512");
                     };
                     char * ____BAH_COMPILER_VAR_98 =null;
                 {
@@ -5332,8 +5373,9 @@ long int i =  0;
 while ((i<len(arr))) {
 
                     if (arr->length <= i) {
-                        printf("array (/opt/bah/json.bah:532): arr[%d] with length %d\n", i, arr->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: arr[%d] with length %d", i, arr->length);
+                        __BAH_panic(buff, "/opt/bah/json.bah:532");
                     };
                     void * arrElem =  arr->data[i];
 ae->value =  arrElem;
@@ -5341,8 +5383,9 @@ long int j =  0;
 while ((j<len(ae->structLayout))) {
 
                     if (ae->structLayout->length <= j) {
-                        printf("array (/opt/bah/json.bah:535): ae->structLayout[%d] with length %d\n", j, ae->structLayout->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: ae->structLayout[%d] with length %d", j, ae->structLayout->length);
+                        __BAH_panic(buff, "/opt/bah/json.bah:535");
                     };
                     struct reflectElement m =  ae->structLayout->data[j];
 m.value =  m.calculateOffset((struct reflectElement*)&m,ae->value);
@@ -5592,8 +5635,9 @@ long int i =  0;
 while ((i<len(elems->vars))) {
 
                     if (elems->vars->length <= i) {
-                        printf("array (/home/alois/Documents/bah-bah/src/logger.bah:83): elems->vars[%d] with length %d\n", i, elems->vars->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: elems->vars[%d] with length %d", i, elems->vars->length);
+                        __BAH_panic(buff, "/home/alois/Documents/bah-bah/src/logger.bah:83");
                     };
                     struct variable* v =  elems->vars->data[i];
 if (((v->outterScope==false)&&(v->isConst==false))) {
@@ -5717,8 +5761,9 @@ long int ii =  0;
 while ((ii<len(errTk))) {
 
                     if (errTk->length <= ii) {
-                        printf("array (/home/alois/Documents/bah-bah/src/errors.bah:44): errTk[%d] with length %d\n", ii, errTk->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: errTk[%d] with length %d", ii, errTk->length);
+                        __BAH_panic(buff, "/home/alois/Documents/bah-bah/src/errors.bah:44");
                     };
                     
 {
@@ -6020,8 +6065,9 @@ long int i =  len(elems->vars)-1;
 for (; (i!=-1); i =  i-1) {
 
                     if (elems->vars->length <= i) {
-                        printf("array (/home/alois/Documents/bah-bah/src/var.bah:104): elems->vars[%d] with length %d\n", i, elems->vars->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: elems->vars[%d] with length %d", i, elems->vars->length);
+                        __BAH_panic(buff, "/home/alois/Documents/bah-bah/src/var.bah:104");
                     };
                     struct variable* v =  elems->vars->data[i];
 if ((v==null)) {
@@ -6118,8 +6164,9 @@ i =  0;
 while ((i<len(elems->fns))) {
 
                     if (elems->fns->length <= i) {
-                        printf("array (/home/alois/Documents/bah-bah/src/var.bah:137): elems->fns[%d] with length %d\n", i, elems->fns->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: elems->fns[%d] with length %d", i, elems->fns->length);
+                        __BAH_panic(buff, "/home/alois/Documents/bah-bah/src/var.bah:137");
                     };
                     struct func* fn =  elems->fns->data[i];
 if ((strcmp(fn->name, name) == 0)) {
@@ -6139,8 +6186,9 @@ long int j =  0;
 while ((j<len(fn->args))) {
 
                     if (fn->args->length <= j) {
-                        printf("array (/home/alois/Documents/bah-bah/src/var.bah:143): fn->args[%d] with length %d\n", j, fn->args->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: fn->args[%d] with length %d", j, fn->args->length);
+                        __BAH_panic(buff, "/home/alois/Documents/bah-bah/src/var.bah:143");
                     };
                     struct variable* arg =  fn->args->data[j];
 char * ____BAH_COMPILER_VAR_158 =null;
@@ -6459,8 +6507,9 @@ long int i =  0;
 while ((i<len(fns))) {
 
                     if (fns->length <= i) {
-                        printf("array (/home/alois/Documents/bah-bah/src/var.bah:282): fns[%d] with length %d\n", i, fns->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: fns[%d] with length %d", i, fns->length);
+                        __BAH_panic(buff, "/home/alois/Documents/bah-bah/src/var.bah:282");
                     };
                     struct func* fn =  fns->data[i];
 if ((fn==null)) {
@@ -6537,8 +6586,9 @@ long int i =  0;
 while ((i<len(members))) {
 
                     if (members->length <= i) {
-                        printf("array (/home/alois/Documents/bah-bah/src/var.bah:327): members[%d] with length %d\n", i, members->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: members[%d] with length %d", i, members->length);
+                        __BAH_panic(buff, "/home/alois/Documents/bah-bah/src/var.bah:327");
                     };
                     struct structMemb* m =  members->data[i];
 struct string cmpt =  string(m->type);
@@ -6789,8 +6839,9 @@ i =  0;
 while ((i<len(es->methods))) {
 
                     if (es->methods->length <= i) {
-                        printf("array (/home/alois/Documents/bah-bah/src/var.bah:364): es->methods[%d] with length %d\n", i, es->methods->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: es->methods[%d] with length %d", i, es->methods->length);
+                        __BAH_panic(buff, "/home/alois/Documents/bah-bah/src/var.bah:364");
                     };
                     struct func* m =  es->methods->data[i];
 char * ____BAH_COMPILER_VAR_179 =null;
@@ -6845,8 +6896,9 @@ i =  0;
 while ((i<len(methods))) {
 
                     if (methods->length <= i) {
-                        printf("array (/home/alois/Documents/bah-bah/src/var.bah:372): methods[%d] with length %d\n", i, methods->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: methods[%d] with length %d", i, methods->length);
+                        __BAH_panic(buff, "/home/alois/Documents/bah-bah/src/var.bah:372");
                     };
                     struct func* m =  methods->data[i];
 char * ____BAH_COMPILER_VAR_180 =null;
@@ -6989,8 +7041,9 @@ long int j =  0;
 while ((j<len(arr))) {
 
                     if (arr->length <= j) {
-                        printf("array (/home/alois/Documents/bah-bah/src/var.bah:401): arr[%d] with length %d\n", j, arr->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: arr[%d] with length %d", j, arr->length);
+                        __BAH_panic(buff, "/home/alois/Documents/bah-bah/src/var.bah:401");
                     };
                     struct variable* ev =  arr->data[j];
 if ((strcmp(ev->name, v->name) == 0)) {
@@ -7006,8 +7059,9 @@ long int i =  0;
 for (; (i<len(a)); i =  i+1) {
 
                     if (a->length <= i) {
-                        printf("array (/home/alois/Documents/bah-bah/src/var.bah:413): a[%d] with length %d\n", i, a->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: a[%d] with length %d", i, a->length);
+                        __BAH_panic(buff, "/home/alois/Documents/bah-bah/src/var.bah:413");
                     };
                     long int c =  a->data[i];
 c =  c - (long int)97;
@@ -7078,8 +7132,9 @@ long int i =  0;
 for (; (i<len(compilerState.evals)); i =  i+1) {
 
                     if (compilerState.evals->length <= i) {
-                        printf("array (/home/alois/Documents/bah-bah/src/var.bah:435): compilerState.evals[%d] with length %d\n", i, compilerState.evals->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: compilerState.evals[%d] with length %d", i, compilerState.evals->length);
+                        __BAH_panic(buff, "/home/alois/Documents/bah-bah/src/var.bah:435");
                     };
                     char * e =  compilerState.evals->data[i];
 char * ____BAH_COMPILER_VAR_189 =null;
@@ -7562,8 +7617,9 @@ long int i =  0;
 for (; (i<len(elems->vars)); i =  i+1) {
 
                     if (elems->vars->length <= i) {
-                        printf("array (/home/alois/Documents/bah-bah/src/mem.bah:100): elems->vars[%d] with length %d\n", i, elems->vars->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: elems->vars[%d] with length %d", i, elems->vars->length);
+                        __BAH_panic(buff, "/home/alois/Documents/bah-bah/src/mem.bah:100");
                     };
                     struct variable* v =  elems->vars->data[i];
 if (((v->outterScope==false)&&(isRCPtype(v->type,elems)==true))) {
@@ -7581,8 +7637,9 @@ long int i =  0;
 for (; (i<len(elems->vars)); i =  i+1) {
 
                     if (elems->vars->length <= i) {
-                        printf("array (/home/alois/Documents/bah-bah/src/mem.bah:114): elems->vars[%d] with length %d\n", i, elems->vars->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: elems->vars[%d] with length %d", i, elems->vars->length);
+                        __BAH_panic(buff, "/home/alois/Documents/bah-bah/src/mem.bah:114");
                     };
                     struct variable* v =  elems->vars->data[i];
 if ((isRCPtype(v->type,elems)==true)) {
@@ -7663,8 +7720,9 @@ long int i =  0;
 while ((i<len(s->members))) {
 
                     if (s->members->length <= i) {
-                        printf("array (/home/alois/Documents/bah-bah/src/mem.bah:141): s->members[%d] with length %d\n", i, s->members->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: s->members[%d] with length %d", i, s->members->length);
+                        __BAH_panic(buff, "/home/alois/Documents/bah-bah/src/mem.bah:141");
                     };
                     struct structMemb* m =  s->members->data[i];
 struct string rm =  string(m->type);
@@ -7818,8 +7876,9 @@ long int i =  0;
 while ((i<len(compilerState.RCPvars))) {
 
                     if (compilerState.RCPvars->length <= i) {
-                        printf("array (/home/alois/Documents/bah-bah/src/mem.bah:183): compilerState.RCPvars[%d] with length %d\n", i, compilerState.RCPvars->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: compilerState.RCPvars[%d] with length %d", i, compilerState.RCPvars->length);
+                        __BAH_panic(buff, "/home/alois/Documents/bah-bah/src/mem.bah:183");
                     };
                     struct variable* r =  compilerState.RCPvars->data[i];
 if ((strcmp(r->name, v->name) == 0)) {
@@ -7940,8 +7999,9 @@ long int i =  0;
 for (; (i<len(s->members)); i =  i+1) {
 
                     if (s->members->length <= i) {
-                        printf("array (/home/alois/Documents/bah-bah/src/verboseOut.bah:53): s->members[%d] with length %d\n", i, s->members->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: s->members[%d] with length %d", i, s->members->length);
+                        __BAH_panic(buff, "/home/alois/Documents/bah-bah/src/verboseOut.bah:53");
                     };
                     struct variable* m =  s->members->data[i];
 char * ____BAH_COMPILER_VAR_223 =null;
@@ -8118,8 +8178,9 @@ long int i =  0;
 for (; (i<len(fn->args)); i =  i+1) {
 
                     if (fn->args->length <= i) {
-                        printf("array (/home/alois/Documents/bah-bah/src/verboseOut.bah:101): fn->args[%d] with length %d\n", i, fn->args->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: fn->args[%d] with length %d", i, fn->args->length);
+                        __BAH_panic(buff, "/home/alois/Documents/bah-bah/src/verboseOut.bah:101");
                     };
                     struct variable* a =  fn->args->data[i];
 if ((isRCPpointerType(a->type)==true)) {
@@ -8137,8 +8198,9 @@ long int j =  0;
 for (; (j<len(fn->args)); j =  j+1) {
 
                     if (fn->args->length <= j) {
-                        printf("array (/home/alois/Documents/bah-bah/src/verboseOut.bah:115): fn->args[%d] with length %d\n", j, fn->args->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: fn->args[%d] with length %d", j, fn->args->length);
+                        __BAH_panic(buff, "/home/alois/Documents/bah-bah/src/verboseOut.bah:115");
                     };
                     struct variable* a =  fn->args->data[j];
 if ((j!=0)) {
@@ -8161,8 +8223,9 @@ long int strLen_1 = strlen(", ");
 }
 
                     if (args->length <= j) {
-                        printf("array (/home/alois/Documents/bah-bah/src/verboseOut.bah:120): args[%d] with length %d\n", j, args->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: args[%d] with length %d", j, args->length);
+                        __BAH_panic(buff, "/home/alois/Documents/bah-bah/src/verboseOut.bah:120");
                     };
                     struct Tok t =  args->data[j];
 struct verboseOutVar v =  verboseOutTransformVar(a,t.cont,elems);
@@ -8514,8 +8577,9 @@ long int i =  0;
 for (; (i<len(cache)); i =  i+1) {
 
                     if (cache->length <= i) {
-                        printf("array (/home/alois/Documents/bah-bah/src/cache.bah:44): cache[%d] with length %d\n", i, cache->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: cache[%d] with length %d", i, cache->length);
+                        __BAH_panic(buff, "/home/alois/Documents/bah-bah/src/cache.bah:44");
                     };
                     struct cacheFile* c =  cache->data[i];
 if (((strcmp(c->file, s) == 0)&&(c->mem==RCPlevel))) {
@@ -8680,8 +8744,9 @@ long int i =  0;
 while ((i<len(line))) {
 
                     if (line->length <= i) {
-                        printf("array (/home/alois/Documents/bah-bah/src/parser.bah:16): line[%d] with length %d\n", i, line->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: line[%d] with length %d", i, line->length);
+                        __BAH_panic(buff, "/home/alois/Documents/bah-bah/src/parser.bah:16");
                     };
                     struct Tok t =  line->data[i];
 char * ____BAH_COMPILER_VAR_294 =null;
@@ -8731,8 +8796,9 @@ long int j =  0;
 for (; (j<len(elems->vars)); j =  j+1) {
 
                     if (elems->vars->length <= j) {
-                        printf("array (/home/alois/Documents/bah-bah/src/parser.bah:29): elems->vars[%d] with length %d\n", j, elems->vars->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: elems->vars[%d] with length %d", j, elems->vars->length);
+                        __BAH_panic(buff, "/home/alois/Documents/bah-bah/src/parser.bah:29");
                     };
                     struct variable* v =  elems->vars->data[j];
 struct variable* ____BAH_COMPILER_VAR_296 = memoryAlloc(sizeof(struct variable));
@@ -8789,8 +8855,9 @@ lineType prevLine;
 lineType getLineType(__BAH_ARR_TYPE_Tok line){
 
                     if (line->length <= 0) {
-                        printf("array (/home/alois/Documents/bah-bah/src/parser.bah:73): line[%d] with length %d\n", 0, line->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: line[%d] with length %d", 0, line->length);
+                        __BAH_panic(buff, "/home/alois/Documents/bah-bah/src/parser.bah:73");
                     };
                     struct Tok ft =  line->data[0];
 if ((ft.type==TOKEN_TYPE_FUNC)) {
@@ -8846,15 +8913,17 @@ throwErr(&ft,"Cannot declare var {TOKEN} without a type.");
 }
 
                     if (line->length <= 1) {
-                        printf("array (/home/alois/Documents/bah-bah/src/parser.bah:112): line[%d] with length %d\n", 1, line->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: line[%d] with length %d", 1, line->length);
+                        __BAH_panic(buff, "/home/alois/Documents/bah-bah/src/parser.bah:112");
                     };
                     struct Tok st =  line->data[1];
 if (((st.type==TOKEN_TYPE_ENCL)&&(strcmp(st.cont, "(") == 0))) {
 
                     if (line->length <= len(line)-1) {
-                        printf("array (/home/alois/Documents/bah-bah/src/parser.bah:114): line[%d] with length %d\n", len(line)-1, line->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: line[%d] with length %d", len(line)-1, line->length);
+                        __BAH_panic(buff, "/home/alois/Documents/bah-bah/src/parser.bah:114");
                     };
                     struct Tok lt =  line->data[len(line)-1];
 if (((lt.type==TOKEN_TYPE_ENCL)&&(strcmp(lt.cont, "}") == 0))) {
@@ -8875,8 +8944,9 @@ long int i =  0;
 while ((i<len(line))) {
 
                     if (line->length <= i) {
-                        printf("array (/home/alois/Documents/bah-bah/src/parser.bah:133): line[%d] with length %d\n", i, line->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: line[%d] with length %d", i, line->length);
+                        __BAH_panic(buff, "/home/alois/Documents/bah-bah/src/parser.bah:133");
                     };
                     struct Tok t =  line->data[i];
 if ((strcmp(t.cont, "<") == 0)) {
@@ -8904,8 +8974,9 @@ return line;
 for (; (i<len(line)); i =  i+1) {
 
                     if (line->length <= i) {
-                        printf("array (/home/alois/Documents/bah-bah/src/parser.bah:145): line[%d] with length %d\n", i, line->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: line[%d] with length %d", i, line->length);
+                        __BAH_panic(buff, "/home/alois/Documents/bah-bah/src/parser.bah:145");
                     };
                     struct Tok t =  line->data[i];
 if ((t.type==TOKEN_TYPE_SYNTAX)) {
@@ -8913,20 +8984,23 @@ if ((strcmp(t.cont, "<") == 0)) {
 if ((i + 3<len(line))) {
 
                     if (line->length <= i + 1) {
-                        printf("array (/home/alois/Documents/bah-bah/src/parser.bah:149): line[%d] with length %d\n", i + 1, line->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: line[%d] with length %d", i + 1, line->length);
+                        __BAH_panic(buff, "/home/alois/Documents/bah-bah/src/parser.bah:149");
                     };
                     struct Tok nt =  line->data[i + 1];
 
                     if (line->length <= i + 2) {
-                        printf("array (/home/alois/Documents/bah-bah/src/parser.bah:150): line[%d] with length %d\n", i + 2, line->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: line[%d] with length %d", i + 2, line->length);
+                        __BAH_panic(buff, "/home/alois/Documents/bah-bah/src/parser.bah:150");
                     };
                     struct Tok nnt =  line->data[i + 2];
 
                     if (line->length <= i + 3) {
-                        printf("array (/home/alois/Documents/bah-bah/src/parser.bah:151): line[%d] with length %d\n", i + 3, line->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: line[%d] with length %d", i + 3, line->length);
+                        __BAH_panic(buff, "/home/alois/Documents/bah-bah/src/parser.bah:151");
                     };
                     struct Tok nnnt =  line->data[i + 3];
 if ((nt.type==TOKEN_TYPE_VAR)) {
@@ -9004,8 +9078,9 @@ long int i =  len(p)-1;
 while ((i>=0)) {
 
                     if (p->length <= i) {
-                        printf("array (/home/alois/Documents/bah-bah/src/parser.bah:179): p[%d] with length %d\n", i, p->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: p[%d] with length %d", i, p->length);
+                        __BAH_panic(buff, "/home/alois/Documents/bah-bah/src/parser.bah:179");
                     };
                     char c =  p->data[i];
 if ((c==47)) {
@@ -9281,8 +9356,9 @@ throwErr(&l->data[0],"Invalid usage of {TOKEN}.");
 }
 
                     if (l->length <= 1) {
-                        printf("array (/home/alois/Documents/bah-bah/src/parser.bah:308): l[%d] with length %d\n", 1, l->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: l[%d] with length %d", 1, l->length);
+                        __BAH_panic(buff, "/home/alois/Documents/bah-bah/src/parser.bah:308");
                     };
                     struct Tok strt =  l->data[1];
 if ((strt.type!=TOKEN_TYPE_STR)) {
@@ -9483,8 +9559,9 @@ throwErr(&l->data[len(l)-1],"Invalid usage of include, ending by {TOKEN}.");
 }
 
                     if (l->length <= 1) {
-                        printf("array (/home/alois/Documents/bah-bah/src/parser.bah:392): l[%d] with length %d\n", 1, l->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: l[%d] with length %d", 1, l->length);
+                        __BAH_panic(buff, "/home/alois/Documents/bah-bah/src/parser.bah:392");
                     };
                     struct Tok strt =  l->data[1];
 if ((strt.type!=TOKEN_TYPE_STR)) {
@@ -9539,8 +9616,9 @@ array(char *)* signs;
 __BAH_ARR_TYPE_Tok parseOperations(__BAH_ARR_TYPE_Tok line,lineType ltp,struct Elems* elems){
 
                     if (line->length <= 0) {
-                        printf("array (/home/alois/Documents/bah-bah/src/parser.bah:414): line[%d] with length %d\n", 0, line->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: line[%d] with length %d", 0, line->length);
+                        __BAH_panic(buff, "/home/alois/Documents/bah-bah/src/parser.bah:414");
                     };
                     array(struct Tok)* nl = memoryAlloc(sizeof(array(struct Tok)));
 
@@ -9549,8 +9627,9 @@ nl->elemSize = sizeof(struct Tok);
 nl->data = memoryAlloc(sizeof(struct Tok) * 50);nl->data[0] = line->data[0];
 
                     if (line->length <= 0) {
-                        printf("array (/home/alois/Documents/bah-bah/src/parser.bah:415): line[%d] with length %d\n", 0, line->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: line[%d] with length %d", 0, line->length);
+                        __BAH_panic(buff, "/home/alois/Documents/bah-bah/src/parser.bah:415");
                     };
                     array(struct Tok)* unNestedLine = memoryAlloc(sizeof(array(struct Tok)));
 
@@ -9561,14 +9640,16 @@ long int i =  1;
 for (; (i<len(line)); i =  i+1) {
 
                     if (line->length <= i) {
-                        printf("array (/home/alois/Documents/bah-bah/src/parser.bah:418): line[%d] with length %d\n", i, line->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: line[%d] with length %d", i, line->length);
+                        __BAH_panic(buff, "/home/alois/Documents/bah-bah/src/parser.bah:418");
                     };
                     struct Tok t =  line->data[i];
 
                     if (line->length <= i-1) {
-                        printf("array (/home/alois/Documents/bah-bah/src/parser.bah:419): line[%d] with length %d\n", i-1, line->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: line[%d] with length %d", i-1, line->length);
+                        __BAH_panic(buff, "/home/alois/Documents/bah-bah/src/parser.bah:419");
                     };
                     struct Tok pt =  line->data[i-1];
 if (((strcmp(t.cont, "(") == 0)&&(pt.type!=TOKEN_TYPE_KEYWORD))) {
@@ -9582,14 +9663,16 @@ struct Tok ft =  t;
 for (; (i<len(line)); i =  i+1) {
 
                     if (line->length <= i) {
-                        printf("array (/home/alois/Documents/bah-bah/src/parser.bah:427): line[%d] with length %d\n", i, line->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: line[%d] with length %d", i, line->length);
+                        __BAH_panic(buff, "/home/alois/Documents/bah-bah/src/parser.bah:427");
                     };
                     t =  line->data[i];
 
                     if (line->length <= i-1) {
-                        printf("array (/home/alois/Documents/bah-bah/src/parser.bah:428): line[%d] with length %d\n", i-1, line->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: line[%d] with length %d", i-1, line->length);
+                        __BAH_panic(buff, "/home/alois/Documents/bah-bah/src/parser.bah:428");
                     };
                     pt =  line->data[i-1];
 if (((strcmp(t.cont, "(") == 0)&&(pt.type!=TOKEN_TYPE_KEYWORD))) {
@@ -9650,8 +9733,9 @@ continue;
 array(struct Tok)* tmpL =  parseOperations(mem,ltp,elems);
 
                     if (tmpL->length <= 0) {
-                        printf("array (/home/alois/Documents/bah-bah/src/parser.bah:447): tmpL[%d] with length %d\n", 0, tmpL->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: tmpL[%d] with length %d", 0, tmpL->length);
+                        __BAH_panic(buff, "/home/alois/Documents/bah-bah/src/parser.bah:447");
                     };
                     struct Tok nestedT =  tmpL->data[0];
 char * ____BAH_COMPILER_VAR_324 =null;
@@ -9710,8 +9794,9 @@ i =  1;
 while ((i<len(line))) {
 
                     if (line->length <= i) {
-                        printf("array (/home/alois/Documents/bah-bah/src/parser.bah:457): line[%d] with length %d\n", i, line->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: line[%d] with length %d", i, line->length);
+                        __BAH_panic(buff, "/home/alois/Documents/bah-bah/src/parser.bah:457");
                     };
                     struct Tok t =  line->data[i];
 
@@ -9728,14 +9813,16 @@ throwErr(&t,"Cannot use {TOKEN} on nothing.");
 }
 
                     if (nl->length <= len(nl)-1) {
-                        printf("array (/home/alois/Documents/bah-bah/src/parser.bah:463): nl[%d] with length %d\n", len(nl)-1, nl->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: nl[%d] with length %d", len(nl)-1, nl->length);
+                        __BAH_panic(buff, "/home/alois/Documents/bah-bah/src/parser.bah:463");
                     };
                     struct Tok pt =  nl->data[len(nl)-1];
 
                     if (line->length <= i + 1) {
-                        printf("array (/home/alois/Documents/bah-bah/src/parser.bah:464): line[%d] with length %d\n", i + 1, line->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: line[%d] with length %d", i + 1, line->length);
+                        __BAH_panic(buff, "/home/alois/Documents/bah-bah/src/parser.bah:464");
                     };
                     struct Tok nt =  line->data[i + 1];
 if ((((strcmp(t.cont, "-") == 0)&&(pt.isValue==false))&&(nt.type==TOKEN_TYPE_INT))) {
@@ -9877,8 +9964,9 @@ strConts->elemSize = sizeof(char *);
 for (; (j<len(line)); j =  j+1) {
 
                     if (line->length <= j) {
-                        printf("array (/home/alois/Documents/bah-bah/src/parser.bah:516): line[%d] with length %d\n", j, line->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: line[%d] with length %d", j, line->length);
+                        __BAH_panic(buff, "/home/alois/Documents/bah-bah/src/parser.bah:516");
                     };
                     struct Tok strAddTk =  line->data[j];
 if ((wasAdd==false)) {
@@ -9964,8 +10052,9 @@ for (; (j<len(strConts)); j =  j+1) {
 char * js =  intToStr(j);
 
                     if (strConts->length <= j) {
-                        printf("array (/home/alois/Documents/bah-bah/src/parser.bah:546): strConts[%d] with length %d\n", j, strConts->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: strConts[%d] with length %d", j, strConts->length);
+                        __BAH_panic(buff, "/home/alois/Documents/bah-bah/src/parser.bah:546");
                     };
                     char * ____BAH_COMPILER_VAR_331 =null;
                 {
@@ -10026,8 +10115,9 @@ for (; (j<len(strConts)); j =  j+1) {
 char * js =  intToStr(j);
 
                     if (strConts->length <= j) {
-                        printf("array (/home/alois/Documents/bah-bah/src/parser.bah:554): strConts[%d] with length %d\n", j, strConts->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: strConts[%d] with length %d", j, strConts->length);
+                        __BAH_panic(buff, "/home/alois/Documents/bah-bah/src/parser.bah:554");
                     };
                     char * ____BAH_COMPILER_VAR_333 =null;
                 {
@@ -10399,8 +10489,9 @@ else if ((t.isValue==true)) {
 if (strHasPrefix(t.cont,"-")) {
 
                     if (nl->length <= len(nl)-1) {
-                        printf("array (/home/alois/Documents/bah-bah/src/parser.bah:629): nl[%d] with length %d\n", len(nl)-1, nl->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: nl[%d] with length %d", len(nl)-1, nl->length);
+                        __BAH_panic(buff, "/home/alois/Documents/bah-bah/src/parser.bah:629");
                     };
                     struct Tok pt =  nl->data[len(nl)-1];
 if ((pt.isValue==true)) {
@@ -10506,8 +10597,9 @@ long int i =  0;
 while ((i<len(line))) {
 
                     if (line->length <= i) {
-                        printf("array (/home/alois/Documents/bah-bah/src/parser.bah:665): line[%d] with length %d\n", i, line->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: line[%d] with length %d", i, line->length);
+                        __BAH_panic(buff, "/home/alois/Documents/bah-bah/src/parser.bah:665");
                     };
                     struct Tok t =  line->data[i];
 if ((t.type==TOKEN_TYPE_VAR)) {
@@ -10546,8 +10638,9 @@ struct Tok nt =  ____BAH_COMPILER_VAR_343;
 if ((i<len(line))) {
 
                     if (line->length <= i) {
-                        printf("array (/home/alois/Documents/bah-bah/src/parser.bah:678): line[%d] with length %d\n", i, line->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: line[%d] with length %d", i, line->length);
+                        __BAH_panic(buff, "/home/alois/Documents/bah-bah/src/parser.bah:678");
                     };
                     nt =  line->data[i];
 }
@@ -10555,8 +10648,9 @@ if (((i==len(line))||(strcmp(nt.cont, "{") != 0))) {
 if ((i-2>=0)) {
 
                     if (line->length <= i-2) {
-                        printf("array (/home/alois/Documents/bah-bah/src/parser.bah:682): line[%d] with length %d\n", i-2, line->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: line[%d] with length %d", i-2, line->length);
+                        __BAH_panic(buff, "/home/alois/Documents/bah-bah/src/parser.bah:682");
                     };
                     struct Tok newTk =  line->data[i-2];
 if ((strcmp(newTk.cont, "new") == 0)) {
@@ -10665,8 +10759,9 @@ continue;
 if ((i<len(line))) {
 
                     if (line->length <= i) {
-                        printf("array (/home/alois/Documents/bah-bah/src/parser.bah:706): line[%d] with length %d\n", i, line->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: line[%d] with length %d", i, line->length);
+                        __BAH_panic(buff, "/home/alois/Documents/bah-bah/src/parser.bah:706");
                     };
                     nt =  line->data[i];
 if ((strcmp(nt.cont, "{") == 0)) {
@@ -10675,8 +10770,9 @@ char * sep =  ".";
 if ((i-2>=0)) {
 
                     if (line->length <= i-2) {
-                        printf("array (/home/alois/Documents/bah-bah/src/parser.bah:711): line[%d] with length %d\n", i-2, line->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: line[%d] with length %d", i-2, line->length);
+                        __BAH_panic(buff, "/home/alois/Documents/bah-bah/src/parser.bah:711");
                     };
                     struct Tok newTk =  line->data[i-2];
 if ((strcmp(newTk.cont, "new") == 0)) {
@@ -10697,8 +10793,9 @@ long int nbBraces =  1;
 for (; (i<len(line)); i =  i+1) {
 
                     if (line->length <= i) {
-                        printf("array (/home/alois/Documents/bah-bah/src/parser.bah:726): line[%d] with length %d\n", i, line->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: line[%d] with length %d", i, line->length);
+                        __BAH_panic(buff, "/home/alois/Documents/bah-bah/src/parser.bah:726");
                     };
                     t =  line->data[i];
 if ((strcmp(t.cont, "{") == 0)) {
@@ -10853,21 +10950,24 @@ long int k =  0;
 while ((k<len(memory))) {
 
                     if (memory->length <= k) {
-                        printf("array (/home/alois/Documents/bah-bah/src/parser.bah:767): memory[%d] with length %d\n", k, memory->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: memory[%d] with length %d", k, memory->length);
+                        __BAH_panic(buff, "/home/alois/Documents/bah-bah/src/parser.bah:767");
                     };
                     t =  memory->data[k];
 if ((k + 2<len(memory))) {
 
                     if (memory->length <= k + 1) {
-                        printf("array (/home/alois/Documents/bah-bah/src/parser.bah:770): memory[%d] with length %d\n", k + 1, memory->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: memory[%d] with length %d", k + 1, memory->length);
+                        __BAH_panic(buff, "/home/alois/Documents/bah-bah/src/parser.bah:770");
                     };
                     struct Tok st =  memory->data[k + 1];
 
                     if (memory->length <= k + 2) {
-                        printf("array (/home/alois/Documents/bah-bah/src/parser.bah:771): memory[%d] with length %d\n", k + 2, memory->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: memory[%d] with length %d", k + 2, memory->length);
+                        __BAH_panic(buff, "/home/alois/Documents/bah-bah/src/parser.bah:771");
                     };
                     struct Tok vl =  memory->data[k + 2];
 if ((strcmp(st.cont, ":") == 0)) {
@@ -10882,8 +10982,9 @@ j =  0;
 while ((j<len(s->members))) {
 
                     if (s->members->length <= j) {
-                        printf("array (/home/alois/Documents/bah-bah/src/parser.bah:781): s->members[%d] with length %d\n", j, s->members->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: s->members[%d] with length %d", j, s->members->length);
+                        __BAH_panic(buff, "/home/alois/Documents/bah-bah/src/parser.bah:781");
                     };
                     struct structMemb* m =  s->members->data[j];
 if ((strcmp(m->name, t.cont) != 0)) {
@@ -10990,8 +11091,9 @@ throwErr(&t,"Too many members {TOKEN}.");
 }
 
                     if (s->members->length <= j) {
-                        printf("array (/home/alois/Documents/bah-bah/src/parser.bah:808): s->members[%d] with length %d\n", j, s->members->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: s->members[%d] with length %d", j, s->members->length);
+                        __BAH_panic(buff, "/home/alois/Documents/bah-bah/src/parser.bah:808");
                     };
                     struct structMemb* m =  s->members->data[j];
 j =  j+1;
@@ -11062,8 +11164,9 @@ if ((k + 1<len(memory))) {
 k =  k+1;
 
                     if (memory->length <= k) {
-                        printf("array (/home/alois/Documents/bah-bah/src/parser.bah:820): memory[%d] with length %d\n", k, memory->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: memory[%d] with length %d", k, memory->length);
+                        __BAH_panic(buff, "/home/alois/Documents/bah-bah/src/parser.bah:820");
                     };
                     struct Tok st =  memory->data[k];
 if ((strcmp(st.cont, ",") != 0)) {
@@ -11148,8 +11251,9 @@ long int i =  0;
 while ((i<len(line))) {
 
                     if (line->length <= i) {
-                        printf("array (/home/alois/Documents/bah-bah/src/parser.bah:864): line[%d] with length %d\n", i, line->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: line[%d] with length %d", i, line->length);
+                        __BAH_panic(buff, "/home/alois/Documents/bah-bah/src/parser.bah:864");
                     };
                     struct Tok t =  line->data[i];
 if ((strcmp(t.cont, ".") == 0)) {
@@ -11164,8 +11268,9 @@ i =  0;
 while ((i<len(line))) {
 
                     if (line->length <= i) {
-                        printf("array (/home/alois/Documents/bah-bah/src/parser.bah:876): line[%d] with length %d\n", i, line->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: line[%d] with length %d", i, line->length);
+                        __BAH_panic(buff, "/home/alois/Documents/bah-bah/src/parser.bah:876");
                     };
                     struct Tok t =  line->data[i];
 if ((t.type==TOKEN_TYPE_VAR)) {
@@ -11173,8 +11278,9 @@ i =  i+1;
 while ((i<len(line))) {
 
                     if (line->length <= i) {
-                        printf("array (/home/alois/Documents/bah-bah/src/parser.bah:880): line[%d] with length %d\n", i, line->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: line[%d] with length %d", i, line->length);
+                        __BAH_panic(buff, "/home/alois/Documents/bah-bah/src/parser.bah:880");
                     };
                     struct Tok it =  line->data[i];
 if ((strcmp(it.cont, ".") != 0)) {
@@ -11214,8 +11320,9 @@ long int strLen_2 = strlen(") as a structure.");
 i =  i+1;
 
                     if (line->length <= i) {
-                        printf("array (/home/alois/Documents/bah-bah/src/parser.bah:897): line[%d] with length %d\n", i, line->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: line[%d] with length %d", i, line->length);
+                        __BAH_panic(buff, "/home/alois/Documents/bah-bah/src/parser.bah:897");
                     };
                     struct Tok nt =  line->data[i];
 if ((nt.type!=TOKEN_TYPE_VAR)) {
@@ -11290,8 +11397,9 @@ long int i =  0;
 for (; (i<len(line)); i =  i+1) {
 
                     if (line->length <= i) {
-                        printf("array (/home/alois/Documents/bah-bah/src/parser.bah:925): line[%d] with length %d\n", i, line->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: line[%d] with length %d", i, line->length);
+                        __BAH_panic(buff, "/home/alois/Documents/bah-bah/src/parser.bah:925");
                     };
                     struct Tok t =  line->data[i];
 if ((strcmp(t.cont, "[") == 0)) {
@@ -11318,8 +11426,9 @@ return line;
 for (; (i<len(line)); i =  i+1) {
 
                     if (line->length <= i) {
-                        printf("array (/home/alois/Documents/bah-bah/src/parser.bah:936): line[%d] with length %d\n", i, line->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: line[%d] with length %d", i, line->length);
+                        __BAH_panic(buff, "/home/alois/Documents/bah-bah/src/parser.bah:936");
                     };
                     struct Tok t =  line->data[i];
 if ((strcmp(t.cont, "[") == 0)) {
@@ -11327,8 +11436,9 @@ i =  i+1;
 if ((i<len(line))) {
 
                     if (line->length <= i) {
-                        printf("array (/home/alois/Documents/bah-bah/src/parser.bah:940): line[%d] with length %d\n", i, line->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: line[%d] with length %d", i, line->length);
+                        __BAH_panic(buff, "/home/alois/Documents/bah-bah/src/parser.bah:940");
                     };
                     t =  line->data[i];
 if ((strcmp(t.cont, "]") == 0)) {
@@ -11338,14 +11448,16 @@ char * bracks =  "[]";
 for (; (i<len(line) - 1); i =  i+1) {
 
                     if (line->length <= i) {
-                        printf("array (/home/alois/Documents/bah-bah/src/parser.bah:946): line[%d] with length %d\n", i, line->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: line[%d] with length %d", i, line->length);
+                        __BAH_panic(buff, "/home/alois/Documents/bah-bah/src/parser.bah:946");
                     };
                     t =  line->data[i];
 
                     if (line->length <= i + 1) {
-                        printf("array (/home/alois/Documents/bah-bah/src/parser.bah:947): line[%d] with length %d\n", i + 1, line->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: line[%d] with length %d", i + 1, line->length);
+                        __BAH_panic(buff, "/home/alois/Documents/bah-bah/src/parser.bah:947");
                     };
                     struct Tok nt =  line->data[i + 1];
 if (((strcmp(t.cont, "[") == 0)&&(strcmp(nt.cont, "]") == 0))) {
@@ -11375,8 +11487,9 @@ break;
 if ((i<len(line))) {
 
                     if (line->length <= i) {
-                        printf("array (/home/alois/Documents/bah-bah/src/parser.bah:957): line[%d] with length %d\n", i, line->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: line[%d] with length %d", i, line->length);
+                        __BAH_panic(buff, "/home/alois/Documents/bah-bah/src/parser.bah:957");
                     };
                     t =  line->data[i];
 if ((t.type!=TOKEN_TYPE_VAR)) {
@@ -11448,8 +11561,9 @@ long int i =  0;
 while ((i<len(line))) {
 
                     if (line->length <= i) {
-                        printf("array (/home/alois/Documents/bah-bah/src/parser.bah:987): line[%d] with length %d\n", i, line->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: line[%d] with length %d", i, line->length);
+                        __BAH_panic(buff, "/home/alois/Documents/bah-bah/src/parser.bah:987");
                     };
                     struct Tok t =  line->data[i];
 if ((inArrayStr(t.cont,comparators)||inArrayStr(t.cont,compSep))) {
@@ -11477,8 +11591,9 @@ return line;
 while ((i<len(line))) {
 
                     if (line->length <= i) {
-                        printf("array (/home/alois/Documents/bah-bah/src/parser.bah:999): line[%d] with length %d\n", i, line->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: line[%d] with length %d", i, line->length);
+                        __BAH_panic(buff, "/home/alois/Documents/bah-bah/src/parser.bah:999");
                     };
                     struct Tok t =  line->data[i];
 if (inArrayStr(t.cont,comparators)) {
@@ -11487,8 +11602,9 @@ throwErr(&t,"Cannot use {TOKEN} to compare with nothing.");
 }
 
                     if (nl->length <= len(nl)-1) {
-                        printf("array (/home/alois/Documents/bah-bah/src/parser.bah:1005): nl[%d] with length %d\n", len(nl)-1, nl->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: nl[%d] with length %d", len(nl)-1, nl->length);
+                        __BAH_panic(buff, "/home/alois/Documents/bah-bah/src/parser.bah:1005");
                     };
                     struct Tok pt =  nl->data[len(nl)-1];
 long int max =  i + 1;
@@ -11497,8 +11613,9 @@ throwErr(&t,"Cannot use {TOKEN} to compare with nothing.");
 }
 
                     if (line->length <= i + 1) {
-                        printf("array (/home/alois/Documents/bah-bah/src/parser.bah:1010): line[%d] with length %d\n", i + 1, line->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: line[%d] with length %d", i + 1, line->length);
+                        __BAH_panic(buff, "/home/alois/Documents/bah-bah/src/parser.bah:1010");
                     };
                     struct Tok nt =  line->data[i + 1];
 char * ptt =  getTypeFromToken(&pt,true,elems);
@@ -11949,8 +12066,9 @@ i =  0;
 while ((i<len(line))) {
 
                     if (line->length <= i) {
-                        printf("array (/home/alois/Documents/bah-bah/src/parser.bah:1086): line[%d] with length %d\n", i, line->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: line[%d] with length %d", i, line->length);
+                        __BAH_panic(buff, "/home/alois/Documents/bah-bah/src/parser.bah:1086");
                     };
                     struct Tok t =  line->data[i];
 if (inArrayStr(t.cont,compSep)) {
@@ -11959,8 +12077,9 @@ throwErr(&t,"Cannot use {TOKEN} to compare with nothing.");
 }
 
                     if (nl->length <= len(nl)-1) {
-                        printf("array (/home/alois/Documents/bah-bah/src/parser.bah:1091): nl[%d] with length %d\n", len(nl)-1, nl->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: nl[%d] with length %d", len(nl)-1, nl->length);
+                        __BAH_panic(buff, "/home/alois/Documents/bah-bah/src/parser.bah:1091");
                     };
                     struct Tok pt =  nl->data[len(nl)-1];
 long int max =  i + 1;
@@ -11969,8 +12088,9 @@ throwErr(&t,"Cannot use {TOKEN} to compare with nothing.");
 }
 
                     if (line->length <= i + 1) {
-                        printf("array (/home/alois/Documents/bah-bah/src/parser.bah:1096): line[%d] with length %d\n", i + 1, line->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: line[%d] with length %d", i + 1, line->length);
+                        __BAH_panic(buff, "/home/alois/Documents/bah-bah/src/parser.bah:1096");
                     };
                     struct Tok nt =  line->data[i + 1];
 char * ptt =  getTypeFromToken(&pt,true,elems);
@@ -12064,8 +12184,9 @@ long int i =  0;
 while ((i<len(l))) {
 
                     if (l->length <= i) {
-                        printf("array (/home/alois/Documents/bah-bah/src/parser.bah:1132): l[%d] with length %d\n", i, l->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: l[%d] with length %d", i, l->length);
+                        __BAH_panic(buff, "/home/alois/Documents/bah-bah/src/parser.bah:1132");
                     };
                     struct Tok t =  l->data[i];
 if ((t.type==TOKEN_TYPE_SYNTAX)) {
@@ -12073,16 +12194,18 @@ if ((strcmp(t.cont, "*") == 0)) {
 if ((i>0)) {
 
                     if (nl->length <= len(nl)-1) {
-                        printf("array (/home/alois/Documents/bah-bah/src/parser.bah:1137): nl[%d] with length %d\n", len(nl)-1, nl->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: nl[%d] with length %d", len(nl)-1, nl->length);
+                        __BAH_panic(buff, "/home/alois/Documents/bah-bah/src/parser.bah:1137");
                     };
                     struct Tok pt =  nl->data[len(nl)-1];
 if ((pt.type==TOKEN_TYPE_VAR)) {
 if ((i + 1<len(l))) {
 
                     if (l->length <= i + 1) {
-                        printf("array (/home/alois/Documents/bah-bah/src/parser.bah:1140): l[%d] with length %d\n", i + 1, l->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: l[%d] with length %d", i + 1, l->length);
+                        __BAH_panic(buff, "/home/alois/Documents/bah-bah/src/parser.bah:1140");
                     };
                     struct Tok nt =  l->data[i + 1];
 if ((nt.isValue==false)) {
@@ -12161,8 +12284,9 @@ if (inArrayStr(t.cont,ptrOpers)) {
 if ((i>0)) {
 
                     if (nl->length <= len(nl)-1) {
-                        printf("array (/home/alois/Documents/bah-bah/src/parser.bah:1159): nl[%d] with length %d\n", len(nl)-1, nl->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: nl[%d] with length %d", len(nl)-1, nl->length);
+                        __BAH_panic(buff, "/home/alois/Documents/bah-bah/src/parser.bah:1159");
                     };
                     struct Tok pt =  nl->data[len(nl)-1];
 if ((pt.isValue==true)) {
@@ -12188,8 +12312,9 @@ i =  i + 1;
 if ((i<len(l))) {
 
                     if (l->length <= i) {
-                        printf("array (/home/alois/Documents/bah-bah/src/parser.bah:1168): l[%d] with length %d\n", i, l->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: l[%d] with length %d", i, l->length);
+                        __BAH_panic(buff, "/home/alois/Documents/bah-bah/src/parser.bah:1168");
                     };
                     struct Tok nt =  l->data[i];
 if ((nt.type==TOKEN_TYPE_VAR)) {
@@ -12257,8 +12382,9 @@ long int i =  0;
 while ((i<len(l))) {
 
                     if (l->length <= i) {
-                        printf("array (/home/alois/Documents/bah-bah/src/parser.bah:1194): l[%d] with length %d\n", i, l->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: l[%d] with length %d", i, l->length);
+                        __BAH_panic(buff, "/home/alois/Documents/bah-bah/src/parser.bah:1194");
                     };
                     struct Tok t =  l->data[i];
 if ((t.type==TOKEN_TYPE_VAR)) {
@@ -12266,8 +12392,9 @@ i =  i + 1;
 if ((i<len(l))) {
 
                     if (l->length <= i) {
-                        printf("array (/home/alois/Documents/bah-bah/src/parser.bah:1198): l[%d] with length %d\n", i, l->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: l[%d] with length %d", i, l->length);
+                        __BAH_panic(buff, "/home/alois/Documents/bah-bah/src/parser.bah:1198");
                     };
                     t =  l->data[i];
 if ((strcmp(t.cont, "[") == 0)) {
@@ -12283,24 +12410,27 @@ return l;
 }
 
                     if (l->length <= 0) {
-                        printf("array (/home/alois/Documents/bah-bah/src/parser.bah:1211): l[%d] with length %d\n", 0, l->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: l[%d] with length %d", 0, l->length);
+                        __BAH_panic(buff, "/home/alois/Documents/bah-bah/src/parser.bah:1211");
                     };
                     struct Tok ft =  l->data[0];
 i =  0;
 for (; (i<len(l)); i =  i+1) {
 
                     if (l->length <= i) {
-                        printf("array (/home/alois/Documents/bah-bah/src/parser.bah:1214): l[%d] with length %d\n", i, l->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: l[%d] with length %d", i, l->length);
+                        __BAH_panic(buff, "/home/alois/Documents/bah-bah/src/parser.bah:1214");
                     };
                     struct Tok t =  l->data[i];
 if ((strcmp(t.cont, "[") == 0)) {
 long int ti =  i-1;
 
                     if (nl->length <= len(nl)-1) {
-                        printf("array (/home/alois/Documents/bah-bah/src/parser.bah:1218): nl[%d] with length %d\n", len(nl)-1, nl->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: nl[%d] with length %d", len(nl)-1, nl->length);
+                        __BAH_panic(buff, "/home/alois/Documents/bah-bah/src/parser.bah:1218");
                     };
                     struct Tok lt =  nl->data[len(nl)-1];
 if (((lt.type!=TOKEN_TYPE_VAR)&&(lt.type!=TOKEN_TYPE_FUNC))) {
@@ -12330,8 +12460,9 @@ long int nbBracks =  1;
 for (; (i<len(l)); i =  i+1) {
 
                     if (l->length <= i) {
-                        printf("array (/home/alois/Documents/bah-bah/src/parser.bah:1230): l[%d] with length %d\n", i, l->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: l[%d] with length %d", i, l->length);
+                        __BAH_panic(buff, "/home/alois/Documents/bah-bah/src/parser.bah:1230");
                     };
                     struct Tok it =  l->data[i];
 if ((strcmp(it.cont, "[") == 0)) {
@@ -12369,8 +12500,9 @@ long int j =  0;
 for (; (j<len(memory)); j =  j+1) {
 
                     if (memory->length <= j) {
-                        printf("array (/home/alois/Documents/bah-bah/src/parser.bah:1251): memory[%d] with length %d\n", j, memory->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: memory[%d] with length %d", j, memory->length);
+                        __BAH_panic(buff, "/home/alois/Documents/bah-bah/src/parser.bah:1251");
                     };
                     struct Tok mt =  memory->data[j];
 if ((strcmp(mt.cont, ":") == 0)) {
@@ -12405,8 +12537,9 @@ j =  0;
 for (; (j<sepPos); j =  j+1) {
 
                     if (memory->length <= j) {
-                        printf("array (/home/alois/Documents/bah-bah/src/parser.bah:1265): memory[%d] with length %d\n", j, memory->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: memory[%d] with length %d", j, memory->length);
+                        __BAH_panic(buff, "/home/alois/Documents/bah-bah/src/parser.bah:1265");
                     };
                     struct Tok mt =  memory->data[j];
 char * ____BAH_COMPILER_VAR_388 =null;
@@ -12454,8 +12587,9 @@ j =  sepPos + 1;
 for (; (j<len(memory)); j =  j+1) {
 
                     if (memory->length <= j) {
-                        printf("array (/home/alois/Documents/bah-bah/src/parser.bah:1273): memory[%d] with length %d\n", j, memory->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: memory[%d] with length %d", j, memory->length);
+                        __BAH_panic(buff, "/home/alois/Documents/bah-bah/src/parser.bah:1273");
                     };
                     struct Tok mt =  memory->data[j];
 char * ____BAH_COMPILER_VAR_390 =null;
@@ -13134,17 +13268,17 @@ char * ____BAH_COMPILER_VAR_411 =intToStr(lt.line);char * ____BAH_COMPILER_VAR_4
 long int strLen_1 = strlen(lt.cont);
 long int strLen_2 = strlen("->length <= ");
 long int strLen_3 = strlen(cont);
-long int strLen_4 = strlen(") {\n                        printf(\"array (");
-long int strLen_5 = strlen(compilerState.currentFile);
-long int strLen_6 = strlen(":");
-long int strLen_7 = strlen(____BAH_COMPILER_VAR_411);
-long int strLen_8 = strlen("): ");
+long int strLen_4 = strlen(") {\n                        char buff[300];\n                        snprintf(buff, 299, \"array: ");
+long int strLen_5 = strlen(lt.cont);
+long int strLen_6 = strlen("[%d] with length %d\", ");
+long int strLen_7 = strlen(cont);
+long int strLen_8 = strlen(", ");
 long int strLen_9 = strlen(lt.cont);
-long int strLen_10 = strlen("[%d] with length %d\\n\", ");
-long int strLen_11 = strlen(cont);
-long int strLen_12 = strlen(", ");
-long int strLen_13 = strlen(lt.cont);
-long int strLen_14 = strlen("->length);\n                        exit(1);\n                    };\n                    ");
+long int strLen_10 = strlen("->length);\n                        __BAH_panic(buff, \"");
+long int strLen_11 = strlen(compilerState.currentFile);
+long int strLen_12 = strlen(":");
+long int strLen_13 = strlen(____BAH_COMPILER_VAR_411);
+long int strLen_14 = strlen("\");\n                    };\n                    ");
 ;                            
                     ____BAH_COMPILER_VAR_412 = memoryAllocSTR(1 + strLen_0 + strLen_1 + strLen_2 + strLen_3 + strLen_4 + strLen_5 + strLen_6 + strLen_7 + strLen_8 + strLen_9 + strLen_10 + strLen_11 + strLen_12 + strLen_13 + strLen_14);
                     
@@ -13160,37 +13294,37 @@ long int strLen_14 = strlen("->length);\n                        exit(1);\n     
                     memcpy(____BAH_COMPILER_VAR_412+currStrOff, cont, strLen_3);
                     currStrOff += strLen_3;
                     
-                    memcpy(____BAH_COMPILER_VAR_412+currStrOff, ") {\n                        printf(\"array (", strLen_4);
+                    memcpy(____BAH_COMPILER_VAR_412+currStrOff, ") {\n                        char buff[300];\n                        snprintf(buff, 299, \"array: ", strLen_4);
                     currStrOff += strLen_4;
                     
-                    memcpy(____BAH_COMPILER_VAR_412+currStrOff, compilerState.currentFile, strLen_5);
+                    memcpy(____BAH_COMPILER_VAR_412+currStrOff, lt.cont, strLen_5);
                     currStrOff += strLen_5;
                     
-                    memcpy(____BAH_COMPILER_VAR_412+currStrOff, ":", strLen_6);
+                    memcpy(____BAH_COMPILER_VAR_412+currStrOff, "[%d] with length %d\", ", strLen_6);
                     currStrOff += strLen_6;
                     
-                    memcpy(____BAH_COMPILER_VAR_412+currStrOff, ____BAH_COMPILER_VAR_411, strLen_7);
+                    memcpy(____BAH_COMPILER_VAR_412+currStrOff, cont, strLen_7);
                     currStrOff += strLen_7;
                     
-                    memcpy(____BAH_COMPILER_VAR_412+currStrOff, "): ", strLen_8);
+                    memcpy(____BAH_COMPILER_VAR_412+currStrOff, ", ", strLen_8);
                     currStrOff += strLen_8;
                     
                     memcpy(____BAH_COMPILER_VAR_412+currStrOff, lt.cont, strLen_9);
                     currStrOff += strLen_9;
                     
-                    memcpy(____BAH_COMPILER_VAR_412+currStrOff, "[%d] with length %d\\n\", ", strLen_10);
+                    memcpy(____BAH_COMPILER_VAR_412+currStrOff, "->length);\n                        __BAH_panic(buff, \"", strLen_10);
                     currStrOff += strLen_10;
                     
-                    memcpy(____BAH_COMPILER_VAR_412+currStrOff, cont, strLen_11);
+                    memcpy(____BAH_COMPILER_VAR_412+currStrOff, compilerState.currentFile, strLen_11);
                     currStrOff += strLen_11;
                     
-                    memcpy(____BAH_COMPILER_VAR_412+currStrOff, ", ", strLen_12);
+                    memcpy(____BAH_COMPILER_VAR_412+currStrOff, ":", strLen_12);
                     currStrOff += strLen_12;
                     
-                    memcpy(____BAH_COMPILER_VAR_412+currStrOff, lt.cont, strLen_13);
+                    memcpy(____BAH_COMPILER_VAR_412+currStrOff, ____BAH_COMPILER_VAR_411, strLen_13);
                     currStrOff += strLen_13;
                     
-                    memcpy(____BAH_COMPILER_VAR_412+currStrOff, "->length);\n                        exit(1);\n                    };\n                    ", strLen_14);
+                    memcpy(____BAH_COMPILER_VAR_412+currStrOff, "\");\n                    };\n                    ", strLen_14);
                     currStrOff += strLen_14;
                     
                 }
@@ -13417,8 +13551,9 @@ long int i =  0;
 while ((i<len(s->members))) {
 
                     if (s->members->length <= i) {
-                        printf("array (/home/alois/Documents/bah-bah/src/parser.bah:1421): s->members[%d] with length %d\n", i, s->members->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: s->members[%d] with length %d", i, s->members->length);
+                        __BAH_panic(buff, "/home/alois/Documents/bah-bah/src/parser.bah:1422");
                     };
                     struct structMemb* m =  s->members->data[i];
 if ((strcmp(m->type, "cpstring") == 0)) {
@@ -13693,8 +13828,9 @@ long int i =  0;
 for (; (i<len(ts->members)); i =  i+1) {
 
                     if (ts->members->length <= i) {
-                        printf("array (/home/alois/Documents/bah-bah/src/parser.bah:1504): ts->members[%d] with length %d\n", i, ts->members->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: ts->members[%d] with length %d", i, ts->members->length);
+                        __BAH_panic(buff, "/home/alois/Documents/bah-bah/src/parser.bah:1505");
                     };
                     struct structMemb* m =  ts->members->data[i];
 if ((strcmp(m->type, tt) == 0)) {
@@ -14064,8 +14200,9 @@ long int i =  0;
 while ((i<len(l))) {
 
                     if (l->length <= i) {
-                        printf("array (/home/alois/Documents/bah-bah/src/parser.bah:1579): l[%d] with length %d\n", i, l->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: l[%d] with length %d", i, l->length);
+                        __BAH_panic(buff, "/home/alois/Documents/bah-bah/src/parser.bah:1580");
                     };
                     struct Tok t =  l->data[i];
 if ((t.type==TOKEN_TYPE_VAR)) {
@@ -14073,8 +14210,9 @@ i =  i+1;
 if ((i<len(l))) {
 
                     if (l->length <= i) {
-                        printf("array (/home/alois/Documents/bah-bah/src/parser.bah:1583): l[%d] with length %d\n", i, l->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: l[%d] with length %d", i, l->length);
+                        __BAH_panic(buff, "/home/alois/Documents/bah-bah/src/parser.bah:1584");
                     };
                     t =  l->data[i];
 if ((strcmp(t.cont, "(") == 0)) {
@@ -14092,8 +14230,9 @@ i =  0;
 while ((i<len(l))) {
 
                     if (l->length <= i) {
-                        printf("array (/home/alois/Documents/bah-bah/src/parser.bah:1598): l[%d] with length %d\n", i, l->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: l[%d] with length %d", i, l->length);
+                        __BAH_panic(buff, "/home/alois/Documents/bah-bah/src/parser.bah:1599");
                     };
                     struct Tok ot =  l->data[i];
 if ((ot.type==TOKEN_TYPE_VAR)) {
@@ -14101,8 +14240,9 @@ i =  i + 1;
 if ((i<len(l))) {
 
                     if (l->length <= i) {
-                        printf("array (/home/alois/Documents/bah-bah/src/parser.bah:1603): l[%d] with length %d\n", i, l->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: l[%d] with length %d", i, l->length);
+                        __BAH_panic(buff, "/home/alois/Documents/bah-bah/src/parser.bah:1604");
                     };
                     struct Tok nt =  l->data[i];
 if ((strcmp(nt.cont, "(") == 0)) {
@@ -14119,8 +14259,9 @@ struct variable* arg1= null;
 if (hasStructSep(fnStr)) {
 
                     if (fn->args->length <= 0) {
-                        printf("array (/home/alois/Documents/bah-bah/src/parser.bah:1616): fn->args[%d] with length %d\n", 0, fn->args->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: fn->args[%d] with length %d", 0, fn->args->length);
+                        __BAH_panic(buff, "/home/alois/Documents/bah-bah/src/parser.bah:1617");
                     };
                     arg1 =  fn->args->data[0];
 struct string fnarg1t =  getCType(arg1->type,elems);
@@ -14217,8 +14358,9 @@ memory->data[len(memory)] =  tk;
 };
 
                     if (l->length <= i) {
-                        printf("array (/home/alois/Documents/bah-bah/src/parser.bah:1649): l[%d] with length %d\n", i, l->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: l[%d] with length %d", i, l->length);
+                        __BAH_panic(buff, "/home/alois/Documents/bah-bah/src/parser.bah:1650");
                     };
                     nt =  l->data[i];
 if ((strcmp(nt.cont, ")") != 0)) {
@@ -14256,8 +14398,9 @@ memory->data[len(memory)] =  tk;
 while ((i<len(l))) {
 
                     if (l->length <= i) {
-                        printf("array (/home/alois/Documents/bah-bah/src/parser.bah:1659): l[%d] with length %d\n", i, l->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: l[%d] with length %d", i, l->length);
+                        __BAH_panic(buff, "/home/alois/Documents/bah-bah/src/parser.bah:1660");
                     };
                     struct Tok t =  l->data[i];
 if ((strcmp(t.cont, "(") == 0)) {
@@ -14292,8 +14435,9 @@ long int j =  0;
 while ((j<len(memory)-1)) {
 
                     if (memory->length <= j) {
-                        printf("array (/home/alois/Documents/bah-bah/src/parser.bah:1676): memory[%d] with length %d\n", j, memory->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: memory[%d] with length %d", j, memory->length);
+                        __BAH_panic(buff, "/home/alois/Documents/bah-bah/src/parser.bah:1677");
                     };
                     struct Tok t =  memory->data[j];
 char * ____BAH_COMPILER_VAR_454 =null;
@@ -14365,8 +14509,9 @@ long int strLen_4 = strlen("\"");
                 char * currLine =  ____BAH_COMPILER_VAR_456;
 
                     if (memory->length <= len(memory)-1) {
-                        printf("array (/home/alois/Documents/bah-bah/src/parser.bah:1690): memory[%d] with length %d\n", len(memory)-1, memory->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: memory[%d] with length %d", len(memory)-1, memory->length);
+                        __BAH_panic(buff, "/home/alois/Documents/bah-bah/src/parser.bah:1691");
                     };
                     struct Tok par =  memory->data[len(memory)-1];
 long int cl =  par.line;
@@ -14490,8 +14635,9 @@ long int strLen_4 = strlen("\"");
                 char * currLine =  ____BAH_COMPILER_VAR_461;
 
                     if (memory->length <= len(memory)-1) {
-                        printf("array (/home/alois/Documents/bah-bah/src/parser.bah:1708): memory[%d] with length %d\n", len(memory)-1, memory->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: memory[%d] with length %d", len(memory)-1, memory->length);
+                        __BAH_panic(buff, "/home/alois/Documents/bah-bah/src/parser.bah:1709");
                     };
                     struct Tok par =  memory->data[len(memory)-1];
 long int cl =  par.line;
@@ -14507,8 +14653,9 @@ long int j =  0;
 for (; (j<len(elems->vars)); j =  j+1) {
 
                     if (elems->vars->length <= j) {
-                        printf("array (/home/alois/Documents/bah-bah/src/parser.bah:1714): elems->vars[%d] with length %d\n", j, elems->vars->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: elems->vars[%d] with length %d", j, elems->vars->length);
+                        __BAH_panic(buff, "/home/alois/Documents/bah-bah/src/parser.bah:1715");
                     };
                     struct variable* v =  elems->vars->data[j];
 if ((v->isConst==false)) {
@@ -14560,8 +14707,9 @@ j =  0;
 for (; (j<len(symbols)); j =  j+1) {
 
                     if (symbols->length <= j) {
-                        printf("array (/home/alois/Documents/bah-bah/src/parser.bah:1729): symbols[%d] with length %d\n", j, symbols->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: symbols[%d] with length %d", j, symbols->length);
+                        __BAH_panic(buff, "/home/alois/Documents/bah-bah/src/parser.bah:1730");
                     };
                     struct variable* v =  symbols->data[j];
 char * vname =  v->name;
@@ -14791,8 +14939,9 @@ long int strLen_4 = strlen("\"");
                 char * currLine =  ____BAH_COMPILER_VAR_473;
 
                     if (memory->length <= len(memory)-1) {
-                        printf("array (/home/alois/Documents/bah-bah/src/parser.bah:1763): memory[%d] with length %d\n", len(memory)-1, memory->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: memory[%d] with length %d", len(memory)-1, memory->length);
+                        __BAH_panic(buff, "/home/alois/Documents/bah-bah/src/parser.bah:1764");
                     };
                     struct Tok par =  memory->data[len(memory)-1];
 long int cl =  par.line;
@@ -14941,8 +15090,9 @@ long int j =  0;
 for (; (j<len(memory)-1); j =  j+1) {
 
                     if (memory->length <= j) {
-                        printf("array (/home/alois/Documents/bah-bah/src/parser.bah:1804): memory[%d] with length %d\n", j, memory->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: memory[%d] with length %d", j, memory->length);
+                        __BAH_panic(buff, "/home/alois/Documents/bah-bah/src/parser.bah:1805");
                     };
                     struct Tok t =  memory->data[j];
 char * ____BAH_COMPILER_VAR_480 =null;
@@ -15016,8 +15166,9 @@ continue;
 memory =  prePross(memory,ltp,elems);
 
                     if (memory->length <= 0) {
-                        printf("array (/home/alois/Documents/bah-bah/src/parser.bah:1829): memory[%d] with length %d\n", 0, memory->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: memory[%d] with length %d", 0, memory->length);
+                        __BAH_panic(buff, "/home/alois/Documents/bah-bah/src/parser.bah:1830");
                     };
                     struct Tok ft =  memory->data[0];
 array(struct Tok)* fnArgs = memoryAlloc(sizeof(array(struct Tok)));
@@ -15029,8 +15180,9 @@ long int j =  0;
 while ((j<len(memory))) {
 
                     if (memory->length <= j) {
-                        printf("array (/home/alois/Documents/bah-bah/src/parser.bah:1836): memory[%d] with length %d\n", j, memory->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: memory[%d] with length %d", j, memory->length);
+                        __BAH_panic(buff, "/home/alois/Documents/bah-bah/src/parser.bah:1837");
                     };
                     struct Tok t =  memory->data[j];
 if ((paramIndex>=len(fn->args))) {
@@ -15038,8 +15190,9 @@ throwErr(&t,"Too many arguments in function call.");
 }
 
                     if (fn->args->length <= paramIndex) {
-                        printf("array (/home/alois/Documents/bah-bah/src/parser.bah:1841): fn->args[%d] with length %d\n", paramIndex, fn->args->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: fn->args[%d] with length %d", paramIndex, fn->args->length);
+                        __BAH_panic(buff, "/home/alois/Documents/bah-bah/src/parser.bah:1842");
                     };
                     struct variable* arg =  fn->args->data[paramIndex];
 char * tt =  getTypeFromToken(&t,true,elems);
@@ -15119,8 +15272,9 @@ long int strLen_1 = strlen(t.cont);
 j =  j + 1;
 
                     if (memory->length <= j) {
-                        printf("array (/home/alois/Documents/bah-bah/src/parser.bah:1867): memory[%d] with length %d\n", j, memory->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: memory[%d] with length %d", j, memory->length);
+                        __BAH_panic(buff, "/home/alois/Documents/bah-bah/src/parser.bah:1868");
                     };
                     t =  memory->data[j];
 if ((strcmp(t.cont, ",") != 0)) {
@@ -15199,8 +15353,9 @@ nl->data[len(nl)] =  ot;
 };
 
                     if (l->length <= 0) {
-                        printf("array (/home/alois/Documents/bah-bah/src/parser.bah:1903): l[%d] with length %d\n", 0, l->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: l[%d] with length %d", 0, l->length);
+                        __BAH_panic(buff, "/home/alois/Documents/bah-bah/src/parser.bah:1904");
                     };
                     ft =  l->data[0];
 if (((verboseRuntime==true)&&(ltp!=LINE_TYPE_ELSE))) {
@@ -15260,8 +15415,9 @@ if ((i + 1!=max)) {
 i =  i+1;
 
                     if (l->length <= i) {
-                        printf("array (/home/alois/Documents/bah-bah/src/parser.bah:1933): l[%d] with length %d\n", i, l->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: l[%d] with length %d", i, l->length);
+                        __BAH_panic(buff, "/home/alois/Documents/bah-bah/src/parser.bah:1934");
                     };
                     struct Tok nt =  l->data[i];
 if ((strcmp(nt.cont, "{") != 0)) {
@@ -15278,8 +15434,9 @@ memory->elemSize = sizeof(struct Tok);
 while ((i<max)) {
 
                     if (l->length <= i) {
-                        printf("array (/home/alois/Documents/bah-bah/src/parser.bah:1943): l[%d] with length %d\n", i, l->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: l[%d] with length %d", i, l->length);
+                        __BAH_panic(buff, "/home/alois/Documents/bah-bah/src/parser.bah:1944");
                     };
                     
 {
@@ -15302,8 +15459,9 @@ i =  0;
 while ((i<len(memory))) {
 
                     if (memory->length <= i) {
-                        printf("array (/home/alois/Documents/bah-bah/src/parser.bah:1948): memory[%d] with length %d\n", i, memory->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: memory[%d] with length %d", i, memory->length);
+                        __BAH_panic(buff, "/home/alois/Documents/bah-bah/src/parser.bah:1949");
                     };
                     struct Tok t =  memory->data[i];
 if ((strcmp(t.cont, "{") == 0)) {
@@ -15312,8 +15470,9 @@ long int nbBraces =  0;
 for (; (i<len(memory)); i =  i+1) {
 
                     if (memory->length <= i) {
-                        printf("array (/home/alois/Documents/bah-bah/src/parser.bah:1954): memory[%d] with length %d\n", i, memory->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: memory[%d] with length %d", i, memory->length);
+                        __BAH_panic(buff, "/home/alois/Documents/bah-bah/src/parser.bah:1955");
                     };
                     struct Tok tmpT =  memory->data[i];
 if ((strcmp(tmpT.cont, "{") == 0)) {
@@ -15488,8 +15647,9 @@ long int strLen_6 = strlen(";\n");
 i =  i+1;
 
                     if (memory->length <= i) {
-                        printf("array (/home/alois/Documents/bah-bah/src/parser.bah:1999): memory[%d] with length %d\n", i, memory->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: memory[%d] with length %d", i, memory->length);
+                        __BAH_panic(buff, "/home/alois/Documents/bah-bah/src/parser.bah:2000");
                     };
                     t =  memory->data[i];
 if ((strcmp(t.cont, ",") != 0)) {
@@ -15603,8 +15763,9 @@ array(char *)* equalsTokens;
 void parseVar(__BAH_ARR_TYPE_Tok l,struct Elems* elems){
 
                     if (l->length <= 0) {
-                        printf("array (/home/alois/Documents/bah-bah/src/parser.bah:2031): l[%d] with length %d\n", 0, l->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: l[%d] with length %d", 0, l->length);
+                        __BAH_panic(buff, "/home/alois/Documents/bah-bah/src/parser.bah:2032");
                     };
                     struct Tok ft =  l->data[0];
 if ((ft.isFunc==true)) {
@@ -15613,8 +15774,9 @@ throwErr(&l->data[len(l)-1],"Not expecting {TOKEN} after function call.");
 }
 
                     if (l->length <= 0) {
-                        printf("array (/home/alois/Documents/bah-bah/src/parser.bah:2036): l[%d] with length %d\n", 0, l->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: l[%d] with length %d", 0, l->length);
+                        __BAH_panic(buff, "/home/alois/Documents/bah-bah/src/parser.bah:2037");
                     };
                     ft =  l->data[0];
 char parsed =  true;
@@ -15644,8 +15806,9 @@ char isStruct =  false;
 char * currentType =  "";
 
                     if (l->length <= 0) {
-                        printf("array (/home/alois/Documents/bah-bah/src/parser.bah:2047): l[%d] with length %d\n", 0, l->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: l[%d] with length %d", 0, l->length);
+                        __BAH_panic(buff, "/home/alois/Documents/bah-bah/src/parser.bah:2048");
                     };
                     ft =  l->data[0];
 struct variable* v =  searchVar(ft.cont,elems);
@@ -15679,8 +15842,9 @@ throwErr(&ft,"Cannot redeclare global variable {TOKEN}.");
 if ((len(l)==2)) {
 
                     if (l->length <= 1) {
-                        printf("array (/home/alois/Documents/bah-bah/src/parser.bah:2069): l[%d] with length %d\n", 1, l->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: l[%d] with length %d", 1, l->length);
+                        __BAH_panic(buff, "/home/alois/Documents/bah-bah/src/parser.bah:2070");
                     };
                     struct Tok lt =  l->data[1];
 if ((((lt.type==TOKEN_TYPE_SYNTAX)&&(strcmp(lt.cont, "++") == 0))||(strcmp(lt.cont, "--") == 0))) {
@@ -15712,8 +15876,9 @@ nl->length = 0;
 nl->elemSize = sizeof(struct Tok);
 
                     if (l->length <= 0) {
-                        printf("array (/home/alois/Documents/bah-bah/src/parser.bah:2075): l[%d] with length %d\n", 0, l->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: l[%d] with length %d", 0, l->length);
+                        __BAH_panic(buff, "/home/alois/Documents/bah-bah/src/parser.bah:2076");
                     };
                     
 {
@@ -15832,10 +15997,14 @@ nl->data[2] =  ____BAH_COMPILER_VAR_506;
 l =  nl;
 }
 }
+if ((len(l)<2)) {
+throwErr(&ft,"Missing '=' after {TOKEN}.");
+}
 
                     if (l->length <= 1) {
-                        printf("array (/home/alois/Documents/bah-bah/src/parser.bah:2107): l[%d] with length %d\n", 1, l->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: l[%d] with length %d", 1, l->length);
+                        __BAH_panic(buff, "/home/alois/Documents/bah-bah/src/parser.bah:2111");
                     };
                     struct Tok operT =  l->data[1];
 
@@ -15849,8 +16018,9 @@ l =  nl;
                 if ((____BAH_COMPILER_VAR_507&&(strcmp(operT.cont, "=") != 0))) {
 
                     if (l->length <= 0) {
-                        printf("array (/home/alois/Documents/bah-bah/src/parser.bah:2109): l[%d] with length %d\n", 0, l->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: l[%d] with length %d", 0, l->length);
+                        __BAH_panic(buff, "/home/alois/Documents/bah-bah/src/parser.bah:2113");
                     };
                     array(struct Tok)* nl = memoryAlloc(sizeof(array(struct Tok)));
 
@@ -15866,8 +16036,9 @@ struct Tok operTok =  operT;
 operTok.cont =  oper.str((struct string*)&oper);
 
                     if (l->length <= 2) {
-                        printf("array (/home/alois/Documents/bah-bah/src/parser.bah:2121): l[%d] with length %d\n", 2, l->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: l[%d] with length %d", 2, l->length);
+                        __BAH_panic(buff, "/home/alois/Documents/bah-bah/src/parser.bah:2125");
                     };
                     array(struct Tok)* tmpL = memoryAlloc(sizeof(array(struct Tok)));
 
@@ -15896,8 +16067,9 @@ long int j =  0;
 for (; (j<len(tmpL)); j =  j+1) {
 
                     if (tmpL->length <= j) {
-                        printf("array (/home/alois/Documents/bah-bah/src/parser.bah:2130): tmpL[%d] with length %d\n", j, tmpL->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: tmpL[%d] with length %d", j, tmpL->length);
+                        __BAH_panic(buff, "/home/alois/Documents/bah-bah/src/parser.bah:2134");
                     };
                     
 {
@@ -15920,8 +16092,9 @@ long int i =  1;
 while ((i<len(l))) {
 
                     if (l->length <= i) {
-                        printf("array (/home/alois/Documents/bah-bah/src/parser.bah:2138): l[%d] with length %d\n", i, l->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: l[%d] with length %d", i, l->length);
+                        __BAH_panic(buff, "/home/alois/Documents/bah-bah/src/parser.bah:2142");
                     };
                     struct Tok t =  l->data[i];
 if ((t.type==TOKEN_TYPE_SYNTAX)) {
@@ -15966,8 +16139,9 @@ throwErr(&t,"Cannot declare a {TOKEN} without a type (chan <type>).");
 i =  i+1;
 
                     if (l->length <= i) {
-                        printf("array (/home/alois/Documents/bah-bah/src/parser.bah:2159): l[%d] with length %d\n", i, l->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: l[%d] with length %d", i, l->length);
+                        __BAH_panic(buff, "/home/alois/Documents/bah-bah/src/parser.bah:2163");
                     };
                     struct Tok nt =  l->data[i];
 char * ____BAH_COMPILER_VAR_509 =null;
@@ -15990,8 +16164,9 @@ code =  "channel()";
 if ((i + 1!=len(l))) {
 
                     if (l->length <= i + 1) {
-                        printf("array (/home/alois/Documents/bah-bah/src/parser.bah:2163): l[%d] with length %d\n", i + 1, l->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: l[%d] with length %d", i + 1, l->length);
+                        __BAH_panic(buff, "/home/alois/Documents/bah-bah/src/parser.bah:2167");
                     };
                     struct Tok errT =  l->data[i + 1];
 throwErr(&errT,"{TOKEN} not expected after channel declaration.");
@@ -16005,8 +16180,9 @@ throwErr(&t,"Cannot declare a {TOKEN} without a type (map <type>).");
 i =  i+1;
 
                     if (l->length <= i) {
-                        printf("array (/home/alois/Documents/bah-bah/src/parser.bah:2173): l[%d] with length %d\n", i, l->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: l[%d] with length %d", i, l->length);
+                        __BAH_panic(buff, "/home/alois/Documents/bah-bah/src/parser.bah:2177");
                     };
                     struct Tok nt =  l->data[i];
 char * ____BAH_COMPILER_VAR_510 =null;
@@ -16029,8 +16205,9 @@ code =  "mapWrapper()";
 if ((i + 1!=len(l))) {
 
                     if (l->length <= i + 1) {
-                        printf("array (/home/alois/Documents/bah-bah/src/parser.bah:2177): l[%d] with length %d\n", i + 1, l->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: l[%d] with length %d", i + 1, l->length);
+                        __BAH_panic(buff, "/home/alois/Documents/bah-bah/src/parser.bah:2181");
                     };
                     struct Tok errT =  l->data[i + 1];
 throwErr(&errT,"{TOKEN} not expected after map declaration.");
@@ -16044,8 +16221,9 @@ throwErr(&t,"Cannot declare a {TOKEN} without a length (buffer <length>).");
 i =  i+1;
 
                     if (l->length <= i) {
-                        printf("array (/home/alois/Documents/bah-bah/src/parser.bah:2186): l[%d] with length %d\n", i, l->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: l[%d] with length %d", i, l->length);
+                        __BAH_panic(buff, "/home/alois/Documents/bah-bah/src/parser.bah:2190");
                     };
                     struct Tok nt =  l->data[i];
 if ((nt.type!=TOKEN_TYPE_INT)) {
@@ -16126,8 +16304,9 @@ code =  av->name;
 if ((i + 1!=len(l))) {
 
                     if (l->length <= i + 1) {
-                        printf("array (/home/alois/Documents/bah-bah/src/parser.bah:2199): l[%d] with length %d\n", i + 1, l->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: l[%d] with length %d", i + 1, l->length);
+                        __BAH_panic(buff, "/home/alois/Documents/bah-bah/src/parser.bah:2203");
                     };
                     struct Tok errT =  l->data[i + 1];
 throwErr(&errT,"{TOKEN} not expected after buffer declaration.");
@@ -16335,8 +16514,9 @@ throwErr(&ft,"Cannot re-declare {TOKEN}.");
 if ((strlen(currentType)>0)) {
 
                     if (l->length <= 1) {
-                        printf("array (/home/alois/Documents/bah-bah/src/parser.bah:2269): l[%d] with length %d\n", 1, l->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: l[%d] with length %d", 1, l->length);
+                        __BAH_panic(buff, "/home/alois/Documents/bah-bah/src/parser.bah:2273");
                     };
                     struct Tok st =  l->data[1];
 char * ____BAH_COMPILER_VAR_521 =null;
@@ -16763,8 +16943,9 @@ long int j =  0;
 while ((j<len(tmpfn->args))) {
 
                     if (tmpfn->args->length <= j) {
-                        printf("array (/home/alois/Documents/bah-bah/src/parser.bah:2369): tmpfn->args[%d] with length %d\n", j, tmpfn->args->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: tmpfn->args[%d] with length %d", j, tmpfn->args->length);
+                        __BAH_panic(buff, "/home/alois/Documents/bah-bah/src/parser.bah:2373");
                     };
                     struct variable* arg =  tmpfn->args->data[j];
 struct string ct =  getCType(arg->type,elems);
@@ -17108,8 +17289,9 @@ long int j =  0;
 while ((j<len(tmpfn->args))) {
 
                     if (tmpfn->args->length <= j) {
-                        printf("array (/home/alois/Documents/bah-bah/src/parser.bah:2446): tmpfn->args[%d] with length %d\n", j, tmpfn->args->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: tmpfn->args[%d] with length %d", j, tmpfn->args->length);
+                        __BAH_panic(buff, "/home/alois/Documents/bah-bah/src/parser.bah:2450");
                     };
                     struct variable* arg =  tmpfn->args->data[j];
 struct string ct =  getCType(arg->type,elems);
@@ -17186,8 +17368,9 @@ char * parseFnHeader(char * prev,__BAH_ARR_TYPE_Tok l,long int* i,struct func* f
 long int j =  *i;
 
                     if (l->length <= j) {
-                        printf("array (/home/alois/Documents/bah-bah/src/parser.bah:2462): l[%d] with length %d\n", j, l->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: l[%d] with length %d", j, l->length);
+                        __BAH_panic(buff, "/home/alois/Documents/bah-bah/src/parser.bah:2466");
                     };
                     struct Tok ft =  l->data[j];
 char * tpdf =  "";
@@ -17233,16 +17416,18 @@ long int strLen_1 = strlen("(");
 j =  j + 2;
 
                     if (l->length <= j) {
-                        printf("array (/home/alois/Documents/bah-bah/src/parser.bah:2476): l[%d] with length %d\n", j, l->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: l[%d] with length %d", j, l->length);
+                        __BAH_panic(buff, "/home/alois/Documents/bah-bah/src/parser.bah:2480");
                     };
                     struct Tok t =  l->data[j];
 if ((strcmp(t.cont, ")") != 0)) {
 while ((j<len(l))) {
 
                     if (l->length <= j) {
-                        printf("array (/home/alois/Documents/bah-bah/src/parser.bah:2480): l[%d] with length %d\n", j, l->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: l[%d] with length %d", j, l->length);
+                        __BAH_panic(buff, "/home/alois/Documents/bah-bah/src/parser.bah:2484");
                     };
                     t =  l->data[j];
 if ((t.type!=TOKEN_TYPE_VAR)) {
@@ -17255,8 +17440,9 @@ throwErr(&t,"Cannot declare argument {TOKEN} without a type.");
 }
 
                     if (l->length <= j) {
-                        printf("array (/home/alois/Documents/bah-bah/src/parser.bah:2490): l[%d] with length %d\n", j, l->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: l[%d] with length %d", j, l->length);
+                        __BAH_panic(buff, "/home/alois/Documents/bah-bah/src/parser.bah:2494");
                     };
                     t =  l->data[j];
 char * argType =  t.cont;
@@ -17266,8 +17452,9 @@ long int nbPars =  1;
 while ((j<len(l))) {
 
                     if (l->length <= j) {
-                        printf("array (/home/alois/Documents/bah-bah/src/parser.bah:2497): l[%d] with length %d\n", j, l->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: l[%d] with length %d", j, l->length);
+                        __BAH_panic(buff, "/home/alois/Documents/bah-bah/src/parser.bah:2501");
                     };
                     t =  l->data[j];
 isComa =  false;
@@ -17524,8 +17711,9 @@ returns->type =  "";
 while ((j<len(l))) {
 
                     if (l->length <= j) {
-                        printf("array (/home/alois/Documents/bah-bah/src/parser.bah:2562): l[%d] with length %d\n", j, l->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: l[%d] with length %d", j, l->length);
+                        __BAH_panic(buff, "/home/alois/Documents/bah-bah/src/parser.bah:2566");
                     };
                     t =  l->data[j];
 if ((strcmp(t.cont, "{") == 0)) {
@@ -17694,8 +17882,9 @@ throwErr(&l->data[len(l)-1],"Cannot declare struct has such, please do 'struct <
 }
 
                     if (l->length <= 1) {
-                        printf("array (/home/alois/Documents/bah-bah/src/parser.bah:2611): l[%d] with length %d\n", 1, l->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: l[%d] with length %d", 1, l->length);
+                        __BAH_panic(buff, "/home/alois/Documents/bah-bah/src/parser.bah:2615");
                     };
                     struct Tok nameToken =  l->data[1];
 long int i =  2;
@@ -17703,8 +17892,9 @@ char doesOutput =  true;
 if ((strcmp(nameToken.cont, "!") == 0)) {
 
                     if (l->length <= 2) {
-                        printf("array (/home/alois/Documents/bah-bah/src/parser.bah:2615): l[%d] with length %d\n", 2, l->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: l[%d] with length %d", 2, l->length);
+                        __BAH_panic(buff, "/home/alois/Documents/bah-bah/src/parser.bah:2619");
                     };
                     nameToken =  l->data[2];
 i =  3;
@@ -17727,8 +17917,9 @@ allMembs->length = 0;
 allMembs->elemSize = sizeof(char *);
 
                     if (l->length <= i) {
-                        printf("array (/home/alois/Documents/bah-bah/src/parser.bah:2631): l[%d] with length %d\n", i, l->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: l[%d] with length %d", i, l->length);
+                        __BAH_panic(buff, "/home/alois/Documents/bah-bah/src/parser.bah:2635");
                     };
                     struct Tok st =  l->data[i];
 if ((st.type==TOKEN_TYPE_KEYWORD)) {
@@ -17736,8 +17927,9 @@ if ((strcmp(st.cont, "extend") == 0)) {
 i =  i+1;
 
                     if (l->length <= i) {
-                        printf("array (/home/alois/Documents/bah-bah/src/parser.bah:2635): l[%d] with length %d\n", i, l->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: l[%d] with length %d", i, l->length);
+                        __BAH_panic(buff, "/home/alois/Documents/bah-bah/src/parser.bah:2639");
                     };
                     struct Tok extdSNameTk =  l->data[i];
 i =  i+1;
@@ -17754,8 +17946,9 @@ long int j =  0;
 while ((j<len(extdsmbs))) {
 
                     if (extdsmbs->length <= j) {
-                        printf("array (/home/alois/Documents/bah-bah/src/parser.bah:2647): extdsmbs[%d] with length %d\n", j, extdsmbs->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: extdsmbs[%d] with length %d", j, extdsmbs->length);
+                        __BAH_panic(buff, "/home/alois/Documents/bah-bah/src/parser.bah:2651");
                     };
                     struct structMemb* em =  extdsmbs->data[j];
 struct string cemt =  string(em->type);
@@ -17768,8 +17961,9 @@ j =  0;
 while ((j<len(tmpfn->args))) {
 
                     if (tmpfn->args->length <= j) {
-                        printf("array (/home/alois/Documents/bah-bah/src/parser.bah:2655): tmpfn->args[%d] with length %d\n", j, tmpfn->args->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: tmpfn->args[%d] with length %d", j, tmpfn->args->length);
+                        __BAH_panic(buff, "/home/alois/Documents/bah-bah/src/parser.bah:2659");
                     };
                     struct variable* arg =  tmpfn->args->data[j];
 struct string ct =  getCType(arg->type,elems);
@@ -17885,8 +18079,9 @@ long int k =  0;
 while ((k<len(extdS->methods))) {
 
                     if (extdS->methods->length <= k) {
-                        printf("array (/home/alois/Documents/bah-bah/src/parser.bah:2679): extdS->methods[%d] with length %d\n", k, extdS->methods->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: extdS->methods[%d] with length %d", k, extdS->methods->length);
+                        __BAH_panic(buff, "/home/alois/Documents/bah-bah/src/parser.bah:2683");
                     };
                     struct func* emt =  extdS->methods->data[k];
 struct string mthdDecl =  getCType(emt->returns->type,elems);
@@ -17914,8 +18109,9 @@ j =  0;
 while ((j<len(emt->args))) {
 
                     if (emt->args->length <= j) {
-                        printf("array (/home/alois/Documents/bah-bah/src/parser.bah:2684): emt->args[%d] with length %d\n", j, emt->args->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: emt->args[%d] with length %d", j, emt->args->length);
+                        __BAH_panic(buff, "/home/alois/Documents/bah-bah/src/parser.bah:2688");
                     };
                     struct variable* a =  emt->args->data[j];
 struct string tp =  getCType(a->type,elems);
@@ -17966,8 +18162,9 @@ throwErr(&st,"Cannot use keyword {TOKEN} in struct declaration.");
 }
 
                     if (l->length <= i) {
-                        printf("array (/home/alois/Documents/bah-bah/src/parser.bah:2703): l[%d] with length %d\n", i, l->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: l[%d] with length %d", i, l->length);
+                        __BAH_panic(buff, "/home/alois/Documents/bah-bah/src/parser.bah:2707");
                     };
                     struct Tok braceTk =  l->data[i];
 i =  i+1;
@@ -17979,8 +18176,9 @@ char * nextLine =  "";
 while ((i<len(l))) {
 
                     if (l->length <= i) {
-                        printf("array (/home/alois/Documents/bah-bah/src/parser.bah:2711): l[%d] with length %d\n", i, l->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: l[%d] with length %d", i, l->length);
+                        __BAH_panic(buff, "/home/alois/Documents/bah-bah/src/parser.bah:2715");
                     };
                     struct Tok t =  l->data[i];
 long int max =  i + 2;
@@ -18010,8 +18208,9 @@ long int ii =  0;
 while ((ii<len(members))) {
 
                     if (members->length <= ii) {
-                        printf("array (/home/alois/Documents/bah-bah/src/parser.bah:2725): members[%d] with length %d\n", ii, members->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: members[%d] with length %d", ii, members->length);
+                        __BAH_panic(buff, "/home/alois/Documents/bah-bah/src/parser.bah:2729");
                     };
                     struct structMemb* m =  members->data[ii];
 if ((strcmp(m->name, memb->name) == 0)) {
@@ -18022,8 +18221,9 @@ ii =  ii + 1;
 i =  i+1;
 
                     if (l->length <= i) {
-                        printf("array (/home/alois/Documents/bah-bah/src/parser.bah:2732): l[%d] with length %d\n", i, l->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: l[%d] with length %d", i, l->length);
+                        __BAH_panic(buff, "/home/alois/Documents/bah-bah/src/parser.bah:2736");
                     };
                     t =  l->data[i];
 if ((strcmp(t.cont, ":") != 0)) {
@@ -18068,8 +18268,9 @@ long int j =  i-1;
 while ((j<len(l))) {
 
                     if (l->length <= j) {
-                        printf("array (/home/alois/Documents/bah-bah/src/parser.bah:2741): l[%d] with length %d\n", j, l->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: l[%d] with length %d", j, l->length);
+                        __BAH_panic(buff, "/home/alois/Documents/bah-bah/src/parser.bah:2745");
                     };
                     t =  l->data[j];
 if ((strcmp(t.cont, "{") == 0)) {
@@ -18141,8 +18342,9 @@ nl->data[len(nl)] =  t;
 };
 
                     if (l->length <= j + 1) {
-                        printf("array (/home/alois/Documents/bah-bah/src/parser.bah:2757): l[%d] with length %d\n", j + 1, l->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: l[%d] with length %d", j + 1, l->length);
+                        __BAH_panic(buff, "/home/alois/Documents/bah-bah/src/parser.bah:2761");
                     };
                     struct Tok nt =  l->data[j + 1];
 if ((strcmp(nt.cont, ")") != 0)) {
@@ -18186,8 +18388,9 @@ j =  0;
 while ((j<len(arguments))) {
 
                     if (arguments->length <= j) {
-                        printf("array (/home/alois/Documents/bah-bah/src/parser.bah:2786): arguments[%d] with length %d\n", j, arguments->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: arguments[%d] with length %d", j, arguments->length);
+                        __BAH_panic(buff, "/home/alois/Documents/bah-bah/src/parser.bah:2790");
                     };
                     struct variable* a =  arguments->data[j];
 a->outterScope =  true;
@@ -18229,8 +18432,9 @@ tokens->elemSize = sizeof(struct Tok);
 long int nbBraces =  1;
 
                     if (l->length <= i) {
-                        printf("array (/home/alois/Documents/bah-bah/src/parser.bah:2797): l[%d] with length %d\n", i, l->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: l[%d] with length %d", i, l->length);
+                        __BAH_panic(buff, "/home/alois/Documents/bah-bah/src/parser.bah:2801");
                     };
                     t =  l->data[i];
 if ((strcmp(t.cont, "{") == 0)) {
@@ -18239,8 +18443,9 @@ i =  i+1;
 while ((i<len(l))) {
 
                     if (l->length <= i) {
-                        printf("array (/home/alois/Documents/bah-bah/src/parser.bah:2802): l[%d] with length %d\n", i, l->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: l[%d] with length %d", i, l->length);
+                        __BAH_panic(buff, "/home/alois/Documents/bah-bah/src/parser.bah:2806");
                     };
                     t =  l->data[i];
 if ((strcmp(t.cont, "{") == 0)) {
@@ -18380,8 +18585,9 @@ j =  0;
 while ((j<len(arguments))) {
 
                     if (arguments->length <= j) {
-                        printf("array (/home/alois/Documents/bah-bah/src/parser.bah:2852): arguments[%d] with length %d\n", j, arguments->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: arguments[%d] with length %d", j, arguments->length);
+                        __BAH_panic(buff, "/home/alois/Documents/bah-bah/src/parser.bah:2856");
                     };
                     struct variable* a =  arguments->data[j];
 struct string tp =  getCType(a->type,elems);
@@ -18433,8 +18639,9 @@ long int currentLine =  t.line;
 while ((i<len(l))) {
 
                     if (l->length <= i) {
-                        printf("array (/home/alois/Documents/bah-bah/src/parser.bah:2874): l[%d] with length %d\n", i, l->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: l[%d] with length %d", i, l->length);
+                        __BAH_panic(buff, "/home/alois/Documents/bah-bah/src/parser.bah:2878");
                     };
                     t =  l->data[i];
 if ((strcmp(t.cont, "=") == 0)) {
@@ -18467,8 +18674,9 @@ memb->type =  mbmType;
 i =  i+1;
 
                     if (l->length <= i) {
-                        printf("array (/home/alois/Documents/bah-bah/src/parser.bah:2889): l[%d] with length %d\n", i, l->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: l[%d] with length %d", i, l->length);
+                        __BAH_panic(buff, "/home/alois/Documents/bah-bah/src/parser.bah:2893");
                     };
                     t =  l->data[i];
 if ((i<len(l))) {
@@ -18476,8 +18684,9 @@ if ((strcmp(t.cont, "=") == 0)) {
 i =  i+1;
 
                     if (l->length <= i) {
-                        printf("array (/home/alois/Documents/bah-bah/src/parser.bah:2893): l[%d] with length %d\n", i, l->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: l[%d] with length %d", i, l->length);
+                        __BAH_panic(buff, "/home/alois/Documents/bah-bah/src/parser.bah:2897");
                     };
                     t =  l->data[i];
 if ((t.isValue==false)) {
@@ -18547,8 +18756,9 @@ long int j =  0;
 while ((j<len(tmpfn->args))) {
 
                     if (tmpfn->args->length <= j) {
-                        printf("array (/home/alois/Documents/bah-bah/src/parser.bah:2919): tmpfn->args[%d] with length %d\n", j, tmpfn->args->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: tmpfn->args[%d] with length %d", j, tmpfn->args->length);
+                        __BAH_panic(buff, "/home/alois/Documents/bah-bah/src/parser.bah:2923");
                     };
                     struct variable* arg =  tmpfn->args->data[j];
 struct string ct =  getCType(arg->type,elems);
@@ -18685,8 +18895,9 @@ i =  0;
 while ((i<len(allMembs))) {
 
                     if (allMembs->length <= i) {
-                        printf("array (/home/alois/Documents/bah-bah/src/parser.bah:2942): allMembs[%d] with length %d\n", i, allMembs->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: allMembs[%d] with length %d", i, allMembs->length);
+                        __BAH_panic(buff, "/home/alois/Documents/bah-bah/src/parser.bah:2946");
                     };
                     char * m =  allMembs->data[i];
 char * ____BAH_COMPILER_VAR_628 =null;
@@ -18725,8 +18936,9 @@ i =  0;
 while ((i<len(s->members))) {
 
                     if (s->members->length <= i) {
-                        printf("array (/home/alois/Documents/bah-bah/src/parser.bah:2959): s->members[%d] with length %d\n", i, s->members->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: s->members[%d] with length %d", i, s->members->length);
+                        __BAH_panic(buff, "/home/alois/Documents/bah-bah/src/parser.bah:2963");
                     };
                     struct structMemb* m =  s->members->data[i];
 struct variable* ____BAH_COMPILER_VAR_630 = memoryAlloc(sizeof(struct variable));
@@ -18814,14 +19026,16 @@ throwErr(&l->data[len(l)-1],"Invalid usage of define, cannot end on {TOKEN}.");
 }
 
                     if (l->length <= 1) {
-                        printf("array (/home/alois/Documents/bah-bah/src/parser.bah:2981): l[%d] with length %d\n", 1, l->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: l[%d] with length %d", 1, l->length);
+                        __BAH_panic(buff, "/home/alois/Documents/bah-bah/src/parser.bah:2985");
                     };
                     struct Tok ft =  l->data[1];
 
                     if (l->length <= 2) {
-                        printf("array (/home/alois/Documents/bah-bah/src/parser.bah:2982): l[%d] with length %d\n", 2, l->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: l[%d] with length %d", 2, l->length);
+                        __BAH_panic(buff, "/home/alois/Documents/bah-bah/src/parser.bah:2986");
                     };
                     struct Tok st =  l->data[2];
 long int i =  1;
@@ -18829,14 +19043,16 @@ char doesOutput =  true;
 if ((strcmp(ft.cont, "!") == 0)) {
 
                     if (l->length <= 2) {
-                        printf("array (/home/alois/Documents/bah-bah/src/parser.bah:2987): l[%d] with length %d\n", 2, l->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: l[%d] with length %d", 2, l->length);
+                        __BAH_panic(buff, "/home/alois/Documents/bah-bah/src/parser.bah:2991");
                     };
                     ft =  l->data[2];
 
                     if (l->length <= 3) {
-                        printf("array (/home/alois/Documents/bah-bah/src/parser.bah:2988): l[%d] with length %d\n", 3, l->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: l[%d] with length %d", 3, l->length);
+                        __BAH_panic(buff, "/home/alois/Documents/bah-bah/src/parser.bah:2992");
                     };
                     st =  l->data[3];
 i =  2;
@@ -18898,8 +19114,9 @@ i =  i+1;
 for (; (i<len(l)); i =  i+1) {
 
                     if (l->length <= i) {
-                        printf("array (/home/alois/Documents/bah-bah/src/parser.bah:3007): l[%d] with length %d\n", i, l->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: l[%d] with length %d", i, l->length);
+                        __BAH_panic(buff, "/home/alois/Documents/bah-bah/src/parser.bah:3011");
                     };
                     struct Tok t =  l->data[i];
 char * ____BAH_COMPILER_VAR_660 =null;
@@ -18999,8 +19216,9 @@ long int i =  1;
 while ((i<len(line))) {
 
                     if (line->length <= i) {
-                        printf("array (/home/alois/Documents/bah-bah/src/parser.bah:3037): line[%d] with length %d\n", i, line->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: line[%d] with length %d", i, line->length);
+                        __BAH_panic(buff, "/home/alois/Documents/bah-bah/src/parser.bah:3041");
                     };
                     struct Tok t =  line->data[i];
 if ((t.type!=TOKEN_TYPE_STR)) {
@@ -19015,8 +19233,9 @@ long int j =  0;
 while ((j<len(clibs))) {
 
                     if (clibs->length <= j) {
-                        printf("array (/home/alois/Documents/bah-bah/src/parser.bah:3049): clibs[%d] with length %d\n", j, clibs->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: clibs[%d] with length %d", j, clibs->length);
+                        __BAH_panic(buff, "/home/alois/Documents/bah-bah/src/parser.bah:3053");
                     };
                     char * l =  clibs->data[j];
 if ((strcmp(l, ccstr) == 0)) {
@@ -19053,20 +19272,23 @@ throwErr(&l->data[0],"Invalid usage of {TOKEN}, must be 'const <constName> = <co
 }
 
                     if (l->length <= 1) {
-                        printf("array (/home/alois/Documents/bah-bah/src/parser.bah:3072): l[%d] with length %d\n", 1, l->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: l[%d] with length %d", 1, l->length);
+                        __BAH_panic(buff, "/home/alois/Documents/bah-bah/src/parser.bah:3076");
                     };
                     struct Tok vart =  l->data[1];
 
                     if (l->length <= 2) {
-                        printf("array (/home/alois/Documents/bah-bah/src/parser.bah:3073): l[%d] with length %d\n", 2, l->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: l[%d] with length %d", 2, l->length);
+                        __BAH_panic(buff, "/home/alois/Documents/bah-bah/src/parser.bah:3077");
                     };
                     struct Tok equt =  l->data[2];
 
                     if (l->length <= 3) {
-                        printf("array (/home/alois/Documents/bah-bah/src/parser.bah:3074): l[%d] with length %d\n", 3, l->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: l[%d] with length %d", 3, l->length);
+                        __BAH_panic(buff, "/home/alois/Documents/bah-bah/src/parser.bah:3078");
                     };
                     struct Tok valt =  l->data[3];
 if ((vart.type!=TOKEN_TYPE_VAR)) {
@@ -19181,8 +19403,9 @@ long int strLen_2 = strlen(".");
 else {
 
                     if (l->length <= 1) {
-                        printf("array (/home/alois/Documents/bah-bah/src/parser.bah:3124): l[%d] with length %d\n", 1, l->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: l[%d] with length %d", 1, l->length);
+                        __BAH_panic(buff, "/home/alois/Documents/bah-bah/src/parser.bah:3128");
                     };
                     struct Tok rvt =  l->data[1];
 if ((rvt.isValue==false)) {
@@ -19321,16 +19544,18 @@ void parseIf(__BAH_ARR_TYPE_Tok l,struct Elems* elems){
 if ((len(l)<4)) {
 
                     if (l->length <= 0) {
-                        printf("array (/home/alois/Documents/bah-bah/src/parser.bah:3164): l[%d] with length %d\n", 0, l->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: l[%d] with length %d", 0, l->length);
+                        __BAH_panic(buff, "/home/alois/Documents/bah-bah/src/parser.bah:3168");
                     };
                     struct Tok ft =  l->data[0];
 throwErr(&ft,"Invalid usage of {TOKEN}, must be 'if <condition> {<code>}'");
 }
 
                     if (l->length <= 1) {
-                        printf("array (/home/alois/Documents/bah-bah/src/parser.bah:3167): l[%d] with length %d\n", 1, l->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: l[%d] with length %d", 1, l->length);
+                        __BAH_panic(buff, "/home/alois/Documents/bah-bah/src/parser.bah:3171");
                     };
                     struct Tok condt =  l->data[1];
 if ((strcmp(condt.bahType, "bool") != 0)) {
@@ -19340,8 +19565,9 @@ throwErr(&condt,"Cannot use {TOKEN} as condition in if statement.");
 }
 
                     if (l->length <= 2) {
-                        printf("array (/home/alois/Documents/bah-bah/src/parser.bah:3173): l[%d] with length %d\n", 2, l->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: l[%d] with length %d", 2, l->length);
+                        __BAH_panic(buff, "/home/alois/Documents/bah-bah/src/parser.bah:3177");
                     };
                     struct Tok t =  l->data[2];
 if ((strcmp(t.cont, "{") != 0)) {
@@ -19356,8 +19582,9 @@ long int i =  3;
 while ((i<max)) {
 
                     if (l->length <= i) {
-                        printf("array (/home/alois/Documents/bah-bah/src/parser.bah:3180): l[%d] with length %d\n", i, l->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: l[%d] with length %d", i, l->length);
+                        __BAH_panic(buff, "/home/alois/Documents/bah-bah/src/parser.bah:3184");
                     };
                     t =  l->data[i];
 
@@ -19404,8 +19631,9 @@ endRCPscope(ifElems,null);
 if ((debug==true)) {
 
                     if (l->length <= len(l)-1) {
-                        printf("array (/home/alois/Documents/bah-bah/src/parser.bah:3193): l[%d] with length %d\n", len(l)-1, l->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: l[%d] with length %d", len(l)-1, l->length);
+                        __BAH_panic(buff, "/home/alois/Documents/bah-bah/src/parser.bah:3197");
                     };
                     struct Tok lt =  l->data[len(l)-1];
 debugEndScope(lt.line,ifElems);
@@ -19424,8 +19652,9 @@ throwErr(&l->data[0],"Incalid usage of {TOKEN}, must be 'else {<code>}'.");
 }
 
                     if (l->length <= 1) {
-                        printf("array (/home/alois/Documents/bah-bah/src/parser.bah:3212): l[%d] with length %d\n", 1, l->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: l[%d] with length %d", 1, l->length);
+                        __BAH_panic(buff, "/home/alois/Documents/bah-bah/src/parser.bah:3216");
                     };
                     struct Tok ft =  l->data[1];
 OUTPUT =  OUTPUT->add(OUTPUT, rope("else "));
@@ -19438,8 +19667,9 @@ long int i =  1;
 while ((i<len(l))) {
 
                     if (l->length <= i) {
-                        printf("array (/home/alois/Documents/bah-bah/src/parser.bah:3217): l[%d] with length %d\n", i, l->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: l[%d] with length %d", i, l->length);
+                        __BAH_panic(buff, "/home/alois/Documents/bah-bah/src/parser.bah:3221");
                     };
                     
 {
@@ -19473,8 +19703,9 @@ long int i =  2;
 while ((i<max)) {
 
                     if (l->length <= i) {
-                        printf("array (/home/alois/Documents/bah-bah/src/parser.bah:3230): l[%d] with length %d\n", i, l->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: l[%d] with length %d", i, l->length);
+                        __BAH_panic(buff, "/home/alois/Documents/bah-bah/src/parser.bah:3234");
                     };
                     
 {
@@ -19501,8 +19732,9 @@ endRCPscope(ifElems,null);
 if ((debug==true)) {
 
                     if (l->length <= len(l)-1) {
-                        printf("array (/home/alois/Documents/bah-bah/src/parser.bah:3241): l[%d] with length %d\n", len(l)-1, l->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: l[%d] with length %d", len(l)-1, l->length);
+                        __BAH_panic(buff, "/home/alois/Documents/bah-bah/src/parser.bah:3245");
                     };
                     struct Tok lt =  l->data[len(l)-1];
 debugEndScope(lt.line,ifElems);
@@ -19521,8 +19753,9 @@ long int i =  1;
 while ((i<len(l))) {
 
                     if (l->length <= i) {
-                        printf("array (/home/alois/Documents/bah-bah/src/parser.bah:3260): l[%d] with length %d\n", i, l->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: l[%d] with length %d", i, l->length);
+                        __BAH_panic(buff, "/home/alois/Documents/bah-bah/src/parser.bah:3264");
                     };
                     struct Tok t =  l->data[i];
 if ((strcmp(t.cont, "{") == 0)) {
@@ -19544,8 +19777,9 @@ if ((nbComas>0)) {
 if ((nbComas!=1)) {
 
                     if (l->length <= 0) {
-                        printf("array (/home/alois/Documents/bah-bah/src/parser.bah:3276): l[%d] with length %d\n", 0, l->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: l[%d] with length %d", 0, l->length);
+                        __BAH_panic(buff, "/home/alois/Documents/bah-bah/src/parser.bah:3280");
                     };
                     struct Tok t =  l->data[0];
 throwErr(&t,"Invalid usage of {TOKEN}, can only partition line in 2 using 'for <condition>, <insctruction> {<code>}'.");
@@ -19556,8 +19790,9 @@ inst->length = 0;
 inst->elemSize = sizeof(struct Tok);
 
                     if (l->length <= 1) {
-                        printf("array (/home/alois/Documents/bah-bah/src/parser.bah:3281): l[%d] with length %d\n", 1, l->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: l[%d] with length %d", 1, l->length);
+                        __BAH_panic(buff, "/home/alois/Documents/bah-bah/src/parser.bah:3285");
                     };
                     struct Tok condt =  l->data[1];
 if ((strcmp(condt.bahType, "bool") != 0)) {
@@ -19567,8 +19802,9 @@ throwErr(&condt,"Cannot use {TOKEN} as condition in for statement.");
 }
 
                     if (l->length <= 2) {
-                        printf("array (/home/alois/Documents/bah-bah/src/parser.bah:3289): l[%d] with length %d\n", 2, l->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: l[%d] with length %d", 2, l->length);
+                        __BAH_panic(buff, "/home/alois/Documents/bah-bah/src/parser.bah:3293");
                     };
                     struct Tok st =  l->data[2];
 if (((st.type!=TOKEN_TYPE_SYNTAX)||(strcmp(st.cont, ",") != 0))) {
@@ -19578,8 +19814,9 @@ i =  3;
 for (; (i<len(l)); i =  i+1) {
 
                     if (l->length <= i) {
-                        printf("array (/home/alois/Documents/bah-bah/src/parser.bah:3296): l[%d] with length %d\n", i, l->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: l[%d] with length %d", i, l->length);
+                        __BAH_panic(buff, "/home/alois/Documents/bah-bah/src/parser.bah:3300");
                     };
                     struct Tok t =  l->data[i];
 if (((t.type==TOKEN_TYPE_ENCL)&&(strcmp(t.cont, "{") == 0))) {
@@ -19608,8 +19845,9 @@ OUTPUT =  oldOut;
 instC.trimRight((struct string*)&instC,2);
 
                     if (l->length <= i) {
-                        printf("array (/home/alois/Documents/bah-bah/src/parser.bah:3312): l[%d] with length %d\n", i, l->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: l[%d] with length %d", i, l->length);
+                        __BAH_panic(buff, "/home/alois/Documents/bah-bah/src/parser.bah:3316");
                     };
                     struct Tok t =  l->data[i];
 if ((strcmp(t.cont, "{") != 0)) {
@@ -19620,8 +19858,9 @@ i =  i + 1;
 for (; (i<max); i =  i+1) {
 
                     if (l->length <= i) {
-                        printf("array (/home/alois/Documents/bah-bah/src/parser.bah:3319): l[%d] with length %d\n", i, l->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: l[%d] with length %d", i, l->length);
+                        __BAH_panic(buff, "/home/alois/Documents/bah-bah/src/parser.bah:3323");
                     };
                     t =  l->data[i];
 
@@ -19671,8 +19910,9 @@ long int strLen_4 = strlen(") {\n");
 else {
 
                     if (l->length <= 1) {
-                        printf("array (/home/alois/Documents/bah-bah/src/parser.bah:3326): l[%d] with length %d\n", 1, l->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: l[%d] with length %d", 1, l->length);
+                        __BAH_panic(buff, "/home/alois/Documents/bah-bah/src/parser.bah:3330");
                     };
                     struct Tok condt =  l->data[1];
 if ((strcmp(condt.bahType, "bool") != 0)) {
@@ -19682,8 +19922,9 @@ throwErr(&condt,"Cannot use {TOKEN} as condition in for statement.");
 }
 
                     if (l->length <= 2) {
-                        printf("array (/home/alois/Documents/bah-bah/src/parser.bah:3332): l[%d] with length %d\n", 2, l->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: l[%d] with length %d", 2, l->length);
+                        __BAH_panic(buff, "/home/alois/Documents/bah-bah/src/parser.bah:3336");
                     };
                     struct Tok t =  l->data[2];
 if ((strcmp(t.cont, "{") != 0)) {
@@ -19694,8 +19935,9 @@ i =  3;
 for (; (i<max); i =  i+1) {
 
                     if (l->length <= i) {
-                        printf("array (/home/alois/Documents/bah-bah/src/parser.bah:3338): l[%d] with length %d\n", i, l->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: l[%d] with length %d", i, l->length);
+                        __BAH_panic(buff, "/home/alois/Documents/bah-bah/src/parser.bah:3342");
                     };
                     t =  l->data[i];
 
@@ -19744,8 +19986,9 @@ endRCPscope(ifElems,null);
 if ((debug==true)) {
 
                     if (l->length <= len(l)-1) {
-                        printf("array (/home/alois/Documents/bah-bah/src/parser.bah:3352): l[%d] with length %d\n", len(l)-1, l->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: l[%d] with length %d", len(l)-1, l->length);
+                        __BAH_panic(buff, "/home/alois/Documents/bah-bah/src/parser.bah:3356");
                     };
                     struct Tok lt =  l->data[len(l)-1];
 debugEndScope(lt.line,ifElems);
@@ -19757,8 +20000,9 @@ OUTPUT =  OUTPUT->add(OUTPUT, rope("};\n"));
 void parseForOp(__BAH_ARR_TYPE_Tok l,struct Elems* elems){
 
                     if (l->length <= 0) {
-                        printf("array (/home/alois/Documents/bah-bah/src/parser.bah:3363): l[%d] with length %d\n", 0, l->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: l[%d] with length %d", 0, l->length);
+                        __BAH_panic(buff, "/home/alois/Documents/bah-bah/src/parser.bah:3367");
                     };
                     struct Tok ft =  l->data[0];
 if ((compilerState.isFor==false)) {
@@ -19874,8 +20118,9 @@ long int i =  0;
 for (; (i<len(fn->args)); i =  i+1) {
 
                     if (fn->args->length <= i) {
-                        printf("array (/home/alois/Documents/bah-bah/src/parser.bah:3398): fn->args[%d] with length %d\n", i, fn->args->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: fn->args[%d] with length %d", i, fn->args->length);
+                        __BAH_panic(buff, "/home/alois/Documents/bah-bah/src/parser.bah:3402");
                     };
                     struct variable* a =  fn->args->data[i];
 char * v =  genCompilerVar();
@@ -20121,8 +20366,9 @@ elems->fns->data[len(elems->fns)] =  efn;
 void parsePreKeyword(__BAH_ARR_TYPE_Tok l,struct Elems* elems){
 
                     if (l->length <= 0) {
-                        printf("array (/home/alois/Documents/bah-bah/src/parser.bah:3440): l[%d] with length %d\n", 0, l->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: l[%d] with length %d", 0, l->length);
+                        __BAH_panic(buff, "/home/alois/Documents/bah-bah/src/parser.bah:3444");
                     };
                     struct Tok ft =  l->data[0];
 if ((strcmp(ft.cont, "#warning") == 0)) {
@@ -20131,8 +20377,9 @@ throwErr(&ft,"Invalid usage of {TOKEN} '#warning \"message\"'.");
 }
 
                     if (l->length <= 1) {
-                        printf("array (/home/alois/Documents/bah-bah/src/parser.bah:3446): l[%d] with length %d\n", 1, l->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: l[%d] with length %d", 1, l->length);
+                        __BAH_panic(buff, "/home/alois/Documents/bah-bah/src/parser.bah:3450");
                     };
                     struct Tok mt =  l->data[1];
 if ((mt.type!=TOKEN_TYPE_STR)) {
@@ -20182,8 +20429,9 @@ throwErr(&l->data[0],"Invalid usage of {TOKEN} <#eval fnName>.");
 }
 
                     if (l->length <= 1) {
-                        printf("array (/home/alois/Documents/bah-bah/src/parser.bah:3473): l[%d] with length %d\n", 1, l->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: l[%d] with length %d", 1, l->length);
+                        __BAH_panic(buff, "/home/alois/Documents/bah-bah/src/parser.bah:3477");
                     };
                     struct Tok fnT =  l->data[1];
 struct func* fn =  searchFunc(fnT.cont,elems,false);
@@ -20199,8 +20447,9 @@ long int i =  0;
 for (; (i<len(elems->fns)); i =  i+1) {
 
                     if (elems->fns->length <= i) {
-                        printf("array (/home/alois/Documents/bah-bah/src/parser.bah:3487): elems->fns[%d] with length %d\n", i, elems->fns->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: elems->fns[%d] with length %d", i, elems->fns->length);
+                        __BAH_panic(buff, "/home/alois/Documents/bah-bah/src/parser.bah:3491");
                     };
                     struct func* fn =  elems->fns->data[i];
 fn->used =  true;
@@ -20265,14 +20514,16 @@ throwErr(&ft,"Undefined token {TOKEN}.");
 }
 
                     if (l->length <= 1) {
-                        printf("array (/home/alois/Documents/bah-bah/src/parser.bah:3542): l[%d] with length %d\n", 1, l->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: l[%d] with length %d", 1, l->length);
+                        __BAH_panic(buff, "/home/alois/Documents/bah-bah/src/parser.bah:3546");
                     };
                     struct Tok st =  l->data[1];
 
                     if (l->length <= len(l)-1) {
-                        printf("array (/home/alois/Documents/bah-bah/src/parser.bah:3543): l[%d] with length %d\n", len(l)-1, l->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: l[%d] with length %d", len(l)-1, l->length);
+                        __BAH_panic(buff, "/home/alois/Documents/bah-bah/src/parser.bah:3547");
                     };
                     struct Tok lt =  l->data[len(l)-1];
 if (((strcmp(st.cont, "{") != 0)||(strcmp(lt.cont, "}") != 0))) {
@@ -20286,8 +20537,9 @@ long int i =  2;
 while ((i<len(l) - 1)) {
 
                     if (l->length <= i) {
-                        printf("array (/home/alois/Documents/bah-bah/src/parser.bah:3550): l[%d] with length %d\n", i, l->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: l[%d] with length %d", i, l->length);
+                        __BAH_panic(buff, "/home/alois/Documents/bah-bah/src/parser.bah:3554");
                     };
                     
 {
@@ -20311,16 +20563,18 @@ void parseAsync(__BAH_ARR_TYPE_Tok l,struct Elems* elems){
 if ((len(l)!=2)) {
 
                     if (l->length <= 0) {
-                        printf("array (/home/alois/Documents/bah-bah/src/parser.bah:3560): l[%d] with length %d\n", 0, l->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: l[%d] with length %d", 0, l->length);
+                        __BAH_panic(buff, "/home/alois/Documents/bah-bah/src/parser.bah:3564");
                     };
                     struct Tok ft =  l->data[0];
 throwErr(&ft,"Cannot use keyword {TOKEN} on a function call 'async <function call>'.");
 }
 
                     if (l->length <= 1) {
-                        printf("array (/home/alois/Documents/bah-bah/src/parser.bah:3563): l[%d] with length %d\n", 1, l->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: l[%d] with length %d", 1, l->length);
+                        __BAH_panic(buff, "/home/alois/Documents/bah-bah/src/parser.bah:3567");
                     };
                     struct Tok fnT =  l->data[1];
 if ((fnT.isFunc==false)) {
@@ -20331,8 +20585,9 @@ long int i =  0;
 while ((i<len(compilerState.cLibs))) {
 
                     if (compilerState.cLibs->length <= i) {
-                        printf("array (/home/alois/Documents/bah-bah/src/parser.bah:3570): compilerState.cLibs[%d] with length %d\n", i, compilerState.cLibs->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: compilerState.cLibs[%d] with length %d", i, compilerState.cLibs->length);
+                        __BAH_panic(buff, "/home/alois/Documents/bah-bah/src/parser.bah:3574");
                     };
                     if ((strcmp(compilerState.cLibs->data[i], "lpthread") == 0)) {
 found =  true;
@@ -20360,8 +20615,9 @@ struct string sFnT =  string(fnT.cont);
 array(struct string)* fnNameParts =  splitString(sFnT,"(");
 
                     if (fnNameParts->length <= 0) {
-                        printf("array (/home/alois/Documents/bah-bah/src/parser.bah:3583): fnNameParts[%d] with length %d\n", 0, fnNameParts->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: fnNameParts[%d] with length %d", 0, fnNameParts->length);
+                        __BAH_panic(buff, "/home/alois/Documents/bah-bah/src/parser.bah:3587");
                     };
                     struct string fnName =  fnNameParts->data[0];
 char * ____BAH_COMPILER_VAR_706 =fnName.str((struct string*)&fnName);struct func* fn =  searchFunc(____BAH_COMPILER_VAR_706,elems,true);
@@ -20393,8 +20649,9 @@ i =  0;
 while ((i<len(fn->args))) {
 
                     if (fn->args->length <= i) {
-                        printf("array (/home/alois/Documents/bah-bah/src/parser.bah:3594): fn->args[%d] with length %d\n", i, fn->args->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: fn->args[%d] with length %d", i, fn->args->length);
+                        __BAH_panic(buff, "/home/alois/Documents/bah-bah/src/parser.bah:3598");
                     };
                     struct variable* a =  fn->args->data[i];
 struct string cType =  getCType(a->type,elems);
@@ -20603,8 +20860,9 @@ i =  1;
 while ((i<len(l))) {
 
                     if (l->length <= i) {
-                        printf("array (/home/alois/Documents/bah-bah/src/parser.bah:3641): l[%d] with length %d\n", i, l->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: l[%d] with length %d", i, l->length);
+                        __BAH_panic(buff, "/home/alois/Documents/bah-bah/src/parser.bah:3645");
                     };
                     struct Tok t =  l->data[i];
 if ((t.type==TOKEN_TYPE_VAR)) {
@@ -20638,8 +20896,9 @@ long int i =  0;
 for (; (i<len(l)); i =  i+1) {
 
                     if (l->length <= i) {
-                        printf("array (/home/alois/Documents/bah-bah/src/parser.bah:3657): l[%d] with length %d\n", i, l->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: l[%d] with length %d", i, l->length);
+                        __BAH_panic(buff, "/home/alois/Documents/bah-bah/src/parser.bah:3661");
                     };
                     struct Tok t =  l->data[i];
 if ((((t.type==TOKEN_TYPE_SYNTAX)&&(strcmp(t.cont, "->") == 0))||(strcmp(t.cont, "<-") == 0))) {
@@ -20648,8 +20907,9 @@ i =  i+1;
 if ((i<len(l))) {
 
                     if (l->length <= i) {
-                        printf("array (/home/alois/Documents/bah-bah/src/parser.bah:3663): l[%d] with length %d\n", i, l->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: l[%d] with length %d", i, l->length);
+                        __BAH_panic(buff, "/home/alois/Documents/bah-bah/src/parser.bah:3667");
                     };
                     struct Tok nt =  l->data[i];
 if ((nt.type!=TOKEN_TYPE_VAR)) {
@@ -20860,14 +21120,16 @@ throwErr(&t,"Cannot send ({TOKEN}) to nothing.");
 }
 
                     if (l->length <= i + 1) {
-                        printf("array (/home/alois/Documents/bah-bah/src/parser.bah:3717): l[%d] with length %d\n", i + 1, l->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: l[%d] with length %d", i + 1, l->length);
+                        __BAH_panic(buff, "/home/alois/Documents/bah-bah/src/parser.bah:3721");
                     };
                     struct Tok pt =  l->data[i + 1];
 
                     if (l->length <= i-1) {
-                        printf("array (/home/alois/Documents/bah-bah/src/parser.bah:3718): l[%d] with length %d\n", i-1, l->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: l[%d] with length %d", i-1, l->length);
+                        __BAH_panic(buff, "/home/alois/Documents/bah-bah/src/parser.bah:3722");
                     };
                     struct Tok nt =  l->data[i-1];
 char * ntt =  getTypeFromToken(&nt,true,elems);
@@ -21073,8 +21335,9 @@ if ((ltp!=(lineType)-1)) {
 while ((i<len(line))) {
 
                     if (line->length <= i) {
-                        printf("array (/home/alois/Documents/bah-bah/src/parser.bah:3765): line[%d] with length %d\n", i, line->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: line[%d] with length %d", i, line->length);
+                        __BAH_panic(buff, "/home/alois/Documents/bah-bah/src/parser.bah:3769");
                     };
                     struct Tok t =  line->data[i];
 if ((strcmp(t.cont, "(") == 0)) {
@@ -21086,8 +21349,9 @@ nbPar =  nbPar - 1;
 else if (((nbPar==0)&&(strcmp(t.cont, "{") == 0))) {
 
                     if (line->length <= i + 1) {
-                        printf("array (/home/alois/Documents/bah-bah/src/parser.bah:3771): line[%d] with length %d\n", i + 1, line->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: line[%d] with length %d", i + 1, line->length);
+                        __BAH_panic(buff, "/home/alois/Documents/bah-bah/src/parser.bah:3775");
                     };
                     struct Tok nt =  line->data[i + 1];
 if ((nt.line!=t.line)) {
@@ -21128,8 +21392,9 @@ if ((ltp!=(lineType)-1)) {
 while ((i<len(line))) {
 
                     if (line->length <= i) {
-                        printf("array (/home/alois/Documents/bah-bah/src/parser.bah:3796): line[%d] with length %d\n", i, line->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: line[%d] with length %d", i, line->length);
+                        __BAH_panic(buff, "/home/alois/Documents/bah-bah/src/parser.bah:3800");
                     };
                     
 {
@@ -21170,8 +21435,9 @@ fn->used =  true;
 }
 
                     if (l->length <= 0) {
-                        printf("array (/home/alois/Documents/bah-bah/src/parser.bah:3813): l[%d] with length %d\n", 0, l->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: l[%d] with length %d", 0, l->length);
+                        __BAH_panic(buff, "/home/alois/Documents/bah-bah/src/parser.bah:3817");
                     };
                     struct Tok ft =  l->data[0];
 char * code =  parseFnHeader("",l,&i,fn,elems);
@@ -21221,8 +21487,9 @@ throwErr(&ft,"{TOKEN} function should take one []cpstring argument. Should be: \
 }
 
                     if (fn->args->length <= 0) {
-                        printf("array (/home/alois/Documents/bah-bah/src/parser.bah:3834): fn->args[%d] with length %d\n", 0, fn->args->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: fn->args[%d] with length %d", 0, fn->args->length);
+                        __BAH_panic(buff, "/home/alois/Documents/bah-bah/src/parser.bah:3838");
                     };
                     struct variable* fa =  fn->args->data[0];
 if ((compTypes(fa->type,"[]cpstring")==false)) {
@@ -21288,8 +21555,9 @@ long int j =  0;
 while ((j<len(fn->args))) {
 
                     if (fn->args->length <= j) {
-                        printf("array (/home/alois/Documents/bah-bah/src/parser.bah:3859): fn->args[%d] with length %d\n", j, fn->args->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: fn->args[%d] with length %d", j, fn->args->length);
+                        __BAH_panic(buff, "/home/alois/Documents/bah-bah/src/parser.bah:3863");
                     };
                     struct variable* a =  fn->args->data[j];
 a->outterScope =  true;
@@ -21341,8 +21609,9 @@ long int max =  len(l)-1;
 while ((i<max)) {
 
                     if (l->length <= i) {
-                        printf("array (/home/alois/Documents/bah-bah/src/parser.bah:3879): l[%d] with length %d\n", i, l->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: l[%d] with length %d", i, l->length);
+                        __BAH_panic(buff, "/home/alois/Documents/bah-bah/src/parser.bah:3883");
                     };
                     struct Tok t =  l->data[i];
 
@@ -21463,8 +21732,9 @@ struct reflectElement ____BAH_COMPILER_VAR_777 = __reflect(____BAH_COMPILER_VAR_
 debugPrint("fn_declare",ft.line,____BAH_COMPILER_VAR_777);
 
                     if (l->length <= len(l)-1) {
-                        printf("array (/home/alois/Documents/bah-bah/src/parser.bah:3919): l[%d] with length %d\n", len(l)-1, l->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: l[%d] with length %d", len(l)-1, l->length);
+                        __BAH_panic(buff, "/home/alois/Documents/bah-bah/src/parser.bah:3923");
                     };
                     struct Tok lt =  l->data[len(l)-1];
 debugEndScope(lt.line,fnElems);
@@ -21524,8 +21794,9 @@ throwErr(&line->data[len(line)-1],"Not expecting {TOKEN} after function call.");
 }
 
                     if (line->length <= 0) {
-                        printf("array (/home/alois/Documents/bah-bah/src/parser.bah:3973): line[%d] with length %d\n", 0, line->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: line[%d] with length %d", 0, line->length);
+                        __BAH_panic(buff, "/home/alois/Documents/bah-bah/src/parser.bah:3977");
                     };
                     struct Tok ft =  line->data[0];
 parsed =  true;
@@ -21581,8 +21852,9 @@ parsed =  true;
 if ((parsed==false)) {
 
                     if (line->length <= 0) {
-                        printf("array (/home/alois/Documents/bah-bah/src/parser.bah:4003): line[%d] with length %d\n", 0, line->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: line[%d] with length %d", 0, line->length);
+                        __BAH_panic(buff, "/home/alois/Documents/bah-bah/src/parser.bah:4007");
                     };
                     struct Tok ft =  line->data[0];
 throwErr(&ft,"{TOKEN} not expected.");
@@ -21603,8 +21875,9 @@ line->length = 0;
 line->elemSize = sizeof(struct Tok);
 
                     if (tokens->length <= 0) {
-                        printf("array (/home/alois/Documents/bah-bah/src/parser.bah:4022): tokens[%d] with length %d\n", 0, tokens->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: tokens[%d] with length %d", 0, tokens->length);
+                        __BAH_panic(buff, "/home/alois/Documents/bah-bah/src/parser.bah:4026");
                     };
                     struct Tok ft =  tokens->data[0];
 long int currentLine =  ft.line;
@@ -21613,8 +21886,9 @@ long int i =  0;
 while ((i<len(tokens))) {
 
                     if (tokens->length <= i) {
-                        printf("array (/home/alois/Documents/bah-bah/src/parser.bah:4026): tokens[%d] with length %d\n", i, tokens->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: tokens[%d] with length %d", i, tokens->length);
+                        __BAH_panic(buff, "/home/alois/Documents/bah-bah/src/parser.bah:4030");
                     };
                     struct Tok t =  tokens->data[i];
 if ((t.type==TOKEN_TYPE_ENCL)) {
@@ -21659,8 +21933,9 @@ line->data[len(line)] =  t;
 };
 
                     if (tokens->length <= i-1) {
-                        printf("array (/home/alois/Documents/bah-bah/src/parser.bah:4052): tokens[%d] with length %d\n", i-1, tokens->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: tokens[%d] with length %d", i-1, tokens->length);
+                        __BAH_panic(buff, "/home/alois/Documents/bah-bah/src/parser.bah:4056");
                     };
                     struct Tok pt =  tokens->data[i-1];
 currentLine =  pt.line;
@@ -21707,8 +21982,9 @@ clear(line);
 else {
 
                     if (line->length <= len(line)-1) {
-                        printf("array (/home/alois/Documents/bah-bah/src/parser.bah:4081): line[%d] with length %d\n", len(line)-1, line->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: line[%d] with length %d", len(line)-1, line->length);
+                        __BAH_panic(buff, "/home/alois/Documents/bah-bah/src/parser.bah:4085");
                     };
                     ft =  line->data[len(line)-1];
 throwErr(&ft,"Missing closing token, line ending by {TOKEN}.");
@@ -21722,8 +21998,9 @@ long int j =  0;
 while ((j<len(fn->args))) {
 
                     if (fn->args->length <= j) {
-                        printf("array (/home/alois/Documents/bah-bah/src/declarative.bah:6): fn->args[%d] with length %d\n", j, fn->args->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: fn->args[%d] with length %d", j, fn->args->length);
+                        __BAH_panic(buff, "/home/alois/Documents/bah-bah/src/declarative.bah:6");
                     };
                     struct variable* arg =  fn->args->data[j];
 struct string ct =  getCType(arg->type,elems);
@@ -21874,8 +22151,9 @@ long int i =  0;
 for (; (i<len(compilerState.cIncludes)); i =  i+1) {
 
                     if (compilerState.cIncludes->length <= i) {
-                        printf("array (/home/alois/Documents/bah-bah/src/declarative.bah:42): compilerState.cIncludes[%d] with length %d\n", i, compilerState.cIncludes->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: compilerState.cIncludes[%d] with length %d", i, compilerState.cIncludes->length);
+                        __BAH_panic(buff, "/home/alois/Documents/bah-bah/src/declarative.bah:42");
                     };
                     char * ____BAH_COMPILER_VAR_787 =null;
                 {
@@ -21902,8 +22180,9 @@ i =  1;
 for (; (i<len(compilerState.arrTypesDecl)); i =  i+1) {
 
                     if (compilerState.arrTypesDecl->length <= i) {
-                        printf("array (/home/alois/Documents/bah-bah/src/declarative.bah:46): compilerState.arrTypesDecl[%d] with length %d\n", i, compilerState.arrTypesDecl->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: compilerState.arrTypesDecl[%d] with length %d", i, compilerState.arrTypesDecl->length);
+                        __BAH_panic(buff, "/home/alois/Documents/bah-bah/src/declarative.bah:46");
                     };
                     char * t =  compilerState.arrTypesDecl->data[i];
 struct string elemType =  string(t);
@@ -21942,8 +22221,9 @@ i =  0;
 for (; (i<len(elems->vars)); i =  i+1) {
 
                     if (elems->vars->length <= i) {
-                        printf("array (/home/alois/Documents/bah-bah/src/declarative.bah:54): elems->vars[%d] with length %d\n", i, elems->vars->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: elems->vars[%d] with length %d", i, elems->vars->length);
+                        __BAH_panic(buff, "/home/alois/Documents/bah-bah/src/declarative.bah:54");
                     };
                     struct variable* v =  elems->vars->data[i];
 declareVar(v,elems);
@@ -21952,8 +22232,9 @@ i =  0;
 for (; (i<len(elems->fns)); i =  i+1) {
 
                     if (elems->fns->length <= i) {
-                        printf("array (/home/alois/Documents/bah-bah/src/declarative.bah:59): elems->fns[%d] with length %d\n", i, elems->fns->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: elems->fns[%d] with length %d", i, elems->fns->length);
+                        __BAH_panic(buff, "/home/alois/Documents/bah-bah/src/declarative.bah:59");
                     };
                     struct func* fn =  elems->fns->data[i];
 if ((fn->isBinding==true)) {
@@ -22078,8 +22359,9 @@ BAH_DIR =  flags.get((struct flags*)&flags,"bahDir");
 array(char)* bahDirArr =  strAsArr(BAH_DIR);
 
                     if (bahDirArr->length <= len(bahDirArr)-1) {
-                        printf("array (/home/alois/Documents/bah-bah/src/main.bah:79): bahDirArr[%d] with length %d\n", len(bahDirArr)-1, bahDirArr->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: bahDirArr[%d] with length %d", len(bahDirArr)-1, bahDirArr->length);
+                        __BAH_panic(buff, "/home/alois/Documents/bah-bah/src/main.bah:79");
                     };
                     if ((bahDirArr->data[len(bahDirArr)-1]!=47)) {
 char * ____BAH_COMPILER_VAR_796 =null;
@@ -22347,8 +22629,9 @@ long int i =  0;
 for (; (i<len(elems->fns)); i =  i+1) {
 
                     if (elems->fns->length <= i) {
-                        printf("array (/home/alois/Documents/bah-bah/src/main.bah:234): elems->fns[%d] with length %d\n", i, elems->fns->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: elems->fns[%d] with length %d", i, elems->fns->length);
+                        __BAH_panic(buff, "/home/alois/Documents/bah-bah/src/main.bah:234");
                     };
                     struct func* fn =  elems->fns->data[i];
 if ((fn->isBinding==true)) {
@@ -22381,8 +22664,9 @@ i =  0;
 for (; (i<len(elems->fns)); i =  i+1) {
 
                     if (elems->fns->length <= i) {
-                        printf("array (/home/alois/Documents/bah-bah/src/main.bah:243): elems->fns[%d] with length %d\n", i, elems->fns->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: elems->fns[%d] with length %d", i, elems->fns->length);
+                        __BAH_panic(buff, "/home/alois/Documents/bah-bah/src/main.bah:243");
                     };
                     struct func* fn =  elems->fns->data[i];
 if ((fn->isBinding==true)) {
@@ -22682,8 +22966,9 @@ long int i =  0;
 while ((i<len(cLibs))) {
 
                     if (cLibs->length <= i) {
-                        printf("array (/home/alois/Documents/bah-bah/src/main.bah:331): cLibs[%d] with length %d\n", i, cLibs->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: cLibs[%d] with length %d", i, cLibs->length);
+                        __BAH_panic(buff, "/home/alois/Documents/bah-bah/src/main.bah:331");
                     };
                     char * l =  cLibs->data[i];
 char * ____BAH_COMPILER_VAR_823 =null;
@@ -22836,8 +23121,9 @@ long int i =  0;
 while ((i<len(cLibs))) {
 
                     if (cLibs->length <= i) {
-                        printf("array (/home/alois/Documents/bah-bah/src/main.bah:369): cLibs[%d] with length %d\n", i, cLibs->length);
-                        exit(1);
+                        char buff[300];
+                        snprintf(buff, 299, "array: cLibs[%d] with length %d", i, cLibs->length);
+                        __BAH_panic(buff, "/home/alois/Documents/bah-bah/src/main.bah:369");
                     };
                     char * l =  cLibs->data[i];
 char * ____BAH_COMPILER_VAR_828 =null;

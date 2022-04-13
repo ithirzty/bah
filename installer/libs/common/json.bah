@@ -182,7 +182,7 @@ parseJson(s cpstring) jsonElement* {
     lenS = strlen(s)
 
     i=0; for i < lenS {
-        if isSpace(cpstringCharAt(s, i)) == 0 {
+        if isSpace(cpstringCharAt(s, i)) == false {
             break
         }
         i = i + 1
@@ -249,7 +249,7 @@ parseJson(s cpstring) jsonElement* {
 
         for i < lenS - 1 {
             c = cpstringCharAt(s, i)
-            if isSpace(c) == 0 {
+            if isSpace(c) == false {
                 break
             }
             i = i + 1
@@ -317,7 +317,7 @@ parseJson(s cpstring) jsonElement* {
         }
         for i < lenS - 1 {
             c = cpstringCharAt(s, i)
-            if isSpace(c) == 0 {
+            if isSpace(c) == false {
                 break
             }
             i = i + 1
