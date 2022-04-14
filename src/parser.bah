@@ -126,6 +126,7 @@ getLineType(line []Tok) lineType {
 
 
 parseCast(line []Tok, elems Elems*) []Tok {
+//    recorder = timer.record("parseCast")
 
     nl = []Tok
 
@@ -283,6 +284,7 @@ parallelObjCompile(fn cpstring, oName cpstring, done chan:bool) {
         if flags.isSet("verboseCC") == 1 {
             verboseCC = "-verboseCC"
         }
+        println("compilling: "+fn)
         cmd = command(execName + " "+fn+" "+rcp+" -object "+verboseCC+" -o "+oName)
         res = cmd.run()
         setCurrentPath(wrkd)
@@ -411,6 +413,7 @@ parseInclude(l []Tok, elems Elems*) {
 signs = []cpstring{"|", "&", "%", "+", "-", "*", "/"}
 
 parseOperations(line []Tok, ltp lineType, elems Elems*) []Tok {
+//    recorder = timer.record("parseOperations")
     nl = []Tok{line[0]}
     unNestedLine = []Tok{line[0]}
     //un-nest operations (for operations priority with parenthesis)
@@ -509,9 +512,16 @@ parseOperations(line []Tok, ltp lineType, elems Elems*) []Tok {
                     throwErr(&t, "Can only do concatenation (+) on cpstrings, not {TOKEN}.")
                 }
                 j = i - 1
+
+                lens = ""
+                totStrLen = "1"
+                cats = rope("")
+                //declare the var containing the result
+                rstr = registerRCPvar("cpstring", "null", elems)
+
                 //get every strings separated by a +
                 wasAdd = true //keeping count of the current token (string or +)
-                strConts = []cpstring
+                // strConts = []cpstring
                 for j < len(line), j++ {
                     strAddTk = line[j]
                     if wasAdd == false {
@@ -525,36 +535,28 @@ parseOperations(line []Tok, ltp lineType, elems Elems*) []Tok {
                             throwErr(&strAddTkT, "Cannot use {TOKEN} ("+ntt+") as "+ptt+".")
                             break
                         }
+                        cont = strAddTk.cont
                         if strAddTk.type == TOKEN_TYPE_FUNC && strHasPrefix(strAddTk.cont, "noCheck(") == false && isRCPtype(strAddTkT, elems) == true {
-                            strConts[len(strConts)] = registerRCPvar(strAddTkT, strAddTk.cont, elems)
-                        } else {
-                            strConts[len(strConts)] = strAddTk.cont
+                            cont = registerRCPvar(strAddTkT, strAddTk.cont, elems)
                         }
+
+                        //strlens
+                        js = intToStr(j)
+                        lens = lens + "long int strLen_"+js+" = strlen("+cont+");\n"
+                        totStrLen = totStrLen + " + strLen_"+js
+
+                        //concatenation
+                        cats += rope("
+                        memcpy("+rstr+"+currStrOff, "+cont+", strLen_"+js+");
+                        currStrOff += strLen_"+js+";
+                        ")
+
                         wasAdd = false
                     }
                 }
                 
                 i = j
-                //declare the var containing the result
-                rstr = registerRCPvar("cpstring", "null", elems)
 
-                //calculating strings length
-                lens = ""
-                totStrLen = "1"
-                j=0; for j < len(strConts), j++ {
-                    js = intToStr(j)
-                    lens = lens + "long int strLen_"+js+" = strlen("+strConts[j]+");\n"
-                    totStrLen = totStrLen + " + strLen_"+js
-                }
-                //efficiently concatenates strings
-                cats = rope("")
-                j=0; for j < len(strConts), j++ {
-                    js = intToStr(j)
-                    cats = cats + rope("
-                    memcpy("+rstr+"+currStrOff, "+strConts[j]+", strLen_"+js+");
-                    currStrOff += strLen_"+js+";
-                    ")
-                }
 
                 //allocates memory
                 res = rope("
@@ -586,10 +588,6 @@ parseOperations(line []Tok, ltp lineType, elems Elems*) []Tok {
                 //check for struct members for correct operation
                 s = searchStruct(ptt, elems)
                 if s != null {
-                    addMthd = searchStructMemb("add", s, elems)
-                    subMthd = searchStructMemb("sub", s, elems)
-                    multMthd = searchStructMemb("mult", s, elems)
-                    divMthd = searchStructMemb("div", s, elems)
                     //pointery stuff :wink:
                     sep = "."
                     amp = "&"
@@ -598,20 +596,32 @@ parseOperations(line []Tok, ltp lineType, elems Elems*) []Tok {
                         amp = ""
                     }
                     //calls the correct member
-                    if t.cont == "+" && addMthd != null && addMthd.isFn == true {
-                        t.cont = pt.cont + sep + "add(" + amp + pt.cont + ", "+nt.cont+")"
-                    } else if t.cont == "-" && subMthd != null && subMthd.isFn == true {
-                        t.cont = pt.cont + sep + "sub(" + amp + pt.cont + ", "+nt.cont+")"
-                    } else if t.cont == "*" && multMthd != null && multMthd.isFn == true {
-                        t.cont = pt.cont + sep + "mult(" + amp + pt.cont + ", "+nt.cont+")"
-                    } else if t.cont == "/" && divMthd != null && divMthd.isFn == true {
-                        t.cont = pt.cont + sep + "div(" + amp + pt.cont + ", "+nt.cont+")"
+                    if t.cont == "+" {
+                        addMthd = searchStructMemb("add", s, elems)
+                        if addMthd != null && addMthd.isFn == true {
+                            t.cont = pt.cont + sep + "add(" + amp + pt.cont + ", "+nt.cont+")"
+                        }
+                    } else if t.cont == "-" {
+                        subMthd = searchStructMemb("sub", s, elems)
+                        if subMthd != null && subMthd.isFn == true {
+                            t.cont = pt.cont + sep + "sub(" + amp + pt.cont + ", "+nt.cont+")"
+                        }
+                    } else if t.cont == "*" {
+                        multMthd = searchStructMemb("mult", s, elems)
+                        if multMthd != null && multMthd.isFn == true {
+                            t.cont = pt.cont + sep + "mult(" + amp + pt.cont + ", "+nt.cont+")"
+                        }
+                    } else if t.cont == "/" {
+                        divMthd = searchStructMemb("div", s, elems)
+                        if divMthd != null && divMthd.isFn == true  {
+                            t.cont = pt.cont + sep + "div(" + amp + pt.cont + ", "+nt.cont+")"
+                        }
                     } else {
                         throwErr(&pt, "Undefined operation on {TOKEN} ("+ptt+").")
                     }
                 } else {
                     //makes C code
-                    t.cont = pt.cont + " " + t.cont + " " + nt.cont
+                    t.cont = pt.cont + t.cont + nt.cont
                 }
             }
             //makes the result token
@@ -655,6 +665,7 @@ parseOperations(line []Tok, ltp lineType, elems Elems*) []Tok {
 
 
 parseStructType(line []Tok, ltp lineType, elems Elems*) []Tok {
+//    recorder = timer.record("parseStructType")
     //vars declaration are handled separatly
     if ltp == LINE_TYPE_VAR {
         return line
@@ -857,7 +868,7 @@ parseStructType(line []Tok, ltp lineType, elems Elems*) []Tok {
 }
 
 parseStructVars(line []Tok, elems Elems*) []Tok {
-
+//    recorder = timer.record("parseStructVars")
     nl = []Tok
 
     i=0; for i < len(line) {
@@ -918,6 +929,7 @@ parseStructVars(line []Tok, elems Elems*) []Tok {
 }
 
 parseArrayType(line []Tok, elems Elems*) []Tok {
+//    recorder = timer.record("parseArrayType")
 
     nl = []Tok
 
@@ -979,6 +991,7 @@ comparators = []cpstring{"==", "!=", ">", "<", "<=", ">=", "in"}
 compSep = []cpstring{"||", "&&"}
 
 parseBool(line []Tok, elems Elems*) []Tok {
+//    recorder = timer.record("parseBool")
 
     nl = []Tok
 
@@ -1186,6 +1199,7 @@ parsePointers(l []Tok) []Tok {
 
 
 parseArrayVars(l []Tok, ltp lineType, elems Elems*) []Tok {
+//    recorder = timer.record("parseArrayVars")
 
     nl = []Tok
 
@@ -1339,12 +1353,14 @@ parseArrayVars(l []Tok, ltp lineType, elems Elems*) []Tok {
             if strHasPrefix(tt, "buffer:") {
                 if split == false {
                     amm = tt[7:]
-                    OUTPUT = OUTPUT + rope("
-                    if ("+cont+" >= "+amm+") {
-                        printf(\"buffer ("+compilerState.currentFile+":"+intToStr(lt.line)+"): "+lt.cont+"[%d] with length %d\\n\", "+cont+", "+amm+");
-                        exit(1);
-                    };
-                    ")
+                    if isUnsafe == false {
+                        OUTPUT = OUTPUT + rope("
+                        if ("+cont+" >= "+amm+") {
+                            printf(\"buffer ("+compilerState.currentFile+":"+intToStr(lt.line)+"): "+lt.cont+"[%d] with length %d\\n\", "+cont+", "+amm+");
+                            exit(1);
+                        };
+                        ")
+                    }
                     lt.cont = lt.cont+"["+cont+"]"
                     lt.isFunc = false
                     lt.bahType = "char"
@@ -1363,13 +1379,15 @@ parseArrayVars(l []Tok, ltp lineType, elems Elems*) []Tok {
 
             if split == false {
                 if ti > 0 && ft.cont != "else" {
-                    OUTPUT = OUTPUT + rope("
-                    if ("+lt.cont+"->length <= "+cont+") {
-                        char buff[300];
-                        snprintf(buff, 299, \"array: "+lt.cont+"[%d] with length %d\", "+cont+", "+lt.cont+"->length);
-                        __BAH_panic(buff, \""+compilerState.currentFile + ":" + intToStr(lt.line)+"\");
-                    };
-                    ")
+                    if isUnsafe == false {
+                        OUTPUT = OUTPUT + rope("
+                        if ("+lt.cont+"->length <= "+cont+") {
+                            char buff[300];
+                            snprintf(buff, 299, \"array: "+lt.cont+"[%d] with length %d\", "+cont+", "+lt.cont+"->length);
+                            __BAH_panic((char*)buff, \""+compilerState.currentFile + ":" + intToStr(lt.line)+"\");
+                        };
+                        ")
+                    }
                 }
                 lt.cont = lt.cont + "->data[" + cont + "]"
                 lt.bahType = tt
@@ -1572,7 +1590,7 @@ parseReflect(t Tok, tt cpstring, elems Elems*, parsedPointer bool, ogName cpstri
 }
 
 parseFnCall(l []Tok, ltp lineType, elems Elems*) []Tok {
-
+//    recorder = timer.record("parseFnCall")
     nl = []Tok
 
     found = false
@@ -1615,7 +1633,7 @@ parseFnCall(l []Tok, ltp lineType, elems Elems*) []Tok {
                     arg1 variable*
                     if hasStructSep(fnStr) {
                         arg1 = fn.args[0]
-                        fnarg1t = getCType(arg1.type, elems)
+                        // fnarg1t = getCType(arg1.type, elems)
                         varName = fnStr
                         realFn = splitStructSepAfter(fnStr)
                         varName.trimRight(realFn.length)
@@ -1633,7 +1651,7 @@ parseFnCall(l []Tok, ltp lineType, elems Elems*) []Tok {
                         if strCount(v.type, "*") == 0 {
                             varName.prepend("&")
                         }
-                        varName.prepend("("+fnarg1t.str()+")")
+                        // varName.prepend("("+fnarg1t.str()+")")
 
                     }
                     ot.cont = fnName+"("
@@ -2029,6 +2047,7 @@ parseArrayDecl(v variable*, l []Tok, i int, max int, elems Elems*) cpstring {
 equalsTokens = []cpstring{"=", "+=", "-=", "*=", "/="}
 
 parseVar(l []Tok, elems Elems*) {
+//    recorder = timer.record("parseVar")
     ft = l[0]
     if ft.isFunc == true {
         if len(l) > 1 {
@@ -2153,7 +2172,7 @@ parseVar(l []Tok, elems Elems*) {
             }
         }
         if isEqual == false {
-            currentType = currentType + " " + t.cont
+            currentType = currentType + t.cont
         } else {
             if t.cont == "chan" {
                 if i >= len(l) {
@@ -2168,7 +2187,6 @@ parseVar(l []Tok, elems Elems*) {
                     throwErr(&errT, "{TOKEN} not expected after channel declaration.")
                 }
                 break
-
             } else if t.cont == "map" {
                 if i >= len(l) {
                     throwErr(&t, "Cannot declare a {TOKEN} without a type (map <type>).")
@@ -2205,17 +2223,17 @@ parseVar(l []Tok, elems Elems*) {
                 }
                 break
             } 
-            if t.isValue == false {
-                throwErr(&t, "Cannot use {TOKEN} as value in var declaration.")
-            }
+            // if t.isValue == false {
+            //     throwErr(&t, "Cannot use {TOKEN} as value in var declaration.")
+            // }
             tp = getTypeFromToken(&t, true, elems)
             if exists == true {
                 if compTypes(tp, v.type) == false {
                     throwErr(&t, "Cannot use {TOKEN} ("+tp+") as "+v.type+".")
                 }
             } else {
-                if strlen(currentType) == 0 {
-                    if strlen(v.type) == 0 {
+                if currentType == "" {
+                    if v.type == "" {
                         v.type = tp
                     } else {
                         if compTypes(tp, v.type) == false {
@@ -2224,9 +2242,9 @@ parseVar(l []Tok, elems Elems*) {
                     }
                 }
             }
-            if strlen(t.cont) > 0 && strHasPrefix(t.cont, "{") == false {
-                code = code + " " + t.cont
-                if t.isOper == false && RCPavailable() == true  {
+            if t.cont != "" && strHasPrefix(t.cont, "{") == false {
+                code = code + t.cont
+                if t.isOper == false && RCPavailable() == true {
                     iv = searchVar(t.cont, elems)
                     if iv != null && iv.isConst == false {
                         toVar = true
@@ -2252,13 +2270,12 @@ parseVar(l []Tok, elems Elems*) {
                 break
             }
             isStruct = true
-            max = i + 1
-            if max != len(l) {
+            if i+1 != len(l) {
                 throwErr(&l[i+1], "{TOKEN} not expected after struct initialization.")
             }
             // s = searchStruct(v.type, elems)
             // NEXT_LINE = declareStructMethods(v, s, elems)
-            code = code + " " + t.cont
+            code = code + t.cont
         }
 
         i++
@@ -2353,13 +2370,13 @@ void * newPtr = memoryRealloc("+nstr+"->data, (nLength+50)*sizeof("+elemTypeStr+
 
         }
     } else {
-        if strlen(currentType) > 0 {
+        if currentType != "" {
             v.type = currentType
         }
 
         vts = string(v.type)
         vts.replace(" ", "")
-        v.type = vts.content
+        v.type = vts.str()
         if strlen(v.type) == 0 {
             throwErr(&ft, "Cannot declare {TOKEN} without a type.")
         }
@@ -2383,18 +2400,18 @@ void * newPtr = memoryRealloc("+nstr+"->data, (nLength+50)*sizeof("+elemTypeStr+
         } else {
             vct = setCType(v, elems)
         }
-        if strlen(code) > 0 && shouldOnlyDecl == false {
+        if code != "" && shouldOnlyDecl == false {
             
             if isRCPpointerType(v.type) && RCPavailable() == true && toVar == true  && isPointedVar == false {
                 cType = getCType(v.type, elems)
                 if isGlobal() {
-                    INIT = INIT + rope(v.name + " = *("+cType.str()+"*)RCP_incrIL(&"+code+");\n")
+                    INIT += rope(v.name + " = *("+cType.str()+"*)RCP_incrIL(&"+code+");\n")
                 } else {
                     code = vct+" = *("+cType.str()+"*)RCP_incrIL(&"+code+")"
                 }
             } else {
                 if isGlobal() {
-                    INIT = INIT + rope(v.name + " = " + code+";\n")
+                    INIT += rope(v.name + " = " + code+";\n")
                 } else {
                     code = vct + " = " + code
                 }
@@ -2423,7 +2440,7 @@ void * newPtr = memoryRealloc("+nstr+"->data, (nLength+50)*sizeof("+elemTypeStr+
         // registerType(&fileDeps, v.type, elems)
 
         if isGlobal() {
-            OUTPUT = OUTPUT + rope(vct+";\n")
+            OUTPUT += rope(vct+";\n")
         }
 
 
@@ -2431,11 +2448,11 @@ void * newPtr = memoryRealloc("+nstr+"->data, (nLength+50)*sizeof("+elemTypeStr+
 
     if isGlobal() {
         if isSubObject == false {
-            INIT = INIT + rope(NEXT_LINE)
+            INIT += rope(NEXT_LINE)
         }
         NEXT_LINE = ""
     } else {
-        OUTPUT = OUTPUT + rope(code + ";\n")
+        OUTPUT += rope(code + ";\n")
     }
 
 
@@ -3428,7 +3445,7 @@ makeEvalFunc(fn func*, elems Elems*) {
 
     OUTPUT += rope("void* __attribute__((optimize(\"O0\"))) "+efn.name+"(array(void*)* fnArgs) {
         if (fnArgs->length != "+intToStr(len(fn.args))+") {
-            __BAH_panic(\"eval: calling function "+fn.name+"() with the wrong number of arguments.\", \"BAH_COMPILER_INTERNAL\");
+            __BAH_panic((char*)\"eval: calling function "+fn.name+"() with the wrong number of arguments.\", \"BAH_COMPILER_INTERNAL\");
         }
         "+fnBinding+"
         "+setReturnValue+fnCall+");
@@ -3637,6 +3654,7 @@ parseAsync(l []Tok, elems Elems*) {
 }
 
 addRCPvars(l []Tok, ltp lineType, elems Elems*) {
+//    recorder = timer.record("addRCPvars")
     i=0
     if ltp == LINE_TYPE_VAR {
         i = 1
@@ -3656,6 +3674,7 @@ addRCPvars(l []Tok, ltp lineType, elems Elems*) {
 
 
 parseChan(l []Tok, elems Elems*) []Tok {
+//    recorder = timer.record("parseChan")
     nl = []Tok
     i=0; for i < len(l), i++ {
         t = l[i]
@@ -3760,40 +3779,106 @@ parseChan(l []Tok, elems Elems*) []Tok {
 }
 
 prePross(line []Tok, ltp lineType, elems Elems*) []Tok {
-
+//    recorder = timer.record("prePross")
     fl = []Tok
     i = 0
     nbPar = 0
+
+    isChan = false
+    isBool = false
+    isFunc = false
+    isFunc = false
+    isArr = false
+    isStruct = false
+    isOper = false
+    isCast = false
+
     if ltp != <lineType>-1 {
         for i < len(line) {
             t = line[i]
             if t.cont == "(" {
+                isFunc = true
                 nbPar = nbPar + 1
             } else if t.cont == ")" {
                 nbPar = nbPar - 1
             } else if nbPar == 0 && t.cont == "{" {
                 nt = line[i+1]
+                isStructType = true
                 if nt.line != t.line {
                     break
                 }
             }
+
+            //checks
+            if isChan == false {
+                if t.cont == "->" || t.cont == "<-" {
+                    isChan = true
+                }
+            }
+            if isBool == false {
+                if t.cont in comparators || t.cont in compSep {
+                    isBool = true
+                }
+            }
+            if isArr == false {
+                if t.cont == "[" {
+                    isArr = true
+                }
+            }
+            if isStruct == false {
+                if t.cont == "." {
+                    isStruct = true
+                }
+            }
+            if isOper == false {
+                if t.cont in signs || strHasPrefix(t.cont, "-") {
+                    isOper = true
+                }
+            }
+            if isCast == false {
+                if t.cont == "<" {
+                    isCast = true
+                }
+            }
+
             fl[len(fl)] = t
             i++
         }
     } else {
+        isStruct = true
+        isFunc = true
+        isChan = true
+        isArr = true
+        isBool = true
+        isOper = true
+        isCast = true
+
         fl = line
     }
-
-    fl = parseStructVars(fl, elems)
-    fl = parseFnCall(fl, ltp, elems)
-    fl = parseArrayVars(fl, ltp, elems)
-    fl = parseArrayType(fl, elems)
-    fl = parseStructType(fl, ltp, elems)
-    fl = parseCast(fl, elems)
+    if isStruct == true {
+        fl = parseStructVars(fl, elems)
+    }
+    if isFunc == true {
+        fl = parseFnCall(fl, ltp, elems)
+    }
+    if isArr == true {
+        fl = parseArrayVars(fl, ltp, elems)
+        fl = parseArrayType(fl, elems)
+    }
+    // fl = parseStructType(fl, ltp, elems)
+    if isCast == true {
+        fl = parseCast(fl, elems)
+    }
     addRCPvars(fl, ltp, elems)
-    fl = parseOperations(fl, ltp, elems)
-    fl = parseBool(fl, elems)
-    fl = parseChan(fl, elems)
+    if isOper == true {
+        fl = parseOperations(fl, ltp, elems)
+    }
+    if isBool == true {
+        fl = parseBool(fl, elems)
+    }
+    if isChan == true {
+        fl = parseChan(fl, elems)
+    }
 
     if ltp != <lineType>-1 {
         for i < len(line) {

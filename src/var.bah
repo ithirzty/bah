@@ -102,9 +102,6 @@ searchVar(name cpstring, elems Elems*) variable* {
 
     i=len(elems.vars)-1; for i != -1, i-- {
         v = elems.vars[i]
-            if v == null {
-                panic("\e[1;31m[INTERNAL COMPILER ERROR]\e[0m\n Please report the bug as 'compiler searching '"+name+"' resulting in null var'.")    
-            }
         if v.name == name {
             nv = new variable
             nv.type = v.type
@@ -133,7 +130,7 @@ searchVar(name cpstring, elems Elems*) variable* {
         }
     }
 
-    i=0; for i < len(elems.fns) {
+    i=0; for i < len(elems.fns), i++ {
         fn = elems.fns[i]
         if fn.name == name {
             nv = new variable
@@ -151,7 +148,6 @@ searchVar(name cpstring, elems Elems*) variable* {
             nv.type = nv.type + ")" + fn.returns.type
             return nv
         }
-        i = i + 1
     }
 
 
@@ -280,9 +276,6 @@ searchFunc(name cpstring, elems Elems*, inclCurr bool) func* {
     fns = elems.fns
     i=0; for i < len(fns) {
         fn = fns[i]
-        if fn == null {
-                panic("\e[1;31m[INTERNAL COMPILER ERROR]\e[0m\n Please report the bug as 'compiler searching '"+name+"' resulting in null func'.")    
-        }
         if fn.name == name {
             fn.used = true
             return fn

@@ -61,17 +61,7 @@ makeToken(pos int, lineNb int, cont []char, type tokenType) Tok {
     t.pos = pos
     t.line = lineNb
     t.type = type
-    if type == TOKEN_TYPE_INT {
-        t.isValue = true
-    } else if type == TOKEN_TYPE_STR {
-        t.isValue = true
-    } else if type == TOKEN_TYPE_FLOAT {
-        t.isValue = true
-    } else if type == TOKEN_TYPE_VAR {
-        t.isValue = true
-    }if type == TOKEN_TYPE_BOOL {
-        t.isValue = true
-    } else if type == TOKEN_TYPE_CHAR {
+    if type == TOKEN_TYPE_INT || type == TOKEN_TYPE_STR || type == TOKEN_TYPE_FLOAT || type == TOKEN_TYPE_VAR || type == TOKEN_TYPE_BOOL || type == TOKEN_TYPE_CHAR {
         t.isValue = true
     }
     return t
@@ -96,10 +86,9 @@ keywords = []cpstring{"if", "else", "for", "struct", "const", "return", "extend"
                     // x: done
                     //  : not done
                     // -: not planned
-varChars = []char{'_'}
-seps = []char{'.'}
 
 lexer(s cpstring) []Tok {
+//    recorder = timer.record("lexer")
     dur = getTimeUnix()
     tokens = []Tok
     
@@ -117,6 +106,7 @@ lexer(s cpstring) []Tok {
         }
         //testing for comments
         if c == '/' {
+//            recorderComms = timer.record("lexer-comments")
             nc = s[i+1]
             if nc == '/' {
                 //ignore the content untill we hit a new line
@@ -140,6 +130,7 @@ lexer(s cpstring) []Tok {
 
         //token is a string
         if c == <char>34 {
+//            recorderStrs = timer.record("lexer-strings")
             pos = i
             begLine = lineNb
             memory[0] = c
@@ -170,6 +161,7 @@ lexer(s cpstring) []Tok {
             lt.begLine = begLine
             tokens[len(tokens) - 1] = lt
         } else if isNumber(c) || isMinus(c, nc) { //token is a number
+//            recorderNums = timer.record("lexer-nums")
             memory[0] = c
             pos = i
             i = i + 1
@@ -203,6 +195,7 @@ lexer(s cpstring) []Tok {
             i--
             tokens[len(tokens)] = makeToken(pos, lineNb, memory, currentType)
         } else if c == <char>39 { //is a character
+//            recorderChars = timer.record("lexer-char")
             i++
             n = s[i]
             toInt = intToStr(<int>nc)
@@ -214,6 +207,7 @@ lexer(s cpstring) []Tok {
             }
             tokens[len(tokens)] = makeToken(i-1, lineNb, memory, TOKEN_TYPE_CHAR)
         } else if c == <char>35 { //is a hash keyword
+//            recorderHash = timer.record("lexer-hash")
             pos = i
             memory[0] = c
             i++
@@ -227,9 +221,11 @@ lexer(s cpstring) []Tok {
             i--
             tokens[len(tokens)] = makeToken(pos, lineNb, memory, TOKEN_TYPE_KEYWORD)
         } else if inArray(c, enclavers) { //token is enclaver
+//            recorderEncl = timer.record("lexer-encls")
             memory[0] = c
             tokens[len(tokens)] = makeToken(i, lineNb, memory, TOKEN_TYPE_ENCL)
         } else if inArray(c, syntaxes) { //token is a syntax element
+//            recorderSyn = timer.record("lexer-syntax")
             memory[0] = c
             pos = i
             i++
@@ -261,10 +257,12 @@ lexer(s cpstring) []Tok {
             }
             i--
             tokens[len(tokens)] = makeToken(pos, lineNb, memory, TOKEN_TYPE_SYNTAX)
-        } else if inArray(c, seps) { //token is a separator
+        } else if c == '.' { //token is a separator
+//            recorderSep = timer.record("lexer-sep")
             memory[0] = c
             tokens[len(tokens)] = makeToken(i, lineNb, memory, TOKEN_TYPE_SEP)
-        } else if isAlphaNumeric(c) || inArray(c, varChars) { //token is a var / keyword
+        } else if isAlphaNumeric(c) || c == '_' { //token is a var / keyword
+//            recorderVars = timer.record("lexer-var")
             memory[0] = c
             pos = i
             i++
@@ -272,7 +270,7 @@ lexer(s cpstring) []Tok {
             for i < codeLength, i++ {
                 c = s[i]
                 if isAlphaNumeric(c) == false {
-                    if c in varChars == false {
+                    if c != '_' {
                         if c == '>' {
                             lc = memory[len(memory)-1]
                             if lc == '-' {

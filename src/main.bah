@@ -23,15 +23,18 @@
     BAH_CC = "gcc"
 }
 //////////////////////BUILD SPECIFIC THINGS//////////////////////
-const BAH_VERSION = "v1.1 (build 78)"
+const BAH_VERSION = "v1.1 (build 79)"
 
 debug = false
 verboseRuntime = false
 isObject = false
+isUnsafe = false
 
 execName = "bah"
 isSubObject = false
 
+// #include "ithirzty/timer.bah"
+// timer = timer{}
 
 #include "./globals.bah"
 
@@ -43,7 +46,12 @@ isSubObject = false
 
 
 main(args []cpstring) int {
-    execName = absPath(args[0]) //for calling a sub-process for compiling imports
+    // timer.open("res.json")
+    execName = args[0] //for calling a sub-process for compiling imports
+
+    if execName[0] == '.' || execName[0] == '/' {
+        execName = absPath(execName)
+    }
 
     flags = flags{}
     flags.addString("o", "Name of the file to output.")
@@ -67,6 +75,7 @@ main(args []cpstring) int {
     flags.addString("bahDir", "If your Bah directory is not the default one ("+BAH_DIR+").")
     flags.addString("CC", "To change the C compiler used, default: "+BAH_CC+".")
     flags.addBool("object", "Compile as an object.")
+    flags.addBool("unsafe", "Compile without safety checking. This will make for faster executable but if your program crashes, it will show less informations.")
     flags.parse(args)
 
     if flags.isSet("target") == 1 {
@@ -96,6 +105,7 @@ main(args []cpstring) int {
     verboseRuntime = flags.isSet("verboseRuntime") == 1
     debug = flags.isSet("debug") == 1
     isObject = flags.isSet("object") == 1
+    isUnsafe = flags.isSet("unsafe") == 1
 
     if debug == true {
         debugStart() //for IDE purposes
@@ -228,7 +238,7 @@ main(args []cpstring) int {
     compilerState.currentDir = getDirFromFile(fileName) //for handling includes
     parseLines(tokens, elems) //parse the frst file
 
-    if isObject == false {
+    if isObject == false && isUnsafe == false {
         l = 0
         i=0; for i < len(elems.fns), i++ {
             fn = elems.fns[i]
@@ -382,6 +392,6 @@ main(args []cpstring) int {
         totalTime = getTimeUnix() - startTime
         println("\e[1;32mDone. (compiled in "+intToStr(totalTime / 1000000)+"ms)\e[0m")
     }
- 
+    // timer.save()
     return 0
 }
