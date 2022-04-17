@@ -1,6 +1,6 @@
  
-#include "json.bah"
-#include "eval.bah"
+#import "json.bah"
+#import "eval.bah"
 
 DEBUG_ENABLED = false
 

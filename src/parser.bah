@@ -125,21 +125,23 @@ getLineType(line []Tok) lineType {
 }
 
 
-parseCast(line []Tok, elems Elems*) []Tok {
-//    recorder = timer.record("parseCast")
+parseCast(line []Tok, elems Elems*, guard bool) []Tok {
+//     recorder = timer.record("parseCast")
 
     nl = []Tok
-
-    i=0; for i < len(line) {
-        t = line[i]
-        if t.cont == "<" {
-            break
+    i=0
+    if guard == true {
+        for i < len(line) {
+            t = line[i]
+            if t.cont == "<" {
+                break
+            }
+            nl[i] = t
+            i = i + 1
         }
-        nl[i] = t
-        i = i + 1
-    }
-    if i == len(line) {
-        return line //found no cast in the line, returns it
+        if i == len(line) {
+            return line //found no cast in the line, returns it
+        }
     }
 
     for i < len(line), i++ {
@@ -413,7 +415,7 @@ parseInclude(l []Tok, elems Elems*) {
 signs = []cpstring{"|", "&", "%", "+", "-", "*", "/"}
 
 parseOperations(line []Tok, ltp lineType, elems Elems*) []Tok {
-//    recorder = timer.record("parseOperations")
+//     recorder = timer.record("parseOperations")
     nl = []Tok{line[0]}
     unNestedLine = []Tok{line[0]}
     //un-nest operations (for operations priority with parenthesis)
@@ -665,7 +667,7 @@ parseOperations(line []Tok, ltp lineType, elems Elems*) []Tok {
 
 
 parseStructType(line []Tok, ltp lineType, elems Elems*) []Tok {
-//    recorder = timer.record("parseStructType")
+//     recorder = timer.record("parseStructType")
     //vars declaration are handled separatly
     if ltp == LINE_TYPE_VAR {
         return line
@@ -850,6 +852,7 @@ parseStructType(line []Tok, ltp lineType, elems Elems*) []Tok {
                     if isHeap == true {
                         nl[len(nl)-1] = t
                     } else {
+                        t.isEqual = true
                         nl[len(nl)] = t
                     }
                     i++
@@ -867,19 +870,21 @@ parseStructType(line []Tok, ltp lineType, elems Elems*) []Tok {
     return nl
 }
 
-parseStructVars(line []Tok, elems Elems*) []Tok {
-//    recorder = timer.record("parseStructVars")
+parseStructVars(line []Tok, elems Elems*, guard bool) []Tok {
+//     recorder = timer.record("parseStructVars")
     nl = []Tok
 
-    i=0; for i < len(line) {
-        t = line[i]
-        if t.cont == "." {
-            break
+    if guard == true {
+        i=0; for i < len(line) {
+            t = line[i]
+            if t.cont == "." {
+                break
+            }
+            i = i + 1
         }
-        i = i + 1
-    }
-    if i == len(line) {
-        return line
+        if i == len(line) {
+            return line
+        }
     }
     
 
@@ -928,20 +933,22 @@ parseStructVars(line []Tok, elems Elems*) []Tok {
     return nl
 }
 
-parseArrayType(line []Tok, elems Elems*) []Tok {
-//    recorder = timer.record("parseArrayType")
+parseArrayType(line []Tok, elems Elems*, guard bool) []Tok {
+//     recorder = timer.record("parseArrayType")
 
     nl = []Tok
-
-    i=0; for i < len(line), i++ {
-        t = line[i]
-        if t.cont == "[" {
-            break
+    i=0
+    if guard == true {
+        for i < len(line), i++ {
+            t = line[i]
+            if t.cont == "[" {
+                break
+            }
+            nl[i] = t
         }
-        nl[i] = t
-    }
-    if i == len(line) {
-        return line
+        if i == len(line) {
+            return line
+        }
     }
 
     for i < len(line), i++ {
@@ -990,22 +997,24 @@ parseArrayType(line []Tok, elems Elems*) []Tok {
 comparators = []cpstring{"==", "!=", ">", "<", "<=", ">=", "in"}
 compSep = []cpstring{"||", "&&"}
 
-parseBool(line []Tok, elems Elems*) []Tok {
-//    recorder = timer.record("parseBool")
+parseBool(line []Tok, elems Elems*, guard bool) []Tok {
+//     recorder = timer.record("parseBool")
 
     nl = []Tok
 
-
-    i=0; for i < len(line) {
-        t = line[i]
-        if inArrayStr(t.cont, comparators) || inArrayStr(t.cont, compSep) {
-            break
+    i=0
+    if guard == true {
+        for i < len(line) {
+            t = line[i]
+            if inArrayStr(t.cont, comparators) || inArrayStr(t.cont, compSep) {
+                break
+            }
+            nl[i] = t
+            i = i + 1
         }
-        nl[i] = t
-        i = i + 1
-    }
-    if i == len(line) {
-        return line
+        if i == len(line) {
+            return line
+        }
     }
 
     for i < len(line) {
@@ -1198,33 +1207,34 @@ parsePointers(l []Tok) []Tok {
 }
 
 
-parseArrayVars(l []Tok, ltp lineType, elems Elems*) []Tok {
-//    recorder = timer.record("parseArrayVars")
+parseArrayVars(l []Tok, ltp lineType, elems Elems*, guard bool) []Tok {
+//     recorder = timer.record("parseArrayVars")
 
     nl = []Tok
-
-    found = false
-    i=0; for i < len(l) {
-        t = l[i]
-        if t.type == TOKEN_TYPE_VAR {
-            i = i + 1
-            if i < len(l) {
-                t = l[i]
-                if t.cont == "[" {
-                    found = true
-                    break
+    if guard == true {
+        found = false
+        i=0;for i < len(l) {
+            t = l[i]
+            if t.type == TOKEN_TYPE_VAR {
+                i = i + 1
+                if i < len(l) {
+                    t = l[i]
+                    if t.cont == "[" {
+                        found = true
+                        break
+                    }
                 }
             }
+            i = i + 1
         }
-        i = i + 1
-    }
-    if found == false {
-        return l
+        if found == false {
+            return l
+        }
     }
 
     ft = l[0]
 
-    i=0; for i < len(l), i++ {
+    i=0;for i < len(l), i++ {
         t = l[i]
 
         if t.cont == "[" {
@@ -1589,28 +1599,30 @@ parseReflect(t Tok, tt cpstring, elems Elems*, parsedPointer bool, ogName cpstri
     return t
 }
 
-parseFnCall(l []Tok, ltp lineType, elems Elems*) []Tok {
-//    recorder = timer.record("parseFnCall")
+parseFnCall(l []Tok, ltp lineType, elems Elems*, guard bool) []Tok {
+//     recorder = timer.record("parseFnCall")
     nl = []Tok
 
-    found = false
-    i=0; for i < len(l) {
-        t = l[i]
-        if t.type == TOKEN_TYPE_VAR {
-            i++
-            if i < len(l) {
-                t = l[i]
-                if t.cont == "(" {
-                    found = true
-                    break
+    if guard == true {
+        found = false
+        i=0; for i < len(l) {
+            t = l[i]
+            if t.type == TOKEN_TYPE_VAR {
+                i++
+                if i < len(l) {
+                    t = l[i]
+                    if t.cont == "(" {
+                        found = true
+                        break
+                    }
                 }
             }
+            i++
         }
-        i++
-    }
 
-    if found == false {
-        return l
+        if found == false {
+            return l
+        }
     }
 
     i=0; for i < len(l) {
@@ -1800,7 +1812,7 @@ parseFnCall(l []Tok, ltp lineType, elems Elems*) []Tok {
                             }
                         }
 
-                        memory = parseFnCall(memory, <lineType>-1, elems)
+                        memory = parseFnCall(memory, <lineType>-1, elems, false)
                         memory[len(memory)] = Tok{
                             type: TOKEN_TYPE_SYNTAX
                             cont: ","
@@ -2047,7 +2059,7 @@ parseArrayDecl(v variable*, l []Tok, i int, max int, elems Elems*) cpstring {
 equalsTokens = []cpstring{"=", "+=", "-=", "*=", "/="}
 
 parseVar(l []Tok, elems Elems*) {
-//    recorder = timer.record("parseVar")
+//     recorder = timer.record("parseVar")
     ft = l[0]
     if ft.isFunc == true {
         if len(l) > 1 {
@@ -2064,6 +2076,7 @@ parseVar(l []Tok, elems Elems*) {
     isPointedVar = false
     isStruct = false
     currentType = ""
+    needsDefine = false
     ft = l[0]
     v = searchVar(ft.cont, elems)
     exists = true
@@ -2174,6 +2187,11 @@ parseVar(l []Tok, elems Elems*) {
         if isEqual == false {
             currentType = currentType + t.cont
         } else {
+
+            if t.isEqual == true && exists == false && isGlobal() == false {
+                needsDefine = true
+            }
+
             if t.cont == "chan" {
                 if i >= len(l) {
                     throwErr(&t, "Cannot declare a {TOKEN} without a type (chan <type>).")
@@ -2401,6 +2419,7 @@ void * newPtr = memoryRealloc("+nstr+"->data, (nLength+50)*sizeof("+elemTypeStr+
             vct = setCType(v, elems)
         }
         if code != "" && shouldOnlyDecl == false {
+
             
             if isRCPpointerType(v.type) && RCPavailable() == true && toVar == true  && isPointedVar == false {
                 cType = getCType(v.type, elems)
@@ -2410,10 +2429,18 @@ void * newPtr = memoryRealloc("+nstr+"->data, (nLength+50)*sizeof("+elemTypeStr+
                     code = vct+" = *("+cType.str()+"*)RCP_incrIL(&"+code+")"
                 }
             } else {
-                if isGlobal() {
-                    INIT += rope(v.name + " = " + code+";\n")
+                if needsDefine == true {
+                    if isGlobal() {
+                        INIT += rope("#define "+v.name+" "+code+"\n")
+                    } else {
+                        code = "#define "+v.name+" "+code
+                    }
                 } else {
-                    code = vct + " = " + code
+                    if isGlobal() {
+                        INIT += rope(v.name + " = " + code+";\n")
+                    } else {
+                        code = vct + " = " + code
+                    }
                 }
             }
         } else {
@@ -2452,7 +2479,11 @@ void * newPtr = memoryRealloc("+nstr+"->data, (nLength+50)*sizeof("+elemTypeStr+
         }
         NEXT_LINE = ""
     } else {
-        OUTPUT += rope(code + ";\n")
+        if needsDefine == true {
+            OUTPUT += rope(code + "\n")
+        } else {
+            OUTPUT += rope(code + ";\n")
+        }
     }
 
 
@@ -2622,6 +2653,7 @@ parseFnHeader(prev cpstring, l []Tok, i int*, fn func*, elems Elems*) cpstring {
 }
 
 parseStruct(l []Tok, elems Elems*) {
+//     recorder = timer.record("parseStruct")
     s = new cStruct
     structs = elems.structs
     structs[len(structs)] = s
@@ -3086,7 +3118,7 @@ parseClib(line []Tok) {
 }
 
 parseConst(l []Tok, elems Elems*) {
-    l = parseCast(l, elems)
+    l = parseCast(l, elems, true)
     if len(l) != 4 {
         throwErr(&l[0], "Invalid usage of {TOKEN}, must be 'const <constName> = <constValue>'. ")
     }
@@ -3654,7 +3686,7 @@ parseAsync(l []Tok, elems Elems*) {
 }
 
 addRCPvars(l []Tok, ltp lineType, elems Elems*) {
-//    recorder = timer.record("addRCPvars")
+//     recorder = timer.record("addRCPvars")
     i=0
     if ltp == LINE_TYPE_VAR {
         i = 1
@@ -3674,7 +3706,7 @@ addRCPvars(l []Tok, ltp lineType, elems Elems*) {
 
 
 parseChan(l []Tok, elems Elems*) []Tok {
-//    recorder = timer.record("parseChan")
+//     recorder = timer.record("parseChan")
     nl = []Tok
     i=0; for i < len(l), i++ {
         t = l[i]
@@ -3779,7 +3811,7 @@ parseChan(l []Tok, elems Elems*) []Tok {
 }
 
 prePross(line []Tok, ltp lineType, elems Elems*) []Tok {
-//    recorder = timer.record("prePross")
+//     recorder = timer.record("prePross")
     fl = []Tok
     i = 0
     nbPar = 0
@@ -3787,11 +3819,12 @@ prePross(line []Tok, ltp lineType, elems Elems*) []Tok {
     isChan = false
     isBool = false
     isFunc = false
-    isFunc = false
     isArr = false
     isStruct = false
     isOper = false
     isCast = false
+
+    needGuard = false
 
     if ltp != <lineType>-1 {
         for i < len(line) {
@@ -3853,28 +3886,30 @@ prePross(line []Tok, ltp lineType, elems Elems*) []Tok {
         isOper = true
         isCast = true
 
+        needGuard = true
+
         fl = line
     }
     if isStruct == true {
-        fl = parseStructVars(fl, elems)
+        fl = parseStructVars(fl, elems, needGuard)
     }
     if isFunc == true {
-        fl = parseFnCall(fl, ltp, elems)
+        fl = parseFnCall(fl, ltp, elems, needGuard)
     }
     if isArr == true {
-        fl = parseArrayVars(fl, ltp, elems)
-        fl = parseArrayType(fl, elems)
+        fl = parseArrayVars(fl, ltp, elems, needGuard)
+        fl = parseArrayType(fl, elems, needGuard)
     }
     // fl = parseStructType(fl, ltp, elems)
     if isCast == true {
-        fl = parseCast(fl, elems)
+        fl = parseCast(fl, elems, needGuard)
     }
     addRCPvars(fl, ltp, elems)
     if isOper == true {
         fl = parseOperations(fl, ltp, elems)
     }
     if isBool == true {
-        fl = parseBool(fl, elems)
+        fl = parseBool(fl, elems, needGuard)
     }
     if isChan == true {
         fl = parseChan(fl, elems)

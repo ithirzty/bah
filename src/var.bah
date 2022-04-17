@@ -10,6 +10,7 @@
 #include "./fns.bah"
 
 searchVar(name cpstring, elems Elems*) variable* {
+//     recorder = timer.record("searchVar")
     ogName = name
     n = string(name)
     n.replace("&", "")
@@ -99,7 +100,6 @@ searchVar(name cpstring, elems Elems*) variable* {
         return nv
     }
 
-
     i=len(elems.vars)-1; for i != -1, i-- {
         v = elems.vars[i]
         if v.name == name {
@@ -164,7 +164,8 @@ setCType(v variable*, elems Elems*) cpstring {
 }
 
 getTypeFromToken(t Tok*, strict bool, elems Elems*) cpstring {
-    if strlen(t.bahType) > 0 {
+//     recorder = timer.record("getTypeFromToken")
+    if t.bahType != "" {
         r = t.bahType
         return r
     }
@@ -178,12 +179,12 @@ getTypeFromToken(t Tok*, strict bool, elems Elems*) cpstring {
             }
         }
         if strict == true {
-            if strlen(v.type) == 0 {
+            if v.type == "" {
                 throwErr(t, "Cannot use {TOKEN} because it does not have any type.")
             }
         }
-        r = v.type        
-        return r
+        t.bahType = v.type
+        return v.type
     }
 
     if t.type == TOKEN_TYPE_FLOAT {
@@ -248,6 +249,7 @@ parseFnType(cvt string) func* {
 
 
 searchFunc(name cpstring, elems Elems*, inclCurr bool) func* {
+//     recorder = timer.record("searchFunc")
     ogName = name
     if name == "noCheck" {
         fn = new func
@@ -382,7 +384,7 @@ declareStructMethods(v variable*, s cStruct*, elems Elems*) cpstring {
         i=0; for i < len(s.methods), i++ {
             m = s.methods[i]
             if m.name == "_init" {
-                code += v.name+sep+m.name+"("+amp+v.name+");\n"
+                NEXT_LINE += v.name+sep+m.name+"("+amp+v.name+");\n"
                 found++
             } else if m.name == "_end" {
                 if sep == "->" {

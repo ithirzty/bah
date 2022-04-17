@@ -45,6 +45,10 @@
 #define! pthread_cond_destroy(cond pthread_cond_t*) int
 #define! pthread_cond_wait(cond pthread_cond_t*, mut pthread_mutex_t*) int
 
+#define! pthread_self() int
+
+const currentThread = pthread_self
+
 //This structure implements a mutex.
 //A mutex is a thread safe lock.
 //*Note: the mutex needs to be initiated ans destroyed when you finished using it.*

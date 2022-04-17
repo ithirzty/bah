@@ -45,17 +45,19 @@ splitStructSepAfter(n string) string {
     return n
 }
 
+
 searchStruct(name cpstring, elems Elems*) cStruct* {
+//     recorder = timer.record("searchStruct")
     n = string(name)
     n.replace("&", "")
     n.replace("*", "")
     name = n.content
-    i=0; for i < len(elems.structs) {
+
+    i=len(elems.structs)-1; for i != -1, i-- {
         s = elems.structs[i]
         if s.name == name {
             return s
         }
-        i = i + 1
     }
     return null
 }

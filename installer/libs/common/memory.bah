@@ -247,7 +247,7 @@ delete(a ptr, i int) {
 //Used to convert an array of characters to a cpstring.
 arrToStr(arr []char) cpstring {
     strLen = len(arr)
-    str cpstring = memoryAlloc(strLen+1)
+    str cpstring = memoryAllocSTR(strLen+1)
     noCheck(memcpy(str, arr->data, strLen))
     return str
 }

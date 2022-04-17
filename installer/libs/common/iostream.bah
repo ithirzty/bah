@@ -51,6 +51,7 @@ println(s cpstring) {
 //So it is recommended to **use fileMap as much as possible**.
 struct fileStream {
     handle: FILE*
+    name: cpstring
 
     //Checks if the current opened file is valid or not.
     isValid() int {
@@ -63,6 +64,7 @@ struct fileStream {
     //Opens a file by its name.
     //The differents modes can be found [here](https://koor.fr/C/cstdio/fopen.wp).
     open(path cpstring, mode cpstring) {
+        this.name = path
         this.handle = fopen(path, mode)
     }
 
@@ -72,6 +74,7 @@ struct fileStream {
             return
         }
         fclose(this.handle)
+        this.handle = null
     }
 
     //Returns the position of the file reader.
@@ -178,6 +181,13 @@ struct fileStream {
     //Write an array of bytes (char) to a file.
     writeBytes(d []char) {
         this.writePtr(noCheck(d->data), len(d))
+    }
+
+    _end() {
+        if this.isValid() {
+            println("iostream: warning, auto-closing file: '"+this.name+"'.")
+            this.close()
+        }
     }
 
 }

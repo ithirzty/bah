@@ -37,6 +37,7 @@ struct RCP {
     p: ptr = null
     c: int = 0
     s: int = 0
+    e: ptr = null
     //for compatibility
     __RCP_counter: ptr
 }
@@ -211,7 +212,7 @@ struct RCPstate {
 
 RCPstate RCPstate
 
-
+DEBUG_RCP = false
 
 RCP_init() {
     RCPstate = RCPstate{}
@@ -228,7 +229,9 @@ RCP_shutdown() {
     pthread_mutex_destroy(&l)
     if RCPstate.len > 0 {
         free(RCPstate.RCPs)
-        noCheck(printf("\n\n[RCP] Leak detected!\n Summary: %d leaks.\n If your program is using self-referenced object (such as ropes), recompile-it without the '-rcp' flag.\n", RCPstate.len))
+        if DEBUG_RCP == true {
+            noCheck(printf("\n\n[RCP] Leak detected!\n Summary: %d leaks.\n If your program is using self-referenced object (such as ropes), recompile-it without the '-rcp' flag.\n", RCPstate.len))
+        }
     }
 }
 
@@ -319,6 +322,10 @@ RCP_decr(p ptr) {
     }
     r.c = r.c - 1
     if r.c <= 0 {
+        if r.e != null {
+            fn function(ptr) = r.e
+            fn(r.p)
+        }
         free(r.p)
         RCPstate.remove(RCPstate.rcpToIndex(r))
     }
@@ -368,6 +375,10 @@ RCP_decrRCP(r RCP*) {
     }
     r.c = r.c - 1
     if r.c <= 0 {
+        if r.e != null {
+            fn function(ptr) = r.e
+            fn(r.p)
+        }
         free(r.p)
         RCPstate.remove(RCPstate.rcpToIndex(r))
     }
@@ -416,4 +427,15 @@ clear(a ptr) {
     noCheck(RCP_decr(arr->data))
     noCheck(arr->data = memoryAlloc(sizeof(0)))
     noCheck(arr->length = 0)
+}
+
+memoryOnEnd(obj ptr, fn ptr) {
+    if obj == null {
+        return
+    }
+    r = RCPstate.getByPtr(obj)
+    if r == null {
+        return
+    }
+    r.e = fn
 }
