@@ -2,41 +2,42 @@ decrVar(v variable*, elems Elems*) rope* {
     r = rope("")
     //is array
     if strHasPrefix(v.type, "[]") {
-        at = string(v.type)
-        at.trimLeft(2)
-        if isRCPtype(at.str(), elems) {
-            arrElem = new variable
-            arrElem.type = at.str()
-            arrElem.name = v.name+"->data[arrElemIndex]"
-            r = rope("
-            {
-            struct RCP * arrRCP = RCP_request("+v.name+");
-            if (arrRCP != null && arrRCP->c == 1) {
-                struct RCP * arrDataRCP = RCP_request("+v.name+"->data);
-                if (arrDataRCP != null && arrDataRCP->c == 1) {
-                    for(int arrElemIndex=len("+v.name+")-1; arrElemIndex >= 0; arrElemIndex--) {
-                        ")+decrVar(arrElem, elems)+rope("
-                    };
-                }
-                RCP_decrRCP(arrDataRCP);
-            }
-            RCP_decrRCP(arrRCP);
-            };
-            ")
-        } else {
-            r = rope("
-            {
-            struct RCP * arrRCP = RCP_request("+v.name+");
-            if (arrRCP != null) {
-                if (arrRCP->c == 1) {
-                    struct RCP * arrDataRCP = RCP_request("+v.name+"->data);
-                    RCP_decrRCP(arrDataRCP);
-                }
-                RCP_decrRCP(arrRCP);
-            }
-            };
-            ")
-        }
+        r += rope("RCP_scanHeap("+v.name+");\n")
+        // at = string(v.type)
+        // at.trimLeft(2)
+        // if isRCPtype(at.str(), elems) {
+        //     arrElem = new variable
+        //     arrElem.type = at.str()
+        //     arrElem.name = v.name+"->data[arrElemIndex]"
+        //     r = rope("
+        //     {
+        //     struct RCP * arrRCP = RCP_request("+v.name+");
+        //     if (arrRCP != null && arrRCP->c == 1) {
+        //         struct RCP * arrDataRCP = RCP_request("+v.name+"->data);
+        //         if (arrDataRCP != null && arrDataRCP->c == 1) {
+        //             for(int arrElemIndex=len("+v.name+")-1; arrElemIndex >= 0; arrElemIndex--) {
+        //                 ")+decrVar(arrElem, elems)+rope("
+        //             };
+        //         }
+        //         RCP_decrRCP(arrDataRCP);
+        //     }
+        //     RCP_decrRCP(arrRCP);
+        //     };
+        //     ")
+        // } else {
+        //     r = rope("
+        //     {
+        //     struct RCP * arrRCP = RCP_request("+v.name+");
+        //     if (arrRCP != null) {
+        //         if (arrRCP->c == 1) {
+        //             struct RCP * arrDataRCP = RCP_request("+v.name+"->data);
+        //             RCP_decrRCP(arrDataRCP);
+        //         }
+        //         RCP_decrRCP(arrRCP);
+        //     }
+        //     };
+        //     ")
+        // }
     } else if strHasPrefix(v.type, "chan:") {
         r = rope("{
             struct RCP * chanRCP = RCP_request("+v.name+");
@@ -58,13 +59,12 @@ decrVar(v variable*, elems Elems*) rope* {
         //is a struct
         s = searchStruct(v.type, elems)
         if s != null && s.isBinding == false {
-            amp = "&"
-            heap = "0"
             if isPointer == true {
-                amp = ""
-                heap = "1"
+            r += rope("RCP_scanHeap("+v.name+");\n")
+            } else {
+            r += rope("RCP_scanStack(&"+v.name+", sizeof("+v.name+"), 1);\n")
             }
-            r = r + rope("__RCP_clean_"+s.name+"("+amp+v.name+", "+heap+");\n")
+            // r = r + rope("__RCP_clean_"+s.name+"("+amp+v.name+", "+heap+");\n")
         } else if isPointer == true {
             //is a pointer
             r = r + rope("RCP_decr("+v.name+");\n")
@@ -81,7 +81,7 @@ incrVar(v variable*, elems Elems*) rope* {
 
     s = searchStruct(v.type, elems)
     if s != null && isRCPpointerType(v.type) == false && s.isBinding == false {
-        return rope("RCP_incrCounter("+v.name+".__RCP_counter);")
+        return rope("RCP_scanStack(&"+v.name+", sizeof("+v.name+"), 0);")
     }
 
     return rope("RCP_incr("+v.name+");")
@@ -122,6 +122,38 @@ endRCPscope(elems Elems*, exc []variable*) {
                     }
                 }
             }
+        }
+    }
+}
+
+beginRCPscope(vars []variable*, elems Elems*) {
+    if RCPavailable() == false {
+        return
+    }
+    i=0; for i < len(vars), i++ {
+        v = vars[i]
+        if isRCPpointerType(v.type) == false {
+            s = searchStruct(v.type, elems)
+            if s == null {
+                continue
+            }
+            OUTPUT += rope("RCP_scanStack(&"+v.name+", sizeof("+v.name+"), 0);\n")
+        }
+    }
+}
+
+decrRCPstackVars(vars []variable*, elems Elems*) {
+    if RCPavailable() == false {
+        return
+    }
+    i=0; for i < len(vars), i++ {
+        v = vars[i]
+        if isRCPpointerType(v.type) == false {
+            s = searchStruct(v.type, elems)
+            if s == null {
+                continue
+            }
+            OUTPUT += rope("RCP_scanStack(&"+v.name+", sizeof("+v.name+"), 1);\n")
         }
     }
 }
@@ -170,60 +202,68 @@ registerRCPvar(t cpstring, c cpstring, elems Elems*) cpstring {
     return av.name
 }
 
-makeRCPfuncFromStruct(s cStruct*, elems Elems*) rope* {
-    if s.isBinding == true || RCPavailable() == false || isObject == true {
-        return rope("")
-    }
+// makeRCPfuncFromStruct(s cStruct*, elems Elems*) rope* {
+//     if s.isBinding == true || RCPavailable() == false || isObject == true {
+//         return rope("")
+//     }
 
-    decrMembs = rope("")
+//     decrMembs = rope("")
 
-    i=0; for i < len(s.members) {
-        m = s.members[i]
-        rm = string(m.type)
-        rm.replace("*", "")
-        if isRCPtype(m.type, elems) {
-            if rm.str() != s.name {
-                mv = new variable
-                mv.name = "e->" + m.name
-                mv.type = m.type
-                decrMembs = decrMembs + decrVar(mv, elems)
-            } else {
-                throwWarning("Strcture '"+s.name+"' has a self-referenced member '"+m.name+"'. May lead to memory leaks, recompile the program without the '-rcp' flag if memory leaks happens.")
-                amp = "&"
-                heap = "0"
-                if strCount(m.type, "*") > 0 {
-                    amp = ""
-                    heap = "1"
-                }
-                decrMembs = decrMembs + rope("__RCP_clean_"+s.name+"("+amp+"e->"+m.name+", "+heap+");\n")
-            }
-        }
-        i = i + 1
-    }
-    endCall = ""
-    endFn = searchStructMemb("_end", s, elems)
-    if endFn != null {
-        endCall = "e->_end(e);"
-    }
+//     i=0; for i < len(s.members) {
+//         m = s.members[i]
+//         rm = string(m.type)
+//         rm.replace("*", "")
+//         if isRCPtype(m.type, elems) {
+//             if rm.str() != s.name {
+//                 mv = new variable
+//                 mv.name = "e->" + m.name
+//                 mv.type = m.type
+//                 decrMembs = decrMembs + decrVar(mv, elems)
+//             } else {
+//                 throwWarning("Strcture '"+s.name+"' has a self-referenced member '"+m.name+"'. May lead to memory leaks, recompile the program without the '-rcp' flag if memory leaks happens.")
+//                 amp = "&"
+//                 heap = "0"
+//                 if strCount(m.type, "*") > 0 {
+//                     amp = ""
+//                     heap = "1"
+//                 }
+//                 mCType = getCType(m.type, elems)
+//                 decrMembs = decrMembs + rope("
+//                 {
+//                     "+mCType.str()+" memb = "+amp+"e->"+m.name+";
+//                     if (RCP_isAllocated(memb) == true) {
+//                         __RCP_clean_"+s.name+"(memb, "+heap+");
+//                     };
+//                 }
+//                 ")
+//             }
+//         }
+//         i = i + 1
+//     }
+//     endCall = ""
+//     endFn = searchStructMemb("_end", s, elems)
+//     if endFn != null {
+//         endCall = "e->_end(e);"
+//     }
 
 
-    r = rope("void* __RCP_clean_"+s.name+"(struct "+s.name+"* e, int heap) {
-        if(heap == 1) {
-            struct RCP* srcp = RCP_request(e);
-            if (srcp != null) {
-                if (srcp->c == 1) {
-                    ") + decrMembs + rope("
-                }
-                RCP_decrRCP(srcp);
-            }
-        } else if(RCP_decrCounter((void*)e->__RCP_counter)==0) {
-            "+endCall+"
-            ") + decrMembs + rope("
-        }
-    };\n")
+//     r = rope("void* __RCP_clean_"+s.name+"(struct "+s.name+"* e, int heap) {
+//         if(heap == 1) {
+//             struct RCP* srcp = RCP_request(e);
+//             if (srcp != null) {
+//                 if (srcp->c == 1) {
+//                     ") + decrMembs + rope("
+//                 }
+//                 RCP_decrRCP(srcp);
+//             }
+//         } else if(RCP_decrCounter((void*)e->__RCP_counter)==0) {
+//             "+endCall+"
+//             ") + decrMembs + rope("
+//         }
+//     };\n")
 
-    return r
-}
+//     return r
+// }
 
 RCPselfRef(v variable*) bool {
     i=0; for i < len(compilerState.RCPvars) {

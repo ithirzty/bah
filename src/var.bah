@@ -371,13 +371,13 @@ declareStructMethods(v variable*, s cStruct*, elems Elems*) cpstring {
         i = i + 1
     }
 
-    if s.isBinding == false && RCPavailable() && s.hasRCPmemb == true {
-        if strCount(v.type, "*") == 0 {
-            code = code + v.name+".__RCP_counter = malloc(sizeof(int));*(int*)"+v.name+".__RCP_counter = 1;\n"
-        } else {
-            code = code + v.name+"->__RCP_counter = RCP_request("+v.name+");\n"
-        }
-    }
+    // if s.isBinding == false && RCPavailable() && s.hasRCPmemb == true {
+    //     if strCount(v.type, "*") == 0 {
+    //         code = code + v.name+".__RCP_counter = malloc(sizeof(int));*(int*)"+v.name+".__RCP_counter = 1;\n"
+    //     } else {
+    //         code = code + v.name+"->__RCP_counter = RCP_request("+v.name+");\n"
+    //     }
+    // }
 
     if s.isBinding == false {
         found = 0

@@ -38,9 +38,8 @@ struct RCP {
     c: int = 0
     s: int = 0
     e: ptr = null
-    //for compatibility
-    __RCP_counter: ptr
 }
+
 
 cmp_rcp(a ptr, b ptr) int {
     ar RCP* = a
@@ -228,7 +227,7 @@ RCP_shutdown() {
     l = RCPstate.lock
     pthread_mutex_destroy(&l)
     if RCPstate.len > 0 {
-        free(RCPstate.RCPs)
+        // free(RCPstate.RCPs)
         if DEBUG_RCP == true {
             noCheck(printf("\n\n[RCP] Leak detected!\n Summary: %d leaks.\n If your program is using self-referenced object (such as ropes), recompile-it without the '-rcp' flag.\n", RCPstate.len))
         }
@@ -312,6 +311,24 @@ RCP_isAllocated(p ptr) bool {
     return true
 }
 
+#define RCP_decr(p ptr)
+#define RCP_incr(p ptr)
+
+RCP_scanRegion(curr ptr*, end ptr*, decr bool) {
+    for <int>curr < <int>end {
+        b = *curr
+        if b <= RCPstate.heapTop && b >= RCPstate.heapBottom {
+            // noCheck(printf("found ptr: %d (%d - %d)\n", b, RCPstate.heapBottom, RCPstate.heapTop))
+            if decr == true {
+                RCP_decr(b)
+            } else {
+                RCP_incr(b)
+            }
+        }
+        curr = noCheck(curr + 1)
+    }
+}
+
 RCP_decr(p ptr) {
     if p == null {
         return
@@ -325,6 +342,10 @@ RCP_decr(p ptr) {
         if r.e != null {
             fn function(ptr) = r.e
             fn(r.p)
+        }
+        if r.s >= sizeof(ptr) {
+            end ptr* = <int>r.p + r.s
+            RCP_scanRegion(r.p, end, true)
         }
         free(r.p)
         RCPstate.remove(RCPstate.rcpToIndex(r))
@@ -341,22 +362,23 @@ RCP_decrIL(p ptr*) ptr {
     return p
 }
 
-RCP_decrCounter(c int*) int {
-    if c == null {
-        return 0
-    }
-    *c = *c - 1
-    if *c <= 0 {
-        free(c)
-        return 0
-    }
-    return *c
-}
+// RCP_decrCounter(c int*) int {
+//     if c == null {
+//         return 0
+//     }
+//     *c = *c - 1
+//     noCheck(printf("c: %d, *c: %d\n", c, *c))
+//     if *c == 0 {
+//         free(c)
+//         return 0
+//     }
+//     return *c
+// }
 
-RCP_incrCounter(c int*) int {
-    *c = *c + 1
-    return *c
-}
+// RCP_incrCounter(c int*) int {
+//     *c = *c + 1
+//     return *c
+// }
 
 RCP_request(p ptr) RCP* {
     if p == null {
@@ -384,6 +406,31 @@ RCP_decrRCP(r RCP*) {
     }
 }
 
+
+RCP_scanStack(p ptr, s int, decr bool) {
+    if p == null {
+        return
+    }
+    end ptr* = <int>p + s
+    // noCheck(printf("scanning stack from: %d to: %d\n", p, end))
+    RCP_scanRegion(p, end, decr)
+}
+
+RCP_scanHeap(p ptr) {
+    if p == null {
+        return
+    }
+    r = RCPstate.getByPtr(p)
+    if r == null {
+        return
+    }
+    if r.c == 1 {
+        end ptr* = <int>p + r.s
+        // noCheck(printf("scanning heap from: %d to: %d\n", p, end))
+        RCP_scanRegion(p, end, true)
+    }
+    RCP_decrRCP(r)
+}
 
 //Used for allocating memory (malloc in c). You must specify the size of the block to allocate.
 //Will return a pointer to the allocated block. The memory is garbage collected.

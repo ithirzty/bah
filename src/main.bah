@@ -23,7 +23,7 @@
     BAH_CC = "gcc"
 }
 //////////////////////BUILD SPECIFIC THINGS//////////////////////
-const BAH_VERSION = "v1.1 (build 80)"
+const BAH_VERSION = "v1.1 (build 81)"
 
 debug = false
 verboseRuntime = false
@@ -32,6 +32,8 @@ isUnsafe = false
 
 execName = "bah"
 isSubObject = false
+
+// #cLib "g"
 
 // #include "ithirzty/timer.bah"
 // timer = timer{}
