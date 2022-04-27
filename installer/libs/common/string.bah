@@ -208,7 +208,7 @@ struct string {
             i = i + 1
         }
 
-        r = arrAsStr(buff)
+        r = arrToStr(buff)
         if replcBuffLength > 0 {
             replbuffStr = []char
             allocateArray(replbuffStr, replcBuffLength+1)
@@ -326,7 +326,7 @@ struct string {
     //Used to trim a specified number of charcaters from the beginning of the string.
     trimLeft(s int) {
         nSize = this.length - s
-        tmpS = memoryAlloc(nSize)
+        tmpS = memoryAlloc(nSize + 1)
         memcpy(tmpS, noCheck(this.content+s), nSize)
         this.content = tmpS
         this.editable = true
@@ -336,7 +336,7 @@ struct string {
     //Used to trim a specified number of charcaters from the end of the string.
     trimRight(s int) {
         nSize = this.length - s
-        tmpS = memoryAlloc(nSize)
+        tmpS = memoryAlloc(nSize + 1)
         memcpy(tmpS, this.content, nSize)
         this.content = tmpS
         this.editable = true

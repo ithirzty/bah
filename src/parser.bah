@@ -1711,6 +1711,7 @@ parseFnCall(l []Tok, ltp lineType, elems Elems*, guard bool) []Tok {
                         ot.cont = ot.cont
                         ot.type = TOKEN_TYPE_FUNC
                         ot.isFunc = true
+                        ot.isOper = true
                         ot.bahType = "ptr"
                         nl[len(nl)] = ot
                         continue
@@ -1854,6 +1855,7 @@ parseFnCall(l []Tok, ltp lineType, elems Elems*, guard bool) []Tok {
                     //         throwErr(&ot, "Function")
                     //     }
                     // }
+                    
 
                     memory = prePross(memory, ltp, elems)
 
@@ -1879,6 +1881,10 @@ parseFnCall(l []Tok, ltp lineType, elems Elems*, guard bool) []Tok {
                             
                             if compTypes(tt, arg.type) == false {
                                 throwErr(&t, "Cannot use {TOKEN} (" + tt + ") as " + arg.type + " in function call.")
+                            }
+
+                            if RCPavailable() == true && ltp == LINE_TYPE_VAR && t.type == TOKEN_TYPE_VAR && t.isOper == false && currSetVar != null && t.cont == currSetVar.name && isRCPtype(currSetVar.type, elems) {
+                                OUTPUT += incrVar(currSetVar, elems)
                             }
 
                             if t.type == TOKEN_TYPE_FUNC && strHasPrefix(t.cont, "noCheck(") == false {
@@ -2273,8 +2279,12 @@ parseVar(l []Tok, elems Elems*) {
                                 code = code + "; RCP_scanStack(&"+iv.name+", sizeof("+iv.name+"), 0)"
                             } else {
                                 ivn = string(iv.name)
-                                ivn.replace("*", "")
-                                code = code + "; RCP_incr("+ivn.str()+")"
+                                if ivn.count("*") > 0 {
+                                    ivn.replace("*", "")
+                                    code += "; RCP_scanStack("+ivn.str()+", sizeof("+iv.name+"), 0)"
+                                } else {
+                                    code = code + "; RCP_incr("+iv.name+")"
+                                }
                             }
                         }
                     }
@@ -2331,9 +2341,15 @@ parseVar(l []Tok, elems Elems*) {
                 }
             } else {
                 s = searchStruct(v.type, elems)
-                if s != null && RCPavailable() == true && RCPselfRef(v) == false && s.isBinding == false  && strCount(v.name, "*") == 0 {
+                if s != null && RCPavailable() == true && RCPselfRef(v) == false && s.isBinding == false {
+                    if strCount(v.name, "*") == 0 {
                         preCode = "RCP_scanStack(&"+v.name+", sizeof("+v.name+"), 1); "
-                        code = v.name + " = " + code
+                    } else {
+                        vn = string(v.name)
+                        vn.replace("*", "")
+                        preCode = "RCP_scanStack("+vn.str()+", sizeof("+v.name+"), 1); "
+                    }
+                    code = v.name + " = " + code
                 } else {
                     code = v.name + " = " + code
                 }
@@ -2887,15 +2903,19 @@ parseStruct(l []Tok, elems Elems*) {
                     } else {
                         OUTPUT = rope("")
                         currentFn = fn
-                        beginRCPscope(fn.args, elems)
+                        beginRCPscope(fnElems, fn.args)
+                        ocurrFnElems = compilerState.currFnElems
+                        compilerState.currFnElems = fnElems
                         parseLines(tokens, fnElems)
+                        compilerState.currFnElems = ocurrFnElems
+
                         currentFn = null
                         if fn.returned == false {
                             if strlen(fn.returns.type) > 0 {
                                 throwErr(&l[len(l)-1], "Function '"+fn.name+"' is not returned.")
                             }
-                            endRCPscope(fnElems, null)
-                            decrRCPstackVars(fn.args, elems)
+                            endRCPscope(fnElems, fn.args)
+                            // decrRCPstackVars(fn.args, elems)
                         }
                         code = code + OUTPUT + rope("};\n")
                     }
@@ -3182,17 +3202,20 @@ parseReturn(l []Tok, elems Elems*) {
         }
     } else {
         rvt = l[1]
+        tt = getTypeFromToken(&rvt, true, elems)
+        rv = rvt.cont
         if rvt.isValue == false {
             throwErr(&rvt, "Must be a value, not {TOKEN}.")
         } else if rvt.type == TOKEN_TYPE_VAR && rvt.isOper == false {
-            v = searchVar(rvt.cont, elems)
-            tmpV = v
-            if v != null && isRCPtype(v.type, elems) == true && v.outterScope == false && RCPavailable() == true {
-                OUTPUT = OUTPUT + incrVar(v, elems)
+            tmpV = searchVar(rvt.cont, compilerState.currFnElems)
+            if tmpV == null {
+                tmpV = searchVar(rvt.cont, elems)
             }
+        } else if RCPavailable() && rvt.type == TOKEN_TYPE_FUNC {
+            rv = genCompilerVar()
+            cType = getCType(tt, elems)
+            OUTPUT += rope(cType.str()+" "+rv+"="+rvt.cont+";\n")
         }
-        rv = rvt.cont
-        tt = getTypeFromToken(&rvt, true, elems)
         if compTypes(tt, currentFn.returns.type) == false {
             throwErr(&rvt, "Cannot return {TOKEN} ("+tt+") as "+currentFn.returns.type+".")
         }
@@ -3206,18 +3229,37 @@ parseReturn(l []Tok, elems Elems*) {
         if RCPavailable() == true && isRCPpointerType(currentFn.returns.type) {
             rvar = genCompilerVar()
             cType = getCType(currentFn.returns.type, elems)
-            OUTPUT = OUTPUT + rope(cType.str() + " " + rvar + " = "+rv+";\n")
+            OUTPUT += rope(cType.str() + " " + rvar + " = "+rv+";\n")
+            if tmpV != null && tmpV.outterScope == true {
+                OUTPUT += incrVar(tmpV, elems)
+            }
         }
-        endRCPnonGlobScope(elems, currentFn.args)
         if strHasPrefix(tt, "buffer:") {
             rvar = "__STR("+rvar+")"
         }
-        decrRCPstackVars(currentFn.args, elems)
-        OUTPUT = OUTPUT + rope("return "+rvar+";\n")
+        if RCPavailable() {
+            excl = []variable*
+            j=0; for j < len(currentFn.args), j++ {
+                excl[j] = currentFn.args[j]
+            }
+            if tmpV != null {
+                excl[len(excl)] = tmpV
+            }
+            endRCPscope(elems, excl)
+        }
+        OUTPUT += rope("return "+rvar+";\n")
     } else {
-        endRCPnonGlobScope(elems, currentFn.args)
-        decrRCPstackVars(currentFn.args, elems)
-        OUTPUT = OUTPUT + rope("return;\n")
+        if RCPavailable() {
+            excl = []variable*
+            j=0; for j < len(currentFn.args), j++ {
+                excl[j] = currentFn.args[j]
+            }
+            if tmpV != null {
+                excl[len(excl)] = tmpV
+            }
+            endRCPscope(elems, excl)
+        }
+        OUTPUT += rope("return;\n")
     }
 }
 
@@ -3250,8 +3292,9 @@ parseIf(l []Tok, elems Elems*) {
 
     oldIB = compilerState.isBranch
     compilerState.isBranch = true
+    beginRCPscopeLeaky(ifElems)
     parseLines(tokens, ifElems)
-    endRCPscope(ifElems, null)
+    endRCPscopeLeaky(ifElems, null)
     if debug == true {
         lt = l[len(l)-1]
         debugEndScope(lt.line, ifElems)
@@ -3298,8 +3341,10 @@ parseElse(l []Tok, elems Elems*) {
 
         oldIB = compilerState.isBranch
         compilerState.isBranch = true
+        t = l[0]
+        beginRCPscopeLeaky(ifElems)
         parseLines(memory, ifElems)
-        endRCPscope(ifElems, null)
+        endRCPscopeLeaky(ifElems, null)
         if debug == true {
             lt = l[len(l)-1]
             debugEndScope(lt.line, ifElems)
@@ -3403,20 +3448,25 @@ parseFor(l []Tok, elems Elems*) {
         }
         OUTPUT = OUTPUT + rope("while ("+condt.cont+") {\n")
     }
+    oForElems = compilerState.currForElems
     ifElems = dupElems(elems)
+    compilerState.currForElems = ifElems
 
     oldIB = compilerState.isBranch
     oldIF = compilerState.isFor
     compilerState.isBranch = true
     compilerState.isFor = true
+    t = l[0]
+    beginRCPscopeLeaky(ifElems)
     parseLines(tokens, ifElems)
-    endRCPscope(ifElems, null)
+    endRCPscopeLeaky(ifElems, null)
     if debug == true {
         lt = l[len(l)-1]
         debugEndScope(lt.line, ifElems)
     }
     compilerState.isFor = oldIF
     compilerState.isBranch = oldIB
+    compilerState.currForElems = oForElems
     OUTPUT = OUTPUT + rope("};\n")
 
 }
@@ -3431,7 +3481,9 @@ parseForOp(l []Tok, elems Elems*) {
         throwErr(&ft, "Nothing expected after {TOKEN}.")
     }
     //TODO: include outter forloop declared variables incase the keyword is inside a if branch,etc...
-    endRCPscope(elems, null)
+    
+    endRCPscopeLeaky(elems, null)
+    endRCPscopeLeaky(compilerState.currForElems, null)
     OUTPUT = OUTPUT + rope(ft.cont + ";\n")
 
 }
@@ -4025,17 +4077,20 @@ parseFnDeclare(l []Tok, elems Elems*) {
 
     oOut = OUTPUT
     OUTPUT = rope("")
-    beginRCPscope(fn.args, elems)
+    t = tokens[0]
+    beginRCPscope(fnElems, fn.args)
+    ocurrFnElems = compilerState.currFnElems
+    compilerState.currFnElems = fnElems
     parseLines(tokens, fnElems)
+    compilerState.currFnElems = ocurrFnElems
     
-
     currentFn = null
     if fn.returned == false {
         if strlen(fn.returns.type) > 0 {
             throwErr(&l[len(l)-1], "Function '"+fn.name+"' is not returned.")
         }
-        endRCPscope(fnElems, null)
-        decrRCPstackVars(fn.args, elems)
+        endRCPscope(fnElems, fn.args)
+        // decrRCPstackVars(fn.args, elems)
     }
 
     fn.code += OUTPUT
@@ -4069,7 +4124,16 @@ parseLine(line []Tok, elems Elems*) {
     ltp = getLineType(line)
 
     compilerState.RCPvars = []variable*
-    
+    currSetVar = null
+
+    if ltp == LINE_TYPE_VAR {
+        ft = line[0]
+        st = line[1]
+        if st.cont == "=" {
+            v = searchVar(ft.cont, elems)
+            currSetVar = v
+        }
+    }
     
     parsed = false
     if ltp == LINE_TYPE_INCLUDE {
@@ -4098,6 +4162,18 @@ parseLine(line []Tok, elems Elems*) {
             return
         }
     }
+
+    ft = line[0]
+    if ft.isOper == false && ft.isFunc == true {
+        fnName = splitStringBefore(string(ft.cont), "(")
+        fn = searchFunc(fnName, elems, true)
+        if fn != null && fn.returns != null && isRCPtype(fn.returns.type, elems) {
+            registerRCPvar(fn.returns.type, ft.cont, elems)
+            return
+            // println("carefull: "+compilerState.currentFile+":"+intToStr(ft.line))
+        }
+    }
+
     if ltp == LINE_TYPE_VAR {
         parsed = true
         parseVar(line, elems)
@@ -4105,7 +4181,6 @@ parseLine(line []Tok, elems Elems*) {
         if len(line) > 1 {
             throwErr(&line[len(line)-1], "Not expecting {TOKEN} after function call.")
         }
-        ft = line[0]
         parsed = true
         OUTPUT = OUTPUT + rope(ft.cont + ";\n")
     } else if ltp == LINE_TYPE_FN_DECL {
@@ -4135,7 +4210,6 @@ parseLine(line []Tok, elems Elems*) {
     }
     
     if parsed == false{
-        ft = line[0]
         throwErr(&ft, "{TOKEN} not expected.")
     }
 

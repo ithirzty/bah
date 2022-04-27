@@ -44,6 +44,7 @@ searchVar(name cpstring, elems Elems*) variable* {
         nv = new variable
         nv.type = vtstr
         nv.name = ogName
+        nv.outterScope = v.outterScope
         nv.isArray = isArr
         return nv
     }
@@ -77,6 +78,7 @@ searchVar(name cpstring, elems Elems*) variable* {
         nv.from = memb.from
         nv.name = memb.name
         nv.type = memb.type
+        nv.outterScope = v.outterScope
         nv.name = ogName
 
         r = nv.type
@@ -107,6 +109,7 @@ searchVar(name cpstring, elems Elems*) variable* {
             nv.type = v.type
             nv.name = v.name
             nv.isConst = v.isConst
+            nv.outterScope = v.outterScope
             r = nv.type
             tcc = string(ogName)
             if tcc.count("&") {

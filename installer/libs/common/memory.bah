@@ -212,11 +212,11 @@ unser(data []char) ptr {
         return r
     }
 }
-#rcp {
-    memoryAllocSTR(s int) cpstring {
-        return memoryAlloc(s)
-    }
-}
+// #rcp {
+    // memoryAllocSTR(s int) cpstring {
+    //     return memoryAlloc(s)
+    // }
+// }
 
 
 //Used for deleting an element from an array by its index.

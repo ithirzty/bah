@@ -18,8 +18,8 @@
 #define! pthread_mutex_unlock(lock pthread_mutex_t*)
 #define! pthread_mutex_destroy(lock pthread_mutex_t*)
 
-#define! pthread_create(id int*, attr ptr, func ptr, args ptr)
-#define! pthread_join(id int, ret ptr)
+#define! pthread_create(id ptr, attr ptr, func ptr, args ptr)
+#define! pthread_join(id ptr, ret ptr)
 
 
 #define RCP_register(p ptr, s int)
@@ -39,6 +39,10 @@ struct RCP {
     //for compatibility
     __RCP_counter: ptr
 }
+
+#define! sizeof(p ptr) int
+
+sRCP = sizeof(RCP)
 
 #define! memcpy(dest ptr, src ptr, s int)
 #define! sbrk(i int) ptr
@@ -65,7 +69,7 @@ struct RCPstate {
         }
 
         pc char* = p
-        return noCheck(pc - sizeof(struct RCP))
+        return noCheck(pc - sRCP)
     }
 }
 
@@ -227,18 +231,18 @@ RCP_decrRCP(r RCP*) {
 //**The given memory is initiated with zeros.**
 //The allocated memory cannot be shared by multiple processes. Use the sharedMemory() function instead.
 memoryAlloc(s int) ptr {
-    r char* = malloc(s + noCheck(sizeof(struct RCP)))
+    r char* = malloc(s + sRCP)
     RCPstate.heapTop = sbrk(0)
-    memset(r, 0, s + noCheck(sizeof(struct RCP)))
+    memset(r, 0, s + sRCP)
     RCP_register(r, s)
-    return noCheck(r + noCheck(sizeof(struct RCP)))
+    return noCheck(r + sRCP)
 }
 
 memoryAllocNZ(s int) ptr {
-    r char* = malloc(s + noCheck(sizeof(struct RCP)))
+    r char* = malloc(s + sRCP)
     RCPstate.heapTop = sbrk(0)
     RCP_register(r, s)
-    return noCheck(r + noCheck(sizeof(struct RCP)))
+    return noCheck(r + sRCP)
 }
 
 

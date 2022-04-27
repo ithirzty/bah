@@ -19,7 +19,7 @@ isRCPtype(t cpstring, elems Elems*) bool {
         return true
     }
     s = searchStruct(t, elems)
-    if s != null && s.isBinding == false && s.hasRCPmemb == true {
+    if s != null && s.isBinding == false {
         return true
     }
 
@@ -109,17 +109,46 @@ getCType(t cpstring, elems Elems*) string {
 
 }
 
+intTypes = []cpstring{
+    "int",
+    "int32",
+    "uint",
+    "uint32"
+}
+
+floatTypes = []cpstring{
+    "float",
+    "float32",
+    "ufloat",
+    "ufloat32"
+}
+
+compTypeEquiv(a cpstring, b cpstring, first bool) bool {
+    //rules
+    if a == "cpstring" && strHasPrefix(b, "buffer:") {
+        return true
+    }
+    if a in intTypes && b in intTypes {
+        return true
+    }
+    if a in floatTypes && b in floatTypes {
+        return true
+    }
+
+    if first == false {
+        return false
+    }
+
+    if compTypeEquiv(b, a, false) {
+        return true
+    }
+
+    return a == b
+}
+
 compTypes(a cpstring, b cpstring) bool {
     if a == "ptr" || b == "ptr" {
         return true
     }
-
-    if a == "cpstring" && strHasPrefix(b, "buffer:") {
-        return true
-    }
-    if b == "cpstring" && strHasPrefix(a, "buffer:") {
-        return true
-    }
-    
-    return a == b
+    return compTypeEquiv(a, b, true)
 }

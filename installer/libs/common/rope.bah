@@ -3,7 +3,7 @@ const ROPE_LEAF_LEN = 200
 struct rope {
     left: rope*
     right: rope*
-    parent: rope*
+    // parent: rope*
     str: cpstring
     lCount: int
     len: int = 0
@@ -11,12 +11,12 @@ struct rope {
 
     //Used to get the parent of the node.
     //*Note: this is an internal function.*
-    getParent() rope* {
-        if this.parent == null {
-            return this
-        }
-        return this.parent.getParent()
-    }
+    // getParent() rope* {
+    //     if this.parent == null {
+    //         return this
+    //     }
+    //     return this.parent.getParent()
+    // }
 
     //Used to add the content of the node to a specified cpstring.
     //*Note: this is an internal function.*
@@ -50,11 +50,11 @@ struct rope {
     add(root2 rope*) rope* {
         n1 = this.len
         tmp = new rope
-        tmp.parent = null
+        // tmp.parent = null
         tmp.left = this
         tmp.right = root2
-        root2.parent = tmp
-        this.parent = root2.parent
+        // root2.parent = tmp
+        // this.parent = root2.parent
         tmp.totalLen = this.totalLen + root2.totalLen
         tmp.str = null
         return tmp
@@ -72,7 +72,7 @@ createRopeStructure(par rope*, a cpstring, l int, r int) rope* {
     tmp.left = null
     tmp.right = null
     
-    tmp.parent = par
+    // tmp.parent = par
 
     if r - l > ROPE_LEAF_LEN {
         tmp.str = null
@@ -110,11 +110,11 @@ ropeSet(r rope*, a cpstring) {
 concatenateRopes(root1 rope*, root2 rope*) rope* {
     n1 = root1.len
     tmp = new rope
-    tmp.parent = null
+    // tmp.parent = null
     tmp.left = root1
     tmp.right = root2
-    root2.parent = tmp
-    root1.parent = root2.parent
+    // root2.parent = tmp
+    // root1.parent = root2.parent
     tmp.totalLen = root1.totalLen + root2.totalLen
     tmp.str = null
     return tmp

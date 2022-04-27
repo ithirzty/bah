@@ -72,6 +72,8 @@ struct compilerStateTag {
     RCPvars: []variable*
     evals: []cpstring
     hasImports: bool = false
+    currForElems: Elems*
+    currFnElems: Elems*
 }
 
 shouldOnlyDecl = false
@@ -93,3 +95,5 @@ RCPenabled = false
 RCPlevel = 0
 
 flags flags
+
+currSetVar variable* = null

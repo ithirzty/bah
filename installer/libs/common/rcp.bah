@@ -21,7 +21,7 @@
 // #define! pthread_join(id int, ret ptr)
 
 
-#define RCP_register(p ptr, s int)
+#define RCP_register(p ptr, s uint)
 #define RCP_remove(p ptr)
 #define RCP_setNewPtr(o ptr, n ptr)
 
@@ -35,13 +35,14 @@ destroy(a ptr) {
 
 struct RCP {
     p: ptr = null
-    c: int = 0
-    s: int = 0
+    c: uint32 = 0
+    s: uint = 0
     e: ptr = null
+    str: bool
 }
 
 
-cmp_rcp(a ptr, b ptr) int {
+cmp_rcp(a ptr, b ptr) int32 {
     ar RCP* = a
     br RCP* = b
     if ar.p < br.p {
@@ -74,26 +75,20 @@ RCPthreadSearch(arg ptr) RCP* {
 
 struct RCPstate {
     RCPs: RCP* = null
-    len: int = 0
-    size: int = 0
+    len: uint = 0
+    size: uint = 0
 
     lock: pthread_mutex_t
 
-    heapTop: ptr
-    heapBottom: ptr
+    heapMax: ptr
+    heapMin: ptr
 
-
-    added: int = 0
-
-    //for compatibility
-    __RCP_counter: ptr
-
-    getSize(add int) int {
+    getSize(add uint) uint {
         l = this.len + add
         return l * sizeof(RCP)
     }
 
-    grow(i int) {
+    grow(i uint) {
         rs = this.getSize(i+30)
         nr = realloc(this.RCPs, rs)
         if nr == null {
@@ -108,7 +103,7 @@ struct RCPstate {
         qsort(noCheck(&this.RCPs[0]), this.len, sizeof(RCP), cmp_rcp)
     }
 
-    rcpToIndex(r RCP*) int {
+    rcpToIndex(r RCP*) uint {
         i int = <int>r - <int>noCheck(&this.RCPs[0])
         i = i / sizeof(RCP)
 
@@ -118,7 +113,6 @@ struct RCPstate {
 
     add(r RCP*) {
         pthread_mutex_lock(&this.lock)
-        this.added = this.added + 1
         rs = this.getSize(1)
         max = this.len - 1
         if this.size < rs {
@@ -152,14 +146,14 @@ struct RCPstate {
         pthread_mutex_unlock(&this.lock)
     }
 
-    get(i int) RCP* {
+    get(i uint) RCP* {
         if i >= this.len {
             return null
         }
         return noCheck(&this.RCPs[i])
     }
 
-    set(i int, r RCP*) {
+    set(i uint, r RCP*) {
         noCheck(this.RCPs[i] = *r)
         // this.sort()
     }
@@ -169,7 +163,7 @@ struct RCPstate {
 
 
     getByPtr(p ptr) RCP* {
-        if p > this.heapTop || p < this.heapBottom {
+        if p < this.heapMin || p > this.heapMax {
             return null
         }
         
@@ -177,7 +171,7 @@ struct RCPstate {
         return bsearch(&p, noCheck(&this.RCPs[0]), this.len, sizeof(RCP), cmp_rcp)
     }
 
-    resize(ns int) {
+    resize(ns uint) {
         nr = realloc(this.RCPs, ns)
         if nr == null {
             return
@@ -186,7 +180,7 @@ struct RCPstate {
         this.size = ns
     }
 
-    remove(i int) {
+    remove(i uint) {
         this.len = this.len - 1
         
         for i < this.len {
@@ -215,8 +209,8 @@ DEBUG_RCP = false
 
 RCP_init() {
     RCPstate = RCPstate{}
-    RCPstate.heapTop = sbrk(0)
-    RCPstate.heapBottom = malloc(0)
+    RCPstate.heapMin = -1
+    RCPstate.heapMax = -1
     l = RCPstate.lock
     pthread_mutex_init(&l, 0)
 }
@@ -229,7 +223,14 @@ RCP_shutdown() {
     if RCPstate.len > 0 {
         // free(RCPstate.RCPs)
         if DEBUG_RCP == true {
-            noCheck(printf("\n\n[RCP] Leak detected!\n Summary: %d leaks.\n If your program is using self-referenced object (such as ropes), recompile-it without the '-rcp' flag.\n", RCPstate.len))
+            noCheck(printf("\n\n[RCP] Leak detected!\n Summary: %d leaks (including global variables that are not freed at the end of the program).\n If your program is using self-referenced object (such as ropes), recompile-it without the '-rcp' flag.\n", RCPstate.len))
+            rcpStatep = &RCPstate
+            i=0; for i < RCPstate.len, i++ {
+                r RCP* = noCheck(&rcpStatep.RCPs[i])
+                if r.p >= RCPstate.heapMin && r.p <= RCPstate.heapMax {
+                    noCheck(printf("\t%p (%d reference(s))\n", r.p, r.c))
+                }
+            }
         }
     }
 }
@@ -243,7 +244,7 @@ RCP_selfRef(a ptr, b ptr) bool {
     return a == b
 }
 
-RCP_register(p ptr, s int) {
+RCP_register(p ptr, s uint) {
     if p == null {
         return
     }
@@ -251,6 +252,19 @@ RCP_register(p ptr, s int) {
     r.c = 1
     r.s = s
     r.p = p
+    r.str = false
+    RCPstate.add(&r)
+}
+
+RCP_registerSTR(p ptr, s uint) {
+    if p == null {
+        return
+    }
+    r = RCP{}
+    r.c = 1
+    r.s = s
+    r.p = p
+    r.str = true
     RCPstate.add(&r)
 }
 
@@ -276,6 +290,8 @@ RCP_remove(p ptr) {
     RCPstate.remove(RCPstate.rcpToIndex(r))
 }
 
+#define RCP_scanRegion(curr ptr*, end ptr*, decr bool)
+
 RCP_incr(p ptr) {
     if p == null {
         return
@@ -285,9 +301,14 @@ RCP_incr(p ptr) {
         return
     }
     r.c = r.c + 1
+    // if r.s >= sizeof(ptr) {
+    //     end ptr* = <int>r.p + r.s
+    //     RCP_scanRegion(r.p, end, false)
+    // }
+    // noCheck(printf("incr: %d (%d)\n", p, r.c))
 }
 
-RCP_getCount(p ptr) int {
+RCP_getCount(p ptr) uint {
     if p == null {
         return 0
     }
@@ -315,10 +336,10 @@ RCP_isAllocated(p ptr) bool {
 #define RCP_incr(p ptr)
 
 RCP_scanRegion(curr ptr*, end ptr*, decr bool) {
+    from = curr
     for <int>curr < <int>end {
         b = *curr
-        if b <= RCPstate.heapTop && b >= RCPstate.heapBottom {
-            // noCheck(printf("found ptr: %d (%d - %d)\n", b, RCPstate.heapBottom, RCPstate.heapTop))
+        if b <= RCPstate.heapMax && b >= RCPstate.heapMin {
             if decr == true {
                 RCP_decr(b)
             } else {
@@ -337,18 +358,21 @@ RCP_decr(p ptr) {
     if r == null {
         return
     }
+    orc = r.c
     r.c = r.c - 1
     if r.c <= 0 {
         if r.e != null {
+            changed = true
             fn function(ptr) = r.e
             fn(r.p)
         }
-        if r.s >= sizeof(ptr) {
-            end ptr* = <int>r.p + r.s
-            RCP_scanRegion(r.p, end, true)
-        }
-        free(r.p)
+        tmpr = *r
         RCPstate.remove(RCPstate.rcpToIndex(r))
+        if tmpr.str == false && tmpr.s >= sizeof(ptr) {
+            end ptr* = <int>tmpr.p + tmpr.s
+            RCP_scanRegion(tmpr.p, end, true)
+        }
+        free(tmpr.p)
     }
 }
 
@@ -361,24 +385,6 @@ RCP_decrIL(p ptr*) ptr {
     RCP_decr(*p)
     return p
 }
-
-// RCP_decrCounter(c int*) int {
-//     if c == null {
-//         return 0
-//     }
-//     *c = *c - 1
-//     noCheck(printf("c: %d, *c: %d\n", c, *c))
-//     if *c == 0 {
-//         free(c)
-//         return 0
-//     }
-//     return *c
-// }
-
-// RCP_incrCounter(c int*) int {
-//     *c = *c + 1
-//     return *c
-// }
 
 RCP_request(p ptr) RCP* {
     if p == null {
@@ -407,7 +413,7 @@ RCP_decrRCP(r RCP*) {
 }
 
 
-RCP_scanStack(p ptr, s int, decr bool) {
+RCP_scanStack(p ptr, s uint, decr bool) {
     if p == null {
         return
     }
@@ -436,24 +442,75 @@ RCP_scanHeap(p ptr) {
 //Will return a pointer to the allocated block. The memory is garbage collected.
 //**The given memory is initiated with zeros.**
 //The allocated memory cannot be shared by multiple processes. Use the sharedMemory() function instead.
-memoryAlloc(s int) ptr {
+memoryAlloc(s uint) ptr {
     r = malloc(s)
-    RCPstate.heapTop = sbrk(0)
+    if r < RCPstate.heapMin || RCPstate.heapMin == -1 {
+        RCPstate.heapMin = r
+    }
+    if r > RCPstate.heapMax {
+        RCPstate.heapMax = r
+    }
     memset(r, 0, s)
     RCP_register(r, s)
     return r
 }
 
 
+memoryAllocSTR(s uint) cpstring {
+    r = malloc(s)
+    if r < RCPstate.heapMin || RCPstate.heapMin == -1 {
+        RCPstate.heapMin = r
+    }
+    if r > RCPstate.heapMax {
+        RCPstate.heapMax = r
+    }
+    memset(r, 0, s)
+    RCP_registerSTR(r, s)
+    return r
+}
+
 //Will realloc memory to a specified pointer.
 //*The data contained in the block of memory is not necessarly preserved.*
-memoryRealloc(p ptr, s int) ptr {
+memoryRealloc(p ptr, s uint) ptr {
+    // Cannot use the following because realloc needs to return a different pointer
+    
+    // or = RCP_request(p)
+    // if or == null || or.c == 0 {
+    //     return memoryAlloc(s)
+    // }
+    // r = realloc(p, s)
+    // if r == p {
+    //     or.s = s
+    //     return r
+    // } else {
+    //     if r < RCPstate.heapMin || RCPstate.heapMin == -1 {
+    //         RCPstate.heapMin = r
+    //     }
+    //     if r > RCPstate.heapMax {
+    //         RCPstate.heapMax = r
+    //     }
+    //     ns = or.s
+    //     if s < or.s {
+    //         ns = s
+    //     } else {
+    //         off ptr = <int>r + ns
+    //         memset(off, null, s - ns)
+    //     }
+    //     RCPstate.remove(RCPstate.rcpToIndex(or))
+    //     RCP_register(r, s)
+    // }
+
     or = RCP_request(p)
     if or == null || or.c == 0 {
         return memoryAlloc(s)
     }
     r = malloc(s)
-    RCPstate.heapTop = sbrk(0)
+    if r < RCPstate.heapMin || RCPstate.heapMin == -1 {
+        RCPstate.heapMin = r
+    }
+    if r > RCPstate.heapMax {
+        RCPstate.heapMax = r
+    }
     ns = or.s
     if s < or.s {
         ns = s
