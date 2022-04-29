@@ -101,7 +101,11 @@ json_scan_inner(thisp ptr, e reflectElement, isMember bool) {
             if ae.type == "int" {
                 arr = []int
                 arrPtr ptr* = e.value
-                arr = *arrPtr
+                if isMember == true {
+                    *arrPtr = arr
+                } else {
+                    arr = *arrPtr
+                }
                 i=0; for i < len(this.children) {
                     c = this.children[i]
                     arr[i] = strToInt(c.content)
@@ -109,11 +113,11 @@ json_scan_inner(thisp ptr, e reflectElement, isMember bool) {
                 }
             } else if ae.type == "float" {
                 arr = []float
+                arrPtr ptr* = e.value
                 if isMember == true {
-                    arrPtr ptr* = e.value
-                    arr = *arrPtr
+                    *arrPtr = arr
                 } else {
-                    arr = e.value
+                    arr = *arrPtr
                 }
                 i=0; for i < len(this.children) {
                     c = this.children[i]
@@ -123,7 +127,11 @@ json_scan_inner(thisp ptr, e reflectElement, isMember bool) {
             } else if ae.type == "cpstring" {
                 arr = []cpstring
                 arrPtr ptr* = e.value
-                arr = *arrPtr
+                if isMember == true {
+                    *arrPtr = arr
+                } else {
+                    arr = *arrPtr
+                }
                 i=0; for i < len(this.children) {
                     c = this.children[i]
                     arr[i] = memoryAlloc(strlen(c.content) + 1)
@@ -133,7 +141,11 @@ json_scan_inner(thisp ptr, e reflectElement, isMember bool) {
             } else if ae.isStruct == true {
                 arr = []ptr
                 arrPtr ptr* = e.value
-                arr = *arrPtr
+                if isMember == true {
+                    *arrPtr = arr
+                } else {
+                    arr = *arrPtr
+                }
                 i=0; for i < len(this.children) {
                     c = this.children[i]
                     ne ptr = memoryAlloc(ae.size)

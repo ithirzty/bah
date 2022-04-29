@@ -286,9 +286,10 @@ parallelObjCompile(fn cpstring, oName cpstring, done chan:bool) {
         if flags.isSet("verboseCC") == 1 {
             verboseCC = "-verboseCC"
         }
-        println("compilling: "+fn)
+        print("compilling: "+fn+"... ")
         cmd = command(execName + " "+fn+" "+rcp+" -object "+verboseCC+" -o "+oName)
         res = cmd.run()
+        println("ok")
         setCurrentPath(wrkd)
         if cmd.status != 0 {
             print(res)

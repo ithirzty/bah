@@ -6,6 +6,12 @@
 }
 
 
+#rcp {
+	#define RCP_decr(p ptr)
+}
+
+#define __BAH_panic(e cpstring, l cpstring)
+
 #define __Bah_safe_string(s cpstring) cpstring
 
 const null = <ptr>0
@@ -141,7 +147,9 @@ __Bah_fnNames_append(fnn __Bah_fnName_mapper) {
 	__Bah_fnNames[len(__Bah_fnNames)] = fnn
 }
 
-#define! backtrace(arr ptr, l int) int
+#linux {
+	#define backtrace(arr ptr, l int) int
+}
 
 __BAH_panic(e cpstring, line cpstring) {
 	if __BAH_panic_chan != null {
