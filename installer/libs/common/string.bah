@@ -317,7 +317,7 @@ struct string {
         if i > 0 {
             this.length = this.length - i
             tmpS cpstring = memoryAlloc(this.length+1)
-            memcpy(tmpS, noCheck(this.content+i), this.length+1)
+            memcpy(tmpS, noCheck(this->content+i), this.length+1)
             this.content = tmpS
             this.editable = true
         }
@@ -327,7 +327,7 @@ struct string {
     trimLeft(s int) {
         nSize = this.length - s
         tmpS = memoryAlloc(nSize + 1)
-        memcpy(tmpS, noCheck(this.content+s), nSize)
+        memcpy(tmpS, noCheck(this->content+s), nSize)
         this.content = tmpS
         this.editable = true
         this.length = nSize

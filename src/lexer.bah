@@ -17,6 +17,7 @@ const TOKEN_TYPE_CHAR =    <tokenType>7
 const TOKEN_TYPE_BOOL =    <tokenType>8
 const TOKEN_TYPE_SYNTAX =  <tokenType>10
 const TOKEN_TYPE_FUNC =    <tokenType>11
+const TOKEN_TYPE_CAST =    <tokenType>12
 
 //a token (the atomic unit for describing the inputed Bah file)
 struct Tok {
@@ -31,6 +32,8 @@ struct Tok {
     isFunc: bool = false
     isOper: bool = false
     isEqual: bool = false
+    pass: bool = false
+    bahRef: ptr
 }
 
 
@@ -227,6 +230,34 @@ lexer(s cpstring) []Tok {
             tokens[len(tokens)] = makeToken(i, lineNb, memory, TOKEN_TYPE_ENCL)
         } else if inArray(c, syntaxes) { //token is a syntax element
 //            recorderSyn = timer.record("lexer-syntax")
+            
+
+            if c == '<' {
+                pos = i
+                isCast = false
+                memory[0] = c
+                i++
+                for i < codeLength, i++ {
+                    c = s[i]
+                    if c == '>' {
+                        isCast = true
+                        memory[len(memory)] = c
+                        break
+                    }
+                    if isAlphaNumeric(c) == false && c != '*' && c != ':' && c != '_' {
+                        break
+                    }
+                    memory[len(memory)] = c
+                }
+                if isCast == true {
+                    tokens[len(tokens)] = makeToken(pos, lineNb, memory, TOKEN_TYPE_CAST)
+                    continue
+                }
+                i = pos
+                c = '<'
+                clear(memory)
+            }
+            
             memory[0] = c
             pos = i
             i++
@@ -236,9 +267,9 @@ lexer(s cpstring) []Tok {
                 if c in syntaxes == false {
                     break
                 }
-                //for <=, >=, ==, !=, +=, -=, && and ||
+                //for <=, >=, ==, !=, +=, -=, &&, ||, <<
                 if fc == '<' {
-                    if c != '-' && c != '=' {
+                    if c != '-' && c != '=' && c != '<' {
                         break
                     }
                 } else if c == '|' {

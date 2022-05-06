@@ -58,20 +58,20 @@ cmp_rcp(a ptr, b ptr) int32 {
 #define! bsearch(key ptr, arr ptr, l int, s int, cmp ptr) ptr
 #define! sbrk(i int) ptr
 
-struct RCP_threadSearch {
-    from: int
-    to: int
-    p: ptr
-    arr: RCP*
-    l: int
-}
+// struct RCP_threadSearch {
+//     from: int
+//     to: int
+//     p: ptr
+//     arr: RCP*
+//     l: int
+// }
 
-RCPthreadSearch(arg ptr) RCP* {
-    rts RCP_threadSearch* = arg
-    r = bsearch(&rts.p, noCheck(&rts.arr[rts.from]), rts.to - rts.from, sizeof(RCP), cmp_rcp)
-    free(arg)
-    return r
-}
+// RCPthreadSearch(arg ptr) RCP* {
+//     rts RCP_threadSearch* = arg
+//     r = bsearch(&rts.p, noCheck(&rts.arr[rts.from]), rts.to - rts.from, sizeof(RCP), cmp_rcp)
+//     free(arg)
+//     return r
+// }
 
 struct RCPstate {
     RCPs: RCP* = null
@@ -100,11 +100,11 @@ struct RCPstate {
     }
 
     sort() {
-        qsort(noCheck(&this.RCPs[0]), this.len, sizeof(RCP), cmp_rcp)
+        qsort(noCheck(&this->RCPs[0]), this.len, sizeof(RCP), cmp_rcp)
     }
 
     rcpToIndex(r RCP*) uint {
-        i int = <int>r - <int>noCheck(&this.RCPs[0])
+        i int = <int>r - <int>noCheck(&this->RCPs[0])
         i = i / sizeof(RCP)
 
         return i
@@ -123,13 +123,13 @@ struct RCPstate {
 
         done = false
         i = max; for i >= 0 {
-            ar RCP* = noCheck(&this.RCPs[i])
+            ar RCP* = noCheck(&this->RCPs[i])
             if ar.p < r.p {
                 j=max; for j > i {
-                    noCheck(this.RCPs[j+1] = this.RCPs[j])
+                    noCheck(this->RCPs[j+1] = this->RCPs[j])
                     j = j - 1
                 }
-                noCheck(this.RCPs[i+1] = *r)
+                noCheck(this->RCPs[i+1] = *r)
                 done = true
                 break
             }
@@ -138,10 +138,10 @@ struct RCPstate {
 
         if done == false {
             j=max; for j >= 0 {
-                noCheck(this.RCPs[j+1] = this.RCPs[j])
+                noCheck(this->RCPs[j+1] = this->RCPs[j])
                 j = j - 1
             }
-            noCheck(this.RCPs[0] = *r)
+            noCheck(this->RCPs[0] = *r)
         }
         pthread_mutex_unlock(&this.lock)
     }
@@ -150,11 +150,11 @@ struct RCPstate {
         if i >= this.len {
             return null
         }
-        return noCheck(&this.RCPs[i])
+        return noCheck(&this->RCPs[i])
     }
 
     set(i uint, r RCP*) {
-        noCheck(this.RCPs[i] = *r)
+        noCheck(this->RCPs[i] = *r)
         // this.sort()
     }
 
@@ -168,7 +168,7 @@ struct RCPstate {
         }
         
         
-        return bsearch(&p, noCheck(&this.RCPs[0]), this.len, sizeof(RCP), cmp_rcp)
+        return bsearch(&p, noCheck(&this->RCPs[0]), this.len, sizeof(RCP), cmp_rcp)
     }
 
     resize(ns uint) {
@@ -184,7 +184,7 @@ struct RCPstate {
         this.len = this.len - 1
         
         for i < this.len {
-            noCheck(this.RCPs[i] = this.RCPs[i+1])
+            noCheck(this->RCPs[i] = this->RCPs[i+1])
             i = i + 1
         }
         s = this.getSize(30)
@@ -226,9 +226,9 @@ RCP_shutdown() {
             noCheck(printf("\n\n[RCP] Leak detected!\n Summary: %d leaks (including global variables that are not freed at the end of the program).\n If your program is using self-referenced object (such as ropes), recompile-it without the '-rcp' flag.\n", RCPstate.len))
             rcpStatep = &RCPstate
             i=0; for i < RCPstate.len, i++ {
-                r RCP* = noCheck(&rcpStatep.RCPs[i])
+                r RCP* = noCheck(&rcpStatep->RCPs[i])
                 if r.p >= RCPstate.heapMin && r.p <= RCPstate.heapMax {
-                    noCheck(printf("\t%p (%d reference(s))\n", r.p, r.c))
+                    noCheck(printf("\t%p (%d reference(s))\n", r->p, r->c))
                 }
             }
         }

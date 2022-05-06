@@ -23,7 +23,7 @@
     BAH_CC = "gcc"
 }
 //////////////////////BUILD SPECIFIC THINGS//////////////////////
-const BAH_VERSION = "v1.1 (build 83)"
+const BAH_VERSION = "v1.2 (build 84)"
 
 debug = false
 verboseRuntime = false
@@ -32,10 +32,6 @@ isUnsafe = false
 
 execName = "bah"
 isSubObject = false
-
-
-// #include "ithirzty/timer.bah"
-// timer = timer{}
 
 #include "./globals.bah"
 
@@ -68,7 +64,7 @@ main(args []cpstring) int {
     flags.addBool("rcp", "Enables RCP (reference counter) instead of the garbage collector. Warning: if you are using self-reference, this will lead to memory leaks!")
     flags.addBool("fastrcp", "Enables RCP without leak detection. It is recommended to test you programs with the -rcp flag to test for leak detection before using this flag.")
     flags.addBool("debug", "Enables verbose json output.")
-    flags.addBool("verboseRuntime", "Enables verbose runtime, a debug mode of the compiled program.")
+    flags.addBool("verboseRuntime", "Enables verbose runtime, a debug mode of the compiled program. (obsolete)")
     flags.addBool("verboseCC", "Enables verbose C compiler output, USE IN LAST RESORT.")
 
     //cross compiler
@@ -94,6 +90,11 @@ main(args []cpstring) int {
     if flags.isSet("CC") == 1 {
         BAH_CC = flags.get("CC")
         println("C compiler: "+BAH_CC)
+    }
+
+    if flags.isSet("verboseRuntime") {
+        println("-verboseRuntime is obsolete.")
+        exit(1)
     }
 
     RCPlevel = 0

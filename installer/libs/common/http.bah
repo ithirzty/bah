@@ -159,14 +159,14 @@ struct response_buffer {
 
     arr() []char {
         a = []char
-        noCheck(a->data = this.data)
-        noCheck(a->length = this.len)
+        noCheck(a->data = this->data)
+        noCheck(a->length = this->len)
         return a
     }
 
     append(buff cpstring, s int) {
         this.data = memoryRealloc(this.data, this.len + s)
-        memcpy(noCheck(this.data + this.len), buff, s)
+        memcpy(noCheck(this->data + this->len), buff, s)
         this.len = this.len + s
     }
 

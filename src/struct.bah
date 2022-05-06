@@ -114,3 +114,30 @@ searchStructMemb(name cpstring, s cStruct*, elems Elems*) structMemb* {
     
     return searchStructMemb(name, es, elems)
 }
+
+#define searchFunc(n cpstring, e Elems*, c bool) func*
+#define parseFnType(n string) func*
+
+searchStructMethod(name cpstring, s cStruct*, elems Elems*) func* {
+    if s == null {
+        return null
+    }
+
+    fn = searchFunc(s.name+"__"+name, elems, true)
+    if fn != null {
+        return fn
+    }
+
+    i=0; for i < len(s.members), i++ {
+        m = s.members[i]
+        if m.name == name {
+            fn = parseFnType(string(m.type))
+            fn.name = name
+            return fn
+        }
+    }
+
+    s = searchStruct(s.extendedFrom, elems)
+
+    return searchStructMethod(name, s, elems)
+}

@@ -113,7 +113,8 @@ intTypes = []cpstring{
     "int",
     "int32",
     "uint",
-    "uint32"
+    "uint32",
+    "bool"
 }
 
 floatTypes = []cpstring{

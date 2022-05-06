@@ -250,7 +250,6 @@ parseFnType(cvt string) func* {
     return nf
 }
 
-
 searchFunc(name cpstring, elems Elems*, inclCurr bool) func* {
 //     recorder = timer.record("searchFunc")
     ogName = name
@@ -309,6 +308,14 @@ searchFunc(name cpstring, elems Elems*, inclCurr bool) func* {
     nf.returns = pfn.returns
     nf.args = pfn.args
     return nf
+}
+
+searchFuncByToken(t Tok, elems Elems*) func* {
+    if t.bahRef != null {
+        return t.bahRef
+    }
+    fnName = splitStringBefore(string(t.cont), "(")
+    return searchFunc(fnName, elems, true)
 }
 
 #define RCPavailable() bool

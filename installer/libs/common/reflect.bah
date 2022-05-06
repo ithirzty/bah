@@ -31,7 +31,7 @@ struct reflectElement {
     //This is used to get a pointer to the element when it
     calculateOffset(origin ptr) ptr {
         base cpstring = origin
-        return noCheck(base + this.offset)
+        return noCheck(base + this->offset)
     }
 }
 

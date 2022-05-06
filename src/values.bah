@@ -1,0 +1,883 @@
+valueFunc(fn func*, parent variable*, l []Tok, i int, ltp lineType, elems Elems*) int {
+    tokPos = i
+
+    //if not defined func, go find it before in the line
+    if fn == null {
+        if i > 0 {
+            tokPos = i-1
+            pt = l[tokPos]
+            if pt.type == TOKEN_TYPE_VAR {
+                delete(l, tokPos)
+                fn = searchFunc(pt.cont, elems, true)
+                if fn == null {
+                    throwErr(&pt, "Unknown func {TOKEN}.")
+                }
+            } else {
+                tokPos++
+            }
+        } else {
+            return i
+        }
+    }
+
+    fnt = l[tokPos]
+    // delete(l, tokPos)
+
+
+    //only have parenthesis
+    if fn == null {
+        nbEncls = 1
+        memory = []Tok
+        i = tokPos+1
+        for i < len(l) {
+            t = l[i]
+            delete(l, i)
+            if t.cont == "(" || t.cont == "{" || t.cont == "[" {
+                nbEncls++
+            } else if t.cont == ")" || t.cont == "}" || t.cont == "]" {
+                nbEncls--
+                if nbEncls == 0 {
+                    break
+                }
+            }
+            memory[len(memory)] = t
+        }
+        memort = prePross(memory, <lineType>-1, elems)
+        ft = memory[0]
+        fnt.cont = "("
+        fnt.isOper = true
+        fnt.isValue = true
+        fnt.bahType = getTypeFromToken(&ft, true, elems)
+        j=0; for j < len(memory), j++ {
+            t = memory[j]
+            fnt.cont = fnt.cont + t.cont
+        }
+        fnt.cont += ")"
+        l[tokPos] = fnt
+        return tokPos
+    }
+
+    //making the return token
+    fnt.cont = fn.name + "("
+    if fn.returns != null && fn.returns.type != "" {
+        fnt.isValue = true
+        fnt.bahType = fn.returns.type
+    }
+    fnt.isFunc = true
+    fnt.type = TOKEN_TYPE_FUNC
+
+    //pre-processing arguments
+    nbEncls = 1
+    memory = []Tok
+    i = tokPos+1
+    for i < len(l) {
+        t = l[i]
+        delete(l, i)
+        if t.cont == "(" || t.cont == "{" || t.cont == "[" {
+            nbEncls++
+        } else if t.cont == ")" || t.cont == "}" || t.cont == "]" {
+            nbEncls--
+            if nbEncls == 0 {
+                break
+            }
+        }
+        memory[len(memory)] = t
+    }
+
+    //noCheck (for c lang in bah)
+    if fn.name == "noCheck" {
+        fnt.cont = ""
+        fnt.isOper = true
+        fnt.isValue = true
+        fnt.bahType = "ptr"
+        j=0; for j < len(memory), j++ {
+            t = memory[j]
+            fnt.cont = fnt.cont + t.cont
+        }
+        l[tokPos] = fnt
+        return tokPos
+    }
+    //special functions
+    currLine = "\""+compilerState.currentFile + ":" + intToStr(fnt.line)+"\""
+    if fn.name == "panic" {
+        memory[len(memory)] = Tok {
+            type: TOKEN_TYPE_SYNTAX
+            cont: ","
+            line: fnt.line
+        }
+        memory[len(memory)] = Tok {
+            type: TOKEN_TYPE_STR
+            cont: currLine
+            line: fnt.line
+        }
+        fn = searchFunc("__BAH_panic", elems, true)
+        fnt.cont = fn.name + "("
+    } else if fn.name == "__dumpSymbols" {
+        symbols = []variable*
+        j=0; for j < len(elems.vars), j++ {
+            v = elems.vars[j]
+            if v.isConst == false {
+                symbols[len(symbols)] = v
+            }
+        }
+        tmpV = new variable {
+            name: genCompilerVar()
+            type: "[]reflectElement"
+            isArray: true
+        }
+        decls = ""
+        j=0; for j < len(symbols), j++ {
+            v = symbols[j]
+            vname = v.name
+            if strCount(v.type, "*") == 0 {
+                vname = "&"+v.name
+            }
+            tmpT = Tok{
+                type: TOKEN_TYPE_VAR
+                cont: vname
+                bahType: v.type
+                isValue: true
+            }
+            tmpT = parseReflect(tmpT, v.type, elems, true, v.name, "0")
+            decls += tmpV.name+"->data["+intToStr(j)+"] = " + tmpT.cont + ";\n"
+        } 
+        elems.vars[len(elems.vars)] = tmpV
+        OUTPUT = OUTPUT + rope("
+        array(struct reflectElement)* "+tmpV.name+" = memoryAlloc(sizeof(array(struct reflectElement)));
+        "+tmpV.name+"->data = memoryAlloc(sizeof(struct reflectElement) * "+intToStr(len(symbols))+");
+        "+tmpV.name+"->length = "+intToStr(len(symbols))+";
+        "+tmpV.name+"->elemSize = sizeof(struct reflectElement);
+        "+decls+"
+        ")
+        memory[0] = Tok{
+            type: TOKEN_TYPE_VAR
+            cont: tmpV.name
+            line: fnt.line
+            isValue: true
+        }
+    } else if fn.name == "breakPoint" {
+        memory = []Tok{
+            Tok{
+                type: TOKEN_TYPE_VAR
+                cont: "__dumpSymbols"
+                line: fnt.line
+            },
+            Tok{
+                type: TOKEN_TYPE_SYNTAX
+                cont: "("
+                line: fnt.line
+            },
+            Tok{
+                type: TOKEN_TYPE_SYNTAX
+                cont: ")"
+                line: fnt.line
+            }
+        }
+        memory = prePross(memory, LINE_TYPE_FN_CALL, elems)
+        memory[len(memory)] = Tok{
+            type: TOKEN_TYPE_SYNTAX
+            cont: ","
+            line: fnt.line
+        }
+        memory[len(memory)] = Tok{
+            type: TOKEN_TYPE_STR
+            cont: currLine
+            line: fnt.line
+        }
+        fn = searchFunc("breakPoint__inner", elems, true)
+        fnt.cont = fn.name + "("
+    } else if fn.name == "sizeof" {
+        tp = ""
+        j=0; for j < len(memory), j++ {
+            tmpT = memory[j]
+            tp += tmpT.cont
+        }
+        cType = getCType(tp, elems)
+        fnt.cont += cType.str()+")"
+        fnt.type = TOKEN_TYPE_FUNC
+        fnt.isFunc = true
+        fnt.bahType = "int"
+        fnt.bahRef = fn
+        l[tokPos] = fnt
+        return tokPos
+    }
+
+    //processing memory (arguments)
+    if len(memory) > 0 {
+        memory = prePross(memory, <lineType>-1, elems)
+    }
+
+    argIndex = 0
+    if parent != null { //adding parent var for method calls
+        amp = "&"
+        if isRCPpointerType(parent.type) {
+            amp = ""
+        }
+        fnt.cont += amp + parent.name
+        argIndex++
+        if len(fn.args) > argIndex {
+            fnt.cont += ","
+        }
+    }
+    // parsing arguments
+    j=0; for j < len(memory), j++ {
+        t = memory[j]
+        if argIndex == len(fn.args) {
+            throwErr(&t, "Too many arguments, expected ')' not {TOKEN}.")
+        }
+        arg = fn.args[argIndex]
+        tt = getTypeFromToken(&t, true, elems)
+
+        if arg.type == "reflectElement" && tt != "reflectElement" {
+            t = parseReflect(t, tt, elems, false, t.cont, "0")
+            tt = "reflectElement"
+        }
+
+        if compTypes(arg.type, tt) == false {
+            throwErr(&t, "Cannot use {TOKEN} ("+tt+") as "+arg.type+" in function call.")
+        }
+
+        if RCPavailable() == true && ltp == LINE_TYPE_VAR && t.type == TOKEN_TYPE_VAR && t.isOper == false && currSetVar != null && t.cont == currSetVar.name && isRCPtype(currSetVar.type, elems) {
+            OUTPUT += incrVar(currSetVar, elems)
+        }
+
+        if t.type == TOKEN_TYPE_FUNC {
+            afn = searchFuncByToken(t, elems)
+            if afn != null && isRCPtype(afn.returns.type, elems) == true {
+                t.cont = registerRCPvar(afn.returns.type, t.cont, elems)
+            }
+        }
+
+        fnt.cont += t.cont
+
+        argIndex++
+
+        if j+1 < len(memory) {
+            j++
+            t = memory[j]
+            if t.cont != "," {
+                throwErr(&t, "Need separator between arguments, not {TOKEN}.")
+            }
+            fnt.cont += ","
+        }
+
+    }
+
+    if argIndex != len(fn.args) {
+        lt = l[i]
+        throwErr(&lt, "Not enough argument, call closed by {TOKEN}.")
+    }
+
+    fnt.bahRef = fn
+    fnt.cont += ")"
+    l[tokPos] = fnt
+    return tokPos
+
+}
+
+valueStruct(l []Tok, i int, ltp lineType, elems Elems*) int {
+    tokPos = i-1
+    delete(l, i)
+
+    //is prev token a struct type
+    t = l[i-1]
+    tt = getTypeFromToken(&t, true, elems)
+    s = searchStruct(tt, elems)
+    if s == null {
+        throwErr(&t, "Cannot use {TOKEN} as structure.")
+    }
+
+    //is next token a member name
+    nt = l[i]
+    delete(l, i)
+    if nt.isValue == false {
+        throwErr(&nt, "Cannot use {TOKEN} as member.")
+    }
+
+    //get appropriate C-separator
+    sep = "."
+    if isRCPpointerType(tt) {
+        sep = "->"
+    }
+
+    //member is a method
+    if i < len(l) {
+        ntt = l[i]
+        if ntt.cont == "(" {
+            parent variable*
+            if t.type == TOKEN_TYPE_VAR == true {
+                parent = searchVar(t.cont, elems)
+            } else {
+                tmpV = genCompilerVar()
+                cType = getCType(tt, elems)
+                OUTPUT += rope("
+                "+cType.str()+" "+tmpV+" = "+t.cont+";
+                ")
+                t.cont = tmpV
+                parent = new variable {
+                    name: tmpV
+                    type: tt
+                }
+                if RCPavailable() {
+                    elems.vars[len(elems.vars)] = parent
+                }
+            }
+            fn = searchStructMethod(nt.cont, s, elems)
+            nfn = new func
+            *nfn = *fn
+            nfn.name = nt.cont
+            
+            valueFunc(nfn, parent, l, i, ltp, elems)
+            fnt = l[i]
+            delete(l, i)
+            fnt.cont = t.cont + sep + fnt.cont
+            l[tokPos] = fnt
+            return tokPos
+        }
+    }
+
+    //member is a variable
+    m = searchStructMemb(nt.cont, s, elems)
+    if m == null {
+        throwErr(&nt, "Unknown struct member {TOKEN} in struct '"+s.name+"'.")
+    }
+    t.cont += sep + nt.cont
+    t.bahType = m.type
+
+    l[tokPos] = t
+    return tokPos
+}
+
+valueArr(l []Tok, i int, ltp lineType, elems Elems*) int {
+    tokPos = i-1
+    //get previous value
+    pt = l[tokPos]
+    delete(l, tokPos)
+    if pt.isValue == false {
+        throwErr(&pt, "Cannot use {TOKEN} as value (array).")
+    }
+    ptt = string(getTypeFromToken(&pt, true, elems))
+
+    //make return token
+    t = pt
+    t.isValue = true
+
+    //pre-processing index value
+    nbEncls = 1
+    memory = []Tok
+    i = tokPos+1
+    for i < len(l) {
+        tmpT = l[i]
+        delete(l, i)
+        if tmpT.cont == "(" || tmpT.cont == "{" || tmpT.cont == "[" {
+            nbEncls++
+        } else if tmpT.cont == ")" || tmpT.cont == "}" || tmpT.cont == "]" {
+            nbEncls--
+            if nbEncls == 0 {
+                break
+            }
+        }
+        memory[len(memory)] = tmpT
+    }
+    memory = prePross(memory, <lineType>-1, elems)
+    
+    //handle empty index
+    if len(memory) == 0 {
+        throwErr(&pt, "Cannot access empty index of array {TOKEN}.")
+    }
+
+    // parsing substitution values
+    split = false
+    from = ""
+    to = ""
+    if len(memory) > 1 {
+        split = true
+        first = memory[0]
+        if first.cont == ":" {
+            second = memory[1]
+            secondt = getTypeFromToken(&second, true, elems)
+            if compTypes(secondt, "int") == false {
+                throwErr(&second, "Cannot use {TOKEN} as index (int).")
+            }
+            from = "0"
+            to = second.cont
+        } else {
+            second = memory[1]
+            if second.cont == ":" {
+                if len(memory) == 2 {
+                    firstt = getTypeFromToken(&first, true, elems)
+                    if compTypes(firstt, "int") == false {
+                        throwErr(&first, "Cannot use {TOKEN} as index (int).")
+                    }
+                    from = first.cont
+                    to = ""
+                } else if len(memory) == 3 {
+                    firstt = getTypeFromToken(&first, true, elems)
+                    if compTypes(firstt, "int") == false {
+                        throwErr(&first, "Cannot use {TOKEN} as index (int).")
+                    }
+                    third = memory[1]
+                    thirdt = getTypeFromToken(&third, true, elems)
+                    if compTypes(thirdt, "int") == false {
+                        throwErr(&third, "Cannot use {TOKEN} as index (int).")
+                    }
+                    from = first.cont
+                    to = third.cont
+                } else {
+                    throwErr(&second, "Cannot substitute by more than 2 values.")
+                }
+            }
+        }
+    }
+
+    if ptt.hasPrefix("[]") { //is array
+        if split == false {
+            index = memory[0]
+            if compTypes(getTypeFromToken(&index, true, elems), "int") == false {
+                throwErr(&index, "Cannot use {TOKEN} as array index (int).")
+            }
+            t.cont = pt.cont+"->data["+index.cont+"]"
+            ptt.trimLeft(2)
+            t.bahType = ptt.str()
+        } else {
+            t.bahType = ptt.str()
+            if to == "" {
+                to = pt.cont+"->length"
+            }
+            t.cont = "arraySubstitute("+pt.cont+", "+from+", "+to+")"
+        }
+
+    } else if ptt.hasPrefix("buffer:") { //is a buffer
+        if split == false {
+            t.bahType = "char"
+            index = memory[0]
+            t.cont = pt.cont+"["+index.cont+"]"
+        } else {
+            t.bahType = "cpstring"
+            if to == "" {
+                to = "strlen("+pt.cont+")"
+            }
+            t.cont = "cpstringSubsitute("+pt.cont+", "+from+", "+to+")"
+        }
+    } else if ptt.hasPrefix("map:") { //is a map
+        if split == true {
+            throwErr(&pt, "Cannot do substitution on a map {TOKEN}.")
+        }
+        ptt.trimLeft(4)
+        elemType = getCType(ptt.str(), elems)
+        index = memory[0]
+        if tokPos == 0 && ltp == LINE_TYPE_VAR { //setting map value
+            tmpV = new variable {
+                name: genCompilerVar()
+                type: ptt.str()
+            }
+            elems.vars[len(elems.vars)] = tmpV
+            if isGlobal() {
+                INIT += rope(elemType.str() + " " + tmpV.name+";\n")
+            } else {
+                OUTPUT += rope(elemType.str() + " " + tmpV.name+";\n")
+            }
+            if isRCPpointerType(ptt.str()) {
+                NEXT_LINE = t.cont + "->set("+pt.cont+", "+index.cont+", "+tmpV.name+");\n"
+            } else {
+                NEXT_LINE = t.cont + "->setAny("+pt.cont+", "+index.cont+", &"+tmpV.name+", sizeof("+elemType.str()+"));\n"
+            }
+            t.cont = tmpV.name
+            t.bahType = ptt.str()
+        } else { //getting map value
+            t.isFunc = true
+            if isRCPpointerType(ptt.str()) {
+                t.cont += "->get("+t.cont+", "+index.cont+")"
+            } else {
+                tmpV = genCompilerVar()
+                res = rope(elemType.str() + "* "+tmpV+"="+pt.cont+"->get("+pt.cont+", "+index.cont+");\n")
+                pt.cont = "("+elemType.str()+")(*"+tmpV+")"
+                if isGlobal() {
+                    INIT += res
+                } else {
+                    OUTPUT += res
+                }
+            }
+            t.bahType = ptt.str()
+        }
+
+    } else if ptt.str() == "cpstring" { // is a string
+        t.isFunc = true
+        t.type = TOKEN_TYPE_FUNC
+        if split == false {
+            t.bahType = "char"
+            index = memory[0]
+            t.cont = pt.cont+"["+index.cont+"]"
+        } else {
+            if to == "" {
+                to = "strlen("+pt.cont+")"
+            }
+            t.cont = "cpstringSubsitute("+pt.cont+", "+from+", "+to+")"
+
+        }
+    } else {
+        throwErr(&pt, "Cannot use {TOKEN} ("+ptt.str()+") as array.")
+    }
+
+    t.isValue = true    
+    l[tokPos] = t
+
+    return tokPos
+}
+
+valueBool(l []Tok, i int, elems Elems*) int {
+
+    tokPos = i-2
+
+    // get previous value
+    pt = l[tokPos]
+    delete(l, tokPos)
+    ptt = getTypeFromToken(&pt, true, elems)
+
+    t = l[tokPos]
+    delete(l, tokPos)
+
+    // if t.cont == "||" || t.cont == "&&" {
+    //     if compTypes(ptt, "bool") == false {
+    //         throwErr(&pt, "Cannot compare {TOKEN} as bool.")
+    //     }
+    // }
+
+    //checking if two values are the same type
+    nt = l[tokPos]
+    ntt = getTypeFromToken(&nt, true, elems)
+    if t.cont == "in" {
+        arrT = string(ntt)
+        if arrT.hasPrefix("[]") == 0 {
+            throwErr(&nt, "Cannot use {TOKEN} ("+ntt+") as array.")
+        }
+        arrT.trimLeft(2)
+        if compTypes(ptt, arrT.str()) == false {
+            throwErr(&pt, "Cannot search for {TOKEN} ("+ptt+") in "+ntt+".")
+        }
+        compVar = genCompilerVar()
+        comp = ""
+        if ptt == "cpstring" {
+            comp = nt.cont+"->data[i] != 0 && strcmp("+nt.cont+"->data[i], "+pt.cont+") == 0"
+        } else {
+            comp = nt.cont+"->data[i] == "+pt.cont
+        }
+        OUTPUT += rope("
+        char "+compVar+" = 0;
+        for(int i="+nt.cont+"->length-1; i!=-1;i--) {
+            if ("+comp+") {
+                "+compVar+"=1;
+                break;
+            };
+        }
+        ")
+        pt.cont = compVar
+    } else {
+        if compTypes(ptt, ntt) == false {
+            throwErr(&nt, "Cannot compare {TOKEN} ("+ntt+") with type "+ptt+".")
+        }
+        if ptt == "cpstring" {
+            if t.cont == "==" {
+                pt.cont = "(strcmp("+pt.cont+", "+nt.cont+") == 0)"
+
+            } else if t.cont == "!=" {
+                pt.cont = "(strcmp("+pt.cont+", "+nt.cont+") != 0)"
+            } else if t.cont == ">" {
+                pt.cont = "(strlen("+pt.cont+") > srtlen("+nt.cont+"))"
+            } else if t.cont == "<" {
+                pt.cont = "(strlen("+pt.cont+") < srtlen("+nt.cont+"))"
+            } else if t.cont == ">=" {
+                pt.cont = "(strlen("+pt.cont+") >= srtlen("+nt.cont+"))"
+            } else if t.cont == "<=" {
+                pt.cont = "(strlen("+pt.cont+") <= srtlen("+nt.cont+"))"
+            }
+        } else {
+            pt.cont = "(" + pt.cont + t.cont + nt.cont + ")"
+        }
+    }
+
+
+    pt.isOper = true
+    pt.bahType = "bool"
+    pt.isValue = true
+    l[tokPos] = pt
+    return tokPos
+}
+
+
+valueOper(l []Tok, i int, elems Elems*) int {
+    tokPos = i - 2
+    //get previous value
+    pt = l[tokPos]
+    delete(l, tokPos)
+    ptt = getTypeFromToken(&pt, true, elems)
+
+    //get operator
+    t = l[tokPos]
+    delete(l, tokPos)
+
+    //get second value
+    nt = l[tokPos]
+    
+    //for increment and decrement
+    if nt.cont == t.cont {
+        pt.isOper = true
+        pt.cont += t.cont + t.cont
+        l[tokPos] = pt
+        return tokPos
+    }
+
+    //check if the two values are the same type
+    ntt = getTypeFromToken(&nt, true, elems)
+    if compTypes(ptt, ntt) == false {
+        throwErr(&nt, "Cannot compare {TOKEN} ("+ntt+") as "+ptt+".")
+    }
+
+    //parse string concatenation
+    if ptt == "cpstring" {
+        lens = ""
+        totStrLen = "1+strLen_0+strLen_1"
+        cats = rope("")
+        rstr = registerRCPvar("cpstring", "null", elems) //result var
+        
+
+        //first token
+        if pt.isFunc == true {
+            pt.cont = registerRCPvar("cpstring", pt.cont, elems)
+        }
+        lens += "long int strLen_0 = strlen("+pt.cont+");\n"
+        cats += rope("
+            memcpy("+rstr+"+currStrOff, "+pt.cont+", strLen_0);
+            currStrOff += strLen_0;
+        ")
+        //second token
+        if nt.isFunc == true {
+            nt.cont = registerRCPvar("cpstring", nt.cont, elems)
+        }
+        lens += "long int strLen_1 = strlen("+nt.cont+");\n"
+        cats += rope("
+            memcpy("+rstr+"+currStrOff, "+nt.cont+", strLen_1);
+            currStrOff += strLen_1;
+        ")
+        
+        //concatenate all strings at once to reduce memory allocations
+        if tokPos -1 >= 0 {
+            nat = l[tokPos-1]
+            if nat.cont == "+" {
+                delete(l, tokPos-1)
+                i = tokPos-2
+                nb = 2
+                for i >= 0, i-- {
+                    tokPos = i
+                    currStrTk = l[i]
+                    //type guard
+                    tt = getTypeFromToken(&currStrTk, true, elems)
+                    if compTypes(tt, "cpstring") == false {
+                        throwErr(&currStrTk, "Cannot concatenate cpstring with {TOKEN} ("+tt+").")
+                    }
+                    //is token is a function call, declare it as a variable to only call it once
+                    if currStrTk.isFunc == true {
+                        currStrTk.cont = registerRCPvar("cpstring", currStrTk.cont, elems)
+                    }
+
+                    //add length for allocating result var
+                    is = intToStr(nb)
+                    nb++
+                    lens += "long int strLen_"+is+" = strlen("+currStrTk.cont+");\n"
+                    totStrLen += "+strLen_"+is
+                    //add to concatenation list
+                    cats = rope("
+                    memcpy("+rstr+"+currStrOff, "+currStrTk.cont+", strLen_"+is+");
+                    currStrOff += strLen_"+is+";
+                    ") + cats
+
+                    delete(l, i)
+                    if i-1 >= 0 {
+                        i--
+                        t = l[i]
+                        if t.cont != "+" {
+                            if t.cont in signs {
+                                throwErr(&t, "Can only do concatenation on cpstring, not {TOKEN}.")
+                            } else {
+                                break
+                            }
+                        }
+                        delete(l, i) 
+                    }
+                }
+            } else if inArrayStr(nat.cont, signs) {
+                throwErr(&nat, "Can only do concatenation on cpstring, not {TOKEN}.")
+            }
+        }
+
+        //build concatenation code
+        res = rope("
+        {
+            long int currStrOff = 0;
+            "+lens+";                            
+            "+rstr+" = memoryAllocSTR("+totStrLen+");
+            ")+cats+rope("
+        }")
+
+        if isGlobal() {
+            INIT += res
+        } else {
+            OUTPUT += res
+        }
+
+        pt.cont = rstr
+
+    } else {
+        sep = "."
+        amp = "&"
+
+        if isRCPpointerType(ptt) {
+            sep = "->"
+            amp = ""
+        }
+
+        s = searchStruct(ptt, elems)
+        if s != null {
+            mName = ""
+            if t.cont == "+" {
+                mName = "add"
+            } else if t.cont == "-" {
+                mName = "sub"
+            } else if t.cont == "*" {
+                mName = "mult"
+            } else if t.cont == "/" {
+                mName = "div"
+            } else {
+                throwErr(&pt, "Undefined operation on struct {TOKEN} ("+ptt+").")
+            }
+            methd = searchStructMemb(mName, s, elems)
+            if methd != null && methd.isFn == true {
+                pt.cont += sep + mName + "(" +amp+pt.cont + ", " + nt.cont + ")"
+                pt.isFunc = true
+            }
+        } else {
+            pt.cont += t.cont + nt.cont
+        }
+
+    }
+
+    pt.isOper = true
+    l[tokPos] = pt
+    return tokPos
+}
+
+valueSendChan(l []Tok, i int, elems Elems*) int {
+    posTok = i-2
+    //value to send
+    nt = l[posTok]
+    delete(l, posTok)
+    //->
+    delete(l, posTok)
+
+    //channel
+    pt = l[posTok]
+    delete(l, posTok)
+
+    ntt = getTypeFromToken(&nt, true, elems)
+
+    ptt = string(getTypeFromToken(&pt, true, elems))
+    if ptt.hasPrefix("chan:") == 0 {
+        throwErr(&pt, "Cannot use {TOKEN} ("+ptt.str()+") as chan.")
+    }
+    ptt.trimLeft(5)
+
+    if isGlobal() {
+        throwErr(&pt, "Cannot send to channel {TOKEN} of a function.")
+    }
+
+    if compTypes(ntt, ptt.str()) == false {
+        throwErr(&nt, "Cannot send {TOKEN} ("+ntt+") through chan:"+ptt.str()+".")
+    }
+
+    if isRCPpointerType(ptt.str()) {
+        OUTPUT += rope(pt.cont+"->send("+pt.cont+", "+nt.cont+");\n")
+    } else {
+        ct = getCType(ntt, elems)
+        tmpV = genCompilerVar()
+        OUTPUT += rope("
+        "+ct.str()+" "+tmpV+" = "+nt.cont+";
+        "+pt.cont+"->sendAny("+pt.cont+", &"+tmpV+", sizeof("+tmpV+"));
+        ")
+    }
+
+    return posTok
+}
+
+valueChan(l []Tok, i int, elems Elems*) int {
+    posTok = i-1
+    delete(l, posTok) //->
+
+    //channel token
+    nt = l[posTok]
+    
+    ntt = string(getTypeFromToken(&nt, true, elems))
+    if ntt.hasPrefix("chan:") == 0 {
+        throwErr(&nt, "Cannot use {TOKEN} ("+ntt.str()+") as chan.")
+    }
+
+    ntt.trimLeft(5)
+
+    if isGlobal() {
+        throwErr(&nt, "Cannot receive from chan {TOKEN} outside a function body.")
+    }
+
+    tmpV = ""
+
+    ct = getCType(ntt.str(), elems)
+    if isRCPpointerType(ntt.str()) {
+        nt.cont = "("+ct.str()+")"+nt.cont+"->receive("+nt.cont+")"
+    } else {
+        if RCPavailable() {
+            tmpV = registerRCPvar(ntt.str()+"*", "("+ct.str()+"*)"+nt.cont+"->receive("+nt.cont+")", elems)
+            nt.cont = "*"+tmpV
+        } else {
+            nt.cont = "*("+ct.str()+"*)"+nt.cont+"->receive("+nt.cont+")"
+        }
+    }
+
+    nt.type = TOKEN_TYPE_FUNC
+    nt.isFunc = true
+    nt.isValue = true
+    nt.bahType = ntt.str()
+
+    l[posTok] = nt
+
+    return posTok
+}
+
+isSmallValue(l []Tok, i int) bool {
+    t = l[i]
+    if t.type == TOKEN_TYPE_CAST || t.cont == "(" {
+        return false
+    } else if t.isValue == false {
+        throwErr(&t, "Cannot use {TOKEN} as value.")
+    }
+    if i+1 < len(l) {
+        nt = l[i+1]
+        if nt.cont == "[" || nt.cont == "." || nt.cont == "(" {
+            return false
+        }
+    }
+    return true
+}
+
+isValue(l []Tok, i int) bool {
+    t = l[i]
+    if t.type == TOKEN_TYPE_CAST || t.cont == "(" {
+        return false
+    } else if t.isValue == false {
+        throwErr(&t, "Cannot use {TOKEN} as value.")
+    }
+    if i+1 < len(l) {
+        nt = l[i+1]
+        if nt.cont == "[" || nt.cont == "." || nt.cont == "(" || inArrayStr(nt.cont, signs) {
+            return false
+        }
+    }
+    return true
+}
