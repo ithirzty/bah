@@ -129,9 +129,9 @@ searchStructMethod(name cpstring, s cStruct*, elems Elems*) func* {
     }
 
     i=0; for i < len(s.members), i++ {
-        m = s.members[i]
-        if m.name == name {
-            fn = parseFnType(string(m.type))
+        // m = s.members[i]
+        if s.members[i].name == name {
+            fn = parseFnType(string(s.members[i].type))
             fn.name = name
             return fn
         }

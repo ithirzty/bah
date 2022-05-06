@@ -2741,7 +2741,7 @@ addRCPvars(l []Tok, ltp lineType, elems Elems*) {
     for i < len(l) {
         t = l[i]
         if t.type == TOKEN_TYPE_VAR && t.isOper == false {
-            v = searchVar(t.cont, elems)
+            v = searchVarByToken(t, elems)
             if v != null {
                 compilerState.RCPvars[len(compilerState.RCPvars)] = v
             }

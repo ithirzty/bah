@@ -343,6 +343,10 @@ valueStruct(l []Tok, i int, ltp lineType, elems Elems*) int {
     }
     t.cont += sep + nt.cont
     t.bahType = m.type
+    t.bahRef = new variable{
+        name: t.cont
+        type: t.bahType
+    }
 
     l[tokPos] = t
     return tokPos

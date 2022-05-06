@@ -159,6 +159,13 @@ searchVar(name cpstring, elems Elems*) variable* {
 
 }
 
+searchVarByToken(t Tok, elems Elems*) variable* {
+    if t.bahRef != null {
+        return t.bahRef
+    }
+    return searchVar(t.cont, elems)
+}
+
 setCType(v variable*, elems Elems*) cpstring {
         tp = getCType(v.type, elems)
         t = tp.str()
