@@ -212,8 +212,14 @@ __BAH_panic(e cpstring, line cpstring) {
 	cleanShutDown()
 }
 
+onMemoryError function()cpstring = null
+
 __Bah_segfault_handle(sig int) {
-	__BAH_panic("Memory error (segfault).", "???")
+	res = ""
+	if onMemoryError != null {
+		res = onMemoryError()
+	}
+	__BAH_panic("Memory error (segfault).\n"+res, "???")
 }
 
 __Bah_init_segfaultHandle() bool {
@@ -222,6 +228,7 @@ __Bah_init_segfaultHandle() bool {
 }
 
 __Bah_init_segfaultHandle_OK = __Bah_init_segfaultHandle()
+
 
 //Used for recovering from a panic instead exitting the program.
 //It needs a  pointer to a non null cpstring which will get the message.

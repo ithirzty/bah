@@ -1435,6 +1435,7 @@ void * newPtr = memoryRealloc("+nstr+"->data, (nLength+50)*sizeof("+elemTypeStr+
                 }
             } else {
                 if needsDefine == true {
+                    elems.defined[len(elems.defined)] = v.name
                     if isGlobal() {
                         INIT += rope("#define "+v.name+" "+code+"\n")
                     } else {

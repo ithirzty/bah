@@ -76,6 +76,10 @@ beginRCPscopeLeaky(elems Elems*) {
 }
 
 endRCPscope(elems Elems*, excl []variable*) {
+    i=0; for i < len(elems.defined), i++ {
+        OUTPUT += rope("#undef "+elems.defined[i]+"\n")
+    }
+
     if RCPavailable() == false {
         return
     }
@@ -91,6 +95,9 @@ endRCPscope(elems Elems*, excl []variable*) {
 }
 
 endRCPscopeLeaky(elems Elems*, excl variable*) {
+    i=0; for i < len(elems.defined), i++ {
+        OUTPUT += rope("#undef "+elems.defined[i]+"\n")
+    }
     if RCPavailable() == false {
         return
     }

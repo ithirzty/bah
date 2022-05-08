@@ -23,7 +23,7 @@
     BAH_CC = "gcc"
 }
 //////////////////////BUILD SPECIFIC THINGS//////////////////////
-const BAH_VERSION = "v1.2 (build 85)"
+const BAH_VERSION = "v1.2 (build 86)"
 
 debug = false
 verboseRuntime = false
@@ -42,8 +42,19 @@ isSubObject = false
 #include "./declarative.bah"
 
 
+memErrHandle() cpstring {
+    r = "file: "+compilerState.currentFile
+    if currentFn != null {
+        r += "\nfunction: "+currentFn.name+"()"
+    }
+    return r
+}
+
 main(args []cpstring) int {
     // timer.open("res.json")
+
+    onMemoryError = memErrHandle
+    
     execName = args[0] //for calling a sub-process for compiling imports
 
     if execName[0] == '.' || execName[0] == '/' {
