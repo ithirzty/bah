@@ -2,12 +2,14 @@ valueFunc(fn func*, parent variable*, l []Tok, i int, ltp lineType, elems Elems*
     tokPos = i
 
     //if not defined func, go find it before in the line
+    errPos = -1
     if fn == null {
         if i > 0 {
             tokPos = i-1
             pt = l[tokPos]
             if pt.type == TOKEN_TYPE_VAR {
                 delete(l, tokPos)
+                errPos = pt.pos
                 fn = searchFunc(pt.cont, elems, true)
                 if fn == null {
                     throwErr(&pt, "Unknown func {TOKEN}.")
@@ -21,7 +23,9 @@ valueFunc(fn func*, parent variable*, l []Tok, i int, ltp lineType, elems Elems*
     }
 
     fnt = l[tokPos]
-    // delete(l, tokPos)
+    if errPos != -1 {
+        fnt.pos = errPos
+    }
 
 
     //only have parenthesis
@@ -29,8 +33,10 @@ valueFunc(fn func*, parent variable*, l []Tok, i int, ltp lineType, elems Elems*
         nbEncls = 1
         memory = []Tok
         i = tokPos+1
+        fnt.ogCont = "("
         for i < len(l), i++ {
             t = l[i]
+            fnt.ogCont += t.ogCont
             if t.cont == "(" || t.cont == "{" || t.cont == "[" {
                 nbEncls++
             } else if t.cont == ")" || t.cont == "}" || t.cont == "]" {
@@ -70,8 +76,10 @@ valueFunc(fn func*, parent variable*, l []Tok, i int, ltp lineType, elems Elems*
     nbEncls = 1
     memory = []Tok
     i = tokPos+1
+    fnt.ogCont = fn.name+"("
     for i < len(l), i++ {
         t = l[i]
+        fnt.ogCont += t.ogCont
         if t.cont == "(" || t.cont == "{" || t.cont == "[" {
             nbEncls++
         } else if t.cont == ")" || t.cont == "}" || t.cont == "]" {
@@ -334,6 +342,8 @@ valueStruct(l []Tok, i int, ltp lineType, elems Elems*) int {
             valueFunc(nfn, parent, l, i, ltp, elems)
             fnt = l[i]
             delete(l, i)
+            fnt.ogCont = t.ogCont + "." + nt.ogCont
+            fnt.pos = t.pos
             fnt.cont = t.cont + sep + fnt.cont
             l[tokPos] = fnt
             return tokPos
@@ -346,6 +356,7 @@ valueStruct(l []Tok, i int, ltp lineType, elems Elems*) int {
         throwErr(&nt, "Unknown struct member {TOKEN} in struct '"+s.name+"'.")
     }
     t.cont += sep + nt.cont
+    t.ogCont += "."+nt.cont
     t.bahType = m.type
     t.bahRef = new variable{
         name: t.cont
@@ -369,6 +380,7 @@ valueArr(l []Tok, i int, ltp lineType, elems Elems*) int {
     //make return token
     t = pt
     t.isValue = true
+    t.ogCont += "["
 
     //pre-processing index value
     nbEncls = 1
@@ -381,10 +393,12 @@ valueArr(l []Tok, i int, ltp lineType, elems Elems*) int {
             nbEncls++
         } else if tmpT.cont == ")" || tmpT.cont == "}" || tmpT.cont == "]" {
             nbEncls--
+            t.ogCont += "]"
             if nbEncls == 0 {
                 break
             }
         }
+        t.ogCont += tmpT.ogCont
         memory[len(memory)] = tmpT
     }
     deleteRange(l, tokPos+1, i)
@@ -667,6 +681,10 @@ valueOper(l []Tok, i int, elems Elems*) int {
             memcpy("+rstr+"+currStrOff, "+nt.cont+", strLen_1);
             currStrOff += strLen_1;
         ")
+
+        if t.cont != "+" {
+            throwErr(&t, "Can only do concatenation on cpstring, not {TOKEN}.")
+        }
         
         //concatenate all strings at once to reduce memory allocations
         if tokPos -1 >= 0 {

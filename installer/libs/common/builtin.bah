@@ -235,7 +235,9 @@ __Bah_init_segfaultHandle_OK = __Bah_init_segfaultHandle()
 recover(s cpstring*) bool {
 	__BAH_panic_chan = chan cpstring
 	err = <- __BAH_panic_chan
-	*s = err
+	if s != null {
+		*s = err
+	}
 	return true
 }
 

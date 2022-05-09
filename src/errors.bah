@@ -33,22 +33,34 @@ throwErr(tp ptr, format cpstring) {
 
         pos = t.pos - beg + 1
 
-        i=beg; for i < fm.size {
+        i=beg; for i < fm.size, i++ {
             c = fileSrcStr[i]
             if c == <char>10 {
                 break
             }
             if i == t.pos {
-                errTk = strToArr("\e[1;31m"+t.ogCont+"\e[1;37m")
-                ii=0; for ii < len(errTk) {
-                    line[len(line)] = errTk[ii]
-                    ii =ii + 1
+                errCont = []char
+                offset = i
+                for i < fm.size, i++ {
+                    if i-offset >= strlen(t.ogCont) {
+                        break
+                    }
+                    if fileSrcStr[i] != t.ogCont[i-offset] {
+                        if isSpace(fileSrcStr[i]) == false {
+                            break
+                        }
+                        offset++
+                    }
+                    errCont[len(errCont)] = fileSrcStr[i]
                 }
-                i = i + strlen(t.ogCont)
+                errTk = strToArr("\e[1;31m"+arrToStr(errCont)+"\e[1;37m")
+                ii=0; for ii < len(errTk), ii++ {
+                    line[len(line)] = errTk[ii]
+                }
+                i--
                 continue
             }
             line[len(line)] = c
-            i =i + 1
         }
 
         fm.close()
