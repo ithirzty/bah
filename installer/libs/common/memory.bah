@@ -218,12 +218,10 @@ unser(data []char) ptr {
     // }
 // }
 
-
 //Used for deleting an element from an array by its index.
 //This will keep the order of the elements.
 delete(a ptr, i int) {
-    arr = []ptr
-    arr = a
+    arr = <[]ptr>a
     length = len(arr)
     if i >= length || i < 0 {
         return
@@ -243,6 +241,35 @@ delete(a ptr, i int) {
     memmove(dest, src, rightNB * elemSize)
     noCheck(arr->length = length - 1)
 }
+
+//Like delete() but for a range.
+//deleteRange(arr, 1, 3) will delete elements at indexes [1, 2, 3]
+deleteRange(a ptr, from int, to int) {
+    // if from > to {
+    //     return
+    // }
+    if from == to {
+        delete(a, from)
+        return
+    }
+
+    arr = <[]ptr>a
+    length = len(arr)
+
+    // if from < 0 || to >= length {
+    //     return
+    // }
+
+    elemSize int = noCheck(arr->elemSize)
+    data char* = noCheck(arr->data)
+    size = elemSize * (to - from)
+    dest ptr = <int>data + elemSize * from
+    src ptr = <int>dest + size + elemSize
+    rightNB = length - to
+    memmove(dest, src, rightNB * elemSize)
+    noCheck(arr->length = length - (to - from + 1))
+}
+
 
 //Used to convert an array of characters to a cpstring.
 arrToStr(arr []char) cpstring {

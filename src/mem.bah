@@ -45,7 +45,7 @@ incrVar(v variable*, elems Elems*) rope* {
 }
 
 RCPavailable() bool {
-    return absPath(compilerState.currentFile) != absPath(BAH_DIR+"rcp.bah") && absPath(compilerState.currentFile) != absPath(BAH_DIR+"fastrcp.bah") && RCPenabled == true
+    return RCPenabled == true
 }
 
 beginRCPscope(elems Elems*, excl []variable*) {
@@ -75,12 +75,15 @@ beginRCPscopeLeaky(elems Elems*) {
     }
 }
 
-endRCPscope(elems Elems*, excl []variable*) {
+removeDefs(elems Elems*) {
     i=0; for i < len(elems.defined), i++ {
-        OUTPUT += rope("#undef "+elems.defined[i]+"\n")
+        OUTPUT += rope("\n#undef "+elems.defined[i]+"\n")
     }
+}
 
+endRCPscope(elems Elems*, excl []variable*) {
     if RCPavailable() == false {
+        removeDefs(elems)
         return
     }
     i=0; for i < len(elems.vars), i++ {
@@ -92,13 +95,12 @@ endRCPscope(elems Elems*, excl []variable*) {
             OUTPUT += decrVar(v, elems)
         }
     }
+    removeDefs(elems)
 }
 
 endRCPscopeLeaky(elems Elems*, excl variable*) {
-    i=0; for i < len(elems.defined), i++ {
-        OUTPUT += rope("#undef "+elems.defined[i]+"\n")
-    }
     if RCPavailable() == false {
+        removeDefs(elems)
         return
     }
     i=0; for i < len(elems.vars), i++ {
@@ -110,6 +112,7 @@ endRCPscopeLeaky(elems Elems*, excl variable*) {
             OUTPUT += decrVar(v, elems)
         }
     }
+    removeDefs(elems)
 }
 
 registerRCPvar(t cpstring, c cpstring, elems Elems*) cpstring {

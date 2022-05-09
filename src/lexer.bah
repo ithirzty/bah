@@ -244,7 +244,7 @@ lexer(s cpstring) []Tok {
                         memory[len(memory)] = c
                         break
                     }
-                    if isAlphaNumeric(c) == false && c != '*' && c != ':' && c != '_' {
+                    if isAlphaNumeric(c) == false && c != '*' && c != ':' && c != '_' && c != '[' && c != ']' {
                         break
                     }
                     memory[len(memory)] = c

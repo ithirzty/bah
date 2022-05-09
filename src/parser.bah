@@ -189,9 +189,12 @@ getDirFromFile(f cpstring) cpstring {
 #define parseLines(ts []Tok, elems Elems*)
 includeFile(ccstr cpstring, elems Elems*) bool {
 
+    needDisableRCP = false
+
     //includes the correct memory manager file
     if ccstr == "BAH_MEM_COLLECTOR" {
         if RCPenabled == true {
+            needDisableRCP = true
             if flags.isSet("rcp") {
                 ccstr = "rcp.bah"
             } else if flags.isSet("fastrcp") {
@@ -249,7 +252,15 @@ includeFile(ccstr cpstring, elems Elems*) bool {
         shouldOnlyDecl = false
     }
 
+    if needDisableRCP == true {
+        RCPenabled = false
+    }
+
     parseLines(tokens, elems)
+
+    if needDisableRCP == true {
+        RCPenabled = true
+    }
 
     //restore old file's parameters
     shouldOnlyDecl = oshd
@@ -696,7 +707,7 @@ parsePointers(l []Tok) []Tok {
                     if pt.type == TOKEN_TYPE_VAR {
                         if i + 1 < len(l) {
                             nt = l[i+1]
-                            if nt.isValue == false {
+                            if nt.isValue == false && nt.cont != "(" {
                                 pt.cont = pt.cont + t.cont
                                 nl[len(nl)-1] = pt
                                 i = i + 1
@@ -2934,8 +2945,7 @@ prePross(line []Tok, ltp lineType, elems Elems*) []Tok {
                 ppt = fl[i-2]
                 if ppt.type == TOKEN_TYPE_VAR {
                     posTok = i-2
-                    delete(fl, i-1)
-                    delete(fl, i-1)
+                    deleteRange(fl, i-1, i)
                     ppt.cont += t.cont + t.cont
                     ppt.isValue = true
                     ppt.isOper = true
@@ -2989,8 +2999,7 @@ prePross(line []Tok, ltp lineType, elems Elems*) []Tok {
             }
             pt.cont += t.cont+nt.cont
             fl[i-1] = pt
-            delete(fl, i)
-            delete(fl, i)
+            deleteRange(fl, i, i+1)
             i -= 2
         } else if t.type == TOKEN_TYPE_VAR && t.bahType != "" {
             if t.cont[0] == '&' {
@@ -3006,7 +3015,9 @@ prePross(line []Tok, ltp lineType, elems Elems*) []Tok {
     }
 
     fl = parseArrayType(fl, elems, true)
-    addRCPvars(fl, ltp, elems)
+    if RCPavailable() == true {
+        addRCPvars(fl, ltp, elems)
+    }
     // fl = parseChan(fl, elems)
 
     if ltp != <lineType>-1 {

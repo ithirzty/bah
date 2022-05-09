@@ -4,11 +4,15 @@
 #include "./lexer.bah"
 #include "./struct.bah"
 
+typeAsStar(t cpstring) bool {
+    return t[strlen(t)-1] == '*'
+}
+
 isRCPpointerType(t cpstring) bool {
     if strHasPrefix(t, "function(") {
         return false
     }
-    if t == "cpstring" || t == "ptr" || strCount(t, "*") > 0 || strHasPrefix(t, "[]") == true || strHasPrefix(t, "chan:") == true || strHasPrefix(t, "map:") == true {
+    if t == "cpstring" || t == "ptr" || typeAsStar(t) || strHasPrefix(t, "[]") || strHasPrefix(t, "chan:") || strHasPrefix(t, "map:") {
         return true
     }
     return false
@@ -32,7 +36,6 @@ getCType(t cpstring, elems Elems*) string {
         return string("void")
     }
 
-
     tp = string(t)
     tp.replace(" ", "")
     if tp.hasPrefix("[]") {
@@ -54,37 +57,37 @@ getCType(t cpstring, elems Elems*) string {
         tp.set("struct mapWrapper *")
     } else if tp.hasPrefix("buffer:") == 1 {
         tp.set("char*")
-    } else if ctp.compare("int") {
+    } else if ctp.str() == "int" {
         tp.replace("int", "long int")
-    } else if ctp.compare("int32") {
+    } else if ctp.str() == "int32" {
         tp.replace("int32", "int")
-    } else if ctp.compare("uint32") {
+    } else if ctp.str() == "uint32" {
         tp.replace("uint32", "unsigned int")
-    } else if ctp.compare("uint") {
+    } else if ctp.str() == "uint" {
         tp.replace("uint", "unsigned long int")
-    } else if ctp.compare("float32") {
+    } else if ctp.str() == "float32" {
         tp.replace("float32", "float")
-    } else if ctp.compare("ufloat32") {
+    } else if ctp.str() == "ufloat32" {
         tp.replace("ufloat32", "unsigned float")
-    } else if ctp.compare("ufloat") {
+    } else if ctp.str() == "ufloat" {
         tp.replace("ufloat", "unsigned double")
-    } else if ctp.compare("float") {
+    } else if ctp.str() == "float" {
         tp.replace("float", "double")
-    } else if ctp.compare("long") {
+    } else if ctp.str() == "long" {
         tp.replace("long", "long long")
-    } else if ctp.compare("ulong") {
+    } else if ctp.str() == "ulong" {
         tp.replace("ulong", "unsigned long long")
-    } else if ctp.compare("cpstring") {
+    } else if ctp.str() == "cpstring" {
         tp.replace("cpstring", "char *")
-    } else if ctp.compare("ptr") {
+    } else if ctp.str() == "ptr" {
         tp.replace("ptr", "void *")
-    } else if ctp.compare("ushort") {
+    } else if ctp.str() == "ushort" {
         tp.replace("ushort", "unsigned short")
-    } else if ctp.compare("byte") {
+    } else if ctp.str() == "byte" {
         tp.replace("byte", "unsigned char")
-    } else if ctp.compare("bool") {
+    } else if ctp.str() == "bool" {
         tp.replace("bool", "char")
-    } else if ctp.compare("char") {
+    } else if ctp.str() == "char" {
         //do nothing for now
     } else {
         
@@ -148,7 +151,7 @@ compTypeEquiv(a cpstring, b cpstring, first bool) bool {
 }
 
 compTypes(a cpstring, b cpstring) bool {
-    if a == "ptr" || b == "ptr" {
+    if a == "ptr" || b == "ptr" || a == b {
         return true
     }
     return compTypeEquiv(a, b, true)

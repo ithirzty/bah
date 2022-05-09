@@ -23,7 +23,7 @@
     BAH_CC = "gcc"
 }
 //////////////////////BUILD SPECIFIC THINGS//////////////////////
-const BAH_VERSION = "v1.2 (build 86)"
+const BAH_VERSION = "v1.2 (build 87)"
 
 debug = false
 verboseRuntime = false

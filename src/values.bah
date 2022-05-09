@@ -29,9 +29,8 @@ valueFunc(fn func*, parent variable*, l []Tok, i int, ltp lineType, elems Elems*
         nbEncls = 1
         memory = []Tok
         i = tokPos+1
-        for i < len(l) {
+        for i < len(l), i++ {
             t = l[i]
-            delete(l, i)
             if t.cont == "(" || t.cont == "{" || t.cont == "[" {
                 nbEncls++
             } else if t.cont == ")" || t.cont == "}" || t.cont == "]" {
@@ -42,6 +41,7 @@ valueFunc(fn func*, parent variable*, l []Tok, i int, ltp lineType, elems Elems*
             }
             memory[len(memory)] = t
         }
+        deleteRange(l, tokPos+1, i)
         memort = prePross(memory, <lineType>-1, elems)
         ft = memory[0]
         fnt.cont = "("
@@ -70,9 +70,8 @@ valueFunc(fn func*, parent variable*, l []Tok, i int, ltp lineType, elems Elems*
     nbEncls = 1
     memory = []Tok
     i = tokPos+1
-    for i < len(l) {
+    for i < len(l), i++ {
         t = l[i]
-        delete(l, i)
         if t.cont == "(" || t.cont == "{" || t.cont == "[" {
             nbEncls++
         } else if t.cont == ")" || t.cont == "}" || t.cont == "]" {
@@ -83,6 +82,7 @@ valueFunc(fn func*, parent variable*, l []Tok, i int, ltp lineType, elems Elems*
         }
         memory[len(memory)] = t
     }
+    deleteRange(l, tokPos+1, i)
 
     //noCheck (for c lang in bah)
     if fn.name == "noCheck" {
@@ -277,7 +277,7 @@ valueFunc(fn func*, parent variable*, l []Tok, i int, ltp lineType, elems Elems*
 
 valueStruct(l []Tok, i int, ltp lineType, elems Elems*) int {
     tokPos = i-1
-    delete(l, i)
+    // delete(l, i)
 
     //is prev token a struct type
     t = l[i-1]
@@ -288,11 +288,12 @@ valueStruct(l []Tok, i int, ltp lineType, elems Elems*) int {
     }
 
     //is next token a member name
-    nt = l[i]
-    delete(l, i)
+    nt = l[i+1]
+    // delete(l, i)
     if nt.isValue == false {
         throwErr(&nt, "Cannot use {TOKEN} as member.")
     }
+    deleteRange(l, i, i+1)
 
     //get appropriate C-separator
     sep = "."
@@ -373,9 +374,9 @@ valueArr(l []Tok, i int, ltp lineType, elems Elems*) int {
     nbEncls = 1
     memory = []Tok
     i = tokPos+1
-    for i < len(l) {
+    for i < len(l), i++ {
         tmpT = l[i]
-        delete(l, i)
+        // delete(l, i)
         if tmpT.cont == "(" || tmpT.cont == "{" || tmpT.cont == "[" {
             nbEncls++
         } else if tmpT.cont == ")" || tmpT.cont == "}" || tmpT.cont == "]" {
@@ -386,6 +387,7 @@ valueArr(l []Tok, i int, ltp lineType, elems Elems*) int {
         }
         memory[len(memory)] = tmpT
     }
+    deleteRange(l, tokPos+1, i)
     memory = prePross(memory, <lineType>-1, elems)
     
     //handle empty index
@@ -538,11 +540,11 @@ valueBool(l []Tok, i int, elems Elems*) int {
 
     // get previous value
     pt = l[tokPos]
-    delete(l, tokPos)
     ptt = getTypeFromToken(&pt, true, elems)
 
-    t = l[tokPos]
-    delete(l, tokPos)
+    t = l[tokPos+1]
+
+    deleteRange(l, tokPos, tokPos+1)
 
     // if t.cont == "||" || t.cont == "&&" {
     //     if compTypes(ptt, "bool") == false {
@@ -616,12 +618,11 @@ valueOper(l []Tok, i int, elems Elems*) int {
     tokPos = i - 2
     //get previous value
     pt = l[tokPos]
-    delete(l, tokPos)
     ptt = getTypeFromToken(&pt, true, elems)
 
     //get operator
-    t = l[tokPos]
-    delete(l, tokPos)
+    t = l[tokPos+1]
+    deleteRange(l, tokPos, tokPos+1)
 
     //get second value
     nt = l[tokPos]
@@ -671,7 +672,8 @@ valueOper(l []Tok, i int, elems Elems*) int {
         if tokPos -1 >= 0 {
             nat = l[tokPos-1]
             if nat.cont == "+" {
-                delete(l, tokPos-1)
+                // delete(l, tokPos-1)
+                rangeEnds = tokPos-1
                 i = tokPos-2
                 nb = 2
                 for i >= 0, i-- {
@@ -698,7 +700,7 @@ valueOper(l []Tok, i int, elems Elems*) int {
                     currStrOff += strLen_"+is+";
                     ") + cats
 
-                    delete(l, i)
+                    // delete(l, i)
                     if i-1 >= 0 {
                         i--
                         t = l[i]
@@ -706,12 +708,17 @@ valueOper(l []Tok, i int, elems Elems*) int {
                             if t.cont in signs {
                                 throwErr(&t, "Can only do concatenation on cpstring, not {TOKEN}.")
                             } else {
+                                i++
                                 break
                             }
                         }
-                        delete(l, i) 
+                        // delete(l, i) 
+                    } else {
+                        i = 0
+                        break
                     }
                 }
+                deleteRange(l, i, rangeEnds)
             } else if inArrayStr(nat.cont, signs) {
                 throwErr(&nat, "Can only do concatenation on cpstring, not {TOKEN}.")
             }
@@ -777,13 +784,9 @@ valueSendChan(l []Tok, i int, elems Elems*) int {
     posTok = i-2
     //value to send
     nt = l[posTok]
-    delete(l, posTok)
-    //->
-    delete(l, posTok)
-
     //channel
-    pt = l[posTok]
-    delete(l, posTok)
+    pt = l[posTok+2]
+    deleteRange(l, posTok, posTok+2)
 
     ntt = getTypeFromToken(&nt, true, elems)
 
