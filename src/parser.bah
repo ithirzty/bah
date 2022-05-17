@@ -8,6 +8,7 @@
 #include "./mem.bah"
 #include "./verboseOut.bah"
 #include "./cache.bah"
+// #include "./optimizations.bah"
 
 //Only for debug purposes
 debugLine(line []Tok) {
@@ -23,14 +24,11 @@ debugLine(line []Tok) {
 //duplicates the elems for making an inner scope
 dupElems(elems Elems*) Elems* {
     nElems = new Elems
+    nElems.parent = elems
 
     //vars
     j=0; for j < len(elems.vars), j++ {
-        v = elems.vars[j]
-        nv = new variable
-        *nv = *v
-        nv.outterScope = true
-        nElems.vars[j] = nv
+        nElems.vars[j] = elems.vars[j]
     }
 
     //structs
@@ -691,7 +689,7 @@ comparators = []cpstring{"==", "!=", ">", "<", "<=", ">=", "in"}
 compSep = []cpstring{"||", "&&"}
 
 
-parsePointers(l []Tok) []Tok {
+parsePointers(l []Tok, elems Elems*) []Tok {
 
     nl = []Tok
 
@@ -1100,45 +1098,6 @@ parseVar(l []Tok, elems Elems*) {
         return
     }
 
-    // if len(l) == 2 {
-    //     lt = l[1]
-    //     if lt.type == TOKEN_TYPE_SYNTAX && lt.cont == "++" || lt.cont == "--" {
-    //         if exists == false {
-    //             throwErr(&ft, "Cannot use '"+lt.cont+"' on non declared {TOKEN} variable.")
-    //         }
-    //         nl = []Tok
-    //         nl[0] = l[0]
-
-    //         nl[1] = Tok{
-    //             type: TOKEN_TYPE_SYNTAX
-    //             cont: "="
-    //             isValue: false
-    //         }
-            
-    //         c = ""
-    //         if lt.cont == "++" {
-    //             c = ft.cont+"+1"
-    //         } else if lt.cont == "--" {
-    //             c = ft.cont+"-1"
-    //         }
-            
-    //         ltl = lt.line
-    //         ltp = lt.pos
-    //         ltc = lt.cont
-
-    //         nl[2] = Tok{
-    //             type: TOKEN_TYPE_INT
-    //             cont: c
-    //             line: ltl
-    //             ogCont: ltc
-    //             pos: ltp
-    //             isOper: true
-    //             isValue: true
-    //         }
-    //         l = nl
-    //     }
-    // }
-
     if len(l) < 2 {
         throwErr(&ft, "Missing '=' after {TOKEN}.")
     }
@@ -1477,17 +1436,16 @@ void * newPtr = memoryRealloc("+nstr+"->data, (nLength+50)*sizeof("+elemTypeStr+
         } else {
             v.isGlobal = false
         }
-
+        v.declScope = elems
         elems.vars[len(elems.vars)] = v
+
 
         debugPrint("var_declaration", ft.line, v)
         // registerType(&fileDeps, v.type, elems)
 
         if isGlobal() {
             OUTPUT += rope(vct+";\n")
-        }
-
-
+        }        
     }
 
     if isGlobal() {
@@ -1499,7 +1457,16 @@ void * newPtr = memoryRealloc("+nstr+"->data, (nLength+50)*sizeof("+elemTypeStr+
         if needsDefine == true {
             OUTPUT += rope(code + "\n")
         } else {
-            OUTPUT += rope(code + ";\n")
+            declR = rope(code + ";\n")
+            if exists == false {
+                //for optimizations
+                v.declRope = declR
+                v.canBeReg = true
+            }
+            OUTPUT += declR
+            // if v.type == "cpstring" {
+            //     makeStrlenVar(v, elems)
+            // }
         }
     }
 
@@ -1854,7 +1821,7 @@ parseStruct(l []Tok, elems Elems*) {
                 fnElems = dupElems(elems)
                 j=0; for j < len(arguments) {
                     a = arguments[j]
-                    a.outterScope = true
+                    a.declScope = elems
                     fnElems.vars[len(fnElems.vars)] = a
                     j =j + 1
                 }
@@ -2227,7 +2194,7 @@ parseReturn(l []Tok, elems Elems*) {
             rvar = genCompilerVar()
             cType = getCType(currentFn.returns.type, elems)
             OUTPUT += rope(cType.str() + " " + rvar + " = "+rv+";\n")
-            if tmpV != null && tmpV.outterScope == true {
+            if tmpV != null && tmpV.declScope != elems {
                 OUTPUT += incrVar(tmpV, elems)
             }
         }
@@ -2918,6 +2885,23 @@ prePross(line []Tok, ltp lineType, elems Elems*) []Tok {
 
     i=0; for i < len(fl), i++ {
         t = fl[i]
+        if t.type == TOKEN_TYPE_VAR && t.isOper == false && t.cont[0] == '&' {
+            tc = string(t.cont)
+            tc.trimLeft(1)
+            rv = getRealVar(tc.str(), elems)
+            if rv != null && rv.canBeReg == true && rv.declRope != null {
+                rvdr = rv.declRope.toStr()
+                if strHasPrefix(rvdr, "register ") {
+                    strTrimLeft(&rvdr, 9)
+                    OUTPUT.totalLen += ropeSet(rv.declRope, rvdr)
+                }
+                rv.canBeReg = false
+            }
+        }
+    }
+
+    i=0; for i < len(fl), i++ {
+        t = fl[i]
         if i > 0 {
             pt = fl[i-1]
         } else {
@@ -2969,7 +2953,7 @@ prePross(line []Tok, ltp lineType, elems Elems*) []Tok {
                 i--
             }
         } else if inArrayStr(pt.cont, comparators) && isValue(fl, i) {
-            i = valueBool(fl, i, elems) - 1
+            i = valueBool(fl, i, ltp, elems) - 1
         } else if pt.cont == "<-" && isValue(fl, i) {
             i = valueChan(fl, i, elems) - 1
         } else if pt.cont == "->" && isValue(fl, i) {
@@ -3086,7 +3070,7 @@ parseFnDeclare(l []Tok, elems Elems*) {
     vs = fnElems.vars
     j=0; for j < len(fn.args) {
         a = fn.args[j]
-        a.outterScope = true
+        a.declScope = elems
         vs[len(vs)] = a
         j =j + 1
     }
@@ -3163,7 +3147,7 @@ parseLine(line []Tok, elems Elems*) {
     if len(line) == 0 {
         return
     }
-    line = parsePointers(line)
+    line = parsePointers(line, elems)
     ltp = getLineType(line)
 
     compilerState.RCPvars = []variable*

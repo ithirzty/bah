@@ -1,3 +1,13 @@
+isOutterScope(ce ptr, e Elems*) bool {
+    for e != null {
+        if ce == e {
+            return true
+        }
+        e = e.parent
+    }
+    return false
+}
+
 decrVar(v variable*, elems Elems*) rope* {
     r = rope("")
     //is array
@@ -69,7 +79,7 @@ beginRCPscopeLeaky(elems Elems*) {
     }
     i=0; for i < len(elems.vars), i++ {
         v = elems.vars[i]
-        if v.isGlobal == false && v.outterScope == false && isRCPtype(v.type, elems) {
+        if v.isGlobal == false && v.declScope == elems && isRCPtype(v.type, elems) {
             OUTPUT += incrVar(v, elems)
         }
     }
@@ -79,6 +89,21 @@ removeDefs(elems Elems*) {
     i=0; for i < len(elems.defined), i++ {
         OUTPUT += rope("\n#undef "+elems.defined[i]+"\n")
     }
+    // i=len(elems.vars)-1; for i != -1, i-- {
+    //     v = elems.vars[i]
+    //     vn = string(v.name)
+    //     if v.ogDeclScope == elems && vn.hasSuffix("__Bah_strlen") {
+    //         c = v.count
+    //         if *c == 0 {
+    //             if v.metaRope != null {
+    //                 OUTPUT.totalLen += ropeSet(v.metaRope, "//removed meta: "+v.name+"\n")
+    //             } else {
+    //                 OUTPUT.totalLen += ropeSet(v.declRope, "//removed declaration: "+v.name+"\n")
+    //             }
+    //             *c = -1
+    //         }
+    //     }
+    // }
 }
 
 endRCPscope(elems Elems*, excl []variable*) {
@@ -108,7 +133,7 @@ endRCPscopeLeaky(elems Elems*, excl variable*) {
         if excl != null && excl.name == v.name {
             continue
         }
-        if v.isGlobal == false && v.outterScope == false && isRCPtype(v.type, elems) {
+        if v.isGlobal == false && v.declScope == elems && isRCPtype(v.type, elems) {
             OUTPUT += decrVar(v, elems)
         }
     }

@@ -81,7 +81,7 @@ debugEndScope(line int, elems Elems*) {
     }
     i=0; for i < len(elems.vars) {
         v = elems.vars[i]
-        if v.outterScope == false && v.isConst == false {
+        if v.declScope == elems && v.isConst == false {
             debugPrint("var_end", line, v)
         }
         i = i + 1

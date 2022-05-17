@@ -14,8 +14,15 @@ struct variable {
     constVal: cpstring = ""
     isArray: bool = false
     from: cpstring = ""
-    outterScope: bool = false
+    declScope: ptr
     isGlobal: bool = false
+    declRope: rope*
+    //optimizations
+    // metaRope: rope* = null
+    // ogDeclScope: ptr
+    canBeReg: bool
+    isReg: bool = false
+    // count: int*
 }
 
 //Bah struct member
@@ -57,6 +64,8 @@ struct Elems {
     types: []cpstring
     fns: []func*
     defined: []cpstring
+    parent: Elems*
+    id: int
 }
 
 //Additional info for the compiler no matter the scope

@@ -227,6 +227,17 @@ valueFunc(fn func*, parent variable*, l []Tok, i int, ltp lineType, elems Elems*
             fnt.cont += ","
         }
     }
+
+    // if fn.name == "strlen" && len(memory) == 1 {
+    //     if cont != "" {
+    //         fnt.cont = memory[0].cont
+    //         fnt.type = TOKEN_TYPE_VAR
+    //         fnt.bahType = "int"
+    //         l[tokPos] = fnt
+    //         return tokPos
+    //     }
+    // }
+
     // parsing arguments
     j=0; for j < len(memory), j++ {
         t = memory[j]
@@ -514,7 +525,7 @@ valueArr(l []Tok, i int, ltp lineType, elems Elems*) int {
             } else {
                 tmpV = genCompilerVar()
                 res = rope(elemType.str() + "* "+tmpV+"="+pt.cont+"->get("+pt.cont+", "+index.cont+");\n")
-                pt.cont = "("+elemType.str()+")(*"+tmpV+")"
+                t.cont = "("+elemType.str()+")(*"+tmpV+")"
                 if isGlobal() {
                     INIT += res
                 } else {
@@ -548,7 +559,7 @@ valueArr(l []Tok, i int, ltp lineType, elems Elems*) int {
     return tokPos
 }
 
-valueBool(l []Tok, i int, elems Elems*) int {
+valueBool(l []Tok, i int, ltp lineType, elems Elems*) int {
 
     tokPos = i-2
 
@@ -560,11 +571,16 @@ valueBool(l []Tok, i int, elems Elems*) int {
 
     deleteRange(l, tokPos, tokPos+1)
 
-    // if t.cont == "||" || t.cont == "&&" {
-    //     if compTypes(ptt, "bool") == false {
-    //         throwErr(&pt, "Cannot compare {TOKEN} as bool.")
-    //     }
-    // }
+    if ltp == LINE_TYPE_FOR && ptt == "int" || ptt == "float" {
+        v = getRealVar(pt.cont, elems)
+        if v != null && v.canBeReg == true && v.isReg == false && v.declRope != null {
+            odecl = v.declRope.toStr()
+            if strHasPrefix(odecl, "register ") == false {
+                OUTPUT.totalLen += ropeSet(v.declRope, "register "+odecl)
+            }
+            v.isReg = true
+        }
+    }
 
     //checking if two values are the same type
     nt = l[tokPos]
@@ -760,16 +776,16 @@ valueOper(l []Tok, i int, elems Elems*) int {
         pt.cont = rstr
 
     } else {
-        sep = "."
-        amp = "&"
-
-        if isRCPpointerType(ptt) {
-            sep = "->"
-            amp = ""
-        }
 
         s = searchStruct(ptt, elems)
         if s != null {
+            sep = "."
+            amp = "&"
+
+            if isRCPpointerType(ptt) {
+                sep = "->"
+                amp = ""
+            }
             mName = ""
             if t.cont == "+" {
                 mName = "add"

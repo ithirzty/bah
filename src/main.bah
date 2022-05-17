@@ -23,7 +23,7 @@
     BAH_CC = "gcc"
 }
 //////////////////////BUILD SPECIFIC THINGS//////////////////////
-const BAH_VERSION = "v1.2 (build 88)"
+const BAH_VERSION = "v1.2 (build 89)"
 
 debug = false
 verboseRuntime = false
@@ -157,6 +157,7 @@ main(args []cpstring) int {
             void RCP_init();
             void RCP_shutdown();
             void free(void*);
+            #include <string.h>
             int main(int argc, char ** argv) {
             RCP_init();
             array(char*) * args = malloc(sizeof(array(char*)));
@@ -177,6 +178,7 @@ main(args []cpstring) int {
         } else {
             OUTPUT = OUTPUT + rope("
             #include <gc.h>
+            #include <string.h>
             int main(int argc, char ** argv) {
             GC_INIT();
             array(char*) * args = GC_MALLOC(sizeof(array(char*)));

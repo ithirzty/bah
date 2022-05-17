@@ -9,6 +9,15 @@
 #include "./type.bah"
 #include "./fns.bah"
 
+getRealVar(n cpstring, elems Elems*) variable* {
+    i=len(elems.vars)-1; for i != -1, i-- {
+        if elems.vars[i].name == n {
+            return elems.vars[i]
+        }
+    }
+    return null
+}
+
 searchVar(name cpstring, elems Elems*) variable* {
 //     recorder = timer.record("searchVar")
     ogName = name
@@ -44,7 +53,7 @@ searchVar(name cpstring, elems Elems*) variable* {
         nv = new variable
         nv.type = vtstr
         nv.name = ogName
-        nv.outterScope = v.outterScope
+        nv.declScope = v.declScope
         nv.isArray = isArr
         return nv
     }
@@ -78,7 +87,7 @@ searchVar(name cpstring, elems Elems*) variable* {
         nv.from = memb.from
         nv.name = memb.name
         nv.type = memb.type
-        nv.outterScope = v.outterScope
+        nv.declScope = v.declScope
         nv.name = ogName
 
         r = nv.type
@@ -109,7 +118,8 @@ searchVar(name cpstring, elems Elems*) variable* {
             nv.type = v.type
             nv.name = v.name
             nv.isConst = v.isConst
-            nv.outterScope = v.outterScope
+            nv.constVal = v.constVal
+            nv.declScope = v.declScope
             r = nv.type
             tcc = string(ogName)
             if tcc.count("&") {
