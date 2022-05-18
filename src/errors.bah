@@ -81,5 +81,9 @@ throwErr(tp ptr, format cpstring) {
 }
 
 throwWarning(s cpstring) {
-    println("\e[1;33m[WARNING]\e[0m " + compilerState.currentFile + "\n\e[1;37m\t" + s + "\e[0m")
+    println("\e[1;33m[WARNING]\e[0m " + compilerState.currentFile + "\n\e[0m\t" + s + "\e[0m")
+}
+
+throwWarningLine(s cpstring, l int) {
+    println("\e[1;33m[WARNING]\e[0m " + compilerState.currentFile + ":"+intToStr(l)+"\n\e[0m\t" + s + "\e[0m")
 }

@@ -1,0 +1,20 @@
+//User optimization, passing argumeny by reference
+OPTI_checkFuncScopeRef(elems Elems*) {
+    if strHasPrefix(compilerState.currentFile, BAH_DIR) == true {
+        return
+    }
+    i=0; for i < len(elems.vars), i++ {
+        v = elems.vars[i]
+        if v.isArg == false {
+            continue
+        }
+        if v.lastSet != elems {
+            if isRCPpointerType(v.type) == false && v.type != "reflectElement" && string(v.name).hasPrefix("____BAH_COMPILER_VAR_") == false {
+                s = searchStruct(v.type, elems)
+                if s != null {
+                    throwWarningLine("in \e[1;37m"+currentFn.name+"()\e[0m: argument \e[1;37m"+v.name+"\e[0m ("+v.type+") could be passed by reference.", currentFn.line)
+                }
+            }
+        }
+    }
+}

@@ -18,11 +18,10 @@ struct variable {
     isGlobal: bool = false
     declRope: rope*
     //optimizations
-    // metaRope: rope* = null
-    // ogDeclScope: ptr
     canBeReg: bool
     isReg: bool = false
-    // count: int*
+    lastSet: ptr
+    isArg: bool = false
 }
 
 //Bah struct member
@@ -41,8 +40,11 @@ struct func {
     from: cpstring = ""
     file: cpstring = ""
     line: int = 1
+    //optimizations
     used: bool = false
     code: rope* = null
+    isMut: bool = false
+    isImported: bool = false
 }
 
 //Interface between Bah struct and C struct

@@ -3,7 +3,7 @@
 
 #include "./globals.bah"
 
-hasStructSep(n string) bool {
+hasStructSep(n string*) bool {
     if n.count(".") {
         return true
     }
@@ -13,14 +13,14 @@ hasStructSep(n string) bool {
     return false
 }
 
-splitStructSepBefore(n string) string {
+splitStructSepBefore(n string*) string {
     
     if n.count(".") {
-        res = string(splitStringBefore(n, "."))
+        res = string(splitStringBefore(*n, "."))
         return res
     }
     if n.count("->") {
-        res = string(splitStringBefore(n, "->"))
+        res = string(splitStringBefore(*n, "->"))
         return res
     }
 
@@ -64,8 +64,8 @@ searchStruct(name cpstring, elems Elems*) cStruct* {
 
 searchStructMemb(name cpstring, s cStruct*, elems Elems*) structMemb* {
     n = string(name)
-    if hasStructSep(n) {
-        rn = splitStructSepBefore(n)
+    if hasStructSep(&n) {
+        rn = splitStructSepBefore(&n)
         name = rn.content
         n.trimLeft(rn.length)
         if n.hasPrefix(".") {

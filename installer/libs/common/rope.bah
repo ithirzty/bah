@@ -98,12 +98,14 @@ createRopeStructure(par rope*, a cpstring, l int, r int) rope* {
     return tmp
 }
 
-ropeSet(r rope*, a cpstring) {
+ropeSet(r rope*, a cpstring) int {
     n1 = strlen(a)
+    diff = n1 - r.totalLen
     nr = createRopeStructure(null, a, 0, n1-1)
     nr.totalLen = n1
     nr.len = n1
     *r = *nr
+    return diff
 }
 
 //Old way of concatenating ropes by specifying in order the ropes to concatenate.

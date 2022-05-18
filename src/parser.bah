@@ -8,7 +8,8 @@
 #include "./mem.bah"
 #include "./verboseOut.bah"
 #include "./cache.bah"
-// #include "./optimizations.bah"
+#include "./gen.bah"
+#include "./optimizations.bah"
 
 //Only for debug purposes
 debugLine(line []Tok) {
@@ -752,7 +753,7 @@ parsePointers(l []Tok, elems Elems*) []Tok {
 }
 
 
-parseSerialize(e Tok, elems Elems*) cpstring {
+parseSerialize(e Tok*, elems Elems*) cpstring {
 
 
     v = searchVar(e.cont, elems)
@@ -902,7 +903,7 @@ parseReflect(t Tok, tt cpstring, elems Elems*, parsedPointer bool, ogName cpstri
     }
 
     name = string(ogName)
-    if hasStructSep(name) == true {
+    if hasStructSep(&name) == true {
         name = splitStructSepAfter(name)
     }
 
@@ -1265,7 +1266,16 @@ parseVar(l []Tok, elems Elems*) {
     }
 
     if exists == true {
-        // oCode = code
+        //optimizations
+        v.lastSet = elems
+        if ft.parent != null {
+            ft.parent.lastSet = elems
+        }
+        if currentFn != null {
+            if v.name == "this" || string(v.name).hasPrefix("this->") {
+                currentFn.isMut = true
+            }
+        }
         if strlen(code) == 0 {
             throwErr(&ft, "Cannot re-declare {TOKEN}.")
         }
@@ -1316,49 +1326,7 @@ parseVar(l []Tok, elems Elems*) {
             }
         }
         if v.isArray == true {
-            nLength = string(v.name)
-            n = string(v.name)
-            i=0; for i < nLength.length {
-                c = nLength.charAt(i)
-                if c == '[' {
-                    break
-                }
-                i++
-            }
-            nLength.trimLeft(i+1)
-            nLength.trimRight(1)
-            nLengthStr = nLength.str()
-
-            i=n.length; for i > 0 {
-                c = n.charAt(i)
-                if c == '[' {
-                    break
-                }
-                i--
-            }
-            tamm = n.length - i
-            
-            n.trimRight(tamm + 6)
-            nstr = n.str()
-            elemType = getCType(v.type, elems)
-            elemTypeStr = elemType.str()
-
-            code = "
-{
-long nLength = " + nLengthStr + ";
-if (" + nstr + "->length < nLength+1) {
-if ((nLength+1) % 50 == 0 || nLength == 0) {
-void * newPtr = memoryRealloc("+nstr+"->data, (nLength+50)*sizeof("+elemTypeStr+"));
-"+nstr+"->data = newPtr;
-}
-"+code+";
-"+nstr+"->length = nLength+1;
-} else {
-"+preCode+code+";
-}
-}"
-
-
+            code = genArrRealloc(v, preCode, code, elems)
         } else {
             code = preCode + code
         }
@@ -1473,9 +1441,9 @@ void * newPtr = memoryRealloc("+nstr+"->data, (nLength+50)*sizeof("+elemTypeStr+
 
 }
 
-getCfunctionType(cfrt string, elemName cpstring, elems Elems*) cpstring {
+getCfunctionType(cfrt string*, elemName cpstring, elems Elems*) cpstring {
 
-    tmpfn = parseFnType(cfrt)
+    tmpfn = parseFnType(*cfrt)
     tmpfnRetCType = getCType(tmpfn.returns.type, elems)
     tmpfnArgsCType = ""
     j=0; for j < len(tmpfn.args) {
@@ -1574,7 +1542,7 @@ parseFnHeader(prev cpstring, l []Tok, i int*, fn func*, elems Elems*) cpstring {
                 }
             }
             if cfrt.hasPrefix("function(") == 1 {
-                code = code + getCfunctionType(cfrt, argName, elems)
+                code = code + getCfunctionType(&cfrt, argName, elems)
             } else {
                 code = code + newArgType + " " + argName
             }
@@ -1712,27 +1680,27 @@ parseStruct(l []Tok, elems Elems*) {
                 members[len(members)] = em
                 j = j + 1
             }
-            k=0; for k < len(extdS.methods) {
-                emt = extdS.methods[k]
-                // registerFunc(&fileDeps, emt, elems)
-                mthdDecl = getCType(emt.returns.type, elems)
-                mthdDecl.append("(*" + emt.name + ")(")
-                j=0; for j < len(emt.args) {
-                    a = emt.args[j]
-                    tp = getCType(a.type, elems)
-                    tp.append(" " + a.name)
-                    max = len(emt.args) - 1
-                    if j != max {
-                        tp.append(",")
-                    }
-                    mthdDecl.append(tp.str())
-                    j =j + 1
-                }
-                mthdDecl.append(")")
-                allMembs[len(allMembs)] = mthdDecl.str()
+            // k=0; for k < len(extdS.methods) {
+            //     emt = extdS.methods[k]
+            //     // registerFunc(&fileDeps, emt, elems)
+            //     mthdDecl = getCType(emt.returns.type, elems)
+            //     mthdDecl.append("(*" + emt.name + ")(")
+            //     j=0; for j < len(emt.args) {
+            //         a = emt.args[j]
+            //         tp = getCType(a.type, elems)
+            //         tp.append(" " + a.name)
+            //         max = len(emt.args) - 1
+            //         if j != max {
+            //             tp.append(",")
+            //         }
+            //         mthdDecl.append(tp.str())
+            //         j =j + 1
+            //     }
+            //     mthdDecl.append(")")
+            //     allMembs[len(allMembs)] = mthdDecl.str()
 
-                k = k + 1
-            }
+            //     k = k + 1
+            // }
         } else {
             throwErr(&st, "Cannot use keyword {TOKEN} in struct declaration.")
         }
@@ -1819,11 +1787,11 @@ parseStruct(l []Tok, elems Elems*) {
                 }
                 
                 fnElems = dupElems(elems)
-                j=0; for j < len(arguments) {
+                j=0; for j < len(arguments), j++ {
                     a = arguments[j]
                     a.declScope = elems
+                    a.isArg = true
                     fnElems.vars[len(fnElems.vars)] = a
-                    j =j + 1
                 }
 
                 fns = elems.fns
@@ -1871,6 +1839,7 @@ parseStruct(l []Tok, elems Elems*) {
                         ocurrFnElems = compilerState.currFnElems
                         compilerState.currFnElems = fnElems
                         parseLines(tokens, fnElems)
+                        OPTI_checkFuncScopeRef(fnElems)
                         compilerState.currFnElems = ocurrFnElems
 
                         currentFn = null
@@ -1883,27 +1852,29 @@ parseStruct(l []Tok, elems Elems*) {
                         }
                         code = code + OUTPUT + rope("};\n")
                     }
+                } else {
+                    fn.isImported = true; mfn.isImported = true;
                 }
 
                 if doesOutput == true {
                     nextLine = nextLine + code.toStr()
                 }
 
-                mthdDecl = getCType(fn.returns.type, elems)
-                mthdDecl.append("(*" + mfn.name + ")(")
-                j=0; for j < len(arguments) {
-                    a = arguments[j]
-                    tp = getCType(a.type, elems)
-                    tp.append(" "+a.name)
-                    max = len(arguments) - 1
-                    if j != max {
-                        tp.append(",")
-                    }
-                    mthdDecl.append(tp.str())
-                    j =j + 1
-                }
-                mthdDecl.append(")")
-                allMembs[len(allMembs)] = mthdDecl.str()
+                // mthdDecl = getCType(fn.returns.type, elems)
+                // mthdDecl.append("(*" + mfn.name + ")(")
+                // j=0; for j < len(arguments) {
+                //     a = arguments[j]
+                //     tp = getCType(a.type, elems)
+                //     tp.append(" "+a.name)
+                //     max = len(arguments) - 1
+                //     if j != max {
+                //         tp.append(",")
+                //     }
+                //     mthdDecl.append(tp.str())
+                //     j =j + 1
+                // }
+                // mthdDecl.append(")")
+                // allMembs[len(allMembs)] = mthdDecl.str()
 
                 i++
                 continue
@@ -2720,7 +2691,7 @@ addRCPvars(l []Tok, ltp lineType, elems Elems*) {
     for i < len(l) {
         t = l[i]
         if t.type == TOKEN_TYPE_VAR && t.isOper == false {
-            v = searchVarByToken(t, elems)
+            v = searchVarByToken(&t, elems)
             if v != null {
                 compilerState.RCPvars[len(compilerState.RCPvars)] = v
             }
@@ -3055,6 +3026,7 @@ parseFnDeclare(l []Tok, elems Elems*) {
         if ogFn != null {
             fn.isBinding = false
         }
+        fn.isImported = true
         elems.fns[len(elems.fns)] = fn
         OUTPUT = OUTPUT + rope(code+";\n")
         return
@@ -3071,6 +3043,7 @@ parseFnDeclare(l []Tok, elems Elems*) {
     j=0; for j < len(fn.args) {
         a = fn.args[j]
         a.declScope = elems
+        a.isArg = true
         vs[len(vs)] = a
         j =j + 1
     }
@@ -3109,8 +3082,9 @@ parseFnDeclare(l []Tok, elems Elems*) {
     ocurrFnElems = compilerState.currFnElems
     compilerState.currFnElems = fnElems
     parseLines(tokens, fnElems)
+    OPTI_checkFuncScopeRef(fnElems)
+
     compilerState.currFnElems = ocurrFnElems
-    
     currentFn = null
     if fn.returned == false {
         if strlen(fn.returns.type) > 0 {
@@ -3192,7 +3166,7 @@ parseLine(line []Tok, elems Elems*) {
 
     ft = line[0]
     if ft.isOper == false && ft.isFunc == true {
-        fn = searchFuncByToken(ft, elems)
+        fn = searchFuncByToken(&ft, elems)
         if fn != null && fn.returns != null && isRCPtype(fn.returns.type, elems) {
             registerRCPvar(fn.returns.type, ft.cont, elems)
             return

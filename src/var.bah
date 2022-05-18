@@ -51,9 +51,9 @@ searchVar(name cpstring, elems Elems*) variable* {
         vtstr = vt.str()
 
         nv = new variable
+        *nv = *v
         nv.type = vtstr
         nv.name = ogName
-        nv.declScope = v.declScope
         nv.isArray = isArr
         return nv
     }
@@ -61,8 +61,8 @@ searchVar(name cpstring, elems Elems*) variable* {
     name = n.content
 
 
-    if hasStructSep(n) && n.count(")") == 0 {
-        rn = splitStructSepBefore(n)
+    if hasStructSep(&n) && n.count(")") == 0 {
+        rn = splitStructSepBefore(&n)
         name = rn.content
         n.trimLeft(rn.length)
         if n.hasPrefix(".") {
@@ -169,11 +169,14 @@ searchVar(name cpstring, elems Elems*) variable* {
 
 }
 
-searchVarByToken(t Tok, elems Elems*) variable* {
+searchVarByToken(t Tok*, elems Elems*) variable* {
     if t.bahRef != null {
         return t.bahRef
     }
-    return searchVar(t.cont, elems)
+    cont = string(t.cont)
+    cont.replace("&", "")
+    cont.replace("*", "")
+    return getRealVar(cont.str(), elems)
 }
 
 setCType(v variable*, elems Elems*) cpstring {
@@ -276,7 +279,7 @@ searchFunc(name cpstring, elems Elems*, inclCurr bool) func* {
         return fn
     }
     n = string(name)
-    if hasStructSep(n) {
+    if hasStructSep(&n) {
         fnName = splitStructSepAfter(n)
         n.trimRight(fnName.length)
         c = n.charAt(n.length-1)
@@ -327,7 +330,7 @@ searchFunc(name cpstring, elems Elems*, inclCurr bool) func* {
     return nf
 }
 
-searchFuncByToken(t Tok, elems Elems*) func* {
+searchFuncByToken(t Tok*, elems Elems*) func* {
     if t.bahRef != null {
         return t.bahRef
     }
@@ -381,30 +384,6 @@ declareStructMethods(v variable*, s cStruct*, elems Elems*) cpstring {
 
         i = i + 1
     }
-
-    if strlen(s.extendedFrom) > 0 {
-        es = searchStruct(s.extendedFrom, elems)
-        i=0; for i < len(es.methods) {
-            m = es.methods[i]
-            code = code + v.name + sep + m.name + " = " + es.name + "__" + m.name + ";\n"
-            i = i + 1
-        }
-    }
-
-    methods = s.methods
-    i=0; for i < len(methods) {
-        m = methods[i]
-            code = code + v.name + sep + m.name + " = " + s.name + "__" + m.name + ";\n"
-        i = i + 1
-    }
-
-    // if s.isBinding == false && RCPavailable() && s.hasRCPmemb == true {
-    //     if strCount(v.type, "*") == 0 {
-    //         code = code + v.name+".__RCP_counter = malloc(sizeof(int));*(int*)"+v.name+".__RCP_counter = 1;\n"
-    //     } else {
-    //         code = code + v.name+"->__RCP_counter = RCP_request("+v.name+");\n"
-    //     }
-    // }
 
     if s.isBinding == false {
         found = 0

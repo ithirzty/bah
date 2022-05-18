@@ -33,7 +33,9 @@ struct Tok {
     isOper: bool = false
     isEqual: bool = false
     pass: bool = false
+    //optimizations
     bahRef: ptr
+    parent: variable*
 }
 
 

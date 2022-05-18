@@ -29,10 +29,8 @@ len(a ptr) int {
     if a == null {
         return 0
     }
-    i = 0
-    noCheck(array(void*) * arr = a)
-    noCheck(i = arr->length)
-    return i
+    arr = <[]ptr> a
+    return noCheck(arr->length)
 }
 
 #define! memmove(dest ptr, src ptr, size int)

@@ -261,7 +261,7 @@ valueFunc(fn func*, parent variable*, l []Tok, i int, ltp lineType, elems Elems*
         }
 
         if t.type == TOKEN_TYPE_FUNC {
-            afn = searchFuncByToken(t, elems)
+            afn = searchFuncByToken(&t, elems)
             if afn != null && isRCPtype(afn.returns.type, elems) == true {
                 t.cont = registerRCPvar(afn.returns.type, t.cont, elems)
             }
@@ -325,7 +325,7 @@ valueStruct(l []Tok, i int, ltp lineType, elems Elems*) int {
         ntt = l[i]
         if ntt.cont == "(" {
             parent variable*
-            if t.type == TOKEN_TYPE_VAR == true {
+            if t.type == TOKEN_TYPE_VAR {
                 parent = searchVar(t.cont, elems)
             } else {
                 tmpV = genCompilerVar()
@@ -343,19 +343,30 @@ valueStruct(l []Tok, i int, ltp lineType, elems Elems*) int {
                 }
             }
             fn = searchStructMethod(nt.cont, s, elems)
+
             if fn == null {
                 throwErr(&nt, "Unknown method {TOKEN} in struct "+s.name+".")
             }
+            if t.type == TOKEN_TYPE_VAR {
+                if fn.isImported == true || fn.isMut == true {
+                    rp = searchVarByToken(&t, elems)
+                    rp.lastSet = elems
+                    if rp.isArg == true {
+                        currentFn.isMut = true
+                    }
+                }
+            }
             nfn = new func
             *nfn = *fn
-            nfn.name = nt.cont
+            // nfn.name = nt.cont
             
             valueFunc(nfn, parent, l, i, ltp, elems)
             fnt = l[i]
             delete(l, i)
             fnt.ogCont = t.ogCont + "." + nt.ogCont
             fnt.pos = t.pos
-            fnt.cont = t.cont + sep + fnt.cont
+            // fnt.cont = t.cont + sep + fnt.cont
+            // fnt.cont = t.cont + sep + fnt.cont
             l[tokPos] = fnt
             return tokPos
         }
@@ -366,10 +377,17 @@ valueStruct(l []Tok, i int, ltp lineType, elems Elems*) int {
     if m == null {
         throwErr(&nt, "Unknown struct member {TOKEN} in struct '"+s.name+"'.")
     }
-    t.cont += sep + nt.cont
+    if m.isFn == true {
+        t.cont = s.name+"__"+m.name
+    } else {
+        if t.type == TOKEN_TYPE_VAR {
+            t.parent = searchVarByToken(&t, elems)
+        }
+        t.cont += sep + nt.cont
+    }
     t.ogCont += "."+nt.cont
     t.bahType = m.type
-    t.bahRef = new variable{
+    t.bahRef = new variable {
         name: t.cont
         type: t.bahType
     }
@@ -512,19 +530,19 @@ valueArr(l []Tok, i int, ltp lineType, elems Elems*) int {
                 OUTPUT += rope(elemType.str() + " " + tmpV.name+";\n")
             }
             if isRCPpointerType(ptt.str()) {
-                NEXT_LINE = t.cont + "->set("+pt.cont+", "+index.cont+", "+tmpV.name+");\n"
+                NEXT_LINE = "mapWrapper__set("+pt.cont+", "+index.cont+", "+tmpV.name+");\n"
             } else {
-                NEXT_LINE = t.cont + "->setAny("+pt.cont+", "+index.cont+", &"+tmpV.name+", sizeof("+elemType.str()+"));\n"
+                NEXT_LINE = "mapWrapper__setAny("+pt.cont+", "+index.cont+", &"+tmpV.name+", sizeof("+elemType.str()+"));\n"
             }
             t.cont = tmpV.name
             t.bahType = ptt.str()
         } else { //getting map value
             t.isFunc = true
             if isRCPpointerType(ptt.str()) {
-                t.cont += "->get("+t.cont+", "+index.cont+")"
+                t.cont = "mapWrapper__get("+t.cont+", "+index.cont+")"
             } else {
                 tmpV = genCompilerVar()
-                res = rope(elemType.str() + "* "+tmpV+"="+pt.cont+"->get("+pt.cont+", "+index.cont+");\n")
+                res = rope(elemType.str() + "* "+tmpV+"=mapWrapper__get("+pt.cont+", "+index.cont+");\n")
                 t.cont = "("+elemType.str()+")(*"+tmpV+")"
                 if isGlobal() {
                     INIT += res
@@ -800,7 +818,7 @@ valueOper(l []Tok, i int, elems Elems*) int {
             }
             methd = searchStructMemb(mName, s, elems)
             if methd != null && methd.isFn == true {
-                pt.cont += sep + mName + "(" +amp+pt.cont + ", " + nt.cont + ")"
+                pt.cont = s.name + "__" + mName + "(" +amp+pt.cont + ", " + nt.cont + ")"
                 pt.isFunc = true
             }
         } else {
@@ -839,13 +857,13 @@ valueSendChan(l []Tok, i int, elems Elems*) int {
     }
 
     if isRCPpointerType(ptt.str()) {
-        OUTPUT += rope(pt.cont+"->send("+pt.cont+", "+nt.cont+");\n")
+        OUTPUT += rope("channel__send("+pt.cont+", "+nt.cont+");\n")
     } else {
         ct = getCType(ntt, elems)
         tmpV = genCompilerVar()
         OUTPUT += rope("
         "+ct.str()+" "+tmpV+" = "+nt.cont+";
-        "+pt.cont+"->sendAny("+pt.cont+", &"+tmpV+", sizeof("+tmpV+"));
+        channel__sendAny("+pt.cont+", &"+tmpV+", sizeof("+tmpV+"));
         ")
     }
 
@@ -874,13 +892,13 @@ valueChan(l []Tok, i int, elems Elems*) int {
 
     ct = getCType(ntt.str(), elems)
     if isRCPpointerType(ntt.str()) {
-        nt.cont = "("+ct.str()+")"+nt.cont+"->receive("+nt.cont+")"
+        nt.cont = "("+ct.str()+")channel__receive("+nt.cont+")"
     } else {
         if RCPavailable() {
-            tmpV = registerRCPvar(ntt.str()+"*", "("+ct.str()+"*)"+nt.cont+"->receive("+nt.cont+")", elems)
+            tmpV = registerRCPvar(ntt.str()+"*", "("+ct.str()+"*)channel__receive("+nt.cont+")", elems)
             nt.cont = "*"+tmpV
         } else {
-            nt.cont = "*("+ct.str()+"*)"+nt.cont+"->receive("+nt.cont+")"
+            nt.cont = "*("+ct.str()+"*)channel__receive("+nt.cont+")"
         }
     }
 
