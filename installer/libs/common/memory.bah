@@ -29,7 +29,7 @@ len(a ptr) int {
     if a == null {
         return 0
     }
-    arr = <[]ptr> a
+    noCheck(array(void*)*arr = a)
     return noCheck(arr->length)
 }
 

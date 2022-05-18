@@ -59,7 +59,7 @@ long int len(void * a){
 if ((a==null)) {
 return 0;
 }
-array(void *)* arr = (array(void *)*)a;
+array(void*)*arr=a;
 return arr->length;
 };
 #include <gc.h>
@@ -2594,7 +2594,7 @@ return r;
 char * BAH_DIR;
 char * BAH_OS;
 char * BAH_CC;
-#define BAH_VERSION "v1.2 (build 91)"
+#define BAH_VERSION "v1.2 (build 92)"
 char debug;
 char verboseRuntime;
 char isObject;
@@ -6033,6 +6033,12 @@ struct string cont = string(t->cont);
 string__replace(&cont,"&","");
 string__replace(&cont,"*","");
 char * ____BAH_COMPILER_VAR_193 =string__str(&cont);return getRealVar(____BAH_COMPILER_VAR_193,elems);
+};
+struct variable* searchVirtVarByToken(struct Tok* t,struct Elems* elems){
+if ((t->bahRef!=null)) {
+return t->bahRef;
+}
+return searchVar(t->cont,elems);
 };
 char * setCType(struct variable* v,struct Elems* elems){
 struct string tp = getCType(v->type,elems);
@@ -15576,7 +15582,7 @@ i = 1;
 while ((i<len(l))) {
 struct Tok t = l->data[i];
 if ((t.type==TOKEN_TYPE_VAR)&&(t.isOper==false)) {
-struct variable* v = searchVarByToken(&t,elems);
+struct variable* v = searchVirtVarByToken(&t,elems);
 if ((v!=null)) {
 
     {
@@ -21637,7 +21643,7 @@ long int strLen_2 = strlen("\e[1;32mDone. (compiled in ");
 }
 return 0;
 };
-volatile struct __Bah_fnName_mapper __tmp____Bah_fnNames[300];
+volatile struct __Bah_fnName_mapper __tmp____Bah_fnNames[301];
     
     void __attribute__((optimize("O0"))) __BAH_init() {
         __BAH_panic_chan = null;
@@ -22441,254 +22447,257 @@ equalsTokens->data[4] = "/=";
             __tmp____Bah_fnNames[217].n = "searchVarByToken";
             __tmp____Bah_fnNames[217].p = searchVarByToken;
 
-            __tmp____Bah_fnNames[218].n = "setCType";
-            __tmp____Bah_fnNames[218].p = setCType;
+            __tmp____Bah_fnNames[218].n = "searchVirtVarByToken";
+            __tmp____Bah_fnNames[218].p = searchVirtVarByToken;
 
-            __tmp____Bah_fnNames[219].n = "getTypeFromToken";
-            __tmp____Bah_fnNames[219].p = getTypeFromToken;
+            __tmp____Bah_fnNames[219].n = "setCType";
+            __tmp____Bah_fnNames[219].p = setCType;
 
-            __tmp____Bah_fnNames[220].n = "searchFuncByToken";
-            __tmp____Bah_fnNames[220].p = searchFuncByToken;
+            __tmp____Bah_fnNames[220].n = "getTypeFromToken";
+            __tmp____Bah_fnNames[220].p = getTypeFromToken;
 
-            __tmp____Bah_fnNames[221].n = "RCPavailable";
-            __tmp____Bah_fnNames[221].p = RCPavailable;
+            __tmp____Bah_fnNames[221].n = "searchFuncByToken";
+            __tmp____Bah_fnNames[221].p = searchFuncByToken;
 
-            __tmp____Bah_fnNames[222].n = "declareStructMethods";
-            __tmp____Bah_fnNames[222].p = declareStructMethods;
+            __tmp____Bah_fnNames[222].n = "RCPavailable";
+            __tmp____Bah_fnNames[222].p = RCPavailable;
 
-            __tmp____Bah_fnNames[223].n = "genCompilerVar";
-            __tmp____Bah_fnNames[223].p = genCompilerVar;
+            __tmp____Bah_fnNames[223].n = "declareStructMethods";
+            __tmp____Bah_fnNames[223].p = declareStructMethods;
 
-            __tmp____Bah_fnNames[224].n = "varInArr";
-            __tmp____Bah_fnNames[224].p = varInArr;
+            __tmp____Bah_fnNames[224].n = "genCompilerVar";
+            __tmp____Bah_fnNames[224].p = genCompilerVar;
 
-            __tmp____Bah_fnNames[225].n = "pathToVarName";
-            __tmp____Bah_fnNames[225].p = pathToVarName;
+            __tmp____Bah_fnNames[225].n = "varInArr";
+            __tmp____Bah_fnNames[225].p = varInArr;
 
-            __tmp____Bah_fnNames[226].n = "makeInit";
-            __tmp____Bah_fnNames[226].p = makeInit;
+            __tmp____Bah_fnNames[226].n = "pathToVarName";
+            __tmp____Bah_fnNames[226].p = pathToVarName;
 
-            __tmp____Bah_fnNames[227].n = "isOutterScope";
-            __tmp____Bah_fnNames[227].p = isOutterScope;
+            __tmp____Bah_fnNames[227].n = "makeInit";
+            __tmp____Bah_fnNames[227].p = makeInit;
 
-            __tmp____Bah_fnNames[228].n = "decrVar";
-            __tmp____Bah_fnNames[228].p = decrVar;
+            __tmp____Bah_fnNames[228].n = "isOutterScope";
+            __tmp____Bah_fnNames[228].p = isOutterScope;
 
-            __tmp____Bah_fnNames[229].n = "incrVar";
-            __tmp____Bah_fnNames[229].p = incrVar;
+            __tmp____Bah_fnNames[229].n = "decrVar";
+            __tmp____Bah_fnNames[229].p = decrVar;
 
-            __tmp____Bah_fnNames[230].n = "beginRCPscope";
-            __tmp____Bah_fnNames[230].p = beginRCPscope;
+            __tmp____Bah_fnNames[230].n = "incrVar";
+            __tmp____Bah_fnNames[230].p = incrVar;
 
-            __tmp____Bah_fnNames[231].n = "beginRCPscopeLeaky";
-            __tmp____Bah_fnNames[231].p = beginRCPscopeLeaky;
+            __tmp____Bah_fnNames[231].n = "beginRCPscope";
+            __tmp____Bah_fnNames[231].p = beginRCPscope;
 
-            __tmp____Bah_fnNames[232].n = "removeDefs";
-            __tmp____Bah_fnNames[232].p = removeDefs;
+            __tmp____Bah_fnNames[232].n = "beginRCPscopeLeaky";
+            __tmp____Bah_fnNames[232].p = beginRCPscopeLeaky;
 
-            __tmp____Bah_fnNames[233].n = "endRCPscope";
-            __tmp____Bah_fnNames[233].p = endRCPscope;
+            __tmp____Bah_fnNames[233].n = "removeDefs";
+            __tmp____Bah_fnNames[233].p = removeDefs;
 
-            __tmp____Bah_fnNames[234].n = "endRCPscopeLeaky";
-            __tmp____Bah_fnNames[234].p = endRCPscopeLeaky;
+            __tmp____Bah_fnNames[234].n = "endRCPscope";
+            __tmp____Bah_fnNames[234].p = endRCPscope;
 
-            __tmp____Bah_fnNames[235].n = "registerRCPvar";
-            __tmp____Bah_fnNames[235].p = registerRCPvar;
+            __tmp____Bah_fnNames[235].n = "endRCPscopeLeaky";
+            __tmp____Bah_fnNames[235].p = endRCPscopeLeaky;
 
-            __tmp____Bah_fnNames[236].n = "RCPselfRef";
-            __tmp____Bah_fnNames[236].p = RCPselfRef;
+            __tmp____Bah_fnNames[236].n = "registerRCPvar";
+            __tmp____Bah_fnNames[236].p = registerRCPvar;
 
-            __tmp____Bah_fnNames[237].n = "verboseOutGuard";
-            __tmp____Bah_fnNames[237].p = verboseOutGuard;
+            __tmp____Bah_fnNames[237].n = "RCPselfRef";
+            __tmp____Bah_fnNames[237].p = RCPselfRef;
 
-            __tmp____Bah_fnNames[238].n = "verboseOutTransformVar";
-            __tmp____Bah_fnNames[238].p = verboseOutTransformVar;
+            __tmp____Bah_fnNames[238].n = "verboseOutGuard";
+            __tmp____Bah_fnNames[238].p = verboseOutGuard;
 
-            __tmp____Bah_fnNames[239].n = "verboseOutTransformTok";
-            __tmp____Bah_fnNames[239].p = verboseOutTransformTok;
+            __tmp____Bah_fnNames[239].n = "verboseOutTransformVar";
+            __tmp____Bah_fnNames[239].p = verboseOutTransformVar;
 
-            __tmp____Bah_fnNames[240].n = "verboseOutFunc";
-            __tmp____Bah_fnNames[240].p = verboseOutFunc;
+            __tmp____Bah_fnNames[240].n = "verboseOutTransformTok";
+            __tmp____Bah_fnNames[240].p = verboseOutTransformTok;
 
-            __tmp____Bah_fnNames[241].n = "verboseOutOper";
-            __tmp____Bah_fnNames[241].p = verboseOutOper;
+            __tmp____Bah_fnNames[241].n = "verboseOutFunc";
+            __tmp____Bah_fnNames[241].p = verboseOutFunc;
 
-            __tmp____Bah_fnNames[242].n = "readCache";
-            __tmp____Bah_fnNames[242].p = readCache;
+            __tmp____Bah_fnNames[242].n = "verboseOutOper";
+            __tmp____Bah_fnNames[242].p = verboseOutOper;
 
-            __tmp____Bah_fnNames[243].n = "getCacheFile";
-            __tmp____Bah_fnNames[243].p = getCacheFile;
+            __tmp____Bah_fnNames[243].n = "readCache";
+            __tmp____Bah_fnNames[243].p = readCache;
 
-            __tmp____Bah_fnNames[244].n = "updateCacheFile";
-            __tmp____Bah_fnNames[244].p = updateCacheFile;
+            __tmp____Bah_fnNames[244].n = "getCacheFile";
+            __tmp____Bah_fnNames[244].p = getCacheFile;
 
-            __tmp____Bah_fnNames[245].n = "makeCacheFile";
-            __tmp____Bah_fnNames[245].p = makeCacheFile;
+            __tmp____Bah_fnNames[245].n = "updateCacheFile";
+            __tmp____Bah_fnNames[245].p = updateCacheFile;
 
-            __tmp____Bah_fnNames[246].n = "writeCache";
-            __tmp____Bah_fnNames[246].p = writeCache;
+            __tmp____Bah_fnNames[246].n = "makeCacheFile";
+            __tmp____Bah_fnNames[246].p = makeCacheFile;
 
-            __tmp____Bah_fnNames[247].n = "isValidCacheFile";
-            __tmp____Bah_fnNames[247].p = isValidCacheFile;
+            __tmp____Bah_fnNames[247].n = "writeCache";
+            __tmp____Bah_fnNames[247].p = writeCache;
 
-            __tmp____Bah_fnNames[248].n = "genArrRealloc";
-            __tmp____Bah_fnNames[248].p = genArrRealloc;
+            __tmp____Bah_fnNames[248].n = "isValidCacheFile";
+            __tmp____Bah_fnNames[248].p = isValidCacheFile;
 
-            __tmp____Bah_fnNames[249].n = "OPTI_checkFuncScopeRef";
-            __tmp____Bah_fnNames[249].p = OPTI_checkFuncScopeRef;
+            __tmp____Bah_fnNames[249].n = "genArrRealloc";
+            __tmp____Bah_fnNames[249].p = genArrRealloc;
 
-            __tmp____Bah_fnNames[250].n = "debugLine";
-            __tmp____Bah_fnNames[250].p = debugLine;
+            __tmp____Bah_fnNames[250].n = "OPTI_checkFuncScopeRef";
+            __tmp____Bah_fnNames[250].p = OPTI_checkFuncScopeRef;
 
-            __tmp____Bah_fnNames[251].n = "dupElems";
-            __tmp____Bah_fnNames[251].p = dupElems;
+            __tmp____Bah_fnNames[251].n = "debugLine";
+            __tmp____Bah_fnNames[251].p = debugLine;
 
-            __tmp____Bah_fnNames[252].n = "getLineType";
-            __tmp____Bah_fnNames[252].p = getLineType;
+            __tmp____Bah_fnNames[252].n = "dupElems";
+            __tmp____Bah_fnNames[252].p = dupElems;
 
-            __tmp____Bah_fnNames[253].n = "parseCast";
-            __tmp____Bah_fnNames[253].p = parseCast;
+            __tmp____Bah_fnNames[253].n = "getLineType";
+            __tmp____Bah_fnNames[253].p = getLineType;
 
-            __tmp____Bah_fnNames[254].n = "getDirFromFile";
-            __tmp____Bah_fnNames[254].p = getDirFromFile;
+            __tmp____Bah_fnNames[254].n = "parseCast";
+            __tmp____Bah_fnNames[254].p = parseCast;
 
-            __tmp____Bah_fnNames[255].n = "parseLines";
-            __tmp____Bah_fnNames[255].p = parseLines;
+            __tmp____Bah_fnNames[255].n = "getDirFromFile";
+            __tmp____Bah_fnNames[255].p = getDirFromFile;
 
-            __tmp____Bah_fnNames[256].n = "includeFile";
-            __tmp____Bah_fnNames[256].p = includeFile;
+            __tmp____Bah_fnNames[256].n = "parseLines";
+            __tmp____Bah_fnNames[256].p = parseLines;
 
-            __tmp____Bah_fnNames[257].n = "parallelObjCompile";
-            __tmp____Bah_fnNames[257].p = parallelObjCompile;
+            __tmp____Bah_fnNames[257].n = "includeFile";
+            __tmp____Bah_fnNames[257].p = includeFile;
 
-            __tmp____Bah_fnNames[258].n = "parseImport";
-            __tmp____Bah_fnNames[258].p = parseImport;
+            __tmp____Bah_fnNames[258].n = "parallelObjCompile";
+            __tmp____Bah_fnNames[258].p = parallelObjCompile;
 
-            __tmp____Bah_fnNames[259].n = "parseInclude";
-            __tmp____Bah_fnNames[259].p = parseInclude;
+            __tmp____Bah_fnNames[259].n = "parseImport";
+            __tmp____Bah_fnNames[259].p = parseImport;
 
-            __tmp____Bah_fnNames[260].n = "prePross";
-            __tmp____Bah_fnNames[260].p = prePross;
+            __tmp____Bah_fnNames[260].n = "parseInclude";
+            __tmp____Bah_fnNames[260].p = parseInclude;
 
-            __tmp____Bah_fnNames[261].n = "parseStructType";
-            __tmp____Bah_fnNames[261].p = parseStructType;
+            __tmp____Bah_fnNames[261].n = "prePross";
+            __tmp____Bah_fnNames[261].p = prePross;
 
-            __tmp____Bah_fnNames[262].n = "parseArrayType";
-            __tmp____Bah_fnNames[262].p = parseArrayType;
+            __tmp____Bah_fnNames[262].n = "parseStructType";
+            __tmp____Bah_fnNames[262].p = parseStructType;
 
-            __tmp____Bah_fnNames[263].n = "parsePointers";
-            __tmp____Bah_fnNames[263].p = parsePointers;
+            __tmp____Bah_fnNames[263].n = "parseArrayType";
+            __tmp____Bah_fnNames[263].p = parseArrayType;
 
-            __tmp____Bah_fnNames[264].n = "parseSerialize";
-            __tmp____Bah_fnNames[264].p = parseSerialize;
+            __tmp____Bah_fnNames[264].n = "parsePointers";
+            __tmp____Bah_fnNames[264].p = parsePointers;
 
-            __tmp____Bah_fnNames[265].n = "parseReflect";
-            __tmp____Bah_fnNames[265].p = parseReflect;
+            __tmp____Bah_fnNames[265].n = "parseSerialize";
+            __tmp____Bah_fnNames[265].p = parseSerialize;
 
-            __tmp____Bah_fnNames[266].n = "parseArrayDecl";
-            __tmp____Bah_fnNames[266].p = parseArrayDecl;
+            __tmp____Bah_fnNames[266].n = "parseReflect";
+            __tmp____Bah_fnNames[266].p = parseReflect;
 
-            __tmp____Bah_fnNames[267].n = "parseVar";
-            __tmp____Bah_fnNames[267].p = parseVar;
+            __tmp____Bah_fnNames[267].n = "parseArrayDecl";
+            __tmp____Bah_fnNames[267].p = parseArrayDecl;
 
-            __tmp____Bah_fnNames[268].n = "getCfunctionType";
-            __tmp____Bah_fnNames[268].p = getCfunctionType;
+            __tmp____Bah_fnNames[268].n = "parseVar";
+            __tmp____Bah_fnNames[268].p = parseVar;
 
-            __tmp____Bah_fnNames[269].n = "parseFnHeader";
-            __tmp____Bah_fnNames[269].p = parseFnHeader;
+            __tmp____Bah_fnNames[269].n = "getCfunctionType";
+            __tmp____Bah_fnNames[269].p = getCfunctionType;
 
-            __tmp____Bah_fnNames[270].n = "parseStruct";
-            __tmp____Bah_fnNames[270].p = parseStruct;
+            __tmp____Bah_fnNames[270].n = "parseFnHeader";
+            __tmp____Bah_fnNames[270].p = parseFnHeader;
 
-            __tmp____Bah_fnNames[271].n = "parseDefine";
-            __tmp____Bah_fnNames[271].p = parseDefine;
+            __tmp____Bah_fnNames[271].n = "parseStruct";
+            __tmp____Bah_fnNames[271].p = parseStruct;
 
-            __tmp____Bah_fnNames[272].n = "parseClib";
-            __tmp____Bah_fnNames[272].p = parseClib;
+            __tmp____Bah_fnNames[272].n = "parseDefine";
+            __tmp____Bah_fnNames[272].p = parseDefine;
 
-            __tmp____Bah_fnNames[273].n = "parseConst";
-            __tmp____Bah_fnNames[273].p = parseConst;
+            __tmp____Bah_fnNames[273].n = "parseClib";
+            __tmp____Bah_fnNames[273].p = parseClib;
 
-            __tmp____Bah_fnNames[274].n = "parseReturn";
-            __tmp____Bah_fnNames[274].p = parseReturn;
+            __tmp____Bah_fnNames[274].n = "parseConst";
+            __tmp____Bah_fnNames[274].p = parseConst;
 
-            __tmp____Bah_fnNames[275].n = "parseIf";
-            __tmp____Bah_fnNames[275].p = parseIf;
+            __tmp____Bah_fnNames[275].n = "parseReturn";
+            __tmp____Bah_fnNames[275].p = parseReturn;
 
-            __tmp____Bah_fnNames[276].n = "parseElse";
-            __tmp____Bah_fnNames[276].p = parseElse;
+            __tmp____Bah_fnNames[276].n = "parseIf";
+            __tmp____Bah_fnNames[276].p = parseIf;
 
-            __tmp____Bah_fnNames[277].n = "parseLine";
-            __tmp____Bah_fnNames[277].p = parseLine;
+            __tmp____Bah_fnNames[277].n = "parseElse";
+            __tmp____Bah_fnNames[277].p = parseElse;
 
-            __tmp____Bah_fnNames[278].n = "parseFor";
-            __tmp____Bah_fnNames[278].p = parseFor;
+            __tmp____Bah_fnNames[278].n = "parseLine";
+            __tmp____Bah_fnNames[278].p = parseLine;
 
-            __tmp____Bah_fnNames[279].n = "parseForOp";
-            __tmp____Bah_fnNames[279].p = parseForOp;
+            __tmp____Bah_fnNames[279].n = "parseFor";
+            __tmp____Bah_fnNames[279].p = parseFor;
 
-            __tmp____Bah_fnNames[280].n = "makeEvalFunc";
-            __tmp____Bah_fnNames[280].p = makeEvalFunc;
+            __tmp____Bah_fnNames[280].n = "parseForOp";
+            __tmp____Bah_fnNames[280].p = parseForOp;
 
-            __tmp____Bah_fnNames[281].n = "parsePreKeyword";
-            __tmp____Bah_fnNames[281].p = parsePreKeyword;
+            __tmp____Bah_fnNames[281].n = "makeEvalFunc";
+            __tmp____Bah_fnNames[281].p = makeEvalFunc;
 
-            __tmp____Bah_fnNames[282].n = "parseAsync";
-            __tmp____Bah_fnNames[282].p = parseAsync;
+            __tmp____Bah_fnNames[282].n = "parsePreKeyword";
+            __tmp____Bah_fnNames[282].p = parsePreKeyword;
 
-            __tmp____Bah_fnNames[283].n = "addRCPvars";
-            __tmp____Bah_fnNames[283].p = addRCPvars;
+            __tmp____Bah_fnNames[283].n = "parseAsync";
+            __tmp____Bah_fnNames[283].p = parseAsync;
 
-            __tmp____Bah_fnNames[284].n = "parseChan";
-            __tmp____Bah_fnNames[284].p = parseChan;
+            __tmp____Bah_fnNames[284].n = "addRCPvars";
+            __tmp____Bah_fnNames[284].p = addRCPvars;
 
-            __tmp____Bah_fnNames[285].n = "valueFunc";
-            __tmp____Bah_fnNames[285].p = valueFunc;
+            __tmp____Bah_fnNames[285].n = "parseChan";
+            __tmp____Bah_fnNames[285].p = parseChan;
 
-            __tmp____Bah_fnNames[286].n = "valueStruct";
-            __tmp____Bah_fnNames[286].p = valueStruct;
+            __tmp____Bah_fnNames[286].n = "valueFunc";
+            __tmp____Bah_fnNames[286].p = valueFunc;
 
-            __tmp____Bah_fnNames[287].n = "valueArr";
-            __tmp____Bah_fnNames[287].p = valueArr;
+            __tmp____Bah_fnNames[287].n = "valueStruct";
+            __tmp____Bah_fnNames[287].p = valueStruct;
 
-            __tmp____Bah_fnNames[288].n = "valueBool";
-            __tmp____Bah_fnNames[288].p = valueBool;
+            __tmp____Bah_fnNames[288].n = "valueArr";
+            __tmp____Bah_fnNames[288].p = valueArr;
 
-            __tmp____Bah_fnNames[289].n = "valueOper";
-            __tmp____Bah_fnNames[289].p = valueOper;
+            __tmp____Bah_fnNames[289].n = "valueBool";
+            __tmp____Bah_fnNames[289].p = valueBool;
 
-            __tmp____Bah_fnNames[290].n = "valueSendChan";
-            __tmp____Bah_fnNames[290].p = valueSendChan;
+            __tmp____Bah_fnNames[290].n = "valueOper";
+            __tmp____Bah_fnNames[290].p = valueOper;
 
-            __tmp____Bah_fnNames[291].n = "valueChan";
-            __tmp____Bah_fnNames[291].p = valueChan;
+            __tmp____Bah_fnNames[291].n = "valueSendChan";
+            __tmp____Bah_fnNames[291].p = valueSendChan;
 
-            __tmp____Bah_fnNames[292].n = "isSmallValue";
-            __tmp____Bah_fnNames[292].p = isSmallValue;
+            __tmp____Bah_fnNames[292].n = "valueChan";
+            __tmp____Bah_fnNames[292].p = valueChan;
 
-            __tmp____Bah_fnNames[293].n = "isValue";
-            __tmp____Bah_fnNames[293].p = isValue;
+            __tmp____Bah_fnNames[293].n = "isSmallValue";
+            __tmp____Bah_fnNames[293].p = isSmallValue;
 
-            __tmp____Bah_fnNames[294].n = "parseFnDeclare";
-            __tmp____Bah_fnNames[294].p = parseFnDeclare;
+            __tmp____Bah_fnNames[294].n = "isValue";
+            __tmp____Bah_fnNames[294].p = isValue;
 
-            __tmp____Bah_fnNames[295].n = "declareFunc";
-            __tmp____Bah_fnNames[295].p = declareFunc;
+            __tmp____Bah_fnNames[295].n = "parseFnDeclare";
+            __tmp____Bah_fnNames[295].p = parseFnDeclare;
 
-            __tmp____Bah_fnNames[296].n = "declareVar";
-            __tmp____Bah_fnNames[296].p = declareVar;
+            __tmp____Bah_fnNames[296].n = "declareFunc";
+            __tmp____Bah_fnNames[296].p = declareFunc;
 
-            __tmp____Bah_fnNames[297].n = "declareAll";
-            __tmp____Bah_fnNames[297].p = declareAll;
+            __tmp____Bah_fnNames[297].n = "declareVar";
+            __tmp____Bah_fnNames[297].p = declareVar;
 
-            __tmp____Bah_fnNames[298].n = "memErrHandle";
-            __tmp____Bah_fnNames[298].p = memErrHandle;
+            __tmp____Bah_fnNames[298].n = "declareAll";
+            __tmp____Bah_fnNames[298].p = declareAll;
 
-            __tmp____Bah_fnNames[299].n = "main";
-            __tmp____Bah_fnNames[299].p = main;
+            __tmp____Bah_fnNames[299].n = "memErrHandle";
+            __tmp____Bah_fnNames[299].p = memErrHandle;
+
+            __tmp____Bah_fnNames[300].n = "main";
+            __tmp____Bah_fnNames[300].p = main;
 
         __Bah_fnNames->data = __tmp____Bah_fnNames;
-        __Bah_fnNames->length = 300;
+        __Bah_fnNames->length = 301;
         
     };
     

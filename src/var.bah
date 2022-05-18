@@ -179,6 +179,13 @@ searchVarByToken(t Tok*, elems Elems*) variable* {
     return getRealVar(cont.str(), elems)
 }
 
+searchVirtVarByToken(t Tok*, elems Elems*) variable* {
+    if t.bahRef != null {
+        return t.bahRef
+    }
+    return searchVar(t.cont, elems)
+}
+
 setCType(v variable*, elems Elems*) cpstring {
         tp = getCType(v.type, elems)
         t = tp.str()
