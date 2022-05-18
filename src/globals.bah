@@ -40,6 +40,7 @@ struct func {
     from: cpstring = ""
     file: cpstring = ""
     line: int = 1
+    isVar: bool = false
     //optimizations
     used: bool = false
     code: rope* = null

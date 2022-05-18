@@ -133,6 +133,7 @@ searchStructMethod(name cpstring, s cStruct*, elems Elems*) func* {
         if s.members[i].name == name {
             fn = parseFnType(string(s.members[i].type))
             fn.name = name
+            fn.isVar = true
             return fn
         }
     }

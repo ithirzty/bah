@@ -2628,15 +2628,16 @@ parseAsync(l []Tok, elems Elems*) {
     }
 
     sFnT = string(fnT.cont)
-    
+
     fnNameParts = splitString(sFnT, "(")
     fnName = fnNameParts[0]
 
-    fn = searchFunc(fnName.str(), elems, true)
+    fn = searchFuncByToken(&fnT, elems)
     
     if fn == null {
         throwErr(&fnT, "Internal compiler error.\n Error parsing async call for function '"+fnName.str()+"', arround {TOKEN}.")
     }
+    fnName = string(fn.name)
     sMembs = ""
     unSerMembs = ""
     

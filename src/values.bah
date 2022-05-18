@@ -343,7 +343,6 @@ valueStruct(l []Tok, i int, ltp lineType, elems Elems*) int {
                 }
             }
             fn = searchStructMethod(nt.cont, s, elems)
-
             if fn == null {
                 throwErr(&nt, "Unknown method {TOKEN} in struct "+s.name+".")
             }
@@ -356,11 +355,10 @@ valueStruct(l []Tok, i int, ltp lineType, elems Elems*) int {
                     }
                 }
             }
-            nfn = new func
-            *nfn = *fn
-            // nfn.name = nt.cont
-            
-            valueFunc(nfn, parent, l, i, ltp, elems)
+            if fn.isVar == true {
+                fn.name = t.cont + sep + fn.name
+            }
+            valueFunc(fn, parent, l, i, ltp, elems)
             fnt = l[i]
             delete(l, i)
             fnt.ogCont = t.ogCont + "." + nt.ogCont
