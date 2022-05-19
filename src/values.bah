@@ -443,40 +443,46 @@ valueArr(l []Tok, i int, ltp lineType, elems Elems*) int {
     if len(memory) > 1 {
         split = true
         first = memory[0]
-        if first.cont == ":" {
+        second Tok
+        third Tok
+
+        if len(memory) == 3 {
             second = memory[1]
-            secondt = getTypeFromToken(&second, true, elems)
-            if compTypes(secondt, "int") == false {
-                throwErr(&second, "Cannot use {TOKEN} as index (int).")
+            third = memory[2]
+            firstT = getTypeFromToken(&first, true, elems)
+            if compTypes(firstT, "int") == false {
+                throwErr(&first, "Cannot use {TOKEN} as int.")
             }
-            from = "0"
-            to = second.cont
-        } else {
+            thirdT = getTypeFromToken(&third, true, elems)
+            if compTypes(thirdT, "int") == false {
+                throwErr(&third, "Cannot use {TOKEN} as int.")
+            }
+            if second.cont != ":" {
+                throwErr(&second, "Expected ':' not {TOKEN}.")
+            }
+            from = first.cont
+            to = third.cont
+        } else if len(memory) == 2 {
             second = memory[1]
-            if second.cont == ":" {
-                if len(memory) == 2 {
-                    firstt = getTypeFromToken(&first, true, elems)
-                    if compTypes(firstt, "int") == false {
-                        throwErr(&first, "Cannot use {TOKEN} as index (int).")
-                    }
-                    from = first.cont
-                    to = ""
-                } else if len(memory) == 3 {
-                    firstt = getTypeFromToken(&first, true, elems)
-                    if compTypes(firstt, "int") == false {
-                        throwErr(&first, "Cannot use {TOKEN} as index (int).")
-                    }
-                    third = memory[1]
-                    thirdt = getTypeFromToken(&third, true, elems)
-                    if compTypes(thirdt, "int") == false {
-                        throwErr(&third, "Cannot use {TOKEN} as index (int).")
-                    }
-                    from = first.cont
-                    to = third.cont
-                } else {
-                    throwErr(&second, "Cannot substitute by more than 2 values.")
+
+            if first.cont == ":" {
+                from = "0"
+                secondT = getTypeFromToken(&second, true, elems)
+                if compTypes(secondT, "int") == false {
+                    throwErr(&second, "Cannot use {TOKEN} as int.")
                 }
+                to = second.cont
+            } else if second.cont == ":" {
+                firstT = getTypeFromToken(&first, true, elems)
+                if compTypes(firstT, "int") == false {
+                    throwErr(&first, "Cannot use {TOKEN} as int.")
+                }
+                from = first.cont
+            } else {
+                throwErr(&second, "Expected ':' not {TOKEN}")
             }
+        } else {
+            throwErr(&memory[3], "Cannot substiture with more than 2 values, expected ']' not {TOKEN}.")
         }
     }
 

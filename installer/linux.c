@@ -1391,7 +1391,6 @@ __BAH_panic("Error appending to string, possibly due to memory shortage.","/opt/
 this->content = nc;
 strncpy(this->content,s,sl);
 strCatOffset(this->content,sl,tmpS,this->length);
-destroy(tmpS);
 this->length = nl;
 };
 char string__charAt(struct string* this,long int i){
@@ -2654,7 +2653,7 @@ return r;
 char * BAH_DIR;
 char * BAH_OS;
 char * BAH_CC;
-#define BAH_VERSION "v1.2 (build 92)"
+#define BAH_VERSION "v1.2 (build 93)"
 char debug;
 char verboseRuntime;
 char isObject;
@@ -17496,43 +17495,48 @@ char * to = "";
 if ((len(memory)>1)) {
 split = true;
 struct Tok first = memory->data[0];
-if ((strcmp(first.cont, ":") == 0)) {
-struct Tok second = memory->data[1];
-char * secondt = getTypeFromToken(&second,true,elems);
-if ((compTypes(secondt,"int")==false)) {
-throwErr(&second,"Cannot use {TOKEN} as index (int).");
+struct Tok second;
+struct Tok third;
+if ((len(memory)==3)) {
+second = memory->data[1];
+third = memory->data[2];
+char * firstT = getTypeFromToken(&first,true,elems);
+if ((compTypes(firstT,"int")==false)) {
+throwErr(&first,"Cannot use {TOKEN} as int.");
 }
-from = "0";
-to = second.cont;
+char * thirdT = getTypeFromToken(&third,true,elems);
+if ((compTypes(thirdT,"int")==false)) {
+throwErr(&third,"Cannot use {TOKEN} as int.");
 }
-else {
-struct Tok second = memory->data[1];
-if ((strcmp(second.cont, ":") == 0)) {
-if ((len(memory)==2)) {
-char * firstt = getTypeFromToken(&first,true,elems);
-if ((compTypes(firstt,"int")==false)) {
-throwErr(&first,"Cannot use {TOKEN} as index (int).");
-}
-from = first.cont;
-to = "";
-}
-else if ((len(memory)==3)) {
-char * firstt = getTypeFromToken(&first,true,elems);
-if ((compTypes(firstt,"int")==false)) {
-throwErr(&first,"Cannot use {TOKEN} as index (int).");
-}
-struct Tok third = memory->data[1];
-char * thirdt = getTypeFromToken(&third,true,elems);
-if ((compTypes(thirdt,"int")==false)) {
-throwErr(&third,"Cannot use {TOKEN} as index (int).");
+if ((strcmp(second.cont, ":") != 0)) {
+throwErr(&second,"Expected ':' not {TOKEN}.");
 }
 from = first.cont;
 to = third.cont;
 }
+else if ((len(memory)==2)) {
+second = memory->data[1];
+if ((strcmp(first.cont, ":") == 0)) {
+from = "0";
+char * secondT = getTypeFromToken(&second,true,elems);
+if ((compTypes(secondT,"int")==false)) {
+throwErr(&second,"Cannot use {TOKEN} as int.");
+}
+to = second.cont;
+}
+else if ((strcmp(second.cont, ":") == 0)) {
+char * firstT = getTypeFromToken(&first,true,elems);
+if ((compTypes(firstT,"int")==false)) {
+throwErr(&first,"Cannot use {TOKEN} as int.");
+}
+from = first.cont;
+}
 else {
-throwErr(&second,"Cannot substitute by more than 2 values.");
+throwErr(&second,"Expected ':' not {TOKEN}");
 }
 }
+else {
+throwErr(&memory->data[3],"Cannot substiture with more than 2 values, expected ']' not {TOKEN}.");
 }
 }
 if (string__hasPrefix(&ptt,"[]")) {
