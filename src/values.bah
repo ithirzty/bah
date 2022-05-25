@@ -682,7 +682,7 @@ valueOper(l []Tok, i int, elems Elems*) int {
     //for increment and decrement
     if nt.cont == t.cont {
         pt.isOper = true
-        pt.cont += t.cont + t.cont
+        pt.cont = t.cont + t.cont + pt.cont
         l[tokPos] = pt
         return tokPos
     }
@@ -705,7 +705,7 @@ valueOper(l []Tok, i int, elems Elems*) int {
         if pt.isFunc == true {
             pt.cont = registerRCPvar("cpstring", pt.cont, elems)
         }
-        lens += "long int strLen_0 = strlen("+pt.cont+");\n"
+        lens += "unsigned int strLen_0 = strlen("+pt.cont+");\n"
         cats += rope("
             memcpy("+rstr+"+currStrOff, "+pt.cont+", strLen_0);
             currStrOff += strLen_0;
@@ -714,7 +714,7 @@ valueOper(l []Tok, i int, elems Elems*) int {
         if nt.isFunc == true {
             nt.cont = registerRCPvar("cpstring", nt.cont, elems)
         }
-        lens += "long int strLen_1 = strlen("+nt.cont+");\n"
+        lens += "unsigned int strLen_1 = strlen("+nt.cont+");\n"
         cats += rope("
             memcpy("+rstr+"+currStrOff, "+nt.cont+", strLen_1);
             currStrOff += strLen_1;
@@ -748,7 +748,7 @@ valueOper(l []Tok, i int, elems Elems*) int {
                     //add length for allocating result var
                     is = intToStr(nb)
                     nb++
-                    lens += "long int strLen_"+is+" = strlen("+currStrTk.cont+");\n"
+                    lens += "unsigned int strLen_"+is+" = strlen("+currStrTk.cont+");\n"
                     totStrLen += "+strLen_"+is
                     //add to concatenation list
                     cats = rope("
@@ -783,7 +783,7 @@ valueOper(l []Tok, i int, elems Elems*) int {
         //build concatenation code
         res = rope("
         {
-            long int currStrOff = 0;
+            unsigned int currStrOff = 0;
             "+lens+";                            
             "+rstr+" = memoryAllocSTR("+totStrLen+");
             ")+cats+rope("

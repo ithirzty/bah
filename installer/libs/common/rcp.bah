@@ -531,6 +531,7 @@ clear(a ptr) {
     noCheck(RCP_decr(arr->data))
     noCheck(arr->data = memoryAlloc(sizeof(0)))
     noCheck(arr->length = 0)
+    noCheck(arr->realLength = 0)
 }
 
 memoryOnEnd(obj ptr, fn ptr) {

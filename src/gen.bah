@@ -9,17 +9,38 @@ genArrRealloc(v variable*, preVal cpstring, val cpstring, elems Elems*) cpstring
 
     return "
     {
-    long nLength = " + nLengthStr + ";
-    if (" + nstr + "->length < nLength+1) {
-    if ((nLength+1) % 50 == 0 || nLength == 0) {
-    void * newPtr = memoryRealloc("+nstr+"->data, (nLength+50)*sizeof("+getCType(v.type, elems).str()+"));
-    "+nstr+"->data = newPtr;
+        unsigned long nLength = " + nLengthStr + ";
+        if (nLength >= "+nstr+"->length) {
+            if (nLength >= "+nstr+"->realLength) {
+                if ("+nstr+"->realLength != 0) {
+                    "+nstr+"->realLength *= 2;
+                } else {
+                    "+nstr+"->realLength = 50;
+                }
+                void * newPtr = memoryRealloc("+nstr+"->data, ("+nstr+"->realLength)*sizeof("+getCType(v.type, elems).str()+"));
+                "+nstr+"->data = newPtr;
+            }
+            "+val+";
+            "+nstr+"->length = nLength+1;
+        } else {
+            "+preVal+val+";
+        }
     }
-    "+val+";
-    "+nstr+"->length = nLength+1;
-    } else {
-    "+preVal+val+";
-    }
-    }"
+    "
+
+    // return "
+    // {
+    //     unsigned long nLength = " + nLengthStr + ";
+    //     if (" + nstr + "->length < nLength+1) {
+    //         if ((nLength+1) % 50 == 0 || "+nstr+"->length == 0) {
+    //             void * newPtr = memoryRealloc("+nstr+"->data, (nLength+50)*sizeof("+getCType(v.type, elems).str()+"));
+    //             "+nstr+"->data = newPtr;
+    //         }
+    //         "+val+";
+    //         "+nstr+"->length = nLength+1;
+    //     } else {
+    //         "+preVal+val+";
+    //     }
+    // }"
 
 }

@@ -39,7 +39,7 @@ struct func {
     isBinding: bool = false
     from: cpstring = ""
     file: cpstring = ""
-    line: int = 1
+    line: uint32 = 1
     isVar: bool = false
     //optimizations
     used: bool = false
@@ -68,7 +68,7 @@ struct Elems {
     fns: []func*
     defined: []cpstring
     parent: Elems*
-    id: int
+    id: uint32
 }
 
 //Additional info for the compiler no matter the scope

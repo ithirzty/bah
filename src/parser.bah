@@ -415,7 +415,7 @@ parseInclude(l []Tok, elems Elems*) {
     }
 }
 
-signs = []cpstring{"|", "&", "%", "+", "-", "*", "/", "<<", ">>"}
+signs = []cpstring{"|", "&", "%", "+", "-", "*", "/", "<<", ">>", "^"}
 
 
 #define prePross(line []Tok, ltp lineType, elems Elems*) []Tok
@@ -1027,7 +1027,8 @@ parseArrayDecl(v variable*, l []Tok, i int, max int, elems Elems*) cpstring {
                         allocLength = 50
                     }
                     allocLengthStr = intToStr(allocLength)
-                    NEXT_LINE = v.name + "->data = memoryAlloc(sizeof(" + elemTypeStr + ") * " + allocLengthStr + ");" + NEXT_LINE
+                    NEXT_LINE = v.name + "->data = memoryAlloc(sizeof(" + elemTypeStr + ") * " + allocLengthStr + ");
+                    "+v.name+"->realLength = " + allocLengthStr + ";\n" + NEXT_LINE
                     break
                 } else {
                     throwErr(&t, "Expected ',' got {TOKEN}.")
@@ -1090,7 +1091,7 @@ parseVar(l []Tok, elems Elems*) {
     if len(l) == 1 {
         t = l[0]
         c = string(t.cont)
-        c.trimRight(2)
+        c.trimLeft(2)
         v = searchVar(c.str(), elems)
         if v == null {
             throwErr(&t, "Cannot increase/decrease not declared variable {TOKEN}.")
@@ -2827,27 +2828,15 @@ prePross(line []Tok, ltp lineType, elems Elems*) []Tok {
                 nbPar = nbPar - 1
             } else if nbPar == 0 && t.cont == "{" {
                 nt = line[i+1]
-                isStructType = true
                 if nt.line != t.line {
                     break
                 }
             }
-
             fl[len(fl)] = t
             i++
         }
         sepI = i
     } else {
-        isStruct = true
-        isFunc = true
-        isChan = true
-        isArr = true
-        isBool = true
-        isOper = true
-        isCast = true
-
-        needGuard = true
-
         fl = line
     }
 
@@ -2902,7 +2891,7 @@ prePross(line []Tok, ltp lineType, elems Elems*) []Tok {
                 if ppt.type == TOKEN_TYPE_VAR {
                     posTok = i-2
                     deleteRange(fl, i-1, i)
-                    ppt.cont += t.cont + t.cont
+                    ppt.cont = t.cont + t.cont + ppt.cont
                     ppt.isValue = true
                     ppt.isOper = true
                     fl[posTok] = ppt
@@ -2974,7 +2963,6 @@ prePross(line []Tok, ltp lineType, elems Elems*) []Tok {
     if RCPavailable() == true {
         addRCPvars(fl, ltp, elems)
     }
-    // fl = parseChan(fl, elems)
 
     if ltp != <lineType>-1 {
         for sepI < len(line) {
@@ -3093,6 +3081,8 @@ parseFnDeclare(l []Tok, elems Elems*) {
         }
         endRCPscope(fnElems, fn.args)
         // decrRCPstackVars(fn.args, elems)
+    } else {
+        removeDefs(fnElems)
     }
 
     fn.code += OUTPUT

@@ -126,7 +126,6 @@ struct string {
         this.content = nc
         strncpy(this.content, s, sl)
         strCatOffset(this.content, sl, tmpS, this.length)
-        destroy(tmpS)
         this.length = nl
     }
 

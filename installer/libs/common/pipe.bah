@@ -35,27 +35,29 @@ struct pipe {
 
     write(d []char) {
         wp ptr = this.fd[1]
-        write(wp, cArr(d), len(d))
+        data = cArr(d)
+        buff = memoryAllocSTR(len(d)+2)
+        memcpy(buff, data, len(d))
+        write(wp, buff, len(d)+2)
     }
 
     read() []char {
         r = []char
         rp ptr = this.fd[0]
-        buff cpstring = memoryAlloc(1024)
+        buff = buffer 1024
 
         success = false
-        for 1 == 1 {
-            memset(buff, 0, 1023)
-            s = read(rp, buff, 1023)
+        
+        for 1==1 {
+            s = read(rp, buff, 1024)
             if s == -1 {
                 if success == true {
                     break
                 }
             } else {
                 success = true
-                a = strAsArr(buff)
-                i=0; for i < len(a), i++ {
-                    r[len(r)] = a[i]
+                i=0; for i < s, i++ {
+                    r[len(r)] = buff[i]
                 }
             }
         }

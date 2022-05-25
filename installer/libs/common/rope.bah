@@ -5,9 +5,9 @@ struct rope {
     right: rope*
     // parent: rope*
     str: cpstring
-    lCount: int
-    len: int = 0
-    totalLen: int
+    lCount: int32
+    len: int32 = 0
+    totalLen: int32
 
     //Used to get the parent of the node.
     //*Note: this is an internal function.*

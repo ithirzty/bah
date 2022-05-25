@@ -39,7 +39,6 @@ len(a ptr) int {
 
 #include "BAH_MEM_COLLECTOR"
 
-
 //Append will add the array b to the array a.
 //Note: doesn't work with []char.
 append(a ptr, b ptr) {

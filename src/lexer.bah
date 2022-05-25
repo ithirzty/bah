@@ -3,7 +3,7 @@
 #include "./globals.bah"
 
 //tokens types
-#define tokenType int
+#define tokenType char
 
 const TOKEN_NO_TYPE =      <tokenType>-1
 const TOKEN_TYPE_INT =     <tokenType>0
@@ -24,9 +24,9 @@ struct Tok {
     cont: cpstring = ""
     ogCont: cpstring = ""
     type: tokenType = TOKEN_NO_TYPE
-    pos: int = 0
-    line: int = 1
-    begLine: int = 1
+    pos: uint32 = 0
+    line: uint32 = 1
+    begLine: uint32 = 1
     bahType: cpstring = "" //shortcut for getting the type of a token
     isValue: bool = false
     isFunc: bool = false
@@ -85,7 +85,7 @@ lexerErr(line int, pos int, msg cpstring) {
 }
 
 enclavers = []char{'(', ')', '{', '}', '[', ']'}
-syntaxes = []char{'!', '=', '|', <char>38, '%', '+', '-', '*', '/', ',', '<', '>', ':', <char>59}
+syntaxes = []char{'!', '=', '|', <char>38, '%', '+', '-', '*', '/', ',', '<', '>', ':', <char>59, '^'}
                                     //&                                                    //;
 keywords = []cpstring{"if", "else", "for", "struct", "const", "return", "extend", "new", "break", "continue", "default", "switch", "case", "while", "typedef", "function", "async", "in", "chan", "map", "buffer"}
                     //  x      x      x        x        x         x         x       x       x          x          -          -        -       -         -           x         x       x     x       x       x
