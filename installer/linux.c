@@ -2848,7 +2848,7 @@ return r;
 char * BAH_DIR;
 char * BAH_OS;
 char * BAH_CC;
-#define BAH_VERSION "v1.2 (build 94)"
+#define BAH_VERSION "v1.2 (build 95)"
 char debug;
 char verboseRuntime;
 char isObject;
@@ -22389,6 +22389,7 @@ OUTPUT = rope("\n        #define noCheck(v) v\n        #define array(type)	\
         struct{	\
         type *data; \
         long int length; \
+        long int realLength; \
         long int elemSize; \
         }\n        typedef array(char*)* __BAH_ARR_TYPE_cpstring;\n        long int __BAH__main(__BAH_ARR_TYPE_cpstring);\n        ");
 shouldOnlyDecl = true;
@@ -22412,7 +22413,7 @@ unsigned int strLen_2 = strlen("Could not find std-libs, please check '");
             memcpy(____BAH_COMPILER_VAR_974+currStrOff, "'", strLen_1);
             currStrOff += strLen_1;
         
-        }__BAH_panic(____BAH_COMPILER_VAR_974,"/home/alois/Documents/bah-bah/src/main.bah:244");
+        }__BAH_panic(____BAH_COMPILER_VAR_974,"/home/alois/Documents/bah-bah/src/main.bah:245");
 }
 shouldOnlyDecl = false;
 if ((flags__isSet(&flags,"l")==1)) {
