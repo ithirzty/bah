@@ -403,12 +403,24 @@ parseJson(s cpstring) jsonElement* {
     return jsonElem
 }
 
+
+json_isPrintable(c uint32) bool {
+    if c < 32 || c > 255 {
+        return false
+    }
+    return c != 127 && c != 129 && c != 141 && c != 143 && c != 144 && c != 157
+}
+
 jsonEscapeStr(s cpstring) cpstring {
     a = strAsArr(s)
     r = []char
 
     i=0; for i < len(a) {
         c = a[i]
+        if json_isPrintable(<uint32>c) == false {
+            i++
+            continue
+        }
         if c == <char>34 {
             r[len(r)] = <char>92
         } else if c == <char>10 {
@@ -521,7 +533,7 @@ toJson__inner(e reflectElement, isMember bool, tabs int) cpstring {
             arr = *arrPtr
             s = s + "\n"
             i=0; for i < len(arr) {
-                s = s + arr[i]
+                s = s + "\""+jsonEscapeStr(arr[i])+"\""
                 i = i + 1
                 if i < len(arr) {
                     s = s + ",\n"
