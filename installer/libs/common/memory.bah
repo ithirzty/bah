@@ -157,6 +157,7 @@ sharedMemory(size int) ptr {
 allocateArray(arr ptr, nbElems int) {
     noCheck(array(void*) * a = arr)
     noCheck(a->length = nbElems)
+    noCheck(a->realLength = nbElems)
     noCheck(a->data = memoryAlloc(nbElems * a->elemSize))
 }
 

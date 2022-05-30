@@ -22,6 +22,7 @@ const false = <bool>0
 #define! exit(i int)
 #define! strcmp(a cpstring, b cpstring) int
 #define! strlen(a cpstring) int
+#define! sizeof(p ptr) int
 
 
 __bah_strcmp(a cpstring, b cpstring) int {
@@ -45,21 +46,29 @@ __bah_strlen(s cpstring) int {
 
 const strlen = __bah_strlen
 
+
+__BAH_memcpy(dest cpstring, source cpstring, l int) {
+    lm = l % sizeof(int)
+    if lm != 0 {
+        for lm != 0, lm-- {
+            i = l - lm
+            noCheck(dest[i] = source[i])
+        }
+    }
+    destI int* = <ptr>(<int>dest - sizeof(int))
+    sourceI int* = <ptr>(<int>source - sizeof(int))
+    i=l/sizeof(int); for i != 0, i-- {
+        noCheck(destI[i] = sourceI[i])
+    }
+}
+const memcpy = __BAH_memcpy
+
 #include "memory.bah"
 
 
 #cLib "lm"
 
 #define! signal(sig int, hdl ptr)
-
-#define! sizeof(a ptr) int
-
-#macro a++ => a = a + 1
-#macro a += b* => a = a + b
-#macro a-- => a = a - 1
-#macro a -= b* => a = a - b
-
-//#cLib "Wl,-eentry main"
 
 #define! strlen(a cpstring) int
 #define! strncpy(a cpstring, b cpstring, l int)
@@ -126,15 +135,7 @@ __Bah_common_panic(e cpstring) {
     }
 }
 
-#linux {
-	const panic = __Bah_common_panic
-}
-#windows {
-	const panic = __Bah_common_panic
-}
-#darwin {
-	const panic = __Bah_common_panic
-}
+const panic = __Bah_common_panic
 
 struct __Bah_fnName_mapper {
 	p: ptr

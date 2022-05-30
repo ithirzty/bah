@@ -288,10 +288,10 @@ parallelObjCompile(fn cpstring, oName cpstring, done chan:bool) {
         if flags.isSet("verboseCC") == 1 {
             verboseCC = "-verboseCC"
         }
-        print("compilling: "+fn+"... ")
+        println("compilling: "+fn+"...")
         cmd = command(execName + " "+fn+" "+rcp+" -object "+verboseCC+" -o "+oName)
         res = cmd.run()
-        println("ok")
+        println("done: "+fn)
         setCurrentPath(wrkd)
         if cmd.status != 0 {
             print(res)
@@ -364,15 +364,15 @@ parseImport(l []Tok, elems Elems*) {
     done = chan bool
 
     //checks for cache
-    // #linux {
-    //     async parallelObjCompile(fn, oName, done)
-    // }
-    // #darwin {
-    //     async parallelObjCompile(fn, oName, done)
-    // }
-    // #windows {
+    #linux {
+        async parallelObjCompile(fn, oName, done)
+    }
+    #darwin {
+        async parallelObjCompile(fn, oName, done)
+    }
+    #windows {
         parallelObjCompile(fn, oName, done)
-    // }
+    }
 
     //parse file
     parseLines(tokens, elems)

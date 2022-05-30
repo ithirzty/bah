@@ -561,7 +561,7 @@ toJson__inner(e reflectElement, isMember bool, tabs int) cpstring {
         s = s + "]"
         return s
     }
-    return ""
+    return "0"
 }
 
 //Converting a var into json.
