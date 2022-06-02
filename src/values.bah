@@ -803,8 +803,10 @@ valueOper(l []Tok, i int, elems Elems*) int {
             OUTPUT += res
         }
 
+        pt.type = TOKEN_TYPE_VAR
+        pt.isValue = true
         pt.cont = rstr
-
+        pt.isOper = false
     } else {
 
         s = searchStruct(ptt, elems)
@@ -841,10 +843,10 @@ valueOper(l []Tok, i int, elems Elems*) int {
         } else {
             pt.cont += t.cont + nt.cont
         }
+        pt.isOper = true
 
     }
 
-    pt.isOper = true
     l[tokPos] = pt
     return tokPos
 }
