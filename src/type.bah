@@ -12,10 +12,7 @@ isRCPpointerType(t cpstring) bool {
     if strHasPrefix(t, "function(") {
         return false
     }
-    if t == "cpstring" || t == "ptr" || typeAsStar(t) || strHasPrefix(t, "[]") || strHasPrefix(t, "chan:") || strHasPrefix(t, "map:") {
-        return true
-    }
-    return false
+    return t == "cpstring" || t == "ptr" || typeAsStar(t) || strHasPrefix(t, "[]") || strHasPrefix(t, "chan:") || strHasPrefix(t, "map:")
 }
 
 isRCPtype(t cpstring, elems Elems*) bool {
@@ -23,11 +20,7 @@ isRCPtype(t cpstring, elems Elems*) bool {
         return true
     }
     s = searchStruct(t, elems)
-    if s != null && s.isBinding == false {
-        return true
-    }
-
-    return false
+    return s != null && s.isBinding == false
 }
 
 
@@ -132,12 +125,6 @@ compTypeEquiv(a cpstring, b cpstring, first bool) bool {
     if a == "cpstring" && strHasPrefix(b, "buffer:") {
         return true
     }
-    if a in intTypes && b in intTypes {
-        return true
-    }
-    if a in floatTypes && b in floatTypes {
-        return true
-    }
 
     if first == false {
         return false
@@ -151,8 +138,16 @@ compTypeEquiv(a cpstring, b cpstring, first bool) bool {
 }
 
 compTypes(a cpstring, b cpstring) bool {
-    if a == "ptr" || b == "ptr" || a == b {
+    if a == b || a == "ptr" || b == "ptr" {
         return true
     }
+
+    if a in intTypes && b in intTypes {
+        return true
+    }
+    if a in floatTypes && b in floatTypes {
+        return true
+    }
+
     return compTypeEquiv(a, b, true)
 }

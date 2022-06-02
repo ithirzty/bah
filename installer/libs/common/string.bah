@@ -82,18 +82,12 @@ struct string {
         this.length = strlen(s)
         this.editable = false
         this.content = s
-        // this.content = <cpstring>memoryAlloc(this.length+1)
-        // strncpy(this.content, s, this.length)
     }
 
     makeEditable() {
         this.editable = true
         old = this.content
-        // if this.length <= STRING_MAX_STACK_SIZE {
-        //     this.content = string_small_alloc(this.length+1)
-        // } else {
-            this.content = <cpstring>memoryAlloc(this.length+1)
-        // }
+        this.content = <cpstring>memoryAlloc(this.length+1)
         strncpy(this.content, old, this.length)
     }
 
@@ -131,29 +125,18 @@ struct string {
 
     //Returns the char at the specified position of the string.
     charAt(i int) char {
-        if <ptr>this.content == null {
-            return null
-        }
-        if i < this.length && i >= 0 {
-            return this.content[i]
-        }
-        return null
+        return this.content[i]
     }
 
     //Used to know if the content of the string is the same as the specified cpstring, returns 1 if true.
     compare(s cpstring) int {
-        r int = strcmp(this.content, s)
-        if r == 0 {
-            return 1
-        }
-        return 0
+        return strcmp(this.content, s) == 0
     }
 
     //Used for getting the content of the string as a cpstring.
     str() cpstring {
         return this.content
     }
-
 
     //Used to replace a substring by another.
     replace(nd cpstring, rl cpstring) {
@@ -349,6 +332,17 @@ struct string {
         strncpy(r.content, this.content, this.length)
         strCatOffset(r.content, this.length, s2.content, s2.length)
         return r
+    }
+
+    asArr() []char {
+        if this.editable == false {
+            this.makeEditable()
+        }
+        arr = []char
+        noCheck(arr->data = this->content)
+        noCheck(arr->length = this->length)
+        noCheck(arr->realLength = this->length)
+        return arr
     }
 
 }

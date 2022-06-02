@@ -28,6 +28,7 @@ dupElems(elems Elems*) Elems* {
     nElems.parent = elems
 
     //vars
+    allocateArray(nElems.vars, len(elems.vars))
     j=0; for j < len(elems.vars), j++ {
         nElems.vars[j] = elems.vars[j]
     }
@@ -292,13 +293,13 @@ parallelObjCompile(fn cpstring, oName cpstring, done chan:bool) {
             println("compilling: "+fn+"...")
         }
         cmd = command(execName + " "+fn+" "+rcp+" -object "+verboseCC+" -o "+oName)
-        res = cmd.run()
+        res = cmd.runBytes()
         if debug == false {
             println("done: "+fn)
         }
         setCurrentPath(wrkd)
         if cmd.status != 0 {
-            print(res)
+            print(arrToStr(res))
             exit(1)
         }
         if cf == null {
@@ -695,65 +696,41 @@ compSep = []cpstring{"||", "&&"}
 
 
 parsePointers(l []Tok, elems Elems*) []Tok {
-
-    nl = []Tok
-
-    ptrOpers = []cpstring{"&", "*"}
-
-    i=0; for i < len(l) {
+    i=0; for i < len(l), i++ {
         t = l[i]
-
-        if t.type == TOKEN_TYPE_SYNTAX {
-            if t.cont == "*" {
-                if i > 0 {
-                    pt = nl[len(nl)-1]
-                    if pt.type == TOKEN_TYPE_VAR {
-                        if i + 1 < len(l) {
-                            nt = l[i+1]
-                            if nt.isValue == false && nt.cont != "(" {
-                                pt.cont = pt.cont + t.cont
-                                nl[len(nl)-1] = pt
-                                i = i + 1
-                                continue
+        if t.cont == "&" || t.cont == "*" {
+            if i > 0 {
+                if l[i-1].type == TOKEN_TYPE_VAR || l[i-1].isValue == true {
+                    if t.cont == "*" {
+                        if i+1 < len(l) {
+                            if l[i+1].cont != "(" && l[i+1].cont != "<" && l[i+1].isValue != true {
+                                l[i-1].cont += t.cont
+                                delete(l, i)
+                                i--
                             }
                         } else {
-                            pt.cont = pt.cont + t.cont
-                            nl[len(nl)-1] = pt
-                            i = i + 1
-                            continue
+                            l[i-1].cont += t.cont
+                            delete(l, i)
+                            i--
                         }
                     }
-                }
-            }
-
-            if inArrayStr(t.cont, ptrOpers) {
-                if i > 0 {
-                    pt = nl[len(nl)-1]
-                    if pt.isValue == true {
-                        nl[len(nl)] = t
-                        i = i + 1
-                        continue            
-                    }
-                }
-                i = i + 1
-                if i < len(l) {
-                    nt = l[i]
-                    if nt.type == TOKEN_TYPE_VAR {
-                        nt.cont = t.cont + nt.cont
-                        nl[len(nl)] = nt
-                        i = i + 1
-                        continue
-                    }
+                    continue
                 }
             }
         }
 
-        nl[len(nl)] = t
-        i = i + 1
+        if t.cont == "&" || t.cont == "*" {
+            if i+1 < len(l) {
+                if l[i+1].type == TOKEN_TYPE_VAR {
+                    l[i+1].cont = t.cont + l[i+1].cont
+                    delete(l, i)
+                    i--
+                }
+            }
+        }
     }
 
-
-    return nl
+    return l
 }
 
 
@@ -3015,6 +2992,14 @@ parseFnDeclare(l []Tok, elems Elems*) {
         }
     }
 
+    if debug == true {
+        df = new debugFunction
+        df.name = fn.name
+        df.args = fn.args
+        df.returns = fn.returns.type
+        debugPrint("fn_declare", ft.line, df)
+    }
+
     if shouldOnlyDecl == true {
         if ogFn != null {
             fn.isBinding = false
@@ -3093,18 +3078,12 @@ parseFnDeclare(l []Tok, elems Elems*) {
     OUTPUT = oOut
     fn.code += rope("};\n")
 
-
-    OUTPUT += fn.code
-
     if debug == true {
-        df = new debugFunction
-        df.name = fn.name
-        df.args = fn.args
-        df.returns = fn.returns.type
-        debugPrint("fn_declare", ft.line, df)
         lt = l[len(l)-1]
         debugEndScope(lt.line, fnElems)
     }
+
+    OUTPUT += fn.code
 
 }
 

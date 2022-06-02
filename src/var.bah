@@ -18,14 +18,25 @@ getRealVar(n cpstring, elems Elems*) variable* {
     return null
 }
 
+removeVarUnar(s string*) {
+    arr = s.asArr()
+    i=0; for i < len(arr), i++ {
+        c = arr[i]
+        if c == '&' || c == '*' {
+            delete(arr, i)
+            i--
+            continue
+        }
+    }
+}
+
 searchVar(name cpstring, elems Elems*) variable* {
 //     recorder = timer.record("searchVar")
     ogName = name
     n = string(name)
-    n.replace("&", "")
-    n.replace("*", "")
-    
-    if n.hasSuffix("]") {
+    removeVarUnar(&n)
+
+    if n.charAt(n.length-1) == ']' {
         i=n.length; for i > 0 {
             c = n.charAt(i)
             if c == '[' {
@@ -115,11 +126,7 @@ searchVar(name cpstring, elems Elems*) variable* {
         v = elems.vars[i]
         if v.name == name {
             nv = new variable
-            nv.type = v.type
-            nv.name = v.name
-            nv.isConst = v.isConst
-            nv.constVal = v.constVal
-            nv.declScope = v.declScope
+            *nv = *v
             r = nv.type
             tcc = string(ogName)
             if tcc.count("&") {
@@ -138,7 +145,6 @@ searchVar(name cpstring, elems Elems*) variable* {
             }
             nv.type = r
             nv.name = ogName
-
             return nv
         }
     }
@@ -174,8 +180,7 @@ searchVarByToken(t Tok*, elems Elems*) variable* {
         return t.bahRef
     }
     cont = string(t.cont)
-    cont.replace("&", "")
-    cont.replace("*", "")
+    removeVarUnar(&cont)
     return getRealVar(cont.str(), elems)
 }
 

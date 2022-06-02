@@ -36,7 +36,6 @@ stdinput() cpstring {
 //Prints text to the terminal and adds a line return at the end.
 println(s cpstring) {
     write(<ptr>1, s+"\n", strlen(s)+1)
-    // write(<ptr>1, "\n", 1)
 }
 
 #define! fwrite(w ptr, s int, f int, hndl FILE*)

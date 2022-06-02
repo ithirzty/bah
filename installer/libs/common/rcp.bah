@@ -524,14 +524,9 @@ memoryRealloc(p ptr, s uint) ptr {
 
 //Clear will remove the content of an array.
 clear(a ptr) {
-    if RCP_isAllocated(a) == false {
-        return
-    }
     noCheck(array(void*) * arr = a)
-    noCheck(RCP_decr(arr->data))
-    noCheck(arr->data = memoryAlloc(sizeof(0)))
+    memset(noCheck(arr->data), null, noCheck(arr->realLength * arr->elemSize))
     noCheck(arr->length = 0)
-    noCheck(arr->realLength = 0)
 }
 
 memoryOnEnd(obj ptr, fn ptr) {
@@ -543,4 +538,19 @@ memoryOnEnd(obj ptr, fn ptr) {
         return
     }
     r.e = fn
+}
+
+__BAH_memcpy(dest cpstring, source cpstring, l int) {
+    lm = l % sizeof(int)
+    if lm != 0 {
+        for lm != 0, lm-- {
+            i = l - lm
+            noCheck(dest[i] = source[i])
+        }
+    }
+    destI int* = <ptr>(<int>dest - sizeof(int))
+    sourceI int* = <ptr>(<int>source - sizeof(int))
+    i=l/sizeof(int); for i != 0, i-- {
+        noCheck(destI[i] = sourceI[i])
+    }
 }

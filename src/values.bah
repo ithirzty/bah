@@ -542,17 +542,25 @@ valueArr(l []Tok, i int, ltp lineType, elems Elems*) int {
             t.bahType = ptt.str()
         } else { //getting map value
             t.isFunc = true
+            res rope*
+            tmpV = genCompilerVar()
             if isRCPpointerType(ptt.str()) {
-                t.cont = "mapWrapper__get("+t.cont+", "+index.cont+")"
+                res = rope(elemType.str()+" "+tmpV+"=mapWrapper__get("+t.cont+", "+index.cont+");\n")
+                t.cont = tmpV 
             } else {
-                tmpV = genCompilerVar()
                 res = rope(elemType.str() + "* "+tmpV+"=mapWrapper__get("+pt.cont+", "+index.cont+");\n")
                 t.cont = "("+elemType.str()+")(*"+tmpV+")"
-                if isGlobal() {
-                    INIT += res
-                } else {
-                    OUTPUT += res
+            }
+            if RCPavailable() {
+                elems.vars[len(elems.vars)] = new variable{
+                    name: tmpV
+                    type: ptt.str()
                 }
+            }
+            if isGlobal() {
+                INIT += res
+            } else {
+                OUTPUT += res
             }
             t.bahType = ptt.str()
         }
@@ -822,8 +830,13 @@ valueOper(l []Tok, i int, elems Elems*) int {
             }
             methd = searchStructMemb(mName, s, elems)
             if methd != null && methd.isFn == true {
-                pt.cont = s.name + "__" + mName + "(" +amp+pt.cont + ", " + nt.cont + ")"
-                pt.isFunc = true
+                if RCPavailable() {
+                    pt.cont = registerRCPvar(ptt, s.name + "__" + mName + "(" +amp+pt.cont + ", " + nt.cont + ")", elems)
+                    pt.type = TOKEN_TYPE_VAR; pt.isFunc = false; pt.isOper = false
+                } else {
+                    pt.cont = s.name + "__" + mName + "(" +amp+pt.cont + ", " + nt.cont + ")"
+                    pt.isFunc = true
+                }
             }
         } else {
             pt.cont += t.cont + nt.cont
@@ -892,11 +905,10 @@ valueChan(l []Tok, i int, elems Elems*) int {
         throwErr(&nt, "Cannot receive from chan {TOKEN} outside a function body.")
     }
 
-    tmpV = ""
-
     ct = getCType(ntt.str(), elems)
     if isRCPpointerType(ntt.str()) {
-        nt.cont = "("+ct.str()+")channel__receive("+nt.cont+")"
+        tmpV = registerRCPvar(ntt.str(), "channel__receive("+nt.cont+")", elems)
+        nt.cont = tmpV
     } else {
         if RCPavailable() {
             tmpV = registerRCPvar(ntt.str()+"*", "("+ct.str()+"*)channel__receive("+nt.cont+")", elems)

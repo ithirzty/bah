@@ -26,12 +26,11 @@ const false = <bool>0
 
 
 __bah_strcmp(a cpstring, b cpstring) int {
-    if <ptr>a == null {
-        a = ""
-    }
-    if <ptr>b == null {
-        b = ""
-    }
+    ai = <int>a
+	bi = <int>b
+	if ai*bi == 0 {
+		return 1
+	}
     return strcmp(a, b)
 }
 
@@ -47,20 +46,8 @@ __bah_strlen(s cpstring) int {
 const strlen = __bah_strlen
 
 
-__BAH_memcpy(dest cpstring, source cpstring, l int) {
-    lm = l % sizeof(int)
-    if lm != 0 {
-        for lm != 0, lm-- {
-            i = l - lm
-            noCheck(dest[i] = source[i])
-        }
-    }
-    destI int* = <ptr>(<int>dest - sizeof(int))
-    sourceI int* = <ptr>(<int>source - sizeof(int))
-    i=l/sizeof(int); for i != 0, i-- {
-        noCheck(destI[i] = sourceI[i])
-    }
-}
+#define __BAH_memcpy(dest cpstring, source cpstring, l int)
+
 const memcpy = __BAH_memcpy
 
 #include "memory.bah"

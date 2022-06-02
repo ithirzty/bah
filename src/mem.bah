@@ -143,6 +143,7 @@ endRCPscopeLeaky(elems Elems*, excl variable*) {
 registerRCPvar(t cpstring, c cpstring, elems Elems*) cpstring {
     av = new variable
     av.type = t
+    av.declScope = elems
     av.name = genCompilerVar()
     elems.vars[len(elems.vars)] = av
     cType = getCType(av.type, elems)

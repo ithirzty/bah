@@ -37,10 +37,8 @@ destroy(a ptr) {
 //Clear will remove the content of an array.
 clear(a ptr) {
     noCheck(array(void*) * arr = a)
-    noCheck(destroy(arr->data))
-    noCheck(arr->data = memoryAlloc(sizeof(0)))
+    memset(noCheck(arr->data), null, noCheck(arr->realLength * arr->elemSize))
     noCheck(arr->length = 0)
-    noCheck(arr->realLength = 0)
 }
 
 
@@ -57,4 +55,19 @@ cleanShutDown() {
 
 memoryOnEnd(obj ptr, fn ptr) {
     GC_REGISTER_FINALIZER_IGNORE_SELF(obj, fn, null, null, null)
+}
+
+__BAH_memcpy(dest cpstring, source cpstring, l int) {
+    lm = l % sizeof(int)
+    if lm != 0 {
+        for lm != 0, lm-- {
+            i = l - lm
+            noCheck(dest[i] = source[i])
+        }
+    }
+    destI int* = <ptr>(<int>dest - sizeof(int))
+    sourceI int* = <ptr>(<int>source - sizeof(int))
+    i=l/sizeof(int); for i != 0, i-- {
+        noCheck(destI[i] = sourceI[i])
+    }
 }
