@@ -307,6 +307,9 @@ struct string {
 
     //Used to trim a specified number of charcaters from the beginning of the string.
     trimLeft(s int) {
+        if s > this.length {
+            return
+        }
         nSize = this.length - s
         tmpS = memoryAlloc(nSize + 1)
         memcpy(tmpS, noCheck(this->content+s), nSize)
@@ -317,6 +320,9 @@ struct string {
 
     //Used to trim a specified number of charcaters from the end of the string.
     trimRight(s int) {
+        if s > this.length {
+            return
+        }
         nSize = this.length - s
         tmpS = memoryAlloc(nSize + 1)
         memcpy(tmpS, this.content, nSize)
@@ -419,6 +425,9 @@ strToInt(s cpstring) int {
         end = 1
     }
     for l >= end, l-- {
+        if s[l] < '0' || s[l] > '9' {
+            continue
+        }
         r += (<int>s[l] - 48) * offset
         offset *= 10
     }

@@ -1706,6 +1706,9 @@ this->editable = true;
 }
 };
 void string__trimLeft(struct string* this,long int s){
+if ((s>this->length)) {
+return;
+}
 long int nSize = this->length-s;
 void * tmpS = memoryAlloc(nSize+1);
 memcpy(tmpS,this->content+s,nSize);
@@ -1714,6 +1717,9 @@ this->editable = true;
 this->length = nSize;
 };
 void string__trimRight(struct string* this,long int s){
+if ((s>this->length)) {
+return;
+}
 long int nSize = this->length-s;
 void * tmpS = memoryAlloc(nSize+1);
 memcpy(tmpS,this->content,nSize);
@@ -1802,6 +1808,9 @@ if ((s[0]==45)) {
 end = 1;
 }
 for (; (l>=end); --l) {
+if ((s[l]<48)||(s[l]>57)) {
+continue;
+}
 r = r+((long int)s[l]-48)*offset;
 offset = offset*10;
 };
@@ -2818,7 +2827,7 @@ return r;
 char * BAH_DIR;
 char * BAH_OS;
 char * BAH_CC;
-#define BAH_VERSION "v1.2 (build 99)"
+#define BAH_VERSION "v1.2 (build 100)"
 char debug;
 char verboseRuntime;
 char isObject;
