@@ -1,8 +1,7 @@
 <div align="center">
 <p>
-    <img width="100px" src="https://raw.githubusercontent.com/ithirzty/bah/main/extra/logo.png">
-    
-# [Bah-lang](https://bah-lang.xyz)
+    <a href="https://bah-lang.xyz"><img width="100px" src="https://raw.githubusercontent.com/ithirzty/bah/main/extra/logo.png"></a>
+    <h1>Bah-lang</h1>
 </p>
 </div>
 
@@ -47,6 +46,7 @@ before installing it. Dont worry this is simple, simply run:
 .\darwin_compile_install.bat
 ```
 
+> Note: yoy may need to run the following command after install if the version is Bah compiler is out of date `clang -I "/opt/bah/libs/darwin/include/" -L "/opt/bah/libs/darwin/" ./installer/darwin.c -O1 -w -lgc -lpthread -lm -o /opt/bah/bah`
 
 [![installation tutorial](./extra/install_thumb.jpg)](https://youtu.be/druJwBluvLc)
 
