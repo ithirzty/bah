@@ -1,4 +1,10 @@
+<div align="center">
+<p>
+    <img width="100px" src="https://raw.githubusercontent.com/ithirzty/bah/main/extra/logo.png">
+    
 # [Bah-lang](https://bah-lang.xyz)
+</p>
+</div>
 
 ## Installation
 > Note that Windows and MacOS (darwin) releases may be delayed compared to Linux releases.
