@@ -292,7 +292,11 @@ parallelObjCompile(fn cpstring, oName cpstring, done chan:bool) {
         if debug == false {
             println("compilling: "+fn+"...")
         }
-        cmd = command(execName + " "+fn+" "+rcp+" -object "+verboseCC+" -o "+oName)
+        opti = ""
+        if isOptimized == true {
+            opti = "-optimize"
+        }
+        cmd = command(execName + " "+fn+" "+rcp+" "+opti+" -object "+verboseCC+" -o "+oName)
         res = cmd.runBytes()
         if debug == false {
             println("done: "+fn)
@@ -363,7 +367,7 @@ parseImport(l []Tok, elems Elems*) {
     oiso = isSubObject
     isSubObject = true
 
-    oName = BAH_DIR+"cache/"+pathToVarName(fn)+intToStr(RCPlevel)+".o"
+    oName = BAH_DIR+"cache/"+pathToVarName(fn)+intToStr(RCPlevel)+intToStr(isOptimized)+".o"
     compilerState.cLibs[len(compilerState.cLibs)] = "w "+oName+".o" //adds object file to the linker
     
     done = chan bool

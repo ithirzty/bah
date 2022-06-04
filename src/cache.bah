@@ -7,6 +7,7 @@ struct cacheFile {
     ver: cpstring
     date: int
     mem: int
+    opti: int
     files: []cpstring
 }
 
@@ -15,7 +16,7 @@ cache = []cacheFile*
 readCache()  {
     fs = fileStream{}
     fs.open(BAH_DIR + "cache/cache.json", "r")
-    if fs.isValid() == 0 {
+    if fs.isValid() == 0 || fs.getSize() == 0 {
         mkdir(BAH_DIR + "cache", noCheck(S_IRWXU))
         fs.createFile(BAH_DIR + "cache/cache.json")
         return
@@ -42,7 +43,7 @@ getCacheFile(s cpstring) cacheFile* {
     }
     i=0; for i < len(cache), i++ {
         c = cache[i]
-        if c.file == s && c.mem == RCPlevel {
+        if c.file == s && c.mem == RCPlevel && c.opti == isOptimized {
             return c
         }
     }
@@ -60,6 +61,7 @@ makeCacheFile(f cpstring) {
     c.file = f
     c.ver = BAH_VERSION
     c.mem = RCPlevel
+    c.opti = isOptimized
     c.date = getTimeUnix()
     c.last = getLastModified(f)
     if cache == null {
@@ -79,7 +81,7 @@ isValidCacheFile(cf cacheFile*) bool {
     if cf == null || cf.last != getLastModified(cf.file) {
         return false
     }
-    if fileExists(BAH_DIR+"cache/"+pathToVarName(cf.file)+intToStr(cf.mem)+".o.o") == 0 {
+    if fileExists(BAH_DIR+"cache/"+pathToVarName(cf.file)+intToStr(cf.mem)+intToStr(cf.opti)+".o.o") == 0 {
         return false
     }
 
