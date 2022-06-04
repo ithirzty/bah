@@ -398,10 +398,15 @@ parseImport(l []Tok, elems Elems*) {
 
 parseInclude(l []Tok, elems Elems*) {
     //basic usage check
-    if len(l) > 2 {
+    if len(l) != 2 && len(l) != 3 {
         throwErr(&l[len(l)-1], "Invalid usage of include, ending by {TOKEN}.")
     }
     strt = l[1]
+    isSupressed = false
+    if strt.cont == "!" &&  len(l) > 2 {
+        isSupressed = true
+        strt = l[2]
+    }
     if strt.type != TOKEN_TYPE_STR {
         throwErr(&strt, "Cannot use {TOKEN} as string in include.")
     }
@@ -411,8 +416,10 @@ parseInclude(l []Tok, elems Elems*) {
     strTrimLeft(&sc, 1)
     strTrimRight(&sc, 1)
     if strHasPrefix(sc, "<") || strHasSuffix(sc, ".h") || strHasSuffix(sc, ".c") { // is a C file
-        OUTPUT = OUTPUT + rope("#include "+sc+"\n")
-        compilerState.cIncludes[len(compilerState.cIncludes)] = sc
+        if isSubObject == false || isSupressed == false {
+            OUTPUT = OUTPUT + rope("#include "+sc+"\n")
+            compilerState.cIncludes[len(compilerState.cIncludes)] = sc
+        }
     } else { //is a Bah file
         if includeFile(sc, elems) == false {
             throwErr(&strt, "Could not find file {TOKEN}.")
@@ -2570,6 +2577,14 @@ parsePreKeyword(l []Tok, elems Elems*) {
         }
     } else if ft.cont == "#included" {
         if isSubObject == true || isObject == true {
+            return
+        }
+    } else if ft.cont == "#optimized" {
+        if isOptimized == false {
+            return
+        }
+    } else if ft.cont == "#unoptimized" {
+        if isOptimized == true {
             return
         }
     } else {

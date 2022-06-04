@@ -46,9 +46,16 @@ __bah_strlen(s cpstring) int {
 const strlen = __bah_strlen
 
 
-#define __BAH_memcpy(dest cpstring, source cpstring, l int)
+#unoptimized {
+	#define __BAH_memcpy(dest cpstring, source cpstring, l int)
+	const memcpy = __BAH_memcpy
+}
 
-const memcpy = __BAH_memcpy
+#optimized {
+	#import "stdopti.bahstrp"
+	const memcpy = __BAH_avx_memcpy
+}
+
 
 #include "memory.bah"
 

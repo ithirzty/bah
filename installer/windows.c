@@ -2827,11 +2827,12 @@ return r;
 char * BAH_DIR;
 char * BAH_OS;
 char * BAH_CC;
-#define BAH_VERSION "v1.2 (build 100)"
+#define BAH_VERSION "v1.2 (build 101)"
 char debug;
 char verboseRuntime;
 char isObject;
 char isUnsafe;
+char isOptimized;
 char * execName;
 char isSubObject;
 struct rope* OUTPUT;
@@ -9721,10 +9722,15 @@ compilerState.currentDir = od;
 #undef fs
 };
 void parseInclude(__BAH_ARR_TYPE_Tok l,struct Elems* elems){
-if ((len(l)>2)) {
+if ((len(l)!=2)&&(len(l)!=3)) {
 throwErr(&l->data[len(l)-1],"Invalid usage of include, ending by {TOKEN}.");
 }
 struct Tok strt = l->data[1];
+char isSupressed = false;
+if ((strcmp(strt.cont, "!") == 0)&&(len(l)>2)) {
+isSupressed = true;
+strt = l->data[2];
+}
 if ((strt.type!=TOKEN_TYPE_STR)) {
 throwErr(&strt,"Cannot use {TOKEN} as string in include.");
 }
@@ -9732,6 +9738,7 @@ char * sc = strt.cont;
 strTrimLeft(&sc,1);
 strTrimRight(&sc,1);
 if (strHasPrefix(sc,"<")||strHasSuffix(sc,".h")||strHasSuffix(sc,".c")) {
+if ((isSubObject==false)||(isSupressed==false)) {
 char * ____BAH_COMPILER_VAR_352 =null;
         {
             unsigned int currStrOff = 0;
@@ -9771,6 +9778,7 @@ unsigned int strLen_2 = strlen("#include ");
         }
     }
     ;
+}
 }
 else {
 if ((includeFile(sc,elems)==false)) {
@@ -16293,6 +16301,16 @@ if ((isSubObject==true)||(isObject==true)) {
 return;
 }
 }
+else if ((strcmp(ft.cont, "#optimized") == 0)) {
+if ((isOptimized==false)) {
+return;
+}
+}
+else if ((strcmp(ft.cont, "#unoptimized") == 0)) {
+if ((isOptimized==true)) {
+return;
+}
+}
 else {
 throwErr(&ft,"Undefined token {TOKEN}.");
 }
@@ -22158,6 +22176,8 @@ unsigned int strLen_2 = strlen("To change the C compiler used, default: ");
         }flags__addString(&flags,"CC",____BAH_COMPILER_VAR_953);
 flags__addBool(&flags,"object","Compile as an object.");
 flags__addBool(&flags,"unsafe","Compile without safety checking. This will make for faster executable but if your program crashes, it will show less informations.");
+flags__addBool(&flags,"nobuiltin","Does not include the builtin library (be really carefull, your program WILL break).");
+flags__addBool(&flags,"optimize","Includes optimized functions");
 flags__parse(&flags,args);
 if ((flags__isSet(&flags,"target")==1)) {
 BAH_OS = flags__get(&flags,"target");
@@ -22246,6 +22266,7 @@ verboseRuntime = (flags__isSet(&flags,"verboseRuntime")==1);
 debug = (flags__isSet(&flags,"debug")==1);
 isObject = (flags__isSet(&flags,"object")==1);
 isUnsafe = (flags__isSet(&flags,"unsafe")==1);
+isOptimized = (flags__isSet(&flags,"optimize")==1);
 if ((debug==true)) {
 debugStart();
 }
@@ -22273,7 +22294,7 @@ unsigned int strLen_2 = strlen("Bah compiler version: ");
 return 0;
 }
 if ((flags__isSet(&flags,"c")==1)&&(flags__isSet(&flags,"l")==1)) {
-__BAH_panic("Cannot use -c (to translate to C code) and -l (to compile as a library) at the same time.","/home/alois/Documents/bah-bah/src/main.bah:135");
+__BAH_panic("Cannot use -c (to translate to C code) and -l (to compile as a library) at the same time.","/home/alois/Documents/bah-bah/src/main.bah:139");
 }
 INIT = rope("");
 OUTPUT = rope("\n    void __BAH_init();\n    #define noCheck(v) v\n    #define array(type)	\
@@ -22421,26 +22442,30 @@ OUTPUT = rope("\n        #define noCheck(v) v\n        #define array(type)	\
         }\n        typedef array(char*)* __BAH_ARR_TYPE_cpstring;\n        long int __BAH__main(__BAH_ARR_TYPE_cpstring);\n        ");
 shouldOnlyDecl = true;
 }
+
+                struct string ____BAH_COMPILER_VAR_964 = string(fileName);
+                if ((flags__isSet(&flags,"nobuiltin")==0)&&(string__hasSuffix(&____BAH_COMPILER_VAR_964,".bahstrp")==false)) {
 if ((includeFile("builtin.bah",elems)==false)) {
-char * ____BAH_COMPILER_VAR_964 =null;
+char * ____BAH_COMPILER_VAR_965 =null;
         {
             unsigned int currStrOff = 0;
             unsigned int strLen_0 = strlen(BAH_DIR);
 unsigned int strLen_1 = strlen("'");
 unsigned int strLen_2 = strlen("Could not find std-libs, please check '");
 ;                            
-            ____BAH_COMPILER_VAR_964 = memoryAllocSTR(1+strLen_0+strLen_1+strLen_2);
+            ____BAH_COMPILER_VAR_965 = memoryAllocSTR(1+strLen_0+strLen_1+strLen_2);
             
-                    memcpy(____BAH_COMPILER_VAR_964+currStrOff, "Could not find std-libs, please check '", strLen_2);
+                    memcpy(____BAH_COMPILER_VAR_965+currStrOff, "Could not find std-libs, please check '", strLen_2);
                     currStrOff += strLen_2;
                     
-            memcpy(____BAH_COMPILER_VAR_964+currStrOff, BAH_DIR, strLen_0);
+            memcpy(____BAH_COMPILER_VAR_965+currStrOff, BAH_DIR, strLen_0);
             currStrOff += strLen_0;
         
-            memcpy(____BAH_COMPILER_VAR_964+currStrOff, "'", strLen_1);
+            memcpy(____BAH_COMPILER_VAR_965+currStrOff, "'", strLen_1);
             currStrOff += strLen_1;
         
-        }__BAH_panic(____BAH_COMPILER_VAR_964,"/home/alois/Documents/bah-bah/src/main.bah:245");
+        }__BAH_panic(____BAH_COMPILER_VAR_965,"/home/alois/Documents/bah-bah/src/main.bah:250");
+}
 }
 shouldOnlyDecl = false;
 if ((flags__isSet(&flags,"l")==1)) {
@@ -22459,25 +22484,25 @@ continue;
 }
 ++l;
 };
-char * ____BAH_COMPILER_VAR_965 =null;char * ____BAH_COMPILER_VAR_966 =intToStr(l);
+char * ____BAH_COMPILER_VAR_966 =null;char * ____BAH_COMPILER_VAR_967 =intToStr(l);
         {
             unsigned int currStrOff = 0;
-            unsigned int strLen_0 = strlen(____BAH_COMPILER_VAR_966);
+            unsigned int strLen_0 = strlen(____BAH_COMPILER_VAR_967);
 unsigned int strLen_1 = strlen("];");
 unsigned int strLen_2 = strlen("volatile struct __Bah_fnName_mapper __tmp____Bah_fnNames[");
 ;                            
-            ____BAH_COMPILER_VAR_965 = memoryAllocSTR(1+strLen_0+strLen_1+strLen_2);
+            ____BAH_COMPILER_VAR_966 = memoryAllocSTR(1+strLen_0+strLen_1+strLen_2);
             
-                    memcpy(____BAH_COMPILER_VAR_965+currStrOff, "volatile struct __Bah_fnName_mapper __tmp____Bah_fnNames[", strLen_2);
+                    memcpy(____BAH_COMPILER_VAR_966+currStrOff, "volatile struct __Bah_fnName_mapper __tmp____Bah_fnNames[", strLen_2);
                     currStrOff += strLen_2;
                     
-            memcpy(____BAH_COMPILER_VAR_965+currStrOff, ____BAH_COMPILER_VAR_966, strLen_0);
+            memcpy(____BAH_COMPILER_VAR_966+currStrOff, ____BAH_COMPILER_VAR_967, strLen_0);
             currStrOff += strLen_0;
         
-            memcpy(____BAH_COMPILER_VAR_965+currStrOff, "];", strLen_1);
+            memcpy(____BAH_COMPILER_VAR_966+currStrOff, "];", strLen_1);
             currStrOff += strLen_1;
         
-        }OUTPUT = rope__add(OUTPUT, rope(____BAH_COMPILER_VAR_965));
+        }OUTPUT = rope__add(OUTPUT, rope(____BAH_COMPILER_VAR_966));
 long int j = 0;
 i = 0;
 for (; (i<len(elems->fns)); ++i) {
@@ -22486,107 +22511,107 @@ if ((fn->isBinding==true)) {
 continue;
 }
 char * name = fn->name;
-char * ____BAH_COMPILER_VAR_967 =null;
+char * ____BAH_COMPILER_VAR_968 =null;
         {
             unsigned int currStrOff = 0;
             unsigned int strLen_0 = strlen(fn->from);
 unsigned int strLen_1 = strlen("__");
 ;                            
-            ____BAH_COMPILER_VAR_967 = memoryAllocSTR(1+strLen_0+strLen_1);
+            ____BAH_COMPILER_VAR_968 = memoryAllocSTR(1+strLen_0+strLen_1);
             
-            memcpy(____BAH_COMPILER_VAR_967+currStrOff, fn->from, strLen_0);
+            memcpy(____BAH_COMPILER_VAR_968+currStrOff, fn->from, strLen_0);
             currStrOff += strLen_0;
         
-            memcpy(____BAH_COMPILER_VAR_967+currStrOff, "__", strLen_1);
+            memcpy(____BAH_COMPILER_VAR_968+currStrOff, "__", strLen_1);
             currStrOff += strLen_1;
         
-        }if ((strcmp(fn->from, "") != 0)&&strHasPrefix(name,____BAH_COMPILER_VAR_967)) {
+        }if ((strcmp(fn->from, "") != 0)&&strHasPrefix(name,____BAH_COMPILER_VAR_968)) {
 struct string n = string(name);
 string__trimLeft(&n,strlen(fn->from)+2);
-char * ____BAH_COMPILER_VAR_968 =null;char * ____BAH_COMPILER_VAR_969 =string__str(&n);
+char * ____BAH_COMPILER_VAR_969 =null;char * ____BAH_COMPILER_VAR_970 =string__str(&n);
         {
             unsigned int currStrOff = 0;
             unsigned int strLen_0 = strlen(".");
-unsigned int strLen_1 = strlen(____BAH_COMPILER_VAR_969);
+unsigned int strLen_1 = strlen(____BAH_COMPILER_VAR_970);
 unsigned int strLen_2 = strlen(fn->from);
 ;                            
-            ____BAH_COMPILER_VAR_968 = memoryAllocSTR(1+strLen_0+strLen_1+strLen_2);
+            ____BAH_COMPILER_VAR_969 = memoryAllocSTR(1+strLen_0+strLen_1+strLen_2);
             
-                    memcpy(____BAH_COMPILER_VAR_968+currStrOff, fn->from, strLen_2);
+                    memcpy(____BAH_COMPILER_VAR_969+currStrOff, fn->from, strLen_2);
                     currStrOff += strLen_2;
                     
-            memcpy(____BAH_COMPILER_VAR_968+currStrOff, ".", strLen_0);
+            memcpy(____BAH_COMPILER_VAR_969+currStrOff, ".", strLen_0);
             currStrOff += strLen_0;
         
-            memcpy(____BAH_COMPILER_VAR_968+currStrOff, ____BAH_COMPILER_VAR_969, strLen_1);
+            memcpy(____BAH_COMPILER_VAR_969+currStrOff, ____BAH_COMPILER_VAR_970, strLen_1);
             currStrOff += strLen_1;
         
-        }name = ____BAH_COMPILER_VAR_968;
+        }name = ____BAH_COMPILER_VAR_969;
 }
-char * ____BAH_COMPILER_VAR_970 =null;char * ____BAH_COMPILER_VAR_971 =intToStr(j);char * ____BAH_COMPILER_VAR_972 =intToStr(j);
+char * ____BAH_COMPILER_VAR_971 =null;char * ____BAH_COMPILER_VAR_972 =intToStr(j);char * ____BAH_COMPILER_VAR_973 =intToStr(j);
         {
             unsigned int currStrOff = 0;
             unsigned int strLen_0 = strlen(fn->name);
 unsigned int strLen_1 = strlen(";\n");
 unsigned int strLen_2 = strlen("].p = ");
-unsigned int strLen_3 = strlen(____BAH_COMPILER_VAR_971);
+unsigned int strLen_3 = strlen(____BAH_COMPILER_VAR_972);
 unsigned int strLen_4 = strlen("\";\n            __tmp____Bah_fnNames[");
 unsigned int strLen_5 = strlen(name);
 unsigned int strLen_6 = strlen("].n = \"");
-unsigned int strLen_7 = strlen(____BAH_COMPILER_VAR_972);
+unsigned int strLen_7 = strlen(____BAH_COMPILER_VAR_973);
 unsigned int strLen_8 = strlen("\n            __tmp____Bah_fnNames[");
 ;                            
-            ____BAH_COMPILER_VAR_970 = memoryAllocSTR(1+strLen_0+strLen_1+strLen_2+strLen_3+strLen_4+strLen_5+strLen_6+strLen_7+strLen_8);
+            ____BAH_COMPILER_VAR_971 = memoryAllocSTR(1+strLen_0+strLen_1+strLen_2+strLen_3+strLen_4+strLen_5+strLen_6+strLen_7+strLen_8);
             
-                    memcpy(____BAH_COMPILER_VAR_970+currStrOff, "\n            __tmp____Bah_fnNames[", strLen_8);
+                    memcpy(____BAH_COMPILER_VAR_971+currStrOff, "\n            __tmp____Bah_fnNames[", strLen_8);
                     currStrOff += strLen_8;
                     
-                    memcpy(____BAH_COMPILER_VAR_970+currStrOff, ____BAH_COMPILER_VAR_972, strLen_7);
+                    memcpy(____BAH_COMPILER_VAR_971+currStrOff, ____BAH_COMPILER_VAR_973, strLen_7);
                     currStrOff += strLen_7;
                     
-                    memcpy(____BAH_COMPILER_VAR_970+currStrOff, "].n = \"", strLen_6);
+                    memcpy(____BAH_COMPILER_VAR_971+currStrOff, "].n = \"", strLen_6);
                     currStrOff += strLen_6;
                     
-                    memcpy(____BAH_COMPILER_VAR_970+currStrOff, name, strLen_5);
+                    memcpy(____BAH_COMPILER_VAR_971+currStrOff, name, strLen_5);
                     currStrOff += strLen_5;
                     
-                    memcpy(____BAH_COMPILER_VAR_970+currStrOff, "\";\n            __tmp____Bah_fnNames[", strLen_4);
+                    memcpy(____BAH_COMPILER_VAR_971+currStrOff, "\";\n            __tmp____Bah_fnNames[", strLen_4);
                     currStrOff += strLen_4;
                     
-                    memcpy(____BAH_COMPILER_VAR_970+currStrOff, ____BAH_COMPILER_VAR_971, strLen_3);
+                    memcpy(____BAH_COMPILER_VAR_971+currStrOff, ____BAH_COMPILER_VAR_972, strLen_3);
                     currStrOff += strLen_3;
                     
-                    memcpy(____BAH_COMPILER_VAR_970+currStrOff, "].p = ", strLen_2);
+                    memcpy(____BAH_COMPILER_VAR_971+currStrOff, "].p = ", strLen_2);
                     currStrOff += strLen_2;
                     
-            memcpy(____BAH_COMPILER_VAR_970+currStrOff, fn->name, strLen_0);
+            memcpy(____BAH_COMPILER_VAR_971+currStrOff, fn->name, strLen_0);
             currStrOff += strLen_0;
         
-            memcpy(____BAH_COMPILER_VAR_970+currStrOff, ";\n", strLen_1);
+            memcpy(____BAH_COMPILER_VAR_971+currStrOff, ";\n", strLen_1);
             currStrOff += strLen_1;
         
-        }INIT = rope__add(INIT, rope(____BAH_COMPILER_VAR_970));
+        }INIT = rope__add(INIT, rope(____BAH_COMPILER_VAR_971));
 ++j;
 };
-char * ____BAH_COMPILER_VAR_973 =null;char * ____BAH_COMPILER_VAR_974 =intToStr(l);
+char * ____BAH_COMPILER_VAR_974 =null;char * ____BAH_COMPILER_VAR_975 =intToStr(l);
         {
             unsigned int currStrOff = 0;
-            unsigned int strLen_0 = strlen(____BAH_COMPILER_VAR_974);
+            unsigned int strLen_0 = strlen(____BAH_COMPILER_VAR_975);
 unsigned int strLen_1 = strlen(";");
 unsigned int strLen_2 = strlen("\n        __Bah_fnNames->data = __tmp____Bah_fnNames;\n        __Bah_fnNames->length = ");
 ;                            
-            ____BAH_COMPILER_VAR_973 = memoryAllocSTR(1+strLen_0+strLen_1+strLen_2);
+            ____BAH_COMPILER_VAR_974 = memoryAllocSTR(1+strLen_0+strLen_1+strLen_2);
             
-                    memcpy(____BAH_COMPILER_VAR_973+currStrOff, "\n        __Bah_fnNames->data = __tmp____Bah_fnNames;\n        __Bah_fnNames->length = ", strLen_2);
+                    memcpy(____BAH_COMPILER_VAR_974+currStrOff, "\n        __Bah_fnNames->data = __tmp____Bah_fnNames;\n        __Bah_fnNames->length = ", strLen_2);
                     currStrOff += strLen_2;
                     
-            memcpy(____BAH_COMPILER_VAR_973+currStrOff, ____BAH_COMPILER_VAR_974, strLen_0);
+            memcpy(____BAH_COMPILER_VAR_974+currStrOff, ____BAH_COMPILER_VAR_975, strLen_0);
             currStrOff += strLen_0;
         
-            memcpy(____BAH_COMPILER_VAR_973+currStrOff, ";", strLen_1);
+            memcpy(____BAH_COMPILER_VAR_974+currStrOff, ";", strLen_1);
             currStrOff += strLen_1;
         
-        }INIT = rope__add(INIT, rope(____BAH_COMPILER_VAR_973));
+        }INIT = rope__add(INIT, rope(____BAH_COMPILER_VAR_974));
 }
 makeInit();
 array(char *)* excludeFns = memoryAlloc(sizeof(array(char *)));
@@ -22607,41 +22632,41 @@ return 0;
 }
 if ((isObject==false)) {
 long int totalTime = getTimeUnix()-startTime;
-char * ____BAH_COMPILER_VAR_975 =null;char * ____BAH_COMPILER_VAR_976 =intToStr(totalLexerTime/1000000);char * ____BAH_COMPILER_VAR_977 =intToStr(totalTime/1000000);char * ____BAH_COMPILER_VAR_978 =intToStr(totalLines);
+char * ____BAH_COMPILER_VAR_976 =null;char * ____BAH_COMPILER_VAR_977 =intToStr(totalLexerTime/1000000);char * ____BAH_COMPILER_VAR_978 =intToStr(totalTime/1000000);char * ____BAH_COMPILER_VAR_979 =intToStr(totalLines);
         {
             unsigned int currStrOff = 0;
-            unsigned int strLen_0 = strlen(____BAH_COMPILER_VAR_976);
+            unsigned int strLen_0 = strlen(____BAH_COMPILER_VAR_977);
 unsigned int strLen_1 = strlen("ms)\e[0m");
 unsigned int strLen_2 = strlen("ms, lexer time: ");
-unsigned int strLen_3 = strlen(____BAH_COMPILER_VAR_977);
+unsigned int strLen_3 = strlen(____BAH_COMPILER_VAR_978);
 unsigned int strLen_4 = strlen(" lines, total time: ");
-unsigned int strLen_5 = strlen(____BAH_COMPILER_VAR_978);
+unsigned int strLen_5 = strlen(____BAH_COMPILER_VAR_979);
 unsigned int strLen_6 = strlen("Parsed. (");
 ;                            
-            ____BAH_COMPILER_VAR_975 = memoryAllocSTR(1+strLen_0+strLen_1+strLen_2+strLen_3+strLen_4+strLen_5+strLen_6);
+            ____BAH_COMPILER_VAR_976 = memoryAllocSTR(1+strLen_0+strLen_1+strLen_2+strLen_3+strLen_4+strLen_5+strLen_6);
             
-                    memcpy(____BAH_COMPILER_VAR_975+currStrOff, "Parsed. (", strLen_6);
+                    memcpy(____BAH_COMPILER_VAR_976+currStrOff, "Parsed. (", strLen_6);
                     currStrOff += strLen_6;
                     
-                    memcpy(____BAH_COMPILER_VAR_975+currStrOff, ____BAH_COMPILER_VAR_978, strLen_5);
+                    memcpy(____BAH_COMPILER_VAR_976+currStrOff, ____BAH_COMPILER_VAR_979, strLen_5);
                     currStrOff += strLen_5;
                     
-                    memcpy(____BAH_COMPILER_VAR_975+currStrOff, " lines, total time: ", strLen_4);
+                    memcpy(____BAH_COMPILER_VAR_976+currStrOff, " lines, total time: ", strLen_4);
                     currStrOff += strLen_4;
                     
-                    memcpy(____BAH_COMPILER_VAR_975+currStrOff, ____BAH_COMPILER_VAR_977, strLen_3);
+                    memcpy(____BAH_COMPILER_VAR_976+currStrOff, ____BAH_COMPILER_VAR_978, strLen_3);
                     currStrOff += strLen_3;
                     
-                    memcpy(____BAH_COMPILER_VAR_975+currStrOff, "ms, lexer time: ", strLen_2);
+                    memcpy(____BAH_COMPILER_VAR_976+currStrOff, "ms, lexer time: ", strLen_2);
                     currStrOff += strLen_2;
                     
-            memcpy(____BAH_COMPILER_VAR_975+currStrOff, ____BAH_COMPILER_VAR_976, strLen_0);
+            memcpy(____BAH_COMPILER_VAR_976+currStrOff, ____BAH_COMPILER_VAR_977, strLen_0);
             currStrOff += strLen_0;
         
-            memcpy(____BAH_COMPILER_VAR_975+currStrOff, "ms)\e[0m", strLen_1);
+            memcpy(____BAH_COMPILER_VAR_976+currStrOff, "ms)\e[0m", strLen_1);
             currStrOff += strLen_1;
         
-        }println(____BAH_COMPILER_VAR_975);
+        }println(____BAH_COMPILER_VAR_976);
 }
 if ((flags__isSet(&flags,"o")==1)) {
 fileName = flags__get(&flags,"o");
@@ -22658,25 +22683,25 @@ isStatic = "";
 if ((flags__isSet(&flags,"c")==0)) {
 char * obj = "";
 if ((flags__isSet(&flags,"object")==1)) {
-char * ____BAH_COMPILER_VAR_979 =null;
+char * ____BAH_COMPILER_VAR_980 =null;
         {
             unsigned int currStrOff = 0;
             unsigned int strLen_0 = strlen(fileName);
 unsigned int strLen_1 = strlen(".o");
 ;                            
-            ____BAH_COMPILER_VAR_979 = memoryAllocSTR(1+strLen_0+strLen_1);
+            ____BAH_COMPILER_VAR_980 = memoryAllocSTR(1+strLen_0+strLen_1);
             
-            memcpy(____BAH_COMPILER_VAR_979+currStrOff, fileName, strLen_0);
+            memcpy(____BAH_COMPILER_VAR_980+currStrOff, fileName, strLen_0);
             currStrOff += strLen_0;
         
-            memcpy(____BAH_COMPILER_VAR_979+currStrOff, ".o", strLen_1);
+            memcpy(____BAH_COMPILER_VAR_980+currStrOff, ".o", strLen_1);
             currStrOff += strLen_1;
         
-        }fileName = ____BAH_COMPILER_VAR_979;
+        }fileName = ____BAH_COMPILER_VAR_980;
 obj = "-c";
 }
 char * randFileName = "-x c - -x none";
-char * ____BAH_COMPILER_VAR_980 =null;
+char * ____BAH_COMPILER_VAR_981 =null;
         {
             unsigned int currStrOff = 0;
             unsigned int strLen_0 = strlen(" -w -O1 -o ");
@@ -22697,115 +22722,115 @@ unsigned int strLen_14 = strlen(BAH_DIR);
 unsigned int strLen_15 = strlen(" -I \"");
 unsigned int strLen_16 = strlen(BAH_CC);
 ;                            
-            ____BAH_COMPILER_VAR_980 = memoryAllocSTR(1+strLen_0+strLen_1+strLen_2+strLen_3+strLen_4+strLen_5+strLen_6+strLen_7+strLen_8+strLen_9+strLen_10+strLen_11+strLen_12+strLen_13+strLen_14+strLen_15+strLen_16);
+            ____BAH_COMPILER_VAR_981 = memoryAllocSTR(1+strLen_0+strLen_1+strLen_2+strLen_3+strLen_4+strLen_5+strLen_6+strLen_7+strLen_8+strLen_9+strLen_10+strLen_11+strLen_12+strLen_13+strLen_14+strLen_15+strLen_16);
             
-                    memcpy(____BAH_COMPILER_VAR_980+currStrOff, BAH_CC, strLen_16);
+                    memcpy(____BAH_COMPILER_VAR_981+currStrOff, BAH_CC, strLen_16);
                     currStrOff += strLen_16;
                     
-                    memcpy(____BAH_COMPILER_VAR_980+currStrOff, " -I \"", strLen_15);
+                    memcpy(____BAH_COMPILER_VAR_981+currStrOff, " -I \"", strLen_15);
                     currStrOff += strLen_15;
                     
-                    memcpy(____BAH_COMPILER_VAR_980+currStrOff, BAH_DIR, strLen_14);
+                    memcpy(____BAH_COMPILER_VAR_981+currStrOff, BAH_DIR, strLen_14);
                     currStrOff += strLen_14;
                     
-                    memcpy(____BAH_COMPILER_VAR_980+currStrOff, "libs/", strLen_13);
+                    memcpy(____BAH_COMPILER_VAR_981+currStrOff, "libs/", strLen_13);
                     currStrOff += strLen_13;
                     
-                    memcpy(____BAH_COMPILER_VAR_980+currStrOff, BAH_OS, strLen_12);
+                    memcpy(____BAH_COMPILER_VAR_981+currStrOff, BAH_OS, strLen_12);
                     currStrOff += strLen_12;
                     
-                    memcpy(____BAH_COMPILER_VAR_980+currStrOff, "/include/\" -L \"", strLen_11);
+                    memcpy(____BAH_COMPILER_VAR_981+currStrOff, "/include/\" -L \"", strLen_11);
                     currStrOff += strLen_11;
                     
-                    memcpy(____BAH_COMPILER_VAR_980+currStrOff, BAH_DIR, strLen_10);
+                    memcpy(____BAH_COMPILER_VAR_981+currStrOff, BAH_DIR, strLen_10);
                     currStrOff += strLen_10;
                     
-                    memcpy(____BAH_COMPILER_VAR_980+currStrOff, "libs/", strLen_9);
+                    memcpy(____BAH_COMPILER_VAR_981+currStrOff, "libs/", strLen_9);
                     currStrOff += strLen_9;
                     
-                    memcpy(____BAH_COMPILER_VAR_980+currStrOff, BAH_OS, strLen_8);
+                    memcpy(____BAH_COMPILER_VAR_981+currStrOff, BAH_OS, strLen_8);
                     currStrOff += strLen_8;
                     
-                    memcpy(____BAH_COMPILER_VAR_980+currStrOff, "/\" ", strLen_7);
+                    memcpy(____BAH_COMPILER_VAR_981+currStrOff, "/\" ", strLen_7);
                     currStrOff += strLen_7;
                     
-                    memcpy(____BAH_COMPILER_VAR_980+currStrOff, randFileName, strLen_6);
+                    memcpy(____BAH_COMPILER_VAR_981+currStrOff, randFileName, strLen_6);
                     currStrOff += strLen_6;
                     
-                    memcpy(____BAH_COMPILER_VAR_980+currStrOff, " ", strLen_5);
+                    memcpy(____BAH_COMPILER_VAR_981+currStrOff, " ", strLen_5);
                     currStrOff += strLen_5;
                     
-                    memcpy(____BAH_COMPILER_VAR_980+currStrOff, isStatic, strLen_4);
+                    memcpy(____BAH_COMPILER_VAR_981+currStrOff, isStatic, strLen_4);
                     currStrOff += strLen_4;
                     
-                    memcpy(____BAH_COMPILER_VAR_980+currStrOff, " ", strLen_3);
+                    memcpy(____BAH_COMPILER_VAR_981+currStrOff, " ", strLen_3);
                     currStrOff += strLen_3;
                     
-                    memcpy(____BAH_COMPILER_VAR_980+currStrOff, obj, strLen_2);
+                    memcpy(____BAH_COMPILER_VAR_981+currStrOff, obj, strLen_2);
                     currStrOff += strLen_2;
                     
-            memcpy(____BAH_COMPILER_VAR_980+currStrOff, " -w -O1 -o ", strLen_0);
+            memcpy(____BAH_COMPILER_VAR_981+currStrOff, " -w -O1 -o ", strLen_0);
             currStrOff += strLen_0;
         
-            memcpy(____BAH_COMPILER_VAR_980+currStrOff, fileName, strLen_1);
+            memcpy(____BAH_COMPILER_VAR_981+currStrOff, fileName, strLen_1);
             currStrOff += strLen_1;
         
-        }char * gccArgs = ____BAH_COMPILER_VAR_980;
+        }char * gccArgs = ____BAH_COMPILER_VAR_981;
 if ((flags__isSet(&flags,"l")==1)) {
-char * ____BAH_COMPILER_VAR_981 =null;
+char * ____BAH_COMPILER_VAR_982 =null;
         {
             unsigned int currStrOff = 0;
             unsigned int strLen_0 = strlen(gccArgs);
 unsigned int strLen_1 = strlen(" -c");
 ;                            
-            ____BAH_COMPILER_VAR_981 = memoryAllocSTR(1+strLen_0+strLen_1);
+            ____BAH_COMPILER_VAR_982 = memoryAllocSTR(1+strLen_0+strLen_1);
             
-            memcpy(____BAH_COMPILER_VAR_981+currStrOff, gccArgs, strLen_0);
+            memcpy(____BAH_COMPILER_VAR_982+currStrOff, gccArgs, strLen_0);
             currStrOff += strLen_0;
         
-            memcpy(____BAH_COMPILER_VAR_981+currStrOff, " -c", strLen_1);
+            memcpy(____BAH_COMPILER_VAR_982+currStrOff, " -c", strLen_1);
             currStrOff += strLen_1;
         
-        }gccArgs = ____BAH_COMPILER_VAR_981;
+        }gccArgs = ____BAH_COMPILER_VAR_982;
 }
 array(char *)* cLibs = compilerState.cLibs;
 register long int i = 0;
 while ((i<len(cLibs))) {
 char * l = cLibs->data[i];
-char * ____BAH_COMPILER_VAR_982 =null;
+char * ____BAH_COMPILER_VAR_983 =null;
         {
             unsigned int currStrOff = 0;
             unsigned int strLen_0 = strlen(" -");
 unsigned int strLen_1 = strlen(l);
 unsigned int strLen_2 = strlen(gccArgs);
 ;                            
-            ____BAH_COMPILER_VAR_982 = memoryAllocSTR(1+strLen_0+strLen_1+strLen_2);
+            ____BAH_COMPILER_VAR_983 = memoryAllocSTR(1+strLen_0+strLen_1+strLen_2);
             
-                    memcpy(____BAH_COMPILER_VAR_982+currStrOff, gccArgs, strLen_2);
+                    memcpy(____BAH_COMPILER_VAR_983+currStrOff, gccArgs, strLen_2);
                     currStrOff += strLen_2;
                     
-            memcpy(____BAH_COMPILER_VAR_982+currStrOff, " -", strLen_0);
+            memcpy(____BAH_COMPILER_VAR_983+currStrOff, " -", strLen_0);
             currStrOff += strLen_0;
         
-            memcpy(____BAH_COMPILER_VAR_982+currStrOff, l, strLen_1);
+            memcpy(____BAH_COMPILER_VAR_983+currStrOff, l, strLen_1);
             currStrOff += strLen_1;
         
-        }gccArgs = ____BAH_COMPILER_VAR_982;
+        }gccArgs = ____BAH_COMPILER_VAR_983;
 i = i+1;
 };
 struct command cmd = command(gccArgs);
 cmd.input = rope__toStr(OUTPUT);
 if ((flags__isSet(&flags,"verboseCC")==1)) {
-char * ____BAH_COMPILER_VAR_983 =command__run(&cmd);println(____BAH_COMPILER_VAR_983);
+char * ____BAH_COMPILER_VAR_984 =command__run(&cmd);println(____BAH_COMPILER_VAR_984);
 }
 else {
-char * ____BAH_COMPILER_VAR_984 =command__run(&cmd);}
+char * ____BAH_COMPILER_VAR_985 =command__run(&cmd);}
 if ((cmd.status!=0)) {
 println("\e[1;31m[CC-ERROR]\e[0m\nCould not compiled.");
 return 1;
 }
 if ((flags__isSet(&flags,"l")==1)) {
-char * ____BAH_COMPILER_VAR_985 =null;
+char * ____BAH_COMPILER_VAR_986 =null;
         {
             unsigned int currStrOff = 0;
             unsigned int strLen_0 = strlen(".a ");
@@ -22813,42 +22838,42 @@ unsigned int strLen_1 = strlen(fileName);
 unsigned int strLen_2 = strlen(fileName);
 unsigned int strLen_3 = strlen("ar rcs ");
 ;                            
-            ____BAH_COMPILER_VAR_985 = memoryAllocSTR(1+strLen_0+strLen_1+strLen_2+strLen_3);
+            ____BAH_COMPILER_VAR_986 = memoryAllocSTR(1+strLen_0+strLen_1+strLen_2+strLen_3);
             
-                    memcpy(____BAH_COMPILER_VAR_985+currStrOff, "ar rcs ", strLen_3);
+                    memcpy(____BAH_COMPILER_VAR_986+currStrOff, "ar rcs ", strLen_3);
                     currStrOff += strLen_3;
                     
-                    memcpy(____BAH_COMPILER_VAR_985+currStrOff, fileName, strLen_2);
+                    memcpy(____BAH_COMPILER_VAR_986+currStrOff, fileName, strLen_2);
                     currStrOff += strLen_2;
                     
-            memcpy(____BAH_COMPILER_VAR_985+currStrOff, ".a ", strLen_0);
+            memcpy(____BAH_COMPILER_VAR_986+currStrOff, ".a ", strLen_0);
             currStrOff += strLen_0;
         
-            memcpy(____BAH_COMPILER_VAR_985+currStrOff, fileName, strLen_1);
+            memcpy(____BAH_COMPILER_VAR_986+currStrOff, fileName, strLen_1);
             currStrOff += strLen_1;
         
-        }cmd = command(____BAH_COMPILER_VAR_985);
-char * ____BAH_COMPILER_VAR_986 =command__run(&cmd);}
+        }cmd = command(____BAH_COMPILER_VAR_986);
+char * ____BAH_COMPILER_VAR_987 =command__run(&cmd);}
 }
 else {
 if ((flags__isSet(&flags,"o")==0)) {
-char * ____BAH_COMPILER_VAR_987 =null;
+char * ____BAH_COMPILER_VAR_988 =null;
         {
             unsigned int currStrOff = 0;
             unsigned int strLen_0 = strlen(fileName);
 unsigned int strLen_1 = strlen(".c");
 ;                            
-            ____BAH_COMPILER_VAR_987 = memoryAllocSTR(1+strLen_0+strLen_1);
+            ____BAH_COMPILER_VAR_988 = memoryAllocSTR(1+strLen_0+strLen_1);
             
-            memcpy(____BAH_COMPILER_VAR_987+currStrOff, fileName, strLen_0);
+            memcpy(____BAH_COMPILER_VAR_988+currStrOff, fileName, strLen_0);
             currStrOff += strLen_0;
         
-            memcpy(____BAH_COMPILER_VAR_987+currStrOff, ".c", strLen_1);
+            memcpy(____BAH_COMPILER_VAR_988+currStrOff, ".c", strLen_1);
             currStrOff += strLen_1;
         
-        }fileName = ____BAH_COMPILER_VAR_987;
+        }fileName = ____BAH_COMPILER_VAR_988;
 }
-char * ____BAH_COMPILER_VAR_988 =null;
+char * ____BAH_COMPILER_VAR_989 =null;
         {
             unsigned int currStrOff = 0;
             unsigned int strLen_0 = strlen(isStatic);
@@ -22866,126 +22891,126 @@ unsigned int strLen_11 = strlen(BAH_DIR);
 unsigned int strLen_12 = strlen(" -I \"");
 unsigned int strLen_13 = strlen(BAH_CC);
 ;                            
-            ____BAH_COMPILER_VAR_988 = memoryAllocSTR(1+strLen_0+strLen_1+strLen_2+strLen_3+strLen_4+strLen_5+strLen_6+strLen_7+strLen_8+strLen_9+strLen_10+strLen_11+strLen_12+strLen_13);
+            ____BAH_COMPILER_VAR_989 = memoryAllocSTR(1+strLen_0+strLen_1+strLen_2+strLen_3+strLen_4+strLen_5+strLen_6+strLen_7+strLen_8+strLen_9+strLen_10+strLen_11+strLen_12+strLen_13);
             
-                    memcpy(____BAH_COMPILER_VAR_988+currStrOff, BAH_CC, strLen_13);
+                    memcpy(____BAH_COMPILER_VAR_989+currStrOff, BAH_CC, strLen_13);
                     currStrOff += strLen_13;
                     
-                    memcpy(____BAH_COMPILER_VAR_988+currStrOff, " -I \"", strLen_12);
+                    memcpy(____BAH_COMPILER_VAR_989+currStrOff, " -I \"", strLen_12);
                     currStrOff += strLen_12;
                     
-                    memcpy(____BAH_COMPILER_VAR_988+currStrOff, BAH_DIR, strLen_11);
+                    memcpy(____BAH_COMPILER_VAR_989+currStrOff, BAH_DIR, strLen_11);
                     currStrOff += strLen_11;
                     
-                    memcpy(____BAH_COMPILER_VAR_988+currStrOff, "libs/", strLen_10);
+                    memcpy(____BAH_COMPILER_VAR_989+currStrOff, "libs/", strLen_10);
                     currStrOff += strLen_10;
                     
-                    memcpy(____BAH_COMPILER_VAR_988+currStrOff, BAH_OS, strLen_9);
+                    memcpy(____BAH_COMPILER_VAR_989+currStrOff, BAH_OS, strLen_9);
                     currStrOff += strLen_9;
                     
-                    memcpy(____BAH_COMPILER_VAR_988+currStrOff, "/include/\" -L \"", strLen_8);
+                    memcpy(____BAH_COMPILER_VAR_989+currStrOff, "/include/\" -L \"", strLen_8);
                     currStrOff += strLen_8;
                     
-                    memcpy(____BAH_COMPILER_VAR_988+currStrOff, BAH_DIR, strLen_7);
+                    memcpy(____BAH_COMPILER_VAR_989+currStrOff, BAH_DIR, strLen_7);
                     currStrOff += strLen_7;
                     
-                    memcpy(____BAH_COMPILER_VAR_988+currStrOff, "libs/", strLen_6);
+                    memcpy(____BAH_COMPILER_VAR_989+currStrOff, "libs/", strLen_6);
                     currStrOff += strLen_6;
                     
-                    memcpy(____BAH_COMPILER_VAR_988+currStrOff, BAH_OS, strLen_5);
+                    memcpy(____BAH_COMPILER_VAR_989+currStrOff, BAH_OS, strLen_5);
                     currStrOff += strLen_5;
                     
-                    memcpy(____BAH_COMPILER_VAR_988+currStrOff, "/\" ", strLen_4);
+                    memcpy(____BAH_COMPILER_VAR_989+currStrOff, "/\" ", strLen_4);
                     currStrOff += strLen_4;
                     
-                    memcpy(____BAH_COMPILER_VAR_988+currStrOff, fileName, strLen_3);
+                    memcpy(____BAH_COMPILER_VAR_989+currStrOff, fileName, strLen_3);
                     currStrOff += strLen_3;
                     
-                    memcpy(____BAH_COMPILER_VAR_988+currStrOff, " ", strLen_2);
+                    memcpy(____BAH_COMPILER_VAR_989+currStrOff, " ", strLen_2);
                     currStrOff += strLen_2;
                     
-            memcpy(____BAH_COMPILER_VAR_988+currStrOff, isStatic, strLen_0);
+            memcpy(____BAH_COMPILER_VAR_989+currStrOff, isStatic, strLen_0);
             currStrOff += strLen_0;
         
-            memcpy(____BAH_COMPILER_VAR_988+currStrOff, " -O1 -w ", strLen_1);
+            memcpy(____BAH_COMPILER_VAR_989+currStrOff, " -O1 -w ", strLen_1);
             currStrOff += strLen_1;
         
-        }char * gccArgs = ____BAH_COMPILER_VAR_988;
+        }char * gccArgs = ____BAH_COMPILER_VAR_989;
 array(char *)* cLibs = compilerState.cLibs;
 register long int i = 0;
 while ((i<len(cLibs))) {
 char * l = cLibs->data[i];
-char * ____BAH_COMPILER_VAR_989 =null;
+char * ____BAH_COMPILER_VAR_990 =null;
         {
             unsigned int currStrOff = 0;
             unsigned int strLen_0 = strlen(" -");
 unsigned int strLen_1 = strlen(l);
 unsigned int strLen_2 = strlen(gccArgs);
 ;                            
-            ____BAH_COMPILER_VAR_989 = memoryAllocSTR(1+strLen_0+strLen_1+strLen_2);
+            ____BAH_COMPILER_VAR_990 = memoryAllocSTR(1+strLen_0+strLen_1+strLen_2);
             
-                    memcpy(____BAH_COMPILER_VAR_989+currStrOff, gccArgs, strLen_2);
+                    memcpy(____BAH_COMPILER_VAR_990+currStrOff, gccArgs, strLen_2);
                     currStrOff += strLen_2;
                     
-            memcpy(____BAH_COMPILER_VAR_989+currStrOff, " -", strLen_0);
+            memcpy(____BAH_COMPILER_VAR_990+currStrOff, " -", strLen_0);
             currStrOff += strLen_0;
         
-            memcpy(____BAH_COMPILER_VAR_989+currStrOff, l, strLen_1);
+            memcpy(____BAH_COMPILER_VAR_990+currStrOff, l, strLen_1);
             currStrOff += strLen_1;
         
-        }gccArgs = ____BAH_COMPILER_VAR_989;
+        }gccArgs = ____BAH_COMPILER_VAR_990;
 i = i+1;
 };
-char * ____BAH_COMPILER_VAR_990 =null;
+char * ____BAH_COMPILER_VAR_991 =null;
         {
             unsigned int currStrOff = 0;
             unsigned int strLen_0 = strlen(gccArgs);
 unsigned int strLen_1 = strlen("'\n");
 unsigned int strLen_2 = strlen("//COMPILE WITH: '");
 ;                            
-            ____BAH_COMPILER_VAR_990 = memoryAllocSTR(1+strLen_0+strLen_1+strLen_2);
+            ____BAH_COMPILER_VAR_991 = memoryAllocSTR(1+strLen_0+strLen_1+strLen_2);
             
-                    memcpy(____BAH_COMPILER_VAR_990+currStrOff, "//COMPILE WITH: '", strLen_2);
+                    memcpy(____BAH_COMPILER_VAR_991+currStrOff, "//COMPILE WITH: '", strLen_2);
                     currStrOff += strLen_2;
                     
-            memcpy(____BAH_COMPILER_VAR_990+currStrOff, gccArgs, strLen_0);
+            memcpy(____BAH_COMPILER_VAR_991+currStrOff, gccArgs, strLen_0);
             currStrOff += strLen_0;
         
-            memcpy(____BAH_COMPILER_VAR_990+currStrOff, "'\n", strLen_1);
+            memcpy(____BAH_COMPILER_VAR_991+currStrOff, "'\n", strLen_1);
             currStrOff += strLen_1;
         
-        }OUTPUT = rope__add(rope(____BAH_COMPILER_VAR_990), OUTPUT);
-struct fileStream ____BAH_COMPILER_VAR_991 = {};
-____BAH_COMPILER_VAR_991.handle= null;
-____BAH_COMPILER_VAR_991.name= null;
-#define fs ____BAH_COMPILER_VAR_991
+        }OUTPUT = rope__add(rope(____BAH_COMPILER_VAR_991), OUTPUT);
+struct fileStream ____BAH_COMPILER_VAR_992 = {};
+____BAH_COMPILER_VAR_992.handle= null;
+____BAH_COMPILER_VAR_992.name= null;
+#define fs ____BAH_COMPILER_VAR_992
 fileStream__open(&fs,fileName,"w");
-char * ____BAH_COMPILER_VAR_992 =rope__toStr(OUTPUT);fileStream__writeFile(&fs,____BAH_COMPILER_VAR_992);
+char * ____BAH_COMPILER_VAR_993 =rope__toStr(OUTPUT);fileStream__writeFile(&fs,____BAH_COMPILER_VAR_993);
 fileStream__close(&fs);
 
 #undef fs
 }
 if ((isObject==false)) {
 long int totalTime = getTimeUnix()-startTime;
-char * ____BAH_COMPILER_VAR_993 =null;char * ____BAH_COMPILER_VAR_994 =intToStr(totalTime/1000000);
+char * ____BAH_COMPILER_VAR_994 =null;char * ____BAH_COMPILER_VAR_995 =intToStr(totalTime/1000000);
         {
             unsigned int currStrOff = 0;
-            unsigned int strLen_0 = strlen(____BAH_COMPILER_VAR_994);
+            unsigned int strLen_0 = strlen(____BAH_COMPILER_VAR_995);
 unsigned int strLen_1 = strlen("ms)\e[0m");
 unsigned int strLen_2 = strlen("\e[1;32mDone. (compiled in ");
 ;                            
-            ____BAH_COMPILER_VAR_993 = memoryAllocSTR(1+strLen_0+strLen_1+strLen_2);
+            ____BAH_COMPILER_VAR_994 = memoryAllocSTR(1+strLen_0+strLen_1+strLen_2);
             
-                    memcpy(____BAH_COMPILER_VAR_993+currStrOff, "\e[1;32mDone. (compiled in ", strLen_2);
+                    memcpy(____BAH_COMPILER_VAR_994+currStrOff, "\e[1;32mDone. (compiled in ", strLen_2);
                     currStrOff += strLen_2;
                     
-            memcpy(____BAH_COMPILER_VAR_993+currStrOff, ____BAH_COMPILER_VAR_994, strLen_0);
+            memcpy(____BAH_COMPILER_VAR_994+currStrOff, ____BAH_COMPILER_VAR_995, strLen_0);
             currStrOff += strLen_0;
         
-            memcpy(____BAH_COMPILER_VAR_993+currStrOff, "ms)\e[0m", strLen_1);
+            memcpy(____BAH_COMPILER_VAR_994+currStrOff, "ms)\e[0m", strLen_1);
             currStrOff += strLen_1;
         
-        }println(____BAH_COMPILER_VAR_993);
+        }println(____BAH_COMPILER_VAR_994);
 }
 return 0;
 
@@ -23009,6 +23034,7 @@ debug = false;
 verboseRuntime = false;
 isObject = false;
 isUnsafe = false;
+isOptimized = false;
 execName = "bah";
 isSubObject = false;
 NEXT_LINE = "";
