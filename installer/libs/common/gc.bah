@@ -43,20 +43,25 @@ clear(a ptr) {
 
 
 //Will realloc memory to a specified pointer.
-//*The data contained in the block of memory is not necessarly preserved.*
 memoryRealloc(p ptr, s int) ptr {
     return GC_REALLOC(p,s)
 }
 
+//Shuts down the program.
 cleanShutDown() {
     exit(1)
     return
 }
 
+//Used for setting an end of line registerer to an allocated pointer.
 memoryOnEnd(obj ptr, fn ptr) {
     GC_REGISTER_FINALIZER_IGNORE_SELF(obj, fn, null, null, null)
 }
 
+//The Bah version of memcpy.
+//This will copy l bytes from the source to the end.
+//A faster version is available with -optimize.
+//This is called when calling memcpy().
 __BAH_memcpy(dest cpstring, source cpstring, l int) {
     lm = l % sizeof(int)
     if lm != 0 {

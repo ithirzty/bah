@@ -56,6 +56,7 @@ struct mutex {
     id: pthread_mutex_t
 
     //This initiaties the mutex.
+    //You do not need to initiate the mutex when creating it with mutex().
     init() {
         pthread_mutex_init(&this.id, 0)
     }
@@ -78,28 +79,39 @@ struct mutex {
 
 }
 
+//This is a condition that while not true blocks the calling thread.
 struct mutexCondition {
     id: pthread_cond_t
 
+    //To initiate a condition.
+    //You do not need to initiate the condition when creating it with mutexCondition().
     init() {
         pthread_cond_init(&this.id, 0)
     }
 
+    //To wait for another thread to signal that the condition may be true.
+    //Usage:
+    //for condition {
+    // mutexCond.wait()
+    //}
     wait(m mutex) {
         mid = m.id
         pthread_cond_wait(&this.id, &mid)
     }
 
+    //To signal a single thread that the condition may be true.
     send() {
         pthread_cond_signal(&this.id)
     }
 
+    //To destroy the condition.
     destroy() {
         pthread_cond_destroy(&this.id)
     }
 
 }
 
+//Generates a mutexCondition and initiates it.
 mutexCondition() mutexCondition {
     m = mutexCondition{}
     m.init()
@@ -107,6 +119,7 @@ mutexCondition() mutexCondition {
 }
 
 //A wrapper for a thread.
+//Note that for less advanced operation, you can use the keyword async.
 struct thread {
     id: pthread_t
     

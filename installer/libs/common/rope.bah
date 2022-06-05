@@ -1,22 +1,15 @@
 const ROPE_LEAF_LEN = 200
 
+//A rope is a structure that represents text.
+//Concatenation takes a constant time.
+//This is usefull for large strings that are built using a lot of concatenations.
 struct rope {
     left: rope*
     right: rope*
-    // parent: rope*
     str: cpstring
     lCount: int32
     len: int32 = 0
     totalLen: int32
-
-    //Used to get the parent of the node.
-    //*Note: this is an internal function.*
-    // getParent() rope* {
-    //     if this.parent == null {
-    //         return this
-    //     }
-    //     return this.parent.getParent()
-    // }
 
     //Used to add the content of the node to a specified cpstring.
     //*Note: this is an internal function.*
@@ -98,6 +91,9 @@ createRopeStructure(par rope*, a cpstring, l int, r int) rope* {
     return tmp
 }
 
+//Used for setting the content of a rope.
+//Returns the difference of size between the new one and the old one.
+//The return value needs to be added to the parent ropes.
 ropeSet(r rope*, a cpstring) int {
     n1 = strlen(a)
     diff = n1 - r.totalLen
@@ -112,11 +108,8 @@ ropeSet(r rope*, a cpstring) int {
 concatenateRopes(root1 rope*, root2 rope*) rope* {
     n1 = root1.len
     tmp = new rope
-    // tmp.parent = null
     tmp.left = root1
     tmp.right = root2
-    // root2.parent = tmp
-    // root1.parent = root2.parent
     tmp.totalLen = root1.totalLen + root2.totalLen
     tmp.str = null
     return tmp

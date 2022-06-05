@@ -111,8 +111,7 @@ struct flags {
     //This is how you should get a string flag.
     get(name cpstring) cpstring {
         flag = this.getFlag(string(name))
-        ctn = flag.content
-        return ctn
+        return flag.content
     }
 
     //To get the content of a flag as an int.
@@ -120,11 +119,9 @@ struct flags {
     getInt(name cpstring) int {
         flag = this.getFlag(string(name))
         if flag.type != FLAG_TYPE_INT {
-            error = "Flag '" + flag.name + "' is not int."
-            panic(error)
+            panic("Flag '" + flag.name + "' is not int.")
         }
-        ctn = flag.cont_int
-        return ctn
+        return flag.cont_int
     }
 
     //To get the content of a flag as a float.
@@ -132,19 +129,16 @@ struct flags {
     getFloat(name cpstring) float {
         flag = this.getFlag(string(name))
         if flag.type != FLAG_TYPE_FLOAT {
-            error = "Flag '" + flag.name + "' is not float."
-            panic(error)
+            panic("Flag '" + flag.name + "' is not float.")
         }
-        ctn = flag.cont_float
-        return ctn
+        return flag.cont_float
     }
 
     //Returns 1 if a flag has been set by the user.
     //This is how you should check for a bool flag.
     isSet(name cpstring) int {
         flag = this.getFlag(string(name))
-        ctn = flag.isSet
-        return ctn
+        return flag.isSet
     }
 
     //This will parse the flags with the specified arguments.
@@ -158,9 +152,9 @@ struct flags {
             if isVal == true {
                     currentFlag.content = argName.str()
                 if currentFlag.type == FLAG_TYPE_INT {
-                    currentFlag.cont_int = atoi(argName.str())
+                    currentFlag.cont_int = strToInt(argName.str())
                 } else if currentFlag.type == FLAG_TYPE_FLOAT {
-                    currentFlag.cont_float = strtod(argName.str(), 0)
+                    currentFlag.cont_float = strToFloat(argName.str())
                 }
                 isVal = false
             } else {

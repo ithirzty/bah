@@ -57,24 +57,13 @@ isSpace(c char) bool {
     return c == <char>32 || c == <char>9 || c == <char>10 || c == <char>11 || c == <char>13
 }
 
-
-// const STRING_MAX_STACK_SIZE = 15
-// STRING_BUFF_LEN = 0
-// STRING_STACK_BUFF = buffer 480
-
-// string_small_alloc(i int) ptr {
-//     if STRING_BUFF_LEN + i <= 480 {
-//         return memoryAllocSTR(i)
-//     }
-//     p cpstring = noCheck(STRING_STACK_BUFF+STRING_BUFF_LEN)
-//     STRING_BUFF_LEN += i
-//     return p
-// }
-
 //A string wrapper to make string manipulation easier.
 struct string {
+    //The content of the string as a cpstring.
     content: cpstring
+    //Weither the string is mutable. This should not be changed.
     editable: bool
+    //The length of the string.
     length: int
 
     //Sets the string value to the specified cpstring.
@@ -84,6 +73,9 @@ struct string {
         this.content = s
     }
 
+    //Used internally to make a string mutable without causing conflict.
+    //This is because setting the content of a string will not copy the new cpstring to memory
+    //until it is changed.
     makeEditable() {
         this.editable = true
         old = this.content
@@ -205,6 +197,7 @@ struct string {
         }
     }
 
+    //Counts the number of times a specific chars apears in the string.
     countChar(need char) int {
         c = 0
         i=0; for i < this.length, i++ {
@@ -282,7 +275,7 @@ struct string {
 
     }
 
-    //Used for trimming spaces at the beginning of the string.
+    //Used for triming spaces at the beginning of the string.
     trim() {
         if this.length == 0 {
             return
@@ -331,6 +324,8 @@ struct string {
         this.length = nSize
     }
 
+    //Used for concatenating antother string.
+    //This is like .append() except this is used by the compiler for string + string.
     add(s2 string) string {
         r = string{}
         r.length = this.length + s2.length
@@ -340,6 +335,7 @@ struct string {
         return r
     }
 
+    //Used for editting the content of the string as an array.
     asArr() []char {
         if this.editable == false {
             this.makeEditable()
@@ -405,8 +401,6 @@ intToString(i int) string {
     r = string(intToStr(i))
     return r
 }
-
-
 
 //Converts a float to a cpstring.
 floatToStr(f float) cpstring {
@@ -581,6 +575,8 @@ toLower(s string) string {
     return string(arrToStr(ns))
 }
 
+//Use string(s).hasPrefix(prefix) instead.
+//This function has known bugs.
 strHasPrefix(s cpstring, need cpstring) bool {
     i = 0
     nl = strlen(need)
@@ -597,6 +593,8 @@ strHasPrefix(s cpstring, need cpstring) bool {
     return true
 }
 
+//Use string(s).hasSuffix(suffix) instead.
+//This function has known bugs.
 strHasSuffix(s cpstring, need cpstring) bool {
     sl = strlen(s)
     nl = strlen(need)
@@ -612,6 +610,8 @@ strHasSuffix(s cpstring, need cpstring) bool {
     return true
 }
 
+//Used for trimming a cpstring.
+//This will remove all space chars at the begining of the cpstring. 
 strTrim(s cpstring*) {
     l = strlen(*s)
     i=0; for i < l {
@@ -625,6 +625,7 @@ strTrim(s cpstring*) {
 
 }
 
+//This is used to count the number of substrings inside a cpstring.
 strCount(src cpstring, needle cpstring) int {
     i = 0
     count = 0

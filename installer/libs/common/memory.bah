@@ -16,6 +16,7 @@
 
 #define! void ptr
 
+//Size of an int, use sizeof(int) instead.
 const SIZE_OF_INT = 8
 const SIZE_OF_CHAR = 1
 const SIZE_OF_INT32 = 4
@@ -72,6 +73,7 @@ append(a ptr, b ptr) {
     noCheck(arrA->data = buff)
 }
 
+//Copy the content of array b to array a.
 copy(a ptr, b ptr) {
     noCheck(array(void*) * arrA = a)
     noCheck(array(void*) * arrB = b)
@@ -175,6 +177,7 @@ allocateArray(arr ptr, nbElems int) {
 #define ser(a ptr) []char
 
 //Internal function used to serialize a pointer.
+//This function is unsafe and deprecated.
 __serialize(a ptr, s int) []char {
     r cpstring = memoryAlloc(s + 9)
     memcpy(r, &s, 8)
@@ -188,12 +191,14 @@ __serialize(a ptr, s int) []char {
 }
 
 //Function used to get the size of the serialized pointer.
+//This function is unsafe and deprecated.
 serlen(data []char) int {
     sarr = []char{data[0], data[1], data[2], data[3], data[4], data[5], data[6], data[7]}
     return noCheck(*sarr->data)
 }
 
 //Function used to unserialize the content of a struct.
+//This function is unsafe and deprecated.
 unser(data []char) ptr {
     sptr = serlen(data)
     r = memoryAlloc(sptr)
@@ -203,6 +208,9 @@ unser(data []char) ptr {
 
 #gc {
     #define! GC_malloc_atomic(s int) ptr
+    //Used for allocating memory for a cpstring.
+    //The content of the memory block should not contain any pointer.
+    //It will not be checked for memory collection.
     memoryAllocSTR(s int) cpstring {
         r cpstring = GC_malloc_atomic(s)
         noCheck(r[s-1] = 0)
@@ -210,11 +218,6 @@ unser(data []char) ptr {
         return r
     }
 }
-// #rcp {
-    // memoryAllocSTR(s int) cpstring {
-    //     return memoryAlloc(s)
-    // }
-// }
 
 //Used for deleting an element from an array by its index.
 //This will keep the order of the elements.
@@ -243,9 +246,6 @@ delete(a ptr, i int) {
 //Like delete() but for a range.
 //deleteRange(arr, 1, 3) will delete elements at indexes [1, 2, 3]
 deleteRange(a ptr, from int, to int) {
-    // if from > to {
-    //     return
-    // }
     if from == to {
         delete(a, from)
         return
@@ -253,10 +253,6 @@ deleteRange(a ptr, from int, to int) {
 
     arr = <[]ptr>a
     length = len(arr)
-
-    // if from < 0 || to >= length {
-    //     return
-    // }
 
     elemSize int = noCheck(arr->elemSize)
     data char* = noCheck(arr->data)
@@ -315,6 +311,7 @@ strAsArr(str cpstring) []char {
 }
 
 
+//Trims i chars at the beginning of a cpstring.
 strTrimLeft(s cpstring*, i int) {
     ls = strlen(*s)
     ns cpstring = memoryAlloc(ls - i + 1)
@@ -322,6 +319,7 @@ strTrimLeft(s cpstring*, i int) {
     *s = ns
 }
 
+//Trims i chars at the end of a cpstring.
 strTrimRight(s cpstring*, i int) {
     ls = strlen(*s)
     ns cpstring = memoryAlloc(ls - i + 1)

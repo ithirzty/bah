@@ -33,6 +33,7 @@ destroy(a ptr) {
     free(a)
 }
 
+//The structure that contains informations on each pointer.
 struct RCP {
     p: ptr = null
     c: uint32 = 0
@@ -41,7 +42,7 @@ struct RCP {
     str: bool
 }
 
-
+//Used for sorting the list of pointers.
 cmp_rcp(a ptr, b ptr) int32 {
     ar RCP* = a
     br RCP* = b
@@ -57,21 +58,6 @@ cmp_rcp(a ptr, b ptr) int32 {
 #define! qsort(arr ptr, l int, s int, cmp ptr)
 #define! bsearch(key ptr, arr ptr, l int, s int, cmp ptr) ptr
 #define! sbrk(i int) ptr
-
-// struct RCP_threadSearch {
-//     from: int
-//     to: int
-//     p: ptr
-//     arr: RCP*
-//     l: int
-// }
-
-// RCPthreadSearch(arg ptr) RCP* {
-//     rts RCP_threadSearch* = arg
-//     r = bsearch(&rts.p, noCheck(&rts.arr[rts.from]), rts.to - rts.from, sizeof(RCP), cmp_rcp)
-//     free(arg)
-//     return r
-// }
 
 struct RCPstate {
     RCPs: RCP* = null
@@ -235,6 +221,7 @@ RCP_shutdown() {
     }
 }
 
+//Shuts down the program.
 cleanShutDown() {
     RCP_shutdown()
     exit(1)
@@ -455,7 +442,9 @@ memoryAlloc(s uint) ptr {
     return r
 }
 
-
+//Used for allocating memory for a cpstring.
+//The content of the memory block should not contain any pointer.
+//It will not be checked for memory collection.
 memoryAllocSTR(s uint) cpstring {
     r = malloc(s)
     if r < RCPstate.heapMin || RCPstate.heapMin == -1 {
@@ -470,36 +459,8 @@ memoryAllocSTR(s uint) cpstring {
 }
 
 //Will realloc memory to a specified pointer.
-//*The data contained in the block of memory is not necessarly preserved.*
+//The pointer returned will be different from p.
 memoryRealloc(p ptr, s uint) ptr {
-    // Cannot use the following because realloc needs to return a different pointer
-    
-    // or = RCP_request(p)
-    // if or == null || or.c == 0 {
-    //     return memoryAlloc(s)
-    // }
-    // r = realloc(p, s)
-    // if r == p {
-    //     or.s = s
-    //     return r
-    // } else {
-    //     if r < RCPstate.heapMin || RCPstate.heapMin == -1 {
-    //         RCPstate.heapMin = r
-    //     }
-    //     if r > RCPstate.heapMax {
-    //         RCPstate.heapMax = r
-    //     }
-    //     ns = or.s
-    //     if s < or.s {
-    //         ns = s
-    //     } else {
-    //         off ptr = <int>r + ns
-    //         memset(off, null, s - ns)
-    //     }
-    //     RCPstate.remove(RCPstate.rcpToIndex(or))
-    //     RCP_register(r, s)
-    // }
-
     or = RCP_request(p)
     if or == null || or.c == 0 {
         return memoryAlloc(s)
@@ -529,6 +490,7 @@ clear(a ptr) {
     noCheck(arr->length = 0)
 }
 
+//Used for setting an end of line registerer to an allocated pointer.
 memoryOnEnd(obj ptr, fn ptr) {
     if obj == null {
         return
@@ -540,6 +502,10 @@ memoryOnEnd(obj ptr, fn ptr) {
     r.e = fn
 }
 
+//The Bah version of memcpy.
+//This will copy l bytes from the source to the end.
+//A faster version is available with -optimize.
+//This is called when calling memcpy().
 __BAH_memcpy(dest cpstring, source cpstring, l int) {
     lm = l % sizeof(int)
     if lm != 0 {

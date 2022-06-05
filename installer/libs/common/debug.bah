@@ -2,6 +2,9 @@
 #import "json.bah"
 #import "eval.bah"
 
+//This variable must be set to true when debugging.
+//When it is false, breakPoint are ignored.
+//This is a security feature but please, remove breakPoint() calls in released code.
 DEBUG_ENABLED = false
 
 #define breakPoint()
@@ -14,6 +17,7 @@ const __debug_ASCII_GREEN = "\033[32m"
 const __debug_ASCII_MAGENTA = "\033[35m"
 const __debug_ASCII_GREY = "\033[2m"
 
+//Internal function used for parsing the commands at a breakPoint.
 __parse_debug_cmd(syms []reflectElement) {
     for 1 == 1 {
         print("> ")
@@ -81,6 +85,7 @@ Here are all available commands:
     }
 }
 
+//Internal function called when breakPoint() is called.
 breakPoint__inner(syms []reflectElement, line cpstring) {
     if DEBUG_ENABLED == false {
         return

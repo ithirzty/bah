@@ -24,7 +24,8 @@ const false = <bool>0
 #define! strlen(a cpstring) int
 #define! sizeof(p ptr) int
 
-
+//Compare two cpstrings.
+//This function is used by the compiler.
 __bah_strcmp(a cpstring, b cpstring) int {
     ai = <int>a
 	bi = <int>b
@@ -33,9 +34,11 @@ __bah_strcmp(a cpstring, b cpstring) int {
 	}
     return strcmp(a, b)
 }
-
+ 
 const strcmp = __bah_strcmp
 
+//Gives the length of a cpstring.
+//This is used by the compiler.
 __bah_strlen(s cpstring) int {
     if <ptr>s == null {
         return 0
@@ -46,6 +49,19 @@ __bah_strlen(s cpstring) int {
 const strlen = __bah_strlen
 
 
+#include "<unistd.h>"
+#include "<sys/types.h>"
+#include "<sys/stat.h>"
+#include "<fcntl.h>"
+
+#define! write(fd FILE*, t cpstring, l int)
+#define! read(fd FILE*, t cpstring, l int) int
+
+//Prints text to the terminal.
+print(s cpstring) {
+    write(<ptr>1, s, strlen(s))
+}
+
 #unoptimized {
 	#define __BAH_memcpy(dest cpstring, source cpstring, l int)
 	const memcpy = __BAH_memcpy
@@ -53,7 +69,6 @@ const strlen = __bah_strlen
 
 #optimized {
 	#import "stdopti.bahstrp"
-	const memcpy = __BAH_avx_memcpy
 }
 
 
@@ -88,25 +103,14 @@ __STR(a cpstring) cpstring {
 	return r
 }
 
-#include "<unistd.h>"
-#include "<sys/types.h>"
-#include "<sys/stat.h>"
-#include "<fcntl.h>"
-
-#define! write(fd FILE*, t cpstring, l int)
-#define! read(fd FILE*, t cpstring, l int) int
-
-//Prints text to the terminal.
-print(s cpstring) {
-    write(<ptr>1, s, strlen(s))
-}
-
 //Converts a bah array to a C array.
 cArr(arr ptr) ptr {
 	noCheck(array(void*)*a = arr)
 	return noCheck(a->data)
 }
 
+//Checks if a cpstring is null.
+//This was used by the compiler before strcmp and strlen where made safe.
 __checkString(s cpstring, l cpstring) bool {
 
 	if <ptr>s == null {
@@ -121,6 +125,7 @@ __checkString(s cpstring, l cpstring) bool {
 __BAH_panic_chan chan:cpstring = null
 
 //Print an error to the terminal and exits the program.
+//Please use panic() instead.
 __Bah_common_panic(e cpstring) {
     if strlen(e) {
         print(e)
@@ -138,6 +143,7 @@ struct __Bah_fnName_mapper {
 
 __Bah_fnNames = []__Bah_fnName_mapper
 
+//Used by the compiler to identify functions in backtrace.
 __Bah_fnNames_append(fnn __Bah_fnName_mapper) {
 	__Bah_fnNames[len(__Bah_fnNames)] = fnn
 }
@@ -146,6 +152,7 @@ __Bah_fnNames_append(fnn __Bah_fnName_mapper) {
 	#define backtrace(arr ptr, l int) int
 }
 
+//Used by the compiler when panic() is called.
 __BAH_panic(e cpstring, line cpstring) {
 	if __BAH_panic_chan != null {
 		e -> __BAH_panic_chan
@@ -209,6 +216,7 @@ __BAH_panic(e cpstring, line cpstring) {
 
 onMemoryError function()cpstring = null
 
+//Used by the compiler, called when a memory error occurs.
 __Bah_segfault_handle(sig int) {
 	res = ""
 	if onMemoryError != null {
@@ -217,6 +225,7 @@ __Bah_segfault_handle(sig int) {
 	__BAH_panic("Memory error (segfault).\n"+res, "???")
 }
 
+//Used to register __Bah_segfault_handle().
 __Bah_init_segfaultHandle() bool {
 	signal(noCheck(SIGSEGV), __Bah_segfault_handle)
 	return true
@@ -236,8 +245,8 @@ recover(s cpstring*) bool {
 	return true
 }
 
-// #define strAsArr(s cpstring) []char
-
+//Used by the compiler in -verboseRuntime.
+//This truncates cpstrings that are too long.
 __Bah_safe_string(s cpstring) cpstring {
 	if <ptr>s == null {
 		return "(nil)"
@@ -256,12 +265,14 @@ __Bah_safe_string(s cpstring) cpstring {
 
 
 //Used for getting a character by its index inside a cpstring.
+//Used cpstring[i] instead.
 cpstringCharAt(s cpstring, i int) char {
     c = <char>0
     noCheck(c = s[i])
     return c
 }
 
+//Used by the compiler for operations like cpstring[start:end].
 cpstringSubsitute(s cpstring, i int, l int) cpstring {
 	size = l - i
 	ns = memoryAllocSTR(size+1)
@@ -269,6 +280,7 @@ cpstringSubsitute(s cpstring, i int, l int) cpstring {
 	return ns
 }
 
+//Used by the compiler for operations like array[start:end].
 arraySubstitute(arr []ptr, i int, l int) ptr {
 	length = l - i
 	offset int = i * noCheck(arr->elemSize)

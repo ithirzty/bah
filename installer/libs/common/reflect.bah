@@ -53,10 +53,14 @@ __reflect(v ptr, s int, t cpstring, n cpstring, isArr bool, ae reflectElement*, 
 
 #define reflectSymbols ptr
 
+//Internal function called when dumpSymbols() is called.
+//This returns every symbols (variables) available at the scope where its called.
+//The symbols are returned as reflectElement.
 __dumpSymbols(syms []reflectElement) []reflectElement {
     return syms
 }
 
+//Internal function used for getting a symbol by name from a symbol array.
 __debug_get_sym(syms []reflectElement, a string) reflectElement {
     if a.count(".") > 0 {
         parts = splitString(a, ".")

@@ -7,8 +7,11 @@
     #include "<mach/clock.h>"
 }
 
+//A milisecond in nanoseconds.
 const TIME_MS  = 1000000
+//A second in nanoseconds.
 const TIME_S   = 1000000000
+//A minute in nanoseconds.
 const TIME_MIN = 60000000000
 
 //This is a wrapper that makes time manipulations easier.

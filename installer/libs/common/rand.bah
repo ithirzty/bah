@@ -8,7 +8,7 @@
 
 #define! srand(i int)
 #define! rand() int
-RAND_SEEDED = 0
+RAND_SEEDED = false
 
 //Used for seeding the pseudo-random number generator.
 //If two instances of a PRNG have the same seed, they will have the same output.
@@ -21,9 +21,9 @@ seedRandom(i int) {
 //*Note: this is not cryptographically safe. This output of this function can be predicted.*
 //*Note: `max` should not be equal to `0`.*
 randomInRange(min int, max int) int {
-    if RAND_SEEDED == 0 {
+    if RAND_SEEDED == false {
         srand(time(0)+getTimeUnix())
-        RAND_SEEDED = 1
+        RAND_SEEDED = true
     }
 
     range = max - min

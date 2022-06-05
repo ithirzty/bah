@@ -46,6 +46,13 @@ return 0;
 return strlen(s);
 };
 #define strlen __bah_strlen
+#include <unistd.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+void print(char * s){
+write((void *)1,s,strlen(s));
+};
 void __BAH_memcpy(char * dest,char * source,long int l);
 #define memcpy __BAH_memcpy
 #include <sys/mman.h>
@@ -290,13 +297,6 @@ long int lenA = strlen(a);
 char * r = memoryAllocSTR(lenA+1);
 memcpy(r,a,lenA);
 return r;
-};
-#include <unistd.h>
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <fcntl.h>
-void print(char * s){
-write((void *)1,s,strlen(s));
 };
 void * cArr(void * arr){
 array(void*)*a=arr;
@@ -1399,7 +1399,7 @@ long int sl = strlen(s);
 long int nl = sl+this->length;
 void * nc = memoryRealloc(this->content,nl+1);
 if ((nc==null)) {
-__BAH_panic("Error appending to string, possibly due to memory shortage.","/opt/bah/string.bah:103");
+__BAH_panic("Error appending to string, possibly due to memory shortage.","/opt/bah/string.bah:95");
 }
 this->content = nc;
 strCatOffset(this->content,this->length,s,sl);
@@ -1412,7 +1412,7 @@ long int nl = this->length+sl;
 char * tmpS = this->content;
 void * nc = memoryAlloc(nl+1);
 if ((nc==null)) {
-__BAH_panic("Error appending to string, possibly due to memory shortage.","/opt/bah/string.bah:118");
+__BAH_panic("Error appending to string, possibly due to memory shortage.","/opt/bah/string.bah:110");
 }
 this->content = nc;
 strncpy(this->content,s,sl);
@@ -2307,8 +2307,7 @@ return z;
 };
 char * flags__get(struct flags* this,char * name){
 struct string ____BAH_COMPILER_VAR_43 =string(name);struct flag* flag = flags__getFlag(this,____BAH_COMPILER_VAR_43);
-char * ctn = flag->content;
-return ctn;
+return flag->content;
 };
 long int flags__getInt(struct flags* this,char * name){
 struct string ____BAH_COMPILER_VAR_44 =string(name);struct flag* flag = flags__getFlag(this,____BAH_COMPILER_VAR_44);
@@ -2331,11 +2330,9 @@ unsigned int strLen_2 = strlen("Flag '");
             memcpy(____BAH_COMPILER_VAR_45+currStrOff, "' is not int.", strLen_1);
             currStrOff += strLen_1;
         
-        }char * error = ____BAH_COMPILER_VAR_45;
-__BAH_panic(error,"/opt/bah/flags.bah:124");
+        }__BAH_panic(____BAH_COMPILER_VAR_45,"/opt/bah/flags.bah:122");
 }
-long int ctn = flag->cont_int;
-return ctn;
+return flag->cont_int;
 };
 double flags__getFloat(struct flags* this,char * name){
 struct string ____BAH_COMPILER_VAR_46 =string(name);struct flag* flag = flags__getFlag(this,____BAH_COMPILER_VAR_46);
@@ -2358,16 +2355,13 @@ unsigned int strLen_2 = strlen("Flag '");
             memcpy(____BAH_COMPILER_VAR_47+currStrOff, "' is not float.", strLen_1);
             currStrOff += strLen_1;
         
-        }char * error = ____BAH_COMPILER_VAR_47;
-__BAH_panic(error,"/opt/bah/flags.bah:136");
+        }__BAH_panic(____BAH_COMPILER_VAR_47,"/opt/bah/flags.bah:132");
 }
-double ctn = flag->cont_float;
-return ctn;
+return flag->cont_float;
 };
 long int flags__isSet(struct flags* this,char * name){
 struct string ____BAH_COMPILER_VAR_48 =string(name);struct flag* flag = flags__getFlag(this,____BAH_COMPILER_VAR_48);
-long int ctn = flag->isSet;
-return ctn;
+return flag->isSet;
 };
 void flags__parse(struct flags* this,__BAH_ARR_TYPE_cpstring args){
 struct flag* currentFlag= null;
@@ -2379,10 +2373,10 @@ struct string argName = string(args->data[i]);
 if ((isVal==true)) {
 currentFlag->content = string__str(&argName);
 if ((currentFlag->type==FLAG_TYPE_INT)) {
-char * ____BAH_COMPILER_VAR_49 =string__str(&argName);currentFlag->cont_int = atoi(____BAH_COMPILER_VAR_49);
+char * ____BAH_COMPILER_VAR_49 =string__str(&argName);currentFlag->cont_int = strToInt(____BAH_COMPILER_VAR_49);
 }
 else if ((currentFlag->type==FLAG_TYPE_FLOAT)) {
-char * ____BAH_COMPILER_VAR_50 =string__str(&argName);currentFlag->cont_float = strtod(____BAH_COMPILER_VAR_50,0);
+char * ____BAH_COMPILER_VAR_50 =string__str(&argName);currentFlag->cont_float = strToFloat(____BAH_COMPILER_VAR_50);
 }
 isVal = false;
 }
@@ -2455,15 +2449,15 @@ return s;
 
 #undef ts
 };
-long int RAND_SEEDED;
+char RAND_SEEDED;
 void seedRandom(long int i){
 srand(i);
 RAND_SEEDED = 1;
 };
 long int randomInRange(long int min,long int max){
-if ((RAND_SEEDED==0)) {
+if ((RAND_SEEDED==false)) {
 srand(time(0)+getTimeUnix());
-RAND_SEEDED = 1;
+RAND_SEEDED = true;
 }
 long int range = max-min;
 long int i = rand()%range+1;
@@ -2824,7 +2818,7 @@ return r;
 char * BAH_DIR;
 char * BAH_OS;
 char * BAH_CC;
-#define BAH_VERSION "v1.2 (build 102)"
+#define BAH_VERSION "v1.2 (build 103)"
 char debug;
 char verboseRuntime;
 char isObject;
@@ -23037,7 +23031,7 @@ __Bah_fnNames->length = 0;
 __Bah_fnNames->elemSize = sizeof(struct __Bah_fnName_mapper);
 onMemoryError = null;
 __Bah_init_segfaultHandle_OK = __Bah_init_segfaultHandle();
-RAND_SEEDED = 0;
+RAND_SEEDED = false;
 BAH_DIR = "/opt/bah/";
 BAH_OS = "darwin";
 BAH_CC = "clang";
@@ -23212,86 +23206,86 @@ equalsTokens->data[4] = "/=";
             __tmp____Bah_fnNames[3].n = "__bah_strlen";
             __tmp____Bah_fnNames[3].p = __bah_strlen;
 
-            __tmp____Bah_fnNames[4].n = "__BAH_memcpy";
-            __tmp____Bah_fnNames[4].p = __BAH_memcpy;
+            __tmp____Bah_fnNames[4].n = "print";
+            __tmp____Bah_fnNames[4].p = print;
 
-            __tmp____Bah_fnNames[5].n = "len";
-            __tmp____Bah_fnNames[5].p = len;
+            __tmp____Bah_fnNames[5].n = "__BAH_memcpy";
+            __tmp____Bah_fnNames[5].p = __BAH_memcpy;
 
-            __tmp____Bah_fnNames[6].n = "memoryAlloc";
-            __tmp____Bah_fnNames[6].p = memoryAlloc;
+            __tmp____Bah_fnNames[6].n = "len";
+            __tmp____Bah_fnNames[6].p = len;
 
-            __tmp____Bah_fnNames[7].n = "destroy";
-            __tmp____Bah_fnNames[7].p = destroy;
+            __tmp____Bah_fnNames[7].n = "memoryAlloc";
+            __tmp____Bah_fnNames[7].p = memoryAlloc;
 
-            __tmp____Bah_fnNames[8].n = "clear";
-            __tmp____Bah_fnNames[8].p = clear;
+            __tmp____Bah_fnNames[8].n = "destroy";
+            __tmp____Bah_fnNames[8].p = destroy;
 
-            __tmp____Bah_fnNames[9].n = "memoryRealloc";
-            __tmp____Bah_fnNames[9].p = memoryRealloc;
+            __tmp____Bah_fnNames[9].n = "clear";
+            __tmp____Bah_fnNames[9].p = clear;
 
-            __tmp____Bah_fnNames[10].n = "cleanShutDown";
-            __tmp____Bah_fnNames[10].p = cleanShutDown;
+            __tmp____Bah_fnNames[10].n = "memoryRealloc";
+            __tmp____Bah_fnNames[10].p = memoryRealloc;
 
-            __tmp____Bah_fnNames[11].n = "memoryOnEnd";
-            __tmp____Bah_fnNames[11].p = memoryOnEnd;
+            __tmp____Bah_fnNames[11].n = "cleanShutDown";
+            __tmp____Bah_fnNames[11].p = cleanShutDown;
 
-            __tmp____Bah_fnNames[12].n = "append";
-            __tmp____Bah_fnNames[12].p = append;
+            __tmp____Bah_fnNames[12].n = "memoryOnEnd";
+            __tmp____Bah_fnNames[12].p = memoryOnEnd;
 
-            __tmp____Bah_fnNames[13].n = "copy";
-            __tmp____Bah_fnNames[13].p = copy;
+            __tmp____Bah_fnNames[13].n = "append";
+            __tmp____Bah_fnNames[13].p = append;
 
-            __tmp____Bah_fnNames[14].n = "sharedMemory";
-            __tmp____Bah_fnNames[14].p = sharedMemory;
+            __tmp____Bah_fnNames[14].n = "copy";
+            __tmp____Bah_fnNames[14].p = copy;
 
-            __tmp____Bah_fnNames[15].n = "allocateArray";
-            __tmp____Bah_fnNames[15].p = allocateArray;
+            __tmp____Bah_fnNames[15].n = "sharedMemory";
+            __tmp____Bah_fnNames[15].p = sharedMemory;
 
-            __tmp____Bah_fnNames[16].n = "__serialize";
-            __tmp____Bah_fnNames[16].p = __serialize;
+            __tmp____Bah_fnNames[16].n = "allocateArray";
+            __tmp____Bah_fnNames[16].p = allocateArray;
 
-            __tmp____Bah_fnNames[17].n = "serlen";
-            __tmp____Bah_fnNames[17].p = serlen;
+            __tmp____Bah_fnNames[17].n = "__serialize";
+            __tmp____Bah_fnNames[17].p = __serialize;
 
-            __tmp____Bah_fnNames[18].n = "unser";
-            __tmp____Bah_fnNames[18].p = unser;
+            __tmp____Bah_fnNames[18].n = "serlen";
+            __tmp____Bah_fnNames[18].p = serlen;
 
-            __tmp____Bah_fnNames[19].n = "memoryAllocSTR";
-            __tmp____Bah_fnNames[19].p = memoryAllocSTR;
+            __tmp____Bah_fnNames[19].n = "unser";
+            __tmp____Bah_fnNames[19].p = unser;
 
-            __tmp____Bah_fnNames[20].n = "delete";
-            __tmp____Bah_fnNames[20].p = delete;
+            __tmp____Bah_fnNames[20].n = "memoryAllocSTR";
+            __tmp____Bah_fnNames[20].p = memoryAllocSTR;
 
-            __tmp____Bah_fnNames[21].n = "deleteRange";
-            __tmp____Bah_fnNames[21].p = deleteRange;
+            __tmp____Bah_fnNames[21].n = "delete";
+            __tmp____Bah_fnNames[21].p = delete;
 
-            __tmp____Bah_fnNames[22].n = "arrToStr";
-            __tmp____Bah_fnNames[22].p = arrToStr;
+            __tmp____Bah_fnNames[22].n = "deleteRange";
+            __tmp____Bah_fnNames[22].p = deleteRange;
 
-            __tmp____Bah_fnNames[23].n = "strToArr";
-            __tmp____Bah_fnNames[23].p = strToArr;
+            __tmp____Bah_fnNames[23].n = "arrToStr";
+            __tmp____Bah_fnNames[23].p = arrToStr;
 
-            __tmp____Bah_fnNames[24].n = "arrAsStr";
-            __tmp____Bah_fnNames[24].p = arrAsStr;
+            __tmp____Bah_fnNames[24].n = "strToArr";
+            __tmp____Bah_fnNames[24].p = strToArr;
 
-            __tmp____Bah_fnNames[25].n = "strAsArr";
-            __tmp____Bah_fnNames[25].p = strAsArr;
+            __tmp____Bah_fnNames[25].n = "arrAsStr";
+            __tmp____Bah_fnNames[25].p = arrAsStr;
 
-            __tmp____Bah_fnNames[26].n = "strTrimLeft";
-            __tmp____Bah_fnNames[26].p = strTrimLeft;
+            __tmp____Bah_fnNames[26].n = "strAsArr";
+            __tmp____Bah_fnNames[26].p = strAsArr;
 
-            __tmp____Bah_fnNames[27].n = "strTrimRight";
-            __tmp____Bah_fnNames[27].p = strTrimRight;
+            __tmp____Bah_fnNames[27].n = "strTrimLeft";
+            __tmp____Bah_fnNames[27].p = strTrimLeft;
 
-            __tmp____Bah_fnNames[28].n = "concatCPSTRING";
-            __tmp____Bah_fnNames[28].p = concatCPSTRING;
+            __tmp____Bah_fnNames[28].n = "strTrimRight";
+            __tmp____Bah_fnNames[28].p = strTrimRight;
 
-            __tmp____Bah_fnNames[29].n = "__STR";
-            __tmp____Bah_fnNames[29].p = __STR;
+            __tmp____Bah_fnNames[29].n = "concatCPSTRING";
+            __tmp____Bah_fnNames[29].p = concatCPSTRING;
 
-            __tmp____Bah_fnNames[30].n = "print";
-            __tmp____Bah_fnNames[30].p = print;
+            __tmp____Bah_fnNames[30].n = "__STR";
+            __tmp____Bah_fnNames[30].p = __STR;
 
             __tmp____Bah_fnNames[31].n = "cArr";
             __tmp____Bah_fnNames[31].p = cArr;

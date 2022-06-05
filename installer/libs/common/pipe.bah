@@ -3,10 +3,15 @@
 #define! pipe(fd ptr)
 #define! fcntl(fd ptr, m int, f int) int
 
+//A wrapper for unix pipes.
+//Note: this library will only work on unix systems.
 struct pipe {
     fd: []int32
+    //Weither the pipe is openned or closed.
     openned: bool = false
 
+    //If .shouldBlock(false), the pipe will not wait for more data to come on read.
+    //Instead, it will stop the reading.
     shouldBlock(b bool) {
         if this.openned == false {
             panic("pipe: cannot .shouldBlock() on closed pipe.")
@@ -17,6 +22,7 @@ struct pipe {
         }
     }
 
+    //To open a pipe.
     open() {
         allocateArray(this.fd, 2)
         pipe(cArr(this.fd))
@@ -24,7 +30,7 @@ struct pipe {
         fcntl(this.fd[0], noCheck(F_SETFL), noCheck(flags | O_NONBLOCK))
         this.openned = true
     }
-
+    //To close a pipe.
     close() {
         rp = this.fd[0]
         wp = this.fd[1]
@@ -32,7 +38,7 @@ struct pipe {
         close(<ptr>wp)
         this.openned = false
     }
-
+    //To write to the pipe.
     write(d []char) {
         wp ptr = this.fd[1]
         data = cArr(d)
@@ -41,6 +47,7 @@ struct pipe {
         write(wp, buff, len(d)+2)
     }
 
+    //To read from the pipe.
     read() []char {
         r = []char
         rp ptr = this.fd[0]

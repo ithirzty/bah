@@ -12,8 +12,11 @@
 //The exit status code of the executed command is stored in `.status`.
 struct command {
     command: cpstring
+    //Weither stderr should be outputted to the terminal.
     error: bool = true
+    //The status code of the program.
     status: int = 0
+    //Input to feed to the program.
     input: cpstring = null
 
     handle: FILE*
@@ -43,6 +46,8 @@ struct command {
         return res
     }
 
+    //This runs the program and returns the output as an array of char.
+    //This cannot take the .input field.
     runBytes() []char {
         arr = []char
         cm = this.command

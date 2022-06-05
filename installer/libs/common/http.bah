@@ -42,7 +42,9 @@
 #define! pid_t int
 #define! sigset_t int32
 
-__httpDNSmutex = mutex()
+#windows {
+    __httpDNSmutex = mutex()
+}
 
 struct! in_addr {
     s_addr: char
@@ -70,7 +72,6 @@ struct! sockaddr_in {
     sin_family: int
     sin_port: uint
     sin_addr: in_addr
-    // sin_zero: char*
 }
 
 struct! addrinfo {
@@ -140,6 +141,7 @@ struct! ifreq {
     #define! closesocket(sockfd int)
     #define! hostname_to_ip(host cpstring, ip cpstring)
 
+    //Ran at startup to initiate networking on windows platform.
     __Bah_win32_WSA_init() bool {
         wsadata WSADATA
         WSAStartup(MAKEWORD(1,1), &wsadata)
@@ -149,14 +151,18 @@ struct! ifreq {
     __Bah_win32_WSA_is_init = __Bah_win32_WSA_init()
 }
 
+//Represents a response buffer for easier i/o reading.
+//You can append to the buffer and read its content.
 struct response_buffer {
     data: cpstring
     len: int
 
+    //Returns the buffer as a cpstring.
     str() cpstring {
         return this.data
     }
 
+    //Returns the buffer as an array of char.
     arr() []char {
         a = []char
         noCheck(a->data = this->data)
@@ -164,6 +170,8 @@ struct response_buffer {
         return a
     }
 
+    //Appends data to the buffer.
+    //s is the length of read data to append.
     append(buff cpstring, s int) {
         this.data = memoryRealloc(this.data, this.len + s)
         memcpy(noCheck(this->data + this->len), buff, s)
@@ -172,6 +180,7 @@ struct response_buffer {
 
 }
 
+//Represents a socket.
 struct http_socket {
     sockfd: int = -1
     timeout: int = 0
@@ -359,6 +368,7 @@ struct http_socket {
         return send(this.sockfd, arrAsStr(bytes), len(bytes), 0) > 0
     }
 
+    //To receive data as a response buffer.
     receiveBuff() response_buffer {
         buff cpstring = memoryAlloc(1025)
         rep = response_buffer{}
@@ -404,7 +414,7 @@ isSocket(s http_socket) bool {
     return s.sockfd > 0
 }
 
-
+//Represents an url.
 struct http_url {
     path: string
     host: string
@@ -589,6 +599,7 @@ const HTTP_SERVER_LISTEN_ERROR = <http_serverError>3
 
 globalHTTPsockets = []http_socket
 
+//Internal function that is ran at exit to make sure that every sockets are closed.
 http_quit_handler(signo int) {
     i=0; for i < len(globalHTTPsockets), i++ {
         s = globalHTTPsockets[i]
@@ -717,6 +728,8 @@ struct http_server {
 }
 
 #windows {
+    //A wrapper around the http_server handle.
+    //This is an internal function.
     __Bah_http_handle_client(sp ptr, cli int) {
         s http_server* = sp
         s.handle(cli)
@@ -725,6 +738,8 @@ struct http_server {
 }
 
 #linux {
+    //A wrapper around the http_server handle.
+    //This is an internal function.
     __Bah_http_handle_client(sp ptr, cli int) {
         s http_server* = sp
         s.handle(cli)
@@ -733,11 +748,13 @@ struct http_server {
 }
 
 //To send a cpstring through the specified socket.
+//This is depreacted, use http_socket instead.
 http_send(connfd int, s cpstring) {
     send(connfd, s, strlen(s), 0)
 }
 
 //To receive from a specified socket.
+//This is depreacted, use http_socket instead.
 http_receive(connfd int) cpstring {
     buff cpstring = memoryAlloc(1025)
     response = string("")
@@ -774,7 +791,8 @@ const HTTP_REDIRECT = 301
 const HTTP_PARTIAL_CONTENT = 206
 
 
-
+//This is the skeletton for http_request and http_response.
+//It represents a bear bone request.
 struct http_transport {
     socket: http_socket
     headers: []string*
@@ -785,7 +803,7 @@ struct http_transport {
     method: cpstring = ""
     path: cpstring = ""
 
-        //To set a header by name.
+    //To set a header by name.
     setHeader(name cpstring, value cpstring) {
         
         h = new string
@@ -913,6 +931,8 @@ http_response(connfd int) http_response {
     return resp
 }
 
+//Parses the HTTP request from a response buffer and returns a http_response.
+//This is an internal function.
 makeRespFromBody(response response_buffer) http_response* {
     if response.len == 0 {
         return null
@@ -1112,7 +1132,8 @@ struct http_request extend http_transport {
     form: []string
     timeout: int = 0
     
-
+    //Sends the response.
+    //Dont forget to calling after writting to it.
     send() http_response* {
         socketWasOpenned = true
         isTLS = false
@@ -1341,171 +1362,6 @@ http_request(connfd int) http_request {
     return r
 }
 
-
-//Used for making any request.
-//Method is either http or https. The arguments (args) are the variables to pass (can be post or get variable) formatted as: name=value.
-// makeRawRequest(method cpstring, u http_url*, args []cpstring) http_response {
-//     proto = u.proto
-//     host = u.host
-//     path = u.path
-    
-//     serv_addr sockaddr_in
-
-//     portno = 80
-//     if u.port.length > 0 {
-//         portno = atoi(u.port.content)
-//     }
-//     response = string("")
-    
-//     message = string(" ")
-//     message.prepend(method)
-//     message.append(path.str())
-//     serialArgs = string("?")
-//     largs = len(args)
-//     max = largs - 1
-//     i = 0; for i < largs {
-//         serialArgs.append(args[i])
-//         if i < max {
-//             serialArgs.append("&")
-//         }
-//         i = i + 1
-//     }
-//     if largs > 0 {
-//         message.append(serialArgs.str())
-//     }
-//     message.append(" HTTP/1.0\r\nHost: ")
-    
-//     if proto.compare("https") {
-//         host.append(":443")
-//     }
-    
-//     message.append(host.str())
-//     message.append("\r\nConnection: close\r\n\r\n")
-    
-
-//     if proto.compare("https") {
-//         resp = makeRawHttpsRequest(host.str(), message.str(), 0)
-//         response.set(resp)
-
-//     } else {
-
-//         sock = http_socket{}
-//         if sock.open() == false {
-//             panic("http: error opening socket")
-//         }
-
-//         if sock.reach(host.str(), portno) == false {
-//             panic("http: error resolving host '"+host.str()+"'.")
-//         }
-
-//         if sock.send(message.str()) == false {
-//             panic("http: error sending trought socket")
-//         }
-
-//         response.set(sock.receive())
-//         sock.close()
-
-//     }
-
-//     resp = http_response{}
-//     resp.body = new string
-
-//     lines = splitString(response, "\r\n")
-//     if len(lines) == 0 {
-//         return resp
-//     }
-
-
-//     i = 0 
-//     head = lines[0]
-//     for i < head.length {
-//         c = head.charAt(i)
-//         if c == ' ' {
-//             i = i + 1
-//             break
-//         }
-//         i = i + 1
-//     }
-
-//     httpCode = string("")
-//     for i < head.length {
-//         c = head.charAt(i)
-//         httpCode.append(charToString(c))
-//         if c == ' ' {
-//             break
-//         }
-//         i = i + 1
-//     }
-//     httpCodeInt = stringToInt(httpCode)
-//     resp.code = httpCodeInt
-    
-//     isBody = 0
-    
-//     max = len(lines) - 1
-//     body = string("")
-//     i = 1; for i < len(lines) {
-
-//         line = lines[i]
-//         if isBody == 1 {
-//             s = string(line.str())
-//             if i < max {
-//                 s.append("\r\n")
-//             }
-//             body.append(s.str())
-//             i = i + 1
-//             continue
-//         }
-//         if i > 0 {
-//             pl = lines[i-1]
-//             if strlen(pl.str()) == 0 {
-//                 isBody = 1
-//                 line.trimLeft(2)
-//                 continue
-//             }
-//         }
-
-//         header = new string
-//         headerName = string(splitStringBefore(line, ":"))
-//         if headerName.length > 0 {
-//             headerName = toLower(headerName)
-//             line.trimLeft(headerName.length)
-//             line.prepend(headerName.str())
-//         }
-//         header.set(line.str())
-//         lrh = len(resp.headers)
-//         resp.headers[lrh] = header
-
-//         i = i + 1
-//     }
-
-//     transferEncoding = resp.getHeader("Transfer-Encoding")
-//     if strcmp(transferEncoding, "chunked") == 0 {
-        
-//         resp.body.set("")
-        
-//         for true == true {
-//             chunkLen = splitStringBefore(body, "\r\n")
-//             if strcmp(chunkLen, "0") == 0 {
-//                 break
-//             }
-//             l = strtol(chunkLen, noCheck(0), 16)
-//             l = l
-//             body.trimLeft(strlen(chunkLen)+2)
-//             chunk cpstring = memoryAlloc(l+1)
-//             memcpy(chunk, body.content, l)
-//             resp.body.append(chunk)
-//             body.trimLeft(l+2)
-//         }
-
-//     } else {
-//         resp.body.set(body.str())
-//     }
-
-
-//     return resp
-
-// }
-
 //Used for making simple get request.
 get(url cpstring) http_response {
     panic("Deprecated get() call")
@@ -1521,7 +1377,7 @@ post(url cpstring, args []cpstring) http_response {
 }
 
 //Checks if a port is available.
-//*Note: this command is very slow.*
+//*Note: this command is very slow and may only work on unix systems with netstat and grep installed.*
 isPortAvailable(port int) int {
     cmdS = intToString(port)
     cmdS.prepend("netstat -antu | grep :")

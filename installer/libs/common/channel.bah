@@ -1,7 +1,7 @@
 #include "thread.bah"
 #include "queue.bah"
 
-//Wrapper for a channel.
+//Internal wrapper for a channel used by the compiler for every chan:* type.
 //A channel is a queue that is thread safe. It can be safely used between different threads.
 //The length of the channel can be capped thanks to the **.cap** field.
 //**The channel will need to be destroyed after its utilization.**
@@ -104,7 +104,7 @@ channel() channel* {
     return c
 }
 
-
+//Sets the maximal capacity of a channel.
 setChanCap(c ptr, cap int) {
     cp channel* = c
     cp.cap = cap

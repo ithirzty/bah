@@ -1,4 +1,5 @@
 //A matrix is defined by its number of elements per line (column size).
+//This is more efficient that doing nested arrays.
 struct matrix {
     colSize: int
     

@@ -1,13 +1,16 @@
 #include "reflect.bah"
 
+//An internal description of a function and its evaluation wrapper.
 struct __eval_binding {
     name: cpstring
     evalFn: ptr
 }
 
+//Internal C type array of all evaluation wrappers.
 __evals_bindings __eval_binding*
 __evals_length = 0
 
+//To call a function by name with arguments passed as an array of pointers.
 evalCall(fn cpstring, args []ptr) ptr {
     i=0; for i < __evals_length, i++ {
         e __eval_binding = noCheck(__evals_bindings[i])
@@ -21,6 +24,8 @@ evalCall(fn cpstring, args []ptr) ptr {
     return null
 }
 
+//To eval simple Bah code with variables passed as an array of reflectElement.
+//This will return a pointer to the result.
 evalRaw(code cpstring, syms []reflectElement) ptr {
     scode = string(code)
     fnName = splitStringBefore(scode, "(")
@@ -161,6 +166,7 @@ evalRaw(code cpstring, syms []reflectElement) ptr {
     return evalCall(fnName, args)
 }
 
+//Used for evaluating simple Bah code and scan the result to r.
 eval(code cpstring, r reflectElement) {
     
     fnReturns = evalRaw(code, null)

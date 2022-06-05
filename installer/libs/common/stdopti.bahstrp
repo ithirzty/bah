@@ -1,9 +1,10 @@
 #include! "<immintrin.h>"
 #cLib "mavx"
 
-#define! _mm256_lddqu_si256(p __m256i_u) __m256i_u
-#define! _mm256_storeu_si256(d __m256i_u*, s __m256i_u)
 #define! __m256i_u ptr
+#define! _mm256_lddqu_si256(p __m256i_u*) __m256i_u
+#define! _mm256_storeu_si256(d __m256i_u*, s __m256i_u)
+#define! _mm256_set1_epi8(a int32) __m256i_u
 
 __BAH_avx_memcpy(dest cpstring, source cpstring, l int) {
     lm = l % 32
@@ -15,7 +16,29 @@ __BAH_avx_memcpy(dest cpstring, source cpstring, l int) {
     }
     destI __m256i_u* = <ptr>(<int>dest - 32)
     sourceI __m256i_u* = <ptr>(<int>source - 32)
-    i=l/32; for i != 0, i-- {
+    i=l >> 5; for i != 0, i-- {
         _mm256_storeu_si256(noCheck(&destI[i]), _mm256_lddqu_si256(noCheck(&sourceI[i])))
     }
-} 
+}
+
+const memcpy = __BAH_avx_memcpy
+
+
+__BAH_avx_memset(dest cpstring, c int32, l int) {
+    lm = l % 32
+    if lm != 0 {
+        for lm != 0, lm-- {
+            i = l - lm
+            noCheck(dest[i] = c)
+        }
+    }
+
+    sourceI = _mm256_set1_epi8(c)
+    destI __m256i_u* = <ptr>(<int>dest - 32)
+
+    i=l >> 5; for i != 0, i-- {
+        _mm256_storeu_si256(noCheck(&destI[i]), sourceI)
+    }
+}
+
+const memset = __BAH_avx_memset

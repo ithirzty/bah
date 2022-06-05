@@ -16,20 +16,23 @@
 
 //Scans a row element to a variable.
 dbResponse_scan_inner(e reflectElement, val cpstring) {
-    if e.type == "int" {
+    typeS = string(e.type)
+    typeS.replace("*", "")
+    type = typeS.str()
+    if type == "int" {
         ep int* = e.value
         *ep = strToInt(val)
-    } else if e.type == "cpstring" {
+    } else if type == "cpstring" {
         ep cpstring* = e.value
         if <ptr>val == null {
             *ep = null
         } else {
             *ep = val
         }
-    } else if e.type == "float" {
+    } else if type == "float" {
         ep float* = e.value
         *ep = strToFloat(val)
-    } else if e.type == "bool" {
+    } else if type == "bool" {
         ep bool* = e.value
         *ep = <bool>strToInt(val)
     }

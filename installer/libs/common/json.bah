@@ -63,7 +63,7 @@ struct jsonElement {
     }
 
 }
-
+//Internal function.
 json_scan_inner(thisp ptr, e reflectElement, isMember bool) {
     this jsonElement* = thisp
     if e.isStruct == true {
@@ -403,7 +403,7 @@ parseJson(s cpstring) jsonElement* {
     return jsonElem
 }
 
-
+//Returns weither a char is a valid string json char.
 json_isPrintable(c uint32) bool {
     if c < 32 || c > 255 {
         return false
@@ -411,6 +411,7 @@ json_isPrintable(c uint32) bool {
     return c != 127 && c != 129 && c != 141 && c != 143 && c != 144 && c != 157
 }
 
+//Used for escaping strings for json marshalling.
 jsonEscapeStr(s cpstring) cpstring {
     a = strAsArr(s)
     r = []char
@@ -580,54 +581,3 @@ toJson__inner(e reflectElement, isMember bool, tabs int) cpstring {
 toJson(e reflectElement) cpstring {
     return toJson__inner(e, false, 0)
 }
-
-//Example
-// #include "iostream.bah"
-// #include "json.bah"
-// struct user {
-//     name: cpstring
-//     id: int
-//     avatar: cpstring
-//     password: cpstring
-// }
-// struct post {
-//     title: cpstring
-//     content: cpstring
-//     author: user
-//     score: float
-//     identified: []int
-// }
-// main(args []cpstring) int {
-//     //Our JSON test string
-//     doc = "
-//     {
-//         \"title\": \"Test\",
-//         \"content\": \"This is a test post\",
-//         \"author\": {
-//             \"name\": \"Alois\",
-//             \"id\": 543,
-//             \"avatar\": \"cdn.example.com/avatar.jpeg\",
-//         },
-//         \"identified\": [324, 456, 875],
-//         \"score\": 43.65
-//     }"
-//     //parsing out test string
-//     root = parseJson(doc)
-//     //sacanning it to the post1 structure
-//     post1 = new post
-//     root.scan(post1)
-//     //converting our post1 structure into json
-//     postStr = toJson(post1)
-//     //parsing the json of out test1 structure
-//     post2Json = parseJson(postStr)
-//     //scanning it to our post2 structure
-//     post2 = new post
-//     post2Json.scan(post2)
-//     //converting our post2 structure into json and printting it
-//     println(toJson(post2))
-//     //fetching post title
-//     titleElem = root.get("title")
-//     //printing the title
-//     println("The post is titled: "+titleElem.content)
-//     return 0
-// }
