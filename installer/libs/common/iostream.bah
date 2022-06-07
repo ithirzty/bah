@@ -195,11 +195,12 @@ struct! stat {
     st_size: int
     st_mtime: int
     st_ctime: int
+    st_mode: int
 }
 #define! open(fn cpstring, flags int, mode int) int
 #define! close(fd int) int
 #define! fstat(fd int, fs stat*)
-#define! stat(path cpstring, s stat*)
+#define! stat(path cpstring, s stat*) int
 #linux {
     #define! munmap(p ptr, l int)
 }
@@ -319,6 +320,17 @@ fileExists(path cpstring) int {
         return 1
     }
     return 0
+}
+
+isFolder(path cpstring) bool {
+    s stat
+    if stat(path, &s) != 0 {
+        return false
+    }
+    if s.st_mode & noCheck(S_IFDIR) {
+        return true
+    }
+    return false
 }
 
 #define! remove(fn cpstring) int

@@ -338,7 +338,7 @@ parseImport(l []Tok, elems Elems*) {
     compilerState.includes[len(compilerState.includes)] = fileName.str()
 
     //locates file
-    fn = absPath(fileName.str())
+    fn = absPath(compilerState.currentDir + fileName.str())
     if <ptr>fn == null {
         fn = absPath(BAH_DIR + fileName.str())
         if <ptr>fn == null {
