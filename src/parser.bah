@@ -247,9 +247,17 @@ includeFile(ccstr cpstring, elems Elems*) bool {
     //handle declarative parsing
     oshd = shouldOnlyDecl
     if isObject == true {
-        shouldOnlyDecl = true
+        if isBahDir == true {
+            shouldOnlyDecl = true
+        } else {
+            shouldOnlyDecl = false
+        }
     } else if isSubObject == true {
-        shouldOnlyDecl = false
+        if isBahDir == true {
+            shouldOnlyDecl = false
+        } else {
+            shouldOnlyDecl = true
+        }
     }
 
     if needDisableRCP == true {

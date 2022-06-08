@@ -2831,7 +2831,7 @@ return r;
 char * BAH_DIR;
 char * BAH_OS;
 char * BAH_CC;
-#define BAH_VERSION "v1.2 (build 104)"
+#define BAH_VERSION "v1.2 (build 105)"
 char debug;
 char verboseRuntime;
 char isObject;
@@ -9427,10 +9427,20 @@ unsigned int strLen_2 = strlen("File '");
 }
 char oshd = shouldOnlyDecl;
 if ((isObject==true)) {
+if ((isBahDir==true)) {
 shouldOnlyDecl = true;
 }
-else if ((isSubObject==true)) {
+else {
 shouldOnlyDecl = false;
+}
+}
+else if ((isSubObject==true)) {
+if ((isBahDir==true)) {
+shouldOnlyDecl = false;
+}
+else {
+shouldOnlyDecl = true;
+}
 }
 if ((needDisableRCP==true)) {
 RCPenabled = false;
