@@ -247,14 +247,18 @@ includeFile(ccstr cpstring, elems Elems*) bool {
     //handle declarative parsing
     oshd = shouldOnlyDecl
     if isObject == true {
-        if isBahDir == true {
+        if isBahDir == true || string(compilerState.currentFile).hasPrefix(oDir) == false {
             shouldOnlyDecl = true
         } else {
             shouldOnlyDecl = false
         }
     } else if isSubObject == true {
-        if isBahDir == true {
-            shouldOnlyDecl = false
+        if isBahDir == true || string(compilerState.currentFile).hasPrefix(oDir) == false {
+            if isImportedSubObject == true && isBahDir == false {
+                shouldOnlyDecl = true
+            } else {
+                shouldOnlyDecl = false
+            }
         } else {
             shouldOnlyDecl = true
         }
@@ -371,8 +375,14 @@ parseImport(l []Tok, elems Elems*) {
     
     //sets declarative parsing parameter
     osod = shouldOnlyDecl
-    shouldOnlyDecl = true
     oiso = isSubObject
+    oiiso = isImportedSubObject
+
+    if isSubObject == true {
+        isImportedSubObject = true
+    }
+
+    shouldOnlyDecl = true
     isSubObject = true
 
     oName = BAH_DIR+"cache/"+pathToVarName(fn)+intToStr(RCPlevel)+intToStr(isOptimized)+".o"
@@ -406,6 +416,7 @@ parseImport(l []Tok, elems Elems*) {
     isSubObject = oiso
     compilerState.currentFile = of
     compilerState.currentDir = od
+    isImportedSubObject = oiiso
 }
 
 parseInclude(l []Tok, elems Elems*) {
