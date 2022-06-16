@@ -875,8 +875,67 @@ for (; (i<l+nb); ++i) {
     }
     ;
 };
+i = 0;
+for (; (i<l); ++i) {
+struct mapElem* e = this->elems->data[i];
+if ((e==null)) {
+continue;
+}
+long int ind = __Bah_map_hash(e->key,len(this->elems));
+if ((ind!=i)) {
+register long int j = ind;
+for (; (j<len(this->elems)); ++j) {
+if ((this->elems->data[j]==null)) {
+
+    {
+        unsigned long nLength = i;
+        if (nLength >= this->elems->length) {
+            if (nLength >= this->elems->realLength) {
+                if (this->elems->realLength != 0) {
+                    this->elems->realLength *= 2;
+                } else {
+                    this->elems->realLength = 50;
+                }
+                void * newPtr = memoryRealloc(this->elems->data, (this->elems->realLength)*sizeof(struct mapElem*));
+                this->elems->data = newPtr;
+            }
+            this->elems->data[i] = null;
+            this->elems->length = nLength+1;
+        } else {
+            this->elems->data[i] = null;
+        }
+    }
+    ;
+
+    {
+        unsigned long nLength = j;
+        if (nLength >= this->elems->length) {
+            if (nLength >= this->elems->realLength) {
+                if (this->elems->realLength != 0) {
+                    this->elems->realLength *= 2;
+                } else {
+                    this->elems->realLength = 50;
+                }
+                void * newPtr = memoryRealloc(this->elems->data, (this->elems->realLength)*sizeof(struct mapElem*));
+                this->elems->data = newPtr;
+            }
+            this->elems->data[j] = e;
+            this->elems->length = nLength+1;
+        } else {
+            this->elems->data[j] = e;
+        }
+    }
+    ;
+break;
+}
+};
+}
+};
 };
 void mapWrapper__set(struct mapWrapper* this,char * k,void * e){
+if ((this->length==0)) {
+mapWrapper__grow(this,50);
+}
 if ((this->length*2>=len(this->elems))) {
 mapWrapper__grow(this,this->length);
 }
@@ -2831,7 +2890,7 @@ return r;
 char * BAH_DIR;
 char * BAH_OS;
 char * BAH_CC;
-#define BAH_VERSION "v1.2 (build 106)"
+#define BAH_VERSION "v1.2 (build 107)"
 char debug;
 char verboseRuntime;
 char isObject;
@@ -2839,6 +2898,7 @@ char isUnsafe;
 char isOptimized;
 char * execName;
 char isSubObject;
+char isImportedSubObject;
 struct rope* OUTPUT;
 char * NEXT_LINE;
 struct rope* INIT;
@@ -9429,7 +9489,7 @@ char oshd = shouldOnlyDecl;
 if ((isObject==true)) {
 
                 struct string ____BAH_COMPILER_VAR_341 = string(compilerState.currentFile);
-                if ((isBahDir==true)||string__hasPrefix(&____BAH_COMPILER_VAR_341,oDir)) {
+                if ((isBahDir==true)||(string__hasPrefix(&____BAH_COMPILER_VAR_341,oDir)==false)) {
 shouldOnlyDecl = true;
 }
 else {
@@ -9439,8 +9499,13 @@ shouldOnlyDecl = false;
 else if ((isSubObject==true)) {
 
                 struct string ____BAH_COMPILER_VAR_342 = string(compilerState.currentFile);
-                if ((isBahDir==true)||string__hasPrefix(&____BAH_COMPILER_VAR_342,oDir)) {
+                if ((isBahDir==true)||(string__hasPrefix(&____BAH_COMPILER_VAR_342,oDir)==false)) {
+if ((isImportedSubObject==true)&&(isBahDir==false)) {
+shouldOnlyDecl = true;
+}
+else {
 shouldOnlyDecl = false;
+}
 }
 else {
 shouldOnlyDecl = true;
@@ -9678,8 +9743,12 @@ char * f = fileStream__readContent(&fs);
 fileStream__close(&fs);
 array(struct Tok)* tokens = lexer(f);
 char osod = shouldOnlyDecl;
-shouldOnlyDecl = true;
 char oiso = isSubObject;
+char oiiso = isImportedSubObject;
+if ((isSubObject==true)) {
+isImportedSubObject = true;
+}
+shouldOnlyDecl = true;
 isSubObject = true;
 char * ____BAH_COMPILER_VAR_354 =null;char * ____BAH_COMPILER_VAR_355 =intToStr(isOptimized);char * ____BAH_COMPILER_VAR_356 =intToStr(RCPlevel);char * ____BAH_COMPILER_VAR_357 =pathToVarName(fn);
         {
@@ -9778,6 +9847,7 @@ shouldOnlyDecl = osod;
 isSubObject = oiso;
 compilerState.currentFile = of;
 compilerState.currentDir = od;
+isImportedSubObject = oiiso;
 
 #undef fs
 };
@@ -22354,7 +22424,7 @@ unsigned int strLen_2 = strlen("Bah compiler version: ");
 return 0;
 }
 if ((flags__isSet(&flags,"c")==1)&&(flags__isSet(&flags,"l")==1)) {
-__BAH_panic("Cannot use -c (to translate to C code) and -l (to compile as a library) at the same time.","/home/alois/Documents/bah-bah/src/main.bah:139");
+__BAH_panic("Cannot use -c (to translate to C code) and -l (to compile as a library) at the same time.","/home/alois/Documents/bah-bah/src/main.bah:140");
 }
 INIT = rope("");
 OUTPUT = rope("\n    void __BAH_init();\n    #define noCheck(v) v\n    #define array(type)	\
@@ -22524,7 +22594,7 @@ unsigned int strLen_2 = strlen("Could not find std-libs, please check '");
             memcpy(____BAH_COMPILER_VAR_974+currStrOff, "'", strLen_1);
             currStrOff += strLen_1;
         
-        }__BAH_panic(____BAH_COMPILER_VAR_974,"/home/alois/Documents/bah-bah/src/main.bah:250");
+        }__BAH_panic(____BAH_COMPILER_VAR_974,"/home/alois/Documents/bah-bah/src/main.bah:251");
 }
 }
 shouldOnlyDecl = false;
@@ -23097,6 +23167,7 @@ isUnsafe = false;
 isOptimized = false;
 execName = "bah";
 isSubObject = false;
+isImportedSubObject = false;
 NEXT_LINE = "";
 shouldOnlyDecl = false;
 threadCount = 0;

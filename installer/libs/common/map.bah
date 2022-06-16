@@ -19,6 +19,7 @@ struct mapElem {
     val: ptr
 }
 
+
 //An internal wrapper that is used for every map:* type.
 struct mapWrapper {
     elems: []mapElem*
@@ -30,10 +31,31 @@ struct mapWrapper {
         i=l; for i < l + nb, i++ {
             this.elems[i] = null
         }
+        //hash of existing elems may have changed
+        //try to re-locate elems if it is the case
+        i=0; for i < l, i++ {
+            e = this.elems[i]
+            if e == null {
+                continue
+            }
+            ind = __Bah_map_hash(e.key, len(this.elems))
+            if ind != i {
+                j=ind; for j < len(this.elems), j++ {
+                    if this.elems[j] == null {
+                        this.elems[i] = null
+                        this.elems[j] = e
+                        break
+                    }
+                }
+            }
+        }
     }
 
     //Used for setting an key to a pointer.
     set(k cpstring, e ptr) {   
+        if this.length == 0 {
+            this.grow(50)
+        }
         if this.length * 2 >= len(this.elems) {
             this.grow(this.length)
         }
