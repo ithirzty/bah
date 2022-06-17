@@ -70,14 +70,7 @@ Files containing bah code have the `.bah` extenstion.
 - To compile your program using builtin debugging tools, use `bah myFile.bah -verboseRuntime`. **This will outputs a lot of data.**
 
 ### Hello, world!
-```c
-#include "iostream.bah" //includes the library containing 'println'
-main(args []cpstring) int //declare the main (the entry-point to the program)
-{
-    println("Hello, world!") //print "Hello, world!" + a new line
-    return 0 //exit the program with '0' meaning that it executed without error
-}
-```
+![hello world](extra/helloworld.svg)
 
 ## Why?
 Bah is a really fast language that is low level enough for most cases while being really simple.
