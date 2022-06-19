@@ -1234,7 +1234,14 @@ parseVar(l []Tok, elems Elems*) {
             //safety check to know if it is possible that the declared/set variable can contain a null pointer
             if isUnsafe == false && string(compilerState.currentDir).hasPrefix(BAH_DIR) == false && isRCPpointerType(tp) {
                 if t.cont == "null" || tp[strlen(tp)-1] == '!' {
-                    v.canBeNull = true
+                    if exists == true {
+                        rv = getRealVar(v.name, elems)
+                        if rv != null {
+                            rv.canBeNull = true
+                        }
+                    } else {
+                        v.canBeNull = true
+                    }
                 } else if t.type == TOKEN_TYPE_VAR {
                     tv = searchVar(t.cont, elems)
                     if tv != null {

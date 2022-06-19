@@ -2887,7 +2887,7 @@ return r;
 char * BAH_DIR;
 char * BAH_OS;
 char * BAH_CC;
-#define BAH_VERSION "v1.2 (build 108)"
+#define BAH_VERSION "v1.2 (build 109)"
 char debug;
 char verboseRuntime;
 char isObject;
@@ -12521,7 +12521,15 @@ char * tp = getTypeFromToken(&t,true,elems);
                 struct string ____BAH_COMPILER_VAR_457 = string(compilerState.currentDir);
                 if ((isUnsafe==false)&&(string__hasPrefix(&____BAH_COMPILER_VAR_457,BAH_DIR)==false)&&isRCPpointerType(tp)) {
 if ((strcmp(t.cont, "null") == 0)||(tp[strlen(tp)-1]==33)) {
+if ((exists==true)) {
+struct variable* rv = getRealVar(v->name,elems);
+if ((rv!=null)) {
+rv->canBeNull = true;
+}
+}
+else {
 v->canBeNull = true;
+}
 }
 else if ((t.type==TOKEN_TYPE_VAR)) {
 struct variable* tv = searchVar(t.cont,elems);
