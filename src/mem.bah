@@ -123,9 +123,11 @@ endRCPscope(elems Elems*, excl []variable*) {
     removeDefs(elems)
 }
 
-endRCPscopeLeaky(elems Elems*, excl variable*) {
+endRCPscopeLeaky(elems Elems*, excl variable*, undef bool) {
     if RCPavailable() == false {
-        removeDefs(elems)
+        if undef == true {
+            removeDefs(elems)
+        }
         return
     }
     i=0; for i < len(elems.vars), i++ {
@@ -137,7 +139,9 @@ endRCPscopeLeaky(elems Elems*, excl variable*) {
             OUTPUT += decrVar(v, elems)
         }
     }
-    removeDefs(elems)
+    if undef == true {
+        removeDefs(elems)
+    }
 }
 
 registerRCPvar(t cpstring, c cpstring, elems Elems*) cpstring {

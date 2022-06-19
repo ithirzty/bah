@@ -74,7 +74,8 @@ verboseOutTransformTok(t Tok*, elems Elems*) verboseOutVar {
     if t.type == TOKEN_TYPE_VAR && t.isOper == false {
         v = searchVar(t.cont, elems)
         if v == null {
-            return verboseOutTransformVar(v, t.cont, elems)
+            rv = verboseOutVar{}
+            return rv
         }
     }
     v = variable{

@@ -1,0 +1,55 @@
+checkCanBeNull(t Tok*, tt cpstring, elems Elems*) {
+    if isUnsafe == false && string(compilerState.currentDir).hasPrefix(BAH_DIR) == false && isRCPpointerType(tt) && t.cont[0] != '&' && t.cont[0] != '*' {
+        sv = searchVarByToken(t, elems)
+        if sv != null {
+            if sv.canBeNull == true && checkedNotNull(sv.name, elems) == false {
+                throwErr(t, "{TOKEN} can be null.")
+            }
+        }
+    }
+}
+
+setNullStateBranchFlowEnd(elems Elems*) {
+    if currentFn == null {
+        return
+    }
+    if compilerState.isBranch == false {
+        currentFn.exits = true   
+    } else {
+        i=0; for i < len(elems.branchChecks), i++ {
+            bc = elems.branchChecks[i]
+            if bc.v == null {
+                continue
+            }
+            if bc.checkNull == true {
+                j=0; for j < len(elems.parent.vars), j++ {
+                    pv = elems.parent.vars[j]
+                    if pv.name == bc.v.name {
+                        pv.canBeNull = false
+                        break
+                    }
+                }
+            }
+        }
+        if prevLine == LINE_TYPE_IF && prevIfExits == true {
+            currElems = elems; for currElems != null, currElems = currElems.parent {
+                i=0; for i < len(currElems.branchChecks), i++ {
+                    bc = currElems.branchChecks[i]
+                    if bc.v == null {
+                        continue
+                    }
+                    if bc.checkNull == true {
+                        j=0; for j < len(currElems.parent.vars), j++ {
+                            pv = currElems.parent.vars[j]
+                            if pv.name == bc.v.name {
+                                pv.canBeNull = false
+                                break
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        prevIfExits = true
+    }
+}

@@ -1,10 +1,10 @@
 #include "iostream.bah"
 #include "string.bah"
 
-OUTPUT rope* //the C output
+OUTPUT = rope("") //the C output
 NEXT_LINE = "" //if we need to add something to the next C line
 
-INIT rope* //the C init function for initializing outter scope stuff (global vars...)
+INIT = rope("") //the C init function for initializing outter scope stuff (global vars...)
 
 //Bah variable
 struct variable {
@@ -17,6 +17,8 @@ struct variable {
     declScope: ptr
     isGlobal: bool = false
     declRope: rope*
+    //safety
+    canBeNull: bool = false
     //optimizations
     canBeReg: bool
     isReg: bool = false
@@ -46,6 +48,8 @@ struct func {
     code: rope* = null
     isMut: bool = false
     isImported: bool = false
+    //safety
+    exits: bool = false
 }
 
 //Interface between Bah struct and C struct
@@ -60,6 +64,11 @@ struct cStruct {
     hasRCPmemb: bool = false
 }
 
+struct varCheck {
+    v: variable*
+    checkNull: bool
+}
+
 //Every elements of the program for a specific scope
 struct Elems {
     vars: []variable*
@@ -69,6 +78,8 @@ struct Elems {
     defined: []cpstring
     parent: Elems*
     id: uint32
+    //safety
+    branchChecks: []varCheck
 }
 
 //Additional info for the compiler no matter the scope
@@ -110,3 +121,10 @@ RCPlevel = 0
 flags flags
 
 currSetVar variable* = null
+
+//safety
+currChecks = []varCheck
+
+prevIfExits = false
+
+prevIfChecks = []varCheck

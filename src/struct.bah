@@ -110,7 +110,9 @@ searchStructMemb(name cpstring, s cStruct*, elems Elems*) structMemb* {
     }
 
     es = searchStruct(s.extendedFrom, elems)
-    
+    if es == null {
+        return null
+    }
     
     return searchStructMemb(name, es, elems)
 }

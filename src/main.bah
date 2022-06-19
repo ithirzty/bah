@@ -23,13 +23,14 @@
     BAH_CC = "gcc"
 }
 //////////////////////BUILD SPECIFIC THINGS//////////////////////
-const BAH_VERSION = "v1.2 (build 107)"
+const BAH_VERSION = "v1.2 (build 108)"
 
 debug = false
 verboseRuntime = false
 isObject = false
 isUnsafe = false
 isOptimized = false
+noticeEnabled = true
 
 execName = "bah"
 isSubObject = false
@@ -88,6 +89,7 @@ main(args []cpstring) int {
     flags.addBool("unsafe", "Compile without safety checking. This will make for faster executable but if your program crashes, it will show less informations.")
     flags.addBool("nobuiltin", "Does not include the builtin library (be really carefull, your program WILL break).")
     flags.addBool("optimize", "Includes optimized functions")
+    flags.addBool("n", "Disables notices while keeping warnings enabled.")
     flags.parse(args)
 
     if flags.isSet("target") == 1 {
@@ -111,6 +113,8 @@ main(args []cpstring) int {
         println("-verboseRuntime is obsolete.")
         exit(1)
     }
+
+    noticeEnabled = flags.isSet("n") == 0
 
     RCPlevel = 0
     if flags.isSet("rcp") {

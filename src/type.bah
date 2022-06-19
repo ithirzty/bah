@@ -39,6 +39,7 @@ getCType(t cpstring, elems Elems*) string {
         r = "array("+t+")*"
         return string(r)
     }
+    tp.replace("!", "*")
     
 
     ctp = tp
@@ -120,6 +121,14 @@ floatTypes = []cpstring{
     "ufloat32"
 }
 
+maybeToPtr(a cpstring) cpstring {
+    if a[strlen(a)-1] != '!' {
+        return a
+    }
+    a = a[:strlen(a)-1] + "*"
+    return a
+}
+
 compTypeEquiv(a cpstring, b cpstring, first bool) bool {
     //rules
     if a == "cpstring" && strHasPrefix(b, "buffer:") {
@@ -134,10 +143,13 @@ compTypeEquiv(a cpstring, b cpstring, first bool) bool {
         return true
     }
 
+
     return a == b
 }
 
 compTypes(a cpstring, b cpstring) bool {
+    a = maybeToPtr(a)
+    b = maybeToPtr(b)
     if a == b || a == "ptr" || b == "ptr" {
         return true
     }

@@ -302,8 +302,17 @@ searchFunc(name cpstring, elems Elems*, inclCurr bool) func* {
         }
         name = n.str()
         v = searchVar(name, elems)
+        if v == null {
+            return null
+        }
         s = searchStruct(v.type, elems)
+        if s == null {
+            return null
+        }
         memb = searchStructMemb(fnName.str(), s, elems)
+        if memb == null {
+            return null
+        }
         name = fnName.content
         name = memb.from+"__"+name
 
@@ -319,7 +328,7 @@ searchFunc(name cpstring, elems Elems*, inclCurr bool) func* {
         i = i + 1
     }
 
-    if inclCurr == true {
+    if inclCurr == true && currentFn != null {
         if currentFn.name == name {
             currentFn.used = true
             return currentFn
@@ -490,4 +499,59 @@ makeInit() {
         "+evals+"
     };
     ")
+}
+
+checkedNull(v cpstring, elems Elems*) bool {
+    for elems != null, elems = elems.parent {
+        i=0; for i < len(elems.branchChecks), i++ {
+            bc = elems.branchChecks[i]
+            if bc.v == null {
+                continue
+            }
+            if bc.v.name == v {
+                return bc.checkNull
+            }
+        }
+        i=0; for i < len(currChecks), i++ {
+            bc = currChecks[i]
+            if bc.v == null {
+                continue
+            }
+            if bc.v.name == v {
+                return bc.checkNull
+            }
+        }
+    }
+    return false
+}
+
+checkedNotNull(v cpstring, elems Elems*) bool {
+    for elems != null, elems = elems.parent {
+        i=0; for i < len(elems.branchChecks), i++ {
+            bc = elems.branchChecks[i]
+            if bc.v == null {
+                continue
+            }
+            if bc.v.name == v {
+                return bc.checkNull == false
+            }
+        }
+        i=0; for i < len(currChecks), i++ {
+            bc = currChecks[i]
+            if bc.v == null {
+                continue
+            }
+            if bc.v.name == v {
+                return bc.checkNull == false
+            }
+        }
+    }
+    return false
+}
+
+canChangeNullState(v variable*, elems Elems*) bool {
+    if v.declScope == elems {
+        return true
+    }
+    return checkedNull(v.name, elems)
 }

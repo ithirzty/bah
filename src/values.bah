@@ -63,6 +63,11 @@ valueFunc(fn func*, parent variable*, l []Tok, i int, ltp lineType, elems Elems*
         return tokPos
     }
 
+    //checks if the program should be running after the execution of this function
+    if fn.name == "exit" || fn.exits == true {
+        setNullStateBranchFlowEnd(elems)
+    }
+
     //making the return token
     fnt.cont = fn.name + "("
     if fn.returns != null && fn.returns.type != "" {
@@ -256,6 +261,8 @@ valueFunc(fn func*, parent variable*, l []Tok, i int, ltp lineType, elems Elems*
             throwErr(&t, "Cannot use {TOKEN} ("+tt+") as "+arg.type+" in function call.")
         }
 
+        checkCanBeNull(&t, tt, elems)
+
         if RCPavailable() == true && ltp == LINE_TYPE_VAR && t.type == TOKEN_TYPE_VAR && t.isOper == false && currSetVar != null && t.cont == currSetVar.name && isRCPtype(currSetVar.type, elems) {
             OUTPUT += incrVar(currSetVar, elems)
         }
@@ -303,8 +310,14 @@ valueStruct(l []Tok, i int, ltp lineType, elems Elems*) int {
     tt = getTypeFromToken(&t, true, elems)
     s = searchStruct(tt, elems)
     if s == null {
-        throwErr(&t, "Cannot use {TOKEN} as structure.")
+        if tt[strlen(tt)-1] == '!' {
+            throwErr(&t, "Cannot use maybe value {TOKEN} ("+tt+") as structure.")
+        } else {
+            throwErr(&t, "Unkown struct {TOKEN} ("+tt+").")
+        }
     }
+
+    checkCanBeNull(&t, tt, elems)
 
     //is next token a member name
     nt = l[i+1]
@@ -357,6 +370,9 @@ valueStruct(l []Tok, i int, ltp lineType, elems Elems*) int {
             }
             if fn.isVar == true {
                 fn.name = t.cont + sep + fn.name
+            }
+            if parent == null {
+                throwErr(&t, "Could not find structure {TOKEN}.")
             }
             valueFunc(fn, parent, l, i, ltp, elems)
             fnt = l[i]
@@ -601,6 +617,7 @@ valueBool(l []Tok, i int, ltp lineType, elems Elems*) int {
 
     deleteRange(l, tokPos, tokPos+1)
 
+    //sets looping variable as register is faster
     if ltp == LINE_TYPE_FOR && ptt == "int" || ptt == "float" {
         v = getRealVar(pt.cont, elems)
         if v != null && v.canBeReg == true && v.isReg == false && v.declRope != null {
@@ -609,6 +626,17 @@ valueBool(l []Tok, i int, ltp lineType, elems Elems*) int {
                 OUTPUT.totalLen += ropeSet(v.declRope, "register "+odecl)
             }
             v.isReg = true
+        }
+    }
+
+    //checking condition of branch for safety checks
+    if isUnsafe == false {
+        if tokPos > 0 {
+            if l[tokPos-1].cont != "&&" {
+                clear(currChecks)
+            }
+        } else {
+            clear(currChecks)
         }
     }
 
@@ -661,6 +689,36 @@ valueBool(l []Tok, i int, ltp lineType, elems Elems*) int {
                 pt.cont = "(strlen("+pt.cont+") <= srtlen("+nt.cont+"))"
             }
         } else {
+            if isUnsafe == false && pt.type == TOKEN_TYPE_VAR && pt.isOper == false && isRCPpointerType(ptt) {
+                ptV = searchVar(pt.cont, elems)
+                if ptV != null {
+                    ntIsNull = false
+                    if nt.cont == "null" {
+                        ntIsNull = true
+                    } else if nt.type == TOKEN_TYPE_VAR && nt.isOper == false {
+                        nv = searchVar(nt.cont, elems)
+                        if nv != null {
+                            ntIsNull = nv.canBeNull
+                        }
+                    } else if nt.isFunc == true {
+                        fn = searchFuncByToken(&nt, elems)
+                        if fn != null && fn.returns != null {
+                            ntIsNull = fn.returns.type[strlen(fn.returns.type)-1] == '!'
+                        }
+                    }
+                    if t.cont == "==" {
+                        currChecks[len(currChecks)] = varCheck{
+                            v: ptV
+                            checkNull: ntIsNull
+                        }
+                    } else if t.cont == "!=" {
+                        currChecks[len(currChecks)] = varCheck{
+                            v: ptV
+                            checkNull: ntIsNull == false
+                        }
+                    }
+                }
+            }
             pt.cont = "(" + pt.cont + t.cont + nt.cont + ")"
         }
     }
