@@ -503,7 +503,13 @@ parseStructType(line []Tok, ltp lineType, elems Elems*) []Tok {
                         structType = getCType(s.name, elems)
                         elems.vars[len(elems.vars)] = tmpV
 
-                        OUTPUT = OUTPUT + rope(cType.str()+" "+t.cont+" = memoryAlloc(sizeof("+structType.str()+"));\n"+declareStructMethods(tmpV, s, elems))
+                        r = rope(cType.str()+" "+t.cont+" = memoryAlloc(sizeof("+structType.str()+"));\n"+declareStructMethods(tmpV, s, elems))
+
+                        if isGlobal() {
+                            INIT += r
+                        } else {
+                            OUTPUT += r
+                        }
 
                         nl[len(nl)-1] = t
                         continue

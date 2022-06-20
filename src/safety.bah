@@ -3,7 +3,12 @@ checkCanBeNull(t Tok*, tt cpstring, elems Elems*) {
         sv = searchVarByToken(t, elems)
         if sv != null {
             if sv.canBeNull == true && checkedNotNull(sv.name, elems) == false {
-                throwErr(t, "{TOKEN} can be null.")
+                globCheck = ""
+                s = searchStruct(sv.type, elems)
+                if sv.isGlobal == true && s != null {
+                    globCheck = " or declare the var as 'new "+s.name+"'."
+                }
+                throwErr(t, "{TOKEN} can contain a null value. Check if the value is null"+globCheck+".")
             }
         }
     }
