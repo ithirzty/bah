@@ -371,13 +371,14 @@ declareStructMethods(v variable*, s cStruct*, elems Elems*) cpstring {
         sep = "->"
         amp = ""
     }
-    i=0; for i < len(members) {
+    i=0; for i < len(members), i++ {
         m = members[i]
         cmpt = string(m.type)
-        declared = false
-        if strlen(m.def) > 0 {
-            code = code + v.name + sep + m.name + " = " + m.def + ";\n"
-            declared = true
+        if m.def != "" {
+            if m.def != "false" && m.def != "0" && m.def != "null" {
+                code = code + v.name + sep + m.name + " = " + m.def + ";\n"
+            }
+            continue
         }
         if cmpt.hasPrefix("[]") == 1 {
             cmpt.trimLeft(2)
@@ -388,22 +389,17 @@ declareStructMethods(v variable*, s cStruct*, elems Elems*) cpstring {
             "+v.name+sep+m.name+"->length = 0;
             "+v.name+sep+m.name+"->elemSize = sizeof("+elemCTypeStr+");
             "
-            declared = true
-        } else if cmpt.hasPrefix("map:") == 1 {
+            continue
+        }
+        if cmpt.hasPrefix("map:") == 1 {
             cmpt.trimLeft(4)
             code += v.name + sep + m.name + " = mapWrapper();\n"
-            declared = true
-        } else if cmpt.hasPrefix("chan:") == 1 {
+            continue
+        }
+        if cmpt.hasPrefix("chan:") == 1 {
             cmpt.trimLeft(5)
             code += v.name + sep + m.name + " = channel();\n"
-            declared = true
         }
-
-        if isRCPpointerType(m.type) && declared == false {
-            code = code + v.name + sep + m.name + "= null;\n"
-        }
-
-        i = i + 1
     }
 
     if s.isBinding == false {

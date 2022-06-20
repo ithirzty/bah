@@ -760,31 +760,10 @@ valueOper(l []Tok, i int, elems Elems*) int {
     }
 
     //parse string concatenation
-    if ptt == "cpstring" {
-        lens = ""
-        totStrLen = "1+strLen_0+strLen_1"
-        cats = rope("")
-        rstr = registerRCPvar("cpstring", "null", elems) //result var
-        
-
-        //first token
-        if pt.isFunc == true {
-            pt.cont = registerRCPvar("cpstring", pt.cont, elems)
-        }
-        lens += "unsigned int strLen_0 = strlen("+pt.cont+");\n"
-        cats += rope("
-            memcpy("+rstr+"+currStrOff, "+pt.cont+", strLen_0);
-            currStrOff += strLen_0;
-        ")
-        //second token
-        if nt.isFunc == true {
-            nt.cont = registerRCPvar("cpstring", nt.cont, elems)
-        }
-        lens += "unsigned int strLen_1 = strlen("+nt.cont+");\n"
-        cats += rope("
-            memcpy("+rstr+"+currStrOff, "+nt.cont+", strLen_1);
-            currStrOff += strLen_1;
-        ")
+    if ptt == "cpstring" {        
+        //add first two cpstrings to the concat array
+        //strs contains all the cpstrings to concatenate in reverse order
+        strs = []cpstring{nt.cont, pt.cont}
 
         if t.cont != "+" {
             throwErr(&t, "Can only do concatenation on cpstring, not {TOKEN}.")
@@ -806,21 +785,8 @@ valueOper(l []Tok, i int, elems Elems*) int {
                     if compTypes(tt, "cpstring") == false {
                         throwErr(&currStrTk, "Cannot concatenate cpstring with {TOKEN} ("+tt+").")
                     }
-                    //is token is a function call, declare it as a variable to only call it once
-                    if currStrTk.isFunc == true {
-                        currStrTk.cont = registerRCPvar("cpstring", currStrTk.cont, elems)
-                    }
-
-                    //add length for allocating result var
-                    is = intToStr(nb)
-                    nb++
-                    lens += "unsigned int strLen_"+is+" = strlen("+currStrTk.cont+");\n"
-                    totStrLen += "+strLen_"+is
-                    //add to concatenation list
-                    cats = rope("
-                    memcpy("+rstr+"+currStrOff, "+currStrTk.cont+", strLen_"+is+");
-                    currStrOff += strLen_"+is+";
-                    ") + cats
+                    //add to the array of cpstrings to allocate
+                    strs[len(strs)] = currStrTk.cont
 
                     // delete(l, i)
                     if i-1 >= 0 {
@@ -847,23 +813,10 @@ valueOper(l []Tok, i int, elems Elems*) int {
         }
 
         //build concatenation code
-        res = rope("
-        {
-            unsigned int currStrOff = 0;
-            "+lens+";                            
-            "+rstr+" = memoryAllocSTR("+totStrLen+");
-            ")+cats+rope("
-        }")
-
-        if isGlobal() {
-            INIT += res
-        } else {
-            OUTPUT += res
-        }
 
         pt.type = TOKEN_TYPE_VAR
         pt.isValue = true
-        pt.cont = rstr
+        pt.cont = genConcat(strs, elems)
         pt.isOper = false
     } else {
 
@@ -1019,3 +972,40 @@ isValue(l []Tok, i int) bool {
     }
     return true
 }
+
+
+// matchToken(t Tok, mt Tok) bool {
+//     if t.type != mt.type {
+//         return false
+//     }
+//     if t.isValue == true {
+//         return true
+//     }
+//     if t.cont == mt.cont {
+//         return true
+//     }
+//     return false
+// }
+
+// matchLine(l []Tok, j int, m []Tok) bool {
+//     i=0; for i < len(m), i++ {
+//         if j >= len(l) {
+//             return false
+//         }
+//         if m[i].cont == "%%" {
+//             i++
+//             for j < len(l), j++ {
+//                 if matchToken(l[j], m[i]) {
+//                     break
+//                 }
+//             }
+//             if j == len(l) {
+//                 return false
+//             }
+//         } else if matchToken(l[j], m[i]) == false {
+//             return false
+//         }
+//         j++
+//     }
+//     return true
+// }

@@ -80,8 +80,7 @@ json_scan_inner(thisp ptr, e reflectElement, isMember bool) {
             *ep = strToInt(this.content)
         } else if e.type == "cpstring" {
             ep cpstring* = e.value
-            *ep = memoryAlloc(strlen(this.content) + 1)
-            strcpy(*ep, this.content)
+            *ep = this.content
         } else if e.type == "float" {
             ep float* = e.value
             *ep = strToFloat(this.content)
@@ -134,8 +133,7 @@ json_scan_inner(thisp ptr, e reflectElement, isMember bool) {
                 }
                 i=0; for i < len(this.children) {
                     c = this.children[i]
-                    arr[i] = memoryAlloc(strlen(c.content) + 1)
-                    strcpy(arr[i], c.content)
+                    arr[i] = c.content
                     i = i + 1
                 }
             } else if ae.isStruct == true {

@@ -301,14 +301,14 @@ parallelObjCompile(fn cpstring, oName cpstring, done chan:bool) {
     }
 
     //file not found in cache, need to compile it
-    if cf != null && isValidCacheFile(cf) == false {
+    if cf == null || cf != null && isValidCacheFile(cf) == false {
         setCurrentPath(compilerState.currentDir)
         verboseCC = ""
         if flags.isSet("verboseCC") == 1 {
             verboseCC = "-verboseCC"
         }
         if debug == false {
-            println("compilling: "+fn+"...")
+            println("[compiling] "+fn)
         }
         opti = ""
         if isOptimized == true {
@@ -316,9 +316,6 @@ parallelObjCompile(fn cpstring, oName cpstring, done chan:bool) {
         }
         cmd = command(execName + " "+fn+" "+rcp+" "+opti+" -object "+verboseCC+" -o "+oName)
         res = cmd.runBytes()
-        if debug == false {
-            println("done: "+fn)
-        }
         setCurrentPath(wrkd)
         if cmd.status != 0 {
             print(arrToStr(res))
@@ -397,15 +394,7 @@ parseImport(l []Tok, elems Elems*) {
     done = chan bool
 
     //checks for cache
-    #linux {
-        async parallelObjCompile(fn, oName, done)
-    }
-    #darwin {
-        async parallelObjCompile(fn, oName, done)
-    }
-    #windows {
-        parallelObjCompile(fn, oName, done)
-    }
+    parallelObjCompile(fn, oName, done)
 
     //parse file
     parseLines(tokens, elems)
@@ -1367,6 +1356,7 @@ parseVar(l []Tok, elems Elems*) {
             throwErr(&st, "Cannot change the type of already declared var '"+ft.cont+"' to {TOKEN}.")
         }
         preCode = ""
+        val = code
         if isStruct == false {
             if isRCPpointerType(v.type) && isPointedVar == false && RCPavailable() == true {
                 cType = getCType(v.type, elems)
@@ -1409,7 +1399,7 @@ parseVar(l []Tok, elems Elems*) {
             }
         }
         if v.isArray == true {
-            code = genArrRealloc(v, preCode, code, elems)
+            code = genArrRealloc(v, preCode, val, elems)
         } else {
             code = preCode + code
         }
@@ -2948,7 +2938,7 @@ prePross(line []Tok, ltp lineType, elems Elems*) []Tok {
     nbPar = 0
 
     if ltp != <lineType>-1 {
-        for i < len(line) {
+        for i < len(line), i++ {
             t = line[i]
             if t.cont == "(" {
                 isFunc = true
@@ -2956,20 +2946,17 @@ prePross(line []Tok, ltp lineType, elems Elems*) []Tok {
             } else if t.cont == ")" {
                 nbPar = nbPar - 1
             } else if nbPar == 0 && t.cont == "{" {
-                nt = line[i+1]
-                if nt.line != t.line {
+                if line[i+1].line != t.line {
                     break
                 }
             }
-            fl[len(fl)] = t
-            i++
         }
+        fl = line[:i]
         sepI = i
     } else {
         fl = line
     }
 
-    // print("from: ");debugLine(fl)
     pt = Tok{}
     l = len(fl)
 

@@ -7,40 +7,30 @@ genArrRealloc(v variable*, preVal cpstring, val cpstring, elems Elems*) cpstring
     vn.trimRight(1)
     nLengthStr = vn.str()
 
+    nLength = genCompilerVar()
+
     return "
-    {
-        unsigned long nLength = " + nLengthStr + ";
-        if (nLength >= "+nstr+"->length) {
-            if (nLength >= "+nstr+"->realLength) {
-                if ("+nstr+"->realLength != 0) {
-                    "+nstr+"->realLength *= 2;
-                } else {
-                    "+nstr+"->realLength = 50;
-                }
-                void * newPtr = memoryRealloc("+nstr+"->data, ("+nstr+"->realLength)*sizeof("+getCType(v.type, elems).str()+"));
-                "+nstr+"->data = newPtr;
-            }
-            "+val+";
-            "+nstr+"->length = nLength+1;
-        } else {
-            "+preVal+val+";
-        }
+    unsigned int "+nLength+" = "+nLengthStr+";
+    __Bah_realocate_arr("+nstr+", "+nLength+");
+    "+preVal+nstr+"->data["+nLength+"] = "+val
+}
+
+genConcat(strs []cpstring, elems Elems*) cpstring {
+    
+
+    buff = genCompilerVar()
+    r = "char** "+buff+" = alloca("+intToStr(len(strs))+" * sizeof(char*));"
+
+    i=0; for i < len(strs), i++ {
+        r += buff + "["+intToStr(len(strs) - i - 1)+"] = " + strs[i] + ";" 
     }
-    "
 
-    // return "
-    // {
-    //     unsigned long nLength = " + nLengthStr + ";
-    //     if (" + nstr + "->length < nLength+1) {
-    //         if ((nLength+1) % 50 == 0 || "+nstr+"->length == 0) {
-    //             void * newPtr = memoryRealloc("+nstr+"->data, (nLength+50)*sizeof("+getCType(v.type, elems).str()+"));
-    //             "+nstr+"->data = newPtr;
-    //         }
-    //         "+val+";
-    //         "+nstr+"->length = nLength+1;
-    //     } else {
-    //         "+preVal+val+";
-    //     }
-    // }"
+    if isGlobal() {
+        INIT += rope(r)
+    } else {
+        OUTPUT += rope(r)
+    }
+    rstr = registerRCPvar("cpstring", "__Bah_multiple_concat("+buff+", "+intToStr(len(strs))+")", elems) //result var
 
+    return rstr
 }

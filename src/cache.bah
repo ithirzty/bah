@@ -21,19 +21,12 @@ readCache()  {
         fs.createFile(BAH_DIR + "cache/cache.json")
         return
     }
-    j = parseJson(fs.readContent())
-    fs.close()
-    j.scan(&cache)
-
-    if cache != null {
-        // t = getTimeUnix()
-        // i=0; for i < len(cache), i++ {
-        //     c = cache[i]
-        //     if t - c.date > TIME_MIN * 60 * 24 * 7 {
-
-        //     }
-        // }
+    if fs.getSize() > 0 {
+        j = parseJson(fs.readContent())
+        fs.close()
+        j.scan(&cache)
     }
+
 
 }
 

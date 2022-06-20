@@ -74,6 +74,48 @@ print(s cpstring) {
 
 #include "memory.bah"
 
+__Bah_realocate_arr(arr []ptr, nLength uint32) {
+	if nLength < noCheck(arr->length) {
+		return
+	}
+	if nLength >= noCheck(arr->realLength) {
+		if noCheck(arr->realLength) != 0 {
+			noCheck(arr->realLength *= 2)
+		} else {
+			noCheck(arr->realLength = 50)
+		}
+		newPtr = memoryRealloc(noCheck(arr->data), noCheck(arr->realLength) * noCheck(arr->elemSize))
+		noCheck(arr->data = newPtr)
+	}
+	noCheck(arr->length = arr->length + 1)
+	return
+}
+
+
+#define! alloca(s int) ptr
+__Bah_multiple_concat(b cpstring*, l uint32) cpstring {
+    lens uint32* = alloca(l * sizeof(uint32)) //stack list of lengths
+    tot uint32 = 0 //total length
+    offset int32 = 0 //offset for concatenation
+
+    //calculate lengths of cpstrings and total length
+    i=0; for i < l, i++ {
+        sl = strlen(noCheck(b[i]))
+        tot += sl
+        noCheck(lens[i] = sl)
+    }
+
+    //allocate return cpstring
+    r = memoryAllocSTR(tot + 1)
+
+    //concatenate all cpstring
+    i=0; for i < l, i++ {
+        memcpy(<ptr>(<int>r + offset), noCheck(b[i]), noCheck(lens[i]))
+        offset += noCheck(lens[i])
+    }
+
+    return r
+}
 
 #cLib "lm"
 
