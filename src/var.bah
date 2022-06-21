@@ -56,8 +56,11 @@ searchVar(name cpstring, elems Elems*) variable* {
         vt = string(v.type)
         if isArr == true {
             vt.trimLeft(2)
+        } else if vt.hasPrefix("tuple:") {
+            parts = splitString(vt, ":")
+            vt.set(parts[2].str())
         } else {
-            vt.set("char")
+            vt.set("char") //buffer
         }
         vtstr = vt.str()
 

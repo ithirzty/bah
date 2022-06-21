@@ -151,7 +151,12 @@ registerRCPvar(t cpstring, c cpstring, elems Elems*) cpstring {
     av.name = genCompilerVar()
     elems.vars[len(elems.vars)] = av
     cType = getCType(av.type, elems)
-    OUTPUT = OUTPUT + rope(cType.str()+" "+av.name+" ="+c+";")
+    if isGlobal() {
+        OUTPUT += rope(cType.str()+" "+av.name+";")
+        INIT += rope(av.name+" ="+c+";")
+    } else {
+        OUTPUT += rope(cType.str()+" "+av.name+" ="+c+";")
+    }
     return av.name
 }
 

@@ -45,7 +45,10 @@ getCType(t cpstring, elems Elems*) string {
     ctp = tp
     ctp.replace("*", "")
 
-    if tp.hasPrefix("chan:") == 1 {
+    if tp.hasPrefix("tuple:") {
+        parts = splitString(tp, ":")
+        tp.set(getCType(parts[2].str(), elems).str()+"*")
+    } else if tp.hasPrefix("chan:") == 1 {
         tp.set("struct channel *")
     } else if tp.hasPrefix("map:") == 1 {
         tp.set("struct mapWrapper *")

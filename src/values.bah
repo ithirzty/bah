@@ -523,6 +523,9 @@ valueArr(l []Tok, i int, ltp lineType, elems Elems*) int {
         if split == false {
             t.bahType = "char"
             index = memory[0]
+            if compTypes(getTypeFromToken(&index, true, elems), "int") == false {
+                throwErr(&index, "Cannot use {TOKEN} as buffer index (int).")
+            }
             t.cont = pt.cont+"["+index.cont+"]"
         } else {
             t.bahType = "cpstring"
@@ -538,6 +541,9 @@ valueArr(l []Tok, i int, ltp lineType, elems Elems*) int {
         ptt.trimLeft(4)
         elemType = getCType(ptt.str(), elems)
         index = memory[0]
+        if compTypes(getTypeFromToken(&index, true, elems), "cpstring") == false {
+            throwErr(&index, "Cannot use {TOKEN} as map index (cpstring).")
+        }
         if tokPos == 0 && ltp == LINE_TYPE_VAR { //setting map value
             tmpV = new variable {
                 name: genCompilerVar()
@@ -587,6 +593,9 @@ valueArr(l []Tok, i int, ltp lineType, elems Elems*) int {
         if split == false {
             t.bahType = "char"
             index = memory[0]
+            if compTypes(getTypeFromToken(&index, true, elems), "int") == false {
+                throwErr(&index, "Cannot use {TOKEN} as cpstring index (int).")
+            }
             t.cont = pt.cont+"["+index.cont+"]"
         } else {
             if to == "" {
@@ -595,6 +604,26 @@ valueArr(l []Tok, i int, ltp lineType, elems Elems*) int {
             t.cont = "cpstringSubsitute("+pt.cont+", "+from+", "+to+")"
 
         }
+    } else if ptt.hasPrefix("tuple:") {
+        t.isOper = true
+        v = searchVar(pt.cont, elems)
+        if v == null {
+            throwErr(&pt, "Unkown var {TOKEN}.")
+        }
+        parts = splitString(ptt, ":")
+        index = memory[0]
+        if index.type == TOKEN_TYPE_INT {
+            ind = strToInt(index.cont)
+            if ind >= strToInt(parts[1].str()) {
+                throwErr(&index, "Cannot access index {TOKEN} of tupple "+pt.cont+" of length "+parts[1].str()+".")
+            }
+        } else {
+            if compTypes(getTypeFromToken(&index, true, elems), "int") == false {
+                throwErr(&index, "Cannot use {TOKEN} as tuple index (int).")
+            }
+        }
+        t.cont = pt.cont+"["+index.cont+"]"
+        t.bahType = parts[2].str()
     } else {
         throwErr(&pt, "Cannot use {TOKEN} ("+ptt.str()+") as array.")
     }
@@ -939,6 +968,82 @@ valueChan(l []Tok, i int, elems Elems*) int {
     l[posTok] = nt
 
     return posTok
+}
+
+valueTuple(l []Tok, i int, elems Elems*) int {
+    tokPos = i
+
+    nbBracks = 0
+    if l[tokPos+1].cont == "]" {
+        //is arr type
+        if l[tokPos+2].type == TOKEN_TYPE_VAR {
+            return tokPos+1
+        }
+        throwErr(&l[tokPos], "Cannot declare {TOKEN} empty tuple.")
+    }
+
+
+    ft = l[tokPos+1]
+
+    tupT = getTypeFromToken(&ft, true, elems)
+
+    vals = []cpstring
+
+    nbEncl = 1
+    i++; for i < len(l), i++ {
+        if l[i].cont == "[" || l[i].cont == "(" {
+            nbEncl++
+        } else if l[1].cont == "]" || l[i].cont == ")" {
+            nbEncl--
+            if nbEncl == 0 {
+                break
+            }
+        }
+    }
+
+    memory = l[tokPos+1:i]
+
+    memory = prePross(memory, <lineType>-1, elems)
+
+    j=0; for j < len(memory), j += 2 {
+        t = memory[j]
+        tt = getTypeFromToken(&t, true, elems)
+        if compTypes(tupT, tt) == false {
+            throwErr(&t, "Cannot use {TOKEN} ("+tt+") as "+tupT+" in tuple declaration.")
+        }
+        vals[len(vals)] = t.cont
+        nt = memory[j+1]
+        if nt.cont == "]" {
+            break
+        } else if nt.cont != "," {
+            throwErr(&nt, "Expected separator between values in tuple declaration, got {TOKEN}.")
+        }
+    }
+
+    type = "tuple:"+intToStr(len(vals))+":"+tupT
+
+    deleteRange(l, tokPos+1, j+1)
+
+    v = registerRCPvar(type, "alloca(sizeof("+getCType(tupT, elems).str()+") * "+intToStr(len(vals))+")", elems)
+    
+    r = ""
+    i=0; for i < len(vals), i++ {
+        r += v+"["+intToStr(i)+"] = "+vals[i]+";"
+    }
+    
+    if isGlobal() {
+        INIT += rope(r)
+    } else {
+        OUTPUT += rope(r)
+    }
+
+    l[tokPos] = Tok {
+        type: TOKEN_TYPE_VAR
+        bahType: type
+        cont: v
+    }
+
+    return tokPos
 }
 
 isSmallValue(l []Tok, i int) bool {
