@@ -391,7 +391,12 @@ parseImport(l []Tok, elems Elems*) {
     isSubObject = true
 
     oName = BAH_DIR+"cache/"+pathToVarName(fn)+intToStr(RCPlevel)+intToStr(isOptimized)+".o"
-    compilerState.cLibs[len(compilerState.cLibs)] = "w "+oName+".o" //adds object file to the linker
+    
+    i=len(compilerState.cLibs); for i != 0, i-- {
+        compilerState.cLibs[i] = compilerState.cLibs[i-1]
+    }
+
+    compilerState.cLibs[0] = "w "+oName+".o" //adds object file to the linker
     
     done = chan bool
 
