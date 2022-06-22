@@ -1,0 +1,81 @@
+
+#define dupElems(e Elems*) Elems*
+#define parseLines(l []Tok, elems Elems*)
+
+//Wrapper for a generic function (function with an argument of <any> type)
+struct genericFunc {
+    tokens: []Tok
+    declared: []func*
+    baseFn: func*
+    tokenName: Tok*
+
+    dupBaseFn() func* {
+        r = new func
+        r.name = this.baseFn.name
+        i=0; for i < len(this.baseFn.args), i++ {
+            a = this.baseFn.args[i]
+            na = new variable
+            *na = *a
+            r.args[i] = na
+        }
+        r.returns = this.baseFn.returns
+        return r
+    }
+
+    isAlreadyDecl(n cpstring) bool {
+        i=0; for i < len(this.declared), i++ {
+            if this.declared[i].name == n {
+                return true
+            }
+        }
+        return false
+    }
+
+    declare(fn func*, elems Elems*) {
+        oldOut = OUTPUT
+        OUTPUT = rope(getCType(fn.returns.type, elems).str()+" __generic_"+fn.name+"(")
+
+        fnElems = dupElems(elems)
+        i=0; for i < len(fn.args), i++ {
+            arg = fn.args[i]
+
+            arg.declScope = elems
+            arg.isArg = true
+            fnElems.vars[len(fnElems.vars)] = arg
+
+            OUTPUT += rope(getCType(arg.type, elems).str() + " " + arg.name)
+            
+            if i+1  < len(fn.args) {
+                OUTPUT += rope(", ")
+            }
+        }
+
+        OUTPUT += rope(") {\n")
+
+        beginRCPscope(fnElems, fn.args)
+        ocurrFnElems = compilerState.currFnElems
+        oCurrFn = currentFn
+        compilerState.currFnElems = fnElems
+        parseLines(this.tokens, fnElems)
+        OPTI_checkFuncScopeRef(fnElems)
+
+        compilerState.currFnElems = ocurrFnElems
+        currentFn = oCurrFn
+
+        if fn.returned == false {
+            if strlen(fn.returns.type) > 0 {
+                throwErr(this.tokenName, "Function '"+fn.name+"' is not returned.")
+            }
+            endRCPscope(fnElems, fn.args)
+            // decrRCPstackVars(fn.args, elems)
+        } else {
+            removeDefs(fnElems)
+        }
+
+        code = OUTPUT + rope("};\n")
+        OUTPUT = oldOut
+        OUTPUT.totalLen +=  ropeSet(postDeclHandle, postDeclHandle.toStr() + code.toStr())
+    }
+}
+
+generics = []genericFunc*

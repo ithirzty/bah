@@ -1,6 +1,8 @@
 valueFunc(fn func*, parent variable*, l []Tok, i int, ltp lineType, elems Elems*) int {
     tokPos = i
 
+    generic genericFunc*
+
     //if not defined func, go find it before in the line
     errPos = -1
     if fn == null {
@@ -12,7 +14,16 @@ valueFunc(fn func*, parent variable*, l []Tok, i int, ltp lineType, elems Elems*
                 errPos = pt.pos
                 fn = searchFunc(pt.cont, elems, true)
                 if fn == null {
-                    throwErr(&pt, "Unknown func {TOKEN}.")
+                    j=0; for j < len(generics), j++ {
+                        if generics[j].baseFn.name == pt.cont {
+                            generic = generics[j]
+                            fn = generics[j].dupBaseFn()
+                            break
+                        }
+                    }
+                    if j == len(generics) {
+                        throwErr(&pt, "Unknown func {TOKEN}.")
+                    }
                 }
             } else {
                 tokPos++
@@ -243,6 +254,8 @@ valueFunc(fn func*, parent variable*, l []Tok, i int, ltp lineType, elems Elems*
     //     }
     // }
 
+    ogFntContL = strlen(fnt.cont)
+
     // parsing arguments
     j=0; for j < len(memory), j++ {
         t = memory[j]
@@ -257,8 +270,17 @@ valueFunc(fn func*, parent variable*, l []Tok, i int, ltp lineType, elems Elems*
             tt = "reflectElement"
         }
 
-        if compTypes(arg.type, tt) == false {
-            throwErr(&t, "Cannot use {TOKEN} ("+tt+") as "+arg.type+" in function call.")
+        if generic != null && arg.type == "<any>" {
+            arg.type = tt
+            tts = string(tt)
+            tts.replace("*", "_AST_")
+            tts.replace(":", "_DP_")
+            tts.replace("[]", "_ARR_")
+            fn.name += "__" + tts.str()
+        } else {
+            if compTypes(arg.type, tt) == false {
+                throwErr(&t, "Cannot use {TOKEN} ("+tt+") as "+arg.type+" in function call.")
+            }
         }
 
         checkCanBeNull(&t, tt, elems)
@@ -292,6 +314,13 @@ valueFunc(fn func*, parent variable*, l []Tok, i int, ltp lineType, elems Elems*
     if argIndex != len(fn.args) {
         lt = l[tokPos]
         throwErr(&lt, "Not enough argument {TOKEN}, calling '"+fn.name+"'.")
+    }
+
+    if generic != null {
+        fnt.cont = "__generic_" + fn.name + "(" + fnt.cont[ogFntContL:]
+        if generic.isAlreadyDecl(fn.name) == false {
+            generic.declare(fn, elems)
+        }
     }
 
     fnt.bahRef = fn

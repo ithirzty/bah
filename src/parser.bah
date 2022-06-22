@@ -10,6 +10,8 @@
 #include "./cache.bah"
 #include "./gen.bah"
 #include "./optimizations.bah"
+#include "./generics.bah"
+
 
 //Only for debug purposes
 debugLine(line []Tok) {
@@ -1752,33 +1754,11 @@ parseStruct(l []Tok, elems Elems*) {
                     membDecl.append(" ")
                     membDecl.append(em.name)
                     membDeclStr = membDecl.content
-                    // registerType(&fileDeps, em.type, elems)
                 }
                 allMembs[len(allMembs)] = membDeclStr
                 members[len(members)] = em
                 j = j + 1
             }
-            // k=0; for k < len(extdS.methods) {
-            //     emt = extdS.methods[k]
-            //     // registerFunc(&fileDeps, emt, elems)
-            //     mthdDecl = getCType(emt.returns.type, elems)
-            //     mthdDecl.append("(*" + emt.name + ")(")
-            //     j=0; for j < len(emt.args) {
-            //         a = emt.args[j]
-            //         tp = getCType(a.type, elems)
-            //         tp.append(" " + a.name)
-            //         max = len(emt.args) - 1
-            //         if j != max {
-            //             tp.append(",")
-            //         }
-            //         mthdDecl.append(tp.str())
-            //         j =j + 1
-            //     }
-            //     mthdDecl.append(")")
-            //     allMembs[len(allMembs)] = mthdDecl.str()
-
-            //     k = k + 1
-            // }
         } else {
             throwErr(&st, "Cannot use keyword {TOKEN} in struct declaration.")
         }
@@ -3154,6 +3134,17 @@ parseFnDeclare(l []Tok, elems Elems*) {
         debugPrint("fn_declare", ft.line, df)
     }
 
+    j=0; for j < len(fn.args), j++ {
+        if fn.args[j].type == "<any>" {
+            generics[len(generics)] = new genericFunc {
+                tokens: l[i+1:len(l)-1]
+                baseFn: fn
+                tokenName: &ft
+            }
+            return
+        }
+    }
+
     if shouldOnlyDecl == true {
         if ogFn != null {
             fn.isBinding = false
@@ -3163,6 +3154,9 @@ parseFnDeclare(l []Tok, elems Elems*) {
         OUTPUT = OUTPUT + rope(code+";\n")
         return
     }
+
+    postDeclHandle = rope("")
+    OUTPUT += postDeclHandle
 
     code = code + "{\n"
 
@@ -3190,14 +3184,8 @@ parseFnDeclare(l []Tok, elems Elems*) {
         fns[len(fns)] = fn
     }
 
-    tokens = []Tok
     i++
-    max = len(l)-1
-    for i < max {
-        t = l[i]
-        tokens[len(tokens)] = t
-        i++
-    }
+    tokens = l[i:len(l)-1]
 
     if len(tokens) == 0 {
         fn.code += rope("};\n")
@@ -3209,7 +3197,6 @@ parseFnDeclare(l []Tok, elems Elems*) {
 
     oOut = OUTPUT
     OUTPUT = rope("")
-    t = tokens[0]
     beginRCPscope(fnElems, fn.args)
     ocurrFnElems = compilerState.currFnElems
     compilerState.currFnElems = fnElems

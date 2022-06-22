@@ -6,6 +6,8 @@ NEXT_LINE = "" //if we need to add something to the next C line
 
 INIT = rope("") //the C init function for initializing outter scope stuff (global vars...)
 
+postDeclHandle = rope("")
+
 //Bah variable
 struct variable {
     name: cpstring = ""
