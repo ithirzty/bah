@@ -19,7 +19,9 @@ setNullStateBranchFlowEnd(elems Elems*) {
         return
     }
     if compilerState.isBranch == false {
-        currentFn.exits = true   
+        if currentFn.couldAlreadyReturn == false {
+            currentFn.exits = true   
+        }
     } else {
         i=0; for i < len(elems.branchChecks), i++ {
             bc = elems.branchChecks[i]

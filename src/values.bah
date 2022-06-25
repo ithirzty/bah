@@ -75,7 +75,10 @@ valueFunc(fn func*, parent variable*, l []Tok, i int, ltp lineType, elems Elems*
     }
 
     //checks if the program should be running after the execution of this function
-    if fn.name == "exit" || fn.exits == true {
+    if fn.name == "exit" || fn.name == "panic" || fn.exits == true {
+        if compilerState.isBranch == true {
+            elems.currFlowEnd = true
+        }
         setNullStateBranchFlowEnd(elems)
     }
 
@@ -726,6 +729,7 @@ valueBool(l []Tok, i int, ltp lineType, elems Elems*) int {
             };
         }
         ")
+        pt.isExpensive = true
         pt.cont = compVar
     } else {
         if compTypes(ptt, ntt) == false {
@@ -746,6 +750,7 @@ valueBool(l []Tok, i int, ltp lineType, elems Elems*) int {
             } else if t.cont == "<=" {
                 pt.cont = "(strlen("+pt.cont+") <= srtlen("+nt.cont+"))"
             }
+            pt.isExpensive = true
         } else {
             if isUnsafe == false && pt.type == TOKEN_TYPE_VAR && pt.isOper == false && isRCPpointerType(ptt) {
                 ptV = searchVar(pt.cont, elems)
@@ -776,6 +781,11 @@ valueBool(l []Tok, i int, ltp lineType, elems Elems*) int {
                         }
                     }
                 }
+            }
+            if isExprExpensive(&pt) || isExprExpensive(&nt) {
+                pt.isExpensive = true
+            } else {
+                pt.isExpensive = false
             }
             pt.cont = "(" + pt.cont + t.cont + nt.cont + ")"
         }
@@ -915,7 +925,7 @@ valueOper(l []Tok, i int, elems Elems*) int {
         pt.isOper = true
 
     }
-
+    pt.isNotExpsvOper = false
     l[tokPos] = pt
     return tokPos
 }

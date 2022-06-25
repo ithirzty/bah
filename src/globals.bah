@@ -52,6 +52,7 @@ struct func {
     isImported: bool = false
     //safety
     exits: bool = false
+    couldAlreadyReturn: bool = false
 }
 
 //Interface between Bah struct and C struct
@@ -82,6 +83,8 @@ struct Elems {
     id: uint32
     //safety
     branchChecks: []varCheck
+    //optimization
+    currFlowEnd: bool
 }
 
 //Additional info for the compiler no matter the scope

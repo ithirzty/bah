@@ -2229,6 +2229,7 @@ parseReturn(l []Tok, elems Elems*) {
     if compilerState.isBranch == false {
         currentFn.returned = true
     } else {
+        currentFn.couldAlreadyReturn = true
         setNullStateBranchFlowEnd(elems)
     }
 
@@ -2280,8 +2281,8 @@ parseReturn(l []Tok, elems Elems*) {
 
 parseIf(l []Tok, fromElse bool, elems Elems*) {
     prevIfExits = false
-    if len(l) < 4 {
         ft = l[0]
+    if len(l) < 4 {
         throwErr(&ft, "Invalid usage of {TOKEN}, must be 'if <condition> {<code>}'")
     }
     condt = l[1]
@@ -2301,7 +2302,10 @@ parseIf(l []Tok, fromElse bool, elems Elems*) {
         tokens[len(tokens)] = t
         i++
     }
-    OUTPUT = OUTPUT + rope("if ("+condt.cont+") {\n")
+
+    ifHeader = rope("if ("+condt.cont+") {\n")
+
+    OUTPUT += ifHeader
 
     ifElems = dupElems(elems)
 
@@ -2322,6 +2326,12 @@ parseIf(l []Tok, fromElse bool, elems Elems*) {
     compilerState.isBranch = true
     beginRCPscopeLeaky(ifElems)
     parseLines(tokens, ifElems)
+
+    if ifElems.currFlowEnd == true {
+        OUTPUT.totalLen += ropeSet(ifHeader, "if (__builtin_expect("+condt.cont+", 0)) {\n")
+        // println("branch exits: "+compilerState.currentFile+":"+intToStr(ft.line))
+    }
+
     endRCPscopeLeaky(ifElems, null, true)
     if debug == true {
         lt = l[len(l)-1]
@@ -3053,7 +3063,12 @@ prePross(line []Tok, ltp lineType, elems Elems*) []Tok {
             if compTypes(ptt, ntt) == false || compTypes(ptt, "bool") == false {
                 throwErr(&t, "Cannot use {TOKEN} on "+ptt+".")
             }
-            pt.cont += t.cont+nt.cont
+
+            if t.cont == "||" && isExprExpensive(&pt) == false && isExprExpensive(&nt) == false {
+                pt.cont += "+"+nt.cont
+            } else {
+                pt.cont += t.cont+nt.cont
+            }
             fl[i-1] = pt
             deleteRange(fl, i, i+1)
             i -= 2

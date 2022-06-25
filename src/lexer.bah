@@ -34,8 +34,10 @@ struct Tok {
     isEqual: bool = false
     pass: bool = false
     //optimizations
+    isNotExpsvOper: bool = false
     bahRef: ptr
     parent: variable*
+    isExpensive: bool
 }
 
 

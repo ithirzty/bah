@@ -18,3 +18,16 @@ OPTI_checkFuncScopeRef(elems Elems*) {
         }
     }
 }
+
+//Is a token an expensive expretion to evaluate.
+//Usefull for helped branch prediction.
+isExprExpensive(t Tok*) bool {
+    if t.isExpensive == true {
+        return true
+    }
+
+    if t.type != TOKEN_TYPE_VAR && t.type != TOKEN_TYPE_INT && t.type != TOKEN_TYPE_FLOAT {
+        return true
+    }
+    return false
+}
