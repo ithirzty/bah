@@ -23,7 +23,7 @@
     BAH_CC = "gcc"
 }
 //////////////////////BUILD SPECIFIC THINGS//////////////////////
-const BAH_VERSION = "v1.2 (build 115)"
+const BAH_VERSION = "v1.2 (build 116)"
 
 debug = false
 verboseRuntime = false
@@ -221,7 +221,7 @@ main(args []cpstring) int {
         exit(1)
     }
     startTime = getTimeUnix() //for timming compilation time
-    tokens = lexer(f) //tokenizing the first file
+    tokens = lexer(f, fm.size) //tokenizing the first file
     fm.close()
 
 

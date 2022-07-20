@@ -71,7 +71,7 @@ writeCache() {
 }
 
 isValidCacheFile(cf cacheFile*) bool {
-    if cf == null || cf.last != getLastModified(cf.file) {
+    if cf.last != getLastModified(cf.file) {
         return false
     }
     if fileExists(BAH_DIR+"cache/"+pathToVarName(cf.file)+intToStr(cf.mem)+intToStr(cf.opti)+".o.o") == 0 {

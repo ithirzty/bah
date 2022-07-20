@@ -69,7 +69,7 @@ struct genericFunc {
             endRCPscope(fnElems, fn.args)
             // decrRCPstackVars(fn.args, elems)
         } else {
-            removeDefs(fnElems)
+            // removeDefs(fnElems)
         }
 
         code = OUTPUT + rope("};\n")

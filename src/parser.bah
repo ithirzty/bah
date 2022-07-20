@@ -246,7 +246,7 @@ includeFile(ccstr cpstring, elems Elems*) bool {
     compilerState.includes[len(compilerState.includes)] = ccstr
     
     //reads file
-    tokens = lexer(f)
+    tokens = lexer(f, fm.size)
     fm.close()
     if len(tokens) == 0 {
         panic("File '"+ccstr+"' not recognized.")
@@ -302,8 +302,13 @@ parallelObjCompile(fn cpstring, oName cpstring, done chan:bool) {
         rcp = "-fastrcp"
     }
 
+    scf = cf
+    if scf == null {
+        scf = new cacheFile
+    }
+
     //file not found in cache, need to compile it
-    if cf == null || cf != null && isValidCacheFile(cf) == false {
+    if cf == null || isValidCacheFile(scf) == false {
         setCurrentPath(compilerState.currentDir)
         verboseCC = ""
         if flags.isSet("verboseCC") == 1 {
@@ -373,10 +378,10 @@ parseImport(l []Tok, elems Elems*) {
     fs = fileStream{}
     fs.open(fn, "r")
     f = fs.readContent()
-    fs.close()
 
     //read file
-    tokens = lexer(f)
+    tokens = lexer(f, fs.getSize())
+    fs.close()
     
     //sets declarative parsing parameter
     osod = shouldOnlyDecl
@@ -1090,7 +1095,7 @@ parseVar(l []Tok, elems Elems*) {
     isPointedVar = false
     isStruct = false
     currentType = ""
-    needsDefine = false
+    // needsDefine = false
     ft = l[0]
     v = searchVar(ft.cont, elems)
     exists = true
@@ -1177,7 +1182,7 @@ parseVar(l []Tok, elems Elems*) {
         } else {
 
             if t.isEqual == true && exists == false && isGlobal() == false {
-                needsDefine = true
+                // needsDefine = true
                 v.canBeNull = false
             }
 
@@ -1457,19 +1462,10 @@ parseVar(l []Tok, elems Elems*) {
                     code = vct+" = *("+cType.str()+"*)RCP_incrIL(&"+code+")"
                 }
             } else {
-                if needsDefine == true {
-                    elems.defined[len(elems.defined)] = v.name
-                    if isGlobal() {
-                        INIT += rope("#define "+v.name+" "+code+"\n")
-                    } else {
-                        code = "#define "+v.name+" "+code
-                    }
+                if isGlobal() {
+                    INIT += rope(v.name + " = " + code+";\n")
                 } else {
-                    if isGlobal() {
-                        INIT += rope(v.name + " = " + code+";\n")
-                    } else {
-                        code = vct + " = " + code
-                    }
+                    code = vct + " = " + code
                 }
             }
         } else {
@@ -1507,20 +1503,16 @@ parseVar(l []Tok, elems Elems*) {
         }
         NEXT_LINE = ""
     } else {
-        if needsDefine == true {
-            OUTPUT += rope(code + "\n")
-        } else {
-            declR = rope(code + ";\n")
-            if exists == false {
-                //for optimizations
-                v.declRope = declR
-                v.canBeReg = true
-            }
-            OUTPUT += declR
-            // if v.type == "cpstring" {
-            //     makeStrlenVar(v, elems)
-            // }
+        declR = rope(code + ";\n")
+        if exists == false {
+            //for optimizations
+            v.declRope = declR
+            v.canBeReg = true
         }
+        OUTPUT += declR
+        // if v.type == "cpstring" {
+        //     makeStrlenVar(v, elems)
+        // }
     }
 
 
@@ -3231,8 +3223,6 @@ parseFnDeclare(l []Tok, elems Elems*) {
         }
         endRCPscope(fnElems, fn.args)
         // decrRCPstackVars(fn.args, elems)
-    } else {
-        removeDefs(fnElems)
     }
 
     fn.code += OUTPUT

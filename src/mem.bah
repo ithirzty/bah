@@ -85,30 +85,30 @@ beginRCPscopeLeaky(elems Elems*) {
     }
 }
 
-removeDefs(elems Elems*) {
-    i=0; for i < len(elems.defined), i++ {
-        OUTPUT += rope("\n#undef "+elems.defined[i]+"\n")
-    }
-    // i=len(elems.vars)-1; for i != -1, i-- {
-    //     v = elems.vars[i]
-    //     vn = string(v.name)
-    //     if v.ogDeclScope == elems && vn.hasSuffix("__Bah_strlen") {
-    //         c = v.count
-    //         if *c == 0 {
-    //             if v.metaRope != null {
-    //                 OUTPUT.totalLen += ropeSet(v.metaRope, "//removed meta: "+v.name+"\n")
-    //             } else {
-    //                 OUTPUT.totalLen += ropeSet(v.declRope, "//removed declaration: "+v.name+"\n")
-    //             }
-    //             *c = -1
-    //         }
-    //     }
-    // }
-}
+// removeDefs(elems Elems*) {
+//     i=0; for i < len(elems.defined), i++ {
+//         OUTPUT += rope("\n#undef "+elems.defined[i]+"\n")
+//     }
+//     // i=len(elems.vars)-1; for i != -1, i-- {
+//     //     v = elems.vars[i]
+//     //     vn = string(v.name)
+//     //     if v.ogDeclScope == elems && vn.hasSuffix("__Bah_strlen") {
+//     //         c = v.count
+//     //         if *c == 0 {
+//     //             if v.metaRope != null {
+//     //                 OUTPUT.totalLen += ropeSet(v.metaRope, "//removed meta: "+v.name+"\n")
+//     //             } else {
+//     //                 OUTPUT.totalLen += ropeSet(v.declRope, "//removed declaration: "+v.name+"\n")
+//     //             }
+//     //             *c = -1
+//     //         }
+//     //     }
+//     // }
+// }
 
 endRCPscope(elems Elems*, excl []variable*) {
     if RCPavailable() == false {
-        removeDefs(elems)
+        // removeDefs(elems)
         return
     }
     i=0; for i < len(elems.vars), i++ {
@@ -120,14 +120,14 @@ endRCPscope(elems Elems*, excl []variable*) {
             OUTPUT += decrVar(v, elems)
         }
     }
-    removeDefs(elems)
+    // removeDefs(elems)
 }
 
 endRCPscopeLeaky(elems Elems*, excl variable*, undef bool) {
     if RCPavailable() == false {
-        if undef == true {
-            removeDefs(elems)
-        }
+        // if undef == true {
+            // removeDefs(elems)
+        // }
         return
     }
     i=0; for i < len(elems.vars), i++ {
@@ -139,9 +139,9 @@ endRCPscopeLeaky(elems Elems*, excl variable*, undef bool) {
             OUTPUT += decrVar(v, elems)
         }
     }
-    if undef == true {
-        removeDefs(elems)
-    }
+    // if undef == true {
+        // removeDefs(elems)
+    // }
 }
 
 registerRCPvar(t cpstring, c cpstring, elems Elems*) cpstring {

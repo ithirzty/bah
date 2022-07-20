@@ -78,7 +78,7 @@ struct Elems {
     structs: []cStruct*
     types: []cpstring
     fns: []func*
-    defined: []cpstring
+    // defined: []cpstring
     parent: Elems*
     id: uint32
     //safety
@@ -116,6 +116,8 @@ threadCount = 0
 currentFn func* = null
 
 totalLines = 0
+
+totalSize = 0
 
 totalLexerTime = 0
 

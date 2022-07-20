@@ -95,12 +95,12 @@ keywords = []cpstring{"if", "else", "for", "struct", "const", "return", "extend"
                     //  : not done
                     // -: not planned
 
-lexer(s cpstring) []Tok {
+lexer(s cpstring, codeLength uint) []Tok {
 //    recorder = timer.record("lexer")
     dur = getTimeUnix()
     tokens = []Tok
-    
-    codeLength = strlen(s)
+
+    totalSize += codeLength
 
     memory = []char
 
