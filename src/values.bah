@@ -371,7 +371,12 @@ valueStruct(l []Tok, i int, ltp lineType, elems Elems*) int {
         if ntt.cont == "(" {
             parent variable*
             if t.type == TOKEN_TYPE_VAR {
-                parent = searchVar(t.cont, elems)
+                if t.bahRef != null {
+                    // println("shortcut: "+t.cont)
+                    parent = t.bahRef
+                } else {
+                    parent = searchVar(t.cont, elems)
+                }
             } else {
                 tmpV = genCompilerVar()
                 cType = getCType(tt, elems)
@@ -463,7 +468,6 @@ valueArr(l []Tok, i int, ltp lineType, elems Elems*) int {
     i = tokPos+1
     for i < len(l), i++ {
         tmpT = l[i]
-        // delete(l, i)
         if tmpT.cont == "(" || tmpT.cont == "{" || tmpT.cont == "[" {
             nbEncls++
         } else if tmpT.cont == ")" || tmpT.cont == "}" || tmpT.cont == "]" {
@@ -540,9 +544,18 @@ valueArr(l []Tok, i int, ltp lineType, elems Elems*) int {
             if compTypes(getTypeFromToken(&index, true, elems), "int") == false {
                 throwErr(&index, "Cannot use {TOKEN} as array index (int).")
             }
-            t.cont = pt.cont+"->data["+index.cont+"]"
             ptt.trimLeft(2)
             t.bahType = ptt.str()
+            t.cont = pt.cont+"->data["+index.cont+"]"
+
+            if tokPos+1 < len(l) && l[tokPos+1].cont == "." {
+                tmpV = new variable {
+                    name: t.cont
+                    type: t.bahType
+                }
+                t.bahRef = tmpV
+            }
+
         } else {
             t.bahType = ptt.str()
             if to == "" {

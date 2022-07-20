@@ -114,7 +114,7 @@ searchVar(name cpstring, elems Elems*) variable* {
             ct = string(r)
             pointerLevel = ct.count("*")
             if pointerLevel < nbUnaries {
-                throwErr(null, "Cannot use '*' on "+nv.name+" because it is not pointer.")
+                throwErr(null, "Cannot use '*' on '"+name+"' because it is not pointer.")
             }
             ct.trimRight(nbUnaries)
             r = ct.str()
@@ -141,7 +141,7 @@ searchVar(name cpstring, elems Elems*) variable* {
                 ct = string(r)
                 pointerLevel = ct.count("*")
                 if pointerLevel < nbUnaries {
-                    throwErr(null, "Cannot use '*' on "+v.name+" because it is not pointer.")
+                    throwErr(null, "Cannot use '*' on '"+name+"' because it is not pointer.")
                 }
                 ct.trimRight(nbUnaries)
                 r = ct.str()

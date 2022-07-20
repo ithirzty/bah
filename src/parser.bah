@@ -749,7 +749,7 @@ parsePointers(l []Tok, elems Elems*) []Tok {
                 if l[i-1].type == TOKEN_TYPE_VAR || l[i-1].isValue == true {
                     if t.cont == "*" {
                         if i+1 < len(l) {
-                            if l[i+1].cont != "(" && l[i+1].cont != "<" && l[i+1].isValue != true {
+                            if l[i+1].cont != "(" && l[i+1].type != TOKEN_TYPE_CAST && l[i+1].isValue != true {
                                 l[i-1].cont += t.cont
                                 delete(l, i)
                                 i--
