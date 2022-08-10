@@ -28,6 +28,7 @@ cp /opt/bah/time.bah ./libs/common/
 cp /opt/bah/rand.bah ./libs/common/
 cp /opt/bah/memory.bah ./libs/common/
 cp /opt/bah/http.bah ./libs/common/
+cp /opt/bah/html.bah ./libs/common/
 cp /opt/bah/eval.bah ./libs/common/
 cp /opt/bah/debug.bah ./libs/common/
 cp /opt/bah/map.bah ./libs/common/

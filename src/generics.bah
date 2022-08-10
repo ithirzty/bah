@@ -2,12 +2,15 @@
 #define dupElems(e Elems*) Elems*
 #define parseLines(l []Tok, elems Elems*)
 
+currGen ptr
+
 //Wrapper for a generic function (function with an argument of <any> type)
 struct genericFunc {
     tokens: []Tok
     declared: []func*
     baseFn: func*
     tokenName: Tok*
+    callToken: Tok*
 
     dupBaseFn() func* {
         r = new func
@@ -22,6 +25,10 @@ struct genericFunc {
         return r
     }
 
+    setCurrGeneric(t Tok*) {
+        this.callToken = t
+    }
+
     isAlreadyDecl(n cpstring) bool {
         i=0; for i < len(this.declared), i++ {
             if this.declared[i].name == n {
@@ -33,6 +40,7 @@ struct genericFunc {
 
     declare(fn func*, elems Elems*) {
         oldOut = OUTPUT
+        this.declared[len(this.declared)] = fn
         OUTPUT = rope(getCType(fn.returns.type, elems).str()+" __generic_"+fn.name+"(")
 
         fnElems = dupElems(elems)
@@ -54,6 +62,8 @@ struct genericFunc {
 
         beginRCPscope(fnElems, fn.args)
         ocurrFnElems = compilerState.currFnElems
+        oCurrGen = currGen
+        currGen = this
         oCurrFn = currentFn
         compilerState.currFnElems = fnElems
         parseLines(this.tokens, fnElems)
@@ -61,6 +71,7 @@ struct genericFunc {
 
         compilerState.currFnElems = ocurrFnElems
         currentFn = oCurrFn
+        currGen = oCurrGen
 
         if fn.returned == false {
             if strlen(fn.returns.type) > 0 {
@@ -79,3 +90,13 @@ struct genericFunc {
 }
 
 generics = []genericFunc*
+
+advertiseGeneric() {
+    if currGen == null {
+        return
+    }
+    gen genericFunc* = currGen
+
+    println("[Generic] called here: "+compilerState.currentFile+":"+intToStr(gen.callToken.line))
+
+}

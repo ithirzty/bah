@@ -333,6 +333,7 @@ parallelObjCompile(fn cpstring, oName cpstring, done chan:bool) {
         } else {
             updateCacheFile(cf)
         }
+        writeCache() //saves cache
     }
     true -> done
 }
@@ -415,8 +416,6 @@ parseImport(l []Tok, elems Elems*) {
 
     //adds its init function
     INIT += rope("__BAH_init"+pathToVarName(fn)+"();\n")
-
-    writeCache() //saves cache
 
     //restore old file's parameters
     shouldOnlyDecl = osod
@@ -1765,6 +1764,8 @@ parseStruct(l []Tok, elems Elems*) {
     if braceTk.cont != "{" {
         throwErr(&braceTk, "Cannot use {TOKEN} in struct declaration.")
     }
+    postDeclHandle = rope("")
+    OUTPUT += postDeclHandle
     OOUT = OUTPUT
     nextLine = ""
     for i < len(l) {
@@ -2012,12 +2013,11 @@ parseStruct(l []Tok, elems Elems*) {
             code = code + rope(m +";\n")
             i++
         }
-        // if RCPavailable() == true {
-        //     code = code + rope("void * __RCP_counter;\n")
-        // }
-        
         code = code + rope("};\n")
-        OUTPUT += code // + makeRCPfuncFromStruct(s, elems)
+        OUTPUT += code
+        phd = postDeclHandle.toStr()
+        OUTPUT.totalLen += ropeSet(postDeclHandle, "")
+        NEXT_LINE += phd
     }
 
     if debug == true {

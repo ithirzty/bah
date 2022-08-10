@@ -4,6 +4,8 @@
 #include "./lexer.bah"
 #include "./logger.bah"
 
+#define advertiseGeneric()
+
 throwErr(tp ptr, format cpstring) {
     //println(OUTPUT)
     str = ""
@@ -73,6 +75,7 @@ throwErr(tp ptr, format cpstring) {
         debugError("error", t.line, pos, pos+strlen(t.ogCont), format)
         debugExit()
     } else {
+        advertiseGeneric()
         println("\e[1;31m[ERROR]\e[0m "+compilerState.currentFile+":" + info + "\n\e[1;37m\t" + str + "\e[0m\n" + format)
     }
 

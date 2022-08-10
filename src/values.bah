@@ -17,6 +17,7 @@ valueFunc(fn func*, parent variable*, l []Tok, i int, ltp lineType, elems Elems*
                     j=0; for j < len(generics), j++ {
                         if generics[j].baseFn.name == pt.cont {
                             generic = generics[j]
+                            generics[j].setCurrGeneric(&pt)
                             fn = generics[j].dupBaseFn()
                             break
                         }
@@ -219,8 +220,18 @@ valueFunc(fn func*, parent variable*, l []Tok, i int, ltp lineType, elems Elems*
             tmpT = memory[j]
             tp += tmpT.cont
         }
-        cType = getCType(tp, elems)
-        fnt.cont += cType.str()+")"
+        tmpV = searchVar(tp, elems)
+        if tmpV != null {
+            cType = getCType(tmpV.type, elems)
+            fnt.cont += cType.str()+")"
+        } else {
+            cType = getCType(tp, elems)
+            if cType.length == 0 {
+                ft = memory[0]
+                throwErr(&ft, "Cannot get size of {TOKEN}.")
+            }
+            fnt.cont += cType.str()+")"
+        }
         fnt.type = TOKEN_TYPE_FUNC
         fnt.isFunc = true
         fnt.bahType = "int"
@@ -728,6 +739,7 @@ valueBool(l []Tok, i int, ltp lineType, elems Elems*) int {
         }
         compVar = genCompilerVar()
         comp = ""
+        pt.cont = registerRCPvar(ptt, pt.cont, elems)
         if ptt == "cpstring" {
             comp = nt.cont+"->data[i] != 0 && strcmp("+nt.cont+"->data[i], "+pt.cont+") == 0"
         } else {
@@ -1035,9 +1047,6 @@ valueTuple(l []Tok, i int, elems Elems*) int {
     }
 
 
-    ft = l[tokPos+1]
-
-    tupT = getTypeFromToken(&ft, true, elems)
 
     vals = []cpstring
 
@@ -1055,7 +1064,11 @@ valueTuple(l []Tok, i int, elems Elems*) int {
 
     memory = l[tokPos+1:i]
 
+    debugLine(memory)
+
     memory = prePross(memory, <lineType>-1, elems)
+    ft = memory[0]
+    tupT = getTypeFromToken(&ft, true, elems)
 
     j=0; for j < len(memory), j += 2 {
         t = memory[j]
