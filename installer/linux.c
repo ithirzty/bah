@@ -198,7 +198,7 @@ memcpy(r,data->data+8,sptr);
 return r;
 };
 char * memoryAllocSTR(long int s){
-char * r = GC_malloc_atomic(s);
+char * r = GC_MALLOC(s);
 r[s-1]=0;
 return r;
 };
@@ -349,19 +349,20 @@ return true;
 #define __thread_join GC_pthread_join
 #define currentThread pthread_self
 struct mutex {
-pthread_mutex_t id;
+pthread_mutex_t* id;
 };
 void mutex__init(struct mutex* this){
-pthread_mutex_init(&this->id,0);
+this->id = memoryAlloc(sizeof(pthread_mutex_t));
+pthread_mutex_init(this->id,0);
 };
 void mutex__lock(struct mutex* this){
-pthread_mutex_lock(&this->id);
+pthread_mutex_lock(this->id);
 };
 void mutex__unlock(struct mutex* this){
-pthread_mutex_unlock(&this->id);
+pthread_mutex_unlock(this->id);
 };
 void mutex__destroy(struct mutex* this){
-pthread_mutex_destroy(&this->id);
+pthread_mutex_destroy(this->id);
 };
 struct mutexCondition {
 pthread_cond_t id;
@@ -370,8 +371,8 @@ void mutexCondition__init(struct mutexCondition* this){
 pthread_cond_init(&this->id,0);
 };
 void mutexCondition__wait(struct mutexCondition* this,struct mutex m){
-pthread_mutex_t mid = m.id;
-pthread_cond_wait(&this->id,&mid);
+pthread_mutex_t* mid = m.id;
+pthread_cond_wait(&this->id,mid);
 };
 void mutexCondition__send(struct mutexCondition* this){
 pthread_cond_signal(&this->id);
@@ -2107,7 +2108,7 @@ return r;
 char * BAH_DIR;
 char * BAH_OS;
 char * BAH_CC;
-#define BAH_VERSION "v1.2 (build 121)"
+#define BAH_VERSION "v1.2 (build 122)"
 char debug;
 char verboseRuntime;
 char isObject;
@@ -8558,7 +8559,7 @@ else {
 tCreate = "GC_pthread_create";
 }
 }
-char** ____BAH_COMPILER_VAR_1104 = alloca(21 * sizeof(char*));____BAH_COMPILER_VAR_1104[20] = ");\n    }; \n    \n    ";____BAH_COMPILER_VAR_1104[19] = tmpArgs;____BAH_COMPILER_VAR_1104[18] = ", &";____BAH_COMPILER_VAR_1104[17] = fnWrapper;____BAH_COMPILER_VAR_1104[16] = "(&id, 0, ";____BAH_COMPILER_VAR_1104[15] = tCreate;____BAH_COMPILER_VAR_1104[14] = "};\n        pthread_t id;\n        ";____BAH_COMPILER_VAR_1104[13] = string__str(&sFnT);____BAH_COMPILER_VAR_1104[12] = " = {";____BAH_COMPILER_VAR_1104[11] = tmpArgs;____BAH_COMPILER_VAR_1104[10] = " ";____BAH_COMPILER_VAR_1104[9] = tmpArgsStruct;____BAH_COMPILER_VAR_1104[8] = ");\n    };\n    {\n        ";____BAH_COMPILER_VAR_1104[7] = unSerMembs;____BAH_COMPILER_VAR_1104[6] = "(";____BAH_COMPILER_VAR_1104[5] = string__str(&fnName);____BAH_COMPILER_VAR_1104[4] = "* args) {\n        ";____BAH_COMPILER_VAR_1104[3] = tmpArgsStruct;____BAH_COMPILER_VAR_1104[2] = "(";____BAH_COMPILER_VAR_1104[1] = fnWrapper;____BAH_COMPILER_VAR_1104[0] = "\n    void ";char * ____BAH_COMPILER_VAR_1105 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1104, 21);OUTPUT = rope__add(OUTPUT, rope(____BAH_COMPILER_VAR_1105));
+char** ____BAH_COMPILER_VAR_1104 = alloca(25 * sizeof(char*));____BAH_COMPILER_VAR_1104[24] = ", tmpArgs);\n    }; \n    \n    ";____BAH_COMPILER_VAR_1104[23] = fnWrapper;____BAH_COMPILER_VAR_1104[22] = "(&id, 0, ";____BAH_COMPILER_VAR_1104[21] = tCreate;____BAH_COMPILER_VAR_1104[20] = "));\n        pthread_t id;\n        ";____BAH_COMPILER_VAR_1104[19] = tmpArgs;____BAH_COMPILER_VAR_1104[18] = ", sizeof(";____BAH_COMPILER_VAR_1104[17] = tmpArgs;____BAH_COMPILER_VAR_1104[16] = "));\n        memcpy(tmpArgs, &";____BAH_COMPILER_VAR_1104[15] = tmpArgs;____BAH_COMPILER_VAR_1104[14] = "};\n        void* tmpArgs = memoryAlloc(sizeof(";____BAH_COMPILER_VAR_1104[13] = string__str(&sFnT);____BAH_COMPILER_VAR_1104[12] = " = {";____BAH_COMPILER_VAR_1104[11] = tmpArgs;____BAH_COMPILER_VAR_1104[10] = " ";____BAH_COMPILER_VAR_1104[9] = tmpArgsStruct;____BAH_COMPILER_VAR_1104[8] = ");\n    };\n    {\n        ";____BAH_COMPILER_VAR_1104[7] = unSerMembs;____BAH_COMPILER_VAR_1104[6] = "(";____BAH_COMPILER_VAR_1104[5] = string__str(&fnName);____BAH_COMPILER_VAR_1104[4] = "* args) {\n        ";____BAH_COMPILER_VAR_1104[3] = tmpArgsStruct;____BAH_COMPILER_VAR_1104[2] = "(";____BAH_COMPILER_VAR_1104[1] = fnWrapper;____BAH_COMPILER_VAR_1104[0] = "\n    void ";char * ____BAH_COMPILER_VAR_1105 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1104, 25);OUTPUT = rope__add(OUTPUT, rope(____BAH_COMPILER_VAR_1105));
 };
 void addRCPvars(__BAH_ARR_TYPE_Tok l,lineType ltp,struct Elems* elems){
 register long int i = 0;

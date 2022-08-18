@@ -2812,8 +2812,10 @@ parseAsync(l []Tok, elems Elems*) {
     };
     {
         "+tmpArgsStruct+" "+tmpArgs+" = {"+sFnT.str()+"};
+        void* tmpArgs = memoryAlloc(sizeof("+tmpArgs+"));
+        memcpy(tmpArgs, &"+tmpArgs+", sizeof("+tmpArgs+"));
         pthread_t id;
-        "+tCreate+"(&id, 0, "+fnWrapper+", &"+tmpArgs+");
+        "+tCreate+"(&id, 0, "+fnWrapper+", tmpArgs);
     }; 
     
     ")

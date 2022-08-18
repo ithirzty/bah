@@ -212,7 +212,7 @@ unser(data []char) ptr {
     //The content of the memory block should not contain any pointer.
     //It will not be checked for memory collection.
     memoryAllocSTR(s int) cpstring {
-        r cpstring = GC_malloc_atomic(s)
+        r cpstring = GC_MALLOC(s)
         noCheck(r[s-1] = 0)
         // memset(r, 0, s)
         return r

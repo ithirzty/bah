@@ -53,28 +53,29 @@ const currentThread = pthread_self
 //A mutex is a thread safe lock.
 //*Note: the mutex needs to be initiated ans destroyed when you finished using it.*
 struct mutex {
-    id: pthread_mutex_t
+    id: pthread_mutex_t*
 
     //This initiaties the mutex.
     //You do not need to initiate the mutex when creating it with mutex().
     init() {
-        pthread_mutex_init(&this.id, 0)
+        this.id = memoryAlloc(sizeof(pthread_mutex_t))
+        pthread_mutex_init(this.id, 0)
     }
 
     //This locks the mutex.
     //Every other thread trying to lock it will need to wait for it to be unlocked.
     lock() {
-        pthread_mutex_lock(&this.id)
+        pthread_mutex_lock(this.id)
     }
 
     //This unlocks the mutex.
     unlock() {
-        pthread_mutex_unlock(&this.id)
+        pthread_mutex_unlock(this.id)
     }
 
     //This destroyes the mutex.
     destroy() {
-        pthread_mutex_destroy(&this.id)
+        pthread_mutex_destroy(this.id)
     }
 
 }
@@ -96,7 +97,7 @@ struct mutexCondition {
     //}
     wait(m mutex) {
         mid = m.id
-        pthread_cond_wait(&this.id, &mid)
+        pthread_cond_wait(&this.id, mid)
     }
 
     //To signal a single thread that the condition may be true.

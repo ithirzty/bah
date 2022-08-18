@@ -1051,7 +1051,7 @@ makeRespFromBody(response response_buffer) http_response* {
 #define! SSL int
 #define! SSL_CTX int
 
-#define! SSL_library_init()
+#define! SSL_library_init() int
 #define! TLSv1_2_client_method() int
 #define! SSL_CTX_new(m int) SSL_CTX*
 #define! BIO_new_ssl_connect(ctx SSL_CTX*) BIO*
@@ -1068,16 +1068,13 @@ makeRespFromBody(response response_buffer) http_response* {
 #define! SSL_set_mode(ssl SSL*, mode int)
 #define! SSL_set_tlsext_host_name(ssl SSL*, host cpstring) int
 
-__Bah_http_is_ssl_initialized = false
+__Bah_http_is_ssl_initialized = SSL_library_init()
 
 //Used for making TLS requests.
 //*This is an internal function, you should know what you're doing if you decide to use it.*
 makeRawHttpsRequest(host cpstring, message cpstring, timeout int) response_buffer {
-    if __Bah_http_is_ssl_initialized == false {
-        SSL_library_init()
-        __Bah_http_is_ssl_initialized = true
-    }
     ssl SSL*
+
     ctx = SSL_CTX_new(TLSv1_2_client_method())
     if timeout > 0 {
         SSL_CTX_set_timeout(ctx, timeout)
@@ -1097,8 +1094,8 @@ makeRawHttpsRequest(host cpstring, message cpstring, timeout int) response_buffe
 
     if BIO_set_conn_hostname(bio, host) != 1 {
         println("http: error finding host '"+host+"'.")
-        BIO_free_all(bio)
         SSL_CTX_free(ctx)
+        BIO_free_all(bio)
         return resp
     }
 
@@ -1106,8 +1103,8 @@ makeRawHttpsRequest(host cpstring, message cpstring, timeout int) response_buffe
 
     if BIO_do_connect(bio) <= 0 {
         println("http: error connecting through ssl to '"+host+"'.")
-        BIO_free_all(bio)
         SSL_CTX_free(ctx)
+        BIO_free_all(bio)
         return resp
     }
 
@@ -1134,8 +1131,8 @@ makeRawHttpsRequest(host cpstring, message cpstring, timeout int) response_buffe
         }
         resp.append(buff, size)
     }
-    BIO_free_all(bio)
     SSL_CTX_free(ctx)
+    BIO_free_all(bio)
     return resp
 
 }
