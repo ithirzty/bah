@@ -201,7 +201,9 @@ includeFile(ccstr cpstring, elems Elems*) bool {
 
     //includes the correct memory manager file
     if ccstr == "BAH_MEM_COLLECTOR" {
-        if RCPenabled == true {
+        if RAIIenabled == true {
+            ccstr = "raii.bah"
+        } else if RCPenabled == true {
             needDisableRCP = true
             if flags.isSet("rcp") {
                 ccstr = "rcp.bah"
@@ -959,7 +961,7 @@ parseReflect(t Tok, tt cpstring, elems Elems*, parsedPointer bool, ogName cpstri
 
     elems.vars[len(elems.vars)] = rv
 
-    OUTPUT = OUTPUT + rope("struct reflectElement "+rv.name+" = __reflect("+amp+t.cont+", sizeof("+cType.str()+"), \""+tt+"\", \""+name.str()+"\", "+isArr+", "+arrElem+", "+isStruct+", "+structLayout+", "+offset+");\n")
+    OUTPUT = OUTPUT + rope("struct reflectElement "+rv.name+" = __reflect("+amp+t.cont+", sizeof("+cType.str()+"), "+strLitteralToBahStr("\""+tt+"\"")+", "+strLitteralToBahStr("\""+name.str()+"\"")+", "+isArr+", "+arrElem+", "+isStruct+", "+structLayout+", "+offset+");\n")
                         //                                                    value                  size             type           name            isArr       arrE        isStruct      structLayout      offset
     t.cont = rv.name
 
@@ -1291,6 +1293,7 @@ parseVar(l []Tok, elems Elems*) {
                 }
             }
 
+            //type checking
             if exists == true {
                 if compTypes(tp, v.type) == false {
                     throwErr(&t, "Cannot use {TOKEN} ("+tp+") as "+v.type+".")
@@ -1306,6 +1309,21 @@ parseVar(l []Tok, elems Elems*) {
                     }
                 }
             }
+
+            if RAIIenabled == true && t.type == TOKEN_TYPE_VAR && isRCPtype(tp, elems) {
+                ov = searchVar(removeCast(t.cont), elems)
+                if ov != null {
+                    k=0; for k < len(elems.vars), k++ {
+                        if elems.vars[k].name == ov.name {
+                            elems.deletedVars[len(elems.deletedVars)] = elems.vars[k]
+                            delete(elems.vars, k)
+                            break
+                        }
+                    }
+                }
+            }
+
+
             if t.cont != "" && strHasPrefix(t.cont, "{") == false {
                 code = code + t.cont
                 if t.isOper == false && RCPavailable() == true {
@@ -1513,7 +1531,6 @@ parseVar(l []Tok, elems Elems*) {
         //     makeStrlenVar(v, elems)
         // }
     }
-
 
 }
 
@@ -2171,6 +2188,10 @@ parseConst(l []Tok, elems Elems*) {
     vars = elems.vars
     vars[len(vars)] = v
 
+    if valt.type == TOKEN_TYPE_STR {
+        valt.cont = strLitteralToBahStr(valt.cont)
+    }
+
     OUTPUT = OUTPUT + rope("#define "+v.name+" "+valt.cont+"\n")
 
 }
@@ -2778,7 +2799,7 @@ parseAsync(l []Tok, elems Elems*) {
     if BAH_OS == "windows" {
         tCreate = "pthread_create"
     } else {
-        if RCPavailable() {
+        if RCPavailable() || RAIIenabled == true {
             tCreate = "pthread_create"
         } else {
             tCreate = "GC_pthread_create"
@@ -2973,6 +2994,13 @@ prePross(line []Tok, ltp lineType, elems Elems*) []Tok {
     }
 
     i=0; for i < len(fl), i++ {
+        if fl[i].type == TOKEN_TYPE_STR && fl[i].processedStr == false {
+            fl[i].cont = strLitteralToBahStr(fl[i].cont)
+            fl[i].processedStr = true
+        }
+    }
+
+    i=0; for i < len(fl), i++ {
         t = fl[i]
         if i > 0 {
             pt = fl[i-1]
@@ -2993,6 +3021,10 @@ prePross(line []Tok, ltp lineType, elems Elems*) []Tok {
             ptc = string(pt.cont)
             ptc.trimLeft(1)
             ptc.trimRight(1)
+            if t.type == TOKEN_TYPE_VAR {
+                v = searchVar(t.cont, elems)
+                t.bahRef = v
+            }
             t.bahType = ptc.str()
             cType = getCType(ptc.str(), elems)
             t.cont = "("+cType.str()+")"+t.cont

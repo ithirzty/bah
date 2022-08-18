@@ -38,6 +38,7 @@ struct Tok {
     bahRef: ptr
     parent: variable*
     isExpensive: bool
+    processedStr: bool = false
 }
 
 

@@ -453,7 +453,7 @@ parseUrl(s cpstring) http_url* {
         i = 0
     }
     for s[i] == '/', i++ {
-        if i == max-1 {
+        if i+1 == max {
             break
         }
     }
@@ -463,7 +463,7 @@ parseUrl(s cpstring) http_url* {
     for s[i] != '/' && s[i] != ':', i++ {
         c = s[i]
         hn[len(hn)] = c
-        if i == max-1 {
+        if i+1 == max {
             break
         }
     }
@@ -471,7 +471,7 @@ parseUrl(s cpstring) http_url* {
     u.host = string(arrAsStr(hn))
 
 
-    if i == max {
+    if i+1 == max {
         u.path = string("/")
         if u.proto.compare("https") {
             u.port = string("443")
@@ -495,13 +495,8 @@ parseUrl(s cpstring) http_url* {
     port[len(port)] = null
     u.port = string(arrAsStr(port))
 
-    if i == max-1 {
+    if i+1 == max {
         u.path = string("/")
-        if u.proto.compare("https") {
-            u.port = string("443")
-        } else {
-            u.port = string("80")
-        }
         return u
     }
 
@@ -1000,11 +995,9 @@ makeRespFromBody(response response_buffer) http_response* {
         for i < len(arr), i++ {
             c = arr[i]
             if c == <char>13 {
-                if i+1 < len(arr) {
-                    if arr[i+1] == <char>10 {
-                        i = i + 2
-                        break
-                    }
+                if i+1 < len(arr) && arr[i+1] == <char>10 {
+                    i += 2
+                    break
                 }
             }
             headerCont[len(headerCont)] = c
@@ -1023,6 +1016,7 @@ makeRespFromBody(response response_buffer) http_response* {
                 }
             }
         }
+        i--
     }
 
     //Reading body to file array
@@ -1058,11 +1052,12 @@ makeRespFromBody(response response_buffer) http_response* {
 #define! SSL_CTX int
 
 #define! SSL_library_init()
-#define! SSLv23_client_method() int
+#define! TLSv1_2_client_method() int
 #define! SSL_CTX_new(m int) SSL_CTX*
 #define! BIO_new_ssl_connect(ctx SSL_CTX*) BIO*
-#define! BIO_set_conn_hostname(bio BIO*, h cpstring)
+#define! BIO_set_conn_hostname(bio BIO*, h cpstring) int
 #define! BIO_do_connect(bio BIO*) int
+#define! BIO_do_handshake(bio BIO*) int
 #define! BIO_write(bio BIO*, cont cpstring, size int) int
 #define! BIO_should_retry(bio BIO*) int
 #define! BIO_read(bio BIO*, buff cpstring, size int) int
@@ -1071,6 +1066,7 @@ makeRespFromBody(response response_buffer) http_response* {
 #define! SSL_CTX_set_timeout(ctx SSL_CTX*, t int) int
 #define! BIO_get_ssl(bio BIO*, ssl SSL**)
 #define! SSL_set_mode(ssl SSL*, mode int)
+#define! SSL_set_tlsext_host_name(ssl SSL*, host cpstring) int
 
 //Used for making TLS requests.
 //*This is an internal function, you should know what you're doing if you decide to use it.*
@@ -1078,7 +1074,7 @@ makeRawHttpsRequest(host cpstring, message cpstring, timeout int) response_buffe
     
     SSL_library_init()
     ssl SSL*
-    ctx = SSL_CTX_new(SSLv23_client_method())
+    ctx = SSL_CTX_new(TLSv1_2_client_method())
     if timeout > 0 {
         SSL_CTX_set_timeout(ctx, timeout)
     }
@@ -1086,6 +1082,7 @@ makeRawHttpsRequest(host cpstring, message cpstring, timeout int) response_buffe
     resp = response_buffer{}
     if ctx == null {
         println("http: cannot initialize ssl context")
+        SSL_CTX_free(ctx)
         return resp
     }
 
@@ -1094,16 +1091,33 @@ makeRawHttpsRequest(host cpstring, message cpstring, timeout int) response_buffe
     BIO_get_ssl(bio, &ssl)
     SSL_set_mode(ssl, 4)
 
-    BIO_set_conn_hostname(bio, host)
-    if BIO_do_connect(bio) <= 0 {
-        println("http: error connecting through ssl to '"+host+"'")
+    if BIO_set_conn_hostname(bio, host) != 1 {
+        println("http: error finding host '"+host+"'.")
+        BIO_free_all(bio)
+        SSL_CTX_free(ctx)
         return resp
     }
+
+    SSL_set_tlsext_host_name(ssl, splitStringBefore(string(host), ":"))
+
+    if BIO_do_connect(bio) <= 0 {
+        println("http: error connecting through ssl to '"+host+"'.")
+        BIO_free_all(bio)
+        SSL_CTX_free(ctx)
+        return resp
+    }
+
+    if BIO_do_handshake(bio) != 1 {
+        println("http: error during ssl handshake with host '"+host+"'.")
+    }
+
     success = BIO_write(bio, message, strlen(message))
 
     if success <= 0 {
         if BIO_should_retry(bio) == 0 {
-            println("http: failed sending request")
+            println("http: failed sending request.")
+            BIO_free_all(bio)
+            SSL_CTX_free(ctx)
             return resp
         }
     }

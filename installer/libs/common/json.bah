@@ -69,6 +69,7 @@ json_scan_inner(thisp ptr, e reflectElement, isMember bool) {
     if e.isStruct == true {
             i=0; for i < len(e.structLayout) {
                 m = e.structLayout[i]
+                m.value = m.calculateOffset(e.value)
                 ov = this.get(m.name)
                 if ov != null {
                     json_scan_inner(ov, m, true)
@@ -417,6 +418,11 @@ jsonEscapeStr(s cpstring) cpstring {
     i=0; for i < len(a) {
         c = a[i]
         if json_isPrintable(<uint32>c) == false {
+            if <byte>c == <byte>195 {
+                r[len(r)] = c
+                r[len(r)] = a[i+1]
+                i++
+            }
             i++
             continue
         }
@@ -444,7 +450,7 @@ jsonEscapeStr(s cpstring) cpstring {
 //*Note: this is an internal function*
 toJson__inner(e reflectElement, isMember bool, tabs int) cpstring {
     v ptr* = e.value
-    if e.value == null || *v == null {
+    if e.value == null {
         if e.type == "int" || e.type == "float" {
             return "0"
         }
@@ -466,6 +472,7 @@ toJson__inner(e reflectElement, isMember bool, tabs int) cpstring {
         i=0; for i < len(e.structLayout) {
             m = e.structLayout[i]
             i = i + 1
+            m.value = m.calculateOffset(e.value)
             if i < len(e.structLayout) {
                 s = s + tabsStr+"\""+m.name+"\": "+toJson__inner(m, true, tabs)+",\n"
             } else {
@@ -504,6 +511,9 @@ toJson__inner(e reflectElement, isMember bool, tabs int) cpstring {
     } else if e.isArray == true {
         s = "["
         ae = e.arrayElem
+        if e.value == null {
+            return "null"
+        }
         if ae.type == "int" {
             arr = []int
             arrPtr ptr* = e.value

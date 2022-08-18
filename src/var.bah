@@ -201,6 +201,14 @@ setCType(v variable*, elems Elems*) cpstring {
         return t
 }
 
+isMissingVar(t Tok*, elems Elems*) {
+    i=0; for i < len(elems.deletedVars), i++ {
+        if elems.deletedVars[i].name == t.cont {
+            throwErr(t, "Variable {TOKEN} has reached its end of life.")
+        }
+    }
+}
+
 getTypeFromToken(t Tok*, strict bool, elems Elems*) cpstring {
 //     recorder = timer.record("getTypeFromToken")
     if t.bahType != "" {
@@ -211,6 +219,7 @@ getTypeFromToken(t Tok*, strict bool, elems Elems*) cpstring {
         v = searchVar(t.cont, elems)
         if v == null {
             if strict == true {
+                isMissingVar(t, elems)
                 throwErr(t, "Unknown var {TOKEN}.")
             } else {
                 return ""
@@ -553,4 +562,14 @@ canChangeNullState(v variable*, elems Elems*) bool {
         return true
     }
     return checkedNull(v.name, elems)
+}
+
+removeCast(s cpstring) cpstring {
+    i = strlen(s)-1; for i >= 0, i-- {
+        if s[i] == ')' {
+            s = s[i+1:]
+            break
+        }
+    }
+    return s
 }

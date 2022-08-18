@@ -28,6 +28,9 @@ sudo cp -r ./libs/linux/libs/* /opt/bah/libs/linux
 sudo cp ./libs/common/* /opt/bah/
 sudo chmod 777 /opt/bah/*
 
+# Compilling because binaries are not maintained for darwin
+clang -I "/opt/bah/libs/darwin/include/" -L "/opt/bah/libs/darwin/" darwin.c  -O1 -w  -lgc -lpthread -lm -o "../bin/darwin_amd64"
+
 # Moving bah exec
 sudo cp ../bin/darwin_amd64 /opt/bah/bah
 sudo ln -s /opt/bah/bah /bin/bah

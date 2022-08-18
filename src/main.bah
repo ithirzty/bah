@@ -23,7 +23,7 @@
     BAH_CC = "gcc"
 }
 //////////////////////BUILD SPECIFIC THINGS//////////////////////
-const BAH_VERSION = "v1.2 (build 118)"
+const BAH_VERSION = "v1.2 (build 119)"
 
 debug = false
 verboseRuntime = false
@@ -31,6 +31,7 @@ isObject = false
 isUnsafe = false
 isOptimized = false
 noticeEnabled = true
+RAIIenabled = false
 
 execName = "bah"
 isSubObject = false
@@ -90,7 +91,15 @@ main(args []cpstring) int {
     flags.addBool("nobuiltin", "Does not include the builtin library (be really carefull, your program WILL break).")
     flags.addBool("optimize", "Includes optimized functions")
     flags.addBool("n", "Disables notices while keeping warnings enabled.")
+    flags.addBool("raii", "Enables RAII memory management.")
     flags.parse(args)
+
+    RAIIenabled = flags.isSet("raii") == 1
+
+    if RAIIenabled == true {
+        println("RAII is not yet available...")
+        return 1
+    }
 
     if flags.isSet("target") == 1 {
         BAH_OS = flags.get("target")
@@ -185,6 +194,23 @@ main(args []cpstring) int {
             #define main(v) __BAH__main(v)
             ")
 
+        } else if RAIIenabled == true {
+            OUTPUT += rope("
+            #include <string.h>
+            int main(int argc, char ** argv) {
+            array(char*) * args = malloc(sizeof(array(char*)));
+            args->data = malloc(sizeof(char*)*argc);
+            memcpy(args->data, argv, sizeof(char*)*argc);
+            args->elemSize = sizeof(char*);
+            args->length = argc;
+            __BAH_init();
+            long int r =  __BAH__main((__BAH_ARR_TYPE_cpstring)args);
+            free(args->data);
+            free(args);
+            return r;
+            };
+            #define main(v) __BAH__main(v)
+            ")
         } else {
             OUTPUT += rope("
             #include <gc.h>
@@ -289,7 +315,7 @@ main(args []cpstring) int {
                 name = fn.from+"."+n.str()
             }
             INIT += rope("
-            __tmp____Bah_fnNames["+intToStr(j)+"].n = \""+name+"\";
+            __tmp____Bah_fnNames["+intToStr(j)+"].n = "+strLitteralToBahStr("\""+name+"\"")+";
             __tmp____Bah_fnNames["+intToStr(j)+"].p = "+fn.name+";\n")
             j++
         }

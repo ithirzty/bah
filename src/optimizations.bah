@@ -31,3 +31,45 @@ isExprExpensive(t Tok*) bool {
     }
     return false
 }
+
+//Converts a byte to C octal notation.
+byteToOctal(b byte) cpstring {
+    n uint32 = b
+    r = ""
+    i=0; for n != 0, i++ {
+        r = intToStr(n % 8) + r
+        n /= 8
+    }
+    escp = "\\0"
+    if i == 3 {
+        escp = escp[:1]
+    }
+    return escp + r
+}
+
+//Returns an int encoded in C octal notation.
+escapeIntOctal(n int) cpstring {
+    s cpstring = &n
+    r = ""
+    i=0; for i < 8, i++ {
+        r += byteToOctal(<byte>s[i])
+    }
+    return r
+}
+
+getStrLen(s cpstring) uint {
+    l = 0
+    i=0; for s[i] != null, i++ {
+        if s[i] == <char>92 {
+            continue
+        }
+        l++
+    }
+    return l
+}
+
+strLitteralToBahStr(s cpstring) cpstring {
+    return s
+    // l = getStrLen(s) - 2
+    // return "(char*)(\"" + escapeIntOctal(l) +"#"+ s[1:] + "+9)"
+}

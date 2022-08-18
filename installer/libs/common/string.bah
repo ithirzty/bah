@@ -95,7 +95,7 @@ struct string {
             panic("Error appending to string, possibly due to memory shortage.")
         }
         this.content = nc
-        strCatOffset(this.content, this.length, s, sl)
+        strCatOffset(this.content, this.length, s, sl+1)
         this.length = nl
     }
     
@@ -111,7 +111,7 @@ struct string {
         }
         this.content = nc
         strncpy(this.content, s, sl)
-        strCatOffset(this.content, sl, tmpS, this.length)
+        strCatOffset(this.content, sl, tmpS, this.length+1)
         this.length = nl
     }
 
@@ -392,7 +392,7 @@ intToStr(i int) cpstring {
 
     s[ind+1] = <char>0
 
-    return __STR(s)
+    return s
 }
 
 //Used to convert an integer into a string.

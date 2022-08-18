@@ -81,6 +81,7 @@ struct Elems {
     parent: Elems*
     id: uint32
     //safety
+    deletedVars: []variable*
     branchChecks: []varCheck
     //optimization
     currFlowEnd: bool
