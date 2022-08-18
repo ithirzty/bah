@@ -299,7 +299,6 @@ void __Bah_realocate_arr(__BAH_ARR_TYPE_ptr arr,unsigned int nLength){
 if ((nLength<arr->length)) {
 return;
 }
-long int orl = arr->realLength;
 if ((nLength>=arr->realLength)) {
 if ((arr->realLength!=0)) {
 arr->realLength*=2;
@@ -2074,7 +2073,7 @@ return r;
 char * BAH_DIR;
 char * BAH_OS;
 char * BAH_CC;
-#define BAH_VERSION "v1.2 (build 119)"
+#define BAH_VERSION "v1.2 (build 120)"
 char debug;
 char verboseRuntime;
 char isObject;
@@ -9795,7 +9794,11 @@ long int valueTuple(__BAH_ARR_TYPE_Tok l,long int i,struct Elems* elems){
 long int tokPos = i;
 long int nbBracks = 0;
 if (__builtin_expect((strcmp(l->data[tokPos+1].cont, "]") == 0), 0)) {
-if ((l->data[tokPos+2].type==TOKEN_TYPE_VAR)) {
+long int offset = 1;
+while ((strcmp(l->data[tokPos+offset+1].cont, "[") == 0)&&(strcmp(l->data[tokPos+offset+2].cont, "]") == 0)) {
+offset = offset+2;
+};
+if ((l->data[tokPos+offset+1].type==TOKEN_TYPE_VAR)) {
 return tokPos+1;
 }
 throwErr(&l->data[tokPos],"Cannot declare {TOKEN} empty tuple.");
@@ -9818,7 +9821,6 @@ break;
 }
 };
 array(struct Tok)* memory = arraySubstitute(l, tokPos+1, i);
-debugLine(memory);
 memory = prePross(memory,(lineType)-1,elems);
 struct Tok ft = memory->data[0];
 char * tupT = getTypeFromToken(&ft,true,elems);

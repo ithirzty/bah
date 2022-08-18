@@ -1040,7 +1040,11 @@ valueTuple(l []Tok, i int, elems Elems*) int {
     nbBracks = 0
     if l[tokPos+1].cont == "]" {
         //is arr type
-        if l[tokPos+2].type == TOKEN_TYPE_VAR {
+        offset = 1
+        for l[tokPos+offset+1].cont == "[" && l[tokPos+offset+2].cont == "]" {
+            offset += 2
+        }
+        if l[tokPos+offset+1].type == TOKEN_TYPE_VAR {
             return tokPos+1
         }
         throwErr(&l[tokPos], "Cannot declare {TOKEN} empty tuple.")
@@ -1063,8 +1067,6 @@ valueTuple(l []Tok, i int, elems Elems*) int {
     }
 
     memory = l[tokPos+1:i]
-
-    debugLine(memory)
 
     memory = prePross(memory, <lineType>-1, elems)
     ft = memory[0]
