@@ -1068,11 +1068,15 @@ makeRespFromBody(response response_buffer) http_response* {
 #define! SSL_set_mode(ssl SSL*, mode int)
 #define! SSL_set_tlsext_host_name(ssl SSL*, host cpstring) int
 
+__Bah_http_is_ssl_initialized = false
+
 //Used for making TLS requests.
 //*This is an internal function, you should know what you're doing if you decide to use it.*
 makeRawHttpsRequest(host cpstring, message cpstring, timeout int) response_buffer {
-    
-    SSL_library_init()
+    if __Bah_http_is_ssl_initialized == false {
+        SSL_library_init()
+        __Bah_http_is_ssl_initialized = true
+    }
     ssl SSL*
     ctx = SSL_CTX_new(TLSv1_2_client_method())
     if timeout > 0 {

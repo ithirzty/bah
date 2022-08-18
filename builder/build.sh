@@ -17,3 +17,7 @@ bah ./main.bah -o ../installer/windows.c -CC x86_64-w64-mingw32-gcc -target wind
 echo -e "\n---> DARWIN BUILD\n"
 # bah ./main.bah -o ../bin/darwin_amd64 -CC ../builder/osxcross/target/bin/x86_64h-apple-darwin14-clang -target darwin
 bah ./main.bah -o ../installer/darwin.c -CC ../builder/osxcross/target/bin/x86_64h-apple-darwin14-clang -target darwin -c -n
+
+echo -e "\n---> adding std libs to installer"
+cd ..
+./linux_make_installer.sh

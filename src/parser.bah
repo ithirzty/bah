@@ -3096,19 +3096,6 @@ prePross(line []Tok, ltp lineType, elems Elems*) []Tok {
             fl[i-1] = pt
             deleteRange(fl, i, i+1)
             i -= 2
-        } else if t.type == TOKEN_TYPE_VAR && t.bahType != "" {
-            if t.cont[0] == '&' {
-                if string(t.bahType).hasPrefix("tuple:") {
-                    throwErr(&t, "Cannot get pointer of a tuple {TOKEN}.")
-                }
-                t.bahType += "*"
-                fl[i] = t
-            } else if t.cont[0] == '*' {
-                tt = string(t.bahType)
-                tt.replace("*", "")
-                t.bahType = tt.str()
-                fl[i] = t
-            }
         } else if t.type == TOKEN_TYPE_VAR && t.cont[0] == '&' {
             tt = getTypeFromToken(&t, true, elems)
             if string(tt).hasPrefix("tuple:") {

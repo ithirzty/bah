@@ -351,6 +351,7 @@ valueStruct(l []Tok, i int, ltp lineType, elems Elems*) int {
     //is prev token a struct type
     t = l[i-1]
     tt = getTypeFromToken(&t, true, elems)
+    // tt = balancePtr(tt, t.cont)
     s = searchStruct(tt, elems)
     if s == null {
         if tt[strlen(tt)-1] == '!' {
@@ -439,6 +440,10 @@ valueStruct(l []Tok, i int, ltp lineType, elems Elems*) int {
     if m == null {
         throwErr(&nt, "Unknown struct member {TOKEN} in struct '"+s.name+"'.")
     }
+    ast = ""
+    if t.cont[0] == '&' {
+        ast = "*"
+    }
     if m.isFn == true {
         t.cont = s.name+"__"+m.name
     } else {
@@ -448,7 +453,7 @@ valueStruct(l []Tok, i int, ltp lineType, elems Elems*) int {
         t.cont += sep + nt.cont
     }
     t.ogCont += "."+nt.cont
-    t.bahType = m.type
+    t.bahType = m.type + ast
     t.bahRef = new variable {
         name: t.cont
         type: t.bahType
