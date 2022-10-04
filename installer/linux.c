@@ -198,7 +198,7 @@ memcpy(r,data->data+8,sptr);
 return r;
 };
 char * memoryAllocSTR(long int s){
-char * r = GC_MALLOC(s);
+char * r = memoryAlloc(s);
 r[s-1]=0;
 return r;
 };
@@ -2108,7 +2108,7 @@ return r;
 char * BAH_DIR;
 char * BAH_OS;
 char * BAH_CC;
-#define BAH_VERSION "v1.2 (build 122)"
+#define BAH_VERSION "v1.2 (build 123)"
 char debug;
 char verboseRuntime;
 char isObject;
@@ -10110,7 +10110,7 @@ if (__builtin_expect((compTypes(ptt,ntt)==false)||(compTypes(ptt,"bool")==false)
 char** ____BAH_COMPILER_VAR_1422 = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_1422[2] = ".";____BAH_COMPILER_VAR_1422[1] = ptt;____BAH_COMPILER_VAR_1422[0] = "Cannot use {TOKEN} on ";char * ____BAH_COMPILER_VAR_1423 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1422, 3);throwErr(&t,____BAH_COMPILER_VAR_1423);
 }
 if ((strcmp(t.cont, "||") == 0)&&(isExprExpensive(&pt)==false)&&(isExprExpensive(&nt)==false)) {
-char** ____BAH_COMPILER_VAR_1424 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1424[1] = nt.cont;____BAH_COMPILER_VAR_1424[0] = "+";char * ____BAH_COMPILER_VAR_1425 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1424, 2);char** ____BAH_COMPILER_VAR_1426 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1426[1] = ____BAH_COMPILER_VAR_1425;____BAH_COMPILER_VAR_1426[0] = pt.cont;char * ____BAH_COMPILER_VAR_1427 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1426, 2);pt.cont = ____BAH_COMPILER_VAR_1427;
+char** ____BAH_COMPILER_VAR_1424 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1424[1] = nt.cont;____BAH_COMPILER_VAR_1424[0] = "||";char * ____BAH_COMPILER_VAR_1425 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1424, 2);char** ____BAH_COMPILER_VAR_1426 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1426[1] = ____BAH_COMPILER_VAR_1425;____BAH_COMPILER_VAR_1426[0] = pt.cont;char * ____BAH_COMPILER_VAR_1427 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1426, 2);pt.cont = ____BAH_COMPILER_VAR_1427;
 }
 else {
 char** ____BAH_COMPILER_VAR_1428 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1428[1] = nt.cont;____BAH_COMPILER_VAR_1428[0] = t.cont;char * ____BAH_COMPILER_VAR_1429 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1428, 2);char** ____BAH_COMPILER_VAR_1430 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1430[1] = ____BAH_COMPILER_VAR_1429;____BAH_COMPILER_VAR_1430[0] = pt.cont;char * ____BAH_COMPILER_VAR_1431 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1430, 2);pt.cont = ____BAH_COMPILER_VAR_1431;

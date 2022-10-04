@@ -39,7 +39,7 @@ struct RCP {
     c: uint32 = 0
     s: uint = 0
     e: ptr = null
-    str: bool
+    // str: bool
 }
 
 //Used for sorting the list of pointers.
@@ -167,12 +167,12 @@ struct RCPstate {
     }
 
     remove(i uint) {
-        this.len = this.len - 1
         
         for i < this.len {
             noCheck(this->RCPs[i] = this->RCPs[i+1])
             i = i + 1
         }
+        this.len = this.len - 1
         s = this.getSize(30)
         if this.size - s >= this.size / 2 {
             this.resize(s)
@@ -239,7 +239,7 @@ RCP_register(p ptr, s uint) {
     r.c = 1
     r.s = s
     r.p = p
-    r.str = false
+    // r.str = false
     RCPstate.add(&r)
 }
 
@@ -251,7 +251,7 @@ RCP_registerSTR(p ptr, s uint) {
     r.c = 1
     r.s = s
     r.p = p
-    r.str = true
+    // r.str = true
     RCPstate.add(&r)
 }
 
@@ -292,7 +292,6 @@ RCP_incr(p ptr) {
     //     end ptr* = <int>r.p + r.s
     //     RCP_scanRegion(r.p, end, false)
     // }
-    // noCheck(printf("incr: %d (%d)\n", p, r.c))
 }
 
 RCP_getCount(p ptr) uint {
@@ -355,7 +354,8 @@ RCP_decr(p ptr) {
         }
         tmpr = *r
         RCPstate.remove(RCPstate.rcpToIndex(r))
-        if tmpr.str == false && tmpr.s >= sizeof(ptr) {
+        // if tmpr.str == false && tmpr.s >= sizeof(ptr) {
+        if tmpr.s >= sizeof(ptr) {
             end ptr* = <int>tmpr.p + tmpr.s
             RCP_scanRegion(tmpr.p, end, true)
         }

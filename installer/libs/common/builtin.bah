@@ -86,6 +86,9 @@ __Bah_realocate_arr(arr []ptr, nLength uint32) {
 		}
 		newPtr = memoryRealloc(noCheck(arr->data), noCheck(arr->realLength) * noCheck(arr->elemSize))
 		noCheck(arr->data = newPtr)
+		#rcp {
+			RCP_incr(newPtr)
+		}
 	}
 	noCheck(arr->length = arr->length + 1)
 	return
