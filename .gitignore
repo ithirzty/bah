@@ -1,0 +1,11 @@
+./compile.sh
+
+./vgcore.*
+
+./TMP_C_FILE_*.c
+
+builder/osxcross
+builder/osxcross/*
+
+*/.DS_Store
+.DS_Store
