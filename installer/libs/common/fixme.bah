@@ -1,0 +1,49 @@
+#include "string.bah"
+
+struct fixMeVar {
+    name: cpstring
+    addr: ptr
+    beg: cpstring
+    end: cpstring
+    alive: bool = true
+}
+
+#define println(s cpstring)
+
+fixMeCurrentVars = []fixMeVar
+
+fixMeAddVar(name cpstring, v ptr, path cpstring) {
+    fixMeCurrentVars[len(fixMeCurrentVars)] = fixMeVar {
+        name: name
+        addr: v
+        beg: path
+        alive: true
+    }    
+}
+
+fixMeRemVar(name cpstring, p ptr, path cpstring) {
+    i=0; for i < len(fixMeCurrentVars), i++ {
+        v = &fixMeCurrentVars[i]
+        if v.addr == p {
+            v.alive = false
+            v.end = path
+            break
+        }
+    }
+}
+
+fixMeIsVarOk(p ptr, path cpstring) {
+    i=0; for i < len(fixMeCurrentVars), i++ {
+        v = &fixMeCurrentVars[i]
+        if v.addr == p {
+            if v.alive == true {
+                return
+            }
+            panic("Accessing var '"+v.name+"' outside of its scope:
+\tAccess:   "+path+"
+\tDeclared: "+v.beg+"
+\tEnded:    "+v.end+"
+\tAddress:   "+intToStr(v.addr)+"")
+        }
+    }
+}

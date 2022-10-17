@@ -60,3 +60,70 @@ setNullStateBranchFlowEnd(elems Elems*) {
         prevIfExits = true
     }
 }
+
+fixMeEnabled() bool {
+    if isFixMeEnabled == false {
+        return false
+    }
+    return isInside(BAH_DIR, compilerState.currentDir) == false
+}
+
+fixMeRegisterVar(v variable*, t Tok*) {
+    // OUT = OUTPUT
+    // if isGlobal() {
+    //     OUT = INIT
+    // }
+    name = v.name
+    if string(v.type).count("*") == 0 {
+        name = "&"+name
+    }
+    NEXT_LINE += "
+    //BEGINING
+    //var: "+v.name+"
+    //src: "+compilerState.currentFile+":"+intToStr(t.line)+"
+    fixMeAddVar(\""+v.name+"\", "+name+", \""+compilerState.currentFile+":"+intToStr(t.line)+"\");
+    "
+}
+
+fixMeEndScope(elems Elems*, t Tok*) {
+    if fixMeEnabled() == false {
+        return
+    }
+    i=0; for i < len(elems.vars), i++ {
+        v = elems.vars[i]
+        if v.declScope == elems {
+            name = v.name
+            if string(v.type).count("*") == 0 {
+                name = "&"+name
+            } else {
+                continue
+            }
+            OUTPUT += rope("
+            //END
+            //var: "+v.name+"
+            //src: "+compilerState.currentFile+":"+intToStr(t.line)+"
+            fixMeRemVar(\""+v.name+"\", "+name+", \""+compilerState.currentFile+":"+intToStr(t.line)+"\");
+            ")
+        }
+    }
+}
+
+fixMeTestVar(t Tok*, elems Elems*) {
+    if fixMeEnabled() == false {
+        return
+    }
+
+    name = t.cont
+    tt = getTypeFromToken(t, true, elems)
+    if string(tt).count("*") == 0 {
+        if name[0] == '*' {
+            name = name[1:]
+        } else {
+            name = "&"+name
+        }
+    }
+    
+    OUTPUT += rope("
+    fixMeIsVarOk("+name+", \""+compilerState.currentFile+":"+intToStr(t.line)+"\");
+    ")
+}

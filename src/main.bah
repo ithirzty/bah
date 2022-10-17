@@ -23,7 +23,7 @@
     BAH_CC = "gcc"
 }
 //////////////////////BUILD SPECIFIC THINGS//////////////////////
-const BAH_VERSION = "v1.2 (build 123)"
+const BAH_VERSION = "v1.2 (build 124)"
 
 debug = false
 verboseRuntime = false
@@ -32,6 +32,7 @@ isUnsafe = false
 isOptimized = false
 noticeEnabled = true
 RAIIenabled = false
+isFixMeEnabled = false
 
 execName = "bah"
 isSubObject = false
@@ -92,9 +93,11 @@ main(args []cpstring) int {
     flags.addBool("optimize", "Includes optimized functions")
     flags.addBool("n", "Disables notices while keeping warnings enabled.")
     flags.addBool("raii", "Enables RAII memory management.")
+    flags.addBool("fixMe", "Enables runtime debugging engine, useful for segfaults...")
     flags.parse(args)
 
     RAIIenabled = flags.isSet("raii") == 1
+    isFixMeEnabled = flags.isSet("fixMe") == 1
 
     if RAIIenabled == true {
         println("RAII is not yet available...")
@@ -281,6 +284,13 @@ main(args []cpstring) int {
             panic("Could not find std-libs, please check '"+BAH_DIR+"'")
         }
     }
+
+    if isFixMeEnabled == true {
+        if includeFile("fixme.bah", elems) == false {
+            panic("Could not find fixme.bah, please check '"+BAH_DIR+"'")
+        }
+    }
+
     shouldOnlyDecl = false //should also set values to vars, funcs...
 
     //if the file is being compiled as a lib, remove all its content and declare everything (builtin.bah)

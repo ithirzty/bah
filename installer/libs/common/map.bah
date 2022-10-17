@@ -3,7 +3,7 @@ __Bah_map_hash(s cpstring, l int) int {
     hash = 5381
 
     i=0; for i < strlen(s), i++ {
-        hash = (<int>noCheck(hash << 5) + 0) + hash + <int>s[i]
+        hash = (<int>hash << 5 + 0) + hash + <int>s[i]
     }
 
     if hash < 0 {
@@ -13,19 +13,185 @@ __Bah_map_hash(s cpstring, l int) int {
     return hash % l
 }
 
-//Internal representation of an element inside a map.
+//Internal representation of an value for algorithm 2 of the mapWrapper.
 struct mapElem {
     key: cpstring
     val: ptr
 }
 
+//Response buffer for algorithm 1.
+//Used to reduce number of alocations.
+struct mapSearchRes {
+    found: bool
+    res: ptr
+    l: uint32
+}
+
+//Represent a single node (value) of the algorithm 1 of the mapWrapper.
+struct mapNode {
+    str: cpstring
+    strL: uint32
+    left: mapNode*  = null
+    right: mapNode* = null
+    value: ptr = null
+
+    //Used for calculating the matching score of the node, given a key.
+    calc(s cpstring, i uint32) int32 {
+        for i < this.strL, i++ {
+            if s[i] == null || this.str[i] != s[i] {
+                break
+            }
+        }
+        if i == this.strL && s[i] == null {
+            return -1
+        }
+        return i
+    }
+
+    //Returns the node containing the value.
+    //If their is no such node, the closest one. It can then be appended the correct node.
+    getFast(s cpstring, r int32, msr mapSearchRes*) {
+        //match 100%, return itslef
+        if r == -1 {
+            msr.found = true
+            msr.res = this
+            return
+        }
+        //no match, cannot be it or its children
+        if r == 0 && this.strL != 0 {
+            msr.found = false
+            msr.res = null
+            return
+        }
+
+        lr = 0; rr = 0
+
+        //if we have child on the left, calculate its value
+        if this.left != null {
+            lr = this.left.calc(s, r)
+        }
+        //if we have child on the right, calculate its value
+        if this.right != null {
+            rr = this.right.calc(s, r)
+        }
+        
+        if lr == -1 {
+            msr.found = true
+            msr.res = this.left
+            return
+        }
+        if rr == -1 {
+            msr.found = true
+            msr.res = this.right
+            return
+        }
+
+        //if left child has higher match score, got its route
+        if lr > r && lr > rr {
+            this.left.getFast(s, lr, msr)
+            return
+        }
+        //if right child has higher match score, got its route
+        if rr > r && rr > lr {
+            this.right.getFast(s, rr, msr)
+            return
+        }
+
+        if this.left != null && this.left.strL == this.strL {
+            this.left.getFast(s, lr, msr)
+            if msr.l == r && msr.found == false {
+                msr.res = this
+            }
+            return
+        }
+
+        //We cannot get a better score using children, return itself
+        msr.found = false
+        msr.res = this
+        msr.l = r
+        return
+    }
+
+    //Appends a node to another.
+    append(k cpstring, e ptr, l uint32) {
+        ne = new mapNode {
+            str: k
+            strL: strlen(k)
+            value: e
+        }
+
+        if l != this.strL {
+            this.right = new mapNode {
+                value: this.value
+                right: this.right
+                left: this.left
+                str: this.str
+                strL: this.strL
+            }
+            this.str = this.str[:l]
+            this.value = null
+            this.strL = l
+            this.left = ne
+            return
+        }
+
+        if this.left == null {
+            this.left = ne
+            return
+        }
+
+        if this.right == null {
+            this.right = ne
+            return
+        }
+
+        ol = this.left
+        this.left = new mapNode {
+            str: this.str
+            strL: this.strL
+            value: null
+            left: ol
+            right: ne
+        }
+    }
+
+}
+
+#define mapWrapperSetAlgo(p ptr, nb uint32)
 
 //An internal wrapper that is used for every map:* type.
 struct mapWrapper {
-    elems: []mapElem*
-    length: int
+    length: int //the length of the map
+    algo: uint32 = 2 //the current algorithm used
+    //algo1:
+    nodes: mapNode* //a binary tree containing all the values
+    msr: mapSearchRes //the response buffer
+    //algo2:
+    elems: []mapElem* //an array containing all values
+    //making algo choice
+    changingAlgo: bool //weither .algoChecks() should be ignored
+    nbMisses: uint = 0 //total number of misses
+    nbTotal: uint = 1 //total number of operations
+    nbDelete: uint = 0 //number of deletes
+
+    //Called for setting a value by key.
+    set: function(mapWrapper*, cpstring, ptr)
+    //Called for getting a value by key.
+    get: function(mapWrapper*, cpstring) ptr
+    //Used for deleting a value by key.
+    delete: function(mapWrapper*, cpstring)
+
+    //Performs performance checks before deciding weither an other algorithm is more optimal.
+    algoChecks() {
+        if this.nbDelete < this.length && (this.length >= 40000 || <float>this.nbMisses / <float>this.nbTotal >= 20.0) {
+            mapWrapperSetAlgo(this, 1)
+        } else if this.nbDelete >= this.length*2 || this.length < 500 {
+            mapWrapperSetAlgo(this, 2)
+        }
+    }
 
     //Used for growing the map.
+    //Only works with algorithm 1.
     grow(nb int) {
         l = len(this.elems)
         i=l; for i < l + nb, i++ {
@@ -51,8 +217,8 @@ struct mapWrapper {
         }
     }
 
-    //Used for setting an key to a pointer.
-    set(k cpstring, e ptr) {   
+    //Set operation on algorithm 2.
+    set2(k cpstring, e ptr) {
         if this.length == 0 {
             this.grow(50)
         }
@@ -76,69 +242,206 @@ struct mapWrapper {
                 break
             } 
         }
-    }
-
-    //Used for setting a key to any data-type.
-    //The data will be copied. 
-    setAny(k cpstring, e ptr, s int) {
-        if this.length == 0 {
-            this.grow(50)
-        }
-        if this.length * 2 >= len(this.elems) {
-            this.grow(this.length)
-        }
-        p = memoryAlloc(s)
-        memcpy(p, e, s)
-        elem = new mapElem{
-            key: k
-            val: p
-        }
-        ind = __Bah_map_hash(k, len(this.elems))
-        i=0; for i < len(this.elems), i++ {
-            j = (i + ind) % len(this.elems)
-            ce = this.elems[j]
-            if ce == null {
-                this.elems[j] = elem
-                this.length++
-                break
-            } else if ce.key == k {
-                this.elems[j] = elem
-                break
-            } 
+        this.nbMisses += i
+        this.nbTotal++
+        if this.length % 1000 == 0 {
+            this.algoChecks()
         }
     }
 
-    //Used for deleting an element.
-    delete(k cpstring) {
+    //Delete operation on algoithm 2.
+    delete2(k cpstring) {
         ind = __Bah_map_hash(k, len(this.elems))
         i=0; for i < len(this.elems), i++ {
             j = (i + ind) % len(this.elems)
             e = this.elems[j]
             if e != null && e.key == k {
+                this.nbMisses += i
+                this.nbTotal++
+                this.nbDelete++
                 this.elems[j] = null
+                if this.length % 1000 == 0 {
+                    this.algoChecks()
+                }
             }
         }
     }
 
-    //Used for getting a pointer to an element.
-    get(k cpstring) ptr {
+    //Get operation on algotihm 2.
+    get2(k cpstring) ptr {
         ind = __Bah_map_hash(k, len(this.elems))
         i=0; for i < len(this.elems), i++ {
             j = (i + ind) % len(this.elems)
             e = this.elems[j]
             if e != null && e.key == k {
+                this.nbMisses += i
+                this.nbTotal++
                 return e.val
             }
         }
         return null
     }
 
+    //This is an internal function.
+    //Used for clearing response buffer.
+    clearMsr() {
+        this.msr.found = false
+        this.msr.res = null
+        this.msr.l = 0
+    }
+
+    //Get operation on algotihm 1.
+    get1(k cpstring) ptr {
+        this.clearMsr()
+        if this.nodes == null {
+            return null
+        }
+        this.nodes.getFast(k, this.nodes.calc(k, 0), &this.msr)
+        if this.msr.found {
+            n mapNode* = this.msr.res
+            return n.value
+        }
+        return null
+    }
+
+    //Set operation on algorithm 1.
+    set1(k cpstring, e ptr) {
+        this.clearMsr()
+        if this.nodes == null {
+            this.nodes = new mapNode {
+                str: k
+                strL: strlen(k)
+                value: e
+            }
+            this.length = 1
+            return
+        }
+        n = &this.msr
+        n.res = null
+        n.found = false
+        this.nodes.getFast(k, this.nodes.calc(k, 0), &this.msr)
+        if n.res == null {
+            ne = new mapNode {
+                str: k
+                strL: strlen(k)
+                value: e
+            }
+            nh = new mapNode {
+                str: ""
+                strL: 0
+                left: ne
+                right: this.nodes
+            }
+            this.nodes = nh
+            nodesP = this.nodes
+            this.length++
+            return
+        }
+        nn mapNode* = n.res
+        if n.found == true {
+            nn.str = k
+            nn.strL = strlen(k)
+            nn.value = e
+            return
+        }
+
+        this.length++
+        nn.append(k, e, n.l)
+        if this.length % 1000 == 0 {
+            this.algoChecks()
+        }
+    }
+
+    //Delete operation on algoithm 1.
+    delete1(k cpstring) {
+        this.clearMsr()
+        this.nodes.getFast(k, this.nodes.calc(k, 0), &this.msr)
+        if this.msr.found {
+            n mapNode* = this.msr.res
+            n.value = null
+            this.nbDelete++
+            this.length--
+            if this.length % 1000 == 0 {
+                this.algoChecks()
+            }
+        }
+    }
+
+    //Used for setting a key to any data-type.
+    //The data will be copied. 
+    setAny(k cpstring, e ptr, s int) {
+        p = memoryAlloc(s)
+        memcpy(p, e, s)
+        this.set(k, p)
+    }
+}
+
+//Internal function used to set the mapWrapper storage algorithm.
+mapWrapperSetAlgo(p ptr, nb uint32) {
+    this mapWrapper* = p
+    if nb == this.algo || this.changingAlgo == true {
+        return
+    }
+    this.changingAlgo = true
+    if nb == 1 {
+        this.set = this.set1
+        this.get = this.get1
+        this.delete = this.delete1
+        this.algo = 1
+        this.length = 0
+        i=0; for i < len(this.elems), i++ {
+            e = this.elems[i]
+            if e != null {
+                this.set(e.key, e.val)
+            }
+        }
+        this.elems = []mapElem*
+    } else if nb == 2 {
+        this.nbDelete = 0
+        this.grow(this.length)
+        this.set = this.set2
+        this.get = this.get2
+        this.delete = this.delete2
+        this.algo = 2
+        this.length = 0
+        current = this.nodes
+        stack = []mapNode*
+        for current != null {
+            for current.left != null {
+                stack[len(stack)] = current
+                current = current.left
+            }
+            if current.value != null {
+                this.set(current.str, current.value)
+            }
+            for current.right == null && len(stack) > 0 {
+                current = stack[len(stack)-1]
+                delete(stack, len(stack)-1)
+                if current.value != null {
+                    this.set(current.str, current.value)
+                }
+            }
+            current = current.right
+        }
+        this.nodes = null
+    }
+    this.changingAlgo = false
 }
 
 //Used for generating a mapWrapper.
 //This is an internal function called with the map keyword.
 mapWrapper() mapWrapper* {
     m = new mapWrapper
+    m.algo = 2
+    m.set = m.set2
+    m.get = m.get2
+    m.delete = m.delete2
     m.grow(50)
     return m
+}
+
+//Used for deleting value from map by key.
+deleteMap(m ptr, k cpstring) {
+    mm mapWrapper* = m
+    mm.delete(k)
 }

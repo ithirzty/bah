@@ -258,16 +258,6 @@ valueFunc(fn func*, parent variable*, l []Tok, i int, ltp lineType, elems Elems*
         }
     }
 
-    // if fn.name == "strlen" && len(memory) == 1 {
-    //     if cont != "" {
-    //         fnt.cont = memory[0].cont
-    //         fnt.type = TOKEN_TYPE_VAR
-    //         fnt.bahType = "int"
-    //         l[tokPos] = fnt
-    //         return tokPos
-    //     }
-    // }
-
     ogFntContL = strlen(fnt.cont)
 
     // parsing arguments
@@ -278,6 +268,10 @@ valueFunc(fn func*, parent variable*, l []Tok, i int, ltp lineType, elems Elems*
         }
         arg = fn.args[argIndex]
         tt = getTypeFromToken(&t, true, elems)
+
+        if (fn.isImported == true || isInside(BAH_DIR, fn.file)) && t.type == TOKEN_TYPE_VAR {
+            fixMeTestVar(&t, elems)
+        }
 
         if arg.type == "reflectElement" && tt != "reflectElement" {
             t = parseReflect(t, tt, elems, false, t.cont, "0")
@@ -375,6 +369,11 @@ valueStruct(l []Tok, i int, ltp lineType, elems Elems*) int {
     sep = "."
     if isRCPpointerType(tt) {
         sep = "->"
+    }
+
+    //FixMe test
+    if t.type == TOKEN_TYPE_VAR {
+        fixMeTestVar(&t, elems)
     }
 
     //member is a method
@@ -617,7 +616,7 @@ valueArr(l []Tok, i int, ltp lineType, elems Elems*) int {
                 OUTPUT += rope(elemType.str() + " " + tmpV.name+";\n")
             }
             if isRCPpointerType(ptt.str()) {
-                NEXT_LINE = "mapWrapper__set("+pt.cont+", "+index.cont+", "+tmpV.name+");\n"
+                NEXT_LINE = pt.cont+"->set("+pt.cont+", "+index.cont+", "+tmpV.name+");\n"
             } else {
                 NEXT_LINE = "mapWrapper__setAny("+pt.cont+", "+index.cont+", &"+tmpV.name+", sizeof("+elemType.str()+"));\n"
             }
@@ -628,10 +627,10 @@ valueArr(l []Tok, i int, ltp lineType, elems Elems*) int {
             res rope*
             tmpV = genCompilerVar()
             if isRCPpointerType(ptt.str()) {
-                res = rope(elemType.str()+" "+tmpV+"=mapWrapper__get("+t.cont+", "+index.cont+");\n")
+                res = rope(elemType.str()+" "+tmpV+"="+t.cont+"->get("+t.cont+", "+index.cont+");\n")
                 t.cont = tmpV 
             } else {
-                res = rope(elemType.str() + "* "+tmpV+"=mapWrapper__get("+pt.cont+", "+index.cont+");\n")
+                res = rope(elemType.str() + "* "+tmpV+"="+pt.cont+"->get("+pt.cont+", "+index.cont+");\n")
                 t.cont = "("+elemType.str()+")(*"+tmpV+")"
             }
             if RCPavailable() {

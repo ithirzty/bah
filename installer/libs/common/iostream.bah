@@ -9,27 +9,49 @@
 
 #define! FILE ptr
 
+__Bah_iostream_stdinputBuffer = ""
+__Bah_iostream_stdinputBufferLength = 0
 
 //Returns the text inputed by the user inside the terminal.
 stdinput() cpstring {
-    buff cpstring = memoryAlloc(1025)
     response = ""
-    nDataLength = read(<ptr>0,buff,1024)
-    if nDataLength < 1024 {
-        response += buff
+    nDataLength = 0
+    if __Bah_iostream_stdinputBufferLength > 0 {
+        response = __Bah_iostream_stdinputBuffer
+        nDataLength = __Bah_iostream_stdinputBufferLength
     } else {
-        for nDataLength > 0 {
+        buff cpstring = memoryAlloc(1025)
+        nDataLength = read(<ptr>0,buff,1024)
+        if nDataLength < 1024 {
             response += buff
-            if nDataLength < 1024 {
-                trimAmm = 1024 - nDataLength
-                strTrimRight(&response, trimAmm)
-                break
-            } else {
-                nDataLength = read(<ptr>0,buff,1024)
+        } else {
+            for nDataLength > 0 {
+                response += buff
+                if nDataLength < 1024 {
+                    trimAmm = 1024 - nDataLength
+                    strTrimRight(&response, trimAmm)
+                    break
+                } else {
+                    nDataLength = read(<ptr>0,buff,1024)
+                }
             }
         }
     }
-    strTrimRight(&response, 1)
+    if response[nDataLength-1] == <char>10 {
+        strTrimRight(&response, 1)
+    }
+
+    i=0; for i < nDataLength, i++ {
+        if response[i] == <char>10 {
+            __Bah_iostream_stdinputBuffer = response[i+1:]
+            __Bah_iostream_stdinputBufferLength = nDataLength - i
+            return response[:i]
+        }
+    }
+
+    __Bah_iostream_stdinputBuffer = ""
+    __Bah_iostream_stdinputBufferLength = 0
+
     return response
 }
 

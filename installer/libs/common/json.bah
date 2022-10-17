@@ -178,9 +178,11 @@ json_scan_inner(thisp ptr, e reflectElement, isMember bool) {
                 k.trimLeft(1)
                 k.trimRight(1)
                 if strCount(ae.type, "*") || ae.type == "ptr" || ae.type == "cpstring" || strHasPrefix(ae.type, "[]") || strHasPrefix(ae.type, "map:") {
-                    mapWrapper__set(*p, k.str(), v)
+                    m = *p
+                    m.set(k.str(), v)
                 } else {
-                    mapWrapper__set(*p, k.str(), &v)
+                    m = *p
+                    m.set(k.str(), &v)
                 }
             }
         }
