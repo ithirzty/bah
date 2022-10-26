@@ -2352,7 +2352,7 @@ return r;
 char * BAH_DIR;
 char * BAH_OS;
 char * BAH_CC;
-#define BAH_VERSION "v1.2 (build 127)"
+#define BAH_VERSION "v1.2 (build 128)"
 char debug;
 char verboseRuntime;
 char isObject;
