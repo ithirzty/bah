@@ -79,7 +79,7 @@ Hello world:
 <center>
 <img src="./extra/repl.png">
 <p>
-<a href="https://github.com/ithirzy/bah-repl">Bah REPL</a>: a simple way of learning Bah lang.
+<a href="https://github.com/ithirzty/bah-repl">Bah REPL</a>: a simple way of learning Bah lang.
 </p>
 </center>
 
