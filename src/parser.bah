@@ -1150,6 +1150,10 @@ parseVar(l []Tok, elems Elems*) {
         operTok = operT
         operTok.cont = oper.str()
 
+        if l[2].isOper {
+            l[2].cont = "("+l[2].cont+")"
+        }
+
         tmpL = []Tok {
             ft,
             operTok,
