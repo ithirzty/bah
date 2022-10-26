@@ -32,7 +32,7 @@ debugPrint(name cpstring, line int, e reflectElement) {
     }
     println("
     {
-        \"name\": "+toJson(name)+",
+        \"name\": "+toJson(&name)+",
         \"path\": \""+compilerState.currentFile+":" + intToStr(line)+"\",
         \"element\": "+toJson(e)+"
     },
@@ -45,7 +45,7 @@ debugError(name cpstring, line int, from int, to int, e reflectElement) {
     }
     println("
     {
-        \"name\": "+toJson(name)+",
+        \"name\": "+toJson(&name)+",
         \"path\": \""+compilerState.currentFile+":" + intToStr(line)+"\",
         \"range\": [
             "+intToStr(from)+",
