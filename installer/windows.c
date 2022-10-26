@@ -7663,6 +7663,7 @@ if (string__hasSuffix(&cfrt,"*")) {
 long int nbast = string__count(&cfrt,"*");
 string__trimRight(&cfrt,nbast);
 }
+string__replace(&cfrt,"[]","_ARR_");
 char** ____BAH_COMPILER_VAR_905 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_905[1] = string__str(&cfrt);____BAH_COMPILER_VAR_905[0] = "__BAH_ARR_TYPE_";char * ____BAH_COMPILER_VAR_906 =__Bah_multiple_concat(____BAH_COMPILER_VAR_905, 2);newArgType = ____BAH_COMPILER_VAR_906;
 array(char *)* csatd = compilerState.arrTypesDecl;
 if ((inArrayStr(newArgType,csatd)==false)) {
@@ -7726,6 +7727,7 @@ if (string__hasSuffix(&cfrt,"*")) {
 long int nbast = string__count(&cfrt,"*");
 string__trimRight(&cfrt,nbast);
 }
+string__replace(&cfrt,"[]","_ARR_");
 char** ____BAH_COMPILER_VAR_923 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_923[1] = string__str(&cfrt);____BAH_COMPILER_VAR_923[0] = "__BAH_ARR_TYPE_";char * ____BAH_COMPILER_VAR_924 =__Bah_multiple_concat(____BAH_COMPILER_VAR_923, 2);newFnRetType = ____BAH_COMPILER_VAR_924;
 array(char *)* csatd = compilerState.arrTypesDecl;
 if ((inArrayStr(newFnRetType,csatd)==false)) {

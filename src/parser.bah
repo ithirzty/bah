@@ -1652,6 +1652,7 @@ parseFnHeader(prev cpstring, l []Tok, i int*, fn func*, elems Elems*) cpstring {
                     nbast = cfrt.count("*")
                     cfrt.trimRight(nbast)
                 }
+                cfrt.replace("[]", "_ARR_")
                 newArgType = "__BAH_ARR_TYPE_" + cfrt.str()
                 csatd = compilerState.arrTypesDecl
                 if inArrayStr(newArgType, csatd) == false {
@@ -1708,6 +1709,7 @@ parseFnHeader(prev cpstring, l []Tok, i int*, fn func*, elems Elems*) cpstring {
             nbast = cfrt.count("*")
             cfrt.trimRight(nbast)
         }
+        cfrt.replace("[]", "_ARR_")
         newFnRetType = "__BAH_ARR_TYPE_" + cfrt.str()
         csatd = compilerState.arrTypesDecl
         if inArrayStr(newFnRetType, csatd) == false {
