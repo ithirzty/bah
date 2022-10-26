@@ -23,7 +23,7 @@
     BAH_CC = "gcc"
 }
 //////////////////////BUILD SPECIFIC THINGS//////////////////////
-const BAH_VERSION = "v1.2 (build 125)"
+const BAH_VERSION = "v1.2 (build 126)"
 
 debug = false
 verboseRuntime = false
@@ -93,7 +93,7 @@ main(args []cpstring) int {
     flags.addBool("optimize", "Includes optimized functions")
     flags.addBool("n", "Disables notices while keeping warnings enabled.")
     flags.addBool("raii", "Enables RAII memory management.")
-    flags.addBool("fixMe", "Enables runtime debugging engine, useful for segfaults...")
+    flags.addBool("fixMe", "Enables runtime debugging engine, useful for segfaults... Note that your program will be slower and use more memory, this is only a debug option.")
     flags.parse(args)
 
     RAIIenabled = flags.isSet("raii") == 1

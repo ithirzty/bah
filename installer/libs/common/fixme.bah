@@ -32,18 +32,28 @@ fixMeRemVar(name cpstring, p ptr, path cpstring) {
     }
 }
 
-fixMeIsVarOk(p ptr, path cpstring) {
+fixMeIsVarOk(p ptr, name cpstring, path cpstring) bool {
+    if p == null {
+        panic("Accessing null var '"+name+"':
+\tAccess:   "+path)
+    }
+    found fixMeVar*
     i=0; for i < len(fixMeCurrentVars), i++ {
         v = &fixMeCurrentVars[i]
         if v.addr == p {
             if v.alive == true {
-                return
+                return true
             }
-            panic("Accessing var '"+v.name+"' outside of its scope:
+            found = v
+        }
+    }
+    if found != null {
+        v = found
+        panic("Accessing var '"+name+"' (declared as "+v.name+") outside of its scope:
 \tAccess:   "+path+"
 \tDeclared: "+v.beg+"
 \tEnded:    "+v.end+"
-\tAddress:   "+intToStr(v.addr)+"")
-        }
+\tAddress:   "+intToStr(v.addr))
     }
+    return true
 }

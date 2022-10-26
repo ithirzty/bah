@@ -188,6 +188,9 @@ searchVarByToken(t Tok*, elems Elems*) variable* {
 }
 
 searchVirtVarByToken(t Tok*, elems Elems*) variable* {
+    if t.isOper == true {
+        return null
+    }
     if t.bahRef != null {
         return t.bahRef
     }

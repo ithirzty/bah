@@ -69,18 +69,14 @@ fixMeEnabled() bool {
 }
 
 fixMeRegisterVar(v variable*, t Tok*) {
-    // OUT = OUTPUT
-    // if isGlobal() {
-    //     OUT = INIT
-    // }
+    if v.isReg == true {
+        return
+    }
     name = v.name
-    if string(v.type).count("*") == 0 {
+    if isRCPpointerType(v.type) == false {
         name = "&"+name
     }
     NEXT_LINE += "
-    //BEGINING
-    //var: "+v.name+"
-    //src: "+compilerState.currentFile+":"+intToStr(t.line)+"
     fixMeAddVar(\""+v.name+"\", "+name+", \""+compilerState.currentFile+":"+intToStr(t.line)+"\");
     "
 }
@@ -92,38 +88,74 @@ fixMeEndScope(elems Elems*, t Tok*) {
     i=0; for i < len(elems.vars), i++ {
         v = elems.vars[i]
         if v.declScope == elems {
+            if v.isReg == true {
+                return
+            }
             name = v.name
-            if string(v.type).count("*") == 0 {
+            if isRCPpointerType(v.type) == false {
                 name = "&"+name
             } else {
                 continue
             }
             OUTPUT += rope("
-            //END
-            //var: "+v.name+"
-            //src: "+compilerState.currentFile+":"+intToStr(t.line)+"
             fixMeRemVar(\""+v.name+"\", "+name+", \""+compilerState.currentFile+":"+intToStr(t.line)+"\");
             ")
         }
     }
 }
 
-fixMeTestVar(t Tok*, elems Elems*) {
+fixMeTestVar(t Tok*, ltp lineType, elems Elems*) {
     if fixMeEnabled() == false {
         return
     }
 
+
     name = t.cont
     tt = getTypeFromToken(t, true, elems)
-    if string(tt).count("*") == 0 {
+    if isRCPtype(tt, elems) == false {
+        return
+    }
+    if isRCPpointerType(tt) == false {
         if name[0] == '*' {
             name = name[1:]
         } else {
             name = "&"+name
         }
     }
+
+    if t.type == TOKEN_TYPE_FUNC || t.isOper == true || t.isFunc == true {
+        name = registerRCPvar(tt, t.cont, elems)
+        t.cont = name
+    }
+
+    fn = "fixMeIsVarOk("+name+", \""+t.cont+"\", \""+compilerState.currentFile+":"+intToStr(t.line)+"\")"
     
-    OUTPUT += rope("
-    fixMeIsVarOk("+name+", \""+compilerState.currentFile+":"+intToStr(t.line)+"\");
-    ")
+    if ltp == LINE_TYPE_ELSE {
+        prevIfShortcut = fn+"&&"
+        return
+    }
+
+    OUTPUT += rope(fn+";\n")
+}
+
+isStaticToken(t Tok*, elems Elems*) bool {
+    if t.type == TOKEN_TYPE_BOOL && (t.cont != "true" || t.cont != "false") {
+        return false
+    }
+
+    if t.type == TOKEN_TYPE_FUNC {
+        return false
+    }
+
+    if t.type == TOKEN_TYPE_VAR {
+        if t.isOper == true {
+            return false
+        }
+        v = searchVirtVarByToken(t, elems)
+        if v != null {
+            return v.isConst
+        }
+    }
+
+    return true
 }

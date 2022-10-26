@@ -21,6 +21,7 @@ struct variable {
     declRope: rope*
     //safety
     canBeNull: bool = false
+    iterScope: ptr = null
     //optimizations
     canBeReg: bool
     isReg: bool = false
@@ -85,6 +86,20 @@ struct Elems {
     branchChecks: []varCheck
     //optimization
     currFlowEnd: bool
+
+    isChildren(e Elems*) bool {
+        if e == null {
+            return false
+        }
+        for e.parent != null {
+            if e.parent == this {
+                return true
+            }
+            e = e.parent
+        }
+        return false
+    }
+
 }
 
 //Additional info for the compiler no matter the scope
@@ -135,3 +150,5 @@ currChecks = []varCheck
 prevIfExits = false
 
 prevIfChecks = []varCheck
+
+prevIfShortcut = "" //fixes code emitted before a line being between '}' and 'else'

@@ -242,7 +242,7 @@ valueFunc(fn func*, parent variable*, l []Tok, i int, ltp lineType, elems Elems*
 
     //processing memory (arguments)
     if len(memory) > 0 {
-        memory = prePross(memory, <lineType>-1, elems)
+        memory = prePross(memory, ltp, elems)
     }
 
     argIndex = 0
@@ -270,7 +270,7 @@ valueFunc(fn func*, parent variable*, l []Tok, i int, ltp lineType, elems Elems*
         tt = getTypeFromToken(&t, true, elems)
 
         if (fn.isImported == true || isInside(BAH_DIR, fn.file)) && t.type == TOKEN_TYPE_VAR {
-            fixMeTestVar(&t, elems)
+            fixMeTestVar(&t, ltp, elems)
         }
 
         if arg.type == "reflectElement" && tt != "reflectElement" {
@@ -373,7 +373,7 @@ valueStruct(l []Tok, i int, ltp lineType, elems Elems*) int {
 
     //FixMe test
     if t.type == TOKEN_TYPE_VAR {
-        fixMeTestVar(&t, elems)
+        fixMeTestVar(&t, ltp, elems)
     }
 
     //member is a method
@@ -576,6 +576,7 @@ valueArr(l []Tok, i int, ltp lineType, elems Elems*) int {
             if to == "" {
                 to = pt.cont+"->length"
             }
+            t.isFunc = true
             t.cont = "arraySubstitute("+pt.cont+", "+from+", "+to+")"
         }
 
@@ -592,6 +593,7 @@ valueArr(l []Tok, i int, ltp lineType, elems Elems*) int {
             if to == "" {
                 to = "strlen("+pt.cont+")"
             }
+            t.isFunc = true
             t.cont = "cpstringSubsitute("+pt.cont+", "+from+", "+to+")"
         }
     } else if ptt.hasPrefix("map:") { //is a map
@@ -707,14 +709,17 @@ valueBool(l []Tok, i int, ltp lineType, elems Elems*) int {
     deleteRange(l, tokPos, tokPos+1)
 
     //sets looping variable as register is faster
-    if ltp == LINE_TYPE_FOR && ptt == "int" || ptt == "float" {
+    if isFixMeEnabled == false && ltp == LINE_TYPE_FOR && ptt == "int" || ptt == "float" {
         v = getRealVar(pt.cont, elems)
-        if v != null && v.canBeReg == true && v.isReg == false && v.declRope != null {
-            odecl = v.declRope.toStr()
-            if strHasPrefix(odecl, "register ") == false {
-                OUTPUT.totalLen += ropeSet(v.declRope, "register "+odecl)
+        if v != null {
+            v.iterScope = elems
+            if v.canBeReg == true && v.isReg == false && v.declRope != null {
+                odecl = v.declRope.toStr()
+                if strHasPrefix(odecl, "register ") == false {
+                    OUTPUT.totalLen += ropeSet(v.declRope, "register "+odecl)
+                }
+                v.isReg = true
             }
-            v.isReg = true
         }
     }
 
@@ -741,25 +746,30 @@ valueBool(l []Tok, i int, ltp lineType, elems Elems*) int {
         if compTypes(ptt, arrT.str()) == false {
             throwErr(&pt, "Cannot search for {TOKEN} ("+ptt+") in "+ntt+".")
         }
-        compVar = genCompilerVar()
         comp = ""
-        pt.cont = registerRCPvar(ptt, pt.cont, elems)
         if ptt == "cpstring" {
-            comp = nt.cont+"->data[i] != 0 && strcmp("+nt.cont+"->data[i], "+pt.cont+") == 0"
+            comp = "arr->data[i] != 0 && strcmp(arr->data[i], el) == 0"
         } else {
-            comp = nt.cont+"->data[i] == "+pt.cont
+            comp = "arr->data[i] == el"
         }
-        OUTPUT += rope("
-        char "+compVar+" = 0;
-        for(int i="+nt.cont+"->length-1; i!=-1;i--) {
+        name = genCompilerVar()
+        fnTest = "char "+name+"("+getCType(ntt, elems).str()+" arr, "+getCType(ptt, elems).str()+" el) {
+        if (arr == 0) {
+            return 0;
+        };
+        for(int i=arr->length-1; i!=-1;i--) {
             if ("+comp+") {
-                "+compVar+"=1;
-                break;
+                return 1;
             };
         }
-        ")
+        return 0;
+        }\n"
+        OUTPUT.totalLen +=  ropeSet(postDeclHandle, postDeclHandle.toStr() + fnTest)
+
+        fnCall = name+"("+nt.cont+", "+pt.cont+")" 
+
         pt.isExpensive = true
-        pt.cont = compVar
+        pt.cont = fnCall
     } else {
         if compTypes(ptt, ntt) == false {
             throwErr(&nt, "Cannot compare {TOKEN} ("+ntt+") with type "+ptt+".")
