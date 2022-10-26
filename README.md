@@ -69,8 +69,22 @@ Files containing bah code have the `.bah` extenstion.
 - To compile your program using the FASTER reference counter instead of the garbage collector, use `bah myFile.bah -fastrcp`. **This reference counter will not check for memory leaks.**
 - To compile your program using builtin debugging tools, use `bah myFile.bah -verboseRuntime`. **This will outputs a lot of data.**
 
-### Hello, world!
+## Learning
+Hello world:
+
 ![hello world](extra/helloworld.svg)
+
+---
+
+<center>
+<img src="./extra/repl.png">
+<p>
+<a href="https://github.com/ithirzy/bah-repl">Bah REPL</a>: a simple way of learning Bah lang.
+</p>
+</center>
+
+---
+
 
 ## Why?
 Bah is a really fast language that is low level enough for most cases while being really simple.
@@ -80,6 +94,7 @@ As well as being easy to learn, you can create
 - compilers
     - [bah compiler](https://github.com/ithirzty/bah)
 - interpreters
+    - [Bah REPL](https://github.com/ithirzty/bah-repl)
     - [Brainfuck interpreter](https://github.com/ithirzty/bah-brainfuck)
 - web apps
     - [bah-lang doc](https://github.com/ithirzty/bah-website)
@@ -102,9 +117,9 @@ Bah also supports awesome features like:
 - **channels** (thread safe pipes to send data),
 - **runtime evaluation** (for evaluating code at runtime `eval.bah`),
 - **embedded debugger** (for setting breakpoints),
-- **verbose runtime** (an included tool for debugging)...
-
-![verbose runtime](extra/verboseRuntime.png)
+- **compile-time safety features** (reducing segfaults),
+- **fixMe** (cry for help when a segfault occurs),
+- **capture** (capture 'maybe values' for returning exceptions).
 
 This enables you to do things that would be impossible in C
 such as scanning JSON content to a variable (event structs and arrays), and marshalling vars to JSON.
@@ -113,7 +128,6 @@ All of that with a single function call!
 Bah also has a garbage collector AND a reference counter. You can choose the one that fits your needs at compile time!
 
 ### [List of most important features](features.md)
-
 
 ## Imports and includes
 When to use `#import` and `#include`?

@@ -445,12 +445,14 @@ jsonEscapeStr(s cpstring) cpstring {
         i = i + 1
     }
 
-    return arrToStr(r)
+    r[len(r)] = null
+
+    return arrAsStr(r)
 }
 
-//Function used by toJson() to convert a var to json string.
+//Function used by oldToJson() to convert a var to json string.
 //*Note: this is an internal function*
-toJson__inner(e reflectElement, isMember bool, tabs int) cpstring {
+oldToJson__inner(e reflectElement, isMember bool, tabs int) cpstring {
     v ptr* = e.value
     if e.value == null {
         if e.type == "int" || e.type == "float" {
@@ -476,9 +478,9 @@ toJson__inner(e reflectElement, isMember bool, tabs int) cpstring {
             i = i + 1
             m.value = m.calculateOffset(e.value)
             if i < len(e.structLayout) {
-                s = s + tabsStr+"\""+m.name+"\": "+toJson__inner(m, true, tabs)+",\n"
+                s = s + tabsStr+"\""+m.name+"\": "+oldToJson__inner(m, true, tabs)+",\n"
             } else {
-                s = s + tabsStr+"\""+m.name+"\": "+toJson__inner(m, true, tabs)+"\n"
+                s = s + tabsStr+"\""+m.name+"\": "+oldToJson__inner(m, true, tabs)+"\n"
             }
         }
         tabs = tabs - 1
@@ -554,8 +556,6 @@ toJson__inner(e reflectElement, isMember bool, tabs int) cpstring {
             }
         } else if ae.isStruct == true {
             arr = []ptr
-            // arrPtr ptr* = e.value
-            // arr = *arrPtr
             if isMember == false {
                 arr = e.value
             } else {
@@ -572,7 +572,7 @@ toJson__inner(e reflectElement, isMember bool, tabs int) cpstring {
                     ae.structLayout[j] = m
                     j = j + 1
                 }
-                s = s + toJson__inner(*ae, false, tabs)
+                s = s + oldToJson__inner(*ae, false, tabs)
                 i = i + 1
                 if i < len(arr) {
                     s = s + ",\n"
@@ -587,7 +587,120 @@ toJson__inner(e reflectElement, isMember bool, tabs int) cpstring {
     return "0"
 }
 
+//Old algorithm to convert a var into json.
+//This function does things the wrong way.
+oldToJson(e reflectElement) cpstring {
+    return oldToJson__inner(e, false, 0)
+}
+
 //Converting a var into json.
+//Note that you need to pass a pointer to the var that you want to convert to json:
+// s cpstring = "test"
+// toJson(&s)
+// If the type is already a pointer, this step is not needed.
 toJson(e reflectElement) cpstring {
-    return toJson__inner(e, false, 0)
+    l = strlen(e.type)
+
+    if e.isArray == false && e.type[l-1] != '*' {
+        panic("toJson("+e.name+") of type "+e.type+" but a pointer is required, try: toJson(&"+e.name+").")
+    }
+
+    if e.isArray == false {
+        ol = l
+        for l >= 2 && e.type[l-1] == '*' && e.type[l-2] == '*', l-- {
+            if e.value == null {
+                return "0"
+            }
+            v ptr* = e.value
+            e.value = *v
+        }
+        if l != ol {
+            e.type = e.type[:l]
+        }
+    }
+
+    if e.value == null {
+        return "0"
+    }
+
+    if e.isStruct == true {
+        s = "{"
+        i=0; for i < len(e.structLayout), i++ {
+            m = e.structLayout[i]
+            if m.type[strlen(m.type)-1] != '*' && m.isArray == false {
+                m.type += "*"
+            }
+            m.value = m.calculateOffset(e.value)
+            s += "\""+m.name+"\": " + toJson(m)
+            if i+1 < len(e.structLayout) {
+                s += ", "
+            }
+        }
+        s += "}"
+        return s
+    }
+    
+    if e.isArray == true {
+        s = "["
+        arrp ptr* = e.value
+        arr = <[]ptr>*arrp
+        if arr == null {
+            return "[]"
+        }
+        base = cArr(arr)
+        l = len(arr)
+        es int = noCheck(arr->elemSize)
+        ae = e.arrayElem
+        if ae.type[strlen(ae.type)-1] != '*' && ae.isArray == false {
+            ae.type += "*"
+        }
+        i=0; for i < l, i++ {
+            m = *ae
+            m.value = <ptr>(<int>base + es * i)
+            s += toJson(m)
+            if i+1 < l {
+                s += ", "
+            }
+        }
+        s += "]"
+        return s
+    }
+    
+    if e.type == "int*" || e.type == "int32*" {
+        j int* = e.value
+        return intToStr(*j)
+    }
+
+    if e.type == "cpstring*" {
+        s cpstring* = e.value
+        if s == null {
+            return "\"\""
+        }
+        return "\""+jsonEscapeStr(*s)+"\""
+    }
+
+    if e.type == "float*" || e.type == "float32*" {
+        f float* = e.value
+        return floatToStr(*f)
+    }
+    
+    if e.type == "uint*" || e.type == "uint32*" {
+        uj uint* = e.value
+        return intToStr(*uj)
+    }
+
+    if e.type == "char*" {
+        c char* = e.value
+        return "\""+charToString(*c)+"\""
+    }
+
+    if e.type == "bool*" {
+        b bool* = e.value
+        if *b == true {
+            return "true"
+        }
+        return "false"
+    }
+
+    return "\"invalid: "+e.type+"\""
 }
