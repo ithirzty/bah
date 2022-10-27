@@ -12,7 +12,12 @@ OPTI_checkFuncScopeRef(elems Elems*) {
             if isRCPpointerType(v.type) == false && v.type != "reflectElement" && string(v.name).hasPrefix("____BAH_COMPILER_VAR_") == false {
                 s = searchStruct(v.type, elems)
                 if s != null && currentFn != null {
-                    throwNoticeLine("in \e[1;37m"+currentFn.name+"()\e[0m: argument \e[1;37m"+v.name+"\e[0m ("+v.type+") could be passed by reference.", currentFn.line)
+                    if debug {
+                        throwNoticeLine("in "+currentFn.name+"(): argument "+v.name+" ("+v.type+") could be passed by reference.", currentFn.line)
+
+                    } else {
+                        throwNoticeLine("in \e[1;37m"+currentFn.name+"()\e[0m: argument \e[1;37m"+v.name+"\e[0m ("+v.type+") could be passed by reference.", currentFn.line)
+                    }
                 }
             }
         }

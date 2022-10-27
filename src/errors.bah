@@ -70,9 +70,9 @@ throwErr(tp ptr, format cpstring) {
         info = intToStr(t.line) + ":" + intToStr(pos)
     }
 
-    if debug == true {
+    if debug {
         t Tok* = tp
-        debugError("error", t.line, pos, pos+strlen(t.ogCont), format)
+        debugError("error", t.line, pos, pos+strlen(t.ogCont), &format)
         debugExit()
     } else {
         advertiseGeneric()
@@ -84,14 +84,26 @@ throwErr(tp ptr, format cpstring) {
 }
 
 throwWarning(s cpstring) {
+    if debug {
+        debugError("warning", -1, -1, -1, &s)
+        return
+    }
     println("\e[1;33m[WARNING]\e[0m " + compilerState.currentFile + "\n\e[0m\t" + s + "\e[0m")
 }
 
 throwWarningLine(s cpstring, l int) {
+    if debug {
+        debugError("warning", l, 0, 0, &s)
+        return
+    }
     println("\e[1;33m[WARNING]\e[0m " + compilerState.currentFile + ":"+intToStr(l)+"\n\e[0m\t" + s + "\e[0m")
 }
 
 throwNoticeLine(s cpstring, l int) {
+    if debug {
+        debugError("notice", l, 0, 0, &s)
+        return
+    }
     if noticeEnabled == false {
         return
     }

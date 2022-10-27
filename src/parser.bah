@@ -2329,10 +2329,9 @@ parseIf(l []Tok, fromElse bool, elems Elems*) {
         throwErr(&ft, "Invalid usage of {TOKEN}, must be 'if <condition> {<code>}'")
     }
     condt = l[1]
-    if condt.bahType != "bool" {
-        if condt.bahType != "int" {
-            throwErr(&condt, "Cannot use {TOKEN} as condition in if statement.")
-        }
+    tt = getTypeFromToken(&condt, true, elems)
+    if compTypes(tt, "bool") == false {
+        throwErr(&condt, "Cannot use {TOKEN} as condition in if statement.")
     }
     t = l[2]
     if t.cont != "{" {
