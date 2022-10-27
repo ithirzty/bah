@@ -2,8 +2,6 @@
 #include "string.bah"
 #include "rope.bah"
 
-#define! popen(cmd cpstring, type cpstring) FILE*
-#define! pclose(hndl FILE*) int
 #define! fileno(f FILE*) int
 
 //A wrapper for executting command.

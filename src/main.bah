@@ -23,7 +23,7 @@
     BAH_CC = "gcc"
 }
 //////////////////////BUILD SPECIFIC THINGS//////////////////////
-const BAH_VERSION = "v1.2 (build 128)"
+const BAH_VERSION = "v1.2 (build 129)"
 
 debug = false
 verboseRuntime = false
@@ -393,7 +393,7 @@ main(args []cpstring) int {
         }
 
         randFileName = "-x c - -x none" //reading from stdin
-        gccArgs = BAH_CC+" -I \""+BAH_DIR+"libs/"+BAH_OS+"/include/\" -L \""+BAH_DIR+"libs/"+BAH_OS+"/\" "+ randFileName+ " "+isStatic+" "+obj+" -w -O1 -o "+fileName //the compiler (C compiler) command
+        gccArgs = BAH_CC+" -I \""+BAH_DIR+"libs/"+BAH_OS+"/include/\" -L \""+BAH_DIR+"libs/"+BAH_OS+"/\" "+ randFileName+ " "+isStatic+" "+obj+" -w -O1 -g1 -o "+fileName //the compiler (C compiler) command
         
         if flags.isSet("l") == 1 {
             gccArgs = gccArgs + " -c"

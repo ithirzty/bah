@@ -3413,6 +3413,8 @@ parseLine(line []Tok, elems Elems*) {
             currSetVar = v
         }
     }
+
+    OUTPUT += rope("\n#line "+intToStr(line[0].line)+" \""+compilerState.currentFile+"\"\n")
     
     parsed = false
     if ltp == LINE_TYPE_INCLUDE {
@@ -3448,7 +3450,6 @@ parseLine(line []Tok, elems Elems*) {
         if fn != null && fn.returns != null && isRCPtype(fn.returns.type, elems) {
             registerRCPvar(fn.returns.type, ft.cont, elems)
             return
-            // println("carefull: "+compilerState.currentFile+":"+intToStr(ft.line))
         }
     }
 
@@ -3489,7 +3490,7 @@ parseLine(line []Tok, elems Elems*) {
         parseCapture(line, elems)
         parsed = true
     }
-    
+
     if parsed == false{
         throwErr(&ft, "{TOKEN} not expected.")
     }
