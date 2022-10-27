@@ -627,7 +627,10 @@ toJson(e reflectElement) cpstring {
         s = "{"
         i=0; for i < len(e.structLayout), i++ {
             m = e.structLayout[i]
-            if m.type[strlen(m.type)-1] != '*' && m.isArray == false {
+            v ptr = e.value
+            if m.isArray == true {
+                m.arrayElem.type += "*"
+            } else if m.type[strlen(m.type)-1] != '*' {
                 m.type += "*"
             }
             m.value = m.calculateOffset(e.value)
