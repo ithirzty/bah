@@ -237,28 +237,12 @@ __BAH_panic(e cpstring, line cpstring) {
 		max = -1
 
 		selfPath = buffer 4096
+		memset(selfPath, 0, 4096)
 		readlink("/proc/self/exe", selfPath, 4096)
 
 		i=1; for i < size, i++ {
 			p int = arr[i]
-			closest __Bah_fnName_mapper
-			dist = -1
-			j=0; for j < len(__Bah_fnNames), j++ {
-				fnn = __Bah_fnNames[j]
-				fnp int = fnn.p
-				if fnp < min || min == -1 {
-					min = fnp
-				}
-				if fnp > max || max == -1 {
-					max = fnp
-				}
-				if p > fnp {
-					if dist == -1 || p - fnp < dist {
-						dist = p - fnp
-						closest = fnn
-					}
-				}
-			}
+
 			buff = buffer 2048
 			memset(buff, 0, 2048)
 			noCheck(sprintf(buff, "addr2line %p -f -i -e %s", p, selfPath))
@@ -283,13 +267,14 @@ __BAH_panic(e cpstring, line cpstring) {
 				path[j-start] = s[j]
 			}
 
-			if closest.n == "main" {
+			if <cpstring>name == "__BAH__main" || <cpstring>name == "main" {
+				name = "main"
 				path = "<internal>"
 			}
 			
 			print("\t\033[33m"+<cpstring>name+"\033[m() \033[32m"+<cpstring>path+"\033[m \n")
-			// system(buff)
-			if closest.n == "main" {
+
+			if <cpstring>name == "main" {
 				break
 			}
 		}

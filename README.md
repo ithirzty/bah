@@ -47,8 +47,21 @@ before installing it. Dont worry this is simple, simply run:
 ```
 
 > Note: yoy may need to run the following command after install if the version is Bah compiler is out of date `clang -I "/opt/bah/libs/darwin/include/" -L "/opt/bah/libs/darwin/" ./installer/darwin.c -O1 -w -lgc -lpthread -lm -o /opt/bah/bah`
+<div align="center">
+<a href="https://youtu.be/druJwBluvLc">
+<img src="./extra/install_thumb.jpg" alt="installation tutorial" />
+</a>
+</div>
 
-[![installation tutorial](./extra/install_thumb.jpg)](https://youtu.be/druJwBluvLc)
+## More?
+Yeah, there is more.
+You can also install the Bah extension for VS Code:
+<div align="center">
+<a href="https://github.com/ithirzty/bah-vscode">
+<img src="./extra/extension.png" alt="bah extension" />
+</a>
+</div>
+
 
 ## Updating
 To update, execute the following:

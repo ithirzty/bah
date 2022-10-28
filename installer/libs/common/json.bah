@@ -22,6 +22,10 @@ struct jsonElement {
     content: cpstring
     children: []jsonElement*
 
+    contentFinal: bool = false
+    from: int
+    to: int
+
     //If the current element is of type map, this method is used to get a children element mapped to this key.
     get(key cpstring) jsonElement* {
         l = len(this.children)
@@ -52,8 +56,10 @@ struct jsonElement {
 
     //To get the current element as a cpstring no matter its type.
     str() cpstring {
-        ctn = this.content
-        return ctn
+        if this.contentFinal == false {
+            this.content = this.content[this.from : this.to]
+        }
+        return this.content
     }
 
 
@@ -78,16 +84,16 @@ json_scan_inner(thisp ptr, e reflectElement, isMember bool) {
             }
         } else if e.type == "int" {
             ep int* = e.value
-            *ep = strToInt(this.content)
+            *ep = strToInt(this.str())
         } else if e.type == "cpstring" {
             ep cpstring* = e.value
-            *ep = this.content
+            *ep = this.str()
         } else if e.type == "float" {
             ep float* = e.value
-            *ep = strToFloat(this.content)
+            *ep = strToFloat(this.str())
         } else if e.type == "bool" {
             ep bool* = e.value
-            if this.content == "1" || this.content == "true" {
+            if this.str() == "1" || this.str() == "true" {
                 *ep = true
             } else {
                 *ep = false
@@ -108,7 +114,7 @@ json_scan_inner(thisp ptr, e reflectElement, isMember bool) {
                 }
                 i=0; for i < len(this.children) {
                     c = this.children[i]
-                    arr[i] = strToInt(c.content)
+                    arr[i] = strToInt(c.str())
                     i = i + 1
                 }
             } else if ae.type == "float" {
@@ -121,7 +127,7 @@ json_scan_inner(thisp ptr, e reflectElement, isMember bool) {
                 }
                 i=0; for i < len(this.children) {
                     c = this.children[i]
-                    arr[i] = strToFloat(c.content)
+                    arr[i] = strToFloat(c.str())
                     i = i + 1
                 }
             } else if ae.type == "cpstring" {
@@ -134,7 +140,7 @@ json_scan_inner(thisp ptr, e reflectElement, isMember bool) {
                 }
                 i=0; for i < len(this.children) {
                     c = this.children[i]
-                    arr[i] = c.content
+                    arr[i] = c.str()
                     i = i + 1
                 }
             } else if ae.isStruct == true {
@@ -188,220 +194,192 @@ json_scan_inner(thisp ptr, e reflectElement, isMember bool) {
         }
 }
 
-//To parse a json document.
-//This will return a pointer to the main element.
-parseJson(s cpstring) jsonElement* {
-    jsonElem = new jsonElement
-    lenS = strlen(s)
+jError = "" //Inner variable containing the last parsing error.
 
-    i=0; for i < lenS {
-        if isSpace(cpstringCharAt(s, i)) == false {
+//Internal function called by parseJson().
+parseJson_inner(s cpstring, ip int*, l int) jsonElement* {
+    jError = ""
+    i = *ip
+
+    for i < l, i++ {
+        if isSpace(s[i]) == false {
             break
         }
-        i = i + 1
+    }
+    
+    j = new jsonElement {
+        content: s
+        from: i
+        to: l
     }
 
-    fc = cpstringCharAt(s, i)
-    if fc == '[' {
-        jsonElem.type = JSON_TYPE_ARRAY
-    } else if fc == '{' {
-        jsonElem.type = JSON_TYPE_MAP
-    } else if fc == <char>34 {
-        jsonElem.type = JSON_TYPE_STRING
-        ns = []char
-        i = i + 1
-        start = i
-        for i < lenS - 1 {
-            c = cpstringCharAt(s,i)
-            if i > start && cpstringCharAt(s, i-1) == <char>92 {
-                if c == 'n' {
-                    c = <char>10
-                } else if c == 'r' {
-                    c = <char>13
-                }
-                ns[len(ns)-1] = c
-            } else {
-                ns[len(ns)] = c
-            }
-            i = i + 1
-        }
-        jsonElem.content = arrToStr(ns)
-    } else if isNumber(cpstringCharAt(s, strlen(s)-1)) {
-        isFloat = false
-        for i < lenS {
-            if cpstringCharAt(s,i) == '.' {
-                isFloat = true
+    if s[i] == '[' {
+        j.type = JSON_TYPE_ARRAY
+        i++
+        for i < l, i++ {
+            if isSpace(s[i]) == false {
                 break
             }
-            i = i + 1
         }
+        if s[i] != ']' {
+            for i < l, i++ {
+                child = parseJson_inner(s, &i, l)
+                if child == null {
+                    return null
+                }
+                j.children[len(j.children)] = child
+                for i < l, i++ {
+                    if isSpace(s[i]) == false {
+                        break
+                    }
+                }
 
-        if isFloat == true {
-            jsonElem.type = JSON_TYPE_FLOAT
+                if s[i] != ',' {
+                    if s[i] != ']' {
+                        jError = "json: expected array separator (pos: "+intToStr(i)+")"
+                        return null
+                    }
+                    i++
+                    break
+                }
+
+                for i < l, i++ {
+                    if isSpace(s[i]) == false {
+                        break
+                    }
+                }
+
+            }
         } else {
-            jsonElem.type = JSON_TYPE_INT
+            i++
         }
-        jsonElem.content = s
-    } else {
-        return null
-    }
-
-    if jsonElem.type == JSON_TYPE_ARRAY {
-        i = i + 1
-
-        trim = 1
-        j=lenS-1; for j >= 0 {
-            c = cpstringCharAt(s, j)
-            if isSpace(c) {
-                trim = trim + 1
-            } else {
+        j.to = i
+    } else if s[i] == '{' {
+        j.type = JSON_TYPE_MAP
+        i++
+        for i < l, i++ {
+            if isSpace(s[i]) == false {
                 break
             }
-            j = j - 1
         }
-
-        for i < lenS - 1 {
-            c = cpstringCharAt(s, i)
-            if isSpace(c) == false {
-                break
-            }
-            i = i + 1
-        }
-        currentElem = []char
-        currentBracks = 0
-        currentBraces = 0
-        currentQuotes = 0
-        elemIndex = 0
-        for i < lenS - trim {
-            c = cpstringCharAt(s, i)
-            if c == <char>34 {
-                if currentQuotes == 0 {
-                    currentQuotes = 1
-                } else {
-                    currentQuotes = 0
+        if s[i] != '}' {
+            for i < l, i++ {
+                for i < l, i++ {
+                    if isSpace(s[i]) == false {
+                        break
+                    }
                 }
-            }else if c == '[' {
-                currentBracks = currentBracks + 1
-            } else if c == ']' {
-                currentBracks = currentBracks - 1
-            } else if c == '{' {
-                currentBraces = currentBraces + 1
-            } else if c == '}' {
-                currentBraces = currentBraces - 1
+                if s[i] != '"' {
+                    jError = "json: expected string as map key (pos: "+intToStr(i)+")"
+                    return null
+                }
+                i++
+                ns = i
+                for i < l, i++ {
+                    if s[i] == '"' && s[i-1] != <char>92 {
+                        break
+                    }
+                }
+                name = s[ns:i]
+                i++
+
+                for i < l, i++ {
+                    if isSpace(s[i]) == false {
+                        break
+                    }
+                }
+
+                if s[i] != ':' {
+                    jError = "json: expected : between key and value (pos: "+intToStr(i)+")"
+                    return null
+                }
+
+                i++
+
+                child = parseJson_inner(s, &i, l)
+                if child == null {
+                    return null
+                }
+                child.key = name
+                j.children[len(j.children)] = child
+                
+                for i < l, i++ {
+                    if isSpace(s[i]) == false {
+                        break
+                    }
+                }
+
+                if s[i] != ',' {
+                    if s[i] != '}' {
+                        jError = "json: expected map separator (pos: "+intToStr(i)+")"
+                        return null
+                    }
+                    i++
+                    break
+                }
             }
-            total = currentBracks + currentBraces + currentQuotes
-            if total > 0 {
-                currentElem[len(currentElem)] = c
-                i = i + 1
+        } else {
+            i++
+        }
+        j.to = i
+    } else if s[i] == '"' {
+        j.type = JSON_TYPE_STRING
+        i++
+        j.from = i
+        mem = []char
+        for i < l, i++ {
+            if s[i] == '"' && s[i-1] != <char>92 {
+                break
+            }
+            if s[i] == <char>92 {
+                j.contentFinal = true
+                if len(mem) == 0 {
+                    sa = strAsArr(s)
+                    mem = sa[j.from:i]
+                    if s[i+1] == 'r' {
+                        mem[len(mem)] = <char>13
+                    } else if s[i+1] == 'n' {
+                        mem[len(mem)] = <char>10
+                    } else {
+                        mem[len(mem)] = s[i+1]
+                    }
+                }
+                i++
                 continue
             }
-            if c == ',' {
-                child = parseJson(arrToStr(currentElem))
-                if child != null {
-                    jsonElem.children[elemIndex] = child
-                }
-                clear(currentElem)
-                elemIndex = elemIndex + 1
-            } else {
-                if isSpace(c) {
-                    i = i + 1
-                    continue
-                }
-                currentElem[len(currentElem)] = c
+            if len(mem) != 0 {
+                mem[len(mem)] = s[i]
             }
-            i = i + 1
         }
-        child = parseJson(arrToStr(currentElem))
-        if child != null {
-            jsonElem.children[elemIndex] = child
+        if len(mem) != 0 {
+            j.content = arrToStr(mem)
         }
-
-    } else if jsonElem.type == JSON_TYPE_MAP {
-        i = i + 1
-        trim = 1
-        j=lenS-1; for j >= 0 {
-            c = cpstringCharAt(s, j)
-            if isSpace(c) {
-                trim = trim + 1
-            } else {
+        j.to = i
+        i++
+    } else if isNumber(s[i]) {
+        j.type = JSON_TYPE_INT
+        for i < l, i++ {
+            if isNumber(s[i]) == false {
                 break
             }
-            j = j - 1
-        }
-        for i < lenS - 1 {
-            c = cpstringCharAt(s, i)
-            if isSpace(c) == false {
-                break
+            if s[i] == '.' {
+                j.type = JSON_TYPE_FLOAT
             }
-            i = i + 1
         }
-        currentElem = []char
-        currentKey = []char
-        isVal = 0
-        currentBracks = 0
-        currentBraces = 0
-        currentQuotes = 0
-        elemIndex = 0
-        for i < lenS-trim {
-            c = cpstringCharAt(s,i)
-            if c == <char>34 {
-                if currentQuotes == 0 {
-                    currentQuotes = 1
-                } else {
-                    currentQuotes = 0
-                }
-            }else if c == '[' {
-                currentBracks = currentBracks + 1
-            } else if c == ']' {
-                currentBracks = currentBracks - 1
-            } else if c == '{' {
-                currentBraces = currentBraces + 1
-            } else if c == '}' {
-                currentBraces = currentBraces - 1
-            }
-            total = currentBracks + currentBraces + currentQuotes
-            if total > 0 {
-                if isVal == 1 {
-                    currentElem[len(currentElem)] = c
-                } else {
-                    currentKey[len(currentKey)] = c
-                }
-                i = i + 1
-                continue
-            }
-            if c == ':' {
-                isVal = 1
-            }else if c == ',' {
-                elem = parseJson(arrToStr(currentElem))
-                if elem != null {
-                    elem.key = arrToStr(currentKey)
-                    jsonElem.children[elemIndex] = elem
-                    elemIndex = elemIndex + 1
-                }
-                clear(currentElem)
-                clear(currentKey)
-                isVal = 0
-            } else {
-                if isSpace(c) {
-                    i = i + 1
-                    continue
-                }
-                if isVal == 1 {
-                    currentElem[len(currentElem)] = c
-                } else {
-                    currentKey[len(currentKey)] = c
-                }
-            }
-            i = i + 1
-        }
-        elem = parseJson(arrToStr(currentElem))
-        if elem != null {
-            elem.key = arrToStr(currentKey)
-            jsonElem.children[elemIndex] = elem
-        }
+        j.to = i
     }
 
-    return jsonElem
+    *ip = i
+    return j
+}
+
+//To parse a json document.
+//This will return a pointer to the main element.
+//This new version of parseJson() uses lazy parsing.
+parseJson(s cpstring) jsonElement* {
+    l = strlen(s)
+    i = 0
+    return parseJson_inner(s, &i, l)
 }
 
 //Returns weither a char is a valid string json char.
