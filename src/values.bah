@@ -651,7 +651,6 @@ valueArr(l []Tok, i int, ltp lineType, elems Elems*) int {
 
     } else if ptt.str() == "cpstring" { // is a string
         t.isFunc = true
-        t.type = TOKEN_TYPE_FUNC
         if split == false {
             t.bahType = "char"
             index = memory[0]
