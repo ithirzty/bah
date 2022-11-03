@@ -132,20 +132,23 @@ lexer(s cpstring, codeLength uint) []Tok {
                 if c == <char>92 {
                     memory[len(memory)] = <char>92
                     memory[len(memory)] = s[i+1]
+                    if s[i+1] == <char>10 {
+                        lineNb++
+                    }
                     i++
                     continue
                 }
                 
                 //string ending
                 if c == '"' {
-                        memory[len(memory)] = c
-                        break
+                    memory[len(memory)] = c
+                    break
                 }
                 //escaping line returns
                 if c == <char>10 {
                     memory[len(memory)] = <char>92
                     memory[len(memory)] = 'n'
-                    lineNb = lineNb + 1
+                    lineNb++
                     continue
                 }
                 memory[len(memory)] = c
