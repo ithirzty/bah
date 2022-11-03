@@ -11,25 +11,34 @@
 }
 
 #define __BAH_panic(e cpstring, l cpstring)
-
 #define __Bah_safe_string(s cpstring) cpstring
+#define cpstringSubsitute(s cpstring, i int, l int) cpstring
 
 const null = <ptr>0
 
 const true = <bool>1
 const false = <bool>0
 
+const cpstringLenSize = 4
+
 #define! exit(i int)
 #define! strcmp(a cpstring, b cpstring) int
 #define! strlen(a cpstring) int
-#define! sizeof(p ptr) int
+#define! sizeof(p ptr) uint32
+
+cStr(s cpstring) char* {
+	if <ptr>s == null {
+		return null
+	}
+	return <char*>(<int>s + cpstringLenSize)
+}
 
 //Compare two cpstrings.
 //This function is used by the compiler.
 __bah_strcmp(a cpstring, b cpstring) int {
-    ai = <int>a
-	bi = <int>b
-	if ai*bi == 0 {
+    ai int = a
+	bi int = b
+	if ai * bi == 0 {
 		return 1
 	}
     return strcmp(a, b)
@@ -39,14 +48,22 @@ const strcmp = __bah_strcmp
 
 //Gives the length of a cpstring.
 //This is used by the compiler.
-__bah_strlen(s cpstring) int {
-    if <ptr>s == null {
-        return 0
-    }
-    return strlen(s)
+Cstrlen(s char*) int {
+	if s == null {
+		return 0
+	}
+	return noCheck(strlen(s))
 }
 
-const strlen = __bah_strlen
+__bah_strlenSTR(s ptr) uint32 {
+	if s == null {
+		return 0
+	}
+	i uint32* = s
+	return *i
+}
+
+const strlen = __bah_strlenSTR
 
 #include "<stdio.h>"
 #include "<unistd.h>"
@@ -57,9 +74,11 @@ const strlen = __bah_strlen
 #define! write(fd FILE*, t cpstring, l int)
 #define! read(fd FILE*, t cpstring, l int) int
 
+#define len(a ptr) uint
+
 //Prints text to the terminal.
 print(s cpstring) {
-    write(<ptr>1, s, strlen(s))
+    write(<ptr>1, s, len(s))
 }
 
 #unoptimized {
@@ -73,6 +92,26 @@ print(s cpstring) {
 
 
 #include "memory.bah"
+
+buffToStr(b char*) cpstring {
+	l = strlen(<ptr>b)
+	s = memoryAllocSTR(l+1)
+	memcpy(s, b, l)
+	ln uint32* = s
+	*ln = l
+	return s
+}
+
+argsToArr(a char**, l int) []cpstring {
+    r = []cpstring
+    allocateArray(r, l)
+    i=0; for i < l, i++ {
+        sp char** = <char**>(<int>a + i * sizeof(char*))
+        s = *sp
+        r[i] = buffToStr(s)
+    }
+    return r
+}
 
 __Bah_realocate_arr(arr []ptr, nLength uint32) {
 	if nLength < noCheck(arr->length) {
@@ -94,6 +133,17 @@ __Bah_realocate_arr(arr []ptr, nLength uint32) {
 	return
 }
 
+cStrToBah(s char*) cpstring {
+	if s == null {
+		return null
+	}
+	l = strlen(<ptr>s)
+	nstr = memoryAllocSTR(l+1)
+	ln uint32* = nstr
+	*ln = l
+	memcpy(nstr, s, l)
+	return nstr
+} 
 
 #define! alloca(s int) ptr
 __Bah_multiple_concat(b cpstring*, l uint32) cpstring {
@@ -103,7 +153,7 @@ __Bah_multiple_concat(b cpstring*, l uint32) cpstring {
 
     //calculate lengths of cpstrings and total length
     i=0; for i < l, i++ {
-        sl = strlen(noCheck(b[i]))
+        sl = len(<cpstring>noCheck(b[i]))
         tot += sl
         noCheck(lens[i] = sl)
     }
@@ -113,9 +163,12 @@ __Bah_multiple_concat(b cpstring*, l uint32) cpstring {
 
     //concatenate all cpstring
     i=0; for i < l, i++ {
-        memcpy(<ptr>(<int>r + offset), noCheck(b[i]), noCheck(lens[i]))
+        memcpy(<ptr>(<int>r + offset + cpstringLenSize), noCheck(b[i]+cpstringLenSize), noCheck(lens[i]))
         offset += noCheck(lens[i])
     }
+
+	ln uint32* = r
+	*ln = tot
 
     return r
 }
@@ -131,8 +184,8 @@ __Bah_multiple_concat(b cpstring*, l uint32) cpstring {
 //Function used by the compiler when concatenating cpstrings.
 //You can use it as a function or do cpstring+cpstring.
 concatCPSTRING(a cpstring, b cpstring) cpstring {
-	lenA = strlen(a)
-	lenB = strlen(b)
+	lenA = len(a)
+	lenB = len(b)
 	r cpstring = memoryAlloc(lenA + lenB + 1)
 	strncpy(r,a,lenA)
 	strcat(r,b)
@@ -142,9 +195,11 @@ concatCPSTRING(a cpstring, b cpstring) cpstring {
 //Funcion used by the compiler to declare a cpstring.
 //It allocates memory for the cpstring.
 __STR(a cpstring) cpstring {
-	lenA = strlen(a)
+	lenA = len(a)
 	r cpstring = memoryAllocSTR(lenA+1)
 	memcpy(r,a,lenA)
+	ln uint32* = r
+	*ln = lenA
 	return r
 }
 
@@ -172,7 +227,7 @@ __BAH_panic_chan chan:cpstring = null
 //Print an error to the terminal and exits the program.
 //Please use panic() instead.
 __Bah_common_panic(e cpstring) {
-    if strlen(e) {
+    if len(e) {
         print(e)
         print("\n")
 		cleanShutDown()
@@ -195,10 +250,10 @@ __Bah_fnNames_append(fnn __Bah_fnName_mapper) {
 
 #linux {
 	#define backtrace(arr ptr, l int) int
-	#define! readlink(p cpstring, res cpstring, l int) int
+	#define! readlink(p cpstring, res char*, l int) int
 }
 
-#define! fgets(r cpstring, l int, f FILE*) cpstring
+#define! fgets(r char*, l int, f FILE*) char*
 #define! popen(cmd cpstring, type cpstring) ptr
 #define! pclose(hndl FILE*) int
 
@@ -206,12 +261,19 @@ fastExec(s cpstring) cpstring {
     hdl = popen(s, "r")
 
     buff = buffer 1024
-    response = ""
-    res ptr = fgets(buff, 1023, hdl)
-    for res != null {
-        response += buff
-        res = fgets(buff, 1023, hdl)
-    }
+    response cpstring = memoryAllocSTR(1)
+	res = <ptr>response
+	i=0; for res != null, i++ {
+		memset(buff, 0, 1024)
+		res = fgets(<char*>buff, 1023, hdl)
+		if res == null || res == <ptr>-1 {
+			break
+		}
+		response = memoryRealloc(response, (i+1)*1023)
+		ln uint32* = response
+		*ln = (i)*1023 + strlen(<ptr>buff)
+		memcpy(<ptr>(<int>response + cpstringLenSize + i*1023), buff, 1024)
+	}
 
     pclose(hdl)
 	return response
@@ -238,43 +300,36 @@ __BAH_panic(e cpstring, line cpstring) {
 
 		selfPath = buffer 4096
 		memset(selfPath, 0, 4096)
-		readlink("/proc/self/exe", selfPath, 4096)
+		readlink("/proc/self/exe", <char*>selfPath, 4096)
 
 		i=1; for i < size, i++ {
 			p int = arr[i]
 
 			buff = buffer 2048
 			memset(buff, 0, 2048)
-			noCheck(sprintf(buff, "addr2line %p -f -i -e %s", p, selfPath))
-			s = fastExec(buff)
-			name = buffer 255
-			path = buffer 2048
-			j=0; for s[j] != null, j++ {
+			noCheck(sprintf(buff, cStr("addr2line %p -f -i -e %s"), p, selfPath))
+			s = fastExec(buffToStr(<char*>buff))
+			name = ""
+			path = ""
+
+			j=0; for j < len(s), j++ {
 				if s[j] == <char>10 {
-					name[j] = null
+					name = s[:j]
 					j++
 					break
 				}
-				name[j] = s[j]
 			}
 
-			start = j
-			for s[j] != null, j++ {
-				if s[j] == <char>10 {
-					path[j-start] = null
-					break
-				}
-				path[j-start] = s[j]
-			}
+			path = s[j:len(s)-1]
 
-			if <cpstring>name == "__BAH__main" || <cpstring>name == "main" {
+			if name == "__BAH__main" || name == "main" {
 				name = "main"
 				path = "<internal>"
 			}
 			
-			print("\t\033[33m"+<cpstring>name+"\033[m() \033[32m"+<cpstring>path+"\033[m \n")
+			print("\t\033[33m"+name+"\033[m() \033[32m"+path+"\033[m \n")
 
-			if <cpstring>name == "main" {
+			if name == "main" {
 				break
 			}
 		}
@@ -320,13 +375,13 @@ __Bah_safe_string(s cpstring) cpstring {
 	if <ptr>s == null {
 		return "(nil)"
 	}
-	if strlen(s) > 50 {
-		s = __STR(s)
-		a = strAsArr(s)
+	if len(s) > 50 {
+		a = strToArr(s)
 		a[47] = '.'
 		a[48] = '.'
 		a[49] = '.'
 		a[50] = <char>0
+		s = arrToStr(a)
 	}
 
 	return "\""+s+"\""
@@ -336,8 +391,7 @@ __Bah_safe_string(s cpstring) cpstring {
 //Used for getting a character by its index inside a cpstring.
 //Used cpstring[i] instead.
 cpstringCharAt(s cpstring, i int) char {
-    c = <char>0
-    noCheck(c = s[i])
+    c = s[i]
     return c
 }
 
@@ -345,7 +399,7 @@ cpstringCharAt(s cpstring, i int) char {
 cpstringSubsitute(s cpstring, i int, l int) cpstring {
 	size = l - i
 	ns = memoryAllocSTR(size+1)
-	memcpy(ns, noCheck(s+i), size)
+	memcpy(ns, noCheck(s+i+cpstringLenSize), size)
 	return ns
 }
 
@@ -373,3 +427,36 @@ arraySubstitute(arr []ptr, i int, l int) ptr {
 }
 
 #include "map.bah"
+
+//This is used to efficiently construct cpstrings character by character.
+//Note that if you want to create a substring of a string efficiently, you can use str[from:to] instead.
+struct strBuilder {
+    buff: cpstring
+    length: uint32
+
+	//Internal function
+    _init() {
+        this.buff = memoryAlloc(cpstringLenSize + 51)
+        this.length = 50
+    }
+
+	//Used for appending a character to the end of the cpstring.
+    append(c char) {
+        ln uint32* = this.buff
+        l = *ln
+        if l >= this.length {
+            this.length *= 2
+            b = memoryRealloc(this.buff, this.length + cpstringLenSize + 1)
+            this.buff = b
+			ln = <uint32*>this.buff
+        }
+        noCheck(this->buff[cpstringLenSize + l] = c)
+        *ln = l + 1
+    }
+
+	//Used for getting the resulting cpstring.
+    str() cpstring {
+        return this.buff
+    }
+
+}

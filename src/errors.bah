@@ -1,6 +1,3 @@
-#include "iostream.bah"
-#include "string.bah"
-
 #include "./lexer.bah"
 #include "./logger.bah"
 
@@ -12,11 +9,12 @@ throwErr(tp ptr, format cpstring) {
     info = ""
     pos = 0
     if tp != null {
-        fm = fileMap{}
-        fileSrcStr = fm.open(compilerState.currentFile)
+        fs = fileStream{}
+        fs.open(compilerState.currentFile, "r")
+        fileSrcStr = fs.readContent()
         t Tok* = tp
         ffmt = string(format)
-        if strlen(t.ogCont) == 0 {
+        if len(t.ogCont) == 0 {
             t.ogCont = t.cont
         }
         ffmt.replace("{TOKEN}", "'"+t.ogCont+"'")
@@ -34,8 +32,9 @@ throwErr(tp ptr, format cpstring) {
         }
 
         pos = t.pos - beg + 1
+        size = fs.getSize()
 
-        i=beg; for i < fm.size, i++ {
+        i=beg; for i < size, i++ {
             c = fileSrcStr[i]
             if c == <char>10 {
                 break
@@ -43,8 +42,8 @@ throwErr(tp ptr, format cpstring) {
             if i == t.pos {
                 errCont = []char
                 offset = i
-                for i < fm.size, i++ {
-                    if i-offset >= strlen(t.ogCont) {
+                for i < size, i++ {
+                    if i-offset >= len(t.ogCont) {
                         break
                     }
                     if fileSrcStr[i] != t.ogCont[i-offset] {
@@ -65,14 +64,14 @@ throwErr(tp ptr, format cpstring) {
             line[len(line)] = c
         }
 
-        fm.close()
+        fs.close()
         str = arrToStr(line)
         info = intToStr(t.line) + ":" + intToStr(pos)
     }
 
     if debug {
         t Tok* = tp
-        debugError("error", t.line, pos, pos+strlen(t.ogCont), &format)
+        debugError("error", t.line, pos, pos+len(t.ogCont), &format)
         debugExit()
     } else {
         advertiseGeneric()

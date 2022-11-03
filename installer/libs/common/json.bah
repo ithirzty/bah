@@ -34,13 +34,13 @@ struct jsonElement {
             fc = cpstringCharAt(elem.key,0)
             if fc == <char>34 {
                 nk = []char
-                lk = strlen(elem.key)
+                lk = len(elem.key)
                 j=1; for j < lk - 1 {
                     c = cpstringCharAt(elem.key, j)
                     nk[j-1] = c
                     j = j + 1
                 }
-                if arrAsStr(nk) == key {
+                if arrToStr(nk) == key {
                     return elem
                 }
             } else {
@@ -328,14 +328,13 @@ parseJson_inner(s cpstring, ip int*, l int) jsonElement* {
         j.from = i
         mem = []char
         for i < l, i++ {
-            if s[i] == '"' && s[i-1] != <char>92 {
+            if s[i] == '"' {
                 break
             }
             if s[i] == <char>92 {
                 j.contentFinal = true
                 if len(mem) == 0 {
-                    sa = strAsArr(s)
-                    mem = sa[j.from:i]
+                    mem = strToArr(s[j.from:i])
                     if s[i+1] == 'r' {
                         mem[len(mem)] = <char>13
                     } else if s[i+1] == 'n' {
@@ -391,7 +390,7 @@ parseJson_inner(s cpstring, ip int*, l int) jsonElement* {
 //This will return a pointer to the main element.
 //This new version of parseJson() uses lazy parsing.
 parseJson(s cpstring) jsonElement* {
-    l = strlen(s)
+    l = len(s)
     i = 0
     return parseJson_inner(s, &i, l)
 }
@@ -406,11 +405,11 @@ json_isPrintable(c uint32) bool {
 
 //Used for escaping strings for json marshalling.
 jsonEscapeStr(s cpstring) cpstring {
-    a = strAsArr(s)
     r = []char
+    l = len(s)
 
-    i=0; for i < len(a) {
-        c = a[i]
+    i=0; for i < l {
+        c = s[i]
         if c == <char>34 {
             r[len(r)] = <char>92
         } else if c == <char>10 {
@@ -427,7 +426,7 @@ jsonEscapeStr(s cpstring) cpstring {
         if json_isPrintable(<uint32>c) == false {
             if <byte>c == <byte>195 {
                 r[len(r)] = c
-                r[len(r)] = a[i+1]
+                r[len(r)] = s[i+1]
                 i++
             }
             i++
@@ -437,9 +436,7 @@ jsonEscapeStr(s cpstring) cpstring {
         i = i + 1
     }
 
-    r[len(r)] = null
-
-    return arrAsStr(r)
+    return arrToStr(r)
 }
 
 //Function used by oldToJson() to convert a var to json string.
@@ -591,7 +588,7 @@ oldToJson(e reflectElement) cpstring {
 // toJson(&s)
 // If the type is already a pointer, this step is not needed.
 toJson(e reflectElement) cpstring {
-    l = strlen(e.type)
+    l = len(e.type)
 
     if e.isArray == false && e.type[l-1] != '*' {
         panic("toJson("+e.name+") of type "+e.type+" but a pointer is required, try: toJson(&"+e.name+").")
@@ -622,7 +619,7 @@ toJson(e reflectElement) cpstring {
             v ptr = e.value
             if m.isArray == true {
                 m.arrayElem.type += "*"
-            } else if m.type[strlen(m.type)-1] != '*' {
+            } else if m.type[len(m.type)-1] != '*' {
                 m.type += "*"
             }
             m.value = m.calculateOffset(e.value)
@@ -646,7 +643,7 @@ toJson(e reflectElement) cpstring {
         l = len(arr)
         es int = noCheck(arr->elemSize)
         ae = e.arrayElem
-        if ae.type[strlen(ae.type)-1] != '*' && ae.isArray == false {
+        if ae.type[len(ae.type)-1] != '*' && ae.isArray == false {
             ae.type += "*"
         }
         i=0; for i < l, i++ {

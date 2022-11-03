@@ -100,7 +100,7 @@ struct! timeval {
 #define! htons(p int) uint
 #define! connect(sockfd int, ser_addr sockaddr_in*, s int) int
 #define! send(sockfd int, msg cpstring, msglen int, c int) int
-#define! recv(sockfd int, buff cpstring, bufflen int, c int) int
+#define! recv(sockfd int, buff char*, bufflen int, c int) int
 #define! close(sockfd int) int
 #define! htonl(inaddrt int) char
 #define! bind(sockfd int, ser_addr sockaddr_in*, s int) int
@@ -165,17 +165,24 @@ struct response_buffer {
     //Returns the buffer as an array of char.
     arr() []char {
         a = []char
-        noCheck(a->data = this->data)
+        noCheck(a->data = this->data + cpstringLenSize)
         noCheck(a->length = this->len)
         return a
     }
 
     //Appends data to the buffer.
     //s is the length of read data to append.
-    append(buff cpstring, s int) {
-        this.data = memoryRealloc(this.data, this.len + s)
-        memcpy(noCheck(this->data + this->len), buff, s)
-        this.len = this.len + s
+    append(buff char*, s int) {
+        if this.data == null {
+            this.data = memoryAllocSTR(s+1)
+        } else {
+            d cpstring = memoryRealloc(this.data, this.len + s + 1)
+            ln uint32* = d
+            this.data = d
+            *ln = this.len + s
+            memcpy(<ptr>(<int>d + cpstringLenSize + this.len), buff, s)
+            this.len = this.len + s
+        }
     }
 
 }
@@ -357,7 +364,7 @@ struct http_socket {
         if this.isOpened() == false {
             return false
         }
-        return send(this.sockfd, s, strlen(s), 0) > 0
+        return send(this.sockfd, s, len(s), 0) > 0
     }
 
     //To send data as bytes through the socket.
@@ -365,32 +372,32 @@ struct http_socket {
         if this.isOpened() == false {
             return false
         }
-        return send(this.sockfd, arrAsStr(bytes), len(bytes), 0) > 0
+        return send(this.sockfd, cArr(bytes), len(bytes), 0) > 0
     }
 
     //To receive data as a response buffer.
     receiveBuff() response_buffer {
-        buff cpstring = memoryAlloc(1025)
+        buff = buffer 1025
         rep = response_buffer{}
 
         #linux {
             iMode = 0
             ioctl(this.sockfd, noCheck(FIONBIO), &iMode)
-            nDataLength = recv(this.sockfd,buff,1024,0)
+            nDataLength = recv(this.sockfd,<char*>buff,1024,0)
             if nDataLength == -1 {
                 return rep
             }
-            rep.append(buff, nDataLength)
+            rep.append(<char*>buff, nDataLength)
             iMode = 1
             ioctl(this.sockfd, noCheck(FIONBIO), &iMode)
         }
 
         for 1 == 1 {
-            nDataLength = recv(this.sockfd,buff,1024,0)
+            nDataLength = recv(this.sockfd,<char*>buff,1024,0)
             if nDataLength <= 0 {
                 break
             }
-            rep.append(buff, nDataLength)
+            rep.append(<char*>buff, nDataLength)
         }
         return rep
     }
@@ -430,7 +437,7 @@ parseUrl(s cpstring) http_url* {
     
     //get protocol
     i = 0
-    max = strlen(s)
+    max = len(s)
     hasProto = false
     for i < max, i++ {
         c = s[i]
@@ -440,14 +447,13 @@ parseUrl(s cpstring) http_url* {
         }
     }
     if hasProto == true {
-        
-        proto = []char
-        i = 0;for s[i] != ':', i++ {
-            proto[len(proto)] = s[i]
+        i = 0;for i < max, i++ {
+            if s[i] == ':' {
+                break
+            }
         }
+        u.proto = string(s[:i])
         i++
-        proto[len(proto)] = null
-        u.proto = string(arrAsStr(proto))
     } else {
         u.proto = string("http")
         i = 0
@@ -459,16 +465,13 @@ parseUrl(s cpstring) http_url* {
     }
 
     //get host
-    hn = []char
-    for s[i] != '/' && s[i] != ':', i++ {
-        c = s[i]
-        hn[len(hn)] = c
-        if i+1 == max {
+    start = i
+    for i != max, i++ {
+        if s[i] == '/' || s[i] == ':' {
             break
         }
     }
-    hn[len(hn)] = null
-    u.host = string(arrAsStr(hn))
+    u.host = string(s[start:i])
 
 
     if i+1 == max {
@@ -481,32 +484,25 @@ parseUrl(s cpstring) http_url* {
         return u
     }
     
-    port = []char
     if s[i] == ':' {
         i++
+        start = i
         for i < max, i++ {
-            c = s[i]
-            if c == '/' {
+            if s[i] == '/' {
                 break
             }
-            port[len(port)] = c
         }
+        u.port = string(s[start:i])
     }
-    port[len(port)] = null
-    u.port = string(arrAsStr(port))
+    
 
     if i+1 == max {
         u.path = string("/")
         return u
     }
 
-    path = []char
-    for i < max, i++ {
-        c = s[i]
-        path[len(path)] = c
-    }
-    path[len(path)] = null
-    u.path = string(arrAsStr(path))
+
+    u.path = string(s[i:])
 
     return u
 }
@@ -519,33 +515,29 @@ __HTTP_urlSafeChars = []char{
 //Used for encoding a string to a safe url format.
 //Encoded strings can be used as url parameter without being interpreted as path.
 urlEncode(s cpstring) cpstring {
-    a = strAsArr(s)
     r = []char
-    tmps cpstring = memoryAlloc(4)
+    tmps = buffer 4
 
-    i=0; for i < len(a), i++ {
-        c = a[i]
+    i=0; for i < len(s), i++ {
+        c = s[i]
         if isAlphaNumeric(c) || c in __HTTP_urlSafeChars {
             r[len(r)] = c
         } else {
             r[len(r)] = '%'
             sprintf(tmps, "%x", c)
-            n = strAsArr(tmps)
-            j=0; for j < len(n), j++ {
-                r[len(r)] = n[j]
+            l = strlen(tmps)
+            j=0; for j < l, j++ {
+                r[len(r)] = tmps[j]
             }
             
         }
     }
 
-    r[len(r)] = <char>0
-
-    return arrAsStr(r)
+    return arrToStr(r)
 }
 
 //Used for decoding an url encoded string.
-urlDecode(encoded cpstring) cpstring {
-    s = strAsArr(encoded)
+urlDecode(s cpstring) cpstring {
     r = []char
 
     i=0; for i < len(s) {
@@ -553,11 +545,10 @@ urlDecode(encoded cpstring) cpstring {
         if c == '+' {
             r[len(r)] = ' '
         } else if c == '%' {
-            hexStr = []char{s[i+1], s[i+2]}
-            c = <char>strtol(arrAsStr(hexStr), null, 16)
+            hexStr = []char{s[i+1], s[i+2], null}
+            c = <char>strtol(cArr(hexStr), null, 16)
             r[len(r)] = c
             i = i + 2
-
         } else {
             r[len(r)] = c
         }
@@ -748,29 +739,6 @@ http_send(connfd int, s cpstring) {
     send(connfd, s, strlen(s), 0)
 }
 
-//To receive from a specified socket.
-//This is depreacted, use http_socket instead.
-http_receive(connfd int) cpstring {
-    buff cpstring = memoryAlloc(1025)
-    response = string("")
-    nDataLength = recv(connfd,buff,1024,0)
-    if nDataLength < 1024 {
-        response.append(buff)
-    } else {
-        for nDataLength > 0 {
-            response.append(buff)
-            if nDataLength < 1024 {
-                trimAmm = 1024 - nDataLength
-                response.trimRight(trimAmm)
-                break
-            } else {
-                nDataLength = recv(connfd,buff,1024,0)
-            }
-        }
-    }
-    return response.str()
-}
-
 
 //HTTP code 200 means everything is ok
 const HTTP_OK = 200
@@ -938,35 +906,36 @@ makeRespFromBody(response response_buffer) http_response* {
     resp.body = new string
 
     arr = response.arr()
+    str = response.str()
 
-    tmp = []char
+    tmp = ""
 
     //HTTP version
     i=0; for i < len(arr), i++ {
         c = arr[i]
         if c == ' ' {
-            tmp[i] = null
+            tmp = str[:i]
             i++
             break
         }
-        tmp[i] = c
     }
-    if strHasPrefix(arrAsStr(tmp), "HTTP/") == false {
+    
+    if strHasPrefix(tmp, "HTTP/") == false {
         return null
     }
 
     //HTTP code
     offset = i
+    tmp = ""
     for i < len(arr), i++ {
         c = arr[i]
         if c == ' ' {
-            tmp[i - offset] = null
+            tmp = str[offset:i]            
             i++
             break
         }
-        tmp[i - offset] = c
     }
-    resp.code = strToInt(arrAsStr(tmp))
+    resp.code = strToInt(tmp)
 
     //Skip Text version of the code
     for i < len(arr), i++ {
@@ -979,39 +948,39 @@ makeRespFromBody(response response_buffer) http_response* {
     //Headers
     for i < len(arr), i++ {
         
-        headerName = []char
-        headerCont = []char
+        headerName = ""
+        headerCont = ""
         //Read header name until ':'
+        start = i
         for i < len(arr), i++ {
             c = arr[i]
             if c == ':' {
+                headerName = str[start:i]
                 i++
                 break
             }
-            headerName[len(headerName)] = c
         }
 
         //Read header content until "\r\n"
+        start = i
         for i < len(arr), i++ {
             c = arr[i]
             if c == <char>13 {
                 if i+1 < len(arr) && arr[i+1] == <char>10 {
+                    headerCont = str[start:i]
                     i += 2
                     break
                 }
             }
-            headerCont[len(headerCont)] = c
         }
 
-        headerName[len(headerName)] = null
-        headerCont[len(headerCont)] = null
-        resp.setHeader(arrAsStr(headerName), arrAsStr(headerCont))
+        resp.setHeader(headerName, headerCont)
 
         //If "\r\n", end of headers, beggining of body
         if arr[i] == <char>13 {
             if i+1 < len(arr) {
                 if arr[i+1] == <char>10 {
-                    i = i + 2
+                    i+= 2
                     break
                 }
             }
@@ -1020,13 +989,10 @@ makeRespFromBody(response response_buffer) http_response* {
     }
 
     //Reading body to file array
-    offset = i
-    for i < len(arr), i++ {
-        resp.file[i-offset] = arr[i]
-    }
+    resp.file = arr[i:]
 
     //Setting body to content of file array + null character.
-    resp.body.set(arrToStr(resp.file))
+    resp.body.set(str[i:])
 
     return resp
 }
@@ -1060,7 +1026,7 @@ makeRespFromBody(response response_buffer) http_response* {
 #define! BIO_do_handshake(bio BIO*) int
 #define! BIO_write(bio BIO*, cont cpstring, size int) int
 #define! BIO_should_retry(bio BIO*) int
-#define! BIO_read(bio BIO*, buff cpstring, size int) int
+#define! BIO_read(bio BIO*, buff char*, size int) int
 #define! BIO_free_all(bio BIO*)
 #define! SSL_CTX_free(ctx SSL_CTX*)
 #define! SSL_CTX_set_timeout(ctx SSL_CTX*, t int) int
@@ -1123,13 +1089,13 @@ makeRawHttpsRequest(host cpstring, message cpstring, timeout int) response_buffe
         }
     }
 
-    buff cpstring = memoryAlloc(1025)
+    buff = buffer 1025
     for true == true {
-        size = BIO_read(bio, buff, 1025)
+        size = BIO_read(bio, <char*>buff, 1025)
         if size <= 0 {
             break
         }
-        resp.append(buff, size)
+        resp.append(<char*>buff, size)
     }
     SSL_CTX_free(ctx)
     BIO_free_all(bio)

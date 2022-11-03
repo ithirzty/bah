@@ -17,15 +17,9 @@ absPath(path cpstring) cpstring {
     #windows {
         buff cpstring = memoryAlloc(4096)
         p = _fullpath(buff, path, 4095)
-        if <ptr>p != null {
-            arr = strAsArr(p)
-            i=0; for i < len(arr), i++ {
-                c = arr[i]
-                if c == <char>92 {
-                    arr[i] = '/'
-                }
-            }
-        }
+        s = string(p)
+        s.replace("\\", "/")
+        p = s.str()
     }
     return p
 }

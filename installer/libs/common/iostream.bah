@@ -4,7 +4,6 @@
 
 
 #include "cBinds.bah"
-#include "memory.bah"
 // #include "string.bah"
 
 #define! FILE ptr
@@ -20,19 +19,23 @@ stdinput() cpstring {
         response = __Bah_iostream_stdinputBuffer
         nDataLength = __Bah_iostream_stdinputBufferLength
     } else {
-        buff cpstring = memoryAlloc(1025)
-        nDataLength = read(<ptr>0,buff,1024)
+        buff = buffer 1025
+        nDataLength = read(<ptr>0,<ptr>buff,1024)
         if nDataLength < 1024 {
-            response += buff
+            tmp = memoryAllocSTR(nDataLength+1)
+            memcpy(tmp, buff, nDataLength)
+            response += tmp
         } else {
             for nDataLength > 0 {
-                response += buff
+                tmp = memoryAllocSTR(nDataLength+1)
+                memcpy(tmp, buff, nDataLength)
+                response += tmp
                 if nDataLength < 1024 {
                     trimAmm = 1024 - nDataLength
                     strTrimRight(&response, trimAmm)
                     break
                 } else {
-                    nDataLength = read(<ptr>0,buff,1024)
+                    nDataLength = read(<ptr>0,<ptr>buff,1024)
                 }
             }
         }
@@ -57,7 +60,7 @@ stdinput() cpstring {
 
 //Prints text to the terminal and adds a line return at the end.
 println(s cpstring) {
-    write(<ptr>1, s+"\n", strlen(s)+1)
+    write(<ptr>1, s+"\n", len(s)+1)
 }
 
 #define! fwrite(w ptr, s int, f int, hndl FILE*)
@@ -154,7 +157,7 @@ struct fileStream {
             return -1
         }
 
-        fputs(content, this.handle)
+        fwrite(content, len(content), 1, this.handle)
 
         return 1
     }
@@ -181,11 +184,7 @@ struct fileStream {
 
         sz = this.getSize()
         r cpstring = memoryAllocSTR(sz + 1)
-        l = fread(r, 1, sz, this.handle)
-        if sz != l {
-            rarr = strAsArr(r)
-            rarr[l] = <char>0
-        }
+        fread(r, 1, sz, this.handle)
         return r
     }
 
@@ -239,14 +238,17 @@ struct fileMap {
 
     //To open a file inside the fileMap.
     //It returns the content of the file as cpstring.
-    open(fileName cpstring) cpstring {
+    open(fileName cpstring) []char {
         #linux {
             this.handle = open(fileName, noCheck(O_RDWR), noCheck(S_IRUSR | S_IWUSR))
             sb = stat{}
             fstat(this.handle, &sb)
             this.size = sb.st_size
             this.p = mmap(0, sb.st_size, noCheck(PROT_READ | PROT_WRITE), noCheck(MAP_SHARED), this.handle, 0)
-            return this.p
+            arr = []char
+            noCheck(arr->length = this->size)
+            noCheck(arr->data = this->p)
+            return arr
         }
         #darwin {
             this.handle = open(fileName, noCheck(O_RDWR), noCheck(S_IRUSR | S_IWUSR))
@@ -254,7 +256,10 @@ struct fileMap {
             fstat(this.handle, &sb)
             this.size = sb.st_size
             this.p = mmap(0, sb.st_size, noCheck(PROT_READ | PROT_WRITE), noCheck(MAP_SHARED), this.handle, 0)
-            return this.p
+            arr = []char
+            noCheck(arr->length = this->size)
+            noCheck(arr->data = this->p)
+            return arr
         }
 
         #windows {
@@ -269,7 +274,7 @@ struct fileMap {
             file = fs.readContent()
             fs.close()
             //file cpstring = mmap(0, sb.st_size, noCheck(PROT_READ | PROT_WRITE), noCheck(MAP_SHARED), this.handle, 0)
-            return file
+            return strToArr(file)
         }
 
     }
@@ -304,7 +309,7 @@ struct fileMap {
 #define! DIR int
 
 struct! dirent {
-    d_name: cpstring
+    d_name: char*
 }
 
 #define! opendir(path cpstring) DIR*
@@ -316,18 +321,13 @@ listFiles(dir cpstring) []cpstring {
     files = []cpstring
     d = opendir(dir)
     file = readdir(d)
-    for file != null {
+    for file != null, file = readdir(d) {
         lf = len(files)
-        if strcmp(file.d_name, ".") == 0 {
-            file = readdir(d)
+        name = cStrToBah(file.d_name)
+        if name == "." || name == ".." {
             continue
         }
-        if strcmp(file.d_name, "..") == 0 {
-            file = readdir(d)
-            continue
-        }
-        files[lf] = __STR(file.d_name)
-        file = readdir(d)
+        files[lf] = name
     }
     closedir(d)
     return files

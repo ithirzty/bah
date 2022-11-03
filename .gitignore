@@ -1,11 +1,9 @@
-./compile.sh
-
-./vgcore.*
-
-./TMP_C_FILE_*.c
-
+.vscode
 builder/osxcross
-builder/osxcross/*
-
 */.DS_Store
 .DS_Store
+src/main
+stc/test.*
+stc/test
+.tmp_bah/
+src/cache.bah

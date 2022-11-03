@@ -1,6 +1,3 @@
-#include "iostream.bah"
-#include "string.bah"
-
 #include "./globals.bah"
 
 
@@ -19,14 +16,14 @@ getRealVar(n cpstring, elems Elems*) variable* {
 }
 
 removeVarUnar(s string*) {
-    arr = s.asArr()
-    i=0; for i < len(arr), i++ {
-        c = arr[i]
-        if c == '&' || c == '*' {
-            delete(arr, i)
-            i--
-            continue
+    i=0; for i < s.length, i++ {
+        c = s.charAt(i)
+        if c != '&' && c != '*' {
+            break
         }
+    }
+    if i != 0 {
+        s.trimLeft(i)
     }
 }
 
@@ -37,12 +34,11 @@ searchVar(name cpstring, elems Elems*) variable* {
     removeVarUnar(&n)
 
     if n.charAt(n.length-1) == ']' {
-        i=n.length; for i > 0 {
+        i=n.length; for i > 0, i-- {
             c = n.charAt(i)
             if c == '[' {
                 break
             }
-            i = i - 1
         }
         tamm = n.length - i
         n.trimRight(tamm)
@@ -57,8 +53,12 @@ searchVar(name cpstring, elems Elems*) variable* {
         if isArr == true {
             vt.trimLeft(2)
         } else if vt.hasPrefix("tuple:") {
-            parts = splitString(vt, ":")
-            vt.set(parts[2].str())
+            i=vt.length-1; for i >= 0, i-- {
+                if vt.charAt(i) == ':' {
+                    break
+                }
+            }
+            vt.trimLeft(i)
         } else {
             vt.set("char") //buffer
         }
@@ -78,11 +78,10 @@ searchVar(name cpstring, elems Elems*) variable* {
     if hasStructSep(&n) && n.count(")") == 0 {
         rn = splitStructSepBefore(&n)
         name = rn.content
-        n.trimLeft(rn.length)
-        if n.hasPrefix(".") {
-            n.trimLeft(1)
+        if n.charAt(rn.length) == '.' {
+            n.trimLeft(1 + rn.length)
         } else {
-            n.trimLeft(2)
+            n.trimLeft(2 + rn.length)
         }
         membs = n.content
         v = searchVar(name, elems)
@@ -106,8 +105,8 @@ searchVar(name cpstring, elems Elems*) variable* {
 
         r = nv.type
         tcc = string(ogName)
-        if tcc.count("&") {
-            r = r + "*"
+        if tcc.charAt(0) == '&' {
+            r += "*"
         }
         nbUnaries = tcc.count("*")
         if nbUnaries > 0 {
@@ -308,12 +307,10 @@ searchFunc(name cpstring, elems Elems*, inclCurr bool) func* {
     n = string(name)
     if hasStructSep(&n) {
         fnName = splitStructSepAfter(n)
-        n.trimRight(fnName.length)
-        c = n.charAt(n.length-1)
-        if c == '.' {
-            n.trimRight(1)
+        if n.charAt(n.length-1-fnName.length) == '.' {
+            n.trimRight(fnName.length + 1)
         } else {
-            n.trimRight(2)
+            n.trimRight(fnName.length + 2)
         }
         name = n.str()
         v = searchVar(name, elems)
@@ -422,11 +419,11 @@ declareStructMethods(v variable*, s cStruct*, elems Elems*) cpstring {
         i=0; for i < len(s.methods), i++ {
             m = s.methods[i]
             if m.name == "_init" {
-                NEXT_LINE += v.name+sep+m.name+"("+amp+v.name+");\n"
+                code += s.name+"__"+m.name+"("+amp+v.name+");\n"
                 found++
             } else if m.name == "_end" {
                 if sep == "->" {
-                    code += "memoryOnEnd("+v.name+", "+v.name+sep+m.name+");\n"
+                    code += "memoryOnEnd("+v.name+", "+s.name+"__"+m.name+");\n"
                 }
                 found++
             }
@@ -568,7 +565,7 @@ canChangeNullState(v variable*, elems Elems*) bool {
 }
 
 removeCast(s cpstring) cpstring {
-    i = strlen(s)-1; for i >= 0, i-- {
+    i = len(s)-1; for i >= 0, i-- {
         if s[i] == ')' {
             s = s[i+1:]
             break

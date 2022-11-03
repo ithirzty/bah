@@ -1,9 +1,12 @@
 #include "iostream.bah"
+#include "string.bah"
 #include "flags.bah"
 #include "rand.bah"
 #include "exec.bah"
 #include "time.bah"
 #include "rope.bah"
+#include "json.bah"
+#include "path.bah"
 
 ///////////////////////OS SPECIFIC THINGS////////////////////////
 #linux {
@@ -23,7 +26,7 @@
     BAH_CC = "gcc"
 }
 //////////////////////BUILD SPECIFIC THINGS//////////////////////
-const BAH_VERSION = "v1.2 (build 132)"
+const BAH_VERSION = "v1.3 (build 133)"
 
 debug = false
 verboseRuntime = false
@@ -45,7 +48,6 @@ isImportedSubObject = false
 #include "./errors.bah"
 #include "./parser.bah"
 #include "./declarative.bah"
-
 
 memErrHandle() cpstring {
     r = "file: "+compilerState.currentFile
@@ -110,8 +112,7 @@ main(args []cpstring) int {
     }
     if flags.isSet("bahDir") == 1 {
         BAH_DIR = flags.get("bahDir")
-        bahDirArr = strAsArr(BAH_DIR)
-        if bahDirArr[len(bahDirArr)-1] != '/' {
+        if BAH_DIR[len(BAH_DIR)-1] != '/' {
             BAH_DIR = BAH_DIR + "/"
         }
         println("Bah directory: "+BAH_DIR)
@@ -165,9 +166,9 @@ main(args []cpstring) int {
     #define array(type)	\
     struct{	\
     type *data; \
-    long int length; \
-    long int realLength; \
-    long int elemSize; \
+    unsigned long int length; \
+    unsigned long int realLength; \
+    unsigned long int elemSize; \
     }
     typedef array(char*)* __BAH_ARR_TYPE_cpstring;
     long int __BAH__main(__BAH_ARR_TYPE_cpstring);
@@ -218,17 +219,11 @@ main(args []cpstring) int {
             OUTPUT += rope("
             #include <gc.h>
             #include <string.h>
+            __BAH_ARR_TYPE_cpstring argsToArr(char** a,long int l);
             int main(int argc, char ** argv) {
             GC_INIT();
-            array(char*) * args = GC_MALLOC(sizeof(array(char*)));
-            args->data = GC_MALLOC(sizeof(char*)*argc);
-            memcpy(args->data, argv, sizeof(char*)*argc);
-            args->elemSize = sizeof(char*);
-            args->length = argc;
             __BAH_init();
-            long int r =  __BAH__main((__BAH_ARR_TYPE_cpstring)args);
-            GC_FREE(args->data);
-            GC_FREE(args);
+            long int r =  __BAH__main(argsToArr(argv, argc));
             return r;
             };
             #define main(v) __BAH__main(v)
@@ -243,15 +238,16 @@ main(args []cpstring) int {
     //opening the file to compile
     fileName = absPath(args[1])
     compilerState.currentFile = fileName
-    fm = fileMap{}
-    f = fm.open(fileName)
-    if fm.isValid() == 0 || fm.size == 0 {
+    fs = fileStream{}
+    fs.open(fileName, "r")
+    f = fs.readContent()
+    if fs.isValid() == 0 || fs.getSize() == 0 {
         println("Could not open file '"+args[1]+"'.")
         exit(1)
     }
     startTime = getTimeUnix() //for timming compilation time
-    tokens = lexer(f, fm.size) //tokenizing the first file
-    fm.close()
+    tokens = lexer(f, fs.getSize()) //tokenizing the first file
+    fs.close()
 
 
     if len(tokens) == 0 {
@@ -321,7 +317,7 @@ main(args []cpstring) int {
             name = fn.name
             if fn.from != "" && strHasPrefix(name, fn.from+"__") {
                 n = string(name)
-                n.trimLeft(strlen(fn.from)+2)
+                n.trimLeft(len(fn.from)+2)
                 name = fn.from+"."+n.str()
             }
             INIT += rope("
@@ -444,6 +440,8 @@ main(args []cpstring) int {
             gccArgs = gccArgs + " -" + l
             i = i + 1
         }
+
+
         OUTPUT = rope("//COMPILE WITH: '"+gccArgs+"'\n") + OUTPUT
         fs = fileStream{}
         fs.open(fileName, "w")

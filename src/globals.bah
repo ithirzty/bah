@@ -1,6 +1,3 @@
-#include "iostream.bah"
-#include "string.bah"
-
 OUTPUT = rope("") //the C output
 NEXT_LINE = "" //if we need to add something to the next C line
 
@@ -42,6 +39,7 @@ struct func {
     returns: variable*
     returned: bool
     isBinding: bool = false
+    isCbinding: bool = false
     from: cpstring = ""
     file: cpstring = ""
     line: uint32 = 1

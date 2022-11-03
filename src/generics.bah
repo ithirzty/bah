@@ -74,7 +74,7 @@ struct genericFunc {
         currGen = oCurrGen
 
         if fn.returned == false {
-            if strlen(fn.returns.type) > 0 {
+            if len(fn.returns.type) > 0 {
                 throwErr(this.tokenName, "Function '"+fn.name+"' is not returned.")
             }
             endRCPscope(fnElems, fn.args)

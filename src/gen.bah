@@ -3,7 +3,7 @@ genArrRealloc(v variable*, preVal cpstring, val cpstring, elems Elems*) cpstring
     vn = string(v.name)
     nstr = splitStringBefore(vn, "->data[")
 
-    vn.trimLeft(strlen(nstr) + 7)
+    vn.trimLeft(len(nstr) + 7)
     vn.trimRight(1)
     nLengthStr = vn.str()
 

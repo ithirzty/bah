@@ -1,11 +1,8 @@
-#include "iostream.bah"
-#include "string.bah"
-
 #include "./lexer.bah"
 #include "./struct.bah"
 
 typeAsStar(t cpstring) bool {
-    return t[strlen(t)-1] == '*'
+    return t[len(t)-1] == '*'
 }
 
 isRCPpointerType(t cpstring) bool {
@@ -25,7 +22,7 @@ isRCPtype(t cpstring, elems Elems*) bool {
 
 
 getCType(t cpstring, elems Elems*) string {
-    if strlen(t) == 0 {
+    if len(t) == 0 {
         return string("void")
     }
 
@@ -76,7 +73,11 @@ getCType(t cpstring, elems Elems*) string {
         tp.replace("ulong", "unsigned long long")
     } else if ctp.str() == "cpstring" {
         tp.replace("cpstring", "char *")
-    } else if ctp.str() == "ptr" {
+    }
+    //  else if ctp.str() == "str" {
+    //     tp.replace("str", "char *")
+    // }
+     else if ctp.str() == "ptr" {
         tp.replace("ptr", "void *")
     } else if ctp.str() == "ushort" {
         tp.replace("ushort", "unsigned short")
@@ -125,18 +126,18 @@ floatTypes = []cpstring{
 }
 
 maybeToPtr(a cpstring) cpstring {
-    if a[strlen(a)-1] != '!' {
+    if a[len(a)-1] != '!' {
         return a
     }
-    a = a[:strlen(a)-1] + "*"
+    a = a[:len(a)-1] + "*"
     return a
 }
 
 compTypeEquiv(a cpstring, b cpstring, first bool) bool {
     //rules
-    if a == "cpstring" && strHasPrefix(b, "buffer:") {
-        return true
-    }
+    // if a == "cpstring" && b == "str" {
+    //     return true
+    // }
 
     if first == false {
         return false

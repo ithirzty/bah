@@ -16,7 +16,7 @@ struct rope {
     addStr(s cpstring, offset int*) {
         if this.left == null && this.right == null {
             off = *offset
-            memcpy(noCheck(s+off), this.str, this.lCount+1)
+            memcpy(noCheck(s+off+cpstringLenSize), this.str, this.lCount+1)
             *offset += this.lCount+1
             return
         }
@@ -30,7 +30,7 @@ struct rope {
         if this.left == null && this.right == null {
             return this.str
         }
-        s cpstring = memoryAlloc(this.totalLen + 1)
+        s cpstring = memoryAllocSTR(this.totalLen + 1)
         offset = 0
         this.left.addStr(s, &offset)
         this.right.addStr(s, &offset)
@@ -43,11 +43,8 @@ struct rope {
     add(root2 rope*) rope* {
         n1 = this.len
         tmp = new rope
-        // tmp.parent = null
         tmp.left = this
         tmp.right = root2
-        // root2.parent = tmp
-        // this.parent = root2.parent
         tmp.totalLen = this.totalLen + root2.totalLen
         tmp.str = null
         return tmp
@@ -79,14 +76,7 @@ createRopeStructure(par rope*, a cpstring, l int, r int) rope* {
     } else {
         node = tmp
         tmp.lCount = r - l
-        j = 0
-        i = l
-        arr cpstring = memoryAlloc(r+1)
-        for i <= r {
-            noCheck(arr[j] = a[i])
-            j++;i++
-        }
-        tmp.str = arr
+        tmp.str = a[l:r+1]
     }
     return tmp
 }
@@ -95,7 +85,7 @@ createRopeStructure(par rope*, a cpstring, l int, r int) rope* {
 //Returns the difference of size between the new one and the old one.
 //The return value needs to be added to the parent ropes.
 ropeSet(r rope*, a cpstring) int {
-    n1 = strlen(a)
+    n1 = len(a)
     diff = n1 - r.totalLen
     nr = createRopeStructure(null, a, 0, n1-1)
     nr.totalLen = n1
@@ -117,7 +107,7 @@ concatenateRopes(root1 rope*, root2 rope*) rope* {
 
 //Used to initiate a rope with a cpstring.
 rope(a cpstring) rope* {
-    n1 = strlen(a)
+    n1 = len(a)
     r = createRopeStructure(null, a, 0, n1-1)
     r.totalLen = n1
     r.len = n1

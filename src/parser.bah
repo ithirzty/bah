@@ -1,6 +1,4 @@
 #include "iostream.bah"
-#include "string.bah"
-#include "path.bah"
 
 #include "./logger.bah"
 #include "./lexer.bah"
@@ -177,12 +175,11 @@ parseCast(line []Tok, elems Elems*, guard bool) []Tok {
 }
 
 getDirFromFile(f cpstring) cpstring {
-    p = strAsArr(__STR(f))
-    i = len(p)-1; for i >= 0 {
-        c = p[i]
+    l int = len(f)
+    i = l-1; for i >= 0 {
+        c = f[i]
         if c == '/' {
-            p[i+1] = <char>0
-            break
+            return f[:i+1]
         }
         i = i - 1
     }
@@ -191,7 +188,7 @@ getDirFromFile(f cpstring) cpstring {
         return ""
     }
 
-    return arrAsStr(p)
+    return f
 }
 
 #define parseLines(ts []Tok, elems Elems*)
@@ -221,15 +218,17 @@ includeFile(ccstr cpstring, elems Elems*) bool {
     }
 
     //open file with Bah directory prefix
-    fm = fileMap{}
+    fs = fileStream{}
     fileName = BAH_DIR + ccstr
     isBahDir = true
-    f = fm.open(fileName)
-    if fm.isValid() == 0 { //try with the current dir instead of Bah dir
+    fs.open(fileName, "r")
+    f = fs.readContent()
+    if fs.isValid() == 0 { //try with the current dir instead of Bah dir
         fileName = absPath(compilerState.currentDir + ccstr)
-        f = fm.open(fileName)
+        fs.open(fileName, "r")
+        f = fs.readContent()
         isBahDir = false
-        if fm.isValid() == 0 {
+        if fs.isValid() == 0 {
             return false //file cannot be found
         }
     }
@@ -248,8 +247,8 @@ includeFile(ccstr cpstring, elems Elems*) bool {
     compilerState.includes[len(compilerState.includes)] = ccstr
     
     //reads file
-    tokens = lexer(f, fm.size)
-    fm.close()
+    tokens = lexer(f, fs.getSize())
+    fs.close()
     if len(tokens) == 0 {
         panic("File '"+ccstr+"' not recognized.")
     }
@@ -1177,7 +1176,7 @@ parseVar(l []Tok, elems Elems*) {
         t = l[i]
         if t.type == TOKEN_TYPE_SYNTAX {
             if t.cont == "=" {
-                if strlen(currentType) > 0 {
+                if len(currentType) > 0 {
                     sct = string(currentType)
                     sct.replace(" ", "")
                     v.type = sct.str()
@@ -1245,14 +1244,14 @@ parseVar(l []Tok, elems Elems*) {
                     throwErr(&errT, "{TOKEN} not expected after buffer declaration.")
                 }
                 break
-            } 
+            }
 
 
             tp = getTypeFromToken(&t, true, elems)
             
             //safety check to know if it is possible that the declared/set variable can contain a null pointer
             if isUnsafe == false && string(compilerState.currentDir).hasPrefix(BAH_DIR) == false && isRCPpointerType(tp) {
-                if t.cont == "null" || tp[strlen(tp)-1] == '!' {
+                if t.cont == "null" || tp[len(tp)-1] == '!' {
                     if exists == true {
                         rv = getRealVar(v.name, elems)
                         if rv != null {
@@ -1399,10 +1398,10 @@ parseVar(l []Tok, elems Elems*) {
                 currentFn.isMut = true
             }
         }
-        if strlen(code) == 0 {
+        if len(code) == 0 {
             throwErr(&ft, "Cannot re-declare {TOKEN}.")
         }
-        if strlen(currentType) > 0 {
+        if len(currentType) > 0 {
             st = l[1]
             throwErr(&st, "Cannot change the type of already declared var '"+ft.cont+"' to {TOKEN}.")
         }
@@ -1459,14 +1458,14 @@ parseVar(l []Tok, elems Elems*) {
             v.type = currentType
         }
 
-        if strlen(code) == 0 {
+        if len(code) == 0 {
             v.canBeNull = true
         }
 
         vts = string(v.type)
         vts.replace(" ", "")
         v.type = vts.str()
-        if strlen(v.type) == 0 {
+        if len(v.type) == 0 {
             throwErr(&ft, "Cannot declare {TOKEN} without a type.")
         }
         vct cpstring
@@ -1655,7 +1654,7 @@ parseFnHeader(prev cpstring, l []Tok, i int*, fn func*, elems Elems*) cpstring {
                 cfrt.replace("[]", "_ARR_")
                 newArgType = "__BAH_ARR_TYPE_" + cfrt.str()
                 csatd = compilerState.arrTypesDecl
-                if inArrayStr(newArgType, csatd) == false {
+                if newArgType in csatd == false {
                     csatd[len(csatd)] = newArgType
                     tpdf = tpdf + "typedef " + argCType.str() + " " + newArgType + ";\n"
                 }
@@ -1689,7 +1688,7 @@ parseFnHeader(prev cpstring, l []Tok, i int*, fn func*, elems Elems*) cpstring {
         returns.type = returns.type + t.cont
         j =j + 1
     }
-    if strlen(returns.type) {
+    if len(returns.type) {
         rts = string(returns.type)
         rts.replace(" ", "")
         returns.type = rts.content
@@ -1712,7 +1711,7 @@ parseFnHeader(prev cpstring, l []Tok, i int*, fn func*, elems Elems*) cpstring {
         cfrt.replace("[]", "_ARR_")
         newFnRetType = "__BAH_ARR_TYPE_" + cfrt.str()
         csatd = compilerState.arrTypesDecl
-        if inArrayStr(newFnRetType, csatd) == false {
+        if newFnRetType in csatd == false {
             csatd[len(csatd)] = newFnRetType
             tpdf = tpdf + "typedef " + fnRetType.str() + " " + newFnRetType + ";\n"
         }
@@ -1924,7 +1923,7 @@ parseStruct(l []Tok, elems Elems*) {
                 mfn.returns = fn.returns
                 mfn.from = s.name
 
-                strTrimLeft(&mfn.name, strlen(fnPrefix))
+                strTrimLeft(&mfn.name, len(fnPrefix))
 
                 methds[len(methds)] = mfn
                 // registerFunc(&fileDeps, mfn, elems)
@@ -1944,7 +1943,7 @@ parseStruct(l []Tok, elems Elems*) {
 
                         currentFn = null
                         if fn.returned == false {
-                            if strlen(fn.returns.type) > 0 {
+                            if len(fn.returns.type) > 0 {
                                 throwErr(&l[len(l)-1], "Function '"+fn.name+"' is not returned.")
                             }
                             endRCPscope(fnElems, fn.args)
@@ -2110,6 +2109,7 @@ parseDefine(l []Tok, elems Elems*) {
         code = parseFnHeader("", l, &i, fn, elems)
         fns = elems.fns
         fn.isBinding = true
+        fn.isCbinding = doesOutput == false
         fns[len(fns)] = fn
         if doesOutput == true {
             OUTPUT = OUTPUT + rope(code+";\n")
@@ -2238,7 +2238,7 @@ parseReturn(l []Tok, elems Elems*) {
     tt = ""
     tmpV variable* = null
     if len(l) == 1 {
-        if strlen(currentFn.returns.type) != 0 {
+        if len(currentFn.returns.type) != 0 {
             throwErr(&l[0], "Cannot return nothing as "+currentFn.returns.type+".")
         }
     } else {
@@ -2251,7 +2251,7 @@ parseReturn(l []Tok, elems Elems*) {
                 tmpV = searchVar(rvt.cont, elems)
             }
             if tmpV != null {
-                if isUnsafe == false && string(compilerState.currentDir).hasPrefix(BAH_DIR) == false && currentFn.returns.type[strlen(currentFn.returns.type)-1] != '!' {
+                if isUnsafe == false && string(compilerState.currentDir).hasPrefix(BAH_DIR) == false && currentFn.returns.type[len(currentFn.returns.type)-1] != '!' {
                     if tmpV.canBeNull == true || rv == "null" {
                         currentFn.returns.canBeNull = true
                         throwNoticeLine("Returning '"+tmpV.name+"' that can be null as pointer.\n\tUse maybe values instead.", rvt.line)
@@ -2274,7 +2274,7 @@ parseReturn(l []Tok, elems Elems*) {
         setNullStateBranchFlowEnd(elems)
     }
 
-    if strlen(rv) > 0 {
+    if len(rv) > 0 {
         rvar = rv
         if RCPavailable() == true && isRCPtype(currentFn.returns.type, elems) {
             rvar = genCompilerVar()
@@ -2286,7 +2286,7 @@ parseReturn(l []Tok, elems Elems*) {
         }
         stt = string(tt)
         if stt.hasPrefix("buffer:") {
-            rvar = "__STR("+rvar+")"
+            rvar = "buffToStr("+rvar+")"
         } else if stt.hasPrefix("tuple:") {
             parts = splitString(stt, ":")
             v = genCompilerVar()
@@ -2474,6 +2474,10 @@ parseFor(l []Tok, elems Elems*) {
 
     ifElems = dupElems(elems)
     tokens = []Tok
+    condt = l[1]
+    if compTypes(getTypeFromToken(&condt, true, elems), "bool") == false {
+        throwErr(&condt, "Cannot use {TOKEN} as condition in for statement.")
+    }
 
     if nbComas > 0 {
         if nbComas != 1 {
@@ -2482,11 +2486,7 @@ parseFor(l []Tok, elems Elems*) {
         }
 
         inst = []Tok
-        condt = l[1]
 
-        if condt.bahType != "bool" && condt.bahType != "int" {
-            throwErr(&condt, "Cannot use {TOKEN} as condition in for statement.")
-        }
 
         st = l[2]
 
@@ -2525,12 +2525,6 @@ parseFor(l []Tok, elems Elems*) {
         OUTPUT = OUTPUT + rope("for (; "+condt.cont+"; "+instC.str()+") {\n")
 
     } else {
-        condt = l[1]
-        if condt.bahType != "bool" {
-            if condt.bahType != "int" {
-                throwErr(&condt, "Cannot use {TOKEN} as condition in for statement.")
-            }
-        }
         t = l[2]
         if t.cont != "{" {
             throwErr(&t, "Expected '{' not {TOKEN} after condtition in for statement.")
@@ -3087,7 +3081,7 @@ prePross(line []Tok, ltp lineType, elems Elems*) []Tok {
             t.cont = "("+cType.str()+")"+t.cont
             fl[i-1] = t
             i -= 2
-        } else if inArrayStr(pt.cont, signs)  {
+        } else if pt.cont in signs  {
             if t.cont == pt.cont && i > 1 {
                 ppt = fl[i-2]
                 if ppt.type == TOKEN_TYPE_VAR {
@@ -3115,7 +3109,7 @@ prePross(line []Tok, ltp lineType, elems Elems*) []Tok {
                 fl[i-1] = pt
                 i--
             }
-        } else if inArrayStr(pt.cont, comparators) && isValue(fl, i) {
+        } else if pt.cont in comparators && isValue(fl, i) {
             i = valueBool(fl, i, ltp, elems) - 1
         } else if pt.cont == "<-" && isValue(fl, i) {
             i = valueChan(fl, i, elems) - 1
@@ -3294,7 +3288,7 @@ parseFnDeclare(l []Tok, elems Elems*) {
     compilerState.currFnElems = ocurrFnElems
     currentFn = null
     if fn.returned == false {
-        if strlen(fn.returns.type) > 0 {
+        if len(fn.returns.type) > 0 {
             throwErr(&l[len(l)-1], "Function '"+fn.name+"' is not returned.")
         }
         endRCPscope(fnElems, fn.args)
@@ -3336,10 +3330,10 @@ parseCapture(line []Tok, elems Elems*) {
 
     //check valTok
     valType = getTypeFromToken(&valTok, true, elems)
-    if valType[strlen(valType)-1] != '!' {
+    if valType[len(valType)-1] != '!' {
         throwErr(&valTok, "Cannot use {TOKEN} ("+valType+") as maybe value.")
     }
-    newType = valType[:strlen(valType)-1]+"*"
+    newType = valType[:len(valType)-1]+"*"
 
     //check else tok
     if line[4].cont != "else" && line[4].cont != "then" {
@@ -3494,7 +3488,7 @@ parseLine(line []Tok, elems Elems*) {
         throwErr(&ft, "{TOKEN} not expected.")
     }
 
-    if strlen(NEXT_LINE) > 0 {
+    if len(NEXT_LINE) > 0 {
         OUTPUT = OUTPUT + rope(NEXT_LINE)
         NEXT_LINE = ""
     }

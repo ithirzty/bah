@@ -2,7 +2,7 @@
 __Bah_map_hash(s cpstring, l int) int {
     hash = 5381
 
-    i=0; for i < strlen(s), i++ {
+    i=0; for i < len(s), i++ {
         hash = (<int>hash << 5 + 0) + hash + <int>s[i]
     }
 
@@ -116,7 +116,7 @@ struct mapNode {
     append(k cpstring, e ptr, l uint32) {
         ne = new mapNode {
             str: k
-            strL: strlen(k)
+            strL: len(k)
             value: e
         }
 
@@ -310,7 +310,7 @@ struct mapWrapper {
         if this.nodes == null {
             this.nodes = new mapNode {
                 str: k
-                strL: strlen(k)
+                strL: len(k)
                 value: e
             }
             this.length = 1
@@ -323,7 +323,7 @@ struct mapWrapper {
         if n.res == null {
             ne = new mapNode {
                 str: k
-                strL: strlen(k)
+                strL: len(k)
                 value: e
             }
             nh = new mapNode {
@@ -340,7 +340,7 @@ struct mapWrapper {
         nn mapNode* = n.res
         if n.found == true {
             nn.str = k
-            nn.strL = strlen(k)
+            nn.strL = len(k)
             nn.value = e
             return
         }

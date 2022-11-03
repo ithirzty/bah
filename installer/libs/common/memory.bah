@@ -26,7 +26,7 @@ const SIZE_OF_FLOAT = 8
 
 //Will return the length of an array.
 //This only works on arrays.
-len(a ptr) int {
+len(a ptr) uint {
     if a == null {
         return 0
     }
@@ -212,7 +212,9 @@ unser(data []char) ptr {
     //The content of the memory block should not contain any pointer.
     //It will not be checked for memory collection.
     memoryAllocSTR(s int) cpstring {
-        r cpstring = memoryAlloc(s)
+        r cpstring = memoryAlloc(s + cpstringLenSize)
+        ln uint32* = r
+        *ln = (s-1)
         noCheck(r[s-1] = 0)
         // memset(r, 0, s)
         return r
@@ -268,63 +270,41 @@ deleteRange(a ptr, from int, to int) {
 //Used to convert an array of characters to a cpstring.
 arrToStr(arr []char) cpstring {
     strLen = len(arr)
+    if len(arr) > 0 && arr[len(arr)-1] == null {
+        strLen--
+    }
     str cpstring = memoryAllocSTR(strLen+1)
-    noCheck(memcpy(str, arr->data, strLen))
+    memcpy(str, noCheck(arr->data), strLen)
+    ln uint32* = str
+    *ln = strLen
     return str
 }
 
 //Used to convert a cpstring into an array of characters.
 strToArr(str cpstring) []char {
-    strLen = strlen(str)
+    strLen = len(str)
     arr = []char
     noCheck(arr->data = memoryAlloc(strLen+1))
-    noCheck(memcpy(arr->data, str, strLen))
+    memcpy(noCheck(arr->data), str, strLen)
     noCheck(arr->length = strLen)
     
     return arr
 }
 
-//Used to get a pointer to an array data as a cpstring.
-//Unlike arrToStr, this does not copy the content of the array to a cpstring.
-//This is faster but changing the content of the returnend cpstring will change the content of the array.
-//You can see this operation as linkning the same data through two different interfaces, the only difference between these two interfaces are their type.
-arrAsStr(arr []char) cpstring {
-    #rcp {
-        RCP_incr(noCheck(arr->data))
-    }
-    return noCheck(arr->data)
-}
+//Removed arrAsStr() and strAsArr() because they are too dangerous
 
-//Used to get a cpstring as an array of chars.
-//This is faster than strToArr() but changing the content of the array will change the content of the cpstring.
-//This could lead to memory corruption if the cpstring is not heap allocated.
-//Make sure that the array is null terminated if editting it.
-strAsArr(str cpstring) []char {
-    #rcp {
-        RCP_incr(str)
-    }
-    l = strlen(str)
-    arr = []char
-    noCheck(arr->length = l)
-    noCheck(arr->data = str)
-    return arr
-}
-
+#define cpstringSubsitute(s cpstring, i int, l int) cpstring
 
 //Trims i chars at the beginning of a cpstring.
 strTrimLeft(s cpstring*, i int) {
-    ls = strlen(*s)
-    ns cpstring = memoryAlloc(ls - i + 1)
-    memcpy(ns, noCheck(*s+i), ls - i)
-    *s = ns
+    rs = *s
+    *s = rs[i:]
 }
 
 //Trims i chars at the end of a cpstring.
 strTrimRight(s cpstring*, i int) {
-    ls = strlen(*s)
-    ns cpstring = memoryAlloc(ls - i + 1)
-    memcpy(ns, *s, ls - i)
-    *s = ns
+    rs = *s
+    *s = rs[:len(rs)-i]
 }
 
 const __bah_memory_realloc = memoryRealloc

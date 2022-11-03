@@ -42,35 +42,28 @@ struct Tok {
 }
 
 
-inArray(needle char, arr []char) bool {
-    i=0; for i < len(arr) {
-        if needle == arr[i] {
-            return true
-        }
-        i = i + 1
-    }
-    return false
-}
-
-inArrayStr(needle cpstring, arr []cpstring) bool {
-    i=0; for i < len(arr) {
-        if needle == arr[i] {
-            return true
-        }
-        i = i + 1
-    }
-    return false
-}
+enclavers = []char{'(', ')', '{', '}', '[', ']'}
+syntaxes = []char{'!', '=', '|', <char>38, '%', '+', '-', '*', '/', ',', '<', '>', ':', <char>59, '^'}
+                                    //&                                                    //;
+keywords = []cpstring{"if", "else", "for", "struct", "const", "return", "extend", "new", "break", "continue", "default", "switch", "case", "while", "typedef", "function", "async", "in", "chan", "map", "buffer", "capture", "then"}
+                    //  x      x      x        x        x         x         x       x       x          x          -          -        -       -         -           x         x       x     x       x       x          x         x
+                    // x: done
+                    //  : not done
+                    // -: not planned
 
 makeToken(pos int, lineNb int, cont []char, type tokenType) Tok {
     t = Tok{}
     t.cont = arrToStr(cont)
     t.ogCont = t.cont
     clear(cont)
+
     t.pos = pos
     t.line = lineNb
     t.type = type
-    if type == TOKEN_TYPE_INT || type == TOKEN_TYPE_STR || type == TOKEN_TYPE_FLOAT || type == TOKEN_TYPE_VAR || type == TOKEN_TYPE_BOOL || type == TOKEN_TYPE_CHAR {
+    
+    if type == TOKEN_TYPE_VAR && t.cont in keywords {
+        t.type = TOKEN_TYPE_KEYWORD
+    } else if type == TOKEN_TYPE_INT || type == TOKEN_TYPE_STR || type == TOKEN_TYPE_FLOAT || type == TOKEN_TYPE_VAR || type == TOKEN_TYPE_BOOL || type == TOKEN_TYPE_CHAR {
         t.isValue = true
     }
     return t
@@ -86,15 +79,6 @@ lexerErr(line int, pos int, msg cpstring) {
     println("\e[1;31m[LEXER-ERROR]\e[0m "+compilerState.currentFile+":"+lineStr+":"+posStr+"\n\e[0m\n"+msg)
     exit(1)
 }
-
-enclavers = []char{'(', ')', '{', '}', '[', ']'}
-syntaxes = []char{'!', '=', '|', <char>38, '%', '+', '-', '*', '/', ',', '<', '>', ':', <char>59, '^'}
-                                    //&                                                    //;
-keywords = []cpstring{"if", "else", "for", "struct", "const", "return", "extend", "new", "break", "continue", "default", "switch", "case", "while", "typedef", "function", "async", "in", "chan", "map", "buffer", "capture", "then"}
-                    //  x      x      x        x        x         x         x       x       x          x          -          -        -       -         -           x         x       x     x       x       x          x         x
-                    // x: done
-                    //  : not done
-                    // -: not planned
 
 lexer(s cpstring, codeLength uint) []Tok {
 //    recorder = timer.record("lexer")
@@ -138,30 +122,31 @@ lexer(s cpstring, codeLength uint) []Tok {
         }
 
         //token is a string
-        if c == <char>34 {
-//            recorderStrs = timer.record("lexer-strings")
+        if c == '"' {
             pos = i
             begLine = lineNb
             memory[0] = c
             i = i + 1
             for i < codeLength, i++ {
                 c = s[i]
-                pc = s[i-1]
+                if c == <char>92 {
+                    memory[len(memory)] = <char>92
+                    memory[len(memory)] = s[i+1]
+                    i++
+                    continue
+                }
+                
                 //string ending
-                if c == <char>34 {
-                    //except if the previous char is a backslash
-                    if pc != <char>92 {
+                if c == '"' {
                         memory[len(memory)] = c
                         break
-                    }
                 }
                 //escaping line returns
                 if c == <char>10 {
+                    memory[len(memory)] = <char>92
+                    memory[len(memory)] = 'n'
                     lineNb = lineNb + 1
-                    if pc != <char>92 {
-                        memory[len(memory)] = <char>92
-                        c = 'n'
-                    }
+                    continue
                 }
                 memory[len(memory)] = c
             }
@@ -229,11 +214,11 @@ lexer(s cpstring, codeLength uint) []Tok {
             }
             i--
             tokens[len(tokens)] = makeToken(pos, lineNb, memory, TOKEN_TYPE_KEYWORD)
-        } else if inArray(c, enclavers) { //token is enclaver
+        } else if c in enclavers { //token is enclaver
 //            recorderEncl = timer.record("lexer-encls")
             memory[0] = c
             tokens[len(tokens)] = makeToken(i, lineNb, memory, TOKEN_TYPE_ENCL)
-        } else if inArray(c, syntaxes) { //token is a syntax element
+        } else if c in syntaxes { //token is a syntax element
 //            recorderSyn = timer.record("lexer-syntax")
             
 
@@ -311,7 +296,6 @@ lexer(s cpstring, codeLength uint) []Tok {
                         if c == '>' {
                             lc = memory[len(memory)-1]
                             if lc == '-' {
-                                memory[len(memory)-1] = <char>0
                                 i--
                                 break
                             }
@@ -325,13 +309,6 @@ lexer(s cpstring, codeLength uint) []Tok {
             i--
             currentType = TOKEN_TYPE_VAR
             
-            memstr = arrAsStr(memory)
-            
-            //token is a keyword
-            if memstr in keywords {
-                currentType = TOKEN_TYPE_KEYWORD
-            }
-
             tokens[len(tokens)] = makeToken(pos, lineNb, memory, currentType)
         }
 

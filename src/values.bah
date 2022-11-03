@@ -258,7 +258,9 @@ valueFunc(fn func*, parent variable*, l []Tok, i int, ltp lineType, elems Elems*
         }
     }
 
-    ogFntContL = strlen(fnt.cont)
+    ogFntContL = len(fnt.cont)
+
+    ltt = ""
 
     // parsing arguments
     j=0; for j < len(memory), j++ {
@@ -268,6 +270,7 @@ valueFunc(fn func*, parent variable*, l []Tok, i int, ltp lineType, elems Elems*
         }
         arg = fn.args[argIndex]
         tt = getTypeFromToken(&t, true, elems)
+        ltt = tt
 
         if (fn.isImported == true || isInside(BAH_DIR, fn.file)) && t.type == TOKEN_TYPE_VAR {
             fixMeTestVar(&t, ltp, elems)
@@ -289,6 +292,14 @@ valueFunc(fn func*, parent variable*, l []Tok, i int, ltp lineType, elems Elems*
             if compTypes(arg.type, tt) == false {
                 throwErr(&t, "Cannot use {TOKEN} ("+tt+") as "+arg.type+" in function call.")
             }
+        }
+
+        if string(tt).hasPrefix("buffer:") && fn.isCbinding == false && arg.type == "cpstring" {
+            t.cont = "buffToStr("+t.cont+")"
+        }
+
+        if tt == "cpstring" && fn.isCbinding && fn.name != "strlen" {
+            t.cont = "cStr("+t.cont+")"
         }
 
         checkCanBeNull(&t, tt, elems)
@@ -331,8 +342,24 @@ valueFunc(fn func*, parent variable*, l []Tok, i int, ltp lineType, elems Elems*
         }
     }
 
+
     fnt.bahRef = fn
     fnt.cont += ")"
+    if fn.name == "strlen" && ltt != "cpstring" {
+        fnt.cont = "C"+fnt.cont
+    } else if fn.name == "len" && ltt == "cpstring" {
+        fnt.cont = "str"+fnt.cont
+    } else if fn.isCbinding && fn.returns.type == "cpstring" {
+        fnt.cont = "cStrToBah("+fnt.cont+")"
+    }
+
+    if noticeEnabled == true && ltt == "cpstring" && fn.name == "strlen" {
+        throwNoticeLine("Function strlen() can be used for char*. Use len() for better code readability.", l[tokPos].line)
+    }
+    if isUnsafe == false && fn.name == "len" && ltt != "cpstring" && string(ltt).hasPrefix("[]") == false {
+        throwErr(&memory[0], "Cannot use len({TOKEN}) ("+ltt+") as cpstring or array.")
+    }
+
     l[tokPos] = fnt
     return tokPos
 
@@ -348,7 +375,7 @@ valueStruct(l []Tok, i int, ltp lineType, elems Elems*) int {
     // tt = balancePtr(tt, t.cont)
     s = searchStruct(tt, elems)
     if s == null {
-        if tt[strlen(tt)-1] == '!' {
+        if tt[len(tt)-1] == '!' {
             throwErr(&t, "Cannot use maybe value {TOKEN} ("+tt+") as structure.")
         } else {
             throwErr(&t, "Unkown struct {TOKEN} ("+tt+").")
@@ -657,7 +684,7 @@ valueArr(l []Tok, i int, ltp lineType, elems Elems*) int {
             if compTypes(getTypeFromToken(&index, true, elems), "int") == false {
                 throwErr(&index, "Cannot use {TOKEN} as cpstring index (int).")
             }
-            t.cont = pt.cont+"["+index.cont+"]"
+            t.cont = pt.cont+"["+index.cont+"+4]"
         } else {
             if to == "" {
                 to = "strlen("+pt.cont+")"
@@ -804,7 +831,7 @@ valueBool(l []Tok, i int, ltp lineType, elems Elems*) int {
                     } else if nt.isFunc == true {
                         fn = searchFuncByToken(&nt, elems)
                         if fn != null && fn.returns != null {
-                            ntIsNull = fn.returns.type[strlen(fn.returns.type)-1] == '!'
+                            ntIsNull = fn.returns.type[len(fn.returns.type)-1] == '!'
                         }
                     }
                     if t.cont == "==" {
@@ -866,7 +893,7 @@ valueOper(l []Tok, i int, elems Elems*) int {
     }
 
     //parse string concatenation
-    if ptt == "cpstring" {        
+    if ptt == "cpstring" {
         //add first two cpstrings to the concat array
         //strs contains all the cpstrings to concatenate in reverse order
         strs = []cpstring{nt.cont, pt.cont}
@@ -913,7 +940,7 @@ valueOper(l []Tok, i int, elems Elems*) int {
                     }
                 }
                 deleteRange(l, i, rangeEnds)
-            } else if inArrayStr(nat.cont, signs) {
+            } else if nat.cont in signs {
                 throwErr(&nat, "Can only do concatenation on cpstring, not {TOKEN}.")
             }
         }
@@ -1151,7 +1178,7 @@ isValue(l []Tok, i int) bool {
     }
     if i+1 < len(l) {
         nt = l[i+1]
-        if nt.cont == "[" || nt.cont == "." || nt.cont == "(" || inArrayStr(nt.cont, signs) {
+        if nt.cont == "[" || nt.cont == "." || nt.cont == "(" || nt.cont in signs {
             return false
         }
     }

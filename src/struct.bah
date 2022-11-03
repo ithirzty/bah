@@ -1,15 +1,16 @@
-#include "iostream.bah"
-#include "string.bah"
-
 #include "./globals.bah"
 
 hasStructSep(n string*) bool {
-    if n.count(".") {
-        return true
+    max = n.length - 1
+    i=0; for i < max, i++ {
+        c = n.charAt(i)
+        if c == '.' {
+            return true
+        } else if c == '-' && n.charAt(i+1) == '>' {
+            return true
+        }
     }
-    if n.count("->") {
-        return true
-    }
+    
     return false
 }
 
@@ -47,11 +48,19 @@ splitStructSepAfter(n string) string {
 
 
 searchStruct(name cpstring, elems Elems*) cStruct* {
-//     recorder = timer.record("searchStruct")
-    n = string(name)
-    n.replace("&", "")
-    n.replace("*", "")
-    name = n.content
+    if len(name) == 0 {
+        return null
+    }
+
+    //Removing *
+    i=0; for i < len(name), i++ {
+        if name[len(name)-i-1] != '*' {
+            break
+        }
+    }
+    if i != 0 {
+        name = name[:len(name)-i]
+    }
 
     i=len(elems.structs)-1; for i != -1, i-- {
         s = elems.structs[i]
@@ -67,11 +76,10 @@ searchStructMemb(name cpstring, s cStruct*, elems Elems*) structMemb* {
     if hasStructSep(&n) {
         rn = splitStructSepBefore(&n)
         name = rn.content
-        n.trimLeft(rn.length)
-        if n.hasPrefix(".") {
-            n.trimLeft(1)
+        if n.charAt(rn.length) == '.' {
+            n.trimLeft(1 + rn.length)
         } else {
-            n.trimLeft(2)
+            n.trimLeft(2 + rn.length)
         }
         membs = n.content
         memb = searchStructMemb(name, s, elems)
@@ -105,7 +113,7 @@ searchStructMemb(name cpstring, s cStruct*, elems Elems*) structMemb* {
         i = i + 1
     }
 
-    if strlen(s.extendedFrom) == 0 {
+    if len(s.extendedFrom) == 0 {
         return null
     }
 
