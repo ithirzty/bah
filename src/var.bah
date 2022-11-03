@@ -473,6 +473,8 @@ pathToVarName(p cpstring) cpstring {
     return arrToStr(a)
 }
 
+#define strLitteralToBahStr(s cpstring) cpstring
+
 makeInit() {
     name = "__BAH_init"
     if isObject == true {
@@ -484,7 +486,7 @@ makeInit() {
     i=0; for i < len(compilerState.evals), i++ {
         e = compilerState.evals[i]
         evalsTMPDecl += "{
-            .name = \""+e+"\",
+            .name = "+strLitteralToBahStr("\""+e+"\"")+",
             .evalFn = __Bah_eval_"+e+"
         }"
         if i+1 != len(compilerState.evals) {

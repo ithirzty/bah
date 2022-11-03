@@ -1811,6 +1811,12 @@ parseStruct(l []Tok, elems Elems*) {
     OUTPUT += postDeclHandle
     OOUT = OUTPUT
     nextLine = ""
+    j=0; for j < len(l), j++ {
+        if l[j].type == TOKEN_TYPE_STR && l[j].processedStr == false {
+            l[j].cont = strLitteralToBahStr(l[j].cont)
+            l[j].processedStr = true
+        }
+    }
     for i < len(l) {
         t = l[i]
         max = i + 2
