@@ -63,7 +63,7 @@ strReplace(s cpstring, what cpstring, by cpstring) cpstring {
     wl = len(what)
     bl = len(by)
     ind = 0
-    r = []char
+    r = strBuilder{}
     i=0; for i < l, i++ {
         c = s[i]
         if c == what[ind] {
@@ -71,21 +71,21 @@ strReplace(s cpstring, what cpstring, by cpstring) cpstring {
             if ind == wl {
                 ind = 0
                 j=0; for j < bl, j++ {
-                    r[len(r)] = by[j]
+                    r.append(by[j])
                 }
             }
         } else {
             j=0; for j < ind, j++ {
-                r[len(r)] = s[i - ind + j]
+                r.append(s[i - ind + j])
             }
             ind = 0
-            r[len(r)] = c
+            r.append(c)
         }
     }
     j=0; for j < ind, j++ {
-        r[len(r)] = s[i - ind + j]
+        r.append(s[i - ind + j])
     }
-    return arrToStr(r)
+    return r.str()
 }
 
 //A string wrapper to make string manipulation easier.
@@ -437,7 +437,6 @@ splitString(s string, sep cpstring) []string {
 
     end = i-len(sep)+1
     if start < end {
-        println("-> "+intToStr(start)+":"+intToStr(end)+" ("+intToStr(s.length)+")")
         r[len(r)] = string(s.content[start:end])
     }
 

@@ -3380,10 +3380,9 @@ unsigned long int bl = strlen(by);
 long int ind = 0;
 
 #line 66 "/opt/bah/string.bah"
-array(char)* r = memoryAlloc(sizeof(array(char)));
-
-r->length = 0;
-r->elemSize = sizeof(char);
+struct strBuilder ____BAH_COMPILER_VAR_52 = {};
+strBuilder___init(&____BAH_COMPILER_VAR_52);
+struct strBuilder r = ____BAH_COMPILER_VAR_52;
 
 #line 67 "/opt/bah/string.bah"
 register long int i = 0;
@@ -3417,10 +3416,7 @@ for (; (j<bl);
 ++j) {
 
 #line 74 "/opt/bah/string.bah"
-
-    unsigned int ____BAH_COMPILER_VAR_52 = len(r);
-    __Bah_realocate_arr(r, ____BAH_COMPILER_VAR_52);
-    r->data[____BAH_COMPILER_VAR_52] = by[j+4];
+strBuilder__append(&r,by[j+4]);
 };
 }
 }
@@ -3437,20 +3433,14 @@ for (; (j<ind);
 ++j) {
 
 #line 79 "/opt/bah/string.bah"
-
-    unsigned int ____BAH_COMPILER_VAR_53 = len(r);
-    __Bah_realocate_arr(r, ____BAH_COMPILER_VAR_53);
-    r->data[____BAH_COMPILER_VAR_53] = s[i-ind+j+4];
+strBuilder__append(&r,s[i-ind+j+4]);
 };
 
 #line 81 "/opt/bah/string.bah"
 ind = 0;
 
 #line 82 "/opt/bah/string.bah"
-
-    unsigned int ____BAH_COMPILER_VAR_54 = len(r);
-    __Bah_realocate_arr(r, ____BAH_COMPILER_VAR_54);
-    r->data[____BAH_COMPILER_VAR_54] = c;
+strBuilder__append(&r,c);
 }
 };
 
@@ -3463,14 +3453,11 @@ for (; (j<ind);
 ++j) {
 
 #line 86 "/opt/bah/string.bah"
-
-    unsigned int ____BAH_COMPILER_VAR_55 = len(r);
-    __Bah_realocate_arr(r, ____BAH_COMPILER_VAR_55);
-    r->data[____BAH_COMPILER_VAR_55] = s[i-ind+j+4];
+strBuilder__append(&r,s[i-ind+j+4]);
 };
 
 #line 88 "/opt/bah/string.bah"
-return arrToStr(r);
+return strBuilder__str(&r);
 };
 
 #line 92 "/opt/bah/string.bah"
@@ -3627,8 +3614,8 @@ register long int i = 0;
 long int count = 0;
 
 #line 184 "/opt/bah/string.bah"
-struct string ____BAH_COMPILER_VAR_56 = {};
-struct string needle = ____BAH_COMPILER_VAR_56;
+struct string ____BAH_COMPILER_VAR_53 = {};
+struct string needle = ____BAH_COMPILER_VAR_53;
 
 #line 185 "/opt/bah/string.bah"
 string__set(&needle,need);
@@ -3851,8 +3838,8 @@ this->length = this->length-s;
 struct string string__add(struct string* this,struct string s2){
 
 #line 290 "/opt/bah/string.bah"
-struct string ____BAH_COMPILER_VAR_57 = {};
-struct string r = ____BAH_COMPILER_VAR_57;
+struct string ____BAH_COMPILER_VAR_54 = {};
+struct string r = ____BAH_COMPILER_VAR_54;
 
 #line 291 "/opt/bah/string.bah"
 r.length = this->length+s2.length;
@@ -3916,8 +3903,8 @@ unsigned int* ln = this->content;
 struct string string(char * s){
 
 #line 322 "/opt/bah/string.bah"
-struct string ____BAH_COMPILER_VAR_58 = {};
-struct string a = ____BAH_COMPILER_VAR_58;
+struct string ____BAH_COMPILER_VAR_55 = {};
+struct string a = ____BAH_COMPILER_VAR_55;
 
 #line 323 "/opt/bah/string.bah"
 string__set(&a,s);
@@ -3937,7 +3924,7 @@ return "\01\0\0\0""0";
 }
 
 #line 333 "/opt/bah/string.bah"
-char ____BAH_COMPILER_VAR_59[66];char* s = ____BAH_COMPILER_VAR_59;
+char ____BAH_COMPILER_VAR_56[66];char* s = ____BAH_COMPILER_VAR_56;
 
 #line 334 "/opt/bah/string.bah"
 long int ind = -1;
@@ -4025,7 +4012,7 @@ return r;
 char * floatToStr(double f){
 
 #line 375 "/opt/bah/string.bah"
-char ____BAH_COMPILER_VAR_60[50];char* buff = ____BAH_COMPILER_VAR_60;
+char ____BAH_COMPILER_VAR_57[50];char* buff = ____BAH_COMPILER_VAR_57;
 
 #line 376 "/opt/bah/string.bah"
 sprintf((void *)buff,cStr("\03\0\0\0""%lf"),f);
@@ -4150,9 +4137,9 @@ if ((start!=end)) {
 
 #line 429 "/opt/bah/string.bah"
 
-    unsigned int ____BAH_COMPILER_VAR_61 = len(r);
-    __Bah_realocate_arr(r, ____BAH_COMPILER_VAR_61);
-    r->data[____BAH_COMPILER_VAR_61] = string(cpstringSubsitute(s.content, start, end));
+    unsigned int ____BAH_COMPILER_VAR_58 = len(r);
+    __Bah_realocate_arr(r, ____BAH_COMPILER_VAR_58);
+    r->data[____BAH_COMPILER_VAR_58] = string(cpstringSubsitute(s.content, start, end));
 }
 
 #line 431 "/opt/bah/string.bah"
@@ -4175,343 +4162,340 @@ long int end = i-strlen(sep)+1;
 if ((start<end)) {
 
 #line 440 "/opt/bah/string.bah"
-char** ____BAH_COMPILER_VAR_62 = alloca(7 * sizeof(char*));____BAH_COMPILER_VAR_62[6] = "\01\0\0\0"")";____BAH_COMPILER_VAR_62[5] = intToStr(s.length);____BAH_COMPILER_VAR_62[4] = "\02\0\0\0"" (";____BAH_COMPILER_VAR_62[3] = intToStr(end);____BAH_COMPILER_VAR_62[2] = "\01\0\0\0"":";____BAH_COMPILER_VAR_62[1] = intToStr(start);____BAH_COMPILER_VAR_62[0] = "\03\0\0\0""-> ";char * ____BAH_COMPILER_VAR_63 =__Bah_multiple_concat(____BAH_COMPILER_VAR_62, 7);println(____BAH_COMPILER_VAR_63);
 
-#line 441 "/opt/bah/string.bah"
-
-    unsigned int ____BAH_COMPILER_VAR_64 = len(r);
-    __Bah_realocate_arr(r, ____BAH_COMPILER_VAR_64);
-    r->data[____BAH_COMPILER_VAR_64] = string(cpstringSubsitute(s.content, start, end));
+    unsigned int ____BAH_COMPILER_VAR_59 = len(r);
+    __Bah_realocate_arr(r, ____BAH_COMPILER_VAR_59);
+    r->data[____BAH_COMPILER_VAR_59] = string(cpstringSubsitute(s.content, start, end));
 }
 
-#line 444 "/opt/bah/string.bah"
+#line 443 "/opt/bah/string.bah"
 return r;
 };
 
-#line 448 "/opt/bah/string.bah"
+#line 447 "/opt/bah/string.bah"
 struct string joinString(__BAH_ARR_TYPE_string a,char * sep){
 
-#line 449 "/opt/bah/string.bah"
+#line 448 "/opt/bah/string.bah"
 register long int i = 0;
 
-#line 450 "/opt/bah/string.bah"
+#line 449 "/opt/bah/string.bah"
 struct string s = string("\0\0\0\0""");
 
-#line 451 "/opt/bah/string.bah"
+#line 450 "/opt/bah/string.bah"
 unsigned long int max = len(a)-1;
 
-#line 452 "/opt/bah/string.bah"
+#line 451 "/opt/bah/string.bah"
 while ((i<len(a))) {
 
-#line 453 "/opt/bah/string.bah"
+#line 452 "/opt/bah/string.bah"
 struct string e = a->data[i];
 
-#line 454 "/opt/bah/string.bah"
+#line 453 "/opt/bah/string.bah"
 if ((e.length==0)) {
 
-#line 455 "/opt/bah/string.bah"
+#line 454 "/opt/bah/string.bah"
 i = i+1;
 
-#line 456 "/opt/bah/string.bah"
+#line 455 "/opt/bah/string.bah"
 continue;
 }
 
-#line 458 "/opt/bah/string.bah"
+#line 457 "/opt/bah/string.bah"
 struct string tmpS = string(string__str(&e));
 
-#line 459 "/opt/bah/string.bah"
+#line 458 "/opt/bah/string.bah"
 if ((i!=max)) {
 
-#line 460 "/opt/bah/string.bah"
+#line 459 "/opt/bah/string.bah"
 string__append(&tmpS,sep);
 }
 
-#line 462 "/opt/bah/string.bah"
+#line 461 "/opt/bah/string.bah"
 string__append(&s,string__str(&tmpS));
 
-#line 463 "/opt/bah/string.bah"
+#line 462 "/opt/bah/string.bah"
 i = i+1;
 };
 
-#line 465 "/opt/bah/string.bah"
+#line 464 "/opt/bah/string.bah"
 return s;
 };
 
-#line 469 "/opt/bah/string.bah"
+#line 468 "/opt/bah/string.bah"
 char * splitStringBefore(struct string s,char * sp){
 
-#line 470 "/opt/bah/string.bah"
+#line 469 "/opt/bah/string.bah"
 struct string sep = string(sp);
 
-#line 471 "/opt/bah/string.bah"
+#line 470 "/opt/bah/string.bah"
 if ((sep.length>=s.length)) {
 
-#line 472 "/opt/bah/string.bah"
+#line 471 "/opt/bah/string.bah"
 return "\0\0\0\0""";
 }
 
-#line 474 "/opt/bah/string.bah"
+#line 473 "/opt/bah/string.bah"
 long int sepIndex = 0;
 
-#line 475 "/opt/bah/string.bah"
+#line 474 "/opt/bah/string.bah"
 long int foundIndex = 0;
 
-#line 476 "/opt/bah/string.bah"
+#line 475 "/opt/bah/string.bah"
 register long int i = 0;
 
-#line 476 "/opt/bah/string.bah"
+#line 475 "/opt/bah/string.bah"
 while ((i<s.length)) {
 
-#line 477 "/opt/bah/string.bah"
+#line 476 "/opt/bah/string.bah"
 char c = string__charAt(&s,i);
 
-#line 478 "/opt/bah/string.bah"
+#line 477 "/opt/bah/string.bah"
 char sc = string__charAt(&sep,sepIndex);
 
-#line 479 "/opt/bah/string.bah"
+#line 478 "/opt/bah/string.bah"
 if ((c==sc)) {
 
-#line 480 "/opt/bah/string.bah"
+#line 479 "/opt/bah/string.bah"
 if ((sepIndex==0)) {
 
-#line 481 "/opt/bah/string.bah"
+#line 480 "/opt/bah/string.bah"
 foundIndex = i-1;
 }
 
-#line 483 "/opt/bah/string.bah"
+#line 482 "/opt/bah/string.bah"
 sepIndex = sepIndex+1;
 
-#line 484 "/opt/bah/string.bah"
+#line 483 "/opt/bah/string.bah"
 if ((sepIndex==sep.length)) {
 
-#line 485 "/opt/bah/string.bah"
+#line 484 "/opt/bah/string.bah"
 long int max = s.length-foundIndex-1;
 
-#line 486 "/opt/bah/string.bah"
+#line 485 "/opt/bah/string.bah"
 string__trimRight(&s,max);
 
-#line 487 "/opt/bah/string.bah"
+#line 486 "/opt/bah/string.bah"
 return string__str(&s);
 }
 }
 
-#line 489 "/opt/bah/string.bah"
+#line 488 "/opt/bah/string.bah"
 else {
 
-#line 490 "/opt/bah/string.bah"
+#line 489 "/opt/bah/string.bah"
 foundIndex = 0;
 
-#line 491 "/opt/bah/string.bah"
+#line 490 "/opt/bah/string.bah"
 sepIndex = 0;
 }
 
-#line 494 "/opt/bah/string.bah"
+#line 493 "/opt/bah/string.bah"
 i = i+1;
 };
 
-#line 497 "/opt/bah/string.bah"
+#line 496 "/opt/bah/string.bah"
 return "\0\0\0\0""";
 };
 
-#line 502 "/opt/bah/string.bah"
+#line 501 "/opt/bah/string.bah"
 struct string toLower(struct string s){
 
-#line 503 "/opt/bah/string.bah"
+#line 502 "/opt/bah/string.bah"
 array(char)* ns = memoryAlloc(sizeof(array(char)));
 
 ns->length = 0;
 ns->elemSize = sizeof(char);
 
-#line 504 "/opt/bah/string.bah"
+#line 503 "/opt/bah/string.bah"
 register long int i = 0;
 
-#line 504 "/opt/bah/string.bah"
+#line 503 "/opt/bah/string.bah"
 while ((i<s.length)) {
 
-#line 505 "/opt/bah/string.bah"
+#line 504 "/opt/bah/string.bah"
 char c = string__charAt(&s,i);
 
-#line 506 "/opt/bah/string.bah"
+#line 505 "/opt/bah/string.bah"
 if (isUpper(c)) {
 
-#line 507 "/opt/bah/string.bah"
+#line 506 "/opt/bah/string.bah"
 c = c+(char)32;
 }
 
+#line 508 "/opt/bah/string.bah"
+
+    unsigned int ____BAH_COMPILER_VAR_60 = len(ns);
+    __Bah_realocate_arr(ns, ____BAH_COMPILER_VAR_60);
+    ns->data[____BAH_COMPILER_VAR_60] = c;
+
 #line 509 "/opt/bah/string.bah"
-
-    unsigned int ____BAH_COMPILER_VAR_65 = len(ns);
-    __Bah_realocate_arr(ns, ____BAH_COMPILER_VAR_65);
-    ns->data[____BAH_COMPILER_VAR_65] = c;
-
-#line 510 "/opt/bah/string.bah"
 i = i+1;
 };
 
-#line 512 "/opt/bah/string.bah"
+#line 511 "/opt/bah/string.bah"
 return string(arrToStr(ns));
 };
 
-#line 517 "/opt/bah/string.bah"
+#line 516 "/opt/bah/string.bah"
 char strHasPrefix(char * s,char * need){
 
-#line 518 "/opt/bah/string.bah"
+#line 517 "/opt/bah/string.bah"
 register long int i = 0;
+
+#line 518 "/opt/bah/string.bah"
+unsigned long int nl = strlen(need);
 
 #line 519 "/opt/bah/string.bah"
-unsigned long int nl = strlen(need);
+unsigned long int sl = strlen(s);
 
 #line 520 "/opt/bah/string.bah"
-unsigned long int sl = strlen(s);
-
-#line 521 "/opt/bah/string.bah"
 if ((sl<nl)) {
 
-#line 522 "/opt/bah/string.bah"
+#line 521 "/opt/bah/string.bah"
 return false;
 }
 
-#line 524 "/opt/bah/string.bah"
+#line 523 "/opt/bah/string.bah"
 while ((i<nl)) {
 
-#line 525 "/opt/bah/string.bah"
+#line 524 "/opt/bah/string.bah"
 if ((cpstringCharAt(s,i)!=cpstringCharAt(need,i))) {
 
-#line 526 "/opt/bah/string.bah"
+#line 525 "/opt/bah/string.bah"
 return false;
 }
 
-#line 528 "/opt/bah/string.bah"
+#line 527 "/opt/bah/string.bah"
 i = i+1;
 };
 
-#line 530 "/opt/bah/string.bah"
+#line 529 "/opt/bah/string.bah"
 return true;
 };
 
-#line 535 "/opt/bah/string.bah"
+#line 534 "/opt/bah/string.bah"
 char strHasSuffix(char * s,char * need){
 
-#line 536 "/opt/bah/string.bah"
+#line 535 "/opt/bah/string.bah"
 unsigned long int sl = strlen(s);
 
-#line 537 "/opt/bah/string.bah"
+#line 536 "/opt/bah/string.bah"
 unsigned long int nl = strlen(need);
 
-#line 538 "/opt/bah/string.bah"
+#line 537 "/opt/bah/string.bah"
 if ((nl>sl)) {
 
-#line 539 "/opt/bah/string.bah"
+#line 538 "/opt/bah/string.bah"
 return false;
 }
 
-#line 541 "/opt/bah/string.bah"
+#line 540 "/opt/bah/string.bah"
 unsigned long int i = sl-nl;
 
-#line 541 "/opt/bah/string.bah"
+#line 540 "/opt/bah/string.bah"
 while ((i<sl)) {
 
-#line 542 "/opt/bah/string.bah"
+#line 541 "/opt/bah/string.bah"
 if ((cpstringCharAt(s,i)!=cpstringCharAt(need,i))) {
 
-#line 543 "/opt/bah/string.bah"
+#line 542 "/opt/bah/string.bah"
 return false;
 }
 
-#line 545 "/opt/bah/string.bah"
+#line 544 "/opt/bah/string.bah"
 i = i+1;
 };
 
-#line 547 "/opt/bah/string.bah"
+#line 546 "/opt/bah/string.bah"
 return true;
 };
 
-#line 552 "/opt/bah/string.bah"
+#line 551 "/opt/bah/string.bah"
 void strTrim(char ** s){
 
-#line 553 "/opt/bah/string.bah"
+#line 552 "/opt/bah/string.bah"
 unsigned long int l = strlen(*s);
 
-#line 554 "/opt/bah/string.bah"
+#line 553 "/opt/bah/string.bah"
 register long int i = 0;
 
-#line 554 "/opt/bah/string.bah"
+#line 553 "/opt/bah/string.bah"
 while ((i<l)) {
 
-#line 555 "/opt/bah/string.bah"
+#line 554 "/opt/bah/string.bah"
 char c = cpstringCharAt(*s,i);
 
-#line 556 "/opt/bah/string.bah"
+#line 555 "/opt/bah/string.bah"
 if ((isSpace(c)==false)) {
 
-#line 557 "/opt/bah/string.bah"
+#line 556 "/opt/bah/string.bah"
 break;
 }
 
-#line 559 "/opt/bah/string.bah"
+#line 558 "/opt/bah/string.bah"
 i = i+1;
 };
 
-#line 561 "/opt/bah/string.bah"
+#line 560 "/opt/bah/string.bah"
 *s = *s+i;
 };
 
-#line 566 "/opt/bah/string.bah"
+#line 565 "/opt/bah/string.bah"
 long int strCount(char * src,char * needle){
 
-#line 567 "/opt/bah/string.bah"
+#line 566 "/opt/bah/string.bah"
 register long int i = 0;
 
-#line 568 "/opt/bah/string.bah"
+#line 567 "/opt/bah/string.bah"
 long int count = 0;
 
-#line 569 "/opt/bah/string.bah"
+#line 568 "/opt/bah/string.bah"
 long int countIndex = 0;
 
-#line 570 "/opt/bah/string.bah"
+#line 569 "/opt/bah/string.bah"
 unsigned long int sl = strlen(src);
 
-#line 571 "/opt/bah/string.bah"
+#line 570 "/opt/bah/string.bah"
 unsigned long int nl = strlen(needle);
 
-#line 572 "/opt/bah/string.bah"
+#line 571 "/opt/bah/string.bah"
 while ((i<sl)) {
 
-#line 573 "/opt/bah/string.bah"
+#line 572 "/opt/bah/string.bah"
 char c = cpstringCharAt(src,i);
 
-#line 574 "/opt/bah/string.bah"
+#line 573 "/opt/bah/string.bah"
 char sc = cpstringCharAt(needle,countIndex);
 
-#line 575 "/opt/bah/string.bah"
+#line 574 "/opt/bah/string.bah"
 if ((c==sc)) {
 
-#line 576 "/opt/bah/string.bah"
+#line 575 "/opt/bah/string.bah"
 countIndex = countIndex+1;
 }
 
-#line 577 "/opt/bah/string.bah"
+#line 576 "/opt/bah/string.bah"
 else {
 
-#line 578 "/opt/bah/string.bah"
+#line 577 "/opt/bah/string.bah"
 countIndex = 0;
 }
 
-#line 580 "/opt/bah/string.bah"
+#line 579 "/opt/bah/string.bah"
 if ((countIndex==nl)) {
 
-#line 581 "/opt/bah/string.bah"
+#line 580 "/opt/bah/string.bah"
 count = count+1;
 
-#line 582 "/opt/bah/string.bah"
+#line 581 "/opt/bah/string.bah"
 countIndex = 0;
 }
 
-#line 584 "/opt/bah/string.bah"
+#line 583 "/opt/bah/string.bah"
 i = i+1;
 };
 
-#line 586 "/opt/bah/string.bah"
+#line 585 "/opt/bah/string.bah"
 return count;
 };
 
@@ -4546,8 +4530,8 @@ array(char *)* args;
 void flags__addString(struct flags* this,char * name,char * help){
 
 #line 28 "/opt/bah/flags.bah"
-struct flag* ____BAH_COMPILER_VAR_66 = memoryAlloc(sizeof(struct flag));
-struct flag* f = ____BAH_COMPILER_VAR_66;
+struct flag* ____BAH_COMPILER_VAR_61 = memoryAlloc(sizeof(struct flag));
+struct flag* f = ____BAH_COMPILER_VAR_61;
 
 #line 29 "/opt/bah/flags.bah"
 f->name = name;
@@ -4563,15 +4547,15 @@ unsigned long int lf = len(this->flags);
 
 #line 33 "/opt/bah/flags.bah"
 
-    unsigned int ____BAH_COMPILER_VAR_67 = lf;
-    __Bah_realocate_arr(this->flags, ____BAH_COMPILER_VAR_67);
-    this->flags->data[____BAH_COMPILER_VAR_67] = f;
+    unsigned int ____BAH_COMPILER_VAR_62 = lf;
+    __Bah_realocate_arr(this->flags, ____BAH_COMPILER_VAR_62);
+    this->flags->data[____BAH_COMPILER_VAR_62] = f;
 };
 void flags__addBool(struct flags* this,char * name,char * help){
 
 #line 39 "/opt/bah/flags.bah"
-struct flag* ____BAH_COMPILER_VAR_68 = memoryAlloc(sizeof(struct flag));
-struct flag* f = ____BAH_COMPILER_VAR_68;
+struct flag* ____BAH_COMPILER_VAR_63 = memoryAlloc(sizeof(struct flag));
+struct flag* f = ____BAH_COMPILER_VAR_63;
 
 #line 40 "/opt/bah/flags.bah"
 f->name = name;
@@ -4587,15 +4571,15 @@ unsigned long int lf = len(this->flags);
 
 #line 44 "/opt/bah/flags.bah"
 
-    unsigned int ____BAH_COMPILER_VAR_69 = lf;
-    __Bah_realocate_arr(this->flags, ____BAH_COMPILER_VAR_69);
-    this->flags->data[____BAH_COMPILER_VAR_69] = f;
+    unsigned int ____BAH_COMPILER_VAR_64 = lf;
+    __Bah_realocate_arr(this->flags, ____BAH_COMPILER_VAR_64);
+    this->flags->data[____BAH_COMPILER_VAR_64] = f;
 };
 void flags__addInt(struct flags* this,char * name,char * help){
 
 #line 49 "/opt/bah/flags.bah"
-struct flag* ____BAH_COMPILER_VAR_70 = memoryAlloc(sizeof(struct flag));
-struct flag* f = ____BAH_COMPILER_VAR_70;
+struct flag* ____BAH_COMPILER_VAR_65 = memoryAlloc(sizeof(struct flag));
+struct flag* f = ____BAH_COMPILER_VAR_65;
 
 #line 50 "/opt/bah/flags.bah"
 f->name = name;
@@ -4611,15 +4595,15 @@ unsigned long int lf = len(this->flags);
 
 #line 54 "/opt/bah/flags.bah"
 
-    unsigned int ____BAH_COMPILER_VAR_71 = lf;
-    __Bah_realocate_arr(this->flags, ____BAH_COMPILER_VAR_71);
-    this->flags->data[____BAH_COMPILER_VAR_71] = f;
+    unsigned int ____BAH_COMPILER_VAR_66 = lf;
+    __Bah_realocate_arr(this->flags, ____BAH_COMPILER_VAR_66);
+    this->flags->data[____BAH_COMPILER_VAR_66] = f;
 };
 void flags__addFloat(struct flags* this,char * name,char * help){
 
 #line 59 "/opt/bah/flags.bah"
-struct flag* ____BAH_COMPILER_VAR_72 = memoryAlloc(sizeof(struct flag));
-struct flag* f = ____BAH_COMPILER_VAR_72;
+struct flag* ____BAH_COMPILER_VAR_67 = memoryAlloc(sizeof(struct flag));
+struct flag* f = ____BAH_COMPILER_VAR_67;
 
 #line 60 "/opt/bah/flags.bah"
 f->name = name;
@@ -4635,9 +4619,9 @@ unsigned long int lf = len(this->flags);
 
 #line 64 "/opt/bah/flags.bah"
 
-    unsigned int ____BAH_COMPILER_VAR_73 = lf;
-    __Bah_realocate_arr(this->flags, ____BAH_COMPILER_VAR_73);
-    this->flags->data[____BAH_COMPILER_VAR_73] = f;
+    unsigned int ____BAH_COMPILER_VAR_68 = lf;
+    __Bah_realocate_arr(this->flags, ____BAH_COMPILER_VAR_68);
+    this->flags->data[____BAH_COMPILER_VAR_68] = f;
 };
 void flags__invalidate(struct flags* this){
 
@@ -4729,8 +4713,8 @@ i = i+1;
 };
 
 #line 103 "/opt/bah/flags.bah"
-struct flag* ____BAH_COMPILER_VAR_74 = memoryAlloc(sizeof(struct flag));
-struct flag* z = ____BAH_COMPILER_VAR_74;
+struct flag* ____BAH_COMPILER_VAR_69 = memoryAlloc(sizeof(struct flag));
+struct flag* z = ____BAH_COMPILER_VAR_69;
 
 #line 104 "/opt/bah/flags.bah"
 z->isSet = 0;
@@ -4755,7 +4739,7 @@ struct flag* flag = flags__getFlag(this,string(name));
 if (__builtin_expect((flag->type!=FLAG_TYPE_INT), 0)) {
 
 #line 121 "/opt/bah/flags.bah"
-char** ____BAH_COMPILER_VAR_75 = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_75[2] = "\015\0\0\0""' is not int.";____BAH_COMPILER_VAR_75[1] = flag->name;____BAH_COMPILER_VAR_75[0] = "\06\0\0\0""Flag '";char * ____BAH_COMPILER_VAR_76 =__Bah_multiple_concat(____BAH_COMPILER_VAR_75, 3);__BAH_panic(____BAH_COMPILER_VAR_76,"\026\0\0\0""/opt/bah/flags.bah:121");
+char** ____BAH_COMPILER_VAR_70 = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_70[2] = "\015\0\0\0""' is not int.";____BAH_COMPILER_VAR_70[1] = flag->name;____BAH_COMPILER_VAR_70[0] = "\06\0\0\0""Flag '";char * ____BAH_COMPILER_VAR_71 =__Bah_multiple_concat(____BAH_COMPILER_VAR_70, 3);__BAH_panic(____BAH_COMPILER_VAR_71,"\026\0\0\0""/opt/bah/flags.bah:121");
 }
 
 #line 123 "/opt/bah/flags.bah"
@@ -4770,7 +4754,7 @@ struct flag* flag = flags__getFlag(this,string(name));
 if (__builtin_expect((flag->type!=FLAG_TYPE_FLOAT), 0)) {
 
 #line 131 "/opt/bah/flags.bah"
-char** ____BAH_COMPILER_VAR_77 = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_77[2] = "\017\0\0\0""' is not float.";____BAH_COMPILER_VAR_77[1] = flag->name;____BAH_COMPILER_VAR_77[0] = "\06\0\0\0""Flag '";char * ____BAH_COMPILER_VAR_78 =__Bah_multiple_concat(____BAH_COMPILER_VAR_77, 3);__BAH_panic(____BAH_COMPILER_VAR_78,"\026\0\0\0""/opt/bah/flags.bah:131");
+char** ____BAH_COMPILER_VAR_72 = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_72[2] = "\017\0\0\0""' is not float.";____BAH_COMPILER_VAR_72[1] = flag->name;____BAH_COMPILER_VAR_72[0] = "\06\0\0\0""Flag '";char * ____BAH_COMPILER_VAR_73 =__Bah_multiple_concat(____BAH_COMPILER_VAR_72, 3);__BAH_panic(____BAH_COMPILER_VAR_73,"\026\0\0\0""/opt/bah/flags.bah:131");
 }
 
 #line 133 "/opt/bah/flags.bah"
@@ -4921,7 +4905,7 @@ char * time__format(struct time* this,char * a){
 long int lt = localtime(&this->timestamp);
 
 #line 32 "/opt/bah/time.bah"
-char ____BAH_COMPILER_VAR_79[1024];char* buff = ____BAH_COMPILER_VAR_79;
+char ____BAH_COMPILER_VAR_74[1024];char* buff = ____BAH_COMPILER_VAR_74;
 
 #line 33 "/opt/bah/time.bah"
 strftime((void *)buff,1024,cStr(a),lt);
@@ -4947,8 +4931,8 @@ return r;
 long int getTimeUnix(){
 
 #line 72 "/opt/bah/time.bah"
-struct timespec ____BAH_COMPILER_VAR_80 = {};
-struct timespec ts = ____BAH_COMPILER_VAR_80;
+struct timespec ____BAH_COMPILER_VAR_75 = {};
+struct timespec ts = ____BAH_COMPILER_VAR_75;
 
 #line 74 "/opt/bah/time.bah"
 timespec_get(&ts,TIME_UTC);
@@ -5005,8 +4989,8 @@ return i;
 long int cryptoRand(){
 
 #line 47 "/opt/bah/rand.bah"
-struct fileStream ____BAH_COMPILER_VAR_81 = {};
-struct fileStream fs = ____BAH_COMPILER_VAR_81;
+struct fileStream ____BAH_COMPILER_VAR_76 = {};
+struct fileStream fs = ____BAH_COMPILER_VAR_76;
 
 #line 48 "/opt/bah/rand.bah"
 fileStream__open(&fs,"\014\0\0\0""/dev/urandom","\01\0\0\0""r");
@@ -5090,10 +5074,10 @@ return s;
 struct rope* rope__add(struct rope* this,struct rope* r){
 
 #line 44 "/opt/bah/rope.bah"
-struct rope* ____BAH_COMPILER_VAR_82 = memoryAlloc(sizeof(struct rope));
-____BAH_COMPILER_VAR_82->left = this;
-____BAH_COMPILER_VAR_82->right = r;
-struct rope* n = ____BAH_COMPILER_VAR_82;
+struct rope* ____BAH_COMPILER_VAR_77 = memoryAlloc(sizeof(struct rope));
+____BAH_COMPILER_VAR_77->left = this;
+____BAH_COMPILER_VAR_77->right = r;
+struct rope* n = ____BAH_COMPILER_VAR_77;
 
 #line 48 "/opt/bah/rope.bah"
 return n;
@@ -5101,8 +5085,8 @@ return n;
 void rope__append(struct rope* this,struct rope* r){
 
 #line 52 "/opt/bah/rope.bah"
-struct rope* ____BAH_COMPILER_VAR_83 = memoryAlloc(sizeof(struct rope));
-struct rope* l = ____BAH_COMPILER_VAR_83;
+struct rope* ____BAH_COMPILER_VAR_78 = memoryAlloc(sizeof(struct rope));
+struct rope* l = ____BAH_COMPILER_VAR_78;
 
 #line 53 "/opt/bah/rope.bah"
 *l = *this;
@@ -5137,9 +5121,9 @@ return 0;
 struct rope* rope(char * a){
 
 #line 72 "/opt/bah/rope.bah"
-struct rope* ____BAH_COMPILER_VAR_84 = memoryAlloc(sizeof(struct rope));
-____BAH_COMPILER_VAR_84->str = a;
-struct rope* r = ____BAH_COMPILER_VAR_84;
+struct rope* ____BAH_COMPILER_VAR_79 = memoryAlloc(sizeof(struct rope));
+____BAH_COMPILER_VAR_79->str = a;
+struct rope* r = ____BAH_COMPILER_VAR_79;
 
 #line 75 "/opt/bah/rope.bah"
 return r;
@@ -5162,14 +5146,14 @@ char * cm = this->command;
 if ((this->error==false)) {
 
 #line 27 "/opt/bah/exec.bah"
-char** ____BAH_COMPILER_VAR_85 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_85[1] = "\014\0\0\0"" 2>/dev/null";____BAH_COMPILER_VAR_85[0] = cm;char * ____BAH_COMPILER_VAR_86 =__Bah_multiple_concat(____BAH_COMPILER_VAR_85, 2);cm = ____BAH_COMPILER_VAR_86;
+char** ____BAH_COMPILER_VAR_80 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_80[1] = "\014\0\0\0"" 2>/dev/null";____BAH_COMPILER_VAR_80[0] = cm;char * ____BAH_COMPILER_VAR_81 =__Bah_multiple_concat(____BAH_COMPILER_VAR_80, 2);cm = ____BAH_COMPILER_VAR_81;
 }
 
 #line 28 "/opt/bah/exec.bah"
 else {
 
 #line 29 "/opt/bah/exec.bah"
-char** ____BAH_COMPILER_VAR_87 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_87[1] = "\05\0\0\0"" 2>&1";____BAH_COMPILER_VAR_87[0] = cm;char * ____BAH_COMPILER_VAR_88 =__Bah_multiple_concat(____BAH_COMPILER_VAR_87, 2);cm = ____BAH_COMPILER_VAR_88;
+char** ____BAH_COMPILER_VAR_82 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_82[1] = "\05\0\0\0"" 2>&1";____BAH_COMPILER_VAR_82[0] = cm;char * ____BAH_COMPILER_VAR_83 =__Bah_multiple_concat(____BAH_COMPILER_VAR_82, 2);cm = ____BAH_COMPILER_VAR_83;
 }
 
 #line 31 "/opt/bah/exec.bah"
@@ -5253,14 +5237,14 @@ char * cm = this->command;
 if ((this->error==false)) {
 
 #line 65 "/opt/bah/exec.bah"
-char** ____BAH_COMPILER_VAR_89 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_89[1] = "\014\0\0\0"" 2>/dev/null";____BAH_COMPILER_VAR_89[0] = cm;char * ____BAH_COMPILER_VAR_90 =__Bah_multiple_concat(____BAH_COMPILER_VAR_89, 2);cm = ____BAH_COMPILER_VAR_90;
+char** ____BAH_COMPILER_VAR_84 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_84[1] = "\014\0\0\0"" 2>/dev/null";____BAH_COMPILER_VAR_84[0] = cm;char * ____BAH_COMPILER_VAR_85 =__Bah_multiple_concat(____BAH_COMPILER_VAR_84, 2);cm = ____BAH_COMPILER_VAR_85;
 }
 
 #line 66 "/opt/bah/exec.bah"
 else {
 
 #line 67 "/opt/bah/exec.bah"
-char** ____BAH_COMPILER_VAR_91 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_91[1] = "\05\0\0\0"" 2>&1";____BAH_COMPILER_VAR_91[0] = cm;char * ____BAH_COMPILER_VAR_92 =__Bah_multiple_concat(____BAH_COMPILER_VAR_91, 2);cm = ____BAH_COMPILER_VAR_92;
+char** ____BAH_COMPILER_VAR_86 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_86[1] = "\05\0\0\0"" 2>&1";____BAH_COMPILER_VAR_86[0] = cm;char * ____BAH_COMPILER_VAR_87 =__Bah_multiple_concat(____BAH_COMPILER_VAR_86, 2);cm = ____BAH_COMPILER_VAR_87;
 }
 
 #line 69 "/opt/bah/exec.bah"
@@ -5277,7 +5261,7 @@ return arr;
 long int total = 0;
 
 #line 76 "/opt/bah/exec.bah"
-char ____BAH_COMPILER_VAR_93[1024];char* buff = ____BAH_COMPILER_VAR_93;
+char ____BAH_COMPILER_VAR_88[1024];char* buff = ____BAH_COMPILER_VAR_88;
 
 #line 78 "/opt/bah/exec.bah"
 void * res = fgets((void *)buff,1023,this->handle);
@@ -5295,9 +5279,9 @@ for (; (buff[i]!=null);
 
 #line 81 "/opt/bah/exec.bah"
 
-    unsigned int ____BAH_COMPILER_VAR_94 = len(arr);
-    __Bah_realocate_arr(arr, ____BAH_COMPILER_VAR_94);
-    arr->data[____BAH_COMPILER_VAR_94] = buff[i];
+    unsigned int ____BAH_COMPILER_VAR_89 = len(arr);
+    __Bah_realocate_arr(arr, ____BAH_COMPILER_VAR_89);
+    arr->data[____BAH_COMPILER_VAR_89] = buff[i];
 };
 
 #line 83 "/opt/bah/exec.bah"
@@ -5315,9 +5299,9 @@ return arr;
 struct command command(char * s){
 
 #line 96 "/opt/bah/exec.bah"
-struct command ____BAH_COMPILER_VAR_95 = {};
-____BAH_COMPILER_VAR_95.error = true;
-struct command cmd = ____BAH_COMPILER_VAR_95;
+struct command ____BAH_COMPILER_VAR_90 = {};
+____BAH_COMPILER_VAR_90.error = true;
+struct command cmd = ____BAH_COMPILER_VAR_90;
 
 #line 97 "/opt/bah/exec.bah"
 cmd.command = s;
@@ -5340,9 +5324,9 @@ nArgs->elemSize = sizeof(char *);
 
 #line 108 "/opt/bah/exec.bah"
 
-    unsigned int ____BAH_COMPILER_VAR_96 = 0;
-    __Bah_realocate_arr(nArgs, ____BAH_COMPILER_VAR_96);
-    nArgs->data[____BAH_COMPILER_VAR_96] = s;
+    unsigned int ____BAH_COMPILER_VAR_91 = 0;
+    __Bah_realocate_arr(nArgs, ____BAH_COMPILER_VAR_91);
+    nArgs->data[____BAH_COMPILER_VAR_91] = s;
 
 #line 109 "/opt/bah/exec.bah"
 register long int i = 0;
@@ -5352,9 +5336,9 @@ while ((i<len(args))) {
 
 #line 110 "/opt/bah/exec.bah"
 
-    unsigned int ____BAH_COMPILER_VAR_97 = i+1;
-    __Bah_realocate_arr(nArgs, ____BAH_COMPILER_VAR_97);
-    nArgs->data[____BAH_COMPILER_VAR_97] = args->data[i];
+    unsigned int ____BAH_COMPILER_VAR_92 = i+1;
+    __Bah_realocate_arr(nArgs, ____BAH_COMPILER_VAR_92);
+    nArgs->data[____BAH_COMPILER_VAR_92] = args->data[i];
 
 #line 111 "/opt/bah/exec.bah"
 i = i+1;
@@ -5362,9 +5346,9 @@ i = i+1;
 
 #line 113 "/opt/bah/exec.bah"
 
-    unsigned int ____BAH_COMPILER_VAR_98 = i+2;
-    __Bah_realocate_arr(nArgs, ____BAH_COMPILER_VAR_98);
-    nArgs->data[____BAH_COMPILER_VAR_98] = (char *)0;
+    unsigned int ____BAH_COMPILER_VAR_93 = i+2;
+    __Bah_realocate_arr(nArgs, ____BAH_COMPILER_VAR_93);
+    nArgs->data[____BAH_COMPILER_VAR_93] = (char *)0;
 
 #line 114 "/opt/bah/exec.bah"
 r=execvp(s,nArgs->data);
@@ -5400,11 +5384,11 @@ typedef array(struct reflectElement)* __BAH_ARR_TYPE_reflectElement;
 struct reflectElement __reflect(void * v,long int s,char * t,char * n,char isArr,struct reflectElement* ae,char isStruct,__BAH_ARR_TYPE_reflectElement sl,long int offset){
 
 #line 41 "/opt/bah/reflect.bah"
-struct reflectElement ____BAH_COMPILER_VAR_99 = {};
-____BAH_COMPILER_VAR_99.structLayout = memoryAlloc(sizeof(array(struct reflectElement)));
-            ____BAH_COMPILER_VAR_99.structLayout->length = 0;
-            ____BAH_COMPILER_VAR_99.structLayout->elemSize = sizeof(struct reflectElement);
-            struct reflectElement re = ____BAH_COMPILER_VAR_99;
+struct reflectElement ____BAH_COMPILER_VAR_94 = {};
+____BAH_COMPILER_VAR_94.structLayout = memoryAlloc(sizeof(array(struct reflectElement)));
+            ____BAH_COMPILER_VAR_94.structLayout->length = 0;
+            ____BAH_COMPILER_VAR_94.structLayout->elemSize = sizeof(struct reflectElement);
+            struct reflectElement re = ____BAH_COMPILER_VAR_94;
 
 #line 42 "/opt/bah/reflect.bah"
 re.size = s;
@@ -5526,11 +5510,11 @@ return s;
 }
 
 #line 90 "/opt/bah/reflect.bah"
-struct reflectElement ____BAH_COMPILER_VAR_100 = {};
-____BAH_COMPILER_VAR_100.structLayout = memoryAlloc(sizeof(array(struct reflectElement)));
-            ____BAH_COMPILER_VAR_100.structLayout->length = 0;
-            ____BAH_COMPILER_VAR_100.structLayout->elemSize = sizeof(struct reflectElement);
-            struct reflectElement ns = ____BAH_COMPILER_VAR_100;
+struct reflectElement ____BAH_COMPILER_VAR_95 = {};
+____BAH_COMPILER_VAR_95.structLayout = memoryAlloc(sizeof(array(struct reflectElement)));
+            ____BAH_COMPILER_VAR_95.structLayout->length = 0;
+            ____BAH_COMPILER_VAR_95.structLayout->elemSize = sizeof(struct reflectElement);
+            struct reflectElement ns = ____BAH_COMPILER_VAR_95;
 
 #line 91 "/opt/bah/reflect.bah"
 return ns;
@@ -5612,9 +5596,9 @@ char c = cpstringCharAt(elem->key,j);
 
 #line 40 "/opt/bah/json.bah"
 
-    unsigned int ____BAH_COMPILER_VAR_101 = j-1;
-    __Bah_realocate_arr(nk, ____BAH_COMPILER_VAR_101);
-    nk->data[____BAH_COMPILER_VAR_101] = c;
+    unsigned int ____BAH_COMPILER_VAR_96 = j-1;
+    __Bah_realocate_arr(nk, ____BAH_COMPILER_VAR_96);
+    nk->data[____BAH_COMPILER_VAR_96] = c;
 
 #line 41 "/opt/bah/json.bah"
 j = j+1;
@@ -5804,9 +5788,9 @@ struct jsonElement* c = this->children->data[i];
 
 #line 117 "/opt/bah/json.bah"
 
-    unsigned int ____BAH_COMPILER_VAR_102 = i;
-    __Bah_realocate_arr(arr, ____BAH_COMPILER_VAR_102);
-    arr->data[____BAH_COMPILER_VAR_102] = strToInt(jsonElement__str(c));
+    unsigned int ____BAH_COMPILER_VAR_97 = i;
+    __Bah_realocate_arr(arr, ____BAH_COMPILER_VAR_97);
+    arr->data[____BAH_COMPILER_VAR_97] = strToInt(jsonElement__str(c));
 
 #line 118 "/opt/bah/json.bah"
 i = i+1;
@@ -5850,9 +5834,9 @@ struct jsonElement* c = this->children->data[i];
 
 #line 130 "/opt/bah/json.bah"
 
-    unsigned int ____BAH_COMPILER_VAR_103 = i;
-    __Bah_realocate_arr(arr, ____BAH_COMPILER_VAR_103);
-    arr->data[____BAH_COMPILER_VAR_103] = strToFloat(jsonElement__str(c));
+    unsigned int ____BAH_COMPILER_VAR_98 = i;
+    __Bah_realocate_arr(arr, ____BAH_COMPILER_VAR_98);
+    arr->data[____BAH_COMPILER_VAR_98] = strToFloat(jsonElement__str(c));
 
 #line 131 "/opt/bah/json.bah"
 i = i+1;
@@ -5896,9 +5880,9 @@ struct jsonElement* c = this->children->data[i];
 
 #line 143 "/opt/bah/json.bah"
 
-    unsigned int ____BAH_COMPILER_VAR_104 = i;
-    __Bah_realocate_arr(arr, ____BAH_COMPILER_VAR_104);
-    arr->data[____BAH_COMPILER_VAR_104] = jsonElement__str(c);
+    unsigned int ____BAH_COMPILER_VAR_99 = i;
+    __Bah_realocate_arr(arr, ____BAH_COMPILER_VAR_99);
+    arr->data[____BAH_COMPILER_VAR_99] = jsonElement__str(c);
 
 #line 144 "/opt/bah/json.bah"
 i = i+1;
@@ -5971,9 +5955,9 @@ j = j+1;
 
 #line 166 "/opt/bah/json.bah"
 
-    unsigned int ____BAH_COMPILER_VAR_105 = i;
-    __Bah_realocate_arr(arr, ____BAH_COMPILER_VAR_105);
-    arr->data[____BAH_COMPILER_VAR_105] = ne;
+    unsigned int ____BAH_COMPILER_VAR_100 = i;
+    __Bah_realocate_arr(arr, ____BAH_COMPILER_VAR_100);
+    arr->data[____BAH_COMPILER_VAR_100] = ne;
 
 #line 167 "/opt/bah/json.bah"
 i = i+1;
@@ -6023,9 +6007,9 @@ m.value = reflectElement__calculateOffset(&m,&v);
 
 #line 180 "/opt/bah/json.bah"
 
-    unsigned int ____BAH_COMPILER_VAR_106 = j;
-    __Bah_realocate_arr(ae->structLayout, ____BAH_COMPILER_VAR_106);
-    ae->structLayout->data[____BAH_COMPILER_VAR_106] = m;
+    unsigned int ____BAH_COMPILER_VAR_101 = j;
+    __Bah_realocate_arr(ae->structLayout, ____BAH_COMPILER_VAR_101);
+    ae->structLayout->data[____BAH_COMPILER_VAR_101] = m;
 };
 
 #line 182 "/opt/bah/json.bah"
@@ -6089,14 +6073,14 @@ break;
 };
 
 #line 210 "/opt/bah/json.bah"
-struct jsonElement* ____BAH_COMPILER_VAR_107 = memoryAlloc(sizeof(struct jsonElement));
-____BAH_COMPILER_VAR_107->children = memoryAlloc(sizeof(array(struct jsonElement*)));
-            ____BAH_COMPILER_VAR_107->children->length = 0;
-            ____BAH_COMPILER_VAR_107->children->elemSize = sizeof(struct jsonElement*);
-            ____BAH_COMPILER_VAR_107->content = s;
-____BAH_COMPILER_VAR_107->from = i;
-____BAH_COMPILER_VAR_107->to = l;
-struct jsonElement* j = ____BAH_COMPILER_VAR_107;
+struct jsonElement* ____BAH_COMPILER_VAR_102 = memoryAlloc(sizeof(struct jsonElement));
+____BAH_COMPILER_VAR_102->children = memoryAlloc(sizeof(array(struct jsonElement*)));
+            ____BAH_COMPILER_VAR_102->children->length = 0;
+            ____BAH_COMPILER_VAR_102->children->elemSize = sizeof(struct jsonElement*);
+            ____BAH_COMPILER_VAR_102->content = s;
+____BAH_COMPILER_VAR_102->from = i;
+____BAH_COMPILER_VAR_102->to = l;
+struct jsonElement* j = ____BAH_COMPILER_VAR_102;
 
 #line 216 "/opt/bah/json.bah"
 if ((s[i+4]==91)) {
@@ -6140,9 +6124,9 @@ return null;
 
 #line 230 "/opt/bah/json.bah"
 
-    unsigned int ____BAH_COMPILER_VAR_108 = len(j->children);
-    __Bah_realocate_arr(j->children, ____BAH_COMPILER_VAR_108);
-    j->children->data[____BAH_COMPILER_VAR_108] = child;
+    unsigned int ____BAH_COMPILER_VAR_103 = len(j->children);
+    __Bah_realocate_arr(j->children, ____BAH_COMPILER_VAR_103);
+    j->children->data[____BAH_COMPILER_VAR_103] = child;
 
 #line 231 "/opt/bah/json.bah"
 for (; (i<l); 
@@ -6164,7 +6148,7 @@ if ((s[i+4]!=44)) {
 if ((s[i+4]!=93)) {
 
 #line 239 "/opt/bah/json.bah"
-char** ____BAH_COMPILER_VAR_109 = alloca(5 * sizeof(char*));____BAH_COMPILER_VAR_109[4] = "\01\0\0\0"")";____BAH_COMPILER_VAR_109[3] = intToStr(i);____BAH_COMPILER_VAR_109[2] = "\010\0\0\0"") (pos: ";____BAH_COMPILER_VAR_109[1] = charToString(s[i+4]);____BAH_COMPILER_VAR_109[0] = "\045\0\0\0""json: expected array separator (got: ";char * ____BAH_COMPILER_VAR_110 =__Bah_multiple_concat(____BAH_COMPILER_VAR_109, 5);jError = ____BAH_COMPILER_VAR_110;
+char** ____BAH_COMPILER_VAR_104 = alloca(5 * sizeof(char*));____BAH_COMPILER_VAR_104[4] = "\01\0\0\0"")";____BAH_COMPILER_VAR_104[3] = intToStr(i);____BAH_COMPILER_VAR_104[2] = "\010\0\0\0"") (pos: ";____BAH_COMPILER_VAR_104[1] = charToString(s[i+4]);____BAH_COMPILER_VAR_104[0] = "\045\0\0\0""json: expected array separator (got: ";char * ____BAH_COMPILER_VAR_105 =__Bah_multiple_concat(____BAH_COMPILER_VAR_104, 5);jError = ____BAH_COMPILER_VAR_105;
 
 #line 240 "/opt/bah/json.bah"
 return null;
@@ -6250,7 +6234,7 @@ break;
 if ((s[i+4]!=34)) {
 
 #line 273 "/opt/bah/json.bah"
-char** ____BAH_COMPILER_VAR_111 = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_111[2] = "\01\0\0\0"")";____BAH_COMPILER_VAR_111[1] = intToStr(i);____BAH_COMPILER_VAR_111[0] = "\047\0\0\0""json: expected string as map key (pos: ";char * ____BAH_COMPILER_VAR_112 =__Bah_multiple_concat(____BAH_COMPILER_VAR_111, 3);jError = ____BAH_COMPILER_VAR_112;
+char** ____BAH_COMPILER_VAR_106 = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_106[2] = "\01\0\0\0"")";____BAH_COMPILER_VAR_106[1] = intToStr(i);____BAH_COMPILER_VAR_106[0] = "\047\0\0\0""json: expected string as map key (pos: ";char * ____BAH_COMPILER_VAR_107 =__Bah_multiple_concat(____BAH_COMPILER_VAR_106, 3);jError = ____BAH_COMPILER_VAR_107;
 
 #line 274 "/opt/bah/json.bah"
 return null;
@@ -6298,7 +6282,7 @@ break;
 if ((s[i+4]!=58)) {
 
 #line 293 "/opt/bah/json.bah"
-char** ____BAH_COMPILER_VAR_113 = alloca(5 * sizeof(char*));____BAH_COMPILER_VAR_113[4] = "\01\0\0\0"")";____BAH_COMPILER_VAR_113[3] = intToStr(i);____BAH_COMPILER_VAR_113[2] = "\010\0\0\0"") (pos: ";____BAH_COMPILER_VAR_113[1] = intToStr((long int)s[i+4]);____BAH_COMPILER_VAR_113[0] = "\055\0\0\0""json: expected : between key and value (got: ";char * ____BAH_COMPILER_VAR_114 =__Bah_multiple_concat(____BAH_COMPILER_VAR_113, 5);jError = ____BAH_COMPILER_VAR_114;
+char** ____BAH_COMPILER_VAR_108 = alloca(5 * sizeof(char*));____BAH_COMPILER_VAR_108[4] = "\01\0\0\0"")";____BAH_COMPILER_VAR_108[3] = intToStr(i);____BAH_COMPILER_VAR_108[2] = "\010\0\0\0"") (pos: ";____BAH_COMPILER_VAR_108[1] = intToStr((long int)s[i+4]);____BAH_COMPILER_VAR_108[0] = "\055\0\0\0""json: expected : between key and value (got: ";char * ____BAH_COMPILER_VAR_109 =__Bah_multiple_concat(____BAH_COMPILER_VAR_108, 5);jError = ____BAH_COMPILER_VAR_109;
 
 #line 294 "/opt/bah/json.bah"
 return null;
@@ -6322,9 +6306,9 @@ child->key = name;
 
 #line 304 "/opt/bah/json.bah"
 
-    unsigned int ____BAH_COMPILER_VAR_115 = len(j->children);
-    __Bah_realocate_arr(j->children, ____BAH_COMPILER_VAR_115);
-    j->children->data[____BAH_COMPILER_VAR_115] = child;
+    unsigned int ____BAH_COMPILER_VAR_110 = len(j->children);
+    __Bah_realocate_arr(j->children, ____BAH_COMPILER_VAR_110);
+    j->children->data[____BAH_COMPILER_VAR_110] = child;
 
 #line 306 "/opt/bah/json.bah"
 for (; (i<l); 
@@ -6346,7 +6330,7 @@ if ((s[i+4]!=44)) {
 if ((s[i+4]!=125)) {
 
 #line 314 "/opt/bah/json.bah"
-char** ____BAH_COMPILER_VAR_116 = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_116[2] = "\01\0\0\0"")";____BAH_COMPILER_VAR_116[1] = intToStr(i);____BAH_COMPILER_VAR_116[0] = "\043\0\0\0""json: expected map separator (pos: ";char * ____BAH_COMPILER_VAR_117 =__Bah_multiple_concat(____BAH_COMPILER_VAR_116, 3);jError = ____BAH_COMPILER_VAR_117;
+char** ____BAH_COMPILER_VAR_111 = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_111[2] = "\01\0\0\0"")";____BAH_COMPILER_VAR_111[1] = intToStr(i);____BAH_COMPILER_VAR_111[0] = "\043\0\0\0""json: expected map separator (pos: ";char * ____BAH_COMPILER_VAR_112 =__Bah_multiple_concat(____BAH_COMPILER_VAR_111, 3);jError = ____BAH_COMPILER_VAR_112;
 
 #line 315 "/opt/bah/json.bah"
 return null;
@@ -6419,9 +6403,9 @@ if ((s[i+1+4]==114)) {
 
 #line 339 "/opt/bah/json.bah"
 
-    unsigned int ____BAH_COMPILER_VAR_118 = len(mem);
-    __Bah_realocate_arr(mem, ____BAH_COMPILER_VAR_118);
-    mem->data[____BAH_COMPILER_VAR_118] = (char)13;
+    unsigned int ____BAH_COMPILER_VAR_113 = len(mem);
+    __Bah_realocate_arr(mem, ____BAH_COMPILER_VAR_113);
+    mem->data[____BAH_COMPILER_VAR_113] = (char)13;
 }
 
 #line 340 "/opt/bah/json.bah"
@@ -6429,9 +6413,9 @@ else if ((s[i+1+4]==110)) {
 
 #line 341 "/opt/bah/json.bah"
 
-    unsigned int ____BAH_COMPILER_VAR_119 = len(mem);
-    __Bah_realocate_arr(mem, ____BAH_COMPILER_VAR_119);
-    mem->data[____BAH_COMPILER_VAR_119] = (char)10;
+    unsigned int ____BAH_COMPILER_VAR_114 = len(mem);
+    __Bah_realocate_arr(mem, ____BAH_COMPILER_VAR_114);
+    mem->data[____BAH_COMPILER_VAR_114] = (char)10;
 }
 
 #line 342 "/opt/bah/json.bah"
@@ -6439,9 +6423,9 @@ else {
 
 #line 343 "/opt/bah/json.bah"
 
-    unsigned int ____BAH_COMPILER_VAR_120 = len(mem);
-    __Bah_realocate_arr(mem, ____BAH_COMPILER_VAR_120);
-    mem->data[____BAH_COMPILER_VAR_120] = s[i+1+4];
+    unsigned int ____BAH_COMPILER_VAR_115 = len(mem);
+    __Bah_realocate_arr(mem, ____BAH_COMPILER_VAR_115);
+    mem->data[____BAH_COMPILER_VAR_115] = s[i+1+4];
 }
 }
 
@@ -6457,9 +6441,9 @@ if ((len(mem)!=0)) {
 
 #line 350 "/opt/bah/json.bah"
 
-    unsigned int ____BAH_COMPILER_VAR_121 = len(mem);
-    __Bah_realocate_arr(mem, ____BAH_COMPILER_VAR_121);
-    mem->data[____BAH_COMPILER_VAR_121] = s[i+4];
+    unsigned int ____BAH_COMPILER_VAR_116 = len(mem);
+    __Bah_realocate_arr(mem, ____BAH_COMPILER_VAR_116);
+    mem->data[____BAH_COMPILER_VAR_116] = s[i+4];
 }
 };
 
@@ -6584,9 +6568,9 @@ return (c!=127)&&(c!=129)&&(c!=141)&&(c!=143)&&(c!=144)&&(c!=157);
 char * jsonEscapeStr(char * s){
 
 #line 408 "/opt/bah/json.bah"
-struct strBuilder ____BAH_COMPILER_VAR_122 = {};
-strBuilder___init(&____BAH_COMPILER_VAR_122);
-struct strBuilder r = ____BAH_COMPILER_VAR_122;
+struct strBuilder ____BAH_COMPILER_VAR_117 = {};
+strBuilder___init(&____BAH_COMPILER_VAR_117);
+struct strBuilder r = ____BAH_COMPILER_VAR_117;
 
 #line 409 "/opt/bah/json.bah"
 unsigned long int l = strlen(s);
@@ -6710,7 +6694,7 @@ register long int i = 0;
 while ((i<tabs)) {
 
 #line 457 "/opt/bah/json.bah"
-char** ____BAH_COMPILER_VAR_123 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_123[1] = "\01\0\0\0""\t";____BAH_COMPILER_VAR_123[0] = tabsStr;char * ____BAH_COMPILER_VAR_124 =__Bah_multiple_concat(____BAH_COMPILER_VAR_123, 2);tabsStr = ____BAH_COMPILER_VAR_124;
+char** ____BAH_COMPILER_VAR_118 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_118[1] = "\01\0\0\0""\t";____BAH_COMPILER_VAR_118[0] = tabsStr;char * ____BAH_COMPILER_VAR_119 =__Bah_multiple_concat(____BAH_COMPILER_VAR_118, 2);tabsStr = ____BAH_COMPILER_VAR_119;
 
 #line 458 "/opt/bah/json.bah"
 i = i+1;
@@ -6738,14 +6722,14 @@ m.value = reflectElement__calculateOffset(&m,e.value);
 if ((i<len(e.structLayout))) {
 
 #line 466 "/opt/bah/json.bah"
-char** ____BAH_COMPILER_VAR_125 = alloca(7 * sizeof(char*));____BAH_COMPILER_VAR_125[6] = "\02\0\0\0"",\n";____BAH_COMPILER_VAR_125[5] = oldToJson__inner(m,true,tabs);____BAH_COMPILER_VAR_125[4] = "\03\0\0\0""\": ";____BAH_COMPILER_VAR_125[3] = m.name;____BAH_COMPILER_VAR_125[2] = "\01\0\0\0""\"";____BAH_COMPILER_VAR_125[1] = tabsStr;____BAH_COMPILER_VAR_125[0] = s;char * ____BAH_COMPILER_VAR_126 =__Bah_multiple_concat(____BAH_COMPILER_VAR_125, 7);s = ____BAH_COMPILER_VAR_126;
+char** ____BAH_COMPILER_VAR_120 = alloca(7 * sizeof(char*));____BAH_COMPILER_VAR_120[6] = "\02\0\0\0"",\n";____BAH_COMPILER_VAR_120[5] = oldToJson__inner(m,true,tabs);____BAH_COMPILER_VAR_120[4] = "\03\0\0\0""\": ";____BAH_COMPILER_VAR_120[3] = m.name;____BAH_COMPILER_VAR_120[2] = "\01\0\0\0""\"";____BAH_COMPILER_VAR_120[1] = tabsStr;____BAH_COMPILER_VAR_120[0] = s;char * ____BAH_COMPILER_VAR_121 =__Bah_multiple_concat(____BAH_COMPILER_VAR_120, 7);s = ____BAH_COMPILER_VAR_121;
 }
 
 #line 467 "/opt/bah/json.bah"
 else {
 
 #line 468 "/opt/bah/json.bah"
-char** ____BAH_COMPILER_VAR_127 = alloca(7 * sizeof(char*));____BAH_COMPILER_VAR_127[6] = "\01\0\0\0""\n";____BAH_COMPILER_VAR_127[5] = oldToJson__inner(m,true,tabs);____BAH_COMPILER_VAR_127[4] = "\03\0\0\0""\": ";____BAH_COMPILER_VAR_127[3] = m.name;____BAH_COMPILER_VAR_127[2] = "\01\0\0\0""\"";____BAH_COMPILER_VAR_127[1] = tabsStr;____BAH_COMPILER_VAR_127[0] = s;char * ____BAH_COMPILER_VAR_128 =__Bah_multiple_concat(____BAH_COMPILER_VAR_127, 7);s = ____BAH_COMPILER_VAR_128;
+char** ____BAH_COMPILER_VAR_122 = alloca(7 * sizeof(char*));____BAH_COMPILER_VAR_122[6] = "\01\0\0\0""\n";____BAH_COMPILER_VAR_122[5] = oldToJson__inner(m,true,tabs);____BAH_COMPILER_VAR_122[4] = "\03\0\0\0""\": ";____BAH_COMPILER_VAR_122[3] = m.name;____BAH_COMPILER_VAR_122[2] = "\01\0\0\0""\"";____BAH_COMPILER_VAR_122[1] = tabsStr;____BAH_COMPILER_VAR_122[0] = s;char * ____BAH_COMPILER_VAR_123 =__Bah_multiple_concat(____BAH_COMPILER_VAR_122, 7);s = ____BAH_COMPILER_VAR_123;
 }
 };
 
@@ -6762,14 +6746,14 @@ i = 0;
 while ((i<tabs)) {
 
 #line 474 "/opt/bah/json.bah"
-char** ____BAH_COMPILER_VAR_129 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_129[1] = "\01\0\0\0""\t";____BAH_COMPILER_VAR_129[0] = tabsStr;char * ____BAH_COMPILER_VAR_130 =__Bah_multiple_concat(____BAH_COMPILER_VAR_129, 2);tabsStr = ____BAH_COMPILER_VAR_130;
+char** ____BAH_COMPILER_VAR_124 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_124[1] = "\01\0\0\0""\t";____BAH_COMPILER_VAR_124[0] = tabsStr;char * ____BAH_COMPILER_VAR_125 =__Bah_multiple_concat(____BAH_COMPILER_VAR_124, 2);tabsStr = ____BAH_COMPILER_VAR_125;
 
 #line 475 "/opt/bah/json.bah"
 i = i+1;
 };
 
 #line 477 "/opt/bah/json.bah"
-char** ____BAH_COMPILER_VAR_131 = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_131[2] = "\01\0\0\0""}";____BAH_COMPILER_VAR_131[1] = tabsStr;____BAH_COMPILER_VAR_131[0] = s;char * ____BAH_COMPILER_VAR_132 =__Bah_multiple_concat(____BAH_COMPILER_VAR_131, 3);s = ____BAH_COMPILER_VAR_132;
+char** ____BAH_COMPILER_VAR_126 = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_126[2] = "\01\0\0\0""}";____BAH_COMPILER_VAR_126[1] = tabsStr;____BAH_COMPILER_VAR_126[0] = s;char * ____BAH_COMPILER_VAR_127 =__Bah_multiple_concat(____BAH_COMPILER_VAR_126, 3);s = ____BAH_COMPILER_VAR_127;
 
 #line 478 "/opt/bah/json.bah"
 return s;
@@ -6805,7 +6789,7 @@ if ((isMember==false)) {
 void * s = e.value;
 
 #line 488 "/opt/bah/json.bah"
-char** ____BAH_COMPILER_VAR_133 = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_133[2] = "\01\0\0\0""\"";____BAH_COMPILER_VAR_133[1] = jsonEscapeStr(s);____BAH_COMPILER_VAR_133[0] = "\01\0\0\0""\"";char * ____BAH_COMPILER_VAR_134 =__Bah_multiple_concat(____BAH_COMPILER_VAR_133, 3);return ____BAH_COMPILER_VAR_134;
+char** ____BAH_COMPILER_VAR_128 = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_128[2] = "\01\0\0\0""\"";____BAH_COMPILER_VAR_128[1] = jsonEscapeStr(s);____BAH_COMPILER_VAR_128[0] = "\01\0\0\0""\"";char * ____BAH_COMPILER_VAR_129 =__Bah_multiple_concat(____BAH_COMPILER_VAR_128, 3);return ____BAH_COMPILER_VAR_129;
 }
 
 #line 489 "/opt/bah/json.bah"
@@ -6818,7 +6802,7 @@ char ** sp = e.value;
 char * s = *sp;
 
 #line 492 "/opt/bah/json.bah"
-char** ____BAH_COMPILER_VAR_135 = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_135[2] = "\01\0\0\0""\"";____BAH_COMPILER_VAR_135[1] = jsonEscapeStr(s);____BAH_COMPILER_VAR_135[0] = "\01\0\0\0""\"";char * ____BAH_COMPILER_VAR_136 =__Bah_multiple_concat(____BAH_COMPILER_VAR_135, 3);return ____BAH_COMPILER_VAR_136;
+char** ____BAH_COMPILER_VAR_130 = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_130[2] = "\01\0\0\0""\"";____BAH_COMPILER_VAR_130[1] = jsonEscapeStr(s);____BAH_COMPILER_VAR_130[0] = "\01\0\0\0""\"";char * ____BAH_COMPILER_VAR_131 =__Bah_multiple_concat(____BAH_COMPILER_VAR_130, 3);return ____BAH_COMPILER_VAR_131;
 }
 }
 
@@ -6877,7 +6861,7 @@ register long int i = 0;
 while ((i<len(arr))) {
 
 #line 511 "/opt/bah/json.bah"
-char** ____BAH_COMPILER_VAR_137 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_137[1] = intToStr(arr->data[i]);____BAH_COMPILER_VAR_137[0] = s;char * ____BAH_COMPILER_VAR_138 =__Bah_multiple_concat(____BAH_COMPILER_VAR_137, 2);s = ____BAH_COMPILER_VAR_138;
+char** ____BAH_COMPILER_VAR_132 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_132[1] = intToStr(arr->data[i]);____BAH_COMPILER_VAR_132[0] = s;char * ____BAH_COMPILER_VAR_133 =__Bah_multiple_concat(____BAH_COMPILER_VAR_132, 2);s = ____BAH_COMPILER_VAR_133;
 
 #line 512 "/opt/bah/json.bah"
 i = i+1;
@@ -6886,7 +6870,7 @@ i = i+1;
 if ((i<len(arr))) {
 
 #line 514 "/opt/bah/json.bah"
-char** ____BAH_COMPILER_VAR_139 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_139[1] = "\01\0\0\0"",";____BAH_COMPILER_VAR_139[0] = s;char * ____BAH_COMPILER_VAR_140 =__Bah_multiple_concat(____BAH_COMPILER_VAR_139, 2);s = ____BAH_COMPILER_VAR_140;
+char** ____BAH_COMPILER_VAR_134 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_134[1] = "\01\0\0\0"",";____BAH_COMPILER_VAR_134[0] = s;char * ____BAH_COMPILER_VAR_135 =__Bah_multiple_concat(____BAH_COMPILER_VAR_134, 2);s = ____BAH_COMPILER_VAR_135;
 }
 };
 }
@@ -6913,7 +6897,7 @@ register long int i = 0;
 while ((i<len(arr))) {
 
 #line 522 "/opt/bah/json.bah"
-char** ____BAH_COMPILER_VAR_141 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_141[1] = floatToStr(arr->data[i]);____BAH_COMPILER_VAR_141[0] = s;char * ____BAH_COMPILER_VAR_142 =__Bah_multiple_concat(____BAH_COMPILER_VAR_141, 2);s = ____BAH_COMPILER_VAR_142;
+char** ____BAH_COMPILER_VAR_136 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_136[1] = floatToStr(arr->data[i]);____BAH_COMPILER_VAR_136[0] = s;char * ____BAH_COMPILER_VAR_137 =__Bah_multiple_concat(____BAH_COMPILER_VAR_136, 2);s = ____BAH_COMPILER_VAR_137;
 
 #line 523 "/opt/bah/json.bah"
 i = i+1;
@@ -6922,7 +6906,7 @@ i = i+1;
 if ((i<len(arr))) {
 
 #line 525 "/opt/bah/json.bah"
-char** ____BAH_COMPILER_VAR_143 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_143[1] = "\01\0\0\0"",";____BAH_COMPILER_VAR_143[0] = s;char * ____BAH_COMPILER_VAR_144 =__Bah_multiple_concat(____BAH_COMPILER_VAR_143, 2);s = ____BAH_COMPILER_VAR_144;
+char** ____BAH_COMPILER_VAR_138 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_138[1] = "\01\0\0\0"",";____BAH_COMPILER_VAR_138[0] = s;char * ____BAH_COMPILER_VAR_139 =__Bah_multiple_concat(____BAH_COMPILER_VAR_138, 2);s = ____BAH_COMPILER_VAR_139;
 }
 };
 }
@@ -6943,7 +6927,7 @@ void ** arrPtr = e.value;
 arr = *arrPtr;
 
 #line 532 "/opt/bah/json.bah"
-char** ____BAH_COMPILER_VAR_145 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_145[1] = "\01\0\0\0""\n";____BAH_COMPILER_VAR_145[0] = s;char * ____BAH_COMPILER_VAR_146 =__Bah_multiple_concat(____BAH_COMPILER_VAR_145, 2);s = ____BAH_COMPILER_VAR_146;
+char** ____BAH_COMPILER_VAR_140 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_140[1] = "\01\0\0\0""\n";____BAH_COMPILER_VAR_140[0] = s;char * ____BAH_COMPILER_VAR_141 =__Bah_multiple_concat(____BAH_COMPILER_VAR_140, 2);s = ____BAH_COMPILER_VAR_141;
 
 #line 533 "/opt/bah/json.bah"
 register long int i = 0;
@@ -6952,7 +6936,7 @@ register long int i = 0;
 while ((i<len(arr))) {
 
 #line 534 "/opt/bah/json.bah"
-char** ____BAH_COMPILER_VAR_147 = alloca(4 * sizeof(char*));____BAH_COMPILER_VAR_147[3] = "\01\0\0\0""\"";____BAH_COMPILER_VAR_147[2] = jsonEscapeStr(arr->data[i]);____BAH_COMPILER_VAR_147[1] = "\01\0\0\0""\"";____BAH_COMPILER_VAR_147[0] = s;char * ____BAH_COMPILER_VAR_148 =__Bah_multiple_concat(____BAH_COMPILER_VAR_147, 4);s = ____BAH_COMPILER_VAR_148;
+char** ____BAH_COMPILER_VAR_142 = alloca(4 * sizeof(char*));____BAH_COMPILER_VAR_142[3] = "\01\0\0\0""\"";____BAH_COMPILER_VAR_142[2] = jsonEscapeStr(arr->data[i]);____BAH_COMPILER_VAR_142[1] = "\01\0\0\0""\"";____BAH_COMPILER_VAR_142[0] = s;char * ____BAH_COMPILER_VAR_143 =__Bah_multiple_concat(____BAH_COMPILER_VAR_142, 4);s = ____BAH_COMPILER_VAR_143;
 
 #line 535 "/opt/bah/json.bah"
 i = i+1;
@@ -6961,14 +6945,14 @@ i = i+1;
 if ((i<len(arr))) {
 
 #line 537 "/opt/bah/json.bah"
-char** ____BAH_COMPILER_VAR_149 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_149[1] = "\02\0\0\0"",\n";____BAH_COMPILER_VAR_149[0] = s;char * ____BAH_COMPILER_VAR_150 =__Bah_multiple_concat(____BAH_COMPILER_VAR_149, 2);s = ____BAH_COMPILER_VAR_150;
+char** ____BAH_COMPILER_VAR_144 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_144[1] = "\02\0\0\0"",\n";____BAH_COMPILER_VAR_144[0] = s;char * ____BAH_COMPILER_VAR_145 =__Bah_multiple_concat(____BAH_COMPILER_VAR_144, 2);s = ____BAH_COMPILER_VAR_145;
 }
 
 #line 538 "/opt/bah/json.bah"
 else {
 
 #line 539 "/opt/bah/json.bah"
-char** ____BAH_COMPILER_VAR_151 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_151[1] = "\01\0\0\0""\n";____BAH_COMPILER_VAR_151[0] = s;char * ____BAH_COMPILER_VAR_152 =__Bah_multiple_concat(____BAH_COMPILER_VAR_151, 2);s = ____BAH_COMPILER_VAR_152;
+char** ____BAH_COMPILER_VAR_146 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_146[1] = "\01\0\0\0""\n";____BAH_COMPILER_VAR_146[0] = s;char * ____BAH_COMPILER_VAR_147 =__Bah_multiple_concat(____BAH_COMPILER_VAR_146, 2);s = ____BAH_COMPILER_VAR_147;
 }
 };
 }
@@ -7025,16 +7009,16 @@ m.value = reflectElement__calculateOffset(&m,ae->value);
 
 #line 557 "/opt/bah/json.bah"
 
-    unsigned int ____BAH_COMPILER_VAR_153 = j;
-    __Bah_realocate_arr(ae->structLayout, ____BAH_COMPILER_VAR_153);
-    ae->structLayout->data[____BAH_COMPILER_VAR_153] = m;
+    unsigned int ____BAH_COMPILER_VAR_148 = j;
+    __Bah_realocate_arr(ae->structLayout, ____BAH_COMPILER_VAR_148);
+    ae->structLayout->data[____BAH_COMPILER_VAR_148] = m;
 
 #line 558 "/opt/bah/json.bah"
 j = j+1;
 };
 
 #line 560 "/opt/bah/json.bah"
-char** ____BAH_COMPILER_VAR_154 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_154[1] = oldToJson__inner(*ae,false,tabs);____BAH_COMPILER_VAR_154[0] = s;char * ____BAH_COMPILER_VAR_155 =__Bah_multiple_concat(____BAH_COMPILER_VAR_154, 2);s = ____BAH_COMPILER_VAR_155;
+char** ____BAH_COMPILER_VAR_149 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_149[1] = oldToJson__inner(*ae,false,tabs);____BAH_COMPILER_VAR_149[0] = s;char * ____BAH_COMPILER_VAR_150 =__Bah_multiple_concat(____BAH_COMPILER_VAR_149, 2);s = ____BAH_COMPILER_VAR_150;
 
 #line 561 "/opt/bah/json.bah"
 i = i+1;
@@ -7043,20 +7027,20 @@ i = i+1;
 if ((i<len(arr))) {
 
 #line 563 "/opt/bah/json.bah"
-char** ____BAH_COMPILER_VAR_156 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_156[1] = "\02\0\0\0"",\n";____BAH_COMPILER_VAR_156[0] = s;char * ____BAH_COMPILER_VAR_157 =__Bah_multiple_concat(____BAH_COMPILER_VAR_156, 2);s = ____BAH_COMPILER_VAR_157;
+char** ____BAH_COMPILER_VAR_151 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_151[1] = "\02\0\0\0"",\n";____BAH_COMPILER_VAR_151[0] = s;char * ____BAH_COMPILER_VAR_152 =__Bah_multiple_concat(____BAH_COMPILER_VAR_151, 2);s = ____BAH_COMPILER_VAR_152;
 }
 
 #line 564 "/opt/bah/json.bah"
 else {
 
 #line 565 "/opt/bah/json.bah"
-char** ____BAH_COMPILER_VAR_158 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_158[1] = "\01\0\0\0""\n";____BAH_COMPILER_VAR_158[0] = s;char * ____BAH_COMPILER_VAR_159 =__Bah_multiple_concat(____BAH_COMPILER_VAR_158, 2);s = ____BAH_COMPILER_VAR_159;
+char** ____BAH_COMPILER_VAR_153 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_153[1] = "\01\0\0\0""\n";____BAH_COMPILER_VAR_153[0] = s;char * ____BAH_COMPILER_VAR_154 =__Bah_multiple_concat(____BAH_COMPILER_VAR_153, 2);s = ____BAH_COMPILER_VAR_154;
 }
 };
 }
 
 #line 569 "/opt/bah/json.bah"
-char** ____BAH_COMPILER_VAR_160 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_160[1] = "\01\0\0\0""]";____BAH_COMPILER_VAR_160[0] = s;char * ____BAH_COMPILER_VAR_161 =__Bah_multiple_concat(____BAH_COMPILER_VAR_160, 2);s = ____BAH_COMPILER_VAR_161;
+char** ____BAH_COMPILER_VAR_155 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_155[1] = "\01\0\0\0""]";____BAH_COMPILER_VAR_155[0] = s;char * ____BAH_COMPILER_VAR_156 =__Bah_multiple_concat(____BAH_COMPILER_VAR_155, 2);s = ____BAH_COMPILER_VAR_156;
 
 #line 570 "/opt/bah/json.bah"
 return s;
@@ -7083,7 +7067,7 @@ unsigned long int l = strlen(e.type);
 if (__builtin_expect((e.isArray==false)&&(e.type[l-1+4]!=42), 0)) {
 
 #line 590 "/opt/bah/json.bah"
-char** ____BAH_COMPILER_VAR_162 = alloca(7 * sizeof(char*));____BAH_COMPILER_VAR_162[6] = "\02\0\0\0"").";____BAH_COMPILER_VAR_162[5] = e.name;____BAH_COMPILER_VAR_162[4] = "\051\0\0\0"" but a pointer is required, try: toJson(&";____BAH_COMPILER_VAR_162[3] = e.type;____BAH_COMPILER_VAR_162[2] = "\012\0\0\0"") of type ";____BAH_COMPILER_VAR_162[1] = e.name;____BAH_COMPILER_VAR_162[0] = "\07\0\0\0""toJson(";char * ____BAH_COMPILER_VAR_163 =__Bah_multiple_concat(____BAH_COMPILER_VAR_162, 7);__BAH_panic(____BAH_COMPILER_VAR_163,"\025\0\0\0""/opt/bah/json.bah:590");
+char** ____BAH_COMPILER_VAR_157 = alloca(7 * sizeof(char*));____BAH_COMPILER_VAR_157[6] = "\02\0\0\0"").";____BAH_COMPILER_VAR_157[5] = e.name;____BAH_COMPILER_VAR_157[4] = "\051\0\0\0"" but a pointer is required, try: toJson(&";____BAH_COMPILER_VAR_157[3] = e.type;____BAH_COMPILER_VAR_157[2] = "\012\0\0\0"") of type ";____BAH_COMPILER_VAR_157[1] = e.name;____BAH_COMPILER_VAR_157[0] = "\07\0\0\0""toJson(";char * ____BAH_COMPILER_VAR_158 =__Bah_multiple_concat(____BAH_COMPILER_VAR_157, 7);__BAH_panic(____BAH_COMPILER_VAR_158,"\025\0\0\0""/opt/bah/json.bah:590");
 }
 
 #line 593 "/opt/bah/json.bah"
@@ -7150,32 +7134,32 @@ void * v = e.value;
 if ((m.isArray==true)) {
 
 #line 617 "/opt/bah/json.bah"
-char** ____BAH_COMPILER_VAR_164 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_164[1] = "\01\0\0\0""*";____BAH_COMPILER_VAR_164[0] = m.arrayElem->type;char * ____BAH_COMPILER_VAR_165 =__Bah_multiple_concat(____BAH_COMPILER_VAR_164, 2);m.arrayElem->type = ____BAH_COMPILER_VAR_165;
+char** ____BAH_COMPILER_VAR_159 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_159[1] = "\01\0\0\0""*";____BAH_COMPILER_VAR_159[0] = m.arrayElem->type;char * ____BAH_COMPILER_VAR_160 =__Bah_multiple_concat(____BAH_COMPILER_VAR_159, 2);m.arrayElem->type = ____BAH_COMPILER_VAR_160;
 }
 
 #line 618 "/opt/bah/json.bah"
 else if ((m.type[strlen(m.type)-1+4]!=42)) {
 
 #line 619 "/opt/bah/json.bah"
-char** ____BAH_COMPILER_VAR_166 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_166[1] = "\01\0\0\0""*";____BAH_COMPILER_VAR_166[0] = m.type;char * ____BAH_COMPILER_VAR_167 =__Bah_multiple_concat(____BAH_COMPILER_VAR_166, 2);m.type = ____BAH_COMPILER_VAR_167;
+char** ____BAH_COMPILER_VAR_161 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_161[1] = "\01\0\0\0""*";____BAH_COMPILER_VAR_161[0] = m.type;char * ____BAH_COMPILER_VAR_162 =__Bah_multiple_concat(____BAH_COMPILER_VAR_161, 2);m.type = ____BAH_COMPILER_VAR_162;
 }
 
 #line 621 "/opt/bah/json.bah"
 m.value = reflectElement__calculateOffset(&m,e.value);
 
 #line 622 "/opt/bah/json.bah"
-char** ____BAH_COMPILER_VAR_168 = alloca(4 * sizeof(char*));____BAH_COMPILER_VAR_168[3] = toJson(m);____BAH_COMPILER_VAR_168[2] = "\03\0\0\0""\": ";____BAH_COMPILER_VAR_168[1] = m.name;____BAH_COMPILER_VAR_168[0] = "\01\0\0\0""\"";char * ____BAH_COMPILER_VAR_169 =__Bah_multiple_concat(____BAH_COMPILER_VAR_168, 4);char** ____BAH_COMPILER_VAR_170 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_170[1] = ____BAH_COMPILER_VAR_169;____BAH_COMPILER_VAR_170[0] = s;char * ____BAH_COMPILER_VAR_171 =__Bah_multiple_concat(____BAH_COMPILER_VAR_170, 2);s = ____BAH_COMPILER_VAR_171;
+char** ____BAH_COMPILER_VAR_163 = alloca(4 * sizeof(char*));____BAH_COMPILER_VAR_163[3] = toJson(m);____BAH_COMPILER_VAR_163[2] = "\03\0\0\0""\": ";____BAH_COMPILER_VAR_163[1] = m.name;____BAH_COMPILER_VAR_163[0] = "\01\0\0\0""\"";char * ____BAH_COMPILER_VAR_164 =__Bah_multiple_concat(____BAH_COMPILER_VAR_163, 4);char** ____BAH_COMPILER_VAR_165 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_165[1] = ____BAH_COMPILER_VAR_164;____BAH_COMPILER_VAR_165[0] = s;char * ____BAH_COMPILER_VAR_166 =__Bah_multiple_concat(____BAH_COMPILER_VAR_165, 2);s = ____BAH_COMPILER_VAR_166;
 
 #line 623 "/opt/bah/json.bah"
 if ((i+1<len(e.structLayout))) {
 
 #line 624 "/opt/bah/json.bah"
-char** ____BAH_COMPILER_VAR_172 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_172[1] = "\02\0\0\0"", ";____BAH_COMPILER_VAR_172[0] = s;char * ____BAH_COMPILER_VAR_173 =__Bah_multiple_concat(____BAH_COMPILER_VAR_172, 2);s = ____BAH_COMPILER_VAR_173;
+char** ____BAH_COMPILER_VAR_167 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_167[1] = "\02\0\0\0"", ";____BAH_COMPILER_VAR_167[0] = s;char * ____BAH_COMPILER_VAR_168 =__Bah_multiple_concat(____BAH_COMPILER_VAR_167, 2);s = ____BAH_COMPILER_VAR_168;
 }
 };
 
 #line 627 "/opt/bah/json.bah"
-char** ____BAH_COMPILER_VAR_174 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_174[1] = "\01\0\0\0""}";____BAH_COMPILER_VAR_174[0] = s;char * ____BAH_COMPILER_VAR_175 =__Bah_multiple_concat(____BAH_COMPILER_VAR_174, 2);s = ____BAH_COMPILER_VAR_175;
+char** ____BAH_COMPILER_VAR_169 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_169[1] = "\01\0\0\0""}";____BAH_COMPILER_VAR_169[0] = s;char * ____BAH_COMPILER_VAR_170 =__Bah_multiple_concat(____BAH_COMPILER_VAR_169, 2);s = ____BAH_COMPILER_VAR_170;
 
 #line 628 "/opt/bah/json.bah"
 return s;
@@ -7216,7 +7200,7 @@ struct reflectElement* ae = e.arrayElem;
 if ((ae->type[strlen(ae->type)-1+4]!=42)&&(ae->isArray==false)) {
 
 #line 643 "/opt/bah/json.bah"
-char** ____BAH_COMPILER_VAR_176 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_176[1] = "\01\0\0\0""*";____BAH_COMPILER_VAR_176[0] = ae->type;char * ____BAH_COMPILER_VAR_177 =__Bah_multiple_concat(____BAH_COMPILER_VAR_176, 2);ae->type = ____BAH_COMPILER_VAR_177;
+char** ____BAH_COMPILER_VAR_171 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_171[1] = "\01\0\0\0""*";____BAH_COMPILER_VAR_171[0] = ae->type;char * ____BAH_COMPILER_VAR_172 =__Bah_multiple_concat(____BAH_COMPILER_VAR_171, 2);ae->type = ____BAH_COMPILER_VAR_172;
 }
 
 #line 645 "/opt/bah/json.bah"
@@ -7234,18 +7218,18 @@ struct reflectElement m = *ae;
 m.value = (void *)((long int)base+es*i);
 
 #line 648 "/opt/bah/json.bah"
-char** ____BAH_COMPILER_VAR_178 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_178[1] = toJson(m);____BAH_COMPILER_VAR_178[0] = s;char * ____BAH_COMPILER_VAR_179 =__Bah_multiple_concat(____BAH_COMPILER_VAR_178, 2);s = ____BAH_COMPILER_VAR_179;
+char** ____BAH_COMPILER_VAR_173 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_173[1] = toJson(m);____BAH_COMPILER_VAR_173[0] = s;char * ____BAH_COMPILER_VAR_174 =__Bah_multiple_concat(____BAH_COMPILER_VAR_173, 2);s = ____BAH_COMPILER_VAR_174;
 
 #line 649 "/opt/bah/json.bah"
 if ((i+1<l)) {
 
 #line 650 "/opt/bah/json.bah"
-char** ____BAH_COMPILER_VAR_180 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_180[1] = "\02\0\0\0"", ";____BAH_COMPILER_VAR_180[0] = s;char * ____BAH_COMPILER_VAR_181 =__Bah_multiple_concat(____BAH_COMPILER_VAR_180, 2);s = ____BAH_COMPILER_VAR_181;
+char** ____BAH_COMPILER_VAR_175 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_175[1] = "\02\0\0\0"", ";____BAH_COMPILER_VAR_175[0] = s;char * ____BAH_COMPILER_VAR_176 =__Bah_multiple_concat(____BAH_COMPILER_VAR_175, 2);s = ____BAH_COMPILER_VAR_176;
 }
 };
 
 #line 653 "/opt/bah/json.bah"
-char** ____BAH_COMPILER_VAR_182 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_182[1] = "\01\0\0\0""]";____BAH_COMPILER_VAR_182[0] = s;char * ____BAH_COMPILER_VAR_183 =__Bah_multiple_concat(____BAH_COMPILER_VAR_182, 2);s = ____BAH_COMPILER_VAR_183;
+char** ____BAH_COMPILER_VAR_177 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_177[1] = "\01\0\0\0""]";____BAH_COMPILER_VAR_177[0] = s;char * ____BAH_COMPILER_VAR_178 =__Bah_multiple_concat(____BAH_COMPILER_VAR_177, 2);s = ____BAH_COMPILER_VAR_178;
 
 #line 654 "/opt/bah/json.bah"
 return s;
@@ -7275,7 +7259,7 @@ return "\02\0\0\0""\"\"";
 }
 
 #line 667 "/opt/bah/json.bah"
-char** ____BAH_COMPILER_VAR_184 = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_184[2] = "\01\0\0\0""\"";____BAH_COMPILER_VAR_184[1] = jsonEscapeStr(*s);____BAH_COMPILER_VAR_184[0] = "\01\0\0\0""\"";char * ____BAH_COMPILER_VAR_185 =__Bah_multiple_concat(____BAH_COMPILER_VAR_184, 3);return ____BAH_COMPILER_VAR_185;
+char** ____BAH_COMPILER_VAR_179 = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_179[2] = "\01\0\0\0""\"";____BAH_COMPILER_VAR_179[1] = jsonEscapeStr(*s);____BAH_COMPILER_VAR_179[0] = "\01\0\0\0""\"";char * ____BAH_COMPILER_VAR_180 =__Bah_multiple_concat(____BAH_COMPILER_VAR_179, 3);return ____BAH_COMPILER_VAR_180;
 }
 
 #line 670 "/opt/bah/json.bah"
@@ -7305,7 +7289,7 @@ if ((strcmp(e.type, "\05\0\0\0""char*") == 0)) {
 char* c = e.value;
 
 #line 682 "/opt/bah/json.bah"
-char** ____BAH_COMPILER_VAR_186 = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_186[2] = "\01\0\0\0""\"";____BAH_COMPILER_VAR_186[1] = charToString(*c);____BAH_COMPILER_VAR_186[0] = "\01\0\0\0""\"";char * ____BAH_COMPILER_VAR_187 =__Bah_multiple_concat(____BAH_COMPILER_VAR_186, 3);return ____BAH_COMPILER_VAR_187;
+char** ____BAH_COMPILER_VAR_181 = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_181[2] = "\01\0\0\0""\"";____BAH_COMPILER_VAR_181[1] = charToString(*c);____BAH_COMPILER_VAR_181[0] = "\01\0\0\0""\"";char * ____BAH_COMPILER_VAR_182 =__Bah_multiple_concat(____BAH_COMPILER_VAR_181, 3);return ____BAH_COMPILER_VAR_182;
 }
 
 #line 685 "/opt/bah/json.bah"
@@ -7383,7 +7367,7 @@ char * BAH_OS;
 char * BAH_CC;
 
 #line 29 "/home/alois/Documents/bah-bah/src/main.bah"
-#define BAH_VERSION "\020\0\0\0""v1.3 (build 138)"
+#define BAH_VERSION "\020\0\0\0""v1.3 (build 139)"
 
 #line 31 "/home/alois/Documents/bah-bah/src/main.bah"
 char debug;
@@ -7687,7 +7671,7 @@ array(char)* syntaxes;
 array(char *)* keywords;
 
 #line 54 "/home/alois/Documents/bah-bah/src/lexer.bah"
-char ____BAH_COMPILER_VAR_189(array(char *)* arr, char * el) {
+char ____BAH_COMPILER_VAR_184(array(char *)* arr, char * el) {
         if (arr == 0) {
             return 0;
         };
@@ -7701,14 +7685,14 @@ char ____BAH_COMPILER_VAR_189(array(char *)* arr, char * el) {
 struct Tok makeToken(long int pos,long int lineNb,__BAH_ARR_TYPE_char cont,tokenType type){
 
 #line 55 "/home/alois/Documents/bah-bah/src/lexer.bah"
-struct Tok ____BAH_COMPILER_VAR_188 = {};
-____BAH_COMPILER_VAR_188.cont = "\0\0\0\0""";
-____BAH_COMPILER_VAR_188.ogCont = "\0\0\0\0""";
-____BAH_COMPILER_VAR_188.type = TOKEN_NO_TYPE;
-____BAH_COMPILER_VAR_188.line = 1;
-____BAH_COMPILER_VAR_188.begLine = 1;
-____BAH_COMPILER_VAR_188.bahType = "\0\0\0\0""";
-struct Tok t = ____BAH_COMPILER_VAR_188;
+struct Tok ____BAH_COMPILER_VAR_183 = {};
+____BAH_COMPILER_VAR_183.cont = "\0\0\0\0""";
+____BAH_COMPILER_VAR_183.ogCont = "\0\0\0\0""";
+____BAH_COMPILER_VAR_183.type = TOKEN_NO_TYPE;
+____BAH_COMPILER_VAR_183.line = 1;
+____BAH_COMPILER_VAR_183.begLine = 1;
+____BAH_COMPILER_VAR_183.bahType = "\0\0\0\0""";
+struct Tok t = ____BAH_COMPILER_VAR_183;
 
 #line 56 "/home/alois/Documents/bah-bah/src/lexer.bah"
 t.cont = arrToStr(cont);
@@ -7729,7 +7713,7 @@ t.line = lineNb;
 t.type = type;
 
 #line 64 "/home/alois/Documents/bah-bah/src/lexer.bah"
-if ((type==TOKEN_TYPE_VAR)&&____BAH_COMPILER_VAR_189(keywords, t.cont)) {
+if ((type==TOKEN_TYPE_VAR)&&____BAH_COMPILER_VAR_184(keywords, t.cont)) {
 
 #line 65 "/home/alois/Documents/bah-bah/src/lexer.bah"
 t.type = TOKEN_TYPE_KEYWORD;
@@ -7763,14 +7747,14 @@ char * lineStr = intToStr(line);
 char * posStr = intToStr(pos);
 
 #line 79 "/home/alois/Documents/bah-bah/src/lexer.bah"
-char** ____BAH_COMPILER_VAR_190 = alloca(8 * sizeof(char*));____BAH_COMPILER_VAR_190[7] = msg;____BAH_COMPILER_VAR_190[6] = "\06\0\0\0""\n\e[0m\n";____BAH_COMPILER_VAR_190[5] = posStr;____BAH_COMPILER_VAR_190[4] = "\01\0\0\0"":";____BAH_COMPILER_VAR_190[3] = lineStr;____BAH_COMPILER_VAR_190[2] = "\01\0\0\0"":";____BAH_COMPILER_VAR_190[1] = compilerState.currentFile;____BAH_COMPILER_VAR_190[0] = "\031\0\0\0""\e[1;31m[LEXER-ERROR]\e[0m ";char * ____BAH_COMPILER_VAR_191 =__Bah_multiple_concat(____BAH_COMPILER_VAR_190, 8);println(____BAH_COMPILER_VAR_191);
+char** ____BAH_COMPILER_VAR_185 = alloca(8 * sizeof(char*));____BAH_COMPILER_VAR_185[7] = msg;____BAH_COMPILER_VAR_185[6] = "\06\0\0\0""\n\e[0m\n";____BAH_COMPILER_VAR_185[5] = posStr;____BAH_COMPILER_VAR_185[4] = "\01\0\0\0"":";____BAH_COMPILER_VAR_185[3] = lineStr;____BAH_COMPILER_VAR_185[2] = "\01\0\0\0"":";____BAH_COMPILER_VAR_185[1] = compilerState.currentFile;____BAH_COMPILER_VAR_185[0] = "\031\0\0\0""\e[1;31m[LEXER-ERROR]\e[0m ";char * ____BAH_COMPILER_VAR_186 =__Bah_multiple_concat(____BAH_COMPILER_VAR_185, 8);println(____BAH_COMPILER_VAR_186);
 
 #line 80 "/home/alois/Documents/bah-bah/src/lexer.bah"
 exit(1);
 };
 
 #line 83 "/home/alois/Documents/bah-bah/src/lexer.bah"
-char ____BAH_COMPILER_VAR_208(array(char)* arr, char el) {
+char ____BAH_COMPILER_VAR_203(array(char)* arr, char el) {
         if (arr == 0) {
             return 0;
         };
@@ -7781,7 +7765,7 @@ char ____BAH_COMPILER_VAR_208(array(char)* arr, char el) {
         }
         return 0;
         }
-char ____BAH_COMPILER_VAR_211(array(char)* arr, char el) {
+char ____BAH_COMPILER_VAR_206(array(char)* arr, char el) {
         if (arr == 0) {
             return 0;
         };
@@ -7792,7 +7776,7 @@ char ____BAH_COMPILER_VAR_211(array(char)* arr, char el) {
         }
         return 0;
         }
-char ____BAH_COMPILER_VAR_217(array(char)* arr, char el) {
+char ____BAH_COMPILER_VAR_212(array(char)* arr, char el) {
         if (arr == 0) {
             return 0;
         };
@@ -7900,9 +7884,9 @@ long int begLine = lineNb;
 
 #line 128 "/home/alois/Documents/bah-bah/src/lexer.bah"
 
-    unsigned int ____BAH_COMPILER_VAR_192 = 0;
-    __Bah_realocate_arr(memory, ____BAH_COMPILER_VAR_192);
-    memory->data[____BAH_COMPILER_VAR_192] = c;
+    unsigned int ____BAH_COMPILER_VAR_187 = 0;
+    __Bah_realocate_arr(memory, ____BAH_COMPILER_VAR_187);
+    memory->data[____BAH_COMPILER_VAR_187] = c;
 
 #line 129 "/home/alois/Documents/bah-bah/src/lexer.bah"
 i = i+1;
@@ -7920,15 +7904,15 @@ if ((c==(char)92)) {
 
 #line 133 "/home/alois/Documents/bah-bah/src/lexer.bah"
 
-    unsigned int ____BAH_COMPILER_VAR_193 = len(memory);
-    __Bah_realocate_arr(memory, ____BAH_COMPILER_VAR_193);
-    memory->data[____BAH_COMPILER_VAR_193] = (char)92;
+    unsigned int ____BAH_COMPILER_VAR_188 = len(memory);
+    __Bah_realocate_arr(memory, ____BAH_COMPILER_VAR_188);
+    memory->data[____BAH_COMPILER_VAR_188] = (char)92;
 
 #line 134 "/home/alois/Documents/bah-bah/src/lexer.bah"
 
-    unsigned int ____BAH_COMPILER_VAR_194 = len(memory);
-    __Bah_realocate_arr(memory, ____BAH_COMPILER_VAR_194);
-    memory->data[____BAH_COMPILER_VAR_194] = s[i+1+4];
+    unsigned int ____BAH_COMPILER_VAR_189 = len(memory);
+    __Bah_realocate_arr(memory, ____BAH_COMPILER_VAR_189);
+    memory->data[____BAH_COMPILER_VAR_189] = s[i+1+4];
 
 #line 135 "/home/alois/Documents/bah-bah/src/lexer.bah"
 if ((s[i+1+4]==(char)10)) {
@@ -7949,9 +7933,9 @@ if ((c==34)) {
 
 #line 144 "/home/alois/Documents/bah-bah/src/lexer.bah"
 
-    unsigned int ____BAH_COMPILER_VAR_195 = len(memory);
-    __Bah_realocate_arr(memory, ____BAH_COMPILER_VAR_195);
-    memory->data[____BAH_COMPILER_VAR_195] = c;
+    unsigned int ____BAH_COMPILER_VAR_190 = len(memory);
+    __Bah_realocate_arr(memory, ____BAH_COMPILER_VAR_190);
+    memory->data[____BAH_COMPILER_VAR_190] = c;
 
 #line 145 "/home/alois/Documents/bah-bah/src/lexer.bah"
 break;
@@ -7962,15 +7946,15 @@ if ((c==(char)10)) {
 
 #line 149 "/home/alois/Documents/bah-bah/src/lexer.bah"
 
-    unsigned int ____BAH_COMPILER_VAR_196 = len(memory);
-    __Bah_realocate_arr(memory, ____BAH_COMPILER_VAR_196);
-    memory->data[____BAH_COMPILER_VAR_196] = (char)92;
+    unsigned int ____BAH_COMPILER_VAR_191 = len(memory);
+    __Bah_realocate_arr(memory, ____BAH_COMPILER_VAR_191);
+    memory->data[____BAH_COMPILER_VAR_191] = (char)92;
 
 #line 150 "/home/alois/Documents/bah-bah/src/lexer.bah"
 
-    unsigned int ____BAH_COMPILER_VAR_197 = len(memory);
-    __Bah_realocate_arr(memory, ____BAH_COMPILER_VAR_197);
-    memory->data[____BAH_COMPILER_VAR_197] = 110;
+    unsigned int ____BAH_COMPILER_VAR_192 = len(memory);
+    __Bah_realocate_arr(memory, ____BAH_COMPILER_VAR_192);
+    memory->data[____BAH_COMPILER_VAR_192] = 110;
 
 #line 151 "/home/alois/Documents/bah-bah/src/lexer.bah"
 ++lineNb;
@@ -7981,16 +7965,16 @@ continue;
 
 #line 154 "/home/alois/Documents/bah-bah/src/lexer.bah"
 
-    unsigned int ____BAH_COMPILER_VAR_198 = len(memory);
-    __Bah_realocate_arr(memory, ____BAH_COMPILER_VAR_198);
-    memory->data[____BAH_COMPILER_VAR_198] = c;
+    unsigned int ____BAH_COMPILER_VAR_193 = len(memory);
+    __Bah_realocate_arr(memory, ____BAH_COMPILER_VAR_193);
+    memory->data[____BAH_COMPILER_VAR_193] = c;
 };
 
 #line 156 "/home/alois/Documents/bah-bah/src/lexer.bah"
 
-    unsigned int ____BAH_COMPILER_VAR_199 = len(tokens);
-    __Bah_realocate_arr(tokens, ____BAH_COMPILER_VAR_199);
-    tokens->data[____BAH_COMPILER_VAR_199] = makeToken(pos,lineNb,memory,TOKEN_TYPE_STR);
+    unsigned int ____BAH_COMPILER_VAR_194 = len(tokens);
+    __Bah_realocate_arr(tokens, ____BAH_COMPILER_VAR_194);
+    tokens->data[____BAH_COMPILER_VAR_194] = makeToken(pos,lineNb,memory,TOKEN_TYPE_STR);
 
 #line 157 "/home/alois/Documents/bah-bah/src/lexer.bah"
 struct Tok lt = tokens->data[len(tokens)-1];
@@ -8000,9 +7984,9 @@ lt.begLine = begLine;
 
 #line 159 "/home/alois/Documents/bah-bah/src/lexer.bah"
 
-    unsigned int ____BAH_COMPILER_VAR_200 = len(tokens)-1;
-    __Bah_realocate_arr(tokens, ____BAH_COMPILER_VAR_200);
-    tokens->data[____BAH_COMPILER_VAR_200] = lt;
+    unsigned int ____BAH_COMPILER_VAR_195 = len(tokens)-1;
+    __Bah_realocate_arr(tokens, ____BAH_COMPILER_VAR_195);
+    tokens->data[____BAH_COMPILER_VAR_195] = lt;
 }
 
 #line 160 "/home/alois/Documents/bah-bah/src/lexer.bah"
@@ -8010,9 +7994,9 @@ else if (isNumber(c)||isMinus(c,nc)) {
 
 #line 162 "/home/alois/Documents/bah-bah/src/lexer.bah"
 
-    unsigned int ____BAH_COMPILER_VAR_201 = 0;
-    __Bah_realocate_arr(memory, ____BAH_COMPILER_VAR_201);
-    memory->data[____BAH_COMPILER_VAR_201] = c;
+    unsigned int ____BAH_COMPILER_VAR_196 = 0;
+    __Bah_realocate_arr(memory, ____BAH_COMPILER_VAR_196);
+    memory->data[____BAH_COMPILER_VAR_196] = c;
 
 #line 163 "/home/alois/Documents/bah-bah/src/lexer.bah"
 long int pos = i;
@@ -8090,9 +8074,9 @@ break;
 
 #line 190 "/home/alois/Documents/bah-bah/src/lexer.bah"
 
-    unsigned int ____BAH_COMPILER_VAR_202 = len(memory);
-    __Bah_realocate_arr(memory, ____BAH_COMPILER_VAR_202);
-    memory->data[____BAH_COMPILER_VAR_202] = c;
+    unsigned int ____BAH_COMPILER_VAR_197 = len(memory);
+    __Bah_realocate_arr(memory, ____BAH_COMPILER_VAR_197);
+    memory->data[____BAH_COMPILER_VAR_197] = c;
 };
 
 #line 192 "/home/alois/Documents/bah-bah/src/lexer.bah"
@@ -8100,9 +8084,9 @@ break;
 
 #line 193 "/home/alois/Documents/bah-bah/src/lexer.bah"
 
-    unsigned int ____BAH_COMPILER_VAR_203 = len(tokens);
-    __Bah_realocate_arr(tokens, ____BAH_COMPILER_VAR_203);
-    tokens->data[____BAH_COMPILER_VAR_203] = makeToken(pos,lineNb,memory,currentType);
+    unsigned int ____BAH_COMPILER_VAR_198 = len(tokens);
+    __Bah_realocate_arr(tokens, ____BAH_COMPILER_VAR_198);
+    tokens->data[____BAH_COMPILER_VAR_198] = makeToken(pos,lineNb,memory,currentType);
 }
 
 #line 194 "/home/alois/Documents/bah-bah/src/lexer.bah"
@@ -8135,9 +8119,9 @@ lexerErr(lineNb,i,"\050\0\0\0""Missing closing tag in char declaration.");
 
 #line 205 "/home/alois/Documents/bah-bah/src/lexer.bah"
 
-    unsigned int ____BAH_COMPILER_VAR_204 = len(tokens);
-    __Bah_realocate_arr(tokens, ____BAH_COMPILER_VAR_204);
-    tokens->data[____BAH_COMPILER_VAR_204] = makeToken(i-1,lineNb,memory,TOKEN_TYPE_CHAR);
+    unsigned int ____BAH_COMPILER_VAR_199 = len(tokens);
+    __Bah_realocate_arr(tokens, ____BAH_COMPILER_VAR_199);
+    tokens->data[____BAH_COMPILER_VAR_199] = makeToken(i-1,lineNb,memory,TOKEN_TYPE_CHAR);
 }
 
 #line 206 "/home/alois/Documents/bah-bah/src/lexer.bah"
@@ -8148,9 +8132,9 @@ long int pos = i;
 
 #line 209 "/home/alois/Documents/bah-bah/src/lexer.bah"
 
-    unsigned int ____BAH_COMPILER_VAR_205 = 0;
-    __Bah_realocate_arr(memory, ____BAH_COMPILER_VAR_205);
-    memory->data[____BAH_COMPILER_VAR_205] = c;
+    unsigned int ____BAH_COMPILER_VAR_200 = 0;
+    __Bah_realocate_arr(memory, ____BAH_COMPILER_VAR_200);
+    memory->data[____BAH_COMPILER_VAR_200] = c;
 
 #line 210 "/home/alois/Documents/bah-bah/src/lexer.bah"
 ++i;
@@ -8172,9 +8156,9 @@ break;
 
 #line 216 "/home/alois/Documents/bah-bah/src/lexer.bah"
 
-    unsigned int ____BAH_COMPILER_VAR_206 = len(memory);
-    __Bah_realocate_arr(memory, ____BAH_COMPILER_VAR_206);
-    memory->data[____BAH_COMPILER_VAR_206] = c;
+    unsigned int ____BAH_COMPILER_VAR_201 = len(memory);
+    __Bah_realocate_arr(memory, ____BAH_COMPILER_VAR_201);
+    memory->data[____BAH_COMPILER_VAR_201] = c;
 };
 
 #line 218 "/home/alois/Documents/bah-bah/src/lexer.bah"
@@ -8182,29 +8166,29 @@ break;
 
 #line 219 "/home/alois/Documents/bah-bah/src/lexer.bah"
 
-    unsigned int ____BAH_COMPILER_VAR_207 = len(tokens);
-    __Bah_realocate_arr(tokens, ____BAH_COMPILER_VAR_207);
-    tokens->data[____BAH_COMPILER_VAR_207] = makeToken(pos,lineNb,memory,TOKEN_TYPE_KEYWORD);
+    unsigned int ____BAH_COMPILER_VAR_202 = len(tokens);
+    __Bah_realocate_arr(tokens, ____BAH_COMPILER_VAR_202);
+    tokens->data[____BAH_COMPILER_VAR_202] = makeToken(pos,lineNb,memory,TOKEN_TYPE_KEYWORD);
 }
 
 #line 220 "/home/alois/Documents/bah-bah/src/lexer.bah"
-else if (____BAH_COMPILER_VAR_208(enclavers, c)) {
+else if (____BAH_COMPILER_VAR_203(enclavers, c)) {
 
 #line 222 "/home/alois/Documents/bah-bah/src/lexer.bah"
 
-    unsigned int ____BAH_COMPILER_VAR_209 = 0;
-    __Bah_realocate_arr(memory, ____BAH_COMPILER_VAR_209);
-    memory->data[____BAH_COMPILER_VAR_209] = c;
+    unsigned int ____BAH_COMPILER_VAR_204 = 0;
+    __Bah_realocate_arr(memory, ____BAH_COMPILER_VAR_204);
+    memory->data[____BAH_COMPILER_VAR_204] = c;
 
 #line 223 "/home/alois/Documents/bah-bah/src/lexer.bah"
 
-    unsigned int ____BAH_COMPILER_VAR_210 = len(tokens);
-    __Bah_realocate_arr(tokens, ____BAH_COMPILER_VAR_210);
-    tokens->data[____BAH_COMPILER_VAR_210] = makeToken(i,lineNb,memory,TOKEN_TYPE_ENCL);
+    unsigned int ____BAH_COMPILER_VAR_205 = len(tokens);
+    __Bah_realocate_arr(tokens, ____BAH_COMPILER_VAR_205);
+    tokens->data[____BAH_COMPILER_VAR_205] = makeToken(i,lineNb,memory,TOKEN_TYPE_ENCL);
 }
 
 #line 224 "/home/alois/Documents/bah-bah/src/lexer.bah"
-else if (____BAH_COMPILER_VAR_211(syntaxes, c)) {
+else if (____BAH_COMPILER_VAR_206(syntaxes, c)) {
 
 #line 228 "/home/alois/Documents/bah-bah/src/lexer.bah"
 if ((c==60)) {
@@ -8217,9 +8201,9 @@ char isCast = false;
 
 #line 231 "/home/alois/Documents/bah-bah/src/lexer.bah"
 
-    unsigned int ____BAH_COMPILER_VAR_212 = 0;
-    __Bah_realocate_arr(memory, ____BAH_COMPILER_VAR_212);
-    memory->data[____BAH_COMPILER_VAR_212] = c;
+    unsigned int ____BAH_COMPILER_VAR_207 = 0;
+    __Bah_realocate_arr(memory, ____BAH_COMPILER_VAR_207);
+    memory->data[____BAH_COMPILER_VAR_207] = c;
 
 #line 232 "/home/alois/Documents/bah-bah/src/lexer.bah"
 ++i;
@@ -8240,9 +8224,9 @@ isCast = true;
 
 #line 237 "/home/alois/Documents/bah-bah/src/lexer.bah"
 
-    unsigned int ____BAH_COMPILER_VAR_213 = len(memory);
-    __Bah_realocate_arr(memory, ____BAH_COMPILER_VAR_213);
-    memory->data[____BAH_COMPILER_VAR_213] = c;
+    unsigned int ____BAH_COMPILER_VAR_208 = len(memory);
+    __Bah_realocate_arr(memory, ____BAH_COMPILER_VAR_208);
+    memory->data[____BAH_COMPILER_VAR_208] = c;
 
 #line 238 "/home/alois/Documents/bah-bah/src/lexer.bah"
 break;
@@ -8257,9 +8241,9 @@ break;
 
 #line 243 "/home/alois/Documents/bah-bah/src/lexer.bah"
 
-    unsigned int ____BAH_COMPILER_VAR_214 = len(memory);
-    __Bah_realocate_arr(memory, ____BAH_COMPILER_VAR_214);
-    memory->data[____BAH_COMPILER_VAR_214] = c;
+    unsigned int ____BAH_COMPILER_VAR_209 = len(memory);
+    __Bah_realocate_arr(memory, ____BAH_COMPILER_VAR_209);
+    memory->data[____BAH_COMPILER_VAR_209] = c;
 };
 
 #line 245 "/home/alois/Documents/bah-bah/src/lexer.bah"
@@ -8267,9 +8251,9 @@ if ((isCast==true)) {
 
 #line 246 "/home/alois/Documents/bah-bah/src/lexer.bah"
 
-    unsigned int ____BAH_COMPILER_VAR_215 = len(tokens);
-    __Bah_realocate_arr(tokens, ____BAH_COMPILER_VAR_215);
-    tokens->data[____BAH_COMPILER_VAR_215] = makeToken(pos,lineNb,memory,TOKEN_TYPE_CAST);
+    unsigned int ____BAH_COMPILER_VAR_210 = len(tokens);
+    __Bah_realocate_arr(tokens, ____BAH_COMPILER_VAR_210);
+    tokens->data[____BAH_COMPILER_VAR_210] = makeToken(pos,lineNb,memory,TOKEN_TYPE_CAST);
 
 #line 247 "/home/alois/Documents/bah-bah/src/lexer.bah"
 continue;
@@ -8287,9 +8271,9 @@ clear(memory);
 
 #line 254 "/home/alois/Documents/bah-bah/src/lexer.bah"
 
-    unsigned int ____BAH_COMPILER_VAR_216 = 0;
-    __Bah_realocate_arr(memory, ____BAH_COMPILER_VAR_216);
-    memory->data[____BAH_COMPILER_VAR_216] = c;
+    unsigned int ____BAH_COMPILER_VAR_211 = 0;
+    __Bah_realocate_arr(memory, ____BAH_COMPILER_VAR_211);
+    memory->data[____BAH_COMPILER_VAR_211] = c;
 
 #line 255 "/home/alois/Documents/bah-bah/src/lexer.bah"
 long int pos = i;
@@ -8309,7 +8293,7 @@ for (; (i<codeLength);
 c = s[i+4];
 
 #line 260 "/home/alois/Documents/bah-bah/src/lexer.bah"
-if ((____BAH_COMPILER_VAR_217(syntaxes, c)==false)) {
+if ((____BAH_COMPILER_VAR_212(syntaxes, c)==false)) {
 
 #line 261 "/home/alois/Documents/bah-bah/src/lexer.bah"
 break;
@@ -8361,9 +8345,9 @@ break;
 
 #line 281 "/home/alois/Documents/bah-bah/src/lexer.bah"
 
-    unsigned int ____BAH_COMPILER_VAR_218 = len(memory);
-    __Bah_realocate_arr(memory, ____BAH_COMPILER_VAR_218);
-    memory->data[____BAH_COMPILER_VAR_218] = c;
+    unsigned int ____BAH_COMPILER_VAR_213 = len(memory);
+    __Bah_realocate_arr(memory, ____BAH_COMPILER_VAR_213);
+    memory->data[____BAH_COMPILER_VAR_213] = c;
 };
 
 #line 283 "/home/alois/Documents/bah-bah/src/lexer.bah"
@@ -8371,9 +8355,9 @@ break;
 
 #line 284 "/home/alois/Documents/bah-bah/src/lexer.bah"
 
-    unsigned int ____BAH_COMPILER_VAR_219 = len(tokens);
-    __Bah_realocate_arr(tokens, ____BAH_COMPILER_VAR_219);
-    tokens->data[____BAH_COMPILER_VAR_219] = makeToken(pos,lineNb,memory,TOKEN_TYPE_SYNTAX);
+    unsigned int ____BAH_COMPILER_VAR_214 = len(tokens);
+    __Bah_realocate_arr(tokens, ____BAH_COMPILER_VAR_214);
+    tokens->data[____BAH_COMPILER_VAR_214] = makeToken(pos,lineNb,memory,TOKEN_TYPE_SYNTAX);
 }
 
 #line 285 "/home/alois/Documents/bah-bah/src/lexer.bah"
@@ -8381,15 +8365,15 @@ else if ((c==46)) {
 
 #line 287 "/home/alois/Documents/bah-bah/src/lexer.bah"
 
-    unsigned int ____BAH_COMPILER_VAR_220 = 0;
-    __Bah_realocate_arr(memory, ____BAH_COMPILER_VAR_220);
-    memory->data[____BAH_COMPILER_VAR_220] = c;
+    unsigned int ____BAH_COMPILER_VAR_215 = 0;
+    __Bah_realocate_arr(memory, ____BAH_COMPILER_VAR_215);
+    memory->data[____BAH_COMPILER_VAR_215] = c;
 
 #line 288 "/home/alois/Documents/bah-bah/src/lexer.bah"
 
-    unsigned int ____BAH_COMPILER_VAR_221 = len(tokens);
-    __Bah_realocate_arr(tokens, ____BAH_COMPILER_VAR_221);
-    tokens->data[____BAH_COMPILER_VAR_221] = makeToken(i,lineNb,memory,TOKEN_TYPE_SEP);
+    unsigned int ____BAH_COMPILER_VAR_216 = len(tokens);
+    __Bah_realocate_arr(tokens, ____BAH_COMPILER_VAR_216);
+    tokens->data[____BAH_COMPILER_VAR_216] = makeToken(i,lineNb,memory,TOKEN_TYPE_SEP);
 }
 
 #line 289 "/home/alois/Documents/bah-bah/src/lexer.bah"
@@ -8397,9 +8381,9 @@ else if (isAlphaNumeric(c)||(c==95)) {
 
 #line 291 "/home/alois/Documents/bah-bah/src/lexer.bah"
 
-    unsigned int ____BAH_COMPILER_VAR_222 = 0;
-    __Bah_realocate_arr(memory, ____BAH_COMPILER_VAR_222);
-    memory->data[____BAH_COMPILER_VAR_222] = c;
+    unsigned int ____BAH_COMPILER_VAR_217 = 0;
+    __Bah_realocate_arr(memory, ____BAH_COMPILER_VAR_217);
+    memory->data[____BAH_COMPILER_VAR_217] = c;
 
 #line 292 "/home/alois/Documents/bah-bah/src/lexer.bah"
 long int pos = i;
@@ -8445,9 +8429,9 @@ break;
 
 #line 310 "/home/alois/Documents/bah-bah/src/lexer.bah"
 
-    unsigned int ____BAH_COMPILER_VAR_223 = len(memory);
-    __Bah_realocate_arr(memory, ____BAH_COMPILER_VAR_223);
-    memory->data[____BAH_COMPILER_VAR_223] = c;
+    unsigned int ____BAH_COMPILER_VAR_218 = len(memory);
+    __Bah_realocate_arr(memory, ____BAH_COMPILER_VAR_218);
+    memory->data[____BAH_COMPILER_VAR_218] = c;
 };
 
 #line 312 "/home/alois/Documents/bah-bah/src/lexer.bah"
@@ -8458,9 +8442,9 @@ tokenType currentType = TOKEN_TYPE_VAR;
 
 #line 315 "/home/alois/Documents/bah-bah/src/lexer.bah"
 
-    unsigned int ____BAH_COMPILER_VAR_224 = len(tokens);
-    __Bah_realocate_arr(tokens, ____BAH_COMPILER_VAR_224);
-    tokens->data[____BAH_COMPILER_VAR_224] = makeToken(pos,lineNb,memory,currentType);
+    unsigned int ____BAH_COMPILER_VAR_219 = len(tokens);
+    __Bah_realocate_arr(tokens, ____BAH_COMPILER_VAR_219);
+    tokens->data[____BAH_COMPILER_VAR_219] = makeToken(pos,lineNb,memory,currentType);
 }
 };
 
@@ -8734,13 +8718,13 @@ struct func* m = mthds->data[i];
 if ((strcmp(m->name, name) == 0)) {
 
 #line 106 "/home/alois/Documents/bah-bah/src/struct.bah"
-struct structMemb* ____BAH_COMPILER_VAR_225 = memoryAlloc(sizeof(struct structMemb));
-____BAH_COMPILER_VAR_225->name = "\0\0\0\0""";
-____BAH_COMPILER_VAR_225->type = "\0\0\0\0""";
-____BAH_COMPILER_VAR_225->constVal = "\0\0\0\0""";
-____BAH_COMPILER_VAR_225->from = "\0\0\0\0""";
-____BAH_COMPILER_VAR_225->def = "\0\0\0\0""";
-struct structMemb* sm = ____BAH_COMPILER_VAR_225;
+struct structMemb* ____BAH_COMPILER_VAR_220 = memoryAlloc(sizeof(struct structMemb));
+____BAH_COMPILER_VAR_220->name = "\0\0\0\0""";
+____BAH_COMPILER_VAR_220->type = "\0\0\0\0""";
+____BAH_COMPILER_VAR_220->constVal = "\0\0\0\0""";
+____BAH_COMPILER_VAR_220->from = "\0\0\0\0""";
+____BAH_COMPILER_VAR_220->def = "\0\0\0\0""";
+struct structMemb* sm = ____BAH_COMPILER_VAR_220;
 
 #line 107 "/home/alois/Documents/bah-bah/src/struct.bah"
 sm->name = m->name;
@@ -8796,7 +8780,7 @@ return null;
 }
 
 #line 136 "/home/alois/Documents/bah-bah/src/struct.bah"
-char** ____BAH_COMPILER_VAR_226 = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_226[2] = name;____BAH_COMPILER_VAR_226[1] = "\02\0\0\0""__";____BAH_COMPILER_VAR_226[0] = s->name;char * ____BAH_COMPILER_VAR_227 =__Bah_multiple_concat(____BAH_COMPILER_VAR_226, 3);struct func* fn = searchFunc(____BAH_COMPILER_VAR_227,elems,true);
+char** ____BAH_COMPILER_VAR_221 = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_221[2] = name;____BAH_COMPILER_VAR_221[1] = "\02\0\0\0""__";____BAH_COMPILER_VAR_221[0] = s->name;char * ____BAH_COMPILER_VAR_222 =__Bah_multiple_concat(____BAH_COMPILER_VAR_221, 3);struct func* fn = searchFunc(____BAH_COMPILER_VAR_222,elems,true);
 
 #line 137 "/home/alois/Documents/bah-bah/src/struct.bah"
 if ((fn!=null)) {
@@ -8907,7 +8891,7 @@ tp = getCType(tpstr,elems);
 t = string__str(&tp);
 
 #line 36 "/home/alois/Documents/bah-bah/src/type.bah"
-char** ____BAH_COMPILER_VAR_228 = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_228[2] = "\02\0\0\0"")*";____BAH_COMPILER_VAR_228[1] = t;____BAH_COMPILER_VAR_228[0] = "\06\0\0\0""array(";char * ____BAH_COMPILER_VAR_229 =__Bah_multiple_concat(____BAH_COMPILER_VAR_228, 3);char * r = ____BAH_COMPILER_VAR_229;
+char** ____BAH_COMPILER_VAR_223 = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_223[2] = "\02\0\0\0"")*";____BAH_COMPILER_VAR_223[1] = t;____BAH_COMPILER_VAR_223[0] = "\06\0\0\0""array(";char * ____BAH_COMPILER_VAR_224 =__Bah_multiple_concat(____BAH_COMPILER_VAR_223, 3);char * r = ____BAH_COMPILER_VAR_224;
 
 #line 37 "/home/alois/Documents/bah-bah/src/type.bah"
 return string(r);
@@ -8930,8 +8914,8 @@ array(struct string)* parts = splitString(tp,"\01\0\0\0"":");
 
 #line 47 "/home/alois/Documents/bah-bah/src/type.bah"
 
-                struct string ____BAH_COMPILER_VAR_230 = getCType(string__str(&parts->data[2]),elems);
-                char** ____BAH_COMPILER_VAR_231 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_231[1] = "\01\0\0\0""*";____BAH_COMPILER_VAR_231[0] = string__str(&____BAH_COMPILER_VAR_230);char * ____BAH_COMPILER_VAR_232 =__Bah_multiple_concat(____BAH_COMPILER_VAR_231, 2);string__set(&tp,____BAH_COMPILER_VAR_232);
+                struct string ____BAH_COMPILER_VAR_225 = getCType(string__str(&parts->data[2]),elems);
+                char** ____BAH_COMPILER_VAR_226 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_226[1] = "\01\0\0\0""*";____BAH_COMPILER_VAR_226[0] = string__str(&____BAH_COMPILER_VAR_225);char * ____BAH_COMPILER_VAR_227 =__Bah_multiple_concat(____BAH_COMPILER_VAR_226, 2);string__set(&tp,____BAH_COMPILER_VAR_227);
 }
 
 #line 48 "/home/alois/Documents/bah-bah/src/type.bah"
@@ -9129,7 +9113,7 @@ return a;
 }
 
 #line 132 "/home/alois/Documents/bah-bah/src/type.bah"
-char** ____BAH_COMPILER_VAR_233 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_233[1] = "\01\0\0\0""*";____BAH_COMPILER_VAR_233[0] = cpstringSubsitute(a, 0, strlen(a)-1);char * ____BAH_COMPILER_VAR_234 =__Bah_multiple_concat(____BAH_COMPILER_VAR_233, 2);a = ____BAH_COMPILER_VAR_234;
+char** ____BAH_COMPILER_VAR_228 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_228[1] = "\01\0\0\0""*";____BAH_COMPILER_VAR_228[0] = cpstringSubsitute(a, 0, strlen(a)-1);char * ____BAH_COMPILER_VAR_229 =__Bah_multiple_concat(____BAH_COMPILER_VAR_228, 2);a = ____BAH_COMPILER_VAR_229;
 
 #line 133 "/home/alois/Documents/bah-bah/src/type.bah"
 return a;
@@ -9157,7 +9141,7 @@ return (strcmp(a, b) == 0);
 };
 
 #line 154 "/home/alois/Documents/bah-bah/src/type.bah"
-char ____BAH_COMPILER_VAR_235(array(char *)* arr, char * el) {
+char ____BAH_COMPILER_VAR_230(array(char *)* arr, char * el) {
         if (arr == 0) {
             return 0;
         };
@@ -9168,7 +9152,7 @@ char ____BAH_COMPILER_VAR_235(array(char *)* arr, char * el) {
         }
         return 0;
         }
-char ____BAH_COMPILER_VAR_236(array(char *)* arr, char * el) {
+char ____BAH_COMPILER_VAR_231(array(char *)* arr, char * el) {
         if (arr == 0) {
             return 0;
         };
@@ -9179,7 +9163,7 @@ char ____BAH_COMPILER_VAR_236(array(char *)* arr, char * el) {
         }
         return 0;
         }
-char ____BAH_COMPILER_VAR_237(array(char *)* arr, char * el) {
+char ____BAH_COMPILER_VAR_232(array(char *)* arr, char * el) {
         if (arr == 0) {
             return 0;
         };
@@ -9190,7 +9174,7 @@ char ____BAH_COMPILER_VAR_237(array(char *)* arr, char * el) {
         }
         return 0;
         }
-char ____BAH_COMPILER_VAR_238(array(char *)* arr, char * el) {
+char ____BAH_COMPILER_VAR_233(array(char *)* arr, char * el) {
         if (arr == 0) {
             return 0;
         };
@@ -9217,14 +9201,14 @@ return true;
 }
 
 #line 161 "/home/alois/Documents/bah-bah/src/type.bah"
-if (____BAH_COMPILER_VAR_235(intTypes, a)&&____BAH_COMPILER_VAR_236(intTypes, b)) {
+if (____BAH_COMPILER_VAR_230(intTypes, a)&&____BAH_COMPILER_VAR_231(intTypes, b)) {
 
 #line 162 "/home/alois/Documents/bah-bah/src/type.bah"
 return true;
 }
 
 #line 164 "/home/alois/Documents/bah-bah/src/type.bah"
-if (____BAH_COMPILER_VAR_237(floatTypes, a)&&____BAH_COMPILER_VAR_238(floatTypes, b)) {
+if (____BAH_COMPILER_VAR_232(floatTypes, a)&&____BAH_COMPILER_VAR_233(floatTypes, b)) {
 
 #line 165 "/home/alois/Documents/bah-bah/src/type.bah"
 return true;
@@ -9270,9 +9254,9 @@ println("\01\0\0\0""[");
 char * noASCIIescape(char * s){
 
 #line 29 "/home/alois/Documents/bah-bah/src/logger.bah"
-struct strBuilder ____BAH_COMPILER_VAR_239 = {};
-strBuilder___init(&____BAH_COMPILER_VAR_239);
-struct strBuilder sb = ____BAH_COMPILER_VAR_239;
+struct strBuilder ____BAH_COMPILER_VAR_234 = {};
+strBuilder___init(&____BAH_COMPILER_VAR_234);
+struct strBuilder sb = ____BAH_COMPILER_VAR_234;
 
 #line 31 "/home/alois/Documents/bah-bah/src/logger.bah"
 register long int i = 0;
@@ -9321,9 +9305,9 @@ return;
 }
 
 #line 51 "/home/alois/Documents/bah-bah/src/logger.bah"
-char ** ____BAH_COMPILER_VAR_240 = &name;
-struct reflectElement ____BAH_COMPILER_VAR_241 = __reflect(____BAH_COMPILER_VAR_240, sizeof(char **), "\011\0\0\0""cpstring*", "\05\0\0\0""&name", 0, 0, 0, 0, 0);
-char** ____BAH_COMPILER_VAR_242 = alloca(9 * sizeof(char*));____BAH_COMPILER_VAR_242[8] = "\014\0\0\0""\n    },\n    ";____BAH_COMPILER_VAR_242[7] = toJson(e);____BAH_COMPILER_VAR_242[6] = "\026\0\0\0""\",\n        \"element\": ";____BAH_COMPILER_VAR_242[5] = intToStr(line);____BAH_COMPILER_VAR_242[4] = "\01\0\0\0"":";____BAH_COMPILER_VAR_242[3] = compilerState.currentFile;____BAH_COMPILER_VAR_242[2] = "\023\0\0\0"",\n        \"path\": \"";____BAH_COMPILER_VAR_242[1] = toJson(____BAH_COMPILER_VAR_241);____BAH_COMPILER_VAR_242[0] = "\027\0\0\0""\n    {\n        \"name\": ";char * ____BAH_COMPILER_VAR_243 =__Bah_multiple_concat(____BAH_COMPILER_VAR_242, 9);println(____BAH_COMPILER_VAR_243);
+char ** ____BAH_COMPILER_VAR_235 = &name;
+struct reflectElement ____BAH_COMPILER_VAR_236 = __reflect(____BAH_COMPILER_VAR_235, sizeof(char **), "\011\0\0\0""cpstring*", "\05\0\0\0""&name", 0, 0, 0, 0, 0);
+char** ____BAH_COMPILER_VAR_237 = alloca(9 * sizeof(char*));____BAH_COMPILER_VAR_237[8] = "\014\0\0\0""\n    },\n    ";____BAH_COMPILER_VAR_237[7] = toJson(e);____BAH_COMPILER_VAR_237[6] = "\026\0\0\0""\",\n        \"element\": ";____BAH_COMPILER_VAR_237[5] = intToStr(line);____BAH_COMPILER_VAR_237[4] = "\01\0\0\0"":";____BAH_COMPILER_VAR_237[3] = compilerState.currentFile;____BAH_COMPILER_VAR_237[2] = "\023\0\0\0"",\n        \"path\": \"";____BAH_COMPILER_VAR_237[1] = toJson(____BAH_COMPILER_VAR_236);____BAH_COMPILER_VAR_237[0] = "\027\0\0\0""\n    {\n        \"name\": ";char * ____BAH_COMPILER_VAR_238 =__Bah_multiple_concat(____BAH_COMPILER_VAR_237, 9);println(____BAH_COMPILER_VAR_238);
 };
 
 #line 60 "/home/alois/Documents/bah-bah/src/logger.bah"
@@ -9337,9 +9321,9 @@ return;
 }
 
 #line 64 "/home/alois/Documents/bah-bah/src/logger.bah"
-char ** ____BAH_COMPILER_VAR_244 = &name;
-struct reflectElement ____BAH_COMPILER_VAR_245 = __reflect(____BAH_COMPILER_VAR_244, sizeof(char **), "\011\0\0\0""cpstring*", "\05\0\0\0""&name", 0, 0, 0, 0, 0);
-char** ____BAH_COMPILER_VAR_246 = alloca(13 * sizeof(char*));____BAH_COMPILER_VAR_246[12] = "\014\0\0\0""\n    },\n    ";____BAH_COMPILER_VAR_246[11] = toJson(e);____BAH_COMPILER_VAR_246[10] = "\037\0\0\0""\n        ],\n        \"element\": ";____BAH_COMPILER_VAR_246[9] = intToStr(to);____BAH_COMPILER_VAR_246[8] = "\016\0\0\0"",\n            ";____BAH_COMPILER_VAR_246[7] = intToStr(from);____BAH_COMPILER_VAR_246[6] = "\042\0\0\0""\",\n        \"range\": [\n            ";____BAH_COMPILER_VAR_246[5] = intToStr(line);____BAH_COMPILER_VAR_246[4] = "\01\0\0\0"":";____BAH_COMPILER_VAR_246[3] = compilerState.currentFile;____BAH_COMPILER_VAR_246[2] = "\023\0\0\0"",\n        \"path\": \"";____BAH_COMPILER_VAR_246[1] = toJson(____BAH_COMPILER_VAR_245);____BAH_COMPILER_VAR_246[0] = "\027\0\0\0""\n    {\n        \"name\": ";char * ____BAH_COMPILER_VAR_247 =__Bah_multiple_concat(____BAH_COMPILER_VAR_246, 13);println(____BAH_COMPILER_VAR_247);
+char ** ____BAH_COMPILER_VAR_239 = &name;
+struct reflectElement ____BAH_COMPILER_VAR_240 = __reflect(____BAH_COMPILER_VAR_239, sizeof(char **), "\011\0\0\0""cpstring*", "\05\0\0\0""&name", 0, 0, 0, 0, 0);
+char** ____BAH_COMPILER_VAR_241 = alloca(13 * sizeof(char*));____BAH_COMPILER_VAR_241[12] = "\014\0\0\0""\n    },\n    ";____BAH_COMPILER_VAR_241[11] = toJson(e);____BAH_COMPILER_VAR_241[10] = "\037\0\0\0""\n        ],\n        \"element\": ";____BAH_COMPILER_VAR_241[9] = intToStr(to);____BAH_COMPILER_VAR_241[8] = "\016\0\0\0"",\n            ";____BAH_COMPILER_VAR_241[7] = intToStr(from);____BAH_COMPILER_VAR_241[6] = "\042\0\0\0""\",\n        \"range\": [\n            ";____BAH_COMPILER_VAR_241[5] = intToStr(line);____BAH_COMPILER_VAR_241[4] = "\01\0\0\0"":";____BAH_COMPILER_VAR_241[3] = compilerState.currentFile;____BAH_COMPILER_VAR_241[2] = "\023\0\0\0"",\n        \"path\": \"";____BAH_COMPILER_VAR_241[1] = toJson(____BAH_COMPILER_VAR_240);____BAH_COMPILER_VAR_241[0] = "\027\0\0\0""\n    {\n        \"name\": ";char * ____BAH_COMPILER_VAR_242 =__Bah_multiple_concat(____BAH_COMPILER_VAR_241, 13);println(____BAH_COMPILER_VAR_242);
 };
 
 #line 77 "/home/alois/Documents/bah-bah/src/logger.bah"
@@ -9379,76 +9363,76 @@ struct variable* v = elems->vars->data[i];
 if ((v->declScope==elems)&&(v->isConst==false)) {
 
 #line 103 "/home/alois/Documents/bah-bah/src/logger.bah"
-struct variable* ____BAH_COMPILER_VAR_248 = v;
-char ** ____BAH_COMPILER_VAR_250 = (char **)((char*)(____BAH_COMPILER_VAR_248) + offsetof(struct variable, name));
-struct reflectElement ____BAH_COMPILER_VAR_251 = __reflect(____BAH_COMPILER_VAR_250, sizeof(char *), "\010\0\0\0""cpstring", "\04\0\0\0""name", 0, 0, 0, 0, offsetof(struct variable, name));
-char ** ____BAH_COMPILER_VAR_252 = (char **)((char*)(____BAH_COMPILER_VAR_248) + offsetof(struct variable, type));
-struct reflectElement ____BAH_COMPILER_VAR_253 = __reflect(____BAH_COMPILER_VAR_252, sizeof(char *), "\010\0\0\0""cpstring", "\04\0\0\0""type", 0, 0, 0, 0, offsetof(struct variable, type));
-char* ____BAH_COMPILER_VAR_254 = (char*)((char*)(____BAH_COMPILER_VAR_248) + offsetof(struct variable, isConst));
-struct reflectElement ____BAH_COMPILER_VAR_255 = __reflect(____BAH_COMPILER_VAR_254, sizeof(char), "\04\0\0\0""bool", "\07\0\0\0""isConst", 0, 0, 0, 0, offsetof(struct variable, isConst));
-char ** ____BAH_COMPILER_VAR_256 = (char **)((char*)(____BAH_COMPILER_VAR_248) + offsetof(struct variable, constVal));
-struct reflectElement ____BAH_COMPILER_VAR_257 = __reflect(____BAH_COMPILER_VAR_256, sizeof(char *), "\010\0\0\0""cpstring", "\010\0\0\0""constVal", 0, 0, 0, 0, offsetof(struct variable, constVal));
-char* ____BAH_COMPILER_VAR_258 = (char*)((char*)(____BAH_COMPILER_VAR_248) + offsetof(struct variable, isArray));
-struct reflectElement ____BAH_COMPILER_VAR_259 = __reflect(____BAH_COMPILER_VAR_258, sizeof(char), "\04\0\0\0""bool", "\07\0\0\0""isArray", 0, 0, 0, 0, offsetof(struct variable, isArray));
-char ** ____BAH_COMPILER_VAR_260 = (char **)((char*)(____BAH_COMPILER_VAR_248) + offsetof(struct variable, from));
-struct reflectElement ____BAH_COMPILER_VAR_261 = __reflect(____BAH_COMPILER_VAR_260, sizeof(char *), "\010\0\0\0""cpstring", "\04\0\0\0""from", 0, 0, 0, 0, offsetof(struct variable, from));
-void ** ____BAH_COMPILER_VAR_262 = (void **)((char*)(____BAH_COMPILER_VAR_248) + offsetof(struct variable, declScope));
-struct reflectElement ____BAH_COMPILER_VAR_263 = __reflect(____BAH_COMPILER_VAR_262, sizeof(void *), "\03\0\0\0""ptr", "\011\0\0\0""declScope", 0, 0, 0, 0, offsetof(struct variable, declScope));
-char* ____BAH_COMPILER_VAR_264 = (char*)((char*)(____BAH_COMPILER_VAR_248) + offsetof(struct variable, isGlobal));
-struct reflectElement ____BAH_COMPILER_VAR_265 = __reflect(____BAH_COMPILER_VAR_264, sizeof(char), "\04\0\0\0""bool", "\010\0\0\0""isGlobal", 0, 0, 0, 0, offsetof(struct variable, isGlobal));
-struct rope** ____BAH_COMPILER_VAR_266 = (struct rope**)((char*)(____BAH_COMPILER_VAR_248) + offsetof(struct variable, declRope));
-char ** ____BAH_COMPILER_VAR_268 = (char **)((char*)(____BAH_COMPILER_VAR_266) + offsetof(struct rope, str));
-struct reflectElement ____BAH_COMPILER_VAR_269 = __reflect(____BAH_COMPILER_VAR_268, sizeof(char *), "\010\0\0\0""cpstring", "\03\0\0\0""str", 0, 0, 0, 0, offsetof(struct rope, str));
-int* ____BAH_COMPILER_VAR_270 = (int*)((char*)(____BAH_COMPILER_VAR_266) + offsetof(struct rope, totalLen));
-struct reflectElement ____BAH_COMPILER_VAR_271 = __reflect(____BAH_COMPILER_VAR_270, sizeof(int), "\05\0\0\0""int32", "\010\0\0\0""totalLen", 0, 0, 0, 0, offsetof(struct rope, totalLen));
-void ** ____BAH_COMPILER_VAR_272 = (void **)((char*)(____BAH_COMPILER_VAR_266) + offsetof(struct rope, left));
-struct reflectElement ____BAH_COMPILER_VAR_273 = __reflect(____BAH_COMPILER_VAR_272, sizeof(void *), "\03\0\0\0""ptr", "\04\0\0\0""left", 0, 0, 0, 0, offsetof(struct rope, left));
-void ** ____BAH_COMPILER_VAR_274 = (void **)((char*)(____BAH_COMPILER_VAR_266) + offsetof(struct rope, right));
-struct reflectElement ____BAH_COMPILER_VAR_275 = __reflect(____BAH_COMPILER_VAR_274, sizeof(void *), "\03\0\0\0""ptr", "\05\0\0\0""right", 0, 0, 0, 0, offsetof(struct rope, right));
+struct variable* ____BAH_COMPILER_VAR_243 = v;
+char ** ____BAH_COMPILER_VAR_245 = (char **)((char*)(____BAH_COMPILER_VAR_243) + offsetof(struct variable, name));
+struct reflectElement ____BAH_COMPILER_VAR_246 = __reflect(____BAH_COMPILER_VAR_245, sizeof(char *), "\010\0\0\0""cpstring", "\04\0\0\0""name", 0, 0, 0, 0, offsetof(struct variable, name));
+char ** ____BAH_COMPILER_VAR_247 = (char **)((char*)(____BAH_COMPILER_VAR_243) + offsetof(struct variable, type));
+struct reflectElement ____BAH_COMPILER_VAR_248 = __reflect(____BAH_COMPILER_VAR_247, sizeof(char *), "\010\0\0\0""cpstring", "\04\0\0\0""type", 0, 0, 0, 0, offsetof(struct variable, type));
+char* ____BAH_COMPILER_VAR_249 = (char*)((char*)(____BAH_COMPILER_VAR_243) + offsetof(struct variable, isConst));
+struct reflectElement ____BAH_COMPILER_VAR_250 = __reflect(____BAH_COMPILER_VAR_249, sizeof(char), "\04\0\0\0""bool", "\07\0\0\0""isConst", 0, 0, 0, 0, offsetof(struct variable, isConst));
+char ** ____BAH_COMPILER_VAR_251 = (char **)((char*)(____BAH_COMPILER_VAR_243) + offsetof(struct variable, constVal));
+struct reflectElement ____BAH_COMPILER_VAR_252 = __reflect(____BAH_COMPILER_VAR_251, sizeof(char *), "\010\0\0\0""cpstring", "\010\0\0\0""constVal", 0, 0, 0, 0, offsetof(struct variable, constVal));
+char* ____BAH_COMPILER_VAR_253 = (char*)((char*)(____BAH_COMPILER_VAR_243) + offsetof(struct variable, isArray));
+struct reflectElement ____BAH_COMPILER_VAR_254 = __reflect(____BAH_COMPILER_VAR_253, sizeof(char), "\04\0\0\0""bool", "\07\0\0\0""isArray", 0, 0, 0, 0, offsetof(struct variable, isArray));
+char ** ____BAH_COMPILER_VAR_255 = (char **)((char*)(____BAH_COMPILER_VAR_243) + offsetof(struct variable, from));
+struct reflectElement ____BAH_COMPILER_VAR_256 = __reflect(____BAH_COMPILER_VAR_255, sizeof(char *), "\010\0\0\0""cpstring", "\04\0\0\0""from", 0, 0, 0, 0, offsetof(struct variable, from));
+void ** ____BAH_COMPILER_VAR_257 = (void **)((char*)(____BAH_COMPILER_VAR_243) + offsetof(struct variable, declScope));
+struct reflectElement ____BAH_COMPILER_VAR_258 = __reflect(____BAH_COMPILER_VAR_257, sizeof(void *), "\03\0\0\0""ptr", "\011\0\0\0""declScope", 0, 0, 0, 0, offsetof(struct variable, declScope));
+char* ____BAH_COMPILER_VAR_259 = (char*)((char*)(____BAH_COMPILER_VAR_243) + offsetof(struct variable, isGlobal));
+struct reflectElement ____BAH_COMPILER_VAR_260 = __reflect(____BAH_COMPILER_VAR_259, sizeof(char), "\04\0\0\0""bool", "\010\0\0\0""isGlobal", 0, 0, 0, 0, offsetof(struct variable, isGlobal));
+struct rope** ____BAH_COMPILER_VAR_261 = (struct rope**)((char*)(____BAH_COMPILER_VAR_243) + offsetof(struct variable, declRope));
+char ** ____BAH_COMPILER_VAR_263 = (char **)((char*)(____BAH_COMPILER_VAR_261) + offsetof(struct rope, str));
+struct reflectElement ____BAH_COMPILER_VAR_264 = __reflect(____BAH_COMPILER_VAR_263, sizeof(char *), "\010\0\0\0""cpstring", "\03\0\0\0""str", 0, 0, 0, 0, offsetof(struct rope, str));
+int* ____BAH_COMPILER_VAR_265 = (int*)((char*)(____BAH_COMPILER_VAR_261) + offsetof(struct rope, totalLen));
+struct reflectElement ____BAH_COMPILER_VAR_266 = __reflect(____BAH_COMPILER_VAR_265, sizeof(int), "\05\0\0\0""int32", "\010\0\0\0""totalLen", 0, 0, 0, 0, offsetof(struct rope, totalLen));
+void ** ____BAH_COMPILER_VAR_267 = (void **)((char*)(____BAH_COMPILER_VAR_261) + offsetof(struct rope, left));
+struct reflectElement ____BAH_COMPILER_VAR_268 = __reflect(____BAH_COMPILER_VAR_267, sizeof(void *), "\03\0\0\0""ptr", "\04\0\0\0""left", 0, 0, 0, 0, offsetof(struct rope, left));
+void ** ____BAH_COMPILER_VAR_269 = (void **)((char*)(____BAH_COMPILER_VAR_261) + offsetof(struct rope, right));
+struct reflectElement ____BAH_COMPILER_VAR_270 = __reflect(____BAH_COMPILER_VAR_269, sizeof(void *), "\03\0\0\0""ptr", "\05\0\0\0""right", 0, 0, 0, 0, offsetof(struct rope, right));
 
-        array(struct reflectElement) * ____BAH_COMPILER_VAR_267 = memoryAlloc(sizeof(array(struct reflectElement)));
-        ____BAH_COMPILER_VAR_267->elemSize = sizeof(struct reflectElement);
-        ____BAH_COMPILER_VAR_267->length = 4;
-        ____BAH_COMPILER_VAR_267->data = memoryAlloc(____BAH_COMPILER_VAR_267->length * ____BAH_COMPILER_VAR_267->elemSize);
-        ____BAH_COMPILER_VAR_267->data[0] = ____BAH_COMPILER_VAR_269;
-____BAH_COMPILER_VAR_267->data[1] = ____BAH_COMPILER_VAR_271;
-____BAH_COMPILER_VAR_267->data[2] = ____BAH_COMPILER_VAR_273;
-____BAH_COMPILER_VAR_267->data[3] = ____BAH_COMPILER_VAR_275;
-struct reflectElement ____BAH_COMPILER_VAR_276 = __reflect(____BAH_COMPILER_VAR_266, sizeof(struct rope), "\05\0\0\0""rope*", "\010\0\0\0""declRope", 0, 0, 1, ____BAH_COMPILER_VAR_267, offsetof(struct variable, declRope));
-char* ____BAH_COMPILER_VAR_277 = (char*)((char*)(____BAH_COMPILER_VAR_248) + offsetof(struct variable, canBeNull));
-struct reflectElement ____BAH_COMPILER_VAR_278 = __reflect(____BAH_COMPILER_VAR_277, sizeof(char), "\04\0\0\0""bool", "\011\0\0\0""canBeNull", 0, 0, 0, 0, offsetof(struct variable, canBeNull));
-void ** ____BAH_COMPILER_VAR_279 = (void **)((char*)(____BAH_COMPILER_VAR_248) + offsetof(struct variable, iterScope));
-struct reflectElement ____BAH_COMPILER_VAR_280 = __reflect(____BAH_COMPILER_VAR_279, sizeof(void *), "\03\0\0\0""ptr", "\011\0\0\0""iterScope", 0, 0, 0, 0, offsetof(struct variable, iterScope));
-char* ____BAH_COMPILER_VAR_281 = (char*)((char*)(____BAH_COMPILER_VAR_248) + offsetof(struct variable, canBeReg));
-struct reflectElement ____BAH_COMPILER_VAR_282 = __reflect(____BAH_COMPILER_VAR_281, sizeof(char), "\04\0\0\0""bool", "\010\0\0\0""canBeReg", 0, 0, 0, 0, offsetof(struct variable, canBeReg));
-char* ____BAH_COMPILER_VAR_283 = (char*)((char*)(____BAH_COMPILER_VAR_248) + offsetof(struct variable, isReg));
-struct reflectElement ____BAH_COMPILER_VAR_284 = __reflect(____BAH_COMPILER_VAR_283, sizeof(char), "\04\0\0\0""bool", "\05\0\0\0""isReg", 0, 0, 0, 0, offsetof(struct variable, isReg));
-void ** ____BAH_COMPILER_VAR_285 = (void **)((char*)(____BAH_COMPILER_VAR_248) + offsetof(struct variable, lastSet));
-struct reflectElement ____BAH_COMPILER_VAR_286 = __reflect(____BAH_COMPILER_VAR_285, sizeof(void *), "\03\0\0\0""ptr", "\07\0\0\0""lastSet", 0, 0, 0, 0, offsetof(struct variable, lastSet));
-char* ____BAH_COMPILER_VAR_287 = (char*)((char*)(____BAH_COMPILER_VAR_248) + offsetof(struct variable, isArg));
-struct reflectElement ____BAH_COMPILER_VAR_288 = __reflect(____BAH_COMPILER_VAR_287, sizeof(char), "\04\0\0\0""bool", "\05\0\0\0""isArg", 0, 0, 0, 0, offsetof(struct variable, isArg));
+        array(struct reflectElement) * ____BAH_COMPILER_VAR_262 = memoryAlloc(sizeof(array(struct reflectElement)));
+        ____BAH_COMPILER_VAR_262->elemSize = sizeof(struct reflectElement);
+        ____BAH_COMPILER_VAR_262->length = 4;
+        ____BAH_COMPILER_VAR_262->data = memoryAlloc(____BAH_COMPILER_VAR_262->length * ____BAH_COMPILER_VAR_262->elemSize);
+        ____BAH_COMPILER_VAR_262->data[0] = ____BAH_COMPILER_VAR_264;
+____BAH_COMPILER_VAR_262->data[1] = ____BAH_COMPILER_VAR_266;
+____BAH_COMPILER_VAR_262->data[2] = ____BAH_COMPILER_VAR_268;
+____BAH_COMPILER_VAR_262->data[3] = ____BAH_COMPILER_VAR_270;
+struct reflectElement ____BAH_COMPILER_VAR_271 = __reflect(____BAH_COMPILER_VAR_261, sizeof(struct rope), "\05\0\0\0""rope*", "\010\0\0\0""declRope", 0, 0, 1, ____BAH_COMPILER_VAR_262, offsetof(struct variable, declRope));
+char* ____BAH_COMPILER_VAR_272 = (char*)((char*)(____BAH_COMPILER_VAR_243) + offsetof(struct variable, canBeNull));
+struct reflectElement ____BAH_COMPILER_VAR_273 = __reflect(____BAH_COMPILER_VAR_272, sizeof(char), "\04\0\0\0""bool", "\011\0\0\0""canBeNull", 0, 0, 0, 0, offsetof(struct variable, canBeNull));
+void ** ____BAH_COMPILER_VAR_274 = (void **)((char*)(____BAH_COMPILER_VAR_243) + offsetof(struct variable, iterScope));
+struct reflectElement ____BAH_COMPILER_VAR_275 = __reflect(____BAH_COMPILER_VAR_274, sizeof(void *), "\03\0\0\0""ptr", "\011\0\0\0""iterScope", 0, 0, 0, 0, offsetof(struct variable, iterScope));
+char* ____BAH_COMPILER_VAR_276 = (char*)((char*)(____BAH_COMPILER_VAR_243) + offsetof(struct variable, canBeReg));
+struct reflectElement ____BAH_COMPILER_VAR_277 = __reflect(____BAH_COMPILER_VAR_276, sizeof(char), "\04\0\0\0""bool", "\010\0\0\0""canBeReg", 0, 0, 0, 0, offsetof(struct variable, canBeReg));
+char* ____BAH_COMPILER_VAR_278 = (char*)((char*)(____BAH_COMPILER_VAR_243) + offsetof(struct variable, isReg));
+struct reflectElement ____BAH_COMPILER_VAR_279 = __reflect(____BAH_COMPILER_VAR_278, sizeof(char), "\04\0\0\0""bool", "\05\0\0\0""isReg", 0, 0, 0, 0, offsetof(struct variable, isReg));
+void ** ____BAH_COMPILER_VAR_280 = (void **)((char*)(____BAH_COMPILER_VAR_243) + offsetof(struct variable, lastSet));
+struct reflectElement ____BAH_COMPILER_VAR_281 = __reflect(____BAH_COMPILER_VAR_280, sizeof(void *), "\03\0\0\0""ptr", "\07\0\0\0""lastSet", 0, 0, 0, 0, offsetof(struct variable, lastSet));
+char* ____BAH_COMPILER_VAR_282 = (char*)((char*)(____BAH_COMPILER_VAR_243) + offsetof(struct variable, isArg));
+struct reflectElement ____BAH_COMPILER_VAR_283 = __reflect(____BAH_COMPILER_VAR_282, sizeof(char), "\04\0\0\0""bool", "\05\0\0\0""isArg", 0, 0, 0, 0, offsetof(struct variable, isArg));
 
-        array(struct reflectElement) * ____BAH_COMPILER_VAR_249 = memoryAlloc(sizeof(array(struct reflectElement)));
-        ____BAH_COMPILER_VAR_249->elemSize = sizeof(struct reflectElement);
-        ____BAH_COMPILER_VAR_249->length = 15;
-        ____BAH_COMPILER_VAR_249->data = memoryAlloc(____BAH_COMPILER_VAR_249->length * ____BAH_COMPILER_VAR_249->elemSize);
-        ____BAH_COMPILER_VAR_249->data[0] = ____BAH_COMPILER_VAR_251;
-____BAH_COMPILER_VAR_249->data[1] = ____BAH_COMPILER_VAR_253;
-____BAH_COMPILER_VAR_249->data[2] = ____BAH_COMPILER_VAR_255;
-____BAH_COMPILER_VAR_249->data[3] = ____BAH_COMPILER_VAR_257;
-____BAH_COMPILER_VAR_249->data[4] = ____BAH_COMPILER_VAR_259;
-____BAH_COMPILER_VAR_249->data[5] = ____BAH_COMPILER_VAR_261;
-____BAH_COMPILER_VAR_249->data[6] = ____BAH_COMPILER_VAR_263;
-____BAH_COMPILER_VAR_249->data[7] = ____BAH_COMPILER_VAR_265;
-____BAH_COMPILER_VAR_249->data[8] = ____BAH_COMPILER_VAR_276;
-____BAH_COMPILER_VAR_249->data[9] = ____BAH_COMPILER_VAR_278;
-____BAH_COMPILER_VAR_249->data[10] = ____BAH_COMPILER_VAR_280;
-____BAH_COMPILER_VAR_249->data[11] = ____BAH_COMPILER_VAR_282;
-____BAH_COMPILER_VAR_249->data[12] = ____BAH_COMPILER_VAR_284;
-____BAH_COMPILER_VAR_249->data[13] = ____BAH_COMPILER_VAR_286;
-____BAH_COMPILER_VAR_249->data[14] = ____BAH_COMPILER_VAR_288;
-struct reflectElement ____BAH_COMPILER_VAR_289 = __reflect(____BAH_COMPILER_VAR_248, sizeof(struct variable), "\011\0\0\0""variable*", "\01\0\0\0""v", 0, 0, 1, ____BAH_COMPILER_VAR_249, 0);
-debugPrint("\07\0\0\0""var_end",line,____BAH_COMPILER_VAR_289);
+        array(struct reflectElement) * ____BAH_COMPILER_VAR_244 = memoryAlloc(sizeof(array(struct reflectElement)));
+        ____BAH_COMPILER_VAR_244->elemSize = sizeof(struct reflectElement);
+        ____BAH_COMPILER_VAR_244->length = 15;
+        ____BAH_COMPILER_VAR_244->data = memoryAlloc(____BAH_COMPILER_VAR_244->length * ____BAH_COMPILER_VAR_244->elemSize);
+        ____BAH_COMPILER_VAR_244->data[0] = ____BAH_COMPILER_VAR_246;
+____BAH_COMPILER_VAR_244->data[1] = ____BAH_COMPILER_VAR_248;
+____BAH_COMPILER_VAR_244->data[2] = ____BAH_COMPILER_VAR_250;
+____BAH_COMPILER_VAR_244->data[3] = ____BAH_COMPILER_VAR_252;
+____BAH_COMPILER_VAR_244->data[4] = ____BAH_COMPILER_VAR_254;
+____BAH_COMPILER_VAR_244->data[5] = ____BAH_COMPILER_VAR_256;
+____BAH_COMPILER_VAR_244->data[6] = ____BAH_COMPILER_VAR_258;
+____BAH_COMPILER_VAR_244->data[7] = ____BAH_COMPILER_VAR_260;
+____BAH_COMPILER_VAR_244->data[8] = ____BAH_COMPILER_VAR_271;
+____BAH_COMPILER_VAR_244->data[9] = ____BAH_COMPILER_VAR_273;
+____BAH_COMPILER_VAR_244->data[10] = ____BAH_COMPILER_VAR_275;
+____BAH_COMPILER_VAR_244->data[11] = ____BAH_COMPILER_VAR_277;
+____BAH_COMPILER_VAR_244->data[12] = ____BAH_COMPILER_VAR_279;
+____BAH_COMPILER_VAR_244->data[13] = ____BAH_COMPILER_VAR_281;
+____BAH_COMPILER_VAR_244->data[14] = ____BAH_COMPILER_VAR_283;
+struct reflectElement ____BAH_COMPILER_VAR_284 = __reflect(____BAH_COMPILER_VAR_243, sizeof(struct variable), "\011\0\0\0""variable*", "\01\0\0\0""v", 0, 0, 1, ____BAH_COMPILER_VAR_244, 0);
+debugPrint("\07\0\0\0""var_end",line,____BAH_COMPILER_VAR_284);
 }
 
 #line 105 "/home/alois/Documents/bah-bah/src/logger.bah"
@@ -9479,7 +9463,7 @@ void advertiseGeneric();
 char * getFuncDef(struct func* fn){
 
 #line 16 "/home/alois/Documents/bah-bah/src/errors.bah"
-char** ____BAH_COMPILER_VAR_290 = alloca(4 * sizeof(char*));____BAH_COMPILER_VAR_290[3] = "\01\0\0\0""(";____BAH_COMPILER_VAR_290[2] = ASCII_RESET;____BAH_COMPILER_VAR_290[1] = fn->name;____BAH_COMPILER_VAR_290[0] = ASCII_YELLOW;char * ____BAH_COMPILER_VAR_291 =__Bah_multiple_concat(____BAH_COMPILER_VAR_290, 4);char * def = ____BAH_COMPILER_VAR_291;
+char** ____BAH_COMPILER_VAR_285 = alloca(4 * sizeof(char*));____BAH_COMPILER_VAR_285[3] = "\01\0\0\0""(";____BAH_COMPILER_VAR_285[2] = ASCII_RESET;____BAH_COMPILER_VAR_285[1] = fn->name;____BAH_COMPILER_VAR_285[0] = ASCII_YELLOW;char * ____BAH_COMPILER_VAR_286 =__Bah_multiple_concat(____BAH_COMPILER_VAR_285, 4);char * def = ____BAH_COMPILER_VAR_286;
 
 #line 17 "/home/alois/Documents/bah-bah/src/errors.bah"
 register long int i = 0;
@@ -9490,18 +9474,18 @@ for (; (i<len(fn->args));
 ++i) {
 
 #line 18 "/home/alois/Documents/bah-bah/src/errors.bah"
-char** ____BAH_COMPILER_VAR_292 = alloca(6 * sizeof(char*));____BAH_COMPILER_VAR_292[5] = ASCII_RESET;____BAH_COMPILER_VAR_292[4] = fn->args->data[i]->type;____BAH_COMPILER_VAR_292[3] = ASCII_BLUE;____BAH_COMPILER_VAR_292[2] = "\01\0\0\0"" ";____BAH_COMPILER_VAR_292[1] = fn->args->data[i]->name;____BAH_COMPILER_VAR_292[0] = ASCII_MAGENTA;char * ____BAH_COMPILER_VAR_293 =__Bah_multiple_concat(____BAH_COMPILER_VAR_292, 6);char** ____BAH_COMPILER_VAR_294 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_294[1] = ____BAH_COMPILER_VAR_293;____BAH_COMPILER_VAR_294[0] = def;char * ____BAH_COMPILER_VAR_295 =__Bah_multiple_concat(____BAH_COMPILER_VAR_294, 2);def = ____BAH_COMPILER_VAR_295;
+char** ____BAH_COMPILER_VAR_287 = alloca(6 * sizeof(char*));____BAH_COMPILER_VAR_287[5] = ASCII_RESET;____BAH_COMPILER_VAR_287[4] = fn->args->data[i]->type;____BAH_COMPILER_VAR_287[3] = ASCII_BLUE;____BAH_COMPILER_VAR_287[2] = "\01\0\0\0"" ";____BAH_COMPILER_VAR_287[1] = fn->args->data[i]->name;____BAH_COMPILER_VAR_287[0] = ASCII_MAGENTA;char * ____BAH_COMPILER_VAR_288 =__Bah_multiple_concat(____BAH_COMPILER_VAR_287, 6);char** ____BAH_COMPILER_VAR_289 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_289[1] = ____BAH_COMPILER_VAR_288;____BAH_COMPILER_VAR_289[0] = def;char * ____BAH_COMPILER_VAR_290 =__Bah_multiple_concat(____BAH_COMPILER_VAR_289, 2);def = ____BAH_COMPILER_VAR_290;
 
 #line 19 "/home/alois/Documents/bah-bah/src/errors.bah"
 if ((i+1<len(fn->args))) {
 
 #line 20 "/home/alois/Documents/bah-bah/src/errors.bah"
-char** ____BAH_COMPILER_VAR_296 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_296[1] = "\02\0\0\0"", ";____BAH_COMPILER_VAR_296[0] = def;char * ____BAH_COMPILER_VAR_297 =__Bah_multiple_concat(____BAH_COMPILER_VAR_296, 2);def = ____BAH_COMPILER_VAR_297;
+char** ____BAH_COMPILER_VAR_291 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_291[1] = "\02\0\0\0"", ";____BAH_COMPILER_VAR_291[0] = def;char * ____BAH_COMPILER_VAR_292 =__Bah_multiple_concat(____BAH_COMPILER_VAR_291, 2);def = ____BAH_COMPILER_VAR_292;
 }
 };
 
 #line 24 "/home/alois/Documents/bah-bah/src/errors.bah"
-char** ____BAH_COMPILER_VAR_298 = alloca(8 * sizeof(char*));____BAH_COMPILER_VAR_298[7] = ASCII_RESET;____BAH_COMPILER_VAR_298[6] = intToStr(fn->line);____BAH_COMPILER_VAR_298[5] = "\01\0\0\0"":";____BAH_COMPILER_VAR_298[4] = fn->file;____BAH_COMPILER_VAR_298[3] = ASCII_GREEN;____BAH_COMPILER_VAR_298[2] = "\01\0\0\0"" ";____BAH_COMPILER_VAR_298[1] = fn->returns->type;____BAH_COMPILER_VAR_298[0] = "\02\0\0\0"") ";char * ____BAH_COMPILER_VAR_299 =__Bah_multiple_concat(____BAH_COMPILER_VAR_298, 8);char** ____BAH_COMPILER_VAR_300 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_300[1] = ____BAH_COMPILER_VAR_299;____BAH_COMPILER_VAR_300[0] = def;char * ____BAH_COMPILER_VAR_301 =__Bah_multiple_concat(____BAH_COMPILER_VAR_300, 2);def = ____BAH_COMPILER_VAR_301;
+char** ____BAH_COMPILER_VAR_293 = alloca(8 * sizeof(char*));____BAH_COMPILER_VAR_293[7] = ASCII_RESET;____BAH_COMPILER_VAR_293[6] = intToStr(fn->line);____BAH_COMPILER_VAR_293[5] = "\01\0\0\0"":";____BAH_COMPILER_VAR_293[4] = fn->file;____BAH_COMPILER_VAR_293[3] = ASCII_GREEN;____BAH_COMPILER_VAR_293[2] = "\01\0\0\0"" ";____BAH_COMPILER_VAR_293[1] = fn->returns->type;____BAH_COMPILER_VAR_293[0] = "\02\0\0\0"") ";char * ____BAH_COMPILER_VAR_294 =__Bah_multiple_concat(____BAH_COMPILER_VAR_293, 8);char** ____BAH_COMPILER_VAR_295 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_295[1] = ____BAH_COMPILER_VAR_294;____BAH_COMPILER_VAR_295[0] = def;char * ____BAH_COMPILER_VAR_296 =__Bah_multiple_concat(____BAH_COMPILER_VAR_295, 2);def = ____BAH_COMPILER_VAR_296;
 
 #line 25 "/home/alois/Documents/bah-bah/src/errors.bah"
 return def;
@@ -9523,8 +9507,8 @@ long int pos = 0;
 if ((tp!=null)) {
 
 #line 34 "/home/alois/Documents/bah-bah/src/errors.bah"
-struct fileStream ____BAH_COMPILER_VAR_302 = {};
-struct fileStream fs = ____BAH_COMPILER_VAR_302;
+struct fileStream ____BAH_COMPILER_VAR_297 = {};
+struct fileStream fs = ____BAH_COMPILER_VAR_297;
 
 #line 35 "/home/alois/Documents/bah-bah/src/errors.bah"
 fileStream__open(&fs,compilerState.currentFile,"\01\0\0\0""r");
@@ -9546,7 +9530,7 @@ t->ogCont = t->cont;
 }
 
 #line 42 "/home/alois/Documents/bah-bah/src/errors.bah"
-char** ____BAH_COMPILER_VAR_303 = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_303[2] = "\01\0\0\0""'";____BAH_COMPILER_VAR_303[1] = t->ogCont;____BAH_COMPILER_VAR_303[0] = "\01\0\0\0""'";char * ____BAH_COMPILER_VAR_304 =__Bah_multiple_concat(____BAH_COMPILER_VAR_303, 3);string__replace(&ffmt,"\07\0\0\0""{TOKEN}",____BAH_COMPILER_VAR_304);
+char** ____BAH_COMPILER_VAR_298 = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_298[2] = "\01\0\0\0""'";____BAH_COMPILER_VAR_298[1] = t->ogCont;____BAH_COMPILER_VAR_298[0] = "\01\0\0\0""'";char * ____BAH_COMPILER_VAR_299 =__Bah_multiple_concat(____BAH_COMPILER_VAR_298, 3);string__replace(&ffmt,"\07\0\0\0""{TOKEN}",____BAH_COMPILER_VAR_299);
 
 #line 43 "/home/alois/Documents/bah-bah/src/errors.bah"
 format = string__str(&ffmt);
@@ -9644,13 +9628,13 @@ break;
 
 #line 77 "/home/alois/Documents/bah-bah/src/errors.bah"
 
-    unsigned int ____BAH_COMPILER_VAR_305 = len(errCont);
-    __Bah_realocate_arr(errCont, ____BAH_COMPILER_VAR_305);
-    errCont->data[____BAH_COMPILER_VAR_305] = fileSrcStr[i+4];
+    unsigned int ____BAH_COMPILER_VAR_300 = len(errCont);
+    __Bah_realocate_arr(errCont, ____BAH_COMPILER_VAR_300);
+    errCont->data[____BAH_COMPILER_VAR_300] = fileSrcStr[i+4];
 };
 
 #line 79 "/home/alois/Documents/bah-bah/src/errors.bah"
-char** ____BAH_COMPILER_VAR_306 = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_306[2] = "\07\0\0\0""\e[1;37m";____BAH_COMPILER_VAR_306[1] = arrToStr(errCont);____BAH_COMPILER_VAR_306[0] = "\07\0\0\0""\e[1;31m";char * ____BAH_COMPILER_VAR_307 =__Bah_multiple_concat(____BAH_COMPILER_VAR_306, 3);array(char)* errTk = strToArr(____BAH_COMPILER_VAR_307);
+char** ____BAH_COMPILER_VAR_301 = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_301[2] = "\07\0\0\0""\e[1;37m";____BAH_COMPILER_VAR_301[1] = arrToStr(errCont);____BAH_COMPILER_VAR_301[0] = "\07\0\0\0""\e[1;31m";char * ____BAH_COMPILER_VAR_302 =__Bah_multiple_concat(____BAH_COMPILER_VAR_301, 3);array(char)* errTk = strToArr(____BAH_COMPILER_VAR_302);
 
 #line 80 "/home/alois/Documents/bah-bah/src/errors.bah"
 register long int ii = 0;
@@ -9662,9 +9646,9 @@ for (; (ii<len(errTk));
 
 #line 81 "/home/alois/Documents/bah-bah/src/errors.bah"
 
-    unsigned int ____BAH_COMPILER_VAR_308 = len(line);
-    __Bah_realocate_arr(line, ____BAH_COMPILER_VAR_308);
-    line->data[____BAH_COMPILER_VAR_308] = errTk->data[ii];
+    unsigned int ____BAH_COMPILER_VAR_303 = len(line);
+    __Bah_realocate_arr(line, ____BAH_COMPILER_VAR_303);
+    line->data[____BAH_COMPILER_VAR_303] = errTk->data[ii];
 };
 
 #line 83 "/home/alois/Documents/bah-bah/src/errors.bah"
@@ -9676,9 +9660,9 @@ continue;
 
 #line 86 "/home/alois/Documents/bah-bah/src/errors.bah"
 
-    unsigned int ____BAH_COMPILER_VAR_309 = len(line);
-    __Bah_realocate_arr(line, ____BAH_COMPILER_VAR_309);
-    line->data[____BAH_COMPILER_VAR_309] = c;
+    unsigned int ____BAH_COMPILER_VAR_304 = len(line);
+    __Bah_realocate_arr(line, ____BAH_COMPILER_VAR_304);
+    line->data[____BAH_COMPILER_VAR_304] = c;
 };
 
 #line 89 "/home/alois/Documents/bah-bah/src/errors.bah"
@@ -9688,7 +9672,7 @@ fileStream__close(&fs);
 str = arrToStr(line);
 
 #line 91 "/home/alois/Documents/bah-bah/src/errors.bah"
-char** ____BAH_COMPILER_VAR_310 = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_310[2] = intToStr(pos);____BAH_COMPILER_VAR_310[1] = "\01\0\0\0"":";____BAH_COMPILER_VAR_310[0] = intToStr(t->line);char * ____BAH_COMPILER_VAR_311 =__Bah_multiple_concat(____BAH_COMPILER_VAR_310, 3);info = ____BAH_COMPILER_VAR_311;
+char** ____BAH_COMPILER_VAR_305 = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_305[2] = intToStr(pos);____BAH_COMPILER_VAR_305[1] = "\01\0\0\0"":";____BAH_COMPILER_VAR_305[0] = intToStr(t->line);char * ____BAH_COMPILER_VAR_306 =__Bah_multiple_concat(____BAH_COMPILER_VAR_305, 3);info = ____BAH_COMPILER_VAR_306;
 }
 
 #line 94 "/home/alois/Documents/bah-bah/src/errors.bah"
@@ -9701,9 +9685,9 @@ struct Tok* t = tp;
 format = noASCIIescape(format);
 
 #line 97 "/home/alois/Documents/bah-bah/src/errors.bah"
-char ** ____BAH_COMPILER_VAR_312 = &format;
-struct reflectElement ____BAH_COMPILER_VAR_313 = __reflect(____BAH_COMPILER_VAR_312, sizeof(char **), "\011\0\0\0""cpstring*", "\07\0\0\0""&format", 0, 0, 0, 0, 0);
-debugError("\05\0\0\0""error",t->line,pos,pos+strlen(t->ogCont),____BAH_COMPILER_VAR_313);
+char ** ____BAH_COMPILER_VAR_307 = &format;
+struct reflectElement ____BAH_COMPILER_VAR_308 = __reflect(____BAH_COMPILER_VAR_307, sizeof(char **), "\011\0\0\0""cpstring*", "\07\0\0\0""&format", 0, 0, 0, 0, 0);
+debugError("\05\0\0\0""error",t->line,pos,pos+strlen(t->ogCont),____BAH_COMPILER_VAR_308);
 
 #line 98 "/home/alois/Documents/bah-bah/src/errors.bah"
 debugExit();
@@ -9716,7 +9700,7 @@ else {
 advertiseGeneric();
 
 #line 101 "/home/alois/Documents/bah-bah/src/errors.bah"
-char** ____BAH_COMPILER_VAR_314 = alloca(8 * sizeof(char*));____BAH_COMPILER_VAR_314[7] = format;____BAH_COMPILER_VAR_314[6] = "\05\0\0\0""\e[0m\n";____BAH_COMPILER_VAR_314[5] = str;____BAH_COMPILER_VAR_314[4] = "\011\0\0\0""\n\e[1;37m\t";____BAH_COMPILER_VAR_314[3] = info;____BAH_COMPILER_VAR_314[2] = "\01\0\0\0"":";____BAH_COMPILER_VAR_314[1] = compilerState.currentFile;____BAH_COMPILER_VAR_314[0] = "\023\0\0\0""\e[1;31m[ERROR]\e[0m ";char * ____BAH_COMPILER_VAR_315 =__Bah_multiple_concat(____BAH_COMPILER_VAR_314, 8);println(____BAH_COMPILER_VAR_315);
+char** ____BAH_COMPILER_VAR_309 = alloca(8 * sizeof(char*));____BAH_COMPILER_VAR_309[7] = format;____BAH_COMPILER_VAR_309[6] = "\05\0\0\0""\e[0m\n";____BAH_COMPILER_VAR_309[5] = str;____BAH_COMPILER_VAR_309[4] = "\011\0\0\0""\n\e[1;37m\t";____BAH_COMPILER_VAR_309[3] = info;____BAH_COMPILER_VAR_309[2] = "\01\0\0\0"":";____BAH_COMPILER_VAR_309[1] = compilerState.currentFile;____BAH_COMPILER_VAR_309[0] = "\023\0\0\0""\e[1;31m[ERROR]\e[0m ";char * ____BAH_COMPILER_VAR_310 =__Bah_multiple_concat(____BAH_COMPILER_VAR_309, 8);println(____BAH_COMPILER_VAR_310);
 }
 
 #line 104 "/home/alois/Documents/bah-bah/src/errors.bah"
@@ -9733,16 +9717,16 @@ if (debug) {
 s = noASCIIescape(s);
 
 #line 111 "/home/alois/Documents/bah-bah/src/errors.bah"
-char ** ____BAH_COMPILER_VAR_316 = &s;
-struct reflectElement ____BAH_COMPILER_VAR_317 = __reflect(____BAH_COMPILER_VAR_316, sizeof(char **), "\011\0\0\0""cpstring*", "\02\0\0\0""&s", 0, 0, 0, 0, 0);
-debugError("\07\0\0\0""warning",-1,-1,-1,____BAH_COMPILER_VAR_317);
+char ** ____BAH_COMPILER_VAR_311 = &s;
+struct reflectElement ____BAH_COMPILER_VAR_312 = __reflect(____BAH_COMPILER_VAR_311, sizeof(char **), "\011\0\0\0""cpstring*", "\02\0\0\0""&s", 0, 0, 0, 0, 0);
+debugError("\07\0\0\0""warning",-1,-1,-1,____BAH_COMPILER_VAR_312);
 
 #line 112 "/home/alois/Documents/bah-bah/src/errors.bah"
 return;
 }
 
 #line 114 "/home/alois/Documents/bah-bah/src/errors.bah"
-char** ____BAH_COMPILER_VAR_318 = alloca(5 * sizeof(char*));____BAH_COMPILER_VAR_318[4] = "\04\0\0\0""\e[0m";____BAH_COMPILER_VAR_318[3] = s;____BAH_COMPILER_VAR_318[2] = "\06\0\0\0""\n\e[0m\t";____BAH_COMPILER_VAR_318[1] = compilerState.currentFile;____BAH_COMPILER_VAR_318[0] = "\025\0\0\0""\e[1;33m[WARNING]\e[0m ";char * ____BAH_COMPILER_VAR_319 =__Bah_multiple_concat(____BAH_COMPILER_VAR_318, 5);println(____BAH_COMPILER_VAR_319);
+char** ____BAH_COMPILER_VAR_313 = alloca(5 * sizeof(char*));____BAH_COMPILER_VAR_313[4] = "\04\0\0\0""\e[0m";____BAH_COMPILER_VAR_313[3] = s;____BAH_COMPILER_VAR_313[2] = "\06\0\0\0""\n\e[0m\t";____BAH_COMPILER_VAR_313[1] = compilerState.currentFile;____BAH_COMPILER_VAR_313[0] = "\025\0\0\0""\e[1;33m[WARNING]\e[0m ";char * ____BAH_COMPILER_VAR_314 =__Bah_multiple_concat(____BAH_COMPILER_VAR_313, 5);println(____BAH_COMPILER_VAR_314);
 };
 
 #line 117 "/home/alois/Documents/bah-bah/src/errors.bah"
@@ -9755,16 +9739,16 @@ if (debug) {
 s = noASCIIescape(s);
 
 #line 120 "/home/alois/Documents/bah-bah/src/errors.bah"
-char ** ____BAH_COMPILER_VAR_320 = &s;
-struct reflectElement ____BAH_COMPILER_VAR_321 = __reflect(____BAH_COMPILER_VAR_320, sizeof(char **), "\011\0\0\0""cpstring*", "\02\0\0\0""&s", 0, 0, 0, 0, 0);
-debugError("\07\0\0\0""warning",l,0,0,____BAH_COMPILER_VAR_321);
+char ** ____BAH_COMPILER_VAR_315 = &s;
+struct reflectElement ____BAH_COMPILER_VAR_316 = __reflect(____BAH_COMPILER_VAR_315, sizeof(char **), "\011\0\0\0""cpstring*", "\02\0\0\0""&s", 0, 0, 0, 0, 0);
+debugError("\07\0\0\0""warning",l,0,0,____BAH_COMPILER_VAR_316);
 
 #line 121 "/home/alois/Documents/bah-bah/src/errors.bah"
 return;
 }
 
 #line 123 "/home/alois/Documents/bah-bah/src/errors.bah"
-char** ____BAH_COMPILER_VAR_322 = alloca(7 * sizeof(char*));____BAH_COMPILER_VAR_322[6] = "\04\0\0\0""\e[0m";____BAH_COMPILER_VAR_322[5] = s;____BAH_COMPILER_VAR_322[4] = "\06\0\0\0""\n\e[0m\t";____BAH_COMPILER_VAR_322[3] = intToStr(l);____BAH_COMPILER_VAR_322[2] = "\01\0\0\0"":";____BAH_COMPILER_VAR_322[1] = compilerState.currentFile;____BAH_COMPILER_VAR_322[0] = "\025\0\0\0""\e[1;33m[WARNING]\e[0m ";char * ____BAH_COMPILER_VAR_323 =__Bah_multiple_concat(____BAH_COMPILER_VAR_322, 7);println(____BAH_COMPILER_VAR_323);
+char** ____BAH_COMPILER_VAR_317 = alloca(7 * sizeof(char*));____BAH_COMPILER_VAR_317[6] = "\04\0\0\0""\e[0m";____BAH_COMPILER_VAR_317[5] = s;____BAH_COMPILER_VAR_317[4] = "\06\0\0\0""\n\e[0m\t";____BAH_COMPILER_VAR_317[3] = intToStr(l);____BAH_COMPILER_VAR_317[2] = "\01\0\0\0"":";____BAH_COMPILER_VAR_317[1] = compilerState.currentFile;____BAH_COMPILER_VAR_317[0] = "\025\0\0\0""\e[1;33m[WARNING]\e[0m ";char * ____BAH_COMPILER_VAR_318 =__Bah_multiple_concat(____BAH_COMPILER_VAR_317, 7);println(____BAH_COMPILER_VAR_318);
 };
 
 #line 126 "/home/alois/Documents/bah-bah/src/errors.bah"
@@ -9777,9 +9761,9 @@ if (debug) {
 s = noASCIIescape(s);
 
 #line 129 "/home/alois/Documents/bah-bah/src/errors.bah"
-char ** ____BAH_COMPILER_VAR_324 = &s;
-struct reflectElement ____BAH_COMPILER_VAR_325 = __reflect(____BAH_COMPILER_VAR_324, sizeof(char **), "\011\0\0\0""cpstring*", "\02\0\0\0""&s", 0, 0, 0, 0, 0);
-debugError("\06\0\0\0""notice",l,0,0,____BAH_COMPILER_VAR_325);
+char ** ____BAH_COMPILER_VAR_319 = &s;
+struct reflectElement ____BAH_COMPILER_VAR_320 = __reflect(____BAH_COMPILER_VAR_319, sizeof(char **), "\011\0\0\0""cpstring*", "\02\0\0\0""&s", 0, 0, 0, 0, 0);
+debugError("\06\0\0\0""notice",l,0,0,____BAH_COMPILER_VAR_320);
 
 #line 130 "/home/alois/Documents/bah-bah/src/errors.bah"
 return;
@@ -9793,7 +9777,7 @@ return;
 }
 
 #line 135 "/home/alois/Documents/bah-bah/src/errors.bah"
-char** ____BAH_COMPILER_VAR_326 = alloca(7 * sizeof(char*));____BAH_COMPILER_VAR_326[6] = "\04\0\0\0""\e[0m";____BAH_COMPILER_VAR_326[5] = s;____BAH_COMPILER_VAR_326[4] = "\06\0\0\0""\n\e[0m\t";____BAH_COMPILER_VAR_326[3] = intToStr(l);____BAH_COMPILER_VAR_326[2] = "\01\0\0\0"":";____BAH_COMPILER_VAR_326[1] = compilerState.currentFile;____BAH_COMPILER_VAR_326[0] = "\024\0\0\0""\e[1;36m[NOTICE]\e[0m ";char * ____BAH_COMPILER_VAR_327 =__Bah_multiple_concat(____BAH_COMPILER_VAR_326, 7);println(____BAH_COMPILER_VAR_327);
+char** ____BAH_COMPILER_VAR_321 = alloca(7 * sizeof(char*));____BAH_COMPILER_VAR_321[6] = "\04\0\0\0""\e[0m";____BAH_COMPILER_VAR_321[5] = s;____BAH_COMPILER_VAR_321[4] = "\06\0\0\0""\n\e[0m\t";____BAH_COMPILER_VAR_321[3] = intToStr(l);____BAH_COMPILER_VAR_321[2] = "\01\0\0\0"":";____BAH_COMPILER_VAR_321[1] = compilerState.currentFile;____BAH_COMPILER_VAR_321[0] = "\024\0\0\0""\e[1;36m[NOTICE]\e[0m ";char * ____BAH_COMPILER_VAR_322 =__Bah_multiple_concat(____BAH_COMPILER_VAR_321, 7);println(____BAH_COMPILER_VAR_322);
 };
 
 #line 3 "/home/alois/Documents/bah-bah/src/fns.bah"
@@ -9956,12 +9940,12 @@ string__set(&vt,"\04\0\0\0""char");
 char * vtstr = string__str(&vt);
 
 #line 67 "/home/alois/Documents/bah-bah/src/var.bah"
-struct variable* ____BAH_COMPILER_VAR_328 = memoryAlloc(sizeof(struct variable));
-____BAH_COMPILER_VAR_328->name = "\0\0\0\0""";
-____BAH_COMPILER_VAR_328->type = "\0\0\0\0""";
-____BAH_COMPILER_VAR_328->constVal = "\0\0\0\0""";
-____BAH_COMPILER_VAR_328->from = "\0\0\0\0""";
-struct variable* nv = ____BAH_COMPILER_VAR_328;
+struct variable* ____BAH_COMPILER_VAR_323 = memoryAlloc(sizeof(struct variable));
+____BAH_COMPILER_VAR_323->name = "\0\0\0\0""";
+____BAH_COMPILER_VAR_323->type = "\0\0\0\0""";
+____BAH_COMPILER_VAR_323->constVal = "\0\0\0\0""";
+____BAH_COMPILER_VAR_323->from = "\0\0\0\0""";
+struct variable* nv = ____BAH_COMPILER_VAR_323;
 
 #line 68 "/home/alois/Documents/bah-bah/src/var.bah"
 *nv = *v;
@@ -10039,12 +10023,12 @@ return null;
 }
 
 #line 99 "/home/alois/Documents/bah-bah/src/var.bah"
-struct variable* ____BAH_COMPILER_VAR_329 = memoryAlloc(sizeof(struct variable));
-____BAH_COMPILER_VAR_329->name = "\0\0\0\0""";
-____BAH_COMPILER_VAR_329->type = "\0\0\0\0""";
-____BAH_COMPILER_VAR_329->constVal = "\0\0\0\0""";
-____BAH_COMPILER_VAR_329->from = "\0\0\0\0""";
-struct variable* nv = ____BAH_COMPILER_VAR_329;
+struct variable* ____BAH_COMPILER_VAR_324 = memoryAlloc(sizeof(struct variable));
+____BAH_COMPILER_VAR_324->name = "\0\0\0\0""";
+____BAH_COMPILER_VAR_324->type = "\0\0\0\0""";
+____BAH_COMPILER_VAR_324->constVal = "\0\0\0\0""";
+____BAH_COMPILER_VAR_324->from = "\0\0\0\0""";
+struct variable* nv = ____BAH_COMPILER_VAR_324;
 
 #line 100 "/home/alois/Documents/bah-bah/src/var.bah"
 nv->from = memb->from;
@@ -10071,7 +10055,7 @@ struct string tcc = string(ogName);
 if ((string__charAt(&tcc,0)==38)) {
 
 #line 109 "/home/alois/Documents/bah-bah/src/var.bah"
-char** ____BAH_COMPILER_VAR_330 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_330[1] = "\01\0\0\0""*";____BAH_COMPILER_VAR_330[0] = r;char * ____BAH_COMPILER_VAR_331 =__Bah_multiple_concat(____BAH_COMPILER_VAR_330, 2);r = ____BAH_COMPILER_VAR_331;
+char** ____BAH_COMPILER_VAR_325 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_325[1] = "\01\0\0\0""*";____BAH_COMPILER_VAR_325[0] = r;char * ____BAH_COMPILER_VAR_326 =__Bah_multiple_concat(____BAH_COMPILER_VAR_325, 2);r = ____BAH_COMPILER_VAR_326;
 }
 
 #line 111 "/home/alois/Documents/bah-bah/src/var.bah"
@@ -10090,7 +10074,7 @@ long int pointerLevel = string__count(&ct,"\01\0\0\0""*");
 if (__builtin_expect((pointerLevel<nbUnaries), 0)) {
 
 #line 116 "/home/alois/Documents/bah-bah/src/var.bah"
-char** ____BAH_COMPILER_VAR_332 = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_332[2] = "\034\0\0\0""' because it is not pointer.";____BAH_COMPILER_VAR_332[1] = name;____BAH_COMPILER_VAR_332[0] = "\023\0\0\0""Cannot use '*' on '";char * ____BAH_COMPILER_VAR_333 =__Bah_multiple_concat(____BAH_COMPILER_VAR_332, 3);throwErr(null,____BAH_COMPILER_VAR_333);
+char** ____BAH_COMPILER_VAR_327 = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_327[2] = "\034\0\0\0""' because it is not pointer.";____BAH_COMPILER_VAR_327[1] = name;____BAH_COMPILER_VAR_327[0] = "\023\0\0\0""Cannot use '*' on '";char * ____BAH_COMPILER_VAR_328 =__Bah_multiple_concat(____BAH_COMPILER_VAR_327, 3);throwErr(null,____BAH_COMPILER_VAR_328);
 }
 
 #line 118 "/home/alois/Documents/bah-bah/src/var.bah"
@@ -10125,12 +10109,12 @@ struct variable* v = elems->vars->data[i];
 if ((strcmp(v->name, name) == 0)) {
 
 #line 130 "/home/alois/Documents/bah-bah/src/var.bah"
-struct variable* ____BAH_COMPILER_VAR_334 = memoryAlloc(sizeof(struct variable));
-____BAH_COMPILER_VAR_334->name = "\0\0\0\0""";
-____BAH_COMPILER_VAR_334->type = "\0\0\0\0""";
-____BAH_COMPILER_VAR_334->constVal = "\0\0\0\0""";
-____BAH_COMPILER_VAR_334->from = "\0\0\0\0""";
-struct variable* nv = ____BAH_COMPILER_VAR_334;
+struct variable* ____BAH_COMPILER_VAR_329 = memoryAlloc(sizeof(struct variable));
+____BAH_COMPILER_VAR_329->name = "\0\0\0\0""";
+____BAH_COMPILER_VAR_329->type = "\0\0\0\0""";
+____BAH_COMPILER_VAR_329->constVal = "\0\0\0\0""";
+____BAH_COMPILER_VAR_329->from = "\0\0\0\0""";
+struct variable* nv = ____BAH_COMPILER_VAR_329;
 
 #line 131 "/home/alois/Documents/bah-bah/src/var.bah"
 *nv = *v;
@@ -10145,7 +10129,7 @@ struct string tcc = string(ogName);
 if (string__count(&tcc,"\01\0\0\0""&")) {
 
 #line 135 "/home/alois/Documents/bah-bah/src/var.bah"
-char** ____BAH_COMPILER_VAR_335 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_335[1] = "\01\0\0\0""*";____BAH_COMPILER_VAR_335[0] = r;char * ____BAH_COMPILER_VAR_336 =__Bah_multiple_concat(____BAH_COMPILER_VAR_335, 2);r = ____BAH_COMPILER_VAR_336;
+char** ____BAH_COMPILER_VAR_330 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_330[1] = "\01\0\0\0""*";____BAH_COMPILER_VAR_330[0] = r;char * ____BAH_COMPILER_VAR_331 =__Bah_multiple_concat(____BAH_COMPILER_VAR_330, 2);r = ____BAH_COMPILER_VAR_331;
 }
 
 #line 138 "/home/alois/Documents/bah-bah/src/var.bah"
@@ -10164,7 +10148,7 @@ long int pointerLevel = string__count(&ct,"\01\0\0\0""*");
 if (__builtin_expect((pointerLevel<nbUnaries), 0)) {
 
 #line 143 "/home/alois/Documents/bah-bah/src/var.bah"
-char** ____BAH_COMPILER_VAR_337 = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_337[2] = "\034\0\0\0""' because it is not pointer.";____BAH_COMPILER_VAR_337[1] = name;____BAH_COMPILER_VAR_337[0] = "\023\0\0\0""Cannot use '*' on '";char * ____BAH_COMPILER_VAR_338 =__Bah_multiple_concat(____BAH_COMPILER_VAR_337, 3);throwErr(null,____BAH_COMPILER_VAR_338);
+char** ____BAH_COMPILER_VAR_332 = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_332[2] = "\034\0\0\0""' because it is not pointer.";____BAH_COMPILER_VAR_332[1] = name;____BAH_COMPILER_VAR_332[0] = "\023\0\0\0""Cannot use '*' on '";char * ____BAH_COMPILER_VAR_333 =__Bah_multiple_concat(____BAH_COMPILER_VAR_332, 3);throwErr(null,____BAH_COMPILER_VAR_333);
 }
 
 #line 145 "/home/alois/Documents/bah-bah/src/var.bah"
@@ -10200,12 +10184,12 @@ struct func* fn = elems->fns->data[i];
 if ((strcmp(fn->name, name) == 0)) {
 
 #line 157 "/home/alois/Documents/bah-bah/src/var.bah"
-struct variable* ____BAH_COMPILER_VAR_339 = memoryAlloc(sizeof(struct variable));
-____BAH_COMPILER_VAR_339->name = "\0\0\0\0""";
-____BAH_COMPILER_VAR_339->type = "\0\0\0\0""";
-____BAH_COMPILER_VAR_339->constVal = "\0\0\0\0""";
-____BAH_COMPILER_VAR_339->from = "\0\0\0\0""";
-struct variable* nv = ____BAH_COMPILER_VAR_339;
+struct variable* ____BAH_COMPILER_VAR_334 = memoryAlloc(sizeof(struct variable));
+____BAH_COMPILER_VAR_334->name = "\0\0\0\0""";
+____BAH_COMPILER_VAR_334->type = "\0\0\0\0""";
+____BAH_COMPILER_VAR_334->constVal = "\0\0\0\0""";
+____BAH_COMPILER_VAR_334->from = "\0\0\0\0""";
+struct variable* nv = ____BAH_COMPILER_VAR_334;
 
 #line 158 "/home/alois/Documents/bah-bah/src/var.bah"
 nv->name = name;
@@ -10223,7 +10207,7 @@ while ((j<len(fn->args))) {
 struct variable* arg = fn->args->data[j];
 
 #line 162 "/home/alois/Documents/bah-bah/src/var.bah"
-char** ____BAH_COMPILER_VAR_340 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_340[1] = arg->type;____BAH_COMPILER_VAR_340[0] = nv->type;char * ____BAH_COMPILER_VAR_341 =__Bah_multiple_concat(____BAH_COMPILER_VAR_340, 2);nv->type = ____BAH_COMPILER_VAR_341;
+char** ____BAH_COMPILER_VAR_335 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_335[1] = arg->type;____BAH_COMPILER_VAR_335[0] = nv->type;char * ____BAH_COMPILER_VAR_336 =__Bah_multiple_concat(____BAH_COMPILER_VAR_335, 2);nv->type = ____BAH_COMPILER_VAR_336;
 
 #line 163 "/home/alois/Documents/bah-bah/src/var.bah"
 j = j+1;
@@ -10232,7 +10216,7 @@ j = j+1;
 if ((j<len(fn->args))) {
 
 #line 165 "/home/alois/Documents/bah-bah/src/var.bah"
-char** ____BAH_COMPILER_VAR_342 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_342[1] = "\01\0\0\0"",";____BAH_COMPILER_VAR_342[0] = nv->type;char * ____BAH_COMPILER_VAR_343 =__Bah_multiple_concat(____BAH_COMPILER_VAR_342, 2);nv->type = ____BAH_COMPILER_VAR_343;
+char** ____BAH_COMPILER_VAR_337 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_337[1] = "\01\0\0\0"",";____BAH_COMPILER_VAR_337[0] = nv->type;char * ____BAH_COMPILER_VAR_338 =__Bah_multiple_concat(____BAH_COMPILER_VAR_337, 2);nv->type = ____BAH_COMPILER_VAR_338;
 }
 };
 
@@ -10240,7 +10224,7 @@ char** ____BAH_COMPILER_VAR_342 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR
 fn->used = true;
 
 #line 169 "/home/alois/Documents/bah-bah/src/var.bah"
-char** ____BAH_COMPILER_VAR_344 = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_344[2] = fn->returns->type;____BAH_COMPILER_VAR_344[1] = "\01\0\0\0"")";____BAH_COMPILER_VAR_344[0] = nv->type;char * ____BAH_COMPILER_VAR_345 =__Bah_multiple_concat(____BAH_COMPILER_VAR_344, 3);nv->type = ____BAH_COMPILER_VAR_345;
+char** ____BAH_COMPILER_VAR_339 = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_339[2] = fn->returns->type;____BAH_COMPILER_VAR_339[1] = "\01\0\0\0"")";____BAH_COMPILER_VAR_339[0] = nv->type;char * ____BAH_COMPILER_VAR_340 =__Bah_multiple_concat(____BAH_COMPILER_VAR_339, 3);nv->type = ____BAH_COMPILER_VAR_340;
 
 #line 170 "/home/alois/Documents/bah-bah/src/var.bah"
 return nv;
@@ -10302,7 +10286,7 @@ struct string tp = getCType(v->type,elems);
 char * t = string__str(&tp);
 
 #line 202 "/home/alois/Documents/bah-bah/src/var.bah"
-char** ____BAH_COMPILER_VAR_346 = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_346[2] = v->name;____BAH_COMPILER_VAR_346[1] = "\01\0\0\0"" ";____BAH_COMPILER_VAR_346[0] = t;char * ____BAH_COMPILER_VAR_347 =__Bah_multiple_concat(____BAH_COMPILER_VAR_346, 3);t = ____BAH_COMPILER_VAR_347;
+char** ____BAH_COMPILER_VAR_341 = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_341[2] = v->name;____BAH_COMPILER_VAR_341[1] = "\01\0\0\0"" ";____BAH_COMPILER_VAR_341[0] = t;char * ____BAH_COMPILER_VAR_342 =__Bah_multiple_concat(____BAH_COMPILER_VAR_341, 3);t = ____BAH_COMPILER_VAR_342;
 
 #line 203 "/home/alois/Documents/bah-bah/src/var.bah"
 return t;
@@ -10432,15 +10416,15 @@ return "\0\0\0\0""";
 struct func* parseFnType(struct string cvt){
 
 #line 261 "/home/alois/Documents/bah-bah/src/var.bah"
-struct func* ____BAH_COMPILER_VAR_348 = memoryAlloc(sizeof(struct func));
-____BAH_COMPILER_VAR_348->name = "\0\0\0\0""";
-____BAH_COMPILER_VAR_348->args = memoryAlloc(sizeof(array(struct variable*)));
-            ____BAH_COMPILER_VAR_348->args->length = 0;
-            ____BAH_COMPILER_VAR_348->args->elemSize = sizeof(struct variable*);
-            ____BAH_COMPILER_VAR_348->from = "\0\0\0\0""";
-____BAH_COMPILER_VAR_348->file = "\0\0\0\0""";
-____BAH_COMPILER_VAR_348->line = 1;
-struct func* nf = ____BAH_COMPILER_VAR_348;
+struct func* ____BAH_COMPILER_VAR_343 = memoryAlloc(sizeof(struct func));
+____BAH_COMPILER_VAR_343->name = "\0\0\0\0""";
+____BAH_COMPILER_VAR_343->args = memoryAlloc(sizeof(array(struct variable*)));
+            ____BAH_COMPILER_VAR_343->args->length = 0;
+            ____BAH_COMPILER_VAR_343->args->elemSize = sizeof(struct variable*);
+            ____BAH_COMPILER_VAR_343->from = "\0\0\0\0""";
+____BAH_COMPILER_VAR_343->file = "\0\0\0\0""";
+____BAH_COMPILER_VAR_343->line = 1;
+struct func* nf = ____BAH_COMPILER_VAR_343;
 
 #line 262 "/home/alois/Documents/bah-bah/src/var.bah"
 string__trimLeft(&cvt,9);
@@ -10468,15 +10452,15 @@ break;
 }
 
 #line 269 "/home/alois/Documents/bah-bah/src/var.bah"
-struct variable* ____BAH_COMPILER_VAR_349 = memoryAlloc(sizeof(struct variable));
-____BAH_COMPILER_VAR_349->name = "\0\0\0\0""";
-____BAH_COMPILER_VAR_349->type = "\0\0\0\0""";
-____BAH_COMPILER_VAR_349->constVal = "\0\0\0\0""";
-____BAH_COMPILER_VAR_349->from = "\0\0\0\0""";
-struct variable* arg = ____BAH_COMPILER_VAR_349;
+struct variable* ____BAH_COMPILER_VAR_344 = memoryAlloc(sizeof(struct variable));
+____BAH_COMPILER_VAR_344->name = "\0\0\0\0""";
+____BAH_COMPILER_VAR_344->type = "\0\0\0\0""";
+____BAH_COMPILER_VAR_344->constVal = "\0\0\0\0""";
+____BAH_COMPILER_VAR_344->from = "\0\0\0\0""";
+struct variable* arg = ____BAH_COMPILER_VAR_344;
 
 #line 270 "/home/alois/Documents/bah-bah/src/var.bah"
-char** ____BAH_COMPILER_VAR_350 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_350[1] = intToStr(len(nf->args));____BAH_COMPILER_VAR_350[0] = "\04\0\0\0""arg_";char * ____BAH_COMPILER_VAR_351 =__Bah_multiple_concat(____BAH_COMPILER_VAR_350, 2);arg->name = ____BAH_COMPILER_VAR_351;
+char** ____BAH_COMPILER_VAR_345 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_345[1] = intToStr(len(nf->args));____BAH_COMPILER_VAR_345[0] = "\04\0\0\0""arg_";char * ____BAH_COMPILER_VAR_346 =__Bah_multiple_concat(____BAH_COMPILER_VAR_345, 2);arg->name = ____BAH_COMPILER_VAR_346;
 
 #line 271 "/home/alois/Documents/bah-bah/src/var.bah"
 while ((j<cvt.length)) {
@@ -10493,9 +10477,9 @@ break;
 
 #line 276 "/home/alois/Documents/bah-bah/src/var.bah"
 
-    unsigned int ____BAH_COMPILER_VAR_352 = len(memory);
-    __Bah_realocate_arr(memory, ____BAH_COMPILER_VAR_352);
-    memory->data[____BAH_COMPILER_VAR_352] = c;
+    unsigned int ____BAH_COMPILER_VAR_347 = len(memory);
+    __Bah_realocate_arr(memory, ____BAH_COMPILER_VAR_347);
+    memory->data[____BAH_COMPILER_VAR_347] = c;
 
 #line 277 "/home/alois/Documents/bah-bah/src/var.bah"
 j = j+1;
@@ -10509,9 +10493,9 @@ clear(memory);
 
 #line 281 "/home/alois/Documents/bah-bah/src/var.bah"
 
-    unsigned int ____BAH_COMPILER_VAR_353 = len(nf->args);
-    __Bah_realocate_arr(nf->args, ____BAH_COMPILER_VAR_353);
-    nf->args->data[____BAH_COMPILER_VAR_353] = arg;
+    unsigned int ____BAH_COMPILER_VAR_348 = len(nf->args);
+    __Bah_realocate_arr(nf->args, ____BAH_COMPILER_VAR_348);
+    nf->args->data[____BAH_COMPILER_VAR_348] = arg;
 
 #line 282 "/home/alois/Documents/bah-bah/src/var.bah"
 if ((c==41)) {
@@ -10535,21 +10519,21 @@ char c = string__charAt(&cvt,j);
 
 #line 290 "/home/alois/Documents/bah-bah/src/var.bah"
 
-    unsigned int ____BAH_COMPILER_VAR_354 = len(memory);
-    __Bah_realocate_arr(memory, ____BAH_COMPILER_VAR_354);
-    memory->data[____BAH_COMPILER_VAR_354] = c;
+    unsigned int ____BAH_COMPILER_VAR_349 = len(memory);
+    __Bah_realocate_arr(memory, ____BAH_COMPILER_VAR_349);
+    memory->data[____BAH_COMPILER_VAR_349] = c;
 
 #line 291 "/home/alois/Documents/bah-bah/src/var.bah"
 j = j+1;
 };
 
 #line 293 "/home/alois/Documents/bah-bah/src/var.bah"
-struct variable* ____BAH_COMPILER_VAR_355 = memoryAlloc(sizeof(struct variable));
-____BAH_COMPILER_VAR_355->name = "\0\0\0\0""";
-____BAH_COMPILER_VAR_355->type = "\0\0\0\0""";
-____BAH_COMPILER_VAR_355->constVal = "\0\0\0\0""";
-____BAH_COMPILER_VAR_355->from = "\0\0\0\0""";
-nf->returns = ____BAH_COMPILER_VAR_355;
+struct variable* ____BAH_COMPILER_VAR_350 = memoryAlloc(sizeof(struct variable));
+____BAH_COMPILER_VAR_350->name = "\0\0\0\0""";
+____BAH_COMPILER_VAR_350->type = "\0\0\0\0""";
+____BAH_COMPILER_VAR_350->constVal = "\0\0\0\0""";
+____BAH_COMPILER_VAR_350->from = "\0\0\0\0""";
+nf->returns = ____BAH_COMPILER_VAR_350;
 
 #line 294 "/home/alois/Documents/bah-bah/src/var.bah"
 nf->returns->name = "\07\0\0\0""_return";
@@ -10571,15 +10555,15 @@ char * ogName = name;
 if ((strcmp(name, "\07\0\0\0""noCheck") == 0)) {
 
 #line 303 "/home/alois/Documents/bah-bah/src/var.bah"
-struct func* ____BAH_COMPILER_VAR_356 = memoryAlloc(sizeof(struct func));
-____BAH_COMPILER_VAR_356->name = "\0\0\0\0""";
-____BAH_COMPILER_VAR_356->args = memoryAlloc(sizeof(array(struct variable*)));
-            ____BAH_COMPILER_VAR_356->args->length = 0;
-            ____BAH_COMPILER_VAR_356->args->elemSize = sizeof(struct variable*);
-            ____BAH_COMPILER_VAR_356->from = "\0\0\0\0""";
-____BAH_COMPILER_VAR_356->file = "\0\0\0\0""";
-____BAH_COMPILER_VAR_356->line = 1;
-struct func* fn = ____BAH_COMPILER_VAR_356;
+struct func* ____BAH_COMPILER_VAR_351 = memoryAlloc(sizeof(struct func));
+____BAH_COMPILER_VAR_351->name = "\0\0\0\0""";
+____BAH_COMPILER_VAR_351->args = memoryAlloc(sizeof(array(struct variable*)));
+            ____BAH_COMPILER_VAR_351->args->length = 0;
+            ____BAH_COMPILER_VAR_351->args->elemSize = sizeof(struct variable*);
+            ____BAH_COMPILER_VAR_351->from = "\0\0\0\0""";
+____BAH_COMPILER_VAR_351->file = "\0\0\0\0""";
+____BAH_COMPILER_VAR_351->line = 1;
+struct func* fn = ____BAH_COMPILER_VAR_351;
 
 #line 304 "/home/alois/Documents/bah-bah/src/var.bah"
 fn->name = "\07\0\0\0""noCheck";
@@ -10648,7 +10632,7 @@ return null;
 name = fnName.content;
 
 #line 329 "/home/alois/Documents/bah-bah/src/var.bah"
-char** ____BAH_COMPILER_VAR_357 = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_357[2] = name;____BAH_COMPILER_VAR_357[1] = "\02\0\0\0""__";____BAH_COMPILER_VAR_357[0] = memb->from;char * ____BAH_COMPILER_VAR_358 =__Bah_multiple_concat(____BAH_COMPILER_VAR_357, 3);name = ____BAH_COMPILER_VAR_358;
+char** ____BAH_COMPILER_VAR_352 = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_352[2] = name;____BAH_COMPILER_VAR_352[1] = "\02\0\0\0""__";____BAH_COMPILER_VAR_352[0] = memb->from;char * ____BAH_COMPILER_VAR_353 =__Bah_multiple_concat(____BAH_COMPILER_VAR_352, 3);name = ____BAH_COMPILER_VAR_353;
 }
 
 #line 333 "/home/alois/Documents/bah-bah/src/var.bah"
@@ -10702,15 +10686,15 @@ return null;
 }
 
 #line 354 "/home/alois/Documents/bah-bah/src/var.bah"
-struct func* ____BAH_COMPILER_VAR_359 = memoryAlloc(sizeof(struct func));
-____BAH_COMPILER_VAR_359->name = "\0\0\0\0""";
-____BAH_COMPILER_VAR_359->args = memoryAlloc(sizeof(array(struct variable*)));
-            ____BAH_COMPILER_VAR_359->args->length = 0;
-            ____BAH_COMPILER_VAR_359->args->elemSize = sizeof(struct variable*);
-            ____BAH_COMPILER_VAR_359->from = "\0\0\0\0""";
-____BAH_COMPILER_VAR_359->file = "\0\0\0\0""";
-____BAH_COMPILER_VAR_359->line = 1;
-struct func* nf = ____BAH_COMPILER_VAR_359;
+struct func* ____BAH_COMPILER_VAR_354 = memoryAlloc(sizeof(struct func));
+____BAH_COMPILER_VAR_354->name = "\0\0\0\0""";
+____BAH_COMPILER_VAR_354->args = memoryAlloc(sizeof(array(struct variable*)));
+            ____BAH_COMPILER_VAR_354->args->length = 0;
+            ____BAH_COMPILER_VAR_354->args->elemSize = sizeof(struct variable*);
+            ____BAH_COMPILER_VAR_354->from = "\0\0\0\0""";
+____BAH_COMPILER_VAR_354->file = "\0\0\0\0""";
+____BAH_COMPILER_VAR_354->line = 1;
+struct func* nf = ____BAH_COMPILER_VAR_354;
 
 #line 355 "/home/alois/Documents/bah-bah/src/var.bah"
 nf->name = ogName;
@@ -10805,7 +10789,7 @@ if ((strcmp(m->def, "\0\0\0\0""") != 0)) {
 if ((strcmp(m->def, "\05\0\0\0""false") != 0)&&(strcmp(m->def, "\01\0\0\0""0") != 0)&&(strcmp(m->def, "\04\0\0\0""null") != 0)) {
 
 #line 391 "/home/alois/Documents/bah-bah/src/var.bah"
-char** ____BAH_COMPILER_VAR_360 = alloca(7 * sizeof(char*));____BAH_COMPILER_VAR_360[6] = "\02\0\0\0"";\n";____BAH_COMPILER_VAR_360[5] = m->def;____BAH_COMPILER_VAR_360[4] = "\03\0\0\0"" = ";____BAH_COMPILER_VAR_360[3] = m->name;____BAH_COMPILER_VAR_360[2] = sep;____BAH_COMPILER_VAR_360[1] = v->name;____BAH_COMPILER_VAR_360[0] = code;char * ____BAH_COMPILER_VAR_361 =__Bah_multiple_concat(____BAH_COMPILER_VAR_360, 7);code = ____BAH_COMPILER_VAR_361;
+char** ____BAH_COMPILER_VAR_355 = alloca(7 * sizeof(char*));____BAH_COMPILER_VAR_355[6] = "\02\0\0\0"";\n";____BAH_COMPILER_VAR_355[5] = m->def;____BAH_COMPILER_VAR_355[4] = "\03\0\0\0"" = ";____BAH_COMPILER_VAR_355[3] = m->name;____BAH_COMPILER_VAR_355[2] = sep;____BAH_COMPILER_VAR_355[1] = v->name;____BAH_COMPILER_VAR_355[0] = code;char * ____BAH_COMPILER_VAR_356 =__Bah_multiple_concat(____BAH_COMPILER_VAR_355, 7);code = ____BAH_COMPILER_VAR_356;
 }
 
 #line 393 "/home/alois/Documents/bah-bah/src/var.bah"
@@ -10828,7 +10812,7 @@ struct string elemCType = getCType(cmptstr,elems);
 char * elemCTypeStr = string__str(&elemCType);
 
 #line 400 "/home/alois/Documents/bah-bah/src/var.bah"
-char** ____BAH_COMPILER_VAR_362 = alloca(17 * sizeof(char*));____BAH_COMPILER_VAR_362[16] = "\017\0\0\0"");\n            ";____BAH_COMPILER_VAR_362[15] = elemCTypeStr;____BAH_COMPILER_VAR_362[14] = "\024\0\0\0""->elemSize = sizeof(";____BAH_COMPILER_VAR_362[13] = m->name;____BAH_COMPILER_VAR_362[12] = sep;____BAH_COMPILER_VAR_362[11] = v->name;____BAH_COMPILER_VAR_362[10] = "\032\0\0\0""->length = 0;\n            ";____BAH_COMPILER_VAR_362[9] = m->name;____BAH_COMPILER_VAR_362[8] = sep;____BAH_COMPILER_VAR_362[7] = v->name;____BAH_COMPILER_VAR_362[6] = "\021\0\0\0"")));\n            ";____BAH_COMPILER_VAR_362[5] = elemCTypeStr;____BAH_COMPILER_VAR_362[4] = "\034\0\0\0"" = memoryAlloc(sizeof(array(";____BAH_COMPILER_VAR_362[3] = m->name;____BAH_COMPILER_VAR_362[2] = sep;____BAH_COMPILER_VAR_362[1] = v->name;____BAH_COMPILER_VAR_362[0] = code;char * ____BAH_COMPILER_VAR_363 =__Bah_multiple_concat(____BAH_COMPILER_VAR_362, 17);code = ____BAH_COMPILER_VAR_363;
+char** ____BAH_COMPILER_VAR_357 = alloca(17 * sizeof(char*));____BAH_COMPILER_VAR_357[16] = "\017\0\0\0"");\n            ";____BAH_COMPILER_VAR_357[15] = elemCTypeStr;____BAH_COMPILER_VAR_357[14] = "\024\0\0\0""->elemSize = sizeof(";____BAH_COMPILER_VAR_357[13] = m->name;____BAH_COMPILER_VAR_357[12] = sep;____BAH_COMPILER_VAR_357[11] = v->name;____BAH_COMPILER_VAR_357[10] = "\032\0\0\0""->length = 0;\n            ";____BAH_COMPILER_VAR_357[9] = m->name;____BAH_COMPILER_VAR_357[8] = sep;____BAH_COMPILER_VAR_357[7] = v->name;____BAH_COMPILER_VAR_357[6] = "\021\0\0\0"")));\n            ";____BAH_COMPILER_VAR_357[5] = elemCTypeStr;____BAH_COMPILER_VAR_357[4] = "\034\0\0\0"" = memoryAlloc(sizeof(array(";____BAH_COMPILER_VAR_357[3] = m->name;____BAH_COMPILER_VAR_357[2] = sep;____BAH_COMPILER_VAR_357[1] = v->name;____BAH_COMPILER_VAR_357[0] = code;char * ____BAH_COMPILER_VAR_358 =__Bah_multiple_concat(____BAH_COMPILER_VAR_357, 17);code = ____BAH_COMPILER_VAR_358;
 
 #line 404 "/home/alois/Documents/bah-bah/src/var.bah"
 continue;
@@ -10841,7 +10825,7 @@ if ((string__hasPrefix(&cmpt,"\04\0\0\0""map:")==1)) {
 string__trimLeft(&cmpt,4);
 
 #line 408 "/home/alois/Documents/bah-bah/src/var.bah"
-char** ____BAH_COMPILER_VAR_364 = alloca(4 * sizeof(char*));____BAH_COMPILER_VAR_364[3] = "\021\0\0\0"" = mapWrapper();\n";____BAH_COMPILER_VAR_364[2] = m->name;____BAH_COMPILER_VAR_364[1] = sep;____BAH_COMPILER_VAR_364[0] = v->name;char * ____BAH_COMPILER_VAR_365 =__Bah_multiple_concat(____BAH_COMPILER_VAR_364, 4);char** ____BAH_COMPILER_VAR_366 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_366[1] = ____BAH_COMPILER_VAR_365;____BAH_COMPILER_VAR_366[0] = code;char * ____BAH_COMPILER_VAR_367 =__Bah_multiple_concat(____BAH_COMPILER_VAR_366, 2);code = ____BAH_COMPILER_VAR_367;
+char** ____BAH_COMPILER_VAR_359 = alloca(4 * sizeof(char*));____BAH_COMPILER_VAR_359[3] = "\021\0\0\0"" = mapWrapper();\n";____BAH_COMPILER_VAR_359[2] = m->name;____BAH_COMPILER_VAR_359[1] = sep;____BAH_COMPILER_VAR_359[0] = v->name;char * ____BAH_COMPILER_VAR_360 =__Bah_multiple_concat(____BAH_COMPILER_VAR_359, 4);char** ____BAH_COMPILER_VAR_361 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_361[1] = ____BAH_COMPILER_VAR_360;____BAH_COMPILER_VAR_361[0] = code;char * ____BAH_COMPILER_VAR_362 =__Bah_multiple_concat(____BAH_COMPILER_VAR_361, 2);code = ____BAH_COMPILER_VAR_362;
 
 #line 409 "/home/alois/Documents/bah-bah/src/var.bah"
 continue;
@@ -10854,7 +10838,7 @@ if ((string__hasPrefix(&cmpt,"\05\0\0\0""chan:")==1)) {
 string__trimLeft(&cmpt,5);
 
 #line 413 "/home/alois/Documents/bah-bah/src/var.bah"
-char** ____BAH_COMPILER_VAR_368 = alloca(4 * sizeof(char*));____BAH_COMPILER_VAR_368[3] = "\016\0\0\0"" = channel();\n";____BAH_COMPILER_VAR_368[2] = m->name;____BAH_COMPILER_VAR_368[1] = sep;____BAH_COMPILER_VAR_368[0] = v->name;char * ____BAH_COMPILER_VAR_369 =__Bah_multiple_concat(____BAH_COMPILER_VAR_368, 4);char** ____BAH_COMPILER_VAR_370 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_370[1] = ____BAH_COMPILER_VAR_369;____BAH_COMPILER_VAR_370[0] = code;char * ____BAH_COMPILER_VAR_371 =__Bah_multiple_concat(____BAH_COMPILER_VAR_370, 2);code = ____BAH_COMPILER_VAR_371;
+char** ____BAH_COMPILER_VAR_363 = alloca(4 * sizeof(char*));____BAH_COMPILER_VAR_363[3] = "\016\0\0\0"" = channel();\n";____BAH_COMPILER_VAR_363[2] = m->name;____BAH_COMPILER_VAR_363[1] = sep;____BAH_COMPILER_VAR_363[0] = v->name;char * ____BAH_COMPILER_VAR_364 =__Bah_multiple_concat(____BAH_COMPILER_VAR_363, 4);char** ____BAH_COMPILER_VAR_365 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_365[1] = ____BAH_COMPILER_VAR_364;____BAH_COMPILER_VAR_365[0] = code;char * ____BAH_COMPILER_VAR_366 =__Bah_multiple_concat(____BAH_COMPILER_VAR_365, 2);code = ____BAH_COMPILER_VAR_366;
 }
 };
 
@@ -10879,7 +10863,7 @@ struct func* m = s->methods->data[i];
 if ((strcmp(m->name, "\05\0\0\0""_init") == 0)) {
 
 #line 422 "/home/alois/Documents/bah-bah/src/var.bah"
-char** ____BAH_COMPILER_VAR_372 = alloca(7 * sizeof(char*));____BAH_COMPILER_VAR_372[6] = "\03\0\0\0"");\n";____BAH_COMPILER_VAR_372[5] = v->name;____BAH_COMPILER_VAR_372[4] = amp;____BAH_COMPILER_VAR_372[3] = "\01\0\0\0""(";____BAH_COMPILER_VAR_372[2] = m->name;____BAH_COMPILER_VAR_372[1] = "\02\0\0\0""__";____BAH_COMPILER_VAR_372[0] = s->name;char * ____BAH_COMPILER_VAR_373 =__Bah_multiple_concat(____BAH_COMPILER_VAR_372, 7);char** ____BAH_COMPILER_VAR_374 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_374[1] = ____BAH_COMPILER_VAR_373;____BAH_COMPILER_VAR_374[0] = code;char * ____BAH_COMPILER_VAR_375 =__Bah_multiple_concat(____BAH_COMPILER_VAR_374, 2);code = ____BAH_COMPILER_VAR_375;
+char** ____BAH_COMPILER_VAR_367 = alloca(7 * sizeof(char*));____BAH_COMPILER_VAR_367[6] = "\03\0\0\0"");\n";____BAH_COMPILER_VAR_367[5] = v->name;____BAH_COMPILER_VAR_367[4] = amp;____BAH_COMPILER_VAR_367[3] = "\01\0\0\0""(";____BAH_COMPILER_VAR_367[2] = m->name;____BAH_COMPILER_VAR_367[1] = "\02\0\0\0""__";____BAH_COMPILER_VAR_367[0] = s->name;char * ____BAH_COMPILER_VAR_368 =__Bah_multiple_concat(____BAH_COMPILER_VAR_367, 7);char** ____BAH_COMPILER_VAR_369 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_369[1] = ____BAH_COMPILER_VAR_368;____BAH_COMPILER_VAR_369[0] = code;char * ____BAH_COMPILER_VAR_370 =__Bah_multiple_concat(____BAH_COMPILER_VAR_369, 2);code = ____BAH_COMPILER_VAR_370;
 
 #line 423 "/home/alois/Documents/bah-bah/src/var.bah"
 ++found;
@@ -10892,7 +10876,7 @@ else if ((strcmp(m->name, "\04\0\0\0""_end") == 0)) {
 if ((strcmp(sep, "\02\0\0\0""->") == 0)) {
 
 #line 426 "/home/alois/Documents/bah-bah/src/var.bah"
-char** ____BAH_COMPILER_VAR_376 = alloca(7 * sizeof(char*));____BAH_COMPILER_VAR_376[6] = "\03\0\0\0"");\n";____BAH_COMPILER_VAR_376[5] = m->name;____BAH_COMPILER_VAR_376[4] = "\02\0\0\0""__";____BAH_COMPILER_VAR_376[3] = s->name;____BAH_COMPILER_VAR_376[2] = "\02\0\0\0"", ";____BAH_COMPILER_VAR_376[1] = v->name;____BAH_COMPILER_VAR_376[0] = "\014\0\0\0""memoryOnEnd(";char * ____BAH_COMPILER_VAR_377 =__Bah_multiple_concat(____BAH_COMPILER_VAR_376, 7);char** ____BAH_COMPILER_VAR_378 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_378[1] = ____BAH_COMPILER_VAR_377;____BAH_COMPILER_VAR_378[0] = code;char * ____BAH_COMPILER_VAR_379 =__Bah_multiple_concat(____BAH_COMPILER_VAR_378, 2);code = ____BAH_COMPILER_VAR_379;
+char** ____BAH_COMPILER_VAR_371 = alloca(7 * sizeof(char*));____BAH_COMPILER_VAR_371[6] = "\03\0\0\0"");\n";____BAH_COMPILER_VAR_371[5] = m->name;____BAH_COMPILER_VAR_371[4] = "\02\0\0\0""__";____BAH_COMPILER_VAR_371[3] = s->name;____BAH_COMPILER_VAR_371[2] = "\02\0\0\0"", ";____BAH_COMPILER_VAR_371[1] = v->name;____BAH_COMPILER_VAR_371[0] = "\014\0\0\0""memoryOnEnd(";char * ____BAH_COMPILER_VAR_372 =__Bah_multiple_concat(____BAH_COMPILER_VAR_371, 7);char** ____BAH_COMPILER_VAR_373 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_373[1] = ____BAH_COMPILER_VAR_372;____BAH_COMPILER_VAR_373[0] = code;char * ____BAH_COMPILER_VAR_374 =__Bah_multiple_concat(____BAH_COMPILER_VAR_373, 2);code = ____BAH_COMPILER_VAR_374;
 }
 
 #line 428 "/home/alois/Documents/bah-bah/src/var.bah"
@@ -10936,7 +10920,7 @@ currFileHashed = compilerState.currentFile;
 }
 
 #line 451 "/home/alois/Documents/bah-bah/src/var.bah"
-char** ____BAH_COMPILER_VAR_380 = alloca(4 * sizeof(char*));____BAH_COMPILER_VAR_380[3] = currFileHash;____BAH_COMPILER_VAR_380[2] = "\01\0\0\0""_";____BAH_COMPILER_VAR_380[1] = intToStr(NB_COMP_VAR);____BAH_COMPILER_VAR_380[0] = "\025\0\0\0""____BAH_COMPILER_VAR_";char * ____BAH_COMPILER_VAR_381 =__Bah_multiple_concat(____BAH_COMPILER_VAR_380, 4);char * name = ____BAH_COMPILER_VAR_381;
+char** ____BAH_COMPILER_VAR_375 = alloca(4 * sizeof(char*));____BAH_COMPILER_VAR_375[3] = currFileHash;____BAH_COMPILER_VAR_375[2] = "\01\0\0\0""_";____BAH_COMPILER_VAR_375[1] = intToStr(NB_COMP_VAR);____BAH_COMPILER_VAR_375[0] = "\025\0\0\0""____BAH_COMPILER_VAR_";char * ____BAH_COMPILER_VAR_376 =__Bah_multiple_concat(____BAH_COMPILER_VAR_375, 4);char * name = ____BAH_COMPILER_VAR_376;
 
 #line 452 "/home/alois/Documents/bah-bah/src/var.bah"
 NB_COMP_VAR = NB_COMP_VAR+1;
@@ -11015,9 +10999,9 @@ c = c+(long int)97;
 
 #line 480 "/home/alois/Documents/bah-bah/src/var.bah"
 
-    unsigned int ____BAH_COMPILER_VAR_382 = i;
-    __Bah_realocate_arr(a, ____BAH_COMPILER_VAR_382);
-    a->data[____BAH_COMPILER_VAR_382] = (char)c;
+    unsigned int ____BAH_COMPILER_VAR_377 = i;
+    __Bah_realocate_arr(a, ____BAH_COMPILER_VAR_377);
+    a->data[____BAH_COMPILER_VAR_377] = (char)c;
 };
 
 #line 482 "/home/alois/Documents/bah-bah/src/var.bah"
@@ -11035,14 +11019,14 @@ char * name = "\012\0\0\0""__BAH_init";
 if ((isObject==true)) {
 
 #line 490 "/home/alois/Documents/bah-bah/src/var.bah"
-char** ____BAH_COMPILER_VAR_383 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_383[1] = pathToVarName(compilerState.currentFile);____BAH_COMPILER_VAR_383[0] = name;char * ____BAH_COMPILER_VAR_384 =__Bah_multiple_concat(____BAH_COMPILER_VAR_383, 2);name = ____BAH_COMPILER_VAR_384;
+char** ____BAH_COMPILER_VAR_378 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_378[1] = pathToVarName(compilerState.currentFile);____BAH_COMPILER_VAR_378[0] = name;char * ____BAH_COMPILER_VAR_379 =__Bah_multiple_concat(____BAH_COMPILER_VAR_378, 2);name = ____BAH_COMPILER_VAR_379;
 }
 
 #line 493 "/home/alois/Documents/bah-bah/src/var.bah"
 char * evals = "\0\0\0\0""";
 
 #line 494 "/home/alois/Documents/bah-bah/src/var.bah"
-char** ____BAH_COMPILER_VAR_385 = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_385[2] = "\05\0\0\0""] = {";____BAH_COMPILER_VAR_385[1] = intToStr(len(compilerState.evals));____BAH_COMPILER_VAR_385[0] = "\065\0\0\0""volatile struct __eval_binding __tmp__evals_bindings[";char * ____BAH_COMPILER_VAR_386 =__Bah_multiple_concat(____BAH_COMPILER_VAR_385, 3);char * evalsTMPDecl = ____BAH_COMPILER_VAR_386;
+char** ____BAH_COMPILER_VAR_380 = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_380[2] = "\05\0\0\0""] = {";____BAH_COMPILER_VAR_380[1] = intToStr(len(compilerState.evals));____BAH_COMPILER_VAR_380[0] = "\065\0\0\0""volatile struct __eval_binding __tmp__evals_bindings[";char * ____BAH_COMPILER_VAR_381 =__Bah_multiple_concat(____BAH_COMPILER_VAR_380, 3);char * evalsTMPDecl = ____BAH_COMPILER_VAR_381;
 
 #line 495 "/home/alois/Documents/bah-bah/src/var.bah"
 register long int i = 0;
@@ -11056,20 +11040,20 @@ for (; (i<len(compilerState.evals));
 char * e = compilerState.evals->data[i];
 
 #line 497 "/home/alois/Documents/bah-bah/src/var.bah"
-char** ____BAH_COMPILER_VAR_387 = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_387[2] = "\01\0\0\0""\"";____BAH_COMPILER_VAR_387[1] = e;____BAH_COMPILER_VAR_387[0] = "\01\0\0\0""\"";char * ____BAH_COMPILER_VAR_388 =__Bah_multiple_concat(____BAH_COMPILER_VAR_387, 3);char** ____BAH_COMPILER_VAR_389 = alloca(5 * sizeof(char*));____BAH_COMPILER_VAR_389[4] = "\012\0\0\0""\n        }";____BAH_COMPILER_VAR_389[3] = e;____BAH_COMPILER_VAR_389[2] = "\043\0\0\0"",\n            .evalFn = __Bah_eval_";____BAH_COMPILER_VAR_389[1] = strLitteralToBahStr(____BAH_COMPILER_VAR_388);____BAH_COMPILER_VAR_389[0] = "\026\0\0\0""{\n            .name = ";char * ____BAH_COMPILER_VAR_390 =__Bah_multiple_concat(____BAH_COMPILER_VAR_389, 5);char** ____BAH_COMPILER_VAR_391 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_391[1] = ____BAH_COMPILER_VAR_390;____BAH_COMPILER_VAR_391[0] = evalsTMPDecl;char * ____BAH_COMPILER_VAR_392 =__Bah_multiple_concat(____BAH_COMPILER_VAR_391, 2);evalsTMPDecl = ____BAH_COMPILER_VAR_392;
+char** ____BAH_COMPILER_VAR_382 = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_382[2] = "\01\0\0\0""\"";____BAH_COMPILER_VAR_382[1] = e;____BAH_COMPILER_VAR_382[0] = "\01\0\0\0""\"";char * ____BAH_COMPILER_VAR_383 =__Bah_multiple_concat(____BAH_COMPILER_VAR_382, 3);char** ____BAH_COMPILER_VAR_384 = alloca(5 * sizeof(char*));____BAH_COMPILER_VAR_384[4] = "\012\0\0\0""\n        }";____BAH_COMPILER_VAR_384[3] = e;____BAH_COMPILER_VAR_384[2] = "\043\0\0\0"",\n            .evalFn = __Bah_eval_";____BAH_COMPILER_VAR_384[1] = strLitteralToBahStr(____BAH_COMPILER_VAR_383);____BAH_COMPILER_VAR_384[0] = "\026\0\0\0""{\n            .name = ";char * ____BAH_COMPILER_VAR_385 =__Bah_multiple_concat(____BAH_COMPILER_VAR_384, 5);char** ____BAH_COMPILER_VAR_386 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_386[1] = ____BAH_COMPILER_VAR_385;____BAH_COMPILER_VAR_386[0] = evalsTMPDecl;char * ____BAH_COMPILER_VAR_387 =__Bah_multiple_concat(____BAH_COMPILER_VAR_386, 2);evalsTMPDecl = ____BAH_COMPILER_VAR_387;
 
 #line 501 "/home/alois/Documents/bah-bah/src/var.bah"
 if ((i+1!=len(compilerState.evals))) {
 
 #line 502 "/home/alois/Documents/bah-bah/src/var.bah"
-char** ____BAH_COMPILER_VAR_393 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_393[1] = "\02\0\0\0"",\n";____BAH_COMPILER_VAR_393[0] = evalsTMPDecl;char * ____BAH_COMPILER_VAR_394 =__Bah_multiple_concat(____BAH_COMPILER_VAR_393, 2);evalsTMPDecl = ____BAH_COMPILER_VAR_394;
+char** ____BAH_COMPILER_VAR_388 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_388[1] = "\02\0\0\0"",\n";____BAH_COMPILER_VAR_388[0] = evalsTMPDecl;char * ____BAH_COMPILER_VAR_389 =__Bah_multiple_concat(____BAH_COMPILER_VAR_388, 2);evalsTMPDecl = ____BAH_COMPILER_VAR_389;
 }
 
 #line 503 "/home/alois/Documents/bah-bah/src/var.bah"
 else {
 
 #line 504 "/home/alois/Documents/bah-bah/src/var.bah"
-char** ____BAH_COMPILER_VAR_395 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_395[1] = "\02\0\0\0""};";____BAH_COMPILER_VAR_395[0] = evalsTMPDecl;char * ____BAH_COMPILER_VAR_396 =__Bah_multiple_concat(____BAH_COMPILER_VAR_395, 2);evalsTMPDecl = ____BAH_COMPILER_VAR_396;
+char** ____BAH_COMPILER_VAR_390 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_390[1] = "\02\0\0\0""};";____BAH_COMPILER_VAR_390[0] = evalsTMPDecl;char * ____BAH_COMPILER_VAR_391 =__Bah_multiple_concat(____BAH_COMPILER_VAR_390, 2);evalsTMPDecl = ____BAH_COMPILER_VAR_391;
 }
 };
 
@@ -11077,7 +11061,7 @@ char** ____BAH_COMPILER_VAR_395 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR
 if ((len(compilerState.evals)!=0)) {
 
 #line 509 "/home/alois/Documents/bah-bah/src/var.bah"
-char** ____BAH_COMPILER_VAR_397 = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_397[2] = "\01\0\0\0"";";____BAH_COMPILER_VAR_397[1] = intToStr(len(compilerState.evals));____BAH_COMPILER_VAR_397[0] = "\073\0\0\0""__evals_bindings = __tmp__evals_bindings; __evals_length = ";char * ____BAH_COMPILER_VAR_398 =__Bah_multiple_concat(____BAH_COMPILER_VAR_397, 3);evals = ____BAH_COMPILER_VAR_398;
+char** ____BAH_COMPILER_VAR_392 = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_392[2] = "\01\0\0\0"";";____BAH_COMPILER_VAR_392[1] = intToStr(len(compilerState.evals));____BAH_COMPILER_VAR_392[0] = "\073\0\0\0""__evals_bindings = __tmp__evals_bindings; __evals_length = ";char * ____BAH_COMPILER_VAR_393 =__Bah_multiple_concat(____BAH_COMPILER_VAR_392, 3);evals = ____BAH_COMPILER_VAR_393;
 }
 
 #line 510 "/home/alois/Documents/bah-bah/src/var.bah"
@@ -11088,7 +11072,7 @@ evalsTMPDecl = "\0\0\0\0""";
 }
 
 #line 514 "/home/alois/Documents/bah-bah/src/var.bah"
-char** ____BAH_COMPILER_VAR_399 = alloca(5 * sizeof(char*));____BAH_COMPILER_VAR_399[4] = "\015\0\0\0""() {\n        ";____BAH_COMPILER_VAR_399[3] = name;____BAH_COMPILER_VAR_399[2] = "\052\0\0\0""\n    void __attribute__((optimize(\"O0\"))) ";____BAH_COMPILER_VAR_399[1] = evalsTMPDecl;____BAH_COMPILER_VAR_399[0] = "\05\0\0\0""\n    ";char * ____BAH_COMPILER_VAR_400 =__Bah_multiple_concat(____BAH_COMPILER_VAR_399, 5);char** ____BAH_COMPILER_VAR_401 = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_401[2] = "\014\0\0\0""\n    };\n    ";____BAH_COMPILER_VAR_401[1] = evals;____BAH_COMPILER_VAR_401[0] = "\011\0\0\0""\n        ";char * ____BAH_COMPILER_VAR_402 =__Bah_multiple_concat(____BAH_COMPILER_VAR_401, 3);OUTPUT = rope__add(OUTPUT, (rope__add(rope(____BAH_COMPILER_VAR_400), rope__add(INIT, rope(____BAH_COMPILER_VAR_402)))));
+char** ____BAH_COMPILER_VAR_394 = alloca(5 * sizeof(char*));____BAH_COMPILER_VAR_394[4] = "\015\0\0\0""() {\n        ";____BAH_COMPILER_VAR_394[3] = name;____BAH_COMPILER_VAR_394[2] = "\052\0\0\0""\n    void __attribute__((optimize(\"O0\"))) ";____BAH_COMPILER_VAR_394[1] = evalsTMPDecl;____BAH_COMPILER_VAR_394[0] = "\05\0\0\0""\n    ";char * ____BAH_COMPILER_VAR_395 =__Bah_multiple_concat(____BAH_COMPILER_VAR_394, 5);char** ____BAH_COMPILER_VAR_396 = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_396[2] = "\014\0\0\0""\n    };\n    ";____BAH_COMPILER_VAR_396[1] = evals;____BAH_COMPILER_VAR_396[0] = "\011\0\0\0""\n        ";char * ____BAH_COMPILER_VAR_397 =__Bah_multiple_concat(____BAH_COMPILER_VAR_396, 3);OUTPUT = rope__add(OUTPUT, (rope__add(rope(____BAH_COMPILER_VAR_395), rope__add(INIT, rope(____BAH_COMPILER_VAR_397)))));
 };
 
 #line 523 "/home/alois/Documents/bah-bah/src/var.bah"
@@ -11292,14 +11276,14 @@ struct rope* r = rope("\0\0\0\0""");
 if (strHasPrefix(v->type,"\02\0\0\0""[]")) {
 
 #line 15 "/home/alois/Documents/bah-bah/src/mem.bah"
-char** ____BAH_COMPILER_VAR_403 = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_403[2] = "\03\0\0\0"");\n";____BAH_COMPILER_VAR_403[1] = v->name;____BAH_COMPILER_VAR_403[0] = "\011\0\0\0""RCP_decr(";char * ____BAH_COMPILER_VAR_404 =__Bah_multiple_concat(____BAH_COMPILER_VAR_403, 3);r = rope__add(r, rope(____BAH_COMPILER_VAR_404));
+char** ____BAH_COMPILER_VAR_398 = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_398[2] = "\03\0\0\0"");\n";____BAH_COMPILER_VAR_398[1] = v->name;____BAH_COMPILER_VAR_398[0] = "\011\0\0\0""RCP_decr(";char * ____BAH_COMPILER_VAR_399 =__Bah_multiple_concat(____BAH_COMPILER_VAR_398, 3);r = rope__add(r, rope(____BAH_COMPILER_VAR_399));
 }
 
 #line 16 "/home/alois/Documents/bah-bah/src/mem.bah"
 else if (strHasPrefix(v->type,"\05\0\0\0""chan:")) {
 
 #line 17 "/home/alois/Documents/bah-bah/src/mem.bah"
-char** ____BAH_COMPILER_VAR_405 = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_405[2] = "\03\0\0\0"");\n";____BAH_COMPILER_VAR_405[1] = v->name;____BAH_COMPILER_VAR_405[0] = "\011\0\0\0""RCP_decr(";char * ____BAH_COMPILER_VAR_406 =__Bah_multiple_concat(____BAH_COMPILER_VAR_405, 3);r = rope__add(r, rope(____BAH_COMPILER_VAR_406));
+char** ____BAH_COMPILER_VAR_400 = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_400[2] = "\03\0\0\0"");\n";____BAH_COMPILER_VAR_400[1] = v->name;____BAH_COMPILER_VAR_400[0] = "\011\0\0\0""RCP_decr(";char * ____BAH_COMPILER_VAR_401 =__Bah_multiple_concat(____BAH_COMPILER_VAR_400, 3);r = rope__add(r, rope(____BAH_COMPILER_VAR_401));
 }
 
 #line 18 "/home/alois/Documents/bah-bah/src/mem.bah"
@@ -11309,12 +11293,12 @@ else {
 if (strHasPrefix(v->type,"\04\0\0\0""map:")) {
 
 #line 20 "/home/alois/Documents/bah-bah/src/mem.bah"
-struct variable* ____BAH_COMPILER_VAR_407 = memoryAlloc(sizeof(struct variable));
-____BAH_COMPILER_VAR_407->name = "\0\0\0\0""";
-____BAH_COMPILER_VAR_407->type = "\0\0\0\0""";
-____BAH_COMPILER_VAR_407->constVal = "\0\0\0\0""";
-____BAH_COMPILER_VAR_407->from = "\0\0\0\0""";
-struct variable* nv = ____BAH_COMPILER_VAR_407;
+struct variable* ____BAH_COMPILER_VAR_402 = memoryAlloc(sizeof(struct variable));
+____BAH_COMPILER_VAR_402->name = "\0\0\0\0""";
+____BAH_COMPILER_VAR_402->type = "\0\0\0\0""";
+____BAH_COMPILER_VAR_402->constVal = "\0\0\0\0""";
+____BAH_COMPILER_VAR_402->from = "\0\0\0\0""";
+struct variable* nv = ____BAH_COMPILER_VAR_402;
 
 #line 21 "/home/alois/Documents/bah-bah/src/mem.bah"
 *nv = *v;
@@ -11339,14 +11323,14 @@ if ((s!=null)&&(s->isBinding==false)) {
 if ((isPointer==true)) {
 
 #line 31 "/home/alois/Documents/bah-bah/src/mem.bah"
-char** ____BAH_COMPILER_VAR_408 = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_408[2] = "\03\0\0\0"");\n";____BAH_COMPILER_VAR_408[1] = v->name;____BAH_COMPILER_VAR_408[0] = "\011\0\0\0""RCP_decr(";char * ____BAH_COMPILER_VAR_409 =__Bah_multiple_concat(____BAH_COMPILER_VAR_408, 3);r = rope__add(r, rope(____BAH_COMPILER_VAR_409));
+char** ____BAH_COMPILER_VAR_403 = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_403[2] = "\03\0\0\0"");\n";____BAH_COMPILER_VAR_403[1] = v->name;____BAH_COMPILER_VAR_403[0] = "\011\0\0\0""RCP_decr(";char * ____BAH_COMPILER_VAR_404 =__Bah_multiple_concat(____BAH_COMPILER_VAR_403, 3);r = rope__add(r, rope(____BAH_COMPILER_VAR_404));
 }
 
 #line 32 "/home/alois/Documents/bah-bah/src/mem.bah"
 else {
 
 #line 33 "/home/alois/Documents/bah-bah/src/mem.bah"
-char** ____BAH_COMPILER_VAR_410 = alloca(5 * sizeof(char*));____BAH_COMPILER_VAR_410[4] = "\07\0\0\0""), 1);\n";____BAH_COMPILER_VAR_410[3] = v->name;____BAH_COMPILER_VAR_410[2] = "\011\0\0\0"", sizeof(";____BAH_COMPILER_VAR_410[1] = v->name;____BAH_COMPILER_VAR_410[0] = "\017\0\0\0""RCP_scanStack(&";char * ____BAH_COMPILER_VAR_411 =__Bah_multiple_concat(____BAH_COMPILER_VAR_410, 5);r = rope__add(r, rope(____BAH_COMPILER_VAR_411));
+char** ____BAH_COMPILER_VAR_405 = alloca(5 * sizeof(char*));____BAH_COMPILER_VAR_405[4] = "\07\0\0\0""), 1);\n";____BAH_COMPILER_VAR_405[3] = v->name;____BAH_COMPILER_VAR_405[2] = "\011\0\0\0"", sizeof(";____BAH_COMPILER_VAR_405[1] = v->name;____BAH_COMPILER_VAR_405[0] = "\017\0\0\0""RCP_scanStack(&";char * ____BAH_COMPILER_VAR_406 =__Bah_multiple_concat(____BAH_COMPILER_VAR_405, 5);r = rope__add(r, rope(____BAH_COMPILER_VAR_406));
 }
 }
 
@@ -11354,7 +11338,7 @@ char** ____BAH_COMPILER_VAR_410 = alloca(5 * sizeof(char*));____BAH_COMPILER_VAR
 else if ((isPointer==true)) {
 
 #line 37 "/home/alois/Documents/bah-bah/src/mem.bah"
-char** ____BAH_COMPILER_VAR_412 = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_412[2] = "\03\0\0\0"");\n";____BAH_COMPILER_VAR_412[1] = v->name;____BAH_COMPILER_VAR_412[0] = "\011\0\0\0""RCP_decr(";char * ____BAH_COMPILER_VAR_413 =__Bah_multiple_concat(____BAH_COMPILER_VAR_412, 3);r = rope__add(r, rope(____BAH_COMPILER_VAR_413));
+char** ____BAH_COMPILER_VAR_407 = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_407[2] = "\03\0\0\0"");\n";____BAH_COMPILER_VAR_407[1] = v->name;____BAH_COMPILER_VAR_407[0] = "\011\0\0\0""RCP_decr(";char * ____BAH_COMPILER_VAR_408 =__Bah_multiple_concat(____BAH_COMPILER_VAR_407, 3);r = rope__add(r, rope(____BAH_COMPILER_VAR_408));
 }
 }
 
@@ -11379,11 +11363,11 @@ struct cStruct* s = searchStruct(v->type,elems);
 if ((s!=null)&&(isRCPpointerType(v->type)==false)&&(s->isBinding==false)) {
 
 #line 51 "/home/alois/Documents/bah-bah/src/mem.bah"
-char** ____BAH_COMPILER_VAR_414 = alloca(5 * sizeof(char*));____BAH_COMPILER_VAR_414[4] = "\06\0\0\0""), 0);";____BAH_COMPILER_VAR_414[3] = v->name;____BAH_COMPILER_VAR_414[2] = "\011\0\0\0"", sizeof(";____BAH_COMPILER_VAR_414[1] = v->name;____BAH_COMPILER_VAR_414[0] = "\017\0\0\0""RCP_scanStack(&";char * ____BAH_COMPILER_VAR_415 =__Bah_multiple_concat(____BAH_COMPILER_VAR_414, 5);return rope(____BAH_COMPILER_VAR_415);
+char** ____BAH_COMPILER_VAR_409 = alloca(5 * sizeof(char*));____BAH_COMPILER_VAR_409[4] = "\06\0\0\0""), 0);";____BAH_COMPILER_VAR_409[3] = v->name;____BAH_COMPILER_VAR_409[2] = "\011\0\0\0"", sizeof(";____BAH_COMPILER_VAR_409[1] = v->name;____BAH_COMPILER_VAR_409[0] = "\017\0\0\0""RCP_scanStack(&";char * ____BAH_COMPILER_VAR_410 =__Bah_multiple_concat(____BAH_COMPILER_VAR_409, 5);return rope(____BAH_COMPILER_VAR_410);
 }
 
 #line 54 "/home/alois/Documents/bah-bah/src/mem.bah"
-char** ____BAH_COMPILER_VAR_416 = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_416[2] = "\02\0\0\0"");";____BAH_COMPILER_VAR_416[1] = v->name;____BAH_COMPILER_VAR_416[0] = "\011\0\0\0""RCP_incr(";char * ____BAH_COMPILER_VAR_417 =__Bah_multiple_concat(____BAH_COMPILER_VAR_416, 3);return rope(____BAH_COMPILER_VAR_417);
+char** ____BAH_COMPILER_VAR_411 = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_411[2] = "\02\0\0\0"");";____BAH_COMPILER_VAR_411[1] = v->name;____BAH_COMPILER_VAR_411[0] = "\011\0\0\0""RCP_incr(";char * ____BAH_COMPILER_VAR_412 =__Bah_multiple_concat(____BAH_COMPILER_VAR_411, 3);return rope(____BAH_COMPILER_VAR_412);
 };
 
 #line 57 "/home/alois/Documents/bah-bah/src/mem.bah"
@@ -11538,12 +11522,12 @@ OUTPUT = rope__add(OUTPUT, decrVar(v,elems));
 char * registerRCPvar(char * t,char * c,struct Elems* elems){
 
 #line 148 "/home/alois/Documents/bah-bah/src/mem.bah"
-struct variable* ____BAH_COMPILER_VAR_418 = memoryAlloc(sizeof(struct variable));
-____BAH_COMPILER_VAR_418->name = "\0\0\0\0""";
-____BAH_COMPILER_VAR_418->type = "\0\0\0\0""";
-____BAH_COMPILER_VAR_418->constVal = "\0\0\0\0""";
-____BAH_COMPILER_VAR_418->from = "\0\0\0\0""";
-struct variable* av = ____BAH_COMPILER_VAR_418;
+struct variable* ____BAH_COMPILER_VAR_413 = memoryAlloc(sizeof(struct variable));
+____BAH_COMPILER_VAR_413->name = "\0\0\0\0""";
+____BAH_COMPILER_VAR_413->type = "\0\0\0\0""";
+____BAH_COMPILER_VAR_413->constVal = "\0\0\0\0""";
+____BAH_COMPILER_VAR_413->from = "\0\0\0\0""";
+struct variable* av = ____BAH_COMPILER_VAR_413;
 
 #line 149 "/home/alois/Documents/bah-bah/src/mem.bah"
 av->type = t;
@@ -11556,9 +11540,9 @@ av->name = genCompilerVar();
 
 #line 152 "/home/alois/Documents/bah-bah/src/mem.bah"
 
-    unsigned int ____BAH_COMPILER_VAR_419 = len(elems->vars);
-    __Bah_realocate_arr(elems->vars, ____BAH_COMPILER_VAR_419);
-    elems->vars->data[____BAH_COMPILER_VAR_419] = av;
+    unsigned int ____BAH_COMPILER_VAR_414 = len(elems->vars);
+    __Bah_realocate_arr(elems->vars, ____BAH_COMPILER_VAR_414);
+    elems->vars->data[____BAH_COMPILER_VAR_414] = av;
 
 #line 153 "/home/alois/Documents/bah-bah/src/mem.bah"
 struct string cType = getCType(av->type,elems);
@@ -11567,17 +11551,17 @@ struct string cType = getCType(av->type,elems);
 if (isGlobal()) {
 
 #line 155 "/home/alois/Documents/bah-bah/src/mem.bah"
-char** ____BAH_COMPILER_VAR_420 = alloca(4 * sizeof(char*));____BAH_COMPILER_VAR_420[3] = "\01\0\0\0"";";____BAH_COMPILER_VAR_420[2] = av->name;____BAH_COMPILER_VAR_420[1] = "\01\0\0\0"" ";____BAH_COMPILER_VAR_420[0] = string__str(&cType);char * ____BAH_COMPILER_VAR_421 =__Bah_multiple_concat(____BAH_COMPILER_VAR_420, 4);OUTPUT = rope__add(OUTPUT, rope(____BAH_COMPILER_VAR_421));
+char** ____BAH_COMPILER_VAR_415 = alloca(4 * sizeof(char*));____BAH_COMPILER_VAR_415[3] = "\01\0\0\0"";";____BAH_COMPILER_VAR_415[2] = av->name;____BAH_COMPILER_VAR_415[1] = "\01\0\0\0"" ";____BAH_COMPILER_VAR_415[0] = string__str(&cType);char * ____BAH_COMPILER_VAR_416 =__Bah_multiple_concat(____BAH_COMPILER_VAR_415, 4);OUTPUT = rope__add(OUTPUT, rope(____BAH_COMPILER_VAR_416));
 
 #line 156 "/home/alois/Documents/bah-bah/src/mem.bah"
-char** ____BAH_COMPILER_VAR_422 = alloca(4 * sizeof(char*));____BAH_COMPILER_VAR_422[3] = "\01\0\0\0"";";____BAH_COMPILER_VAR_422[2] = c;____BAH_COMPILER_VAR_422[1] = "\02\0\0\0"" =";____BAH_COMPILER_VAR_422[0] = av->name;char * ____BAH_COMPILER_VAR_423 =__Bah_multiple_concat(____BAH_COMPILER_VAR_422, 4);INIT = rope__add(INIT, rope(____BAH_COMPILER_VAR_423));
+char** ____BAH_COMPILER_VAR_417 = alloca(4 * sizeof(char*));____BAH_COMPILER_VAR_417[3] = "\01\0\0\0"";";____BAH_COMPILER_VAR_417[2] = c;____BAH_COMPILER_VAR_417[1] = "\02\0\0\0"" =";____BAH_COMPILER_VAR_417[0] = av->name;char * ____BAH_COMPILER_VAR_418 =__Bah_multiple_concat(____BAH_COMPILER_VAR_417, 4);INIT = rope__add(INIT, rope(____BAH_COMPILER_VAR_418));
 }
 
 #line 157 "/home/alois/Documents/bah-bah/src/mem.bah"
 else {
 
 #line 158 "/home/alois/Documents/bah-bah/src/mem.bah"
-char** ____BAH_COMPILER_VAR_424 = alloca(6 * sizeof(char*));____BAH_COMPILER_VAR_424[5] = "\01\0\0\0"";";____BAH_COMPILER_VAR_424[4] = c;____BAH_COMPILER_VAR_424[3] = "\02\0\0\0"" =";____BAH_COMPILER_VAR_424[2] = av->name;____BAH_COMPILER_VAR_424[1] = "\01\0\0\0"" ";____BAH_COMPILER_VAR_424[0] = string__str(&cType);char * ____BAH_COMPILER_VAR_425 =__Bah_multiple_concat(____BAH_COMPILER_VAR_424, 6);OUTPUT = rope__add(OUTPUT, rope(____BAH_COMPILER_VAR_425));
+char** ____BAH_COMPILER_VAR_419 = alloca(6 * sizeof(char*));____BAH_COMPILER_VAR_419[5] = "\01\0\0\0"";";____BAH_COMPILER_VAR_419[4] = c;____BAH_COMPILER_VAR_419[3] = "\02\0\0\0"" =";____BAH_COMPILER_VAR_419[2] = av->name;____BAH_COMPILER_VAR_419[1] = "\01\0\0\0"" ";____BAH_COMPILER_VAR_419[0] = string__str(&cType);char * ____BAH_COMPILER_VAR_420 =__Bah_multiple_concat(____BAH_COMPILER_VAR_419, 6);OUTPUT = rope__add(OUTPUT, rope(____BAH_COMPILER_VAR_420));
 }
 
 #line 160 "/home/alois/Documents/bah-bah/src/mem.bah"
@@ -11621,7 +11605,7 @@ char * content;
 array(char *)* noVOfns;
 
 #line 10 "/home/alois/Documents/bah-bah/src/verboseOut.bah"
-char ____BAH_COMPILER_VAR_426(array(char *)* arr, char * el) {
+char ____BAH_COMPILER_VAR_421(array(char *)* arr, char * el) {
         if (arr == 0) {
             return 0;
         };
@@ -11638,7 +11622,7 @@ char verboseOutGuard(){
 if ((currentFn!=null)) {
 
 #line 12 "/home/alois/Documents/bah-bah/src/verboseOut.bah"
-if (____BAH_COMPILER_VAR_426(noVOfns, currentFn->name)) {
+if (____BAH_COMPILER_VAR_421(noVOfns, currentFn->name)) {
 
 #line 13 "/home/alois/Documents/bah-bah/src/verboseOut.bah"
 return false;
@@ -11653,8 +11637,8 @@ return true;
 struct verboseOutVar verboseOutTransformVar(struct variable* v,char * cont,struct Elems* elems){
 
 #line 20 "/home/alois/Documents/bah-bah/src/verboseOut.bah"
-struct verboseOutVar ____BAH_COMPILER_VAR_427 = {};
-struct verboseOutVar rv = ____BAH_COMPILER_VAR_427;
+struct verboseOutVar ____BAH_COMPILER_VAR_422 = {};
+struct verboseOutVar rv = ____BAH_COMPILER_VAR_422;
 
 #line 21 "/home/alois/Documents/bah-bah/src/verboseOut.bah"
 char * ogCont = cont;
@@ -11663,11 +11647,11 @@ char * ogCont = cont;
 if ((strcmp(v->type, "\010\0\0\0""cpstring") == 0)) {
 
 #line 23 "/home/alois/Documents/bah-bah/src/verboseOut.bah"
-char** ____BAH_COMPILER_VAR_428 = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_428[2] = "\01\0\0\0"")";____BAH_COMPILER_VAR_428[1] = cont;____BAH_COMPILER_VAR_428[0] = "\022\0\0\0""__Bah_safe_string(";char * ____BAH_COMPILER_VAR_429 =__Bah_multiple_concat(____BAH_COMPILER_VAR_428, 3);cont = ____BAH_COMPILER_VAR_429;
+char** ____BAH_COMPILER_VAR_423 = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_423[2] = "\01\0\0\0"")";____BAH_COMPILER_VAR_423[1] = cont;____BAH_COMPILER_VAR_423[0] = "\022\0\0\0""__Bah_safe_string(";char * ____BAH_COMPILER_VAR_424 =__Bah_multiple_concat(____BAH_COMPILER_VAR_423, 3);cont = ____BAH_COMPILER_VAR_424;
 }
 
 #line 25 "/home/alois/Documents/bah-bah/src/verboseOut.bah"
-char** ____BAH_COMPILER_VAR_430 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_430[1] = cont;____BAH_COMPILER_VAR_430[0] = "\02\0\0\0"", ";char * ____BAH_COMPILER_VAR_431 =__Bah_multiple_concat(____BAH_COMPILER_VAR_430, 2);cont = ____BAH_COMPILER_VAR_431;
+char** ____BAH_COMPILER_VAR_425 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_425[1] = cont;____BAH_COMPILER_VAR_425[0] = "\02\0\0\0"", ";char * ____BAH_COMPILER_VAR_426 =__Bah_multiple_concat(____BAH_COMPILER_VAR_425, 2);cont = ____BAH_COMPILER_VAR_426;
 
 #line 26 "/home/alois/Documents/bah-bah/src/verboseOut.bah"
 char * ct = "\0\0\0\0""";
@@ -11717,7 +11701,7 @@ ct = "\03\0\0\0""%li";
 else {
 
 #line 40 "/home/alois/Documents/bah-bah/src/verboseOut.bah"
-char** ____BAH_COMPILER_VAR_432 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_432[1] = "\01\0\0\0""{";____BAH_COMPILER_VAR_432[0] = ASCII_RESET;char * ____BAH_COMPILER_VAR_433 =__Bah_multiple_concat(____BAH_COMPILER_VAR_432, 2);ct = ____BAH_COMPILER_VAR_433;
+char** ____BAH_COMPILER_VAR_427 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_427[1] = "\01\0\0\0""{";____BAH_COMPILER_VAR_427[0] = ASCII_RESET;char * ____BAH_COMPILER_VAR_428 =__Bah_multiple_concat(____BAH_COMPILER_VAR_427, 2);ct = ____BAH_COMPILER_VAR_428;
 
 #line 41 "/home/alois/Documents/bah-bah/src/verboseOut.bah"
 cont = "\0\0\0\0""";
@@ -11734,29 +11718,29 @@ for (; (i<len(s->members));
 struct variable* m = s->members->data[i];
 
 #line 44 "/home/alois/Documents/bah-bah/src/verboseOut.bah"
-char** ____BAH_COMPILER_VAR_434 = alloca(5 * sizeof(char*));____BAH_COMPILER_VAR_434[4] = m->name;____BAH_COMPILER_VAR_434[3] = "\01\0\0\0"".";____BAH_COMPILER_VAR_434[2] = "\01\0\0\0"")";____BAH_COMPILER_VAR_434[1] = ogCont;____BAH_COMPILER_VAR_434[0] = "\01\0\0\0""(";char * ____BAH_COMPILER_VAR_435 =__Bah_multiple_concat(____BAH_COMPILER_VAR_434, 5);struct verboseOutVar mv = verboseOutTransformVar(m,____BAH_COMPILER_VAR_435,elems);
+char** ____BAH_COMPILER_VAR_429 = alloca(5 * sizeof(char*));____BAH_COMPILER_VAR_429[4] = m->name;____BAH_COMPILER_VAR_429[3] = "\01\0\0\0"".";____BAH_COMPILER_VAR_429[2] = "\01\0\0\0"")";____BAH_COMPILER_VAR_429[1] = ogCont;____BAH_COMPILER_VAR_429[0] = "\01\0\0\0""(";char * ____BAH_COMPILER_VAR_430 =__Bah_multiple_concat(____BAH_COMPILER_VAR_429, 5);struct verboseOutVar mv = verboseOutTransformVar(m,____BAH_COMPILER_VAR_430,elems);
 
 #line 45 "/home/alois/Documents/bah-bah/src/verboseOut.bah"
 if ((i!=0)) {
 
 #line 46 "/home/alois/Documents/bah-bah/src/verboseOut.bah"
-char** ____BAH_COMPILER_VAR_436 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_436[1] = "\02\0\0\0"", ";____BAH_COMPILER_VAR_436[0] = ct;char * ____BAH_COMPILER_VAR_437 =__Bah_multiple_concat(____BAH_COMPILER_VAR_436, 2);ct = ____BAH_COMPILER_VAR_437;
+char** ____BAH_COMPILER_VAR_431 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_431[1] = "\02\0\0\0"", ";____BAH_COMPILER_VAR_431[0] = ct;char * ____BAH_COMPILER_VAR_432 =__Bah_multiple_concat(____BAH_COMPILER_VAR_431, 2);ct = ____BAH_COMPILER_VAR_432;
 }
 
 #line 48 "/home/alois/Documents/bah-bah/src/verboseOut.bah"
-char** ____BAH_COMPILER_VAR_438 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_438[1] = mv.markup;____BAH_COMPILER_VAR_438[0] = ct;char * ____BAH_COMPILER_VAR_439 =__Bah_multiple_concat(____BAH_COMPILER_VAR_438, 2);ct = ____BAH_COMPILER_VAR_439;
+char** ____BAH_COMPILER_VAR_433 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_433[1] = mv.markup;____BAH_COMPILER_VAR_433[0] = ct;char * ____BAH_COMPILER_VAR_434 =__Bah_multiple_concat(____BAH_COMPILER_VAR_433, 2);ct = ____BAH_COMPILER_VAR_434;
 
 #line 49 "/home/alois/Documents/bah-bah/src/verboseOut.bah"
-char** ____BAH_COMPILER_VAR_440 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_440[1] = mv.content;____BAH_COMPILER_VAR_440[0] = cont;char * ____BAH_COMPILER_VAR_441 =__Bah_multiple_concat(____BAH_COMPILER_VAR_440, 2);cont = ____BAH_COMPILER_VAR_441;
+char** ____BAH_COMPILER_VAR_435 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_435[1] = mv.content;____BAH_COMPILER_VAR_435[0] = cont;char * ____BAH_COMPILER_VAR_436 =__Bah_multiple_concat(____BAH_COMPILER_VAR_435, 2);cont = ____BAH_COMPILER_VAR_436;
 };
 
 #line 51 "/home/alois/Documents/bah-bah/src/verboseOut.bah"
-char** ____BAH_COMPILER_VAR_442 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_442[1] = "\01\0\0\0""}";____BAH_COMPILER_VAR_442[0] = ct;char * ____BAH_COMPILER_VAR_443 =__Bah_multiple_concat(____BAH_COMPILER_VAR_442, 2);ct = ____BAH_COMPILER_VAR_443;
+char** ____BAH_COMPILER_VAR_437 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_437[1] = "\01\0\0\0""}";____BAH_COMPILER_VAR_437[0] = ct;char * ____BAH_COMPILER_VAR_438 =__Bah_multiple_concat(____BAH_COMPILER_VAR_437, 2);ct = ____BAH_COMPILER_VAR_438;
 }
 }
 
 #line 56 "/home/alois/Documents/bah-bah/src/verboseOut.bah"
-char** ____BAH_COMPILER_VAR_444 = alloca(7 * sizeof(char*));____BAH_COMPILER_VAR_444[6] = ASCII_RESET;____BAH_COMPILER_VAR_444[5] = ct;____BAH_COMPILER_VAR_444[4] = ASCII_MAGENTA;____BAH_COMPILER_VAR_444[3] = "\03\0\0\0"" = ";____BAH_COMPILER_VAR_444[2] = ASCII_RESET;____BAH_COMPILER_VAR_444[1] = v->name;____BAH_COMPILER_VAR_444[0] = ASCII_BLUE;char * ____BAH_COMPILER_VAR_445 =__Bah_multiple_concat(____BAH_COMPILER_VAR_444, 7);rv.markup = ____BAH_COMPILER_VAR_445;
+char** ____BAH_COMPILER_VAR_439 = alloca(7 * sizeof(char*));____BAH_COMPILER_VAR_439[6] = ASCII_RESET;____BAH_COMPILER_VAR_439[5] = ct;____BAH_COMPILER_VAR_439[4] = ASCII_MAGENTA;____BAH_COMPILER_VAR_439[3] = "\03\0\0\0"" = ";____BAH_COMPILER_VAR_439[2] = ASCII_RESET;____BAH_COMPILER_VAR_439[1] = v->name;____BAH_COMPILER_VAR_439[0] = ASCII_BLUE;char * ____BAH_COMPILER_VAR_440 =__Bah_multiple_concat(____BAH_COMPILER_VAR_439, 7);rv.markup = ____BAH_COMPILER_VAR_440;
 
 #line 58 "/home/alois/Documents/bah-bah/src/verboseOut.bah"
 rv.content = cont;
@@ -11778,8 +11762,8 @@ struct variable* v = searchVar(t->cont,elems);
 if ((v==null)) {
 
 #line 67 "/home/alois/Documents/bah-bah/src/verboseOut.bah"
-struct verboseOutVar ____BAH_COMPILER_VAR_446 = {};
-struct verboseOutVar rv = ____BAH_COMPILER_VAR_446;
+struct verboseOutVar ____BAH_COMPILER_VAR_441 = {};
+struct verboseOutVar rv = ____BAH_COMPILER_VAR_441;
 
 #line 68 "/home/alois/Documents/bah-bah/src/verboseOut.bah"
 return rv;
@@ -11787,14 +11771,14 @@ return rv;
 }
 
 #line 71 "/home/alois/Documents/bah-bah/src/verboseOut.bah"
-struct variable ____BAH_COMPILER_VAR_447 = {};
-____BAH_COMPILER_VAR_447.name = "\0\0\0\0""";
-____BAH_COMPILER_VAR_447.type = "\0\0\0\0""";
-____BAH_COMPILER_VAR_447.constVal = "\0\0\0\0""";
-____BAH_COMPILER_VAR_447.from = "\0\0\0\0""";
-____BAH_COMPILER_VAR_447.name = "\07\0\0\0""(value)";
-____BAH_COMPILER_VAR_447.type = getTypeFromToken(t,true,elems);
-struct variable v = ____BAH_COMPILER_VAR_447;
+struct variable ____BAH_COMPILER_VAR_442 = {};
+____BAH_COMPILER_VAR_442.name = "\0\0\0\0""";
+____BAH_COMPILER_VAR_442.type = "\0\0\0\0""";
+____BAH_COMPILER_VAR_442.constVal = "\0\0\0\0""";
+____BAH_COMPILER_VAR_442.from = "\0\0\0\0""";
+____BAH_COMPILER_VAR_442.name = "\07\0\0\0""(value)";
+____BAH_COMPILER_VAR_442.type = getTypeFromToken(t,true,elems);
+struct variable v = ____BAH_COMPILER_VAR_442;
 
 #line 75 "/home/alois/Documents/bah-bah/src/verboseOut.bah"
 return verboseOutTransformVar(&v,t->cont,elems);
@@ -11884,7 +11868,7 @@ struct variable* a = fn->args->data[j];
 if ((j!=0)) {
 
 #line 108 "/home/alois/Documents/bah-bah/src/verboseOut.bah"
-char** ____BAH_COMPILER_VAR_448 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_448[1] = "\02\0\0\0"", ";____BAH_COMPILER_VAR_448[0] = fnArgs;char * ____BAH_COMPILER_VAR_449 =__Bah_multiple_concat(____BAH_COMPILER_VAR_448, 2);fnArgs = ____BAH_COMPILER_VAR_449;
+char** ____BAH_COMPILER_VAR_443 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_443[1] = "\02\0\0\0"", ";____BAH_COMPILER_VAR_443[0] = fnArgs;char * ____BAH_COMPILER_VAR_444 =__Bah_multiple_concat(____BAH_COMPILER_VAR_443, 2);fnArgs = ____BAH_COMPILER_VAR_444;
 }
 
 #line 111 "/home/alois/Documents/bah-bah/src/verboseOut.bah"
@@ -11894,17 +11878,17 @@ struct Tok t = args->data[j];
 struct verboseOutVar v = verboseOutTransformVar(a,t.cont,elems);
 
 #line 113 "/home/alois/Documents/bah-bah/src/verboseOut.bah"
-char** ____BAH_COMPILER_VAR_450 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_450[1] = v.markup;____BAH_COMPILER_VAR_450[0] = fnArgs;char * ____BAH_COMPILER_VAR_451 =__Bah_multiple_concat(____BAH_COMPILER_VAR_450, 2);fnArgs = ____BAH_COMPILER_VAR_451;
+char** ____BAH_COMPILER_VAR_445 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_445[1] = v.markup;____BAH_COMPILER_VAR_445[0] = fnArgs;char * ____BAH_COMPILER_VAR_446 =__Bah_multiple_concat(____BAH_COMPILER_VAR_445, 2);fnArgs = ____BAH_COMPILER_VAR_446;
 
 #line 114 "/home/alois/Documents/bah-bah/src/verboseOut.bah"
-char** ____BAH_COMPILER_VAR_452 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_452[1] = v.content;____BAH_COMPILER_VAR_452[0] = fnArgsValues;char * ____BAH_COMPILER_VAR_453 =__Bah_multiple_concat(____BAH_COMPILER_VAR_452, 2);fnArgsValues = ____BAH_COMPILER_VAR_453;
+char** ____BAH_COMPILER_VAR_447 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_447[1] = v.content;____BAH_COMPILER_VAR_447[0] = fnArgsValues;char * ____BAH_COMPILER_VAR_448 =__Bah_multiple_concat(____BAH_COMPILER_VAR_447, 2);fnArgsValues = ____BAH_COMPILER_VAR_448;
 };
 
 #line 116 "/home/alois/Documents/bah-bah/src/verboseOut.bah"
-char** ____BAH_COMPILER_VAR_454 = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_454[2] = intToStr(lineNb);____BAH_COMPILER_VAR_454[1] = "\01\0\0\0"":";____BAH_COMPILER_VAR_454[0] = compilerState.currentFile;char * ____BAH_COMPILER_VAR_455 =__Bah_multiple_concat(____BAH_COMPILER_VAR_454, 3);char * line = ____BAH_COMPILER_VAR_455;
+char** ____BAH_COMPILER_VAR_449 = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_449[2] = intToStr(lineNb);____BAH_COMPILER_VAR_449[1] = "\01\0\0\0"":";____BAH_COMPILER_VAR_449[0] = compilerState.currentFile;char * ____BAH_COMPILER_VAR_450 =__Bah_multiple_concat(____BAH_COMPILER_VAR_449, 3);char * line = ____BAH_COMPILER_VAR_450;
 
 #line 117 "/home/alois/Documents/bah-bah/src/verboseOut.bah"
-char** ____BAH_COMPILER_VAR_456 = alloca(13 * sizeof(char*));____BAH_COMPILER_VAR_456[12] = "\016\0\0\0"");\n    //\n    ";____BAH_COMPILER_VAR_456[11] = fnArgsValues;____BAH_COMPILER_VAR_456[10] = "\03\0\0\0""\\n\"";____BAH_COMPILER_VAR_456[9] = ASCII_RESET;____BAH_COMPILER_VAR_456[8] = line;____BAH_COMPILER_VAR_456[7] = ASCII_GREEN;____BAH_COMPILER_VAR_456[6] = "\05\0\0\0"") -> ";____BAH_COMPILER_VAR_456[5] = fnArgs;____BAH_COMPILER_VAR_456[4] = "\01\0\0\0""(";____BAH_COMPILER_VAR_456[3] = ASCII_RESET;____BAH_COMPILER_VAR_456[2] = fn->name;____BAH_COMPILER_VAR_456[1] = nameColor;____BAH_COMPILER_VAR_456[0] = "\065\0\0\0""\n    //Verbose Runtime\n        printf(\"[VO] calling: ";char * ____BAH_COMPILER_VAR_457 =__Bah_multiple_concat(____BAH_COMPILER_VAR_456, 13);struct rope* verboseOut = rope(____BAH_COMPILER_VAR_457);
+char** ____BAH_COMPILER_VAR_451 = alloca(13 * sizeof(char*));____BAH_COMPILER_VAR_451[12] = "\016\0\0\0"");\n    //\n    ";____BAH_COMPILER_VAR_451[11] = fnArgsValues;____BAH_COMPILER_VAR_451[10] = "\03\0\0\0""\\n\"";____BAH_COMPILER_VAR_451[9] = ASCII_RESET;____BAH_COMPILER_VAR_451[8] = line;____BAH_COMPILER_VAR_451[7] = ASCII_GREEN;____BAH_COMPILER_VAR_451[6] = "\05\0\0\0"") -> ";____BAH_COMPILER_VAR_451[5] = fnArgs;____BAH_COMPILER_VAR_451[4] = "\01\0\0\0""(";____BAH_COMPILER_VAR_451[3] = ASCII_RESET;____BAH_COMPILER_VAR_451[2] = fn->name;____BAH_COMPILER_VAR_451[1] = nameColor;____BAH_COMPILER_VAR_451[0] = "\065\0\0\0""\n    //Verbose Runtime\n        printf(\"[VO] calling: ";char * ____BAH_COMPILER_VAR_452 =__Bah_multiple_concat(____BAH_COMPILER_VAR_451, 13);struct rope* verboseOut = rope(____BAH_COMPILER_VAR_452);
 
 #line 122 "/home/alois/Documents/bah-bah/src/verboseOut.bah"
 if (isGlobal()) {
@@ -11938,13 +11922,13 @@ struct verboseOutVar pvo = verboseOutTransformTok(pt,elems);
 struct verboseOutVar nvo = verboseOutTransformTok(nt,elems);
 
 #line 137 "/home/alois/Documents/bah-bah/src/verboseOut.bah"
-char** ____BAH_COMPILER_VAR_458 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_458[1] = nvo.content;____BAH_COMPILER_VAR_458[0] = pvo.content;char * ____BAH_COMPILER_VAR_459 =__Bah_multiple_concat(____BAH_COMPILER_VAR_458, 2);char * values = ____BAH_COMPILER_VAR_459;
+char** ____BAH_COMPILER_VAR_453 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_453[1] = nvo.content;____BAH_COMPILER_VAR_453[0] = pvo.content;char * ____BAH_COMPILER_VAR_454 =__Bah_multiple_concat(____BAH_COMPILER_VAR_453, 2);char * values = ____BAH_COMPILER_VAR_454;
 
 #line 139 "/home/alois/Documents/bah-bah/src/verboseOut.bah"
-char** ____BAH_COMPILER_VAR_460 = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_460[2] = intToStr(lineNb);____BAH_COMPILER_VAR_460[1] = "\01\0\0\0"":";____BAH_COMPILER_VAR_460[0] = compilerState.currentFile;char * ____BAH_COMPILER_VAR_461 =__Bah_multiple_concat(____BAH_COMPILER_VAR_460, 3);char * line = ____BAH_COMPILER_VAR_461;
+char** ____BAH_COMPILER_VAR_455 = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_455[2] = intToStr(lineNb);____BAH_COMPILER_VAR_455[1] = "\01\0\0\0"":";____BAH_COMPILER_VAR_455[0] = compilerState.currentFile;char * ____BAH_COMPILER_VAR_456 =__Bah_multiple_concat(____BAH_COMPILER_VAR_455, 3);char * line = ____BAH_COMPILER_VAR_456;
 
 #line 140 "/home/alois/Documents/bah-bah/src/verboseOut.bah"
-char** ____BAH_COMPILER_VAR_462 = alloca(11 * sizeof(char*));____BAH_COMPILER_VAR_462[10] = "\016\0\0\0"");\n    //\n    ";____BAH_COMPILER_VAR_462[9] = values;____BAH_COMPILER_VAR_462[8] = "\03\0\0\0""\\n\"";____BAH_COMPILER_VAR_462[7] = ASCII_RESET;____BAH_COMPILER_VAR_462[6] = line;____BAH_COMPILER_VAR_462[5] = ASCII_GREEN;____BAH_COMPILER_VAR_462[4] = "\04\0\0\0"" -> ";____BAH_COMPILER_VAR_462[3] = nvo.markup;____BAH_COMPILER_VAR_462[2] = "\05\0\0\0"" AND ";____BAH_COMPILER_VAR_462[1] = pvo.markup;____BAH_COMPILER_VAR_462[0] = "\065\0\0\0""\n    //Verbose Runtime\n        printf(\"[VO]    oper: ";char * ____BAH_COMPILER_VAR_463 =__Bah_multiple_concat(____BAH_COMPILER_VAR_462, 11);struct rope* verboseOut = rope(____BAH_COMPILER_VAR_463);
+char** ____BAH_COMPILER_VAR_457 = alloca(11 * sizeof(char*));____BAH_COMPILER_VAR_457[10] = "\016\0\0\0"");\n    //\n    ";____BAH_COMPILER_VAR_457[9] = values;____BAH_COMPILER_VAR_457[8] = "\03\0\0\0""\\n\"";____BAH_COMPILER_VAR_457[7] = ASCII_RESET;____BAH_COMPILER_VAR_457[6] = line;____BAH_COMPILER_VAR_457[5] = ASCII_GREEN;____BAH_COMPILER_VAR_457[4] = "\04\0\0\0"" -> ";____BAH_COMPILER_VAR_457[3] = nvo.markup;____BAH_COMPILER_VAR_457[2] = "\05\0\0\0"" AND ";____BAH_COMPILER_VAR_457[1] = pvo.markup;____BAH_COMPILER_VAR_457[0] = "\065\0\0\0""\n    //Verbose Runtime\n        printf(\"[VO]    oper: ";char * ____BAH_COMPILER_VAR_458 =__Bah_multiple_concat(____BAH_COMPILER_VAR_457, 11);struct rope* verboseOut = rope(____BAH_COMPILER_VAR_458);
 
 #line 145 "/home/alois/Documents/bah-bah/src/verboseOut.bah"
 if (isGlobal()) {
@@ -11979,20 +11963,20 @@ array(struct cacheFile*)* cache;
 void readCache(){
 
 #line 14 "/home/alois/Documents/bah-bah/src/cache.bah"
-struct fileStream ____BAH_COMPILER_VAR_464 = {};
-struct fileStream fs = ____BAH_COMPILER_VAR_464;
+struct fileStream ____BAH_COMPILER_VAR_459 = {};
+struct fileStream fs = ____BAH_COMPILER_VAR_459;
 
 #line 15 "/home/alois/Documents/bah-bah/src/cache.bah"
-char** ____BAH_COMPILER_VAR_465 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_465[1] = "\020\0\0\0""cache/cache.json";____BAH_COMPILER_VAR_465[0] = BAH_DIR;char * ____BAH_COMPILER_VAR_466 =__Bah_multiple_concat(____BAH_COMPILER_VAR_465, 2);fileStream__open(&fs,____BAH_COMPILER_VAR_466,"\01\0\0\0""r");
+char** ____BAH_COMPILER_VAR_460 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_460[1] = "\020\0\0\0""cache/cache.json";____BAH_COMPILER_VAR_460[0] = BAH_DIR;char * ____BAH_COMPILER_VAR_461 =__Bah_multiple_concat(____BAH_COMPILER_VAR_460, 2);fileStream__open(&fs,____BAH_COMPILER_VAR_461,"\01\0\0\0""r");
 
 #line 16 "/home/alois/Documents/bah-bah/src/cache.bah"
 if ((fileStream__isValid(&fs)==0)||(fileStream__getSize(&fs)==0)) {
 
 #line 17 "/home/alois/Documents/bah-bah/src/cache.bah"
-char** ____BAH_COMPILER_VAR_467 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_467[1] = "\05\0\0\0""cache";____BAH_COMPILER_VAR_467[0] = BAH_DIR;char * ____BAH_COMPILER_VAR_468 =__Bah_multiple_concat(____BAH_COMPILER_VAR_467, 2);mkdir(cStr(____BAH_COMPILER_VAR_468),S_IRWXU);
+char** ____BAH_COMPILER_VAR_462 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_462[1] = "\05\0\0\0""cache";____BAH_COMPILER_VAR_462[0] = BAH_DIR;char * ____BAH_COMPILER_VAR_463 =__Bah_multiple_concat(____BAH_COMPILER_VAR_462, 2);mkdir(cStr(____BAH_COMPILER_VAR_463),S_IRWXU);
 
 #line 18 "/home/alois/Documents/bah-bah/src/cache.bah"
-char** ____BAH_COMPILER_VAR_469 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_469[1] = "\020\0\0\0""cache/cache.json";____BAH_COMPILER_VAR_469[0] = BAH_DIR;char * ____BAH_COMPILER_VAR_470 =__Bah_multiple_concat(____BAH_COMPILER_VAR_469, 2);fileStream__createFile(&fs,____BAH_COMPILER_VAR_470);
+char** ____BAH_COMPILER_VAR_464 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_464[1] = "\020\0\0\0""cache/cache.json";____BAH_COMPILER_VAR_464[0] = BAH_DIR;char * ____BAH_COMPILER_VAR_465 =__Bah_multiple_concat(____BAH_COMPILER_VAR_464, 2);fileStream__createFile(&fs,____BAH_COMPILER_VAR_465);
 
 #line 19 "/home/alois/Documents/bah-bah/src/cache.bah"
 return;
@@ -12008,43 +11992,43 @@ struct jsonElement* j = parseJson(fileStream__readContent(&fs));
 fileStream__close(&fs);
 
 #line 24 "/home/alois/Documents/bah-bah/src/cache.bah"
-array(struct cacheFile**)* ____BAH_COMPILER_VAR_471 = &cache;
-struct cacheFile*** ____BAH_COMPILER_VAR_472 = 0;
-char ** ____BAH_COMPILER_VAR_474 = (char **)((char*)(____BAH_COMPILER_VAR_472) + offsetof(struct cacheFile, file));
-struct reflectElement ____BAH_COMPILER_VAR_475 = __reflect(____BAH_COMPILER_VAR_474, sizeof(char *), "\010\0\0\0""cpstring", "\04\0\0\0""file", 0, 0, 0, 0, offsetof(struct cacheFile, file));
-long int* ____BAH_COMPILER_VAR_476 = (long int*)((char*)(____BAH_COMPILER_VAR_472) + offsetof(struct cacheFile, last));
-struct reflectElement ____BAH_COMPILER_VAR_477 = __reflect(____BAH_COMPILER_VAR_476, sizeof(long int), "\03\0\0\0""int", "\04\0\0\0""last", 0, 0, 0, 0, offsetof(struct cacheFile, last));
-char ** ____BAH_COMPILER_VAR_478 = (char **)((char*)(____BAH_COMPILER_VAR_472) + offsetof(struct cacheFile, ver));
-struct reflectElement ____BAH_COMPILER_VAR_479 = __reflect(____BAH_COMPILER_VAR_478, sizeof(char *), "\010\0\0\0""cpstring", "\03\0\0\0""ver", 0, 0, 0, 0, offsetof(struct cacheFile, ver));
-long int* ____BAH_COMPILER_VAR_480 = (long int*)((char*)(____BAH_COMPILER_VAR_472) + offsetof(struct cacheFile, date));
-struct reflectElement ____BAH_COMPILER_VAR_481 = __reflect(____BAH_COMPILER_VAR_480, sizeof(long int), "\03\0\0\0""int", "\04\0\0\0""date", 0, 0, 0, 0, offsetof(struct cacheFile, date));
-long int* ____BAH_COMPILER_VAR_482 = (long int*)((char*)(____BAH_COMPILER_VAR_472) + offsetof(struct cacheFile, mem));
-struct reflectElement ____BAH_COMPILER_VAR_483 = __reflect(____BAH_COMPILER_VAR_482, sizeof(long int), "\03\0\0\0""int", "\03\0\0\0""mem", 0, 0, 0, 0, offsetof(struct cacheFile, mem));
-long int* ____BAH_COMPILER_VAR_484 = (long int*)((char*)(____BAH_COMPILER_VAR_472) + offsetof(struct cacheFile, opti));
-struct reflectElement ____BAH_COMPILER_VAR_485 = __reflect(____BAH_COMPILER_VAR_484, sizeof(long int), "\03\0\0\0""int", "\04\0\0\0""opti", 0, 0, 0, 0, offsetof(struct cacheFile, opti));
-array(char *)** ____BAH_COMPILER_VAR_486 = (array(char *)**)((char*)(____BAH_COMPILER_VAR_472) + offsetof(struct cacheFile, files));
-char ** ____BAH_COMPILER_VAR_487 = 0;
-struct reflectElement ____BAH_COMPILER_VAR_488 = __reflect(____BAH_COMPILER_VAR_487, sizeof(char *), "\010\0\0\0""cpstring", "\0\0\0\0""", 0, 0, 0, 0, 0);
+array(struct cacheFile**)* ____BAH_COMPILER_VAR_466 = &cache;
+struct cacheFile*** ____BAH_COMPILER_VAR_467 = 0;
+char ** ____BAH_COMPILER_VAR_469 = (char **)((char*)(____BAH_COMPILER_VAR_467) + offsetof(struct cacheFile, file));
+struct reflectElement ____BAH_COMPILER_VAR_470 = __reflect(____BAH_COMPILER_VAR_469, sizeof(char *), "\010\0\0\0""cpstring", "\04\0\0\0""file", 0, 0, 0, 0, offsetof(struct cacheFile, file));
+long int* ____BAH_COMPILER_VAR_471 = (long int*)((char*)(____BAH_COMPILER_VAR_467) + offsetof(struct cacheFile, last));
+struct reflectElement ____BAH_COMPILER_VAR_472 = __reflect(____BAH_COMPILER_VAR_471, sizeof(long int), "\03\0\0\0""int", "\04\0\0\0""last", 0, 0, 0, 0, offsetof(struct cacheFile, last));
+char ** ____BAH_COMPILER_VAR_473 = (char **)((char*)(____BAH_COMPILER_VAR_467) + offsetof(struct cacheFile, ver));
+struct reflectElement ____BAH_COMPILER_VAR_474 = __reflect(____BAH_COMPILER_VAR_473, sizeof(char *), "\010\0\0\0""cpstring", "\03\0\0\0""ver", 0, 0, 0, 0, offsetof(struct cacheFile, ver));
+long int* ____BAH_COMPILER_VAR_475 = (long int*)((char*)(____BAH_COMPILER_VAR_467) + offsetof(struct cacheFile, date));
+struct reflectElement ____BAH_COMPILER_VAR_476 = __reflect(____BAH_COMPILER_VAR_475, sizeof(long int), "\03\0\0\0""int", "\04\0\0\0""date", 0, 0, 0, 0, offsetof(struct cacheFile, date));
+long int* ____BAH_COMPILER_VAR_477 = (long int*)((char*)(____BAH_COMPILER_VAR_467) + offsetof(struct cacheFile, mem));
+struct reflectElement ____BAH_COMPILER_VAR_478 = __reflect(____BAH_COMPILER_VAR_477, sizeof(long int), "\03\0\0\0""int", "\03\0\0\0""mem", 0, 0, 0, 0, offsetof(struct cacheFile, mem));
+long int* ____BAH_COMPILER_VAR_479 = (long int*)((char*)(____BAH_COMPILER_VAR_467) + offsetof(struct cacheFile, opti));
+struct reflectElement ____BAH_COMPILER_VAR_480 = __reflect(____BAH_COMPILER_VAR_479, sizeof(long int), "\03\0\0\0""int", "\04\0\0\0""opti", 0, 0, 0, 0, offsetof(struct cacheFile, opti));
+array(char *)** ____BAH_COMPILER_VAR_481 = (array(char *)**)((char*)(____BAH_COMPILER_VAR_467) + offsetof(struct cacheFile, files));
+char ** ____BAH_COMPILER_VAR_482 = 0;
+struct reflectElement ____BAH_COMPILER_VAR_483 = __reflect(____BAH_COMPILER_VAR_482, sizeof(char *), "\010\0\0\0""cpstring", "\0\0\0\0""", 0, 0, 0, 0, 0);
 
-        struct reflectElement ____BAH_COMPILER_VAR_489 = ____BAH_COMPILER_VAR_488;
-        struct reflectElement ____BAH_COMPILER_VAR_490 = __reflect(____BAH_COMPILER_VAR_486, sizeof(array(char *)*), "\012\0\0\0""[]cpstring", "\05\0\0\0""files", 1, &____BAH_COMPILER_VAR_489, 0, 0, offsetof(struct cacheFile, files));
+        struct reflectElement ____BAH_COMPILER_VAR_484 = ____BAH_COMPILER_VAR_483;
+        struct reflectElement ____BAH_COMPILER_VAR_485 = __reflect(____BAH_COMPILER_VAR_481, sizeof(array(char *)*), "\012\0\0\0""[]cpstring", "\05\0\0\0""files", 1, &____BAH_COMPILER_VAR_484, 0, 0, offsetof(struct cacheFile, files));
 
-        array(struct reflectElement) * ____BAH_COMPILER_VAR_473 = memoryAlloc(sizeof(array(struct reflectElement)));
-        ____BAH_COMPILER_VAR_473->elemSize = sizeof(struct reflectElement);
-        ____BAH_COMPILER_VAR_473->length = 7;
-        ____BAH_COMPILER_VAR_473->data = memoryAlloc(____BAH_COMPILER_VAR_473->length * ____BAH_COMPILER_VAR_473->elemSize);
-        ____BAH_COMPILER_VAR_473->data[0] = ____BAH_COMPILER_VAR_475;
-____BAH_COMPILER_VAR_473->data[1] = ____BAH_COMPILER_VAR_477;
-____BAH_COMPILER_VAR_473->data[2] = ____BAH_COMPILER_VAR_479;
-____BAH_COMPILER_VAR_473->data[3] = ____BAH_COMPILER_VAR_481;
-____BAH_COMPILER_VAR_473->data[4] = ____BAH_COMPILER_VAR_483;
-____BAH_COMPILER_VAR_473->data[5] = ____BAH_COMPILER_VAR_485;
-____BAH_COMPILER_VAR_473->data[6] = ____BAH_COMPILER_VAR_490;
-struct reflectElement ____BAH_COMPILER_VAR_491 = __reflect(____BAH_COMPILER_VAR_472, sizeof(struct cacheFile), "\013\0\0\0""cacheFile**", "\0\0\0\0""", 0, 0, 1, ____BAH_COMPILER_VAR_473, 0);
+        array(struct reflectElement) * ____BAH_COMPILER_VAR_468 = memoryAlloc(sizeof(array(struct reflectElement)));
+        ____BAH_COMPILER_VAR_468->elemSize = sizeof(struct reflectElement);
+        ____BAH_COMPILER_VAR_468->length = 7;
+        ____BAH_COMPILER_VAR_468->data = memoryAlloc(____BAH_COMPILER_VAR_468->length * ____BAH_COMPILER_VAR_468->elemSize);
+        ____BAH_COMPILER_VAR_468->data[0] = ____BAH_COMPILER_VAR_470;
+____BAH_COMPILER_VAR_468->data[1] = ____BAH_COMPILER_VAR_472;
+____BAH_COMPILER_VAR_468->data[2] = ____BAH_COMPILER_VAR_474;
+____BAH_COMPILER_VAR_468->data[3] = ____BAH_COMPILER_VAR_476;
+____BAH_COMPILER_VAR_468->data[4] = ____BAH_COMPILER_VAR_478;
+____BAH_COMPILER_VAR_468->data[5] = ____BAH_COMPILER_VAR_480;
+____BAH_COMPILER_VAR_468->data[6] = ____BAH_COMPILER_VAR_485;
+struct reflectElement ____BAH_COMPILER_VAR_486 = __reflect(____BAH_COMPILER_VAR_467, sizeof(struct cacheFile), "\013\0\0\0""cacheFile**", "\0\0\0\0""", 0, 0, 1, ____BAH_COMPILER_VAR_468, 0);
 
-        struct reflectElement ____BAH_COMPILER_VAR_492 = ____BAH_COMPILER_VAR_491;
-        struct reflectElement ____BAH_COMPILER_VAR_493 = __reflect(____BAH_COMPILER_VAR_471, sizeof(array(struct cacheFile**)*), "\015\0\0\0""[]cacheFile**", "\06\0\0\0""&cache", 1, &____BAH_COMPILER_VAR_492, 0, 0, 0);
-jsonElement__scan(j,____BAH_COMPILER_VAR_493);
+        struct reflectElement ____BAH_COMPILER_VAR_487 = ____BAH_COMPILER_VAR_486;
+        struct reflectElement ____BAH_COMPILER_VAR_488 = __reflect(____BAH_COMPILER_VAR_466, sizeof(array(struct cacheFile**)*), "\015\0\0\0""[]cacheFile**", "\06\0\0\0""&cache", 1, &____BAH_COMPILER_VAR_487, 0, 0, 0);
+jsonElement__scan(j,____BAH_COMPILER_VAR_488);
 }
 };
 
@@ -12098,11 +12082,11 @@ c->date = getTimeUnix();
 void makeCacheFile(char * f){
 
 #line 50 "/home/alois/Documents/bah-bah/src/cache.bah"
-struct cacheFile* ____BAH_COMPILER_VAR_494 = memoryAlloc(sizeof(struct cacheFile));
-____BAH_COMPILER_VAR_494->files = memoryAlloc(sizeof(array(char *)));
-            ____BAH_COMPILER_VAR_494->files->length = 0;
-            ____BAH_COMPILER_VAR_494->files->elemSize = sizeof(char *);
-            struct cacheFile* c = ____BAH_COMPILER_VAR_494;
+struct cacheFile* ____BAH_COMPILER_VAR_489 = memoryAlloc(sizeof(struct cacheFile));
+____BAH_COMPILER_VAR_489->files = memoryAlloc(sizeof(array(char *)));
+            ____BAH_COMPILER_VAR_489->files->length = 0;
+            ____BAH_COMPILER_VAR_489->files->elemSize = sizeof(char *);
+            struct cacheFile* c = ____BAH_COMPILER_VAR_489;
 
 #line 51 "/home/alois/Documents/bah-bah/src/cache.bah"
 c->file = f;
@@ -12134,59 +12118,59 @@ cache->elemSize = sizeof(struct cacheFile*);
 
 #line 60 "/home/alois/Documents/bah-bah/src/cache.bah"
 
-    unsigned int ____BAH_COMPILER_VAR_495 = len(cache);
-    __Bah_realocate_arr(cache, ____BAH_COMPILER_VAR_495);
-    cache->data[____BAH_COMPILER_VAR_495] = c;
+    unsigned int ____BAH_COMPILER_VAR_490 = len(cache);
+    __Bah_realocate_arr(cache, ____BAH_COMPILER_VAR_490);
+    cache->data[____BAH_COMPILER_VAR_490] = c;
 };
 
 #line 63 "/home/alois/Documents/bah-bah/src/cache.bah"
 void writeCache(){
 
 #line 64 "/home/alois/Documents/bah-bah/src/cache.bah"
-struct fileStream ____BAH_COMPILER_VAR_496 = {};
-struct fileStream fs = ____BAH_COMPILER_VAR_496;
+struct fileStream ____BAH_COMPILER_VAR_491 = {};
+struct fileStream fs = ____BAH_COMPILER_VAR_491;
 
 #line 65 "/home/alois/Documents/bah-bah/src/cache.bah"
-char** ____BAH_COMPILER_VAR_497 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_497[1] = "\020\0\0\0""cache/cache.json";____BAH_COMPILER_VAR_497[0] = BAH_DIR;char * ____BAH_COMPILER_VAR_498 =__Bah_multiple_concat(____BAH_COMPILER_VAR_497, 2);fileStream__open(&fs,____BAH_COMPILER_VAR_498,"\01\0\0\0""w");
+char** ____BAH_COMPILER_VAR_492 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_492[1] = "\020\0\0\0""cache/cache.json";____BAH_COMPILER_VAR_492[0] = BAH_DIR;char * ____BAH_COMPILER_VAR_493 =__Bah_multiple_concat(____BAH_COMPILER_VAR_492, 2);fileStream__open(&fs,____BAH_COMPILER_VAR_493,"\01\0\0\0""w");
 
 #line 66 "/home/alois/Documents/bah-bah/src/cache.bah"
-array(struct cacheFile**)* ____BAH_COMPILER_VAR_499 = &cache;
-struct cacheFile*** ____BAH_COMPILER_VAR_500 = 0;
-char ** ____BAH_COMPILER_VAR_502 = (char **)((char*)(____BAH_COMPILER_VAR_500) + offsetof(struct cacheFile, file));
-struct reflectElement ____BAH_COMPILER_VAR_503 = __reflect(____BAH_COMPILER_VAR_502, sizeof(char *), "\010\0\0\0""cpstring", "\04\0\0\0""file", 0, 0, 0, 0, offsetof(struct cacheFile, file));
-long int* ____BAH_COMPILER_VAR_504 = (long int*)((char*)(____BAH_COMPILER_VAR_500) + offsetof(struct cacheFile, last));
-struct reflectElement ____BAH_COMPILER_VAR_505 = __reflect(____BAH_COMPILER_VAR_504, sizeof(long int), "\03\0\0\0""int", "\04\0\0\0""last", 0, 0, 0, 0, offsetof(struct cacheFile, last));
-char ** ____BAH_COMPILER_VAR_506 = (char **)((char*)(____BAH_COMPILER_VAR_500) + offsetof(struct cacheFile, ver));
-struct reflectElement ____BAH_COMPILER_VAR_507 = __reflect(____BAH_COMPILER_VAR_506, sizeof(char *), "\010\0\0\0""cpstring", "\03\0\0\0""ver", 0, 0, 0, 0, offsetof(struct cacheFile, ver));
-long int* ____BAH_COMPILER_VAR_508 = (long int*)((char*)(____BAH_COMPILER_VAR_500) + offsetof(struct cacheFile, date));
-struct reflectElement ____BAH_COMPILER_VAR_509 = __reflect(____BAH_COMPILER_VAR_508, sizeof(long int), "\03\0\0\0""int", "\04\0\0\0""date", 0, 0, 0, 0, offsetof(struct cacheFile, date));
-long int* ____BAH_COMPILER_VAR_510 = (long int*)((char*)(____BAH_COMPILER_VAR_500) + offsetof(struct cacheFile, mem));
-struct reflectElement ____BAH_COMPILER_VAR_511 = __reflect(____BAH_COMPILER_VAR_510, sizeof(long int), "\03\0\0\0""int", "\03\0\0\0""mem", 0, 0, 0, 0, offsetof(struct cacheFile, mem));
-long int* ____BAH_COMPILER_VAR_512 = (long int*)((char*)(____BAH_COMPILER_VAR_500) + offsetof(struct cacheFile, opti));
-struct reflectElement ____BAH_COMPILER_VAR_513 = __reflect(____BAH_COMPILER_VAR_512, sizeof(long int), "\03\0\0\0""int", "\04\0\0\0""opti", 0, 0, 0, 0, offsetof(struct cacheFile, opti));
-array(char *)** ____BAH_COMPILER_VAR_514 = (array(char *)**)((char*)(____BAH_COMPILER_VAR_500) + offsetof(struct cacheFile, files));
-char ** ____BAH_COMPILER_VAR_515 = 0;
-struct reflectElement ____BAH_COMPILER_VAR_516 = __reflect(____BAH_COMPILER_VAR_515, sizeof(char *), "\010\0\0\0""cpstring", "\0\0\0\0""", 0, 0, 0, 0, 0);
+array(struct cacheFile**)* ____BAH_COMPILER_VAR_494 = &cache;
+struct cacheFile*** ____BAH_COMPILER_VAR_495 = 0;
+char ** ____BAH_COMPILER_VAR_497 = (char **)((char*)(____BAH_COMPILER_VAR_495) + offsetof(struct cacheFile, file));
+struct reflectElement ____BAH_COMPILER_VAR_498 = __reflect(____BAH_COMPILER_VAR_497, sizeof(char *), "\010\0\0\0""cpstring", "\04\0\0\0""file", 0, 0, 0, 0, offsetof(struct cacheFile, file));
+long int* ____BAH_COMPILER_VAR_499 = (long int*)((char*)(____BAH_COMPILER_VAR_495) + offsetof(struct cacheFile, last));
+struct reflectElement ____BAH_COMPILER_VAR_500 = __reflect(____BAH_COMPILER_VAR_499, sizeof(long int), "\03\0\0\0""int", "\04\0\0\0""last", 0, 0, 0, 0, offsetof(struct cacheFile, last));
+char ** ____BAH_COMPILER_VAR_501 = (char **)((char*)(____BAH_COMPILER_VAR_495) + offsetof(struct cacheFile, ver));
+struct reflectElement ____BAH_COMPILER_VAR_502 = __reflect(____BAH_COMPILER_VAR_501, sizeof(char *), "\010\0\0\0""cpstring", "\03\0\0\0""ver", 0, 0, 0, 0, offsetof(struct cacheFile, ver));
+long int* ____BAH_COMPILER_VAR_503 = (long int*)((char*)(____BAH_COMPILER_VAR_495) + offsetof(struct cacheFile, date));
+struct reflectElement ____BAH_COMPILER_VAR_504 = __reflect(____BAH_COMPILER_VAR_503, sizeof(long int), "\03\0\0\0""int", "\04\0\0\0""date", 0, 0, 0, 0, offsetof(struct cacheFile, date));
+long int* ____BAH_COMPILER_VAR_505 = (long int*)((char*)(____BAH_COMPILER_VAR_495) + offsetof(struct cacheFile, mem));
+struct reflectElement ____BAH_COMPILER_VAR_506 = __reflect(____BAH_COMPILER_VAR_505, sizeof(long int), "\03\0\0\0""int", "\03\0\0\0""mem", 0, 0, 0, 0, offsetof(struct cacheFile, mem));
+long int* ____BAH_COMPILER_VAR_507 = (long int*)((char*)(____BAH_COMPILER_VAR_495) + offsetof(struct cacheFile, opti));
+struct reflectElement ____BAH_COMPILER_VAR_508 = __reflect(____BAH_COMPILER_VAR_507, sizeof(long int), "\03\0\0\0""int", "\04\0\0\0""opti", 0, 0, 0, 0, offsetof(struct cacheFile, opti));
+array(char *)** ____BAH_COMPILER_VAR_509 = (array(char *)**)((char*)(____BAH_COMPILER_VAR_495) + offsetof(struct cacheFile, files));
+char ** ____BAH_COMPILER_VAR_510 = 0;
+struct reflectElement ____BAH_COMPILER_VAR_511 = __reflect(____BAH_COMPILER_VAR_510, sizeof(char *), "\010\0\0\0""cpstring", "\0\0\0\0""", 0, 0, 0, 0, 0);
 
-        struct reflectElement ____BAH_COMPILER_VAR_517 = ____BAH_COMPILER_VAR_516;
-        struct reflectElement ____BAH_COMPILER_VAR_518 = __reflect(____BAH_COMPILER_VAR_514, sizeof(array(char *)*), "\012\0\0\0""[]cpstring", "\05\0\0\0""files", 1, &____BAH_COMPILER_VAR_517, 0, 0, offsetof(struct cacheFile, files));
+        struct reflectElement ____BAH_COMPILER_VAR_512 = ____BAH_COMPILER_VAR_511;
+        struct reflectElement ____BAH_COMPILER_VAR_513 = __reflect(____BAH_COMPILER_VAR_509, sizeof(array(char *)*), "\012\0\0\0""[]cpstring", "\05\0\0\0""files", 1, &____BAH_COMPILER_VAR_512, 0, 0, offsetof(struct cacheFile, files));
 
-        array(struct reflectElement) * ____BAH_COMPILER_VAR_501 = memoryAlloc(sizeof(array(struct reflectElement)));
-        ____BAH_COMPILER_VAR_501->elemSize = sizeof(struct reflectElement);
-        ____BAH_COMPILER_VAR_501->length = 7;
-        ____BAH_COMPILER_VAR_501->data = memoryAlloc(____BAH_COMPILER_VAR_501->length * ____BAH_COMPILER_VAR_501->elemSize);
-        ____BAH_COMPILER_VAR_501->data[0] = ____BAH_COMPILER_VAR_503;
-____BAH_COMPILER_VAR_501->data[1] = ____BAH_COMPILER_VAR_505;
-____BAH_COMPILER_VAR_501->data[2] = ____BAH_COMPILER_VAR_507;
-____BAH_COMPILER_VAR_501->data[3] = ____BAH_COMPILER_VAR_509;
-____BAH_COMPILER_VAR_501->data[4] = ____BAH_COMPILER_VAR_511;
-____BAH_COMPILER_VAR_501->data[5] = ____BAH_COMPILER_VAR_513;
-____BAH_COMPILER_VAR_501->data[6] = ____BAH_COMPILER_VAR_518;
-struct reflectElement ____BAH_COMPILER_VAR_519 = __reflect(____BAH_COMPILER_VAR_500, sizeof(struct cacheFile), "\013\0\0\0""cacheFile**", "\0\0\0\0""", 0, 0, 1, ____BAH_COMPILER_VAR_501, 0);
+        array(struct reflectElement) * ____BAH_COMPILER_VAR_496 = memoryAlloc(sizeof(array(struct reflectElement)));
+        ____BAH_COMPILER_VAR_496->elemSize = sizeof(struct reflectElement);
+        ____BAH_COMPILER_VAR_496->length = 7;
+        ____BAH_COMPILER_VAR_496->data = memoryAlloc(____BAH_COMPILER_VAR_496->length * ____BAH_COMPILER_VAR_496->elemSize);
+        ____BAH_COMPILER_VAR_496->data[0] = ____BAH_COMPILER_VAR_498;
+____BAH_COMPILER_VAR_496->data[1] = ____BAH_COMPILER_VAR_500;
+____BAH_COMPILER_VAR_496->data[2] = ____BAH_COMPILER_VAR_502;
+____BAH_COMPILER_VAR_496->data[3] = ____BAH_COMPILER_VAR_504;
+____BAH_COMPILER_VAR_496->data[4] = ____BAH_COMPILER_VAR_506;
+____BAH_COMPILER_VAR_496->data[5] = ____BAH_COMPILER_VAR_508;
+____BAH_COMPILER_VAR_496->data[6] = ____BAH_COMPILER_VAR_513;
+struct reflectElement ____BAH_COMPILER_VAR_514 = __reflect(____BAH_COMPILER_VAR_495, sizeof(struct cacheFile), "\013\0\0\0""cacheFile**", "\0\0\0\0""", 0, 0, 1, ____BAH_COMPILER_VAR_496, 0);
 
-        struct reflectElement ____BAH_COMPILER_VAR_520 = ____BAH_COMPILER_VAR_519;
-        struct reflectElement ____BAH_COMPILER_VAR_521 = __reflect(____BAH_COMPILER_VAR_499, sizeof(array(struct cacheFile**)*), "\015\0\0\0""[]cacheFile**", "\06\0\0\0""&cache", 1, &____BAH_COMPILER_VAR_520, 0, 0, 0);
-fileStream__writeFile(&fs,toJson(____BAH_COMPILER_VAR_521));
+        struct reflectElement ____BAH_COMPILER_VAR_515 = ____BAH_COMPILER_VAR_514;
+        struct reflectElement ____BAH_COMPILER_VAR_516 = __reflect(____BAH_COMPILER_VAR_494, sizeof(array(struct cacheFile**)*), "\015\0\0\0""[]cacheFile**", "\06\0\0\0""&cache", 1, &____BAH_COMPILER_VAR_515, 0, 0, 0);
+fileStream__writeFile(&fs,toJson(____BAH_COMPILER_VAR_516));
 
 #line 67 "/home/alois/Documents/bah-bah/src/cache.bah"
 fileStream__close(&fs);
@@ -12203,7 +12187,7 @@ return false;
 }
 
 #line 74 "/home/alois/Documents/bah-bah/src/cache.bah"
-char** ____BAH_COMPILER_VAR_522 = alloca(6 * sizeof(char*));____BAH_COMPILER_VAR_522[5] = "\04\0\0\0"".o.o";____BAH_COMPILER_VAR_522[4] = intToStr(cf->opti);____BAH_COMPILER_VAR_522[3] = intToStr(cf->mem);____BAH_COMPILER_VAR_522[2] = pathToVarName(cf->file);____BAH_COMPILER_VAR_522[1] = "\06\0\0\0""cache/";____BAH_COMPILER_VAR_522[0] = BAH_DIR;char * ____BAH_COMPILER_VAR_523 =__Bah_multiple_concat(____BAH_COMPILER_VAR_522, 6);if ((fileExists(____BAH_COMPILER_VAR_523)==0)) {
+char** ____BAH_COMPILER_VAR_517 = alloca(6 * sizeof(char*));____BAH_COMPILER_VAR_517[5] = "\04\0\0\0"".o.o";____BAH_COMPILER_VAR_517[4] = intToStr(cf->opti);____BAH_COMPILER_VAR_517[3] = intToStr(cf->mem);____BAH_COMPILER_VAR_517[2] = pathToVarName(cf->file);____BAH_COMPILER_VAR_517[1] = "\06\0\0\0""cache/";____BAH_COMPILER_VAR_517[0] = BAH_DIR;char * ____BAH_COMPILER_VAR_518 =__Bah_multiple_concat(____BAH_COMPILER_VAR_517, 6);if ((fileExists(____BAH_COMPILER_VAR_518)==0)) {
 
 #line 75 "/home/alois/Documents/bah-bah/src/cache.bah"
 return false;
@@ -12242,7 +12226,7 @@ char * nLengthStr = string__str(&vn);
 char * nLength = genCompilerVar();
 
 #line 12 "/home/alois/Documents/bah-bah/src/gen.bah"
-char** ____BAH_COMPILER_VAR_524 = alloca(15 * sizeof(char*));____BAH_COMPILER_VAR_524[14] = val;____BAH_COMPILER_VAR_524[13] = "\04\0\0\0""] = ";____BAH_COMPILER_VAR_524[12] = nLength;____BAH_COMPILER_VAR_524[11] = "\07\0\0\0""->data[";____BAH_COMPILER_VAR_524[10] = nstr;____BAH_COMPILER_VAR_524[9] = preVal;____BAH_COMPILER_VAR_524[8] = "\07\0\0\0"");\n    ";____BAH_COMPILER_VAR_524[7] = nLength;____BAH_COMPILER_VAR_524[6] = "\02\0\0\0"", ";____BAH_COMPILER_VAR_524[5] = nstr;____BAH_COMPILER_VAR_524[4] = "\032\0\0\0"";\n    __Bah_realocate_arr(";____BAH_COMPILER_VAR_524[3] = nLengthStr;____BAH_COMPILER_VAR_524[2] = "\03\0\0\0"" = ";____BAH_COMPILER_VAR_524[1] = nLength;____BAH_COMPILER_VAR_524[0] = "\022\0\0\0""\n    unsigned int ";char * ____BAH_COMPILER_VAR_525 =__Bah_multiple_concat(____BAH_COMPILER_VAR_524, 15);return ____BAH_COMPILER_VAR_525;
+char** ____BAH_COMPILER_VAR_519 = alloca(15 * sizeof(char*));____BAH_COMPILER_VAR_519[14] = val;____BAH_COMPILER_VAR_519[13] = "\04\0\0\0""] = ";____BAH_COMPILER_VAR_519[12] = nLength;____BAH_COMPILER_VAR_519[11] = "\07\0\0\0""->data[";____BAH_COMPILER_VAR_519[10] = nstr;____BAH_COMPILER_VAR_519[9] = preVal;____BAH_COMPILER_VAR_519[8] = "\07\0\0\0"");\n    ";____BAH_COMPILER_VAR_519[7] = nLength;____BAH_COMPILER_VAR_519[6] = "\02\0\0\0"", ";____BAH_COMPILER_VAR_519[5] = nstr;____BAH_COMPILER_VAR_519[4] = "\032\0\0\0"";\n    __Bah_realocate_arr(";____BAH_COMPILER_VAR_519[3] = nLengthStr;____BAH_COMPILER_VAR_519[2] = "\03\0\0\0"" = ";____BAH_COMPILER_VAR_519[1] = nLength;____BAH_COMPILER_VAR_519[0] = "\022\0\0\0""\n    unsigned int ";char * ____BAH_COMPILER_VAR_520 =__Bah_multiple_concat(____BAH_COMPILER_VAR_519, 15);return ____BAH_COMPILER_VAR_520;
 };
 
 #line 18 "/home/alois/Documents/bah-bah/src/gen.bah"
@@ -12252,7 +12236,7 @@ char * genConcat(__BAH_ARR_TYPE_cpstring strs,struct Elems* elems){
 char * buff = genCompilerVar();
 
 #line 22 "/home/alois/Documents/bah-bah/src/gen.bah"
-char** ____BAH_COMPILER_VAR_526 = alloca(5 * sizeof(char*));____BAH_COMPILER_VAR_526[4] = "\022\0\0\0"" * sizeof(char*));";____BAH_COMPILER_VAR_526[3] = intToStr(len(strs));____BAH_COMPILER_VAR_526[2] = "\012\0\0\0"" = alloca(";____BAH_COMPILER_VAR_526[1] = buff;____BAH_COMPILER_VAR_526[0] = "\07\0\0\0""char** ";char * ____BAH_COMPILER_VAR_527 =__Bah_multiple_concat(____BAH_COMPILER_VAR_526, 5);char * r = ____BAH_COMPILER_VAR_527;
+char** ____BAH_COMPILER_VAR_521 = alloca(5 * sizeof(char*));____BAH_COMPILER_VAR_521[4] = "\022\0\0\0"" * sizeof(char*));";____BAH_COMPILER_VAR_521[3] = intToStr(len(strs));____BAH_COMPILER_VAR_521[2] = "\012\0\0\0"" = alloca(";____BAH_COMPILER_VAR_521[1] = buff;____BAH_COMPILER_VAR_521[0] = "\07\0\0\0""char** ";char * ____BAH_COMPILER_VAR_522 =__Bah_multiple_concat(____BAH_COMPILER_VAR_521, 5);char * r = ____BAH_COMPILER_VAR_522;
 
 #line 24 "/home/alois/Documents/bah-bah/src/gen.bah"
 register long int i = 0;
@@ -12263,7 +12247,7 @@ for (; (i<len(strs));
 ++i) {
 
 #line 25 "/home/alois/Documents/bah-bah/src/gen.bah"
-char** ____BAH_COMPILER_VAR_528 = alloca(6 * sizeof(char*));____BAH_COMPILER_VAR_528[5] = "\01\0\0\0"";";____BAH_COMPILER_VAR_528[4] = strs->data[i];____BAH_COMPILER_VAR_528[3] = "\04\0\0\0""] = ";____BAH_COMPILER_VAR_528[2] = intToStr(len(strs)-i-1);____BAH_COMPILER_VAR_528[1] = "\01\0\0\0""[";____BAH_COMPILER_VAR_528[0] = buff;char * ____BAH_COMPILER_VAR_529 =__Bah_multiple_concat(____BAH_COMPILER_VAR_528, 6);char** ____BAH_COMPILER_VAR_530 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_530[1] = ____BAH_COMPILER_VAR_529;____BAH_COMPILER_VAR_530[0] = r;char * ____BAH_COMPILER_VAR_531 =__Bah_multiple_concat(____BAH_COMPILER_VAR_530, 2);r = ____BAH_COMPILER_VAR_531;
+char** ____BAH_COMPILER_VAR_523 = alloca(6 * sizeof(char*));____BAH_COMPILER_VAR_523[5] = "\01\0\0\0"";";____BAH_COMPILER_VAR_523[4] = strs->data[i];____BAH_COMPILER_VAR_523[3] = "\04\0\0\0""] = ";____BAH_COMPILER_VAR_523[2] = intToStr(len(strs)-i-1);____BAH_COMPILER_VAR_523[1] = "\01\0\0\0""[";____BAH_COMPILER_VAR_523[0] = buff;char * ____BAH_COMPILER_VAR_524 =__Bah_multiple_concat(____BAH_COMPILER_VAR_523, 6);char** ____BAH_COMPILER_VAR_525 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_525[1] = ____BAH_COMPILER_VAR_524;____BAH_COMPILER_VAR_525[0] = r;char * ____BAH_COMPILER_VAR_526 =__Bah_multiple_concat(____BAH_COMPILER_VAR_525, 2);r = ____BAH_COMPILER_VAR_526;
 };
 
 #line 28 "/home/alois/Documents/bah-bah/src/gen.bah"
@@ -12281,7 +12265,7 @@ OUTPUT = rope__add(OUTPUT, rope(r));
 }
 
 #line 33 "/home/alois/Documents/bah-bah/src/gen.bah"
-char** ____BAH_COMPILER_VAR_532 = alloca(5 * sizeof(char*));____BAH_COMPILER_VAR_532[4] = "\01\0\0\0"")";____BAH_COMPILER_VAR_532[3] = intToStr(len(strs));____BAH_COMPILER_VAR_532[2] = "\02\0\0\0"", ";____BAH_COMPILER_VAR_532[1] = buff;____BAH_COMPILER_VAR_532[0] = "\026\0\0\0""__Bah_multiple_concat(";char * ____BAH_COMPILER_VAR_533 =__Bah_multiple_concat(____BAH_COMPILER_VAR_532, 5);char * rstr = registerRCPvar("\010\0\0\0""cpstring",____BAH_COMPILER_VAR_533,elems);
+char** ____BAH_COMPILER_VAR_527 = alloca(5 * sizeof(char*));____BAH_COMPILER_VAR_527[4] = "\01\0\0\0"")";____BAH_COMPILER_VAR_527[3] = intToStr(len(strs));____BAH_COMPILER_VAR_527[2] = "\02\0\0\0"", ";____BAH_COMPILER_VAR_527[1] = buff;____BAH_COMPILER_VAR_527[0] = "\026\0\0\0""__Bah_multiple_concat(";char * ____BAH_COMPILER_VAR_528 =__Bah_multiple_concat(____BAH_COMPILER_VAR_527, 5);char * rstr = registerRCPvar("\010\0\0\0""cpstring",____BAH_COMPILER_VAR_528,elems);
 
 #line 35 "/home/alois/Documents/bah-bah/src/gen.bah"
 return rstr;
@@ -12320,8 +12304,8 @@ if ((v->lastSet!=elems)) {
 
 #line 12 "/home/alois/Documents/bah-bah/src/optimizations.bah"
 
-                struct string ____BAH_COMPILER_VAR_534 = string(v->name);
-                if ((isRCPpointerType(v->type)==false)&&(strcmp(v->type, "\016\0\0\0""reflectElement") != 0)&&(string__hasPrefix(&____BAH_COMPILER_VAR_534,"\025\0\0\0""____BAH_COMPILER_VAR_")==false)) {
+                struct string ____BAH_COMPILER_VAR_529 = string(v->name);
+                if ((isRCPpointerType(v->type)==false)&&(strcmp(v->type, "\016\0\0\0""reflectElement") != 0)&&(string__hasPrefix(&____BAH_COMPILER_VAR_529,"\025\0\0\0""____BAH_COMPILER_VAR_")==false)) {
 
 #line 13 "/home/alois/Documents/bah-bah/src/optimizations.bah"
 struct cStruct* s = searchStruct(v->type,elems);
@@ -12330,7 +12314,7 @@ struct cStruct* s = searchStruct(v->type,elems);
 if ((s!=null)&&(currentFn!=null)) {
 
 #line 15 "/home/alois/Documents/bah-bah/src/optimizations.bah"
-char** ____BAH_COMPILER_VAR_535 = alloca(8 * sizeof(char*));____BAH_COMPILER_VAR_535[7] = getFuncDef(currentFn);____BAH_COMPILER_VAR_535[6] = "\040\0\0\0"") could be passed by reference.\n";____BAH_COMPILER_VAR_535[5] = v->type;____BAH_COMPILER_VAR_535[4] = "\06\0\0\0""\e[0m (";____BAH_COMPILER_VAR_535[3] = v->name;____BAH_COMPILER_VAR_535[2] = "\030\0\0\0""()\e[0m: argument \e[1;37m";____BAH_COMPILER_VAR_535[1] = currentFn->name;____BAH_COMPILER_VAR_535[0] = "\012\0\0\0""in \e[1;37m";char * ____BAH_COMPILER_VAR_536 =__Bah_multiple_concat(____BAH_COMPILER_VAR_535, 8);throwNoticeLine(____BAH_COMPILER_VAR_536,currentFn->line);
+char** ____BAH_COMPILER_VAR_530 = alloca(8 * sizeof(char*));____BAH_COMPILER_VAR_530[7] = getFuncDef(currentFn);____BAH_COMPILER_VAR_530[6] = "\040\0\0\0"") could be passed by reference.\n";____BAH_COMPILER_VAR_530[5] = v->type;____BAH_COMPILER_VAR_530[4] = "\06\0\0\0""\e[0m (";____BAH_COMPILER_VAR_530[3] = v->name;____BAH_COMPILER_VAR_530[2] = "\030\0\0\0""()\e[0m: argument \e[1;37m";____BAH_COMPILER_VAR_530[1] = currentFn->name;____BAH_COMPILER_VAR_530[0] = "\012\0\0\0""in \e[1;37m";char * ____BAH_COMPILER_VAR_531 =__Bah_multiple_concat(____BAH_COMPILER_VAR_530, 8);throwNoticeLine(____BAH_COMPILER_VAR_531,currentFn->line);
 }
 }
 }
@@ -12376,7 +12360,7 @@ for (; (n!=0);
 ++i) {
 
 #line 40 "/home/alois/Documents/bah-bah/src/optimizations.bah"
-char** ____BAH_COMPILER_VAR_537 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_537[1] = r;____BAH_COMPILER_VAR_537[0] = intToStr(n%8);char * ____BAH_COMPILER_VAR_538 =__Bah_multiple_concat(____BAH_COMPILER_VAR_537, 2);r = ____BAH_COMPILER_VAR_538;
+char** ____BAH_COMPILER_VAR_532 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_532[1] = r;____BAH_COMPILER_VAR_532[0] = intToStr(n%8);char * ____BAH_COMPILER_VAR_533 =__Bah_multiple_concat(____BAH_COMPILER_VAR_532, 2);r = ____BAH_COMPILER_VAR_533;
 
 #line 41 "/home/alois/Documents/bah-bah/src/optimizations.bah"
 n = n/8;
@@ -12393,7 +12377,7 @@ escp = cpstringSubsitute(escp, 0, 1);
 }
 
 #line 47 "/home/alois/Documents/bah-bah/src/optimizations.bah"
-char** ____BAH_COMPILER_VAR_539 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_539[1] = r;____BAH_COMPILER_VAR_539[0] = escp;char * ____BAH_COMPILER_VAR_540 =__Bah_multiple_concat(____BAH_COMPILER_VAR_539, 2);return ____BAH_COMPILER_VAR_540;
+char** ____BAH_COMPILER_VAR_534 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_534[1] = r;____BAH_COMPILER_VAR_534[0] = escp;char * ____BAH_COMPILER_VAR_535 =__Bah_multiple_concat(____BAH_COMPILER_VAR_534, 2);return ____BAH_COMPILER_VAR_535;
 };
 
 #line 51 "/home/alois/Documents/bah-bah/src/optimizations.bah"
@@ -12403,7 +12387,7 @@ char * escapeIntOctal(long int n){
 char* s = &n;
 
 #line 53 "/home/alois/Documents/bah-bah/src/optimizations.bah"
-char** ____BAH_COMPILER_VAR_541 = alloca(4 * sizeof(char*));____BAH_COMPILER_VAR_541[3] = byteToOctal((unsigned char)s[3]);____BAH_COMPILER_VAR_541[2] = byteToOctal((unsigned char)s[2]);____BAH_COMPILER_VAR_541[1] = byteToOctal((unsigned char)s[1]);____BAH_COMPILER_VAR_541[0] = byteToOctal((unsigned char)s[0]);char * ____BAH_COMPILER_VAR_542 =__Bah_multiple_concat(____BAH_COMPILER_VAR_541, 4);char * r = ____BAH_COMPILER_VAR_542;
+char** ____BAH_COMPILER_VAR_536 = alloca(4 * sizeof(char*));____BAH_COMPILER_VAR_536[3] = byteToOctal((unsigned char)s[3]);____BAH_COMPILER_VAR_536[2] = byteToOctal((unsigned char)s[2]);____BAH_COMPILER_VAR_536[1] = byteToOctal((unsigned char)s[1]);____BAH_COMPILER_VAR_536[0] = byteToOctal((unsigned char)s[0]);char * ____BAH_COMPILER_VAR_537 =__Bah_multiple_concat(____BAH_COMPILER_VAR_536, 4);char * r = ____BAH_COMPILER_VAR_537;
 
 #line 54 "/home/alois/Documents/bah-bah/src/optimizations.bah"
 return r;
@@ -12481,7 +12465,7 @@ char * strLitteralToBahStr(char * s){
 unsigned long int l = getStrLen(s);
 
 #line 84 "/home/alois/Documents/bah-bah/src/optimizations.bah"
-char** ____BAH_COMPILER_VAR_543 = alloca(4 * sizeof(char*));____BAH_COMPILER_VAR_543[3] = s;____BAH_COMPILER_VAR_543[2] = "\01\0\0\0""\"";____BAH_COMPILER_VAR_543[1] = escapeIntOctal(l);____BAH_COMPILER_VAR_543[0] = "\01\0\0\0""\"";char * ____BAH_COMPILER_VAR_544 =__Bah_multiple_concat(____BAH_COMPILER_VAR_543, 4);return ____BAH_COMPILER_VAR_544;
+char** ____BAH_COMPILER_VAR_538 = alloca(4 * sizeof(char*));____BAH_COMPILER_VAR_538[3] = s;____BAH_COMPILER_VAR_538[2] = "\01\0\0\0""\"";____BAH_COMPILER_VAR_538[1] = escapeIntOctal(l);____BAH_COMPILER_VAR_538[0] = "\01\0\0\0""\"";char * ____BAH_COMPILER_VAR_539 =__Bah_multiple_concat(____BAH_COMPILER_VAR_538, 4);return ____BAH_COMPILER_VAR_539;
 };
 struct Elems* dupElems(struct Elems* e);
 void parseLines(__BAH_ARR_TYPE_Tok l,struct Elems* elems);
@@ -12500,15 +12484,15 @@ struct Tok* callToken;
 struct func* genericFunc__dupBaseFn(struct genericFunc* this){
 
 #line 16 "/home/alois/Documents/bah-bah/src/generics.bah"
-struct func* ____BAH_COMPILER_VAR_545 = memoryAlloc(sizeof(struct func));
-____BAH_COMPILER_VAR_545->name = "\0\0\0\0""";
-____BAH_COMPILER_VAR_545->args = memoryAlloc(sizeof(array(struct variable*)));
-            ____BAH_COMPILER_VAR_545->args->length = 0;
-            ____BAH_COMPILER_VAR_545->args->elemSize = sizeof(struct variable*);
-            ____BAH_COMPILER_VAR_545->from = "\0\0\0\0""";
-____BAH_COMPILER_VAR_545->file = "\0\0\0\0""";
-____BAH_COMPILER_VAR_545->line = 1;
-struct func* r = ____BAH_COMPILER_VAR_545;
+struct func* ____BAH_COMPILER_VAR_540 = memoryAlloc(sizeof(struct func));
+____BAH_COMPILER_VAR_540->name = "\0\0\0\0""";
+____BAH_COMPILER_VAR_540->args = memoryAlloc(sizeof(array(struct variable*)));
+            ____BAH_COMPILER_VAR_540->args->length = 0;
+            ____BAH_COMPILER_VAR_540->args->elemSize = sizeof(struct variable*);
+            ____BAH_COMPILER_VAR_540->from = "\0\0\0\0""";
+____BAH_COMPILER_VAR_540->file = "\0\0\0\0""";
+____BAH_COMPILER_VAR_540->line = 1;
+struct func* r = ____BAH_COMPILER_VAR_540;
 
 #line 17 "/home/alois/Documents/bah-bah/src/generics.bah"
 r->name = this->baseFn->name;
@@ -12525,21 +12509,21 @@ for (; (i<len(this->baseFn->args));
 struct variable* a = this->baseFn->args->data[i];
 
 #line 20 "/home/alois/Documents/bah-bah/src/generics.bah"
-struct variable* ____BAH_COMPILER_VAR_546 = memoryAlloc(sizeof(struct variable));
-____BAH_COMPILER_VAR_546->name = "\0\0\0\0""";
-____BAH_COMPILER_VAR_546->type = "\0\0\0\0""";
-____BAH_COMPILER_VAR_546->constVal = "\0\0\0\0""";
-____BAH_COMPILER_VAR_546->from = "\0\0\0\0""";
-struct variable* na = ____BAH_COMPILER_VAR_546;
+struct variable* ____BAH_COMPILER_VAR_541 = memoryAlloc(sizeof(struct variable));
+____BAH_COMPILER_VAR_541->name = "\0\0\0\0""";
+____BAH_COMPILER_VAR_541->type = "\0\0\0\0""";
+____BAH_COMPILER_VAR_541->constVal = "\0\0\0\0""";
+____BAH_COMPILER_VAR_541->from = "\0\0\0\0""";
+struct variable* na = ____BAH_COMPILER_VAR_541;
 
 #line 21 "/home/alois/Documents/bah-bah/src/generics.bah"
 *na = *a;
 
 #line 22 "/home/alois/Documents/bah-bah/src/generics.bah"
 
-    unsigned int ____BAH_COMPILER_VAR_547 = i;
-    __Bah_realocate_arr(r->args, ____BAH_COMPILER_VAR_547);
-    r->args->data[____BAH_COMPILER_VAR_547] = na;
+    unsigned int ____BAH_COMPILER_VAR_542 = i;
+    __Bah_realocate_arr(r->args, ____BAH_COMPILER_VAR_542);
+    r->args->data[____BAH_COMPILER_VAR_542] = na;
 };
 
 #line 24 "/home/alois/Documents/bah-bah/src/generics.bah"
@@ -12581,14 +12565,14 @@ struct rope* oldOut = OUTPUT;
 
 #line 43 "/home/alois/Documents/bah-bah/src/generics.bah"
 
-    unsigned int ____BAH_COMPILER_VAR_548 = len(this->declared);
-    __Bah_realocate_arr(this->declared, ____BAH_COMPILER_VAR_548);
-    this->declared->data[____BAH_COMPILER_VAR_548] = fn;
+    unsigned int ____BAH_COMPILER_VAR_543 = len(this->declared);
+    __Bah_realocate_arr(this->declared, ____BAH_COMPILER_VAR_543);
+    this->declared->data[____BAH_COMPILER_VAR_543] = fn;
 
 #line 44 "/home/alois/Documents/bah-bah/src/generics.bah"
 
-                struct string ____BAH_COMPILER_VAR_549 = getCType(fn->returns->type,elems);
-                char** ____BAH_COMPILER_VAR_550 = alloca(4 * sizeof(char*));____BAH_COMPILER_VAR_550[3] = "\01\0\0\0""(";____BAH_COMPILER_VAR_550[2] = fn->name;____BAH_COMPILER_VAR_550[1] = "\013\0\0\0"" __generic_";____BAH_COMPILER_VAR_550[0] = string__str(&____BAH_COMPILER_VAR_549);char * ____BAH_COMPILER_VAR_551 =__Bah_multiple_concat(____BAH_COMPILER_VAR_550, 4);OUTPUT = rope(____BAH_COMPILER_VAR_551);
+                struct string ____BAH_COMPILER_VAR_544 = getCType(fn->returns->type,elems);
+                char** ____BAH_COMPILER_VAR_545 = alloca(4 * sizeof(char*));____BAH_COMPILER_VAR_545[3] = "\01\0\0\0""(";____BAH_COMPILER_VAR_545[2] = fn->name;____BAH_COMPILER_VAR_545[1] = "\013\0\0\0"" __generic_";____BAH_COMPILER_VAR_545[0] = string__str(&____BAH_COMPILER_VAR_544);char * ____BAH_COMPILER_VAR_546 =__Bah_multiple_concat(____BAH_COMPILER_VAR_545, 4);OUTPUT = rope(____BAH_COMPILER_VAR_546);
 
 #line 46 "/home/alois/Documents/bah-bah/src/generics.bah"
 struct Elems* fnElems = dupElems(elems);
@@ -12612,14 +12596,14 @@ arg->isArg = true;
 
 #line 52 "/home/alois/Documents/bah-bah/src/generics.bah"
 
-    unsigned int ____BAH_COMPILER_VAR_552 = len(fnElems->vars);
-    __Bah_realocate_arr(fnElems->vars, ____BAH_COMPILER_VAR_552);
-    fnElems->vars->data[____BAH_COMPILER_VAR_552] = arg;
+    unsigned int ____BAH_COMPILER_VAR_547 = len(fnElems->vars);
+    __Bah_realocate_arr(fnElems->vars, ____BAH_COMPILER_VAR_547);
+    fnElems->vars->data[____BAH_COMPILER_VAR_547] = arg;
 
 #line 54 "/home/alois/Documents/bah-bah/src/generics.bah"
 
-                struct string ____BAH_COMPILER_VAR_553 = getCType(arg->type,elems);
-                char** ____BAH_COMPILER_VAR_554 = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_554[2] = arg->name;____BAH_COMPILER_VAR_554[1] = "\01\0\0\0"" ";____BAH_COMPILER_VAR_554[0] = string__str(&____BAH_COMPILER_VAR_553);char * ____BAH_COMPILER_VAR_555 =__Bah_multiple_concat(____BAH_COMPILER_VAR_554, 3);OUTPUT = rope__add(OUTPUT, rope(____BAH_COMPILER_VAR_555));
+                struct string ____BAH_COMPILER_VAR_548 = getCType(arg->type,elems);
+                char** ____BAH_COMPILER_VAR_549 = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_549[2] = arg->name;____BAH_COMPILER_VAR_549[1] = "\01\0\0\0"" ";____BAH_COMPILER_VAR_549[0] = string__str(&____BAH_COMPILER_VAR_548);char * ____BAH_COMPILER_VAR_550 =__Bah_multiple_concat(____BAH_COMPILER_VAR_549, 3);OUTPUT = rope__add(OUTPUT, rope(____BAH_COMPILER_VAR_550));
 
 #line 56 "/home/alois/Documents/bah-bah/src/generics.bah"
 if ((i+1<len(fn->args))) {
@@ -12672,7 +12656,7 @@ if ((fn->returned==false)) {
 if (__builtin_expect((strlen(fn->returns->type)>0), 0)) {
 
 #line 78 "/home/alois/Documents/bah-bah/src/generics.bah"
-char** ____BAH_COMPILER_VAR_556 = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_556[2] = "\022\0\0\0""' is not returned.";____BAH_COMPILER_VAR_556[1] = fn->name;____BAH_COMPILER_VAR_556[0] = "\012\0\0\0""Function '";char * ____BAH_COMPILER_VAR_557 =__Bah_multiple_concat(____BAH_COMPILER_VAR_556, 3);throwErr(this->tokenName,____BAH_COMPILER_VAR_557);
+char** ____BAH_COMPILER_VAR_551 = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_551[2] = "\022\0\0\0""' is not returned.";____BAH_COMPILER_VAR_551[1] = fn->name;____BAH_COMPILER_VAR_551[0] = "\012\0\0\0""Function '";char * ____BAH_COMPILER_VAR_552 =__Bah_multiple_concat(____BAH_COMPILER_VAR_551, 3);throwErr(this->tokenName,____BAH_COMPILER_VAR_552);
 }
 
 #line 80 "/home/alois/Documents/bah-bah/src/generics.bah"
@@ -12710,7 +12694,7 @@ return;
 struct genericFunc* gen = currGen;
 
 #line 100 "/home/alois/Documents/bah-bah/src/generics.bah"
-char** ____BAH_COMPILER_VAR_558 = alloca(4 * sizeof(char*));____BAH_COMPILER_VAR_558[3] = intToStr(gen->callToken->line);____BAH_COMPILER_VAR_558[2] = "\01\0\0\0"":";____BAH_COMPILER_VAR_558[1] = compilerState.currentFile;____BAH_COMPILER_VAR_558[0] = "\027\0\0\0""[Generic] called here: ";char * ____BAH_COMPILER_VAR_559 =__Bah_multiple_concat(____BAH_COMPILER_VAR_558, 4);println(____BAH_COMPILER_VAR_559);
+char** ____BAH_COMPILER_VAR_553 = alloca(4 * sizeof(char*));____BAH_COMPILER_VAR_553[3] = intToStr(gen->callToken->line);____BAH_COMPILER_VAR_553[2] = "\01\0\0\0"":";____BAH_COMPILER_VAR_553[1] = compilerState.currentFile;____BAH_COMPILER_VAR_553[0] = "\027\0\0\0""[Generic] called here: ";char * ____BAH_COMPILER_VAR_554 =__Bah_multiple_concat(____BAH_COMPILER_VAR_553, 4);println(____BAH_COMPILER_VAR_554);
 };
 
 #line 15 "/home/alois/Documents/bah-bah/src/parser.bah"
@@ -12729,7 +12713,7 @@ while ((i<len(line))) {
 struct Tok t = line->data[i];
 
 #line 19 "/home/alois/Documents/bah-bah/src/parser.bah"
-char** ____BAH_COMPILER_VAR_560 = alloca(4 * sizeof(char*));____BAH_COMPILER_VAR_560[3] = "\01\0\0\0""'";____BAH_COMPILER_VAR_560[2] = t.cont;____BAH_COMPILER_VAR_560[1] = "\02\0\0\0"" '";____BAH_COMPILER_VAR_560[0] = cont;char * ____BAH_COMPILER_VAR_561 =__Bah_multiple_concat(____BAH_COMPILER_VAR_560, 4);cont = ____BAH_COMPILER_VAR_561;
+char** ____BAH_COMPILER_VAR_555 = alloca(4 * sizeof(char*));____BAH_COMPILER_VAR_555[3] = "\01\0\0\0""'";____BAH_COMPILER_VAR_555[2] = t.cont;____BAH_COMPILER_VAR_555[1] = "\02\0\0\0"" '";____BAH_COMPILER_VAR_555[0] = cont;char * ____BAH_COMPILER_VAR_556 =__Bah_multiple_concat(____BAH_COMPILER_VAR_555, 4);cont = ____BAH_COMPILER_VAR_556;
 
 #line 20 "/home/alois/Documents/bah-bah/src/parser.bah"
 ++i;
@@ -12743,26 +12727,26 @@ println(cont);
 struct Elems* dupElems(struct Elems* elems){
 
 #line 27 "/home/alois/Documents/bah-bah/src/parser.bah"
-struct Elems* ____BAH_COMPILER_VAR_562 = memoryAlloc(sizeof(struct Elems));
-____BAH_COMPILER_VAR_562->vars = memoryAlloc(sizeof(array(struct variable*)));
-            ____BAH_COMPILER_VAR_562->vars->length = 0;
-            ____BAH_COMPILER_VAR_562->vars->elemSize = sizeof(struct variable*);
-            ____BAH_COMPILER_VAR_562->structs = memoryAlloc(sizeof(array(struct cStruct*)));
-            ____BAH_COMPILER_VAR_562->structs->length = 0;
-            ____BAH_COMPILER_VAR_562->structs->elemSize = sizeof(struct cStruct*);
-            ____BAH_COMPILER_VAR_562->types = memoryAlloc(sizeof(array(char *)));
-            ____BAH_COMPILER_VAR_562->types->length = 0;
-            ____BAH_COMPILER_VAR_562->types->elemSize = sizeof(char *);
-            ____BAH_COMPILER_VAR_562->fns = memoryAlloc(sizeof(array(struct func*)));
-            ____BAH_COMPILER_VAR_562->fns->length = 0;
-            ____BAH_COMPILER_VAR_562->fns->elemSize = sizeof(struct func*);
-            ____BAH_COMPILER_VAR_562->deletedVars = memoryAlloc(sizeof(array(struct variable*)));
-            ____BAH_COMPILER_VAR_562->deletedVars->length = 0;
-            ____BAH_COMPILER_VAR_562->deletedVars->elemSize = sizeof(struct variable*);
-            ____BAH_COMPILER_VAR_562->branchChecks = memoryAlloc(sizeof(array(struct varCheck)));
-            ____BAH_COMPILER_VAR_562->branchChecks->length = 0;
-            ____BAH_COMPILER_VAR_562->branchChecks->elemSize = sizeof(struct varCheck);
-            struct Elems* nElems = ____BAH_COMPILER_VAR_562;
+struct Elems* ____BAH_COMPILER_VAR_557 = memoryAlloc(sizeof(struct Elems));
+____BAH_COMPILER_VAR_557->vars = memoryAlloc(sizeof(array(struct variable*)));
+            ____BAH_COMPILER_VAR_557->vars->length = 0;
+            ____BAH_COMPILER_VAR_557->vars->elemSize = sizeof(struct variable*);
+            ____BAH_COMPILER_VAR_557->structs = memoryAlloc(sizeof(array(struct cStruct*)));
+            ____BAH_COMPILER_VAR_557->structs->length = 0;
+            ____BAH_COMPILER_VAR_557->structs->elemSize = sizeof(struct cStruct*);
+            ____BAH_COMPILER_VAR_557->types = memoryAlloc(sizeof(array(char *)));
+            ____BAH_COMPILER_VAR_557->types->length = 0;
+            ____BAH_COMPILER_VAR_557->types->elemSize = sizeof(char *);
+            ____BAH_COMPILER_VAR_557->fns = memoryAlloc(sizeof(array(struct func*)));
+            ____BAH_COMPILER_VAR_557->fns->length = 0;
+            ____BAH_COMPILER_VAR_557->fns->elemSize = sizeof(struct func*);
+            ____BAH_COMPILER_VAR_557->deletedVars = memoryAlloc(sizeof(array(struct variable*)));
+            ____BAH_COMPILER_VAR_557->deletedVars->length = 0;
+            ____BAH_COMPILER_VAR_557->deletedVars->elemSize = sizeof(struct variable*);
+            ____BAH_COMPILER_VAR_557->branchChecks = memoryAlloc(sizeof(array(struct varCheck)));
+            ____BAH_COMPILER_VAR_557->branchChecks->length = 0;
+            ____BAH_COMPILER_VAR_557->branchChecks->elemSize = sizeof(struct varCheck);
+            struct Elems* nElems = ____BAH_COMPILER_VAR_557;
 
 #line 28 "/home/alois/Documents/bah-bah/src/parser.bah"
 nElems->parent = elems;
@@ -12780,9 +12764,9 @@ for (; (j<len(elems->vars));
 
 #line 33 "/home/alois/Documents/bah-bah/src/parser.bah"
 
-    unsigned int ____BAH_COMPILER_VAR_563 = j;
-    __Bah_realocate_arr(nElems->vars, ____BAH_COMPILER_VAR_563);
-    nElems->vars->data[____BAH_COMPILER_VAR_563] = elems->vars->data[j];
+    unsigned int ____BAH_COMPILER_VAR_558 = j;
+    __Bah_realocate_arr(nElems->vars, ____BAH_COMPILER_VAR_558);
+    nElems->vars->data[____BAH_COMPILER_VAR_558] = elems->vars->data[j];
 };
 
 #line 37 "/home/alois/Documents/bah-bah/src/parser.bah"
@@ -12861,8 +12845,8 @@ void checkCanBeNull(struct Tok* t,char * tt,struct Elems* elems){
 
 #line 2 "/home/alois/Documents/bah-bah/src/safety.bah"
 
-                struct string ____BAH_COMPILER_VAR_564 = string(compilerState.currentDir);
-                if ((isUnsafe==false)&&(string__hasPrefix(&____BAH_COMPILER_VAR_564,BAH_DIR)==false)&&isRCPpointerType(tt)&&(t->cont[0+4]!=38)&&(t->cont[0+4]!=42)) {
+                struct string ____BAH_COMPILER_VAR_559 = string(compilerState.currentDir);
+                if ((isUnsafe==false)&&(string__hasPrefix(&____BAH_COMPILER_VAR_559,BAH_DIR)==false)&&isRCPpointerType(tt)&&(t->cont[0+4]!=38)&&(t->cont[0+4]!=42)) {
 
 #line 3 "/home/alois/Documents/bah-bah/src/safety.bah"
 struct variable* sv = searchVarByToken(t,elems);
@@ -12883,11 +12867,11 @@ struct cStruct* s = searchStruct(sv->type,elems);
 if ((sv->isGlobal==true)&&(s!=null)) {
 
 #line 9 "/home/alois/Documents/bah-bah/src/safety.bah"
-char** ____BAH_COMPILER_VAR_565 = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_565[2] = "\02\0\0\0""'.";____BAH_COMPILER_VAR_565[1] = s->name;____BAH_COMPILER_VAR_565[0] = "\034\0\0\0"" or declare the var as 'new ";char * ____BAH_COMPILER_VAR_566 =__Bah_multiple_concat(____BAH_COMPILER_VAR_565, 3);globCheck = ____BAH_COMPILER_VAR_566;
+char** ____BAH_COMPILER_VAR_560 = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_560[2] = "\02\0\0\0""'.";____BAH_COMPILER_VAR_560[1] = s->name;____BAH_COMPILER_VAR_560[0] = "\034\0\0\0"" or declare the var as 'new ";char * ____BAH_COMPILER_VAR_561 =__Bah_multiple_concat(____BAH_COMPILER_VAR_560, 3);globCheck = ____BAH_COMPILER_VAR_561;
 }
 
 #line 11 "/home/alois/Documents/bah-bah/src/safety.bah"
-char** ____BAH_COMPILER_VAR_567 = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_567[2] = "\01\0\0\0"".";____BAH_COMPILER_VAR_567[1] = globCheck;____BAH_COMPILER_VAR_567[0] = "\074\0\0\0""{TOKEN} can contain a null value. Check if the value is null";char * ____BAH_COMPILER_VAR_568 =__Bah_multiple_concat(____BAH_COMPILER_VAR_567, 3);throwErr(t,____BAH_COMPILER_VAR_568);
+char** ____BAH_COMPILER_VAR_562 = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_562[2] = "\01\0\0\0"".";____BAH_COMPILER_VAR_562[1] = globCheck;____BAH_COMPILER_VAR_562[0] = "\074\0\0\0""{TOKEN} can contain a null value. Check if the value is null";char * ____BAH_COMPILER_VAR_563 =__Bah_multiple_concat(____BAH_COMPILER_VAR_562, 3);throwErr(t,____BAH_COMPILER_VAR_563);
 }
 }
 }
@@ -13056,11 +13040,11 @@ char * name = v->name;
 if ((isRCPpointerType(v->type)==false)) {
 
 #line 77 "/home/alois/Documents/bah-bah/src/safety.bah"
-char** ____BAH_COMPILER_VAR_569 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_569[1] = name;____BAH_COMPILER_VAR_569[0] = "\01\0\0\0""&";char * ____BAH_COMPILER_VAR_570 =__Bah_multiple_concat(____BAH_COMPILER_VAR_569, 2);name = ____BAH_COMPILER_VAR_570;
+char** ____BAH_COMPILER_VAR_564 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_564[1] = name;____BAH_COMPILER_VAR_564[0] = "\01\0\0\0""&";char * ____BAH_COMPILER_VAR_565 =__Bah_multiple_concat(____BAH_COMPILER_VAR_564, 2);name = ____BAH_COMPILER_VAR_565;
 }
 
 #line 79 "/home/alois/Documents/bah-bah/src/safety.bah"
-char** ____BAH_COMPILER_VAR_571 = alloca(9 * sizeof(char*));____BAH_COMPILER_VAR_571[8] = "\010\0\0\0""\");\n    ";____BAH_COMPILER_VAR_571[7] = intToStr(t->line);____BAH_COMPILER_VAR_571[6] = "\01\0\0\0"":";____BAH_COMPILER_VAR_571[5] = compilerState.currentFile;____BAH_COMPILER_VAR_571[4] = "\03\0\0\0"", \"";____BAH_COMPILER_VAR_571[3] = name;____BAH_COMPILER_VAR_571[2] = "\03\0\0\0""\", ";____BAH_COMPILER_VAR_571[1] = v->name;____BAH_COMPILER_VAR_571[0] = "\022\0\0\0""\n    fixMeAddVar(\"";char * ____BAH_COMPILER_VAR_572 =__Bah_multiple_concat(____BAH_COMPILER_VAR_571, 9);char** ____BAH_COMPILER_VAR_573 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_573[1] = ____BAH_COMPILER_VAR_572;____BAH_COMPILER_VAR_573[0] = NEXT_LINE;char * ____BAH_COMPILER_VAR_574 =__Bah_multiple_concat(____BAH_COMPILER_VAR_573, 2);NEXT_LINE = ____BAH_COMPILER_VAR_574;
+char** ____BAH_COMPILER_VAR_566 = alloca(9 * sizeof(char*));____BAH_COMPILER_VAR_566[8] = "\010\0\0\0""\");\n    ";____BAH_COMPILER_VAR_566[7] = intToStr(t->line);____BAH_COMPILER_VAR_566[6] = "\01\0\0\0"":";____BAH_COMPILER_VAR_566[5] = compilerState.currentFile;____BAH_COMPILER_VAR_566[4] = "\03\0\0\0"", \"";____BAH_COMPILER_VAR_566[3] = name;____BAH_COMPILER_VAR_566[2] = "\03\0\0\0""\", ";____BAH_COMPILER_VAR_566[1] = v->name;____BAH_COMPILER_VAR_566[0] = "\022\0\0\0""\n    fixMeAddVar(\"";char * ____BAH_COMPILER_VAR_567 =__Bah_multiple_concat(____BAH_COMPILER_VAR_566, 9);char** ____BAH_COMPILER_VAR_568 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_568[1] = ____BAH_COMPILER_VAR_567;____BAH_COMPILER_VAR_568[0] = NEXT_LINE;char * ____BAH_COMPILER_VAR_569 =__Bah_multiple_concat(____BAH_COMPILER_VAR_568, 2);NEXT_LINE = ____BAH_COMPILER_VAR_569;
 };
 
 #line 84 "/home/alois/Documents/bah-bah/src/safety.bah"
@@ -13101,7 +13085,7 @@ char * name = v->name;
 if ((isRCPpointerType(v->type)==false)) {
 
 #line 96 "/home/alois/Documents/bah-bah/src/safety.bah"
-char** ____BAH_COMPILER_VAR_575 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_575[1] = name;____BAH_COMPILER_VAR_575[0] = "\01\0\0\0""&";char * ____BAH_COMPILER_VAR_576 =__Bah_multiple_concat(____BAH_COMPILER_VAR_575, 2);name = ____BAH_COMPILER_VAR_576;
+char** ____BAH_COMPILER_VAR_570 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_570[1] = name;____BAH_COMPILER_VAR_570[0] = "\01\0\0\0""&";char * ____BAH_COMPILER_VAR_571 =__Bah_multiple_concat(____BAH_COMPILER_VAR_570, 2);name = ____BAH_COMPILER_VAR_571;
 }
 
 #line 97 "/home/alois/Documents/bah-bah/src/safety.bah"
@@ -13112,7 +13096,7 @@ continue;
 }
 
 #line 100 "/home/alois/Documents/bah-bah/src/safety.bah"
-char** ____BAH_COMPILER_VAR_577 = alloca(9 * sizeof(char*));____BAH_COMPILER_VAR_577[8] = "\020\0\0\0""\");\n            ";____BAH_COMPILER_VAR_577[7] = intToStr(t->line);____BAH_COMPILER_VAR_577[6] = "\01\0\0\0"":";____BAH_COMPILER_VAR_577[5] = compilerState.currentFile;____BAH_COMPILER_VAR_577[4] = "\03\0\0\0"", \"";____BAH_COMPILER_VAR_577[3] = name;____BAH_COMPILER_VAR_577[2] = "\03\0\0\0""\", ";____BAH_COMPILER_VAR_577[1] = v->name;____BAH_COMPILER_VAR_577[0] = "\032\0\0\0""\n            fixMeRemVar(\"";char * ____BAH_COMPILER_VAR_578 =__Bah_multiple_concat(____BAH_COMPILER_VAR_577, 9);OUTPUT = rope__add(OUTPUT, rope(____BAH_COMPILER_VAR_578));
+char** ____BAH_COMPILER_VAR_572 = alloca(9 * sizeof(char*));____BAH_COMPILER_VAR_572[8] = "\020\0\0\0""\");\n            ";____BAH_COMPILER_VAR_572[7] = intToStr(t->line);____BAH_COMPILER_VAR_572[6] = "\01\0\0\0"":";____BAH_COMPILER_VAR_572[5] = compilerState.currentFile;____BAH_COMPILER_VAR_572[4] = "\03\0\0\0"", \"";____BAH_COMPILER_VAR_572[3] = name;____BAH_COMPILER_VAR_572[2] = "\03\0\0\0""\", ";____BAH_COMPILER_VAR_572[1] = v->name;____BAH_COMPILER_VAR_572[0] = "\032\0\0\0""\n            fixMeRemVar(\"";char * ____BAH_COMPILER_VAR_573 =__Bah_multiple_concat(____BAH_COMPILER_VAR_572, 9);OUTPUT = rope__add(OUTPUT, rope(____BAH_COMPILER_VAR_573));
 }
 };
 };
@@ -13154,7 +13138,7 @@ name = cpstringSubsitute(name, 1, strlen(name));
 else {
 
 #line 122 "/home/alois/Documents/bah-bah/src/safety.bah"
-char** ____BAH_COMPILER_VAR_579 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_579[1] = name;____BAH_COMPILER_VAR_579[0] = "\01\0\0\0""&";char * ____BAH_COMPILER_VAR_580 =__Bah_multiple_concat(____BAH_COMPILER_VAR_579, 2);name = ____BAH_COMPILER_VAR_580;
+char** ____BAH_COMPILER_VAR_574 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_574[1] = name;____BAH_COMPILER_VAR_574[0] = "\01\0\0\0""&";char * ____BAH_COMPILER_VAR_575 =__Bah_multiple_concat(____BAH_COMPILER_VAR_574, 2);name = ____BAH_COMPILER_VAR_575;
 }
 }
 
@@ -13169,20 +13153,20 @@ t->cont = name;
 }
 
 #line 131 "/home/alois/Documents/bah-bah/src/safety.bah"
-char** ____BAH_COMPILER_VAR_581 = alloca(9 * sizeof(char*));____BAH_COMPILER_VAR_581[8] = "\02\0\0\0""\")";____BAH_COMPILER_VAR_581[7] = intToStr(t->line);____BAH_COMPILER_VAR_581[6] = "\01\0\0\0"":";____BAH_COMPILER_VAR_581[5] = compilerState.currentFile;____BAH_COMPILER_VAR_581[4] = "\04\0\0\0""\", \"";____BAH_COMPILER_VAR_581[3] = t->cont;____BAH_COMPILER_VAR_581[2] = "\03\0\0\0"", \"";____BAH_COMPILER_VAR_581[1] = name;____BAH_COMPILER_VAR_581[0] = "\015\0\0\0""fixMeIsVarOk(";char * ____BAH_COMPILER_VAR_582 =__Bah_multiple_concat(____BAH_COMPILER_VAR_581, 9);char * fn = ____BAH_COMPILER_VAR_582;
+char** ____BAH_COMPILER_VAR_576 = alloca(9 * sizeof(char*));____BAH_COMPILER_VAR_576[8] = "\02\0\0\0""\")";____BAH_COMPILER_VAR_576[7] = intToStr(t->line);____BAH_COMPILER_VAR_576[6] = "\01\0\0\0"":";____BAH_COMPILER_VAR_576[5] = compilerState.currentFile;____BAH_COMPILER_VAR_576[4] = "\04\0\0\0""\", \"";____BAH_COMPILER_VAR_576[3] = t->cont;____BAH_COMPILER_VAR_576[2] = "\03\0\0\0"", \"";____BAH_COMPILER_VAR_576[1] = name;____BAH_COMPILER_VAR_576[0] = "\015\0\0\0""fixMeIsVarOk(";char * ____BAH_COMPILER_VAR_577 =__Bah_multiple_concat(____BAH_COMPILER_VAR_576, 9);char * fn = ____BAH_COMPILER_VAR_577;
 
 #line 133 "/home/alois/Documents/bah-bah/src/safety.bah"
 if ((ltp==LINE_TYPE_ELSE)) {
 
 #line 134 "/home/alois/Documents/bah-bah/src/safety.bah"
-char** ____BAH_COMPILER_VAR_583 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_583[1] = "\02\0\0\0""&&";____BAH_COMPILER_VAR_583[0] = fn;char * ____BAH_COMPILER_VAR_584 =__Bah_multiple_concat(____BAH_COMPILER_VAR_583, 2);prevIfShortcut = ____BAH_COMPILER_VAR_584;
+char** ____BAH_COMPILER_VAR_578 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_578[1] = "\02\0\0\0""&&";____BAH_COMPILER_VAR_578[0] = fn;char * ____BAH_COMPILER_VAR_579 =__Bah_multiple_concat(____BAH_COMPILER_VAR_578, 2);prevIfShortcut = ____BAH_COMPILER_VAR_579;
 
 #line 135 "/home/alois/Documents/bah-bah/src/safety.bah"
 return;
 }
 
 #line 138 "/home/alois/Documents/bah-bah/src/safety.bah"
-char** ____BAH_COMPILER_VAR_585 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_585[1] = "\02\0\0\0"";\n";____BAH_COMPILER_VAR_585[0] = fn;char * ____BAH_COMPILER_VAR_586 =__Bah_multiple_concat(____BAH_COMPILER_VAR_585, 2);OUTPUT = rope__add(OUTPUT, rope(____BAH_COMPILER_VAR_586));
+char** ____BAH_COMPILER_VAR_580 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_580[1] = "\02\0\0\0"";\n";____BAH_COMPILER_VAR_580[0] = fn;char * ____BAH_COMPILER_VAR_581 =__Bah_multiple_concat(____BAH_COMPILER_VAR_580, 2);OUTPUT = rope__add(OUTPUT, rope(____BAH_COMPILER_VAR_581));
 };
 
 #line 141 "/home/alois/Documents/bah-bah/src/safety.bah"
@@ -13414,9 +13398,9 @@ break;
 
 #line 144 "/home/alois/Documents/bah-bah/src/parser.bah"
 
-    unsigned int ____BAH_COMPILER_VAR_587 = i;
-    __Bah_realocate_arr(nl, ____BAH_COMPILER_VAR_587);
-    nl->data[____BAH_COMPILER_VAR_587] = t;
+    unsigned int ____BAH_COMPILER_VAR_582 = i;
+    __Bah_realocate_arr(nl, ____BAH_COMPILER_VAR_582);
+    nl->data[____BAH_COMPILER_VAR_582] = t;
 
 #line 145 "/home/alois/Documents/bah-bah/src/parser.bah"
 i = i+1;
@@ -13466,13 +13450,13 @@ struct string cCast = getCType(string__str(&tc),elems);
 char * cCastStr = string__str(&cCast);
 
 #line 164 "/home/alois/Documents/bah-bah/src/parser.bah"
-char** ____BAH_COMPILER_VAR_588 = alloca(4 * sizeof(char*));____BAH_COMPILER_VAR_588[3] = nnnt.cont;____BAH_COMPILER_VAR_588[2] = "\01\0\0\0"")";____BAH_COMPILER_VAR_588[1] = cCastStr;____BAH_COMPILER_VAR_588[0] = "\01\0\0\0""(";char * ____BAH_COMPILER_VAR_589 =__Bah_multiple_concat(____BAH_COMPILER_VAR_588, 4);nnnt.cont = ____BAH_COMPILER_VAR_589;
+char** ____BAH_COMPILER_VAR_583 = alloca(4 * sizeof(char*));____BAH_COMPILER_VAR_583[3] = nnnt.cont;____BAH_COMPILER_VAR_583[2] = "\01\0\0\0"")";____BAH_COMPILER_VAR_583[1] = cCastStr;____BAH_COMPILER_VAR_583[0] = "\01\0\0\0""(";char * ____BAH_COMPILER_VAR_584 =__Bah_multiple_concat(____BAH_COMPILER_VAR_583, 4);nnnt.cont = ____BAH_COMPILER_VAR_584;
 
 #line 165 "/home/alois/Documents/bah-bah/src/parser.bah"
 
-    unsigned int ____BAH_COMPILER_VAR_590 = len(nl);
-    __Bah_realocate_arr(nl, ____BAH_COMPILER_VAR_590);
-    nl->data[____BAH_COMPILER_VAR_590] = nnnt;
+    unsigned int ____BAH_COMPILER_VAR_585 = len(nl);
+    __Bah_realocate_arr(nl, ____BAH_COMPILER_VAR_585);
+    nl->data[____BAH_COMPILER_VAR_585] = nnnt;
 
 #line 166 "/home/alois/Documents/bah-bah/src/parser.bah"
 i = i+2;
@@ -13484,9 +13468,9 @@ continue;
 
 #line 171 "/home/alois/Documents/bah-bah/src/parser.bah"
 
-    unsigned int ____BAH_COMPILER_VAR_591 = len(nl);
-    __Bah_realocate_arr(nl, ____BAH_COMPILER_VAR_591);
-    nl->data[____BAH_COMPILER_VAR_591] = t;
+    unsigned int ____BAH_COMPILER_VAR_586 = len(nl);
+    __Bah_realocate_arr(nl, ____BAH_COMPILER_VAR_586);
+    nl->data[____BAH_COMPILER_VAR_586] = t;
 };
 
 #line 174 "/home/alois/Documents/bah-bah/src/parser.bah"
@@ -13532,7 +13516,7 @@ return f;
 void parseLines(__BAH_ARR_TYPE_Tok ts,struct Elems* elems);
 
 #line 195 "/home/alois/Documents/bah-bah/src/parser.bah"
-char ____BAH_COMPILER_VAR_592(array(char *)* arr, char * el) {
+char ____BAH_COMPILER_VAR_587(array(char *)* arr, char * el) {
         if (arr == 0) {
             return 0;
         };
@@ -13588,18 +13572,18 @@ ccstr = "\06\0\0\0""gc.bah";
 }
 
 #line 216 "/home/alois/Documents/bah-bah/src/parser.bah"
-if (____BAH_COMPILER_VAR_592(compilerState.includes, ccstr)) {
+if (____BAH_COMPILER_VAR_587(compilerState.includes, ccstr)) {
 
 #line 217 "/home/alois/Documents/bah-bah/src/parser.bah"
 return true;
 }
 
 #line 221 "/home/alois/Documents/bah-bah/src/parser.bah"
-struct fileStream ____BAH_COMPILER_VAR_593 = {};
-struct fileStream fs = ____BAH_COMPILER_VAR_593;
+struct fileStream ____BAH_COMPILER_VAR_588 = {};
+struct fileStream fs = ____BAH_COMPILER_VAR_588;
 
 #line 222 "/home/alois/Documents/bah-bah/src/parser.bah"
-char** ____BAH_COMPILER_VAR_594 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_594[1] = ccstr;____BAH_COMPILER_VAR_594[0] = BAH_DIR;char * ____BAH_COMPILER_VAR_595 =__Bah_multiple_concat(____BAH_COMPILER_VAR_594, 2);char * fileName = ____BAH_COMPILER_VAR_595;
+char** ____BAH_COMPILER_VAR_589 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_589[1] = ccstr;____BAH_COMPILER_VAR_589[0] = BAH_DIR;char * ____BAH_COMPILER_VAR_590 =__Bah_multiple_concat(____BAH_COMPILER_VAR_589, 2);char * fileName = ____BAH_COMPILER_VAR_590;
 
 #line 223 "/home/alois/Documents/bah-bah/src/parser.bah"
 char isBahDir = true;
@@ -13614,7 +13598,7 @@ char * f = fileStream__readContent(&fs);
 if ((fileStream__isValid(&fs)==0)) {
 
 #line 227 "/home/alois/Documents/bah-bah/src/parser.bah"
-char** ____BAH_COMPILER_VAR_596 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_596[1] = ccstr;____BAH_COMPILER_VAR_596[0] = compilerState.currentDir;char * ____BAH_COMPILER_VAR_597 =__Bah_multiple_concat(____BAH_COMPILER_VAR_596, 2);fileName = absPath(____BAH_COMPILER_VAR_597);
+char** ____BAH_COMPILER_VAR_591 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_591[1] = ccstr;____BAH_COMPILER_VAR_591[0] = compilerState.currentDir;char * ____BAH_COMPILER_VAR_592 =__Bah_multiple_concat(____BAH_COMPILER_VAR_591, 2);fileName = absPath(____BAH_COMPILER_VAR_592);
 
 #line 228 "/home/alois/Documents/bah-bah/src/parser.bah"
 fileStream__open(&fs,fileName,"\01\0\0\0""r");
@@ -13640,14 +13624,14 @@ char * oDir = compilerState.currentDir;
 if ((isBahDir==false)) {
 
 #line 239 "/home/alois/Documents/bah-bah/src/parser.bah"
-char** ____BAH_COMPILER_VAR_598 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_598[1] = getDirFromFile(ccstr);____BAH_COMPILER_VAR_598[0] = compilerState.currentDir;char * ____BAH_COMPILER_VAR_599 =__Bah_multiple_concat(____BAH_COMPILER_VAR_598, 2);compilerState.currentDir = ____BAH_COMPILER_VAR_599;
+char** ____BAH_COMPILER_VAR_593 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_593[1] = getDirFromFile(ccstr);____BAH_COMPILER_VAR_593[0] = compilerState.currentDir;char * ____BAH_COMPILER_VAR_594 =__Bah_multiple_concat(____BAH_COMPILER_VAR_593, 2);compilerState.currentDir = ____BAH_COMPILER_VAR_594;
 }
 
 #line 240 "/home/alois/Documents/bah-bah/src/parser.bah"
 else {
 
 #line 241 "/home/alois/Documents/bah-bah/src/parser.bah"
-char** ____BAH_COMPILER_VAR_600 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_600[1] = getDirFromFile(ccstr);____BAH_COMPILER_VAR_600[0] = BAH_DIR;char * ____BAH_COMPILER_VAR_601 =__Bah_multiple_concat(____BAH_COMPILER_VAR_600, 2);compilerState.currentDir = ____BAH_COMPILER_VAR_601;
+char** ____BAH_COMPILER_VAR_595 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_595[1] = getDirFromFile(ccstr);____BAH_COMPILER_VAR_595[0] = BAH_DIR;char * ____BAH_COMPILER_VAR_596 =__Bah_multiple_concat(____BAH_COMPILER_VAR_595, 2);compilerState.currentDir = ____BAH_COMPILER_VAR_596;
 }
 
 #line 245 "/home/alois/Documents/bah-bah/src/parser.bah"
@@ -13658,9 +13642,9 @@ compilerState.currentFile = fileName;
 
 #line 247 "/home/alois/Documents/bah-bah/src/parser.bah"
 
-    unsigned int ____BAH_COMPILER_VAR_602 = len(compilerState.includes);
-    __Bah_realocate_arr(compilerState.includes, ____BAH_COMPILER_VAR_602);
-    compilerState.includes->data[____BAH_COMPILER_VAR_602] = ccstr;
+    unsigned int ____BAH_COMPILER_VAR_597 = len(compilerState.includes);
+    __Bah_realocate_arr(compilerState.includes, ____BAH_COMPILER_VAR_597);
+    compilerState.includes->data[____BAH_COMPILER_VAR_597] = ccstr;
 
 #line 250 "/home/alois/Documents/bah-bah/src/parser.bah"
 array(struct Tok)* tokens = lexer(f,fileStream__getSize(&fs));
@@ -13672,7 +13656,7 @@ fileStream__close(&fs);
 if (__builtin_expect((len(tokens)==0), 0)) {
 
 #line 253 "/home/alois/Documents/bah-bah/src/parser.bah"
-char** ____BAH_COMPILER_VAR_603 = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_603[2] = "\021\0\0\0""' not recognized.";____BAH_COMPILER_VAR_603[1] = ccstr;____BAH_COMPILER_VAR_603[0] = "\06\0\0\0""File '";char * ____BAH_COMPILER_VAR_604 =__Bah_multiple_concat(____BAH_COMPILER_VAR_603, 3);__BAH_panic(____BAH_COMPILER_VAR_604,"\060\0\0\0""/home/alois/Documents/bah-bah/src/parser.bah:253");
+char** ____BAH_COMPILER_VAR_598 = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_598[2] = "\021\0\0\0""' not recognized.";____BAH_COMPILER_VAR_598[1] = ccstr;____BAH_COMPILER_VAR_598[0] = "\06\0\0\0""File '";char * ____BAH_COMPILER_VAR_599 =__Bah_multiple_concat(____BAH_COMPILER_VAR_598, 3);__BAH_panic(____BAH_COMPILER_VAR_599,"\060\0\0\0""/home/alois/Documents/bah-bah/src/parser.bah:253");
 }
 
 #line 257 "/home/alois/Documents/bah-bah/src/parser.bah"
@@ -13683,8 +13667,8 @@ if ((isObject==true)) {
 
 #line 259 "/home/alois/Documents/bah-bah/src/parser.bah"
 
-                struct string ____BAH_COMPILER_VAR_605 = string(compilerState.currentFile);
-                if ((isBahDir==true)||(string__hasPrefix(&____BAH_COMPILER_VAR_605,oDir)==false)) {
+                struct string ____BAH_COMPILER_VAR_600 = string(compilerState.currentFile);
+                if ((isBahDir==true)||(string__hasPrefix(&____BAH_COMPILER_VAR_600,oDir)==false)) {
 
 #line 260 "/home/alois/Documents/bah-bah/src/parser.bah"
 shouldOnlyDecl = true;
@@ -13703,8 +13687,8 @@ else if ((isSubObject==true)) {
 
 #line 265 "/home/alois/Documents/bah-bah/src/parser.bah"
 
-                struct string ____BAH_COMPILER_VAR_606 = string(compilerState.currentFile);
-                if ((isBahDir==true)||(string__hasPrefix(&____BAH_COMPILER_VAR_606,oDir)==false)) {
+                struct string ____BAH_COMPILER_VAR_601 = string(compilerState.currentFile);
+                if ((isBahDir==true)||(string__hasPrefix(&____BAH_COMPILER_VAR_601,oDir)==false)) {
 
 #line 266 "/home/alois/Documents/bah-bah/src/parser.bah"
 if ((isImportedSubObject==true)&&(isBahDir==false)) {
@@ -13795,11 +13779,11 @@ struct cacheFile* scf = cf;
 if ((scf==null)) {
 
 #line 308 "/home/alois/Documents/bah-bah/src/parser.bah"
-struct cacheFile* ____BAH_COMPILER_VAR_607 = memoryAlloc(sizeof(struct cacheFile));
-____BAH_COMPILER_VAR_607->files = memoryAlloc(sizeof(array(char *)));
-            ____BAH_COMPILER_VAR_607->files->length = 0;
-            ____BAH_COMPILER_VAR_607->files->elemSize = sizeof(char *);
-            scf = ____BAH_COMPILER_VAR_607;
+struct cacheFile* ____BAH_COMPILER_VAR_602 = memoryAlloc(sizeof(struct cacheFile));
+____BAH_COMPILER_VAR_602->files = memoryAlloc(sizeof(array(char *)));
+            ____BAH_COMPILER_VAR_602->files->length = 0;
+            ____BAH_COMPILER_VAR_602->files->elemSize = sizeof(char *);
+            scf = ____BAH_COMPILER_VAR_602;
 }
 
 #line 312 "/home/alois/Documents/bah-bah/src/parser.bah"
@@ -13822,7 +13806,7 @@ verboseCC = "\012\0\0\0""-verboseCC";
 if ((debug==false)) {
 
 #line 319 "/home/alois/Documents/bah-bah/src/parser.bah"
-char** ____BAH_COMPILER_VAR_608 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_608[1] = fn;____BAH_COMPILER_VAR_608[0] = "\014\0\0\0""[compiling] ";char * ____BAH_COMPILER_VAR_609 =__Bah_multiple_concat(____BAH_COMPILER_VAR_608, 2);println(____BAH_COMPILER_VAR_609);
+char** ____BAH_COMPILER_VAR_603 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_603[1] = fn;____BAH_COMPILER_VAR_603[0] = "\014\0\0\0""[compiling] ";char * ____BAH_COMPILER_VAR_604 =__Bah_multiple_concat(____BAH_COMPILER_VAR_603, 2);println(____BAH_COMPILER_VAR_604);
 }
 
 #line 321 "/home/alois/Documents/bah-bah/src/parser.bah"
@@ -13836,7 +13820,7 @@ opti = "\011\0\0\0""-optimize";
 }
 
 #line 325 "/home/alois/Documents/bah-bah/src/parser.bah"
-char** ____BAH_COMPILER_VAR_610 = alloca(11 * sizeof(char*));____BAH_COMPILER_VAR_610[10] = oName;____BAH_COMPILER_VAR_610[9] = "\04\0\0\0"" -o ";____BAH_COMPILER_VAR_610[8] = verboseCC;____BAH_COMPILER_VAR_610[7] = "\011\0\0\0"" -object ";____BAH_COMPILER_VAR_610[6] = opti;____BAH_COMPILER_VAR_610[5] = "\01\0\0\0"" ";____BAH_COMPILER_VAR_610[4] = rcp;____BAH_COMPILER_VAR_610[3] = "\01\0\0\0"" ";____BAH_COMPILER_VAR_610[2] = fn;____BAH_COMPILER_VAR_610[1] = "\01\0\0\0"" ";____BAH_COMPILER_VAR_610[0] = execName;char * ____BAH_COMPILER_VAR_611 =__Bah_multiple_concat(____BAH_COMPILER_VAR_610, 11);struct command cmd = command(____BAH_COMPILER_VAR_611);
+char** ____BAH_COMPILER_VAR_605 = alloca(11 * sizeof(char*));____BAH_COMPILER_VAR_605[10] = oName;____BAH_COMPILER_VAR_605[9] = "\04\0\0\0"" -o ";____BAH_COMPILER_VAR_605[8] = verboseCC;____BAH_COMPILER_VAR_605[7] = "\011\0\0\0"" -object ";____BAH_COMPILER_VAR_605[6] = opti;____BAH_COMPILER_VAR_605[5] = "\01\0\0\0"" ";____BAH_COMPILER_VAR_605[4] = rcp;____BAH_COMPILER_VAR_605[3] = "\01\0\0\0"" ";____BAH_COMPILER_VAR_605[2] = fn;____BAH_COMPILER_VAR_605[1] = "\01\0\0\0"" ";____BAH_COMPILER_VAR_605[0] = execName;char * ____BAH_COMPILER_VAR_606 =__Bah_multiple_concat(____BAH_COMPILER_VAR_605, 11);struct command cmd = command(____BAH_COMPILER_VAR_606);
 
 #line 326 "/home/alois/Documents/bah-bah/src/parser.bah"
 array(char)* res = command__runBytes(&cmd);
@@ -13874,12 +13858,12 @@ writeCache();
 
 #line 339 "/home/alois/Documents/bah-bah/src/parser.bah"
 
-        char ____BAH_COMPILER_VAR_612 = true;
-        channel__sendAny(done, &____BAH_COMPILER_VAR_612, sizeof(____BAH_COMPILER_VAR_612));
+        char ____BAH_COMPILER_VAR_607 = true;
+        channel__sendAny(done, &____BAH_COMPILER_VAR_607, sizeof(____BAH_COMPILER_VAR_607));
         };
 
 #line 342 "/home/alois/Documents/bah-bah/src/parser.bah"
-char ____BAH_COMPILER_VAR_613(array(char *)* arr, char * el) {
+char ____BAH_COMPILER_VAR_608(array(char *)* arr, char * el) {
         if (arr == 0) {
             return 0;
         };
@@ -13922,7 +13906,7 @@ string__trimLeft(&fileName,1);
 string__trimRight(&fileName,1);
 
 #line 359 "/home/alois/Documents/bah-bah/src/parser.bah"
-if (____BAH_COMPILER_VAR_613(compilerState.includes, string__str(&fileName))) {
+if (____BAH_COMPILER_VAR_608(compilerState.includes, string__str(&fileName))) {
 
 #line 360 "/home/alois/Documents/bah-bah/src/parser.bah"
 return;
@@ -13930,18 +13914,18 @@ return;
 
 #line 362 "/home/alois/Documents/bah-bah/src/parser.bah"
 
-    unsigned int ____BAH_COMPILER_VAR_614 = len(compilerState.includes);
-    __Bah_realocate_arr(compilerState.includes, ____BAH_COMPILER_VAR_614);
-    compilerState.includes->data[____BAH_COMPILER_VAR_614] = string__str(&fileName);
+    unsigned int ____BAH_COMPILER_VAR_609 = len(compilerState.includes);
+    __Bah_realocate_arr(compilerState.includes, ____BAH_COMPILER_VAR_609);
+    compilerState.includes->data[____BAH_COMPILER_VAR_609] = string__str(&fileName);
 
 #line 365 "/home/alois/Documents/bah-bah/src/parser.bah"
-char** ____BAH_COMPILER_VAR_615 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_615[1] = string__str(&fileName);____BAH_COMPILER_VAR_615[0] = compilerState.currentDir;char * ____BAH_COMPILER_VAR_616 =__Bah_multiple_concat(____BAH_COMPILER_VAR_615, 2);char * fn = absPath(____BAH_COMPILER_VAR_616);
+char** ____BAH_COMPILER_VAR_610 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_610[1] = string__str(&fileName);____BAH_COMPILER_VAR_610[0] = compilerState.currentDir;char * ____BAH_COMPILER_VAR_611 =__Bah_multiple_concat(____BAH_COMPILER_VAR_610, 2);char * fn = absPath(____BAH_COMPILER_VAR_611);
 
 #line 366 "/home/alois/Documents/bah-bah/src/parser.bah"
 if (((void *)fn==null)) {
 
 #line 367 "/home/alois/Documents/bah-bah/src/parser.bah"
-char** ____BAH_COMPILER_VAR_617 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_617[1] = string__str(&fileName);____BAH_COMPILER_VAR_617[0] = BAH_DIR;char * ____BAH_COMPILER_VAR_618 =__Bah_multiple_concat(____BAH_COMPILER_VAR_617, 2);fn = absPath(____BAH_COMPILER_VAR_618);
+char** ____BAH_COMPILER_VAR_612 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_612[1] = string__str(&fileName);____BAH_COMPILER_VAR_612[0] = BAH_DIR;char * ____BAH_COMPILER_VAR_613 =__Bah_multiple_concat(____BAH_COMPILER_VAR_612, 2);fn = absPath(____BAH_COMPILER_VAR_613);
 
 #line 368 "/home/alois/Documents/bah-bah/src/parser.bah"
 if (__builtin_expect(((void *)fn==null), 0)) {
@@ -13964,8 +13948,8 @@ compilerState.currentFile = fn;
 compilerState.currentDir = getDirFromFile(fn);
 
 #line 380 "/home/alois/Documents/bah-bah/src/parser.bah"
-struct fileStream ____BAH_COMPILER_VAR_619 = {};
-struct fileStream fs = ____BAH_COMPILER_VAR_619;
+struct fileStream ____BAH_COMPILER_VAR_614 = {};
+struct fileStream fs = ____BAH_COMPILER_VAR_614;
 
 #line 381 "/home/alois/Documents/bah-bah/src/parser.bah"
 fileStream__open(&fs,fn,"\01\0\0\0""r");
@@ -14002,7 +13986,7 @@ shouldOnlyDecl = true;
 isSubObject = true;
 
 #line 400 "/home/alois/Documents/bah-bah/src/parser.bah"
-char** ____BAH_COMPILER_VAR_620 = alloca(6 * sizeof(char*));____BAH_COMPILER_VAR_620[5] = "\02\0\0\0"".o";____BAH_COMPILER_VAR_620[4] = intToStr(isOptimized);____BAH_COMPILER_VAR_620[3] = intToStr(RCPlevel);____BAH_COMPILER_VAR_620[2] = pathToVarName(fn);____BAH_COMPILER_VAR_620[1] = "\06\0\0\0""cache/";____BAH_COMPILER_VAR_620[0] = BAH_DIR;char * ____BAH_COMPILER_VAR_621 =__Bah_multiple_concat(____BAH_COMPILER_VAR_620, 6);char * oName = ____BAH_COMPILER_VAR_621;
+char** ____BAH_COMPILER_VAR_615 = alloca(6 * sizeof(char*));____BAH_COMPILER_VAR_615[5] = "\02\0\0\0"".o";____BAH_COMPILER_VAR_615[4] = intToStr(isOptimized);____BAH_COMPILER_VAR_615[3] = intToStr(RCPlevel);____BAH_COMPILER_VAR_615[2] = pathToVarName(fn);____BAH_COMPILER_VAR_615[1] = "\06\0\0\0""cache/";____BAH_COMPILER_VAR_615[0] = BAH_DIR;char * ____BAH_COMPILER_VAR_616 =__Bah_multiple_concat(____BAH_COMPILER_VAR_615, 6);char * oName = ____BAH_COMPILER_VAR_616;
 
 #line 402 "/home/alois/Documents/bah-bah/src/parser.bah"
 unsigned long int i = len(compilerState.cLibs);
@@ -14014,16 +13998,16 @@ for (; (i!=0);
 
 #line 403 "/home/alois/Documents/bah-bah/src/parser.bah"
 
-    unsigned int ____BAH_COMPILER_VAR_622 = i;
-    __Bah_realocate_arr(compilerState.cLibs, ____BAH_COMPILER_VAR_622);
-    compilerState.cLibs->data[____BAH_COMPILER_VAR_622] = compilerState.cLibs->data[i-1];
+    unsigned int ____BAH_COMPILER_VAR_617 = i;
+    __Bah_realocate_arr(compilerState.cLibs, ____BAH_COMPILER_VAR_617);
+    compilerState.cLibs->data[____BAH_COMPILER_VAR_617] = compilerState.cLibs->data[i-1];
 };
 
 #line 406 "/home/alois/Documents/bah-bah/src/parser.bah"
-char** ____BAH_COMPILER_VAR_623 = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_623[2] = "\02\0\0\0"".o";____BAH_COMPILER_VAR_623[1] = oName;____BAH_COMPILER_VAR_623[0] = "\02\0\0\0""w ";char * ____BAH_COMPILER_VAR_624 =__Bah_multiple_concat(____BAH_COMPILER_VAR_623, 3);
-    unsigned int ____BAH_COMPILER_VAR_625 = 0;
-    __Bah_realocate_arr(compilerState.cLibs, ____BAH_COMPILER_VAR_625);
-    compilerState.cLibs->data[____BAH_COMPILER_VAR_625] = ____BAH_COMPILER_VAR_624;
+char** ____BAH_COMPILER_VAR_618 = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_618[2] = "\02\0\0\0"".o";____BAH_COMPILER_VAR_618[1] = oName;____BAH_COMPILER_VAR_618[0] = "\02\0\0\0""w ";char * ____BAH_COMPILER_VAR_619 =__Bah_multiple_concat(____BAH_COMPILER_VAR_618, 3);
+    unsigned int ____BAH_COMPILER_VAR_620 = 0;
+    __Bah_realocate_arr(compilerState.cLibs, ____BAH_COMPILER_VAR_620);
+    compilerState.cLibs->data[____BAH_COMPILER_VAR_620] = ____BAH_COMPILER_VAR_619;
 
 #line 408 "/home/alois/Documents/bah-bah/src/parser.bah"
 struct channel * done = channel();
@@ -14038,7 +14022,7 @@ parseLines(tokens,elems);
 char ok = *(char*)channel__receive(done);
 
 #line 419 "/home/alois/Documents/bah-bah/src/parser.bah"
-char** ____BAH_COMPILER_VAR_626 = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_626[2] = "\04\0\0\0""();\n";____BAH_COMPILER_VAR_626[1] = pathToVarName(fn);____BAH_COMPILER_VAR_626[0] = "\012\0\0\0""__BAH_init";char * ____BAH_COMPILER_VAR_627 =__Bah_multiple_concat(____BAH_COMPILER_VAR_626, 3);INIT = rope__add(INIT, rope(____BAH_COMPILER_VAR_627));
+char** ____BAH_COMPILER_VAR_621 = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_621[2] = "\04\0\0\0""();\n";____BAH_COMPILER_VAR_621[1] = pathToVarName(fn);____BAH_COMPILER_VAR_621[0] = "\012\0\0\0""__BAH_init";char * ____BAH_COMPILER_VAR_622 =__Bah_multiple_concat(____BAH_COMPILER_VAR_621, 3);INIT = rope__add(INIT, rope(____BAH_COMPILER_VAR_622));
 
 #line 422 "/home/alois/Documents/bah-bah/src/parser.bah"
 shouldOnlyDecl = osod;
@@ -14105,13 +14089,13 @@ if (strHasPrefix(sc,"\01\0\0\0""<")||strHasSuffix(sc,"\02\0\0\0"".h")||strHasSuf
 if ((isSubObject==false)||(isSupressed==false)) {
 
 #line 450 "/home/alois/Documents/bah-bah/src/parser.bah"
-char** ____BAH_COMPILER_VAR_628 = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_628[2] = "\01\0\0\0""\n";____BAH_COMPILER_VAR_628[1] = sc;____BAH_COMPILER_VAR_628[0] = "\011\0\0\0""#include ";char * ____BAH_COMPILER_VAR_629 =__Bah_multiple_concat(____BAH_COMPILER_VAR_628, 3);OUTPUT = rope__add(OUTPUT, rope(____BAH_COMPILER_VAR_629));
+char** ____BAH_COMPILER_VAR_623 = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_623[2] = "\01\0\0\0""\n";____BAH_COMPILER_VAR_623[1] = sc;____BAH_COMPILER_VAR_623[0] = "\011\0\0\0""#include ";char * ____BAH_COMPILER_VAR_624 =__Bah_multiple_concat(____BAH_COMPILER_VAR_623, 3);OUTPUT = rope__add(OUTPUT, rope(____BAH_COMPILER_VAR_624));
 
 #line 451 "/home/alois/Documents/bah-bah/src/parser.bah"
 
-    unsigned int ____BAH_COMPILER_VAR_630 = len(compilerState.cIncludes);
-    __Bah_realocate_arr(compilerState.cIncludes, ____BAH_COMPILER_VAR_630);
-    compilerState.cIncludes->data[____BAH_COMPILER_VAR_630] = sc;
+    unsigned int ____BAH_COMPILER_VAR_625 = len(compilerState.cIncludes);
+    __Bah_realocate_arr(compilerState.cIncludes, ____BAH_COMPILER_VAR_625);
+    compilerState.cIncludes->data[____BAH_COMPILER_VAR_625] = sc;
 }
 }
 
@@ -14164,9 +14148,9 @@ if (strHasPrefix(t.bahType,"\02\0\0\0""[]")) {
 
 #line 479 "/home/alois/Documents/bah-bah/src/parser.bah"
 
-    unsigned int ____BAH_COMPILER_VAR_631 = len(nl);
-    __Bah_realocate_arr(nl, ____BAH_COMPILER_VAR_631);
-    nl->data[____BAH_COMPILER_VAR_631] = t;
+    unsigned int ____BAH_COMPILER_VAR_626 = len(nl);
+    __Bah_realocate_arr(nl, ____BAH_COMPILER_VAR_626);
+    nl->data[____BAH_COMPILER_VAR_626] = t;
 
 #line 480 "/home/alois/Documents/bah-bah/src/parser.bah"
 ++i;
@@ -14179,15 +14163,15 @@ continue;
 ++i;
 
 #line 484 "/home/alois/Documents/bah-bah/src/parser.bah"
-struct Tok ____BAH_COMPILER_VAR_632 = {};
-____BAH_COMPILER_VAR_632.cont = "\0\0\0\0""";
-____BAH_COMPILER_VAR_632.ogCont = "\0\0\0\0""";
-____BAH_COMPILER_VAR_632.type = TOKEN_NO_TYPE;
-____BAH_COMPILER_VAR_632.line = 1;
-____BAH_COMPILER_VAR_632.begLine = 1;
-____BAH_COMPILER_VAR_632.bahType = "\0\0\0\0""";
-____BAH_COMPILER_VAR_632.cont = "\0\0\0\0""";
-struct Tok nt = ____BAH_COMPILER_VAR_632;
+struct Tok ____BAH_COMPILER_VAR_627 = {};
+____BAH_COMPILER_VAR_627.cont = "\0\0\0\0""";
+____BAH_COMPILER_VAR_627.ogCont = "\0\0\0\0""";
+____BAH_COMPILER_VAR_627.type = TOKEN_NO_TYPE;
+____BAH_COMPILER_VAR_627.line = 1;
+____BAH_COMPILER_VAR_627.begLine = 1;
+____BAH_COMPILER_VAR_627.bahType = "\0\0\0\0""";
+____BAH_COMPILER_VAR_627.cont = "\0\0\0\0""";
+struct Tok nt = ____BAH_COMPILER_VAR_627;
 
 #line 487 "/home/alois/Documents/bah-bah/src/parser.bah"
 if ((i<len(line))) {
@@ -14222,18 +14206,18 @@ throwErr(&t,"\055\0\0\0""Cannot initialize new unknown struct {TOKEN}.");
 t.cont = genCompilerVar();
 
 #line 500 "/home/alois/Documents/bah-bah/src/parser.bah"
-struct variable* ____BAH_COMPILER_VAR_633 = memoryAlloc(sizeof(struct variable));
-____BAH_COMPILER_VAR_633->name = "\0\0\0\0""";
-____BAH_COMPILER_VAR_633->type = "\0\0\0\0""";
-____BAH_COMPILER_VAR_633->constVal = "\0\0\0\0""";
-____BAH_COMPILER_VAR_633->from = "\0\0\0\0""";
-struct variable* tmpV = ____BAH_COMPILER_VAR_633;
+struct variable* ____BAH_COMPILER_VAR_628 = memoryAlloc(sizeof(struct variable));
+____BAH_COMPILER_VAR_628->name = "\0\0\0\0""";
+____BAH_COMPILER_VAR_628->type = "\0\0\0\0""";
+____BAH_COMPILER_VAR_628->constVal = "\0\0\0\0""";
+____BAH_COMPILER_VAR_628->from = "\0\0\0\0""";
+struct variable* tmpV = ____BAH_COMPILER_VAR_628;
 
 #line 501 "/home/alois/Documents/bah-bah/src/parser.bah"
 tmpV->name = t.cont;
 
 #line 502 "/home/alois/Documents/bah-bah/src/parser.bah"
-char** ____BAH_COMPILER_VAR_634 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_634[1] = "\01\0\0\0""*";____BAH_COMPILER_VAR_634[0] = s->name;char * ____BAH_COMPILER_VAR_635 =__Bah_multiple_concat(____BAH_COMPILER_VAR_634, 2);tmpV->type = ____BAH_COMPILER_VAR_635;
+char** ____BAH_COMPILER_VAR_629 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_629[1] = "\01\0\0\0""*";____BAH_COMPILER_VAR_629[0] = s->name;char * ____BAH_COMPILER_VAR_630 =__Bah_multiple_concat(____BAH_COMPILER_VAR_629, 2);tmpV->type = ____BAH_COMPILER_VAR_630;
 
 #line 503 "/home/alois/Documents/bah-bah/src/parser.bah"
 struct string cType = getCType(tmpV->type,elems);
@@ -14243,12 +14227,12 @@ struct string structType = getCType(s->name,elems);
 
 #line 505 "/home/alois/Documents/bah-bah/src/parser.bah"
 
-    unsigned int ____BAH_COMPILER_VAR_636 = len(elems->vars);
-    __Bah_realocate_arr(elems->vars, ____BAH_COMPILER_VAR_636);
-    elems->vars->data[____BAH_COMPILER_VAR_636] = tmpV;
+    unsigned int ____BAH_COMPILER_VAR_631 = len(elems->vars);
+    __Bah_realocate_arr(elems->vars, ____BAH_COMPILER_VAR_631);
+    elems->vars->data[____BAH_COMPILER_VAR_631] = tmpV;
 
 #line 507 "/home/alois/Documents/bah-bah/src/parser.bah"
-char** ____BAH_COMPILER_VAR_637 = alloca(7 * sizeof(char*));____BAH_COMPILER_VAR_637[6] = declareStructMethods(tmpV,s,elems);____BAH_COMPILER_VAR_637[5] = "\04\0\0\0""));\n";____BAH_COMPILER_VAR_637[4] = string__str(&structType);____BAH_COMPILER_VAR_637[3] = "\026\0\0\0"" = memoryAlloc(sizeof(";____BAH_COMPILER_VAR_637[2] = t.cont;____BAH_COMPILER_VAR_637[1] = "\01\0\0\0"" ";____BAH_COMPILER_VAR_637[0] = string__str(&cType);char * ____BAH_COMPILER_VAR_638 =__Bah_multiple_concat(____BAH_COMPILER_VAR_637, 7);struct rope* r = rope(____BAH_COMPILER_VAR_638);
+char** ____BAH_COMPILER_VAR_632 = alloca(7 * sizeof(char*));____BAH_COMPILER_VAR_632[6] = declareStructMethods(tmpV,s,elems);____BAH_COMPILER_VAR_632[5] = "\04\0\0\0""));\n";____BAH_COMPILER_VAR_632[4] = string__str(&structType);____BAH_COMPILER_VAR_632[3] = "\026\0\0\0"" = memoryAlloc(sizeof(";____BAH_COMPILER_VAR_632[2] = t.cont;____BAH_COMPILER_VAR_632[1] = "\01\0\0\0"" ";____BAH_COMPILER_VAR_632[0] = string__str(&cType);char * ____BAH_COMPILER_VAR_633 =__Bah_multiple_concat(____BAH_COMPILER_VAR_632, 7);struct rope* r = rope(____BAH_COMPILER_VAR_633);
 
 #line 509 "/home/alois/Documents/bah-bah/src/parser.bah"
 if (isGlobal()) {
@@ -14266,9 +14250,9 @@ OUTPUT = rope__add(OUTPUT, r);
 
 #line 515 "/home/alois/Documents/bah-bah/src/parser.bah"
 
-    unsigned int ____BAH_COMPILER_VAR_639 = len(nl)-1;
-    __Bah_realocate_arr(nl, ____BAH_COMPILER_VAR_639);
-    nl->data[____BAH_COMPILER_VAR_639] = t;
+    unsigned int ____BAH_COMPILER_VAR_634 = len(nl)-1;
+    __Bah_realocate_arr(nl, ____BAH_COMPILER_VAR_634);
+    nl->data[____BAH_COMPILER_VAR_634] = t;
 
 #line 516 "/home/alois/Documents/bah-bah/src/parser.bah"
 continue;
@@ -14361,9 +14345,9 @@ break;
 
 #line 551 "/home/alois/Documents/bah-bah/src/parser.bah"
 
-    unsigned int ____BAH_COMPILER_VAR_640 = len(memory);
-    __Bah_realocate_arr(memory, ____BAH_COMPILER_VAR_640);
-    memory->data[____BAH_COMPILER_VAR_640] = t;
+    unsigned int ____BAH_COMPILER_VAR_635 = len(memory);
+    __Bah_realocate_arr(memory, ____BAH_COMPILER_VAR_635);
+    memory->data[____BAH_COMPILER_VAR_635] = t;
 };
 
 #line 555 "/home/alois/Documents/bah-bah/src/parser.bah"
@@ -14380,12 +14364,12 @@ long int declType = 0;
 char * rvn = genCompilerVar();
 
 #line 563 "/home/alois/Documents/bah-bah/src/parser.bah"
-struct variable* ____BAH_COMPILER_VAR_641 = memoryAlloc(sizeof(struct variable));
-____BAH_COMPILER_VAR_641->name = "\0\0\0\0""";
-____BAH_COMPILER_VAR_641->type = "\0\0\0\0""";
-____BAH_COMPILER_VAR_641->constVal = "\0\0\0\0""";
-____BAH_COMPILER_VAR_641->from = "\0\0\0\0""";
-struct variable* tmpV = ____BAH_COMPILER_VAR_641;
+struct variable* ____BAH_COMPILER_VAR_636 = memoryAlloc(sizeof(struct variable));
+____BAH_COMPILER_VAR_636->name = "\0\0\0\0""";
+____BAH_COMPILER_VAR_636->type = "\0\0\0\0""";
+____BAH_COMPILER_VAR_636->constVal = "\0\0\0\0""";
+____BAH_COMPILER_VAR_636->from = "\0\0\0\0""";
+struct variable* tmpV = ____BAH_COMPILER_VAR_636;
 
 #line 564 "/home/alois/Documents/bah-bah/src/parser.bah"
 tmpV->name = rvn;
@@ -14394,13 +14378,13 @@ tmpV->name = rvn;
 if ((isHeap==true)) {
 
 #line 566 "/home/alois/Documents/bah-bah/src/parser.bah"
-char** ____BAH_COMPILER_VAR_642 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_642[1] = "\01\0\0\0""*";____BAH_COMPILER_VAR_642[0] = s->name;char * ____BAH_COMPILER_VAR_643 =__Bah_multiple_concat(____BAH_COMPILER_VAR_642, 2);tmpV->type = ____BAH_COMPILER_VAR_643;
+char** ____BAH_COMPILER_VAR_637 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_637[1] = "\01\0\0\0""*";____BAH_COMPILER_VAR_637[0] = s->name;char * ____BAH_COMPILER_VAR_638 =__Bah_multiple_concat(____BAH_COMPILER_VAR_637, 2);tmpV->type = ____BAH_COMPILER_VAR_638;
 
 #line 567 "/home/alois/Documents/bah-bah/src/parser.bah"
 
-    unsigned int ____BAH_COMPILER_VAR_644 = len(elems->vars);
-    __Bah_realocate_arr(elems->vars, ____BAH_COMPILER_VAR_644);
-    elems->vars->data[____BAH_COMPILER_VAR_644] = tmpV;
+    unsigned int ____BAH_COMPILER_VAR_639 = len(elems->vars);
+    __Bah_realocate_arr(elems->vars, ____BAH_COMPILER_VAR_639);
+    elems->vars->data[____BAH_COMPILER_VAR_639] = tmpV;
 }
 
 #line 568 "/home/alois/Documents/bah-bah/src/parser.bah"
@@ -14426,14 +14410,14 @@ struct string structType = string(string__str(&rst));
 string__trimRight(&structType,1);
 
 #line 578 "/home/alois/Documents/bah-bah/src/parser.bah"
-char** ____BAH_COMPILER_VAR_645 = alloca(7 * sizeof(char*));____BAH_COMPILER_VAR_645[6] = declareStructMethods(tmpV,s,elems);____BAH_COMPILER_VAR_645[5] = "\04\0\0\0""));\n";____BAH_COMPILER_VAR_645[4] = string__str(&structType);____BAH_COMPILER_VAR_645[3] = "\026\0\0\0"" = memoryAlloc(sizeof(";____BAH_COMPILER_VAR_645[2] = rvn;____BAH_COMPILER_VAR_645[1] = "\01\0\0\0"" ";____BAH_COMPILER_VAR_645[0] = string__str(&rst);char * ____BAH_COMPILER_VAR_646 =__Bah_multiple_concat(____BAH_COMPILER_VAR_645, 7);r = rope(____BAH_COMPILER_VAR_646);
+char** ____BAH_COMPILER_VAR_640 = alloca(7 * sizeof(char*));____BAH_COMPILER_VAR_640[6] = declareStructMethods(tmpV,s,elems);____BAH_COMPILER_VAR_640[5] = "\04\0\0\0""));\n";____BAH_COMPILER_VAR_640[4] = string__str(&structType);____BAH_COMPILER_VAR_640[3] = "\026\0\0\0"" = memoryAlloc(sizeof(";____BAH_COMPILER_VAR_640[2] = rvn;____BAH_COMPILER_VAR_640[1] = "\01\0\0\0"" ";____BAH_COMPILER_VAR_640[0] = string__str(&rst);char * ____BAH_COMPILER_VAR_641 =__Bah_multiple_concat(____BAH_COMPILER_VAR_640, 7);r = rope(____BAH_COMPILER_VAR_641);
 }
 
 #line 579 "/home/alois/Documents/bah-bah/src/parser.bah"
 else {
 
 #line 580 "/home/alois/Documents/bah-bah/src/parser.bah"
-char** ____BAH_COMPILER_VAR_647 = alloca(5 * sizeof(char*));____BAH_COMPILER_VAR_647[4] = declareStructMethods(tmpV,s,elems);____BAH_COMPILER_VAR_647[3] = "\07\0\0\0"" = {};\n";____BAH_COMPILER_VAR_647[2] = rvn;____BAH_COMPILER_VAR_647[1] = "\01\0\0\0"" ";____BAH_COMPILER_VAR_647[0] = string__str(&rst);char * ____BAH_COMPILER_VAR_648 =__Bah_multiple_concat(____BAH_COMPILER_VAR_647, 5);r = rope(____BAH_COMPILER_VAR_648);
+char** ____BAH_COMPILER_VAR_642 = alloca(5 * sizeof(char*));____BAH_COMPILER_VAR_642[4] = declareStructMethods(tmpV,s,elems);____BAH_COMPILER_VAR_642[3] = "\07\0\0\0"" = {};\n";____BAH_COMPILER_VAR_642[2] = rvn;____BAH_COMPILER_VAR_642[1] = "\01\0\0\0"" ";____BAH_COMPILER_VAR_642[0] = string__str(&rst);char * ____BAH_COMPILER_VAR_643 =__Bah_multiple_concat(____BAH_COMPILER_VAR_642, 5);r = rope(____BAH_COMPILER_VAR_643);
 }
 
 #line 582 "/home/alois/Documents/bah-bah/src/parser.bah"
@@ -14503,11 +14487,11 @@ char * vlt = getTypeFromToken(&vl,true,elems);
 if (__builtin_expect((compTypes(vlt,m->type)==false), 0)) {
 
 #line 604 "/home/alois/Documents/bah-bah/src/parser.bah"
-char** ____BAH_COMPILER_VAR_649 = alloca(5 * sizeof(char*));____BAH_COMPILER_VAR_649[4] = "\02\0\0\0""'.";____BAH_COMPILER_VAR_649[3] = m->type;____BAH_COMPILER_VAR_649[2] = "\06\0\0\0"") as '";____BAH_COMPILER_VAR_649[1] = vlt;____BAH_COMPILER_VAR_649[0] = "\024\0\0\0""Cannot use {TOKEN} (";char * ____BAH_COMPILER_VAR_650 =__Bah_multiple_concat(____BAH_COMPILER_VAR_649, 5);throwErr(&vl,____BAH_COMPILER_VAR_650);
+char** ____BAH_COMPILER_VAR_644 = alloca(5 * sizeof(char*));____BAH_COMPILER_VAR_644[4] = "\02\0\0\0""'.";____BAH_COMPILER_VAR_644[3] = m->type;____BAH_COMPILER_VAR_644[2] = "\06\0\0\0"") as '";____BAH_COMPILER_VAR_644[1] = vlt;____BAH_COMPILER_VAR_644[0] = "\024\0\0\0""Cannot use {TOKEN} (";char * ____BAH_COMPILER_VAR_645 =__Bah_multiple_concat(____BAH_COMPILER_VAR_644, 5);throwErr(&vl,____BAH_COMPILER_VAR_645);
 }
 
 #line 606 "/home/alois/Documents/bah-bah/src/parser.bah"
-char** ____BAH_COMPILER_VAR_651 = alloca(6 * sizeof(char*));____BAH_COMPILER_VAR_651[5] = "\02\0\0\0"";\n";____BAH_COMPILER_VAR_651[4] = vl.cont;____BAH_COMPILER_VAR_651[3] = "\03\0\0\0"" = ";____BAH_COMPILER_VAR_651[2] = m->name;____BAH_COMPILER_VAR_651[1] = sep;____BAH_COMPILER_VAR_651[0] = rvn;char * ____BAH_COMPILER_VAR_652 =__Bah_multiple_concat(____BAH_COMPILER_VAR_651, 6);r = rope__add(r, rope(____BAH_COMPILER_VAR_652));
+char** ____BAH_COMPILER_VAR_646 = alloca(6 * sizeof(char*));____BAH_COMPILER_VAR_646[5] = "\02\0\0\0"";\n";____BAH_COMPILER_VAR_646[4] = vl.cont;____BAH_COMPILER_VAR_646[3] = "\03\0\0\0"" = ";____BAH_COMPILER_VAR_646[2] = m->name;____BAH_COMPILER_VAR_646[1] = sep;____BAH_COMPILER_VAR_646[0] = rvn;char * ____BAH_COMPILER_VAR_647 =__Bah_multiple_concat(____BAH_COMPILER_VAR_646, 6);r = rope__add(r, rope(____BAH_COMPILER_VAR_647));
 
 #line 607 "/home/alois/Documents/bah-bah/src/parser.bah"
 break;
@@ -14517,7 +14501,7 @@ break;
 if (__builtin_expect((j==len(s->members)), 0)) {
 
 #line 610 "/home/alois/Documents/bah-bah/src/parser.bah"
-char** ____BAH_COMPILER_VAR_653 = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_653[2] = "\037\0\0\0""' has no member called {TOKEN}.";____BAH_COMPILER_VAR_653[1] = s->name;____BAH_COMPILER_VAR_653[0] = "\010\0\0\0""Struct '";char * ____BAH_COMPILER_VAR_654 =__Bah_multiple_concat(____BAH_COMPILER_VAR_653, 3);throwErr(&t,____BAH_COMPILER_VAR_654);
+char** ____BAH_COMPILER_VAR_648 = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_648[2] = "\037\0\0\0""' has no member called {TOKEN}.";____BAH_COMPILER_VAR_648[1] = s->name;____BAH_COMPILER_VAR_648[0] = "\010\0\0\0""Struct '";char * ____BAH_COMPILER_VAR_649 =__Bah_multiple_concat(____BAH_COMPILER_VAR_648, 3);throwErr(&t,____BAH_COMPILER_VAR_649);
 }
 
 #line 612 "/home/alois/Documents/bah-bah/src/parser.bah"
@@ -14558,11 +14542,11 @@ char * tt = getTypeFromToken(&t,true,elems);
 if (__builtin_expect((compTypes(tt,m->type)==false), 0)) {
 
 #line 629 "/home/alois/Documents/bah-bah/src/parser.bah"
-char** ____BAH_COMPILER_VAR_655 = alloca(5 * sizeof(char*));____BAH_COMPILER_VAR_655[4] = "\02\0\0\0""'.";____BAH_COMPILER_VAR_655[3] = m->type;____BAH_COMPILER_VAR_655[2] = "\06\0\0\0"") as '";____BAH_COMPILER_VAR_655[1] = tt;____BAH_COMPILER_VAR_655[0] = "\024\0\0\0""Cannot use {TOKEN} (";char * ____BAH_COMPILER_VAR_656 =__Bah_multiple_concat(____BAH_COMPILER_VAR_655, 5);throwErr(&t,____BAH_COMPILER_VAR_656);
+char** ____BAH_COMPILER_VAR_650 = alloca(5 * sizeof(char*));____BAH_COMPILER_VAR_650[4] = "\02\0\0\0""'.";____BAH_COMPILER_VAR_650[3] = m->type;____BAH_COMPILER_VAR_650[2] = "\06\0\0\0"") as '";____BAH_COMPILER_VAR_650[1] = tt;____BAH_COMPILER_VAR_650[0] = "\024\0\0\0""Cannot use {TOKEN} (";char * ____BAH_COMPILER_VAR_651 =__Bah_multiple_concat(____BAH_COMPILER_VAR_650, 5);throwErr(&t,____BAH_COMPILER_VAR_651);
 }
 
 #line 632 "/home/alois/Documents/bah-bah/src/parser.bah"
-char** ____BAH_COMPILER_VAR_657 = alloca(6 * sizeof(char*));____BAH_COMPILER_VAR_657[5] = "\02\0\0\0"";\n";____BAH_COMPILER_VAR_657[4] = t.cont;____BAH_COMPILER_VAR_657[3] = "\03\0\0\0"" = ";____BAH_COMPILER_VAR_657[2] = m->name;____BAH_COMPILER_VAR_657[1] = sep;____BAH_COMPILER_VAR_657[0] = rvn;char * ____BAH_COMPILER_VAR_658 =__Bah_multiple_concat(____BAH_COMPILER_VAR_657, 6);r = rope__add(r, rope(____BAH_COMPILER_VAR_658));
+char** ____BAH_COMPILER_VAR_652 = alloca(6 * sizeof(char*));____BAH_COMPILER_VAR_652[5] = "\02\0\0\0"";\n";____BAH_COMPILER_VAR_652[4] = t.cont;____BAH_COMPILER_VAR_652[3] = "\03\0\0\0"" = ";____BAH_COMPILER_VAR_652[2] = m->name;____BAH_COMPILER_VAR_652[1] = sep;____BAH_COMPILER_VAR_652[0] = rvn;char * ____BAH_COMPILER_VAR_653 =__Bah_multiple_concat(____BAH_COMPILER_VAR_652, 6);r = rope__add(r, rope(____BAH_COMPILER_VAR_653));
 
 #line 634 "/home/alois/Documents/bah-bah/src/parser.bah"
 if ((k+1<len(memory))) {
@@ -14613,9 +14597,9 @@ if ((isHeap==true)) {
 
 #line 656 "/home/alois/Documents/bah-bah/src/parser.bah"
 
-    unsigned int ____BAH_COMPILER_VAR_659 = len(nl)-1;
-    __Bah_realocate_arr(nl, ____BAH_COMPILER_VAR_659);
-    nl->data[____BAH_COMPILER_VAR_659] = t;
+    unsigned int ____BAH_COMPILER_VAR_654 = len(nl)-1;
+    __Bah_realocate_arr(nl, ____BAH_COMPILER_VAR_654);
+    nl->data[____BAH_COMPILER_VAR_654] = t;
 }
 
 #line 657 "/home/alois/Documents/bah-bah/src/parser.bah"
@@ -14626,9 +14610,9 @@ t.isEqual = true;
 
 #line 659 "/home/alois/Documents/bah-bah/src/parser.bah"
 
-    unsigned int ____BAH_COMPILER_VAR_660 = len(nl);
-    __Bah_realocate_arr(nl, ____BAH_COMPILER_VAR_660);
-    nl->data[____BAH_COMPILER_VAR_660] = t;
+    unsigned int ____BAH_COMPILER_VAR_655 = len(nl);
+    __Bah_realocate_arr(nl, ____BAH_COMPILER_VAR_655);
+    nl->data[____BAH_COMPILER_VAR_655] = t;
 }
 
 #line 661 "/home/alois/Documents/bah-bah/src/parser.bah"
@@ -14649,9 +14633,9 @@ else {
 
 #line 669 "/home/alois/Documents/bah-bah/src/parser.bah"
 
-    unsigned int ____BAH_COMPILER_VAR_661 = len(nl);
-    __Bah_realocate_arr(nl, ____BAH_COMPILER_VAR_661);
-    nl->data[____BAH_COMPILER_VAR_661] = t;
+    unsigned int ____BAH_COMPILER_VAR_656 = len(nl);
+    __Bah_realocate_arr(nl, ____BAH_COMPILER_VAR_656);
+    nl->data[____BAH_COMPILER_VAR_656] = t;
 
 #line 670 "/home/alois/Documents/bah-bah/src/parser.bah"
 ++i;
@@ -14747,7 +14731,7 @@ if ((strcmp(t.cont, "\01\0\0\0""[") == 0)&&(strcmp(nt.cont, "\01\0\0\0""]") == 0
 ++depth;
 
 #line 707 "/home/alois/Documents/bah-bah/src/parser.bah"
-char** ____BAH_COMPILER_VAR_662 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_662[1] = "\02\0\0\0""[]";____BAH_COMPILER_VAR_662[0] = bracks;char * ____BAH_COMPILER_VAR_663 =__Bah_multiple_concat(____BAH_COMPILER_VAR_662, 2);bracks = ____BAH_COMPILER_VAR_663;
+char** ____BAH_COMPILER_VAR_657 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_657[1] = "\02\0\0\0""[]";____BAH_COMPILER_VAR_657[0] = bracks;char * ____BAH_COMPILER_VAR_658 =__Bah_multiple_concat(____BAH_COMPILER_VAR_657, 2);bracks = ____BAH_COMPILER_VAR_658;
 
 #line 708 "/home/alois/Documents/bah-bah/src/parser.bah"
 ++i;
@@ -14778,7 +14762,7 @@ throwErr(&t,"\041\0\0\0""Cannot use {TOKEN} as array type.");
 char * arrElem = t.cont;
 
 #line 719 "/home/alois/Documents/bah-bah/src/parser.bah"
-char** ____BAH_COMPILER_VAR_664 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_664[1] = arrElem;____BAH_COMPILER_VAR_664[0] = bracks;char * ____BAH_COMPILER_VAR_665 =__Bah_multiple_concat(____BAH_COMPILER_VAR_664, 2);t.bahType = ____BAH_COMPILER_VAR_665;
+char** ____BAH_COMPILER_VAR_659 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_659[1] = arrElem;____BAH_COMPILER_VAR_659[0] = bracks;char * ____BAH_COMPILER_VAR_660 =__Bah_multiple_concat(____BAH_COMPILER_VAR_659, 2);t.bahType = ____BAH_COMPILER_VAR_660;
 
 #line 720 "/home/alois/Documents/bah-bah/src/parser.bah"
 t.cont = "\0\0\0\0""";
@@ -14788,9 +14772,9 @@ t.isValue = true;
 
 #line 722 "/home/alois/Documents/bah-bah/src/parser.bah"
 
-    unsigned int ____BAH_COMPILER_VAR_666 = len(nl);
-    __Bah_realocate_arr(nl, ____BAH_COMPILER_VAR_666);
-    nl->data[____BAH_COMPILER_VAR_666] = t;
+    unsigned int ____BAH_COMPILER_VAR_661 = len(nl);
+    __Bah_realocate_arr(nl, ____BAH_COMPILER_VAR_661);
+    nl->data[____BAH_COMPILER_VAR_661] = t;
 
 #line 723 "/home/alois/Documents/bah-bah/src/parser.bah"
 continue;
@@ -14818,9 +14802,9 @@ else {
 
 #line 734 "/home/alois/Documents/bah-bah/src/parser.bah"
 
-    unsigned int ____BAH_COMPILER_VAR_667 = len(nl);
-    __Bah_realocate_arr(nl, ____BAH_COMPILER_VAR_667);
-    nl->data[____BAH_COMPILER_VAR_667] = t;
+    unsigned int ____BAH_COMPILER_VAR_662 = len(nl);
+    __Bah_realocate_arr(nl, ____BAH_COMPILER_VAR_662);
+    nl->data[____BAH_COMPILER_VAR_662] = t;
 };
 
 #line 737 "/home/alois/Documents/bah-bah/src/parser.bah"
@@ -14866,7 +14850,7 @@ if ((i+1<len(l))) {
 if ((strcmp(l->data[i+1].cont, "\01\0\0\0""(") != 0)&&(l->data[i+1].type!=TOKEN_TYPE_CAST)&&(l->data[i+1].isValue!=true)) {
 
 #line 753 "/home/alois/Documents/bah-bah/src/parser.bah"
-char** ____BAH_COMPILER_VAR_668 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_668[1] = t.cont;____BAH_COMPILER_VAR_668[0] = l->data[i-1].cont;char * ____BAH_COMPILER_VAR_669 =__Bah_multiple_concat(____BAH_COMPILER_VAR_668, 2);l->data[i-1].cont = ____BAH_COMPILER_VAR_669;
+char** ____BAH_COMPILER_VAR_663 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_663[1] = t.cont;____BAH_COMPILER_VAR_663[0] = l->data[i-1].cont;char * ____BAH_COMPILER_VAR_664 =__Bah_multiple_concat(____BAH_COMPILER_VAR_663, 2);l->data[i-1].cont = ____BAH_COMPILER_VAR_664;
 
 #line 754 "/home/alois/Documents/bah-bah/src/parser.bah"
 delete(l,i);
@@ -14880,7 +14864,7 @@ delete(l,i);
 else {
 
 #line 758 "/home/alois/Documents/bah-bah/src/parser.bah"
-char** ____BAH_COMPILER_VAR_670 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_670[1] = t.cont;____BAH_COMPILER_VAR_670[0] = l->data[i-1].cont;char * ____BAH_COMPILER_VAR_671 =__Bah_multiple_concat(____BAH_COMPILER_VAR_670, 2);l->data[i-1].cont = ____BAH_COMPILER_VAR_671;
+char** ____BAH_COMPILER_VAR_665 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_665[1] = t.cont;____BAH_COMPILER_VAR_665[0] = l->data[i-1].cont;char * ____BAH_COMPILER_VAR_666 =__Bah_multiple_concat(____BAH_COMPILER_VAR_665, 2);l->data[i-1].cont = ____BAH_COMPILER_VAR_666;
 
 #line 759 "/home/alois/Documents/bah-bah/src/parser.bah"
 delete(l,i);
@@ -14913,7 +14897,7 @@ continue;
 if ((l->data[i+1].type==TOKEN_TYPE_VAR)) {
 
 #line 774 "/home/alois/Documents/bah-bah/src/parser.bah"
-char** ____BAH_COMPILER_VAR_672 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_672[1] = l->data[i+1].cont;____BAH_COMPILER_VAR_672[0] = t.cont;char * ____BAH_COMPILER_VAR_673 =__Bah_multiple_concat(____BAH_COMPILER_VAR_672, 2);l->data[i+1].cont = ____BAH_COMPILER_VAR_673;
+char** ____BAH_COMPILER_VAR_667 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_667[1] = l->data[i+1].cont;____BAH_COMPILER_VAR_667[0] = t.cont;char * ____BAH_COMPILER_VAR_668 =__Bah_multiple_concat(____BAH_COMPILER_VAR_667, 2);l->data[i+1].cont = ____BAH_COMPILER_VAR_668;
 
 #line 775 "/home/alois/Documents/bah-bah/src/parser.bah"
 delete(l,i);
@@ -14968,7 +14952,7 @@ char * code= null;
 if ((ptrLevel==0)) {
 
 #line 807 "/home/alois/Documents/bah-bah/src/parser.bah"
-char** ____BAH_COMPILER_VAR_674 = alloca(6 * sizeof(char*));____BAH_COMPILER_VAR_674[5] = "\01\0\0\0"")";____BAH_COMPILER_VAR_674[4] = string__str(&svt);____BAH_COMPILER_VAR_674[3] = "\016\0\0\0""sizeof(struct ";____BAH_COMPILER_VAR_674[2] = "\02\0\0\0"", ";____BAH_COMPILER_VAR_674[1] = e->cont;____BAH_COMPILER_VAR_674[0] = "\015\0\0\0""__serialize(&";char * ____BAH_COMPILER_VAR_675 =__Bah_multiple_concat(____BAH_COMPILER_VAR_674, 6);code = ____BAH_COMPILER_VAR_675;
+char** ____BAH_COMPILER_VAR_669 = alloca(6 * sizeof(char*));____BAH_COMPILER_VAR_669[5] = "\01\0\0\0"")";____BAH_COMPILER_VAR_669[4] = string__str(&svt);____BAH_COMPILER_VAR_669[3] = "\016\0\0\0""sizeof(struct ";____BAH_COMPILER_VAR_669[2] = "\02\0\0\0"", ";____BAH_COMPILER_VAR_669[1] = e->cont;____BAH_COMPILER_VAR_669[0] = "\015\0\0\0""__serialize(&";char * ____BAH_COMPILER_VAR_670 =__Bah_multiple_concat(____BAH_COMPILER_VAR_669, 6);code = ____BAH_COMPILER_VAR_670;
 }
 
 #line 808 "/home/alois/Documents/bah-bah/src/parser.bah"
@@ -14981,14 +14965,14 @@ char * ptrRect = "\0\0\0\0""";
 while ((ptrLevel>1)) {
 
 #line 811 "/home/alois/Documents/bah-bah/src/parser.bah"
-char** ____BAH_COMPILER_VAR_676 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_676[1] = "\01\0\0\0""*";____BAH_COMPILER_VAR_676[0] = ptrRect;char * ____BAH_COMPILER_VAR_677 =__Bah_multiple_concat(____BAH_COMPILER_VAR_676, 2);ptrRect = ____BAH_COMPILER_VAR_677;
+char** ____BAH_COMPILER_VAR_671 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_671[1] = "\01\0\0\0""*";____BAH_COMPILER_VAR_671[0] = ptrRect;char * ____BAH_COMPILER_VAR_672 =__Bah_multiple_concat(____BAH_COMPILER_VAR_671, 2);ptrRect = ____BAH_COMPILER_VAR_672;
 
 #line 812 "/home/alois/Documents/bah-bah/src/parser.bah"
 ptrLevel = ptrLevel-1;
 };
 
 #line 814 "/home/alois/Documents/bah-bah/src/parser.bah"
-char** ____BAH_COMPILER_VAR_678 = alloca(7 * sizeof(char*));____BAH_COMPILER_VAR_678[6] = "\01\0\0\0"")";____BAH_COMPILER_VAR_678[5] = string__str(&svt);____BAH_COMPILER_VAR_678[4] = "\016\0\0\0""sizeof(struct ";____BAH_COMPILER_VAR_678[3] = "\02\0\0\0"", ";____BAH_COMPILER_VAR_678[2] = e->cont;____BAH_COMPILER_VAR_678[1] = ptrRect;____BAH_COMPILER_VAR_678[0] = "\014\0\0\0""__serialize(";char * ____BAH_COMPILER_VAR_679 =__Bah_multiple_concat(____BAH_COMPILER_VAR_678, 7);code = ____BAH_COMPILER_VAR_679;
+char** ____BAH_COMPILER_VAR_673 = alloca(7 * sizeof(char*));____BAH_COMPILER_VAR_673[6] = "\01\0\0\0"")";____BAH_COMPILER_VAR_673[5] = string__str(&svt);____BAH_COMPILER_VAR_673[4] = "\016\0\0\0""sizeof(struct ";____BAH_COMPILER_VAR_673[3] = "\02\0\0\0"", ";____BAH_COMPILER_VAR_673[2] = e->cont;____BAH_COMPILER_VAR_673[1] = ptrRect;____BAH_COMPILER_VAR_673[0] = "\014\0\0\0""__serialize(";char * ____BAH_COMPILER_VAR_674 =__Bah_multiple_concat(____BAH_COMPILER_VAR_673, 7);code = ____BAH_COMPILER_VAR_674;
 
 #line 817 "/home/alois/Documents/bah-bah/src/parser.bah"
 register long int i = 0;
@@ -15003,7 +14987,7 @@ struct structMemb* m = s->members->data[i];
 if ((strcmp(m->type, "\010\0\0\0""cpstring") == 0)) {
 
 #line 820 "/home/alois/Documents/bah-bah/src/parser.bah"
-char** ____BAH_COMPILER_VAR_680 = alloca(6 * sizeof(char*));____BAH_COMPILER_VAR_680[5] = "\01\0\0\0"")";____BAH_COMPILER_VAR_680[4] = m->name;____BAH_COMPILER_VAR_680[3] = "\02\0\0\0""->";____BAH_COMPILER_VAR_680[2] = e->cont;____BAH_COMPILER_VAR_680[1] = "\010\0\0\0""+strlen(";____BAH_COMPILER_VAR_680[0] = code;char * ____BAH_COMPILER_VAR_681 =__Bah_multiple_concat(____BAH_COMPILER_VAR_680, 6);code = ____BAH_COMPILER_VAR_681;
+char** ____BAH_COMPILER_VAR_675 = alloca(6 * sizeof(char*));____BAH_COMPILER_VAR_675[5] = "\01\0\0\0"")";____BAH_COMPILER_VAR_675[4] = m->name;____BAH_COMPILER_VAR_675[3] = "\02\0\0\0""->";____BAH_COMPILER_VAR_675[2] = e->cont;____BAH_COMPILER_VAR_675[1] = "\010\0\0\0""+strlen(";____BAH_COMPILER_VAR_675[0] = code;char * ____BAH_COMPILER_VAR_676 =__Bah_multiple_concat(____BAH_COMPILER_VAR_675, 6);code = ____BAH_COMPILER_VAR_676;
 }
 
 #line 822 "/home/alois/Documents/bah-bah/src/parser.bah"
@@ -15012,7 +14996,7 @@ i = i+1;
 }
 
 #line 828 "/home/alois/Documents/bah-bah/src/parser.bah"
-char** ____BAH_COMPILER_VAR_682 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_682[1] = "\01\0\0\0"")";____BAH_COMPILER_VAR_682[0] = code;char * ____BAH_COMPILER_VAR_683 =__Bah_multiple_concat(____BAH_COMPILER_VAR_682, 2);return ____BAH_COMPILER_VAR_683;
+char** ____BAH_COMPILER_VAR_677 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_677[1] = "\01\0\0\0"")";____BAH_COMPILER_VAR_677[0] = code;char * ____BAH_COMPILER_VAR_678 =__Bah_multiple_concat(____BAH_COMPILER_VAR_677, 2);return ____BAH_COMPILER_VAR_678;
 };
 
 #line 831 "/home/alois/Documents/bah-bah/src/parser.bah"
@@ -15052,7 +15036,7 @@ string__append(&cType,"\01\0\0\0""*");
 }
 
 #line 846 "/home/alois/Documents/bah-bah/src/parser.bah"
-char** ____BAH_COMPILER_VAR_684 = alloca(6 * sizeof(char*));____BAH_COMPILER_VAR_684[5] = "\02\0\0\0"";\n";____BAH_COMPILER_VAR_684[4] = t.cont;____BAH_COMPILER_VAR_684[3] = "\03\0\0\0"" = ";____BAH_COMPILER_VAR_684[2] = v;____BAH_COMPILER_VAR_684[1] = "\01\0\0\0"" ";____BAH_COMPILER_VAR_684[0] = string__str(&cType);char * ____BAH_COMPILER_VAR_685 =__Bah_multiple_concat(____BAH_COMPILER_VAR_684, 6);OUTPUT = rope__add(OUTPUT, rope(____BAH_COMPILER_VAR_685));
+char** ____BAH_COMPILER_VAR_679 = alloca(6 * sizeof(char*));____BAH_COMPILER_VAR_679[5] = "\02\0\0\0"";\n";____BAH_COMPILER_VAR_679[4] = t.cont;____BAH_COMPILER_VAR_679[3] = "\03\0\0\0"" = ";____BAH_COMPILER_VAR_679[2] = v;____BAH_COMPILER_VAR_679[1] = "\01\0\0\0"" ";____BAH_COMPILER_VAR_679[0] = string__str(&cType);char * ____BAH_COMPILER_VAR_680 =__Bah_multiple_concat(____BAH_COMPILER_VAR_679, 6);OUTPUT = rope__add(OUTPUT, rope(____BAH_COMPILER_VAR_680));
 
 #line 847 "/home/alois/Documents/bah-bah/src/parser.bah"
 t.cont = v;
@@ -15081,14 +15065,14 @@ struct string aet = string(tt);
 string__trimLeft(&aet,2);
 
 #line 858 "/home/alois/Documents/bah-bah/src/parser.bah"
-struct Tok ____BAH_COMPILER_VAR_686 = {};
-____BAH_COMPILER_VAR_686.cont = "\0\0\0\0""";
-____BAH_COMPILER_VAR_686.ogCont = "\0\0\0\0""";
-____BAH_COMPILER_VAR_686.type = TOKEN_NO_TYPE;
-____BAH_COMPILER_VAR_686.line = 1;
-____BAH_COMPILER_VAR_686.begLine = 1;
-____BAH_COMPILER_VAR_686.bahType = "\0\0\0\0""";
-struct Tok tmpT = ____BAH_COMPILER_VAR_686;
+struct Tok ____BAH_COMPILER_VAR_681 = {};
+____BAH_COMPILER_VAR_681.cont = "\0\0\0\0""";
+____BAH_COMPILER_VAR_681.ogCont = "\0\0\0\0""";
+____BAH_COMPILER_VAR_681.type = TOKEN_NO_TYPE;
+____BAH_COMPILER_VAR_681.line = 1;
+____BAH_COMPILER_VAR_681.begLine = 1;
+____BAH_COMPILER_VAR_681.bahType = "\0\0\0\0""";
+struct Tok tmpT = ____BAH_COMPILER_VAR_681;
 
 #line 859 "/home/alois/Documents/bah-bah/src/parser.bah"
 tmpT.type = TOKEN_TYPE_VAR;
@@ -15103,10 +15087,10 @@ struct Tok rt = parseReflect(tmpT,string__str(&aet),elems,true,"\0\0\0\0""","\01
 char * aev = genCompilerVar();
 
 #line 865 "/home/alois/Documents/bah-bah/src/parser.bah"
-char** ____BAH_COMPILER_VAR_687 = alloca(5 * sizeof(char*));____BAH_COMPILER_VAR_687[4] = "\012\0\0\0"";\n        ";____BAH_COMPILER_VAR_687[3] = rt.cont;____BAH_COMPILER_VAR_687[2] = "\03\0\0\0"" = ";____BAH_COMPILER_VAR_687[1] = aev;____BAH_COMPILER_VAR_687[0] = "\037\0\0\0""\n        struct reflectElement ";char * ____BAH_COMPILER_VAR_688 =__Bah_multiple_concat(____BAH_COMPILER_VAR_687, 5);OUTPUT = rope__add(OUTPUT, rope(____BAH_COMPILER_VAR_688));
+char** ____BAH_COMPILER_VAR_682 = alloca(5 * sizeof(char*));____BAH_COMPILER_VAR_682[4] = "\012\0\0\0"";\n        ";____BAH_COMPILER_VAR_682[3] = rt.cont;____BAH_COMPILER_VAR_682[2] = "\03\0\0\0"" = ";____BAH_COMPILER_VAR_682[1] = aev;____BAH_COMPILER_VAR_682[0] = "\037\0\0\0""\n        struct reflectElement ";char * ____BAH_COMPILER_VAR_683 =__Bah_multiple_concat(____BAH_COMPILER_VAR_682, 5);OUTPUT = rope__add(OUTPUT, rope(____BAH_COMPILER_VAR_683));
 
 #line 869 "/home/alois/Documents/bah-bah/src/parser.bah"
-char** ____BAH_COMPILER_VAR_689 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_689[1] = aev;____BAH_COMPILER_VAR_689[0] = "\01\0\0\0""&";char * ____BAH_COMPILER_VAR_690 =__Bah_multiple_concat(____BAH_COMPILER_VAR_689, 2);arrElem = ____BAH_COMPILER_VAR_690;
+char** ____BAH_COMPILER_VAR_684 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_684[1] = aev;____BAH_COMPILER_VAR_684[0] = "\01\0\0\0""&";char * ____BAH_COMPILER_VAR_685 =__Bah_multiple_concat(____BAH_COMPILER_VAR_684, 2);arrElem = ____BAH_COMPILER_VAR_685;
 }
 
 #line 870 "/home/alois/Documents/bah-bah/src/parser.bah"
@@ -15119,14 +15103,14 @@ struct string aet = string(tt);
 string__trimLeft(&aet,4);
 
 #line 873 "/home/alois/Documents/bah-bah/src/parser.bah"
-struct Tok ____BAH_COMPILER_VAR_691 = {};
-____BAH_COMPILER_VAR_691.cont = "\0\0\0\0""";
-____BAH_COMPILER_VAR_691.ogCont = "\0\0\0\0""";
-____BAH_COMPILER_VAR_691.type = TOKEN_NO_TYPE;
-____BAH_COMPILER_VAR_691.line = 1;
-____BAH_COMPILER_VAR_691.begLine = 1;
-____BAH_COMPILER_VAR_691.bahType = "\0\0\0\0""";
-struct Tok tmpT = ____BAH_COMPILER_VAR_691;
+struct Tok ____BAH_COMPILER_VAR_686 = {};
+____BAH_COMPILER_VAR_686.cont = "\0\0\0\0""";
+____BAH_COMPILER_VAR_686.ogCont = "\0\0\0\0""";
+____BAH_COMPILER_VAR_686.type = TOKEN_NO_TYPE;
+____BAH_COMPILER_VAR_686.line = 1;
+____BAH_COMPILER_VAR_686.begLine = 1;
+____BAH_COMPILER_VAR_686.bahType = "\0\0\0\0""";
+struct Tok tmpT = ____BAH_COMPILER_VAR_686;
 
 #line 874 "/home/alois/Documents/bah-bah/src/parser.bah"
 tmpT.type = TOKEN_TYPE_VAR;
@@ -15141,10 +15125,10 @@ struct Tok rt = parseReflect(tmpT,string__str(&aet),elems,true,"\0\0\0\0""","\01
 char * aev = genCompilerVar();
 
 #line 878 "/home/alois/Documents/bah-bah/src/parser.bah"
-char** ____BAH_COMPILER_VAR_692 = alloca(5 * sizeof(char*));____BAH_COMPILER_VAR_692[4] = "\012\0\0\0"";\n        ";____BAH_COMPILER_VAR_692[3] = rt.cont;____BAH_COMPILER_VAR_692[2] = "\03\0\0\0"" = ";____BAH_COMPILER_VAR_692[1] = aev;____BAH_COMPILER_VAR_692[0] = "\037\0\0\0""\n        struct reflectElement ";char * ____BAH_COMPILER_VAR_693 =__Bah_multiple_concat(____BAH_COMPILER_VAR_692, 5);OUTPUT = rope__add(OUTPUT, rope(____BAH_COMPILER_VAR_693));
+char** ____BAH_COMPILER_VAR_687 = alloca(5 * sizeof(char*));____BAH_COMPILER_VAR_687[4] = "\012\0\0\0"";\n        ";____BAH_COMPILER_VAR_687[3] = rt.cont;____BAH_COMPILER_VAR_687[2] = "\03\0\0\0"" = ";____BAH_COMPILER_VAR_687[1] = aev;____BAH_COMPILER_VAR_687[0] = "\037\0\0\0""\n        struct reflectElement ";char * ____BAH_COMPILER_VAR_688 =__Bah_multiple_concat(____BAH_COMPILER_VAR_687, 5);OUTPUT = rope__add(OUTPUT, rope(____BAH_COMPILER_VAR_688));
 
 #line 881 "/home/alois/Documents/bah-bah/src/parser.bah"
-char** ____BAH_COMPILER_VAR_694 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_694[1] = aev;____BAH_COMPILER_VAR_694[0] = "\01\0\0\0""&";char * ____BAH_COMPILER_VAR_695 =__Bah_multiple_concat(____BAH_COMPILER_VAR_694, 2);arrElem = ____BAH_COMPILER_VAR_695;
+char** ____BAH_COMPILER_VAR_689 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_689[1] = aev;____BAH_COMPILER_VAR_689[0] = "\01\0\0\0""&";char * ____BAH_COMPILER_VAR_690 =__Bah_multiple_concat(____BAH_COMPILER_VAR_689, 2);arrElem = ____BAH_COMPILER_VAR_690;
 }
 
 #line 884 "/home/alois/Documents/bah-bah/src/parser.bah"
@@ -15166,12 +15150,12 @@ isStruct = "\01\0\0\0""1";
 structLayout = genCompilerVar();
 
 #line 892 "/home/alois/Documents/bah-bah/src/parser.bah"
-struct variable* ____BAH_COMPILER_VAR_696 = memoryAlloc(sizeof(struct variable));
-____BAH_COMPILER_VAR_696->name = "\0\0\0\0""";
-____BAH_COMPILER_VAR_696->type = "\0\0\0\0""";
-____BAH_COMPILER_VAR_696->constVal = "\0\0\0\0""";
-____BAH_COMPILER_VAR_696->from = "\0\0\0\0""";
-struct variable* slv = ____BAH_COMPILER_VAR_696;
+struct variable* ____BAH_COMPILER_VAR_691 = memoryAlloc(sizeof(struct variable));
+____BAH_COMPILER_VAR_691->name = "\0\0\0\0""";
+____BAH_COMPILER_VAR_691->type = "\0\0\0\0""";
+____BAH_COMPILER_VAR_691->constVal = "\0\0\0\0""";
+____BAH_COMPILER_VAR_691->from = "\0\0\0\0""";
+struct variable* slv = ____BAH_COMPILER_VAR_691;
 
 #line 893 "/home/alois/Documents/bah-bah/src/parser.bah"
 slv->name = structLayout;
@@ -15181,9 +15165,9 @@ slv->type = "\020\0\0\0""[]reflectElement";
 
 #line 896 "/home/alois/Documents/bah-bah/src/parser.bah"
 
-    unsigned int ____BAH_COMPILER_VAR_697 = len(elems->vars);
-    __Bah_realocate_arr(elems->vars, ____BAH_COMPILER_VAR_697);
-    elems->vars->data[____BAH_COMPILER_VAR_697] = slv;
+    unsigned int ____BAH_COMPILER_VAR_692 = len(elems->vars);
+    __Bah_realocate_arr(elems->vars, ____BAH_COMPILER_VAR_692);
+    elems->vars->data[____BAH_COMPILER_VAR_692] = slv;
 
 #line 898 "/home/alois/Documents/bah-bah/src/parser.bah"
 struct rope* dataLayout = rope("\0\0\0\0""");
@@ -15203,13 +15187,13 @@ struct structMemb* m = ts->members->data[i];
 if ((strcmp(m->type, tt) == 0)) {
 
 #line 903 "/home/alois/Documents/bah-bah/src/parser.bah"
-struct structMemb* ____BAH_COMPILER_VAR_698 = memoryAlloc(sizeof(struct structMemb));
-____BAH_COMPILER_VAR_698->name = "\0\0\0\0""";
-____BAH_COMPILER_VAR_698->type = "\0\0\0\0""";
-____BAH_COMPILER_VAR_698->constVal = "\0\0\0\0""";
-____BAH_COMPILER_VAR_698->from = "\0\0\0\0""";
-____BAH_COMPILER_VAR_698->def = "\0\0\0\0""";
-struct structMemb* nm = ____BAH_COMPILER_VAR_698;
+struct structMemb* ____BAH_COMPILER_VAR_693 = memoryAlloc(sizeof(struct structMemb));
+____BAH_COMPILER_VAR_693->name = "\0\0\0\0""";
+____BAH_COMPILER_VAR_693->type = "\0\0\0\0""";
+____BAH_COMPILER_VAR_693->constVal = "\0\0\0\0""";
+____BAH_COMPILER_VAR_693->from = "\0\0\0\0""";
+____BAH_COMPILER_VAR_693->def = "\0\0\0\0""";
+struct structMemb* nm = ____BAH_COMPILER_VAR_693;
 
 #line 904 "/home/alois/Documents/bah-bah/src/parser.bah"
 *nm = *m;
@@ -15222,14 +15206,14 @@ m->type = "\03\0\0\0""ptr";
 }
 
 #line 908 "/home/alois/Documents/bah-bah/src/parser.bah"
-struct Tok ____BAH_COMPILER_VAR_699 = {};
-____BAH_COMPILER_VAR_699.cont = "\0\0\0\0""";
-____BAH_COMPILER_VAR_699.ogCont = "\0\0\0\0""";
-____BAH_COMPILER_VAR_699.type = TOKEN_NO_TYPE;
-____BAH_COMPILER_VAR_699.line = 1;
-____BAH_COMPILER_VAR_699.begLine = 1;
-____BAH_COMPILER_VAR_699.bahType = "\0\0\0\0""";
-struct Tok tmpT = ____BAH_COMPILER_VAR_699;
+struct Tok ____BAH_COMPILER_VAR_694 = {};
+____BAH_COMPILER_VAR_694.cont = "\0\0\0\0""";
+____BAH_COMPILER_VAR_694.ogCont = "\0\0\0\0""";
+____BAH_COMPILER_VAR_694.type = TOKEN_NO_TYPE;
+____BAH_COMPILER_VAR_694.line = 1;
+____BAH_COMPILER_VAR_694.begLine = 1;
+____BAH_COMPILER_VAR_694.bahType = "\0\0\0\0""";
+struct Tok tmpT = ____BAH_COMPILER_VAR_694;
 
 #line 909 "/home/alois/Documents/bah-bah/src/parser.bah"
 tmpT.type = TOKEN_TYPE_VAR;
@@ -15254,17 +15238,17 @@ struct string offsetTT = string(tt);
 string__replace(&offsetTT,"\01\0\0\0""*","\0\0\0\0""");
 
 #line 917 "/home/alois/Documents/bah-bah/src/parser.bah"
-char** ____BAH_COMPILER_VAR_700 = alloca(9 * sizeof(char*));____BAH_COMPILER_VAR_700[8] = "\02\0\0\0""))";____BAH_COMPILER_VAR_700[7] = m->name;____BAH_COMPILER_VAR_700[6] = "\02\0\0\0"", ";____BAH_COMPILER_VAR_700[5] = string__str(&offsetTT);____BAH_COMPILER_VAR_700[4] = "\024\0\0\0"") + offsetof(struct ";____BAH_COMPILER_VAR_700[3] = t.cont;____BAH_COMPILER_VAR_700[2] = "\013\0\0\0""*)((char*)(";____BAH_COMPILER_VAR_700[1] = string__str(&mCtype);____BAH_COMPILER_VAR_700[0] = "\01\0\0\0""(";char * ____BAH_COMPILER_VAR_701 =__Bah_multiple_concat(____BAH_COMPILER_VAR_700, 9);tmpT.cont = ____BAH_COMPILER_VAR_701;
+char** ____BAH_COMPILER_VAR_695 = alloca(9 * sizeof(char*));____BAH_COMPILER_VAR_695[8] = "\02\0\0\0""))";____BAH_COMPILER_VAR_695[7] = m->name;____BAH_COMPILER_VAR_695[6] = "\02\0\0\0"", ";____BAH_COMPILER_VAR_695[5] = string__str(&offsetTT);____BAH_COMPILER_VAR_695[4] = "\024\0\0\0"") + offsetof(struct ";____BAH_COMPILER_VAR_695[3] = t.cont;____BAH_COMPILER_VAR_695[2] = "\013\0\0\0""*)((char*)(";____BAH_COMPILER_VAR_695[1] = string__str(&mCtype);____BAH_COMPILER_VAR_695[0] = "\01\0\0\0""(";char * ____BAH_COMPILER_VAR_696 =__Bah_multiple_concat(____BAH_COMPILER_VAR_695, 9);tmpT.cont = ____BAH_COMPILER_VAR_696;
 
 #line 918 "/home/alois/Documents/bah-bah/src/parser.bah"
-char** ____BAH_COMPILER_VAR_702 = alloca(5 * sizeof(char*));____BAH_COMPILER_VAR_702[4] = "\01\0\0\0"")";____BAH_COMPILER_VAR_702[3] = m->name;____BAH_COMPILER_VAR_702[2] = "\02\0\0\0"", ";____BAH_COMPILER_VAR_702[1] = string__str(&offsetTT);____BAH_COMPILER_VAR_702[0] = "\020\0\0\0""offsetof(struct ";char * ____BAH_COMPILER_VAR_703 =__Bah_multiple_concat(____BAH_COMPILER_VAR_702, 5);struct Tok rt = parseReflect(tmpT,m->type,elems,true,m->name,____BAH_COMPILER_VAR_703);
+char** ____BAH_COMPILER_VAR_697 = alloca(5 * sizeof(char*));____BAH_COMPILER_VAR_697[4] = "\01\0\0\0"")";____BAH_COMPILER_VAR_697[3] = m->name;____BAH_COMPILER_VAR_697[2] = "\02\0\0\0"", ";____BAH_COMPILER_VAR_697[1] = string__str(&offsetTT);____BAH_COMPILER_VAR_697[0] = "\020\0\0\0""offsetof(struct ";char * ____BAH_COMPILER_VAR_698 =__Bah_multiple_concat(____BAH_COMPILER_VAR_697, 5);struct Tok rt = parseReflect(tmpT,m->type,elems,true,m->name,____BAH_COMPILER_VAR_698);
 
 #line 919 "/home/alois/Documents/bah-bah/src/parser.bah"
-char** ____BAH_COMPILER_VAR_704 = alloca(6 * sizeof(char*));____BAH_COMPILER_VAR_704[5] = "\02\0\0\0"";\n";____BAH_COMPILER_VAR_704[4] = rt.cont;____BAH_COMPILER_VAR_704[3] = "\04\0\0\0""] = ";____BAH_COMPILER_VAR_704[2] = intToStr(i);____BAH_COMPILER_VAR_704[1] = "\07\0\0\0""->data[";____BAH_COMPILER_VAR_704[0] = structLayout;char * ____BAH_COMPILER_VAR_705 =__Bah_multiple_concat(____BAH_COMPILER_VAR_704, 6);dataLayout = rope__add(dataLayout, rope(____BAH_COMPILER_VAR_705));
+char** ____BAH_COMPILER_VAR_699 = alloca(6 * sizeof(char*));____BAH_COMPILER_VAR_699[5] = "\02\0\0\0"";\n";____BAH_COMPILER_VAR_699[4] = rt.cont;____BAH_COMPILER_VAR_699[3] = "\04\0\0\0""] = ";____BAH_COMPILER_VAR_699[2] = intToStr(i);____BAH_COMPILER_VAR_699[1] = "\07\0\0\0""->data[";____BAH_COMPILER_VAR_699[0] = structLayout;char * ____BAH_COMPILER_VAR_700 =__Bah_multiple_concat(____BAH_COMPILER_VAR_699, 6);dataLayout = rope__add(dataLayout, rope(____BAH_COMPILER_VAR_700));
 };
 
 #line 922 "/home/alois/Documents/bah-bah/src/parser.bah"
-char** ____BAH_COMPILER_VAR_706 = alloca(15 * sizeof(char*));____BAH_COMPILER_VAR_706[14] = "\025\0\0\0""->elemSize);\n        ";____BAH_COMPILER_VAR_706[13] = structLayout;____BAH_COMPILER_VAR_706[12] = "\013\0\0\0""->length * ";____BAH_COMPILER_VAR_706[11] = structLayout;____BAH_COMPILER_VAR_706[10] = "\025\0\0\0""->data = memoryAlloc(";____BAH_COMPILER_VAR_706[9] = structLayout;____BAH_COMPILER_VAR_706[8] = "\012\0\0\0"";\n        ";____BAH_COMPILER_VAR_706[7] = intToStr(len(ts->members));____BAH_COMPILER_VAR_706[6] = "\013\0\0\0""->length = ";____BAH_COMPILER_VAR_706[5] = structLayout;____BAH_COMPILER_VAR_706[4] = "\064\0\0\0""->elemSize = sizeof(struct reflectElement);\n        ";____BAH_COMPILER_VAR_706[3] = structLayout;____BAH_COMPILER_VAR_706[2] = "\076\0\0\0"" = memoryAlloc(sizeof(array(struct reflectElement)));\n        ";____BAH_COMPILER_VAR_706[1] = structLayout;____BAH_COMPILER_VAR_706[0] = "\050\0\0\0""\n        array(struct reflectElement) * ";char * ____BAH_COMPILER_VAR_707 =__Bah_multiple_concat(____BAH_COMPILER_VAR_706, 15);OUTPUT = rope__add(OUTPUT, rope__add(rope(____BAH_COMPILER_VAR_707), dataLayout));
+char** ____BAH_COMPILER_VAR_701 = alloca(15 * sizeof(char*));____BAH_COMPILER_VAR_701[14] = "\025\0\0\0""->elemSize);\n        ";____BAH_COMPILER_VAR_701[13] = structLayout;____BAH_COMPILER_VAR_701[12] = "\013\0\0\0""->length * ";____BAH_COMPILER_VAR_701[11] = structLayout;____BAH_COMPILER_VAR_701[10] = "\025\0\0\0""->data = memoryAlloc(";____BAH_COMPILER_VAR_701[9] = structLayout;____BAH_COMPILER_VAR_701[8] = "\012\0\0\0"";\n        ";____BAH_COMPILER_VAR_701[7] = intToStr(len(ts->members));____BAH_COMPILER_VAR_701[6] = "\013\0\0\0""->length = ";____BAH_COMPILER_VAR_701[5] = structLayout;____BAH_COMPILER_VAR_701[4] = "\064\0\0\0""->elemSize = sizeof(struct reflectElement);\n        ";____BAH_COMPILER_VAR_701[3] = structLayout;____BAH_COMPILER_VAR_701[2] = "\076\0\0\0"" = memoryAlloc(sizeof(array(struct reflectElement)));\n        ";____BAH_COMPILER_VAR_701[1] = structLayout;____BAH_COMPILER_VAR_701[0] = "\050\0\0\0""\n        array(struct reflectElement) * ";char * ____BAH_COMPILER_VAR_702 =__Bah_multiple_concat(____BAH_COMPILER_VAR_701, 15);OUTPUT = rope__add(OUTPUT, rope__add(rope(____BAH_COMPILER_VAR_702), dataLayout));
 }
 
 #line 930 "/home/alois/Documents/bah-bah/src/parser.bah"
@@ -15319,12 +15303,12 @@ string__set(&cType,"\01\0\0\0""0");
 }
 
 #line 957 "/home/alois/Documents/bah-bah/src/parser.bah"
-struct variable* ____BAH_COMPILER_VAR_708 = memoryAlloc(sizeof(struct variable));
-____BAH_COMPILER_VAR_708->name = "\0\0\0\0""";
-____BAH_COMPILER_VAR_708->type = "\0\0\0\0""";
-____BAH_COMPILER_VAR_708->constVal = "\0\0\0\0""";
-____BAH_COMPILER_VAR_708->from = "\0\0\0\0""";
-struct variable* rv = ____BAH_COMPILER_VAR_708;
+struct variable* ____BAH_COMPILER_VAR_703 = memoryAlloc(sizeof(struct variable));
+____BAH_COMPILER_VAR_703->name = "\0\0\0\0""";
+____BAH_COMPILER_VAR_703->type = "\0\0\0\0""";
+____BAH_COMPILER_VAR_703->constVal = "\0\0\0\0""";
+____BAH_COMPILER_VAR_703->from = "\0\0\0\0""";
+struct variable* rv = ____BAH_COMPILER_VAR_703;
 
 #line 958 "/home/alois/Documents/bah-bah/src/parser.bah"
 rv->name = genCompilerVar();
@@ -15334,12 +15318,12 @@ rv->type = "\016\0\0\0""reflectElement";
 
 #line 961 "/home/alois/Documents/bah-bah/src/parser.bah"
 
-    unsigned int ____BAH_COMPILER_VAR_709 = len(elems->vars);
-    __Bah_realocate_arr(elems->vars, ____BAH_COMPILER_VAR_709);
-    elems->vars->data[____BAH_COMPILER_VAR_709] = rv;
+    unsigned int ____BAH_COMPILER_VAR_704 = len(elems->vars);
+    __Bah_realocate_arr(elems->vars, ____BAH_COMPILER_VAR_704);
+    elems->vars->data[____BAH_COMPILER_VAR_704] = rv;
 
 #line 963 "/home/alois/Documents/bah-bah/src/parser.bah"
-char** ____BAH_COMPILER_VAR_710 = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_710[2] = "\01\0\0\0""\"";____BAH_COMPILER_VAR_710[1] = tt;____BAH_COMPILER_VAR_710[0] = "\01\0\0\0""\"";char * ____BAH_COMPILER_VAR_711 =__Bah_multiple_concat(____BAH_COMPILER_VAR_710, 3);char** ____BAH_COMPILER_VAR_712 = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_712[2] = "\01\0\0\0""\"";____BAH_COMPILER_VAR_712[1] = string__str(&name);____BAH_COMPILER_VAR_712[0] = "\01\0\0\0""\"";char * ____BAH_COMPILER_VAR_713 =__Bah_multiple_concat(____BAH_COMPILER_VAR_712, 3);char** ____BAH_COMPILER_VAR_714 = alloca(22 * sizeof(char*));____BAH_COMPILER_VAR_714[21] = "\03\0\0\0"");\n";____BAH_COMPILER_VAR_714[20] = offset;____BAH_COMPILER_VAR_714[19] = "\02\0\0\0"", ";____BAH_COMPILER_VAR_714[18] = structLayout;____BAH_COMPILER_VAR_714[17] = "\02\0\0\0"", ";____BAH_COMPILER_VAR_714[16] = isStruct;____BAH_COMPILER_VAR_714[15] = "\02\0\0\0"", ";____BAH_COMPILER_VAR_714[14] = arrElem;____BAH_COMPILER_VAR_714[13] = "\02\0\0\0"", ";____BAH_COMPILER_VAR_714[12] = isArr;____BAH_COMPILER_VAR_714[11] = "\02\0\0\0"", ";____BAH_COMPILER_VAR_714[10] = strLitteralToBahStr(____BAH_COMPILER_VAR_713);____BAH_COMPILER_VAR_714[9] = "\02\0\0\0"", ";____BAH_COMPILER_VAR_714[8] = strLitteralToBahStr(____BAH_COMPILER_VAR_711);____BAH_COMPILER_VAR_714[7] = "\03\0\0\0""), ";____BAH_COMPILER_VAR_714[6] = string__str(&cType);____BAH_COMPILER_VAR_714[5] = "\011\0\0\0"", sizeof(";____BAH_COMPILER_VAR_714[4] = t.cont;____BAH_COMPILER_VAR_714[3] = amp;____BAH_COMPILER_VAR_714[2] = "\015\0\0\0"" = __reflect(";____BAH_COMPILER_VAR_714[1] = rv->name;____BAH_COMPILER_VAR_714[0] = "\026\0\0\0""struct reflectElement ";char * ____BAH_COMPILER_VAR_715 =__Bah_multiple_concat(____BAH_COMPILER_VAR_714, 22);OUTPUT = rope__add(OUTPUT, rope(____BAH_COMPILER_VAR_715));
+char** ____BAH_COMPILER_VAR_705 = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_705[2] = "\01\0\0\0""\"";____BAH_COMPILER_VAR_705[1] = tt;____BAH_COMPILER_VAR_705[0] = "\01\0\0\0""\"";char * ____BAH_COMPILER_VAR_706 =__Bah_multiple_concat(____BAH_COMPILER_VAR_705, 3);char** ____BAH_COMPILER_VAR_707 = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_707[2] = "\01\0\0\0""\"";____BAH_COMPILER_VAR_707[1] = string__str(&name);____BAH_COMPILER_VAR_707[0] = "\01\0\0\0""\"";char * ____BAH_COMPILER_VAR_708 =__Bah_multiple_concat(____BAH_COMPILER_VAR_707, 3);char** ____BAH_COMPILER_VAR_709 = alloca(22 * sizeof(char*));____BAH_COMPILER_VAR_709[21] = "\03\0\0\0"");\n";____BAH_COMPILER_VAR_709[20] = offset;____BAH_COMPILER_VAR_709[19] = "\02\0\0\0"", ";____BAH_COMPILER_VAR_709[18] = structLayout;____BAH_COMPILER_VAR_709[17] = "\02\0\0\0"", ";____BAH_COMPILER_VAR_709[16] = isStruct;____BAH_COMPILER_VAR_709[15] = "\02\0\0\0"", ";____BAH_COMPILER_VAR_709[14] = arrElem;____BAH_COMPILER_VAR_709[13] = "\02\0\0\0"", ";____BAH_COMPILER_VAR_709[12] = isArr;____BAH_COMPILER_VAR_709[11] = "\02\0\0\0"", ";____BAH_COMPILER_VAR_709[10] = strLitteralToBahStr(____BAH_COMPILER_VAR_708);____BAH_COMPILER_VAR_709[9] = "\02\0\0\0"", ";____BAH_COMPILER_VAR_709[8] = strLitteralToBahStr(____BAH_COMPILER_VAR_706);____BAH_COMPILER_VAR_709[7] = "\03\0\0\0""), ";____BAH_COMPILER_VAR_709[6] = string__str(&cType);____BAH_COMPILER_VAR_709[5] = "\011\0\0\0"", sizeof(";____BAH_COMPILER_VAR_709[4] = t.cont;____BAH_COMPILER_VAR_709[3] = amp;____BAH_COMPILER_VAR_709[2] = "\015\0\0\0"" = __reflect(";____BAH_COMPILER_VAR_709[1] = rv->name;____BAH_COMPILER_VAR_709[0] = "\026\0\0\0""struct reflectElement ";char * ____BAH_COMPILER_VAR_710 =__Bah_multiple_concat(____BAH_COMPILER_VAR_709, 22);OUTPUT = rope__add(OUTPUT, rope(____BAH_COMPILER_VAR_710));
 
 #line 965 "/home/alois/Documents/bah-bah/src/parser.bah"
 t.cont = rv->name;
@@ -15361,7 +15345,7 @@ struct string arrType = getCType(v->type,elems);
 string__trimRight(&arrType,1);
 
 #line 975 "/home/alois/Documents/bah-bah/src/parser.bah"
-char** ____BAH_COMPILER_VAR_716 = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_716[2] = "\02\0\0\0""))";____BAH_COMPILER_VAR_716[1] = string__str(&arrType);____BAH_COMPILER_VAR_716[0] = "\023\0\0\0""memoryAlloc(sizeof(";char * ____BAH_COMPILER_VAR_717 =__Bah_multiple_concat(____BAH_COMPILER_VAR_716, 3);char * code = ____BAH_COMPILER_VAR_717;
+char** ____BAH_COMPILER_VAR_711 = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_711[2] = "\02\0\0\0""))";____BAH_COMPILER_VAR_711[1] = string__str(&arrType);____BAH_COMPILER_VAR_711[0] = "\023\0\0\0""memoryAlloc(sizeof(";char * ____BAH_COMPILER_VAR_712 =__Bah_multiple_concat(____BAH_COMPILER_VAR_711, 3);char * code = ____BAH_COMPILER_VAR_712;
 
 #line 976 "/home/alois/Documents/bah-bah/src/parser.bah"
 string__trimLeft(&arrType,6);
@@ -15411,9 +15395,9 @@ while ((i<max)) {
 
 #line 992 "/home/alois/Documents/bah-bah/src/parser.bah"
 
-    unsigned int ____BAH_COMPILER_VAR_718 = len(memory);
-    __Bah_realocate_arr(memory, ____BAH_COMPILER_VAR_718);
-    memory->data[____BAH_COMPILER_VAR_718] = l->data[i];
+    unsigned int ____BAH_COMPILER_VAR_713 = len(memory);
+    __Bah_realocate_arr(memory, ____BAH_COMPILER_VAR_713);
+    memory->data[____BAH_COMPILER_VAR_713] = l->data[i];
 
 #line 993 "/home/alois/Documents/bah-bah/src/parser.bah"
 i = i+1;
@@ -15471,12 +15455,12 @@ break;
 };
 
 #line 1013 "/home/alois/Documents/bah-bah/src/parser.bah"
-struct variable* ____BAH_COMPILER_VAR_719 = memoryAlloc(sizeof(struct variable));
-____BAH_COMPILER_VAR_719->name = "\0\0\0\0""";
-____BAH_COMPILER_VAR_719->type = "\0\0\0\0""";
-____BAH_COMPILER_VAR_719->constVal = "\0\0\0\0""";
-____BAH_COMPILER_VAR_719->from = "\0\0\0\0""";
-struct variable* tmpV = ____BAH_COMPILER_VAR_719;
+struct variable* ____BAH_COMPILER_VAR_714 = memoryAlloc(sizeof(struct variable));
+____BAH_COMPILER_VAR_714->name = "\0\0\0\0""";
+____BAH_COMPILER_VAR_714->type = "\0\0\0\0""";
+____BAH_COMPILER_VAR_714->constVal = "\0\0\0\0""";
+____BAH_COMPILER_VAR_714->from = "\0\0\0\0""";
+struct variable* tmpV = ____BAH_COMPILER_VAR_714;
 
 #line 1014 "/home/alois/Documents/bah-bah/src/parser.bah"
 tmpV->name = genCompilerVar();
@@ -15492,9 +15476,9 @@ tmpV->type = string__str(&elemType);
 
 #line 1018 "/home/alois/Documents/bah-bah/src/parser.bah"
 
-    unsigned int ____BAH_COMPILER_VAR_720 = len(elems->vars);
-    __Bah_realocate_arr(elems->vars, ____BAH_COMPILER_VAR_720);
-    elems->vars->data[____BAH_COMPILER_VAR_720] = tmpV;
+    unsigned int ____BAH_COMPILER_VAR_715 = len(elems->vars);
+    __Bah_realocate_arr(elems->vars, ____BAH_COMPILER_VAR_715);
+    elems->vars->data[____BAH_COMPILER_VAR_715] = tmpV;
 
 #line 1020 "/home/alois/Documents/bah-bah/src/parser.bah"
 char * oldNL = NEXT_LINE;
@@ -15509,24 +15493,24 @@ char * innerCode = parseArrayDecl(tmpV,memory,j,i+1,elems);
 struct string cType = getCType(string__str(&elemType),elems);
 
 #line 1024 "/home/alois/Documents/bah-bah/src/parser.bah"
-char** ____BAH_COMPILER_VAR_721 = alloca(9 * sizeof(char*));____BAH_COMPILER_VAR_721[8] = "\021\0\0\0""\n                ";____BAH_COMPILER_VAR_721[7] = NEXT_LINE;____BAH_COMPILER_VAR_721[6] = "\022\0\0\0"";\n                ";____BAH_COMPILER_VAR_721[5] = innerCode;____BAH_COMPILER_VAR_721[4] = "\03\0\0\0"" = ";____BAH_COMPILER_VAR_721[3] = tmpV->name;____BAH_COMPILER_VAR_721[2] = "\04\0\0\0"") * ";____BAH_COMPILER_VAR_721[1] = string__str(&cType);____BAH_COMPILER_VAR_721[0] = "\027\0\0\0""\n                array(";char * ____BAH_COMPILER_VAR_722 =__Bah_multiple_concat(____BAH_COMPILER_VAR_721, 9);OUTPUT = rope__add(OUTPUT, rope(____BAH_COMPILER_VAR_722));
+char** ____BAH_COMPILER_VAR_716 = alloca(9 * sizeof(char*));____BAH_COMPILER_VAR_716[8] = "\021\0\0\0""\n                ";____BAH_COMPILER_VAR_716[7] = NEXT_LINE;____BAH_COMPILER_VAR_716[6] = "\022\0\0\0"";\n                ";____BAH_COMPILER_VAR_716[5] = innerCode;____BAH_COMPILER_VAR_716[4] = "\03\0\0\0"" = ";____BAH_COMPILER_VAR_716[3] = tmpV->name;____BAH_COMPILER_VAR_716[2] = "\04\0\0\0"") * ";____BAH_COMPILER_VAR_716[1] = string__str(&cType);____BAH_COMPILER_VAR_716[0] = "\027\0\0\0""\n                array(";char * ____BAH_COMPILER_VAR_717 =__Bah_multiple_concat(____BAH_COMPILER_VAR_716, 9);OUTPUT = rope__add(OUTPUT, rope(____BAH_COMPILER_VAR_717));
 
 #line 1028 "/home/alois/Documents/bah-bah/src/parser.bah"
 NEXT_LINE = oldNL;
 
 #line 1030 "/home/alois/Documents/bah-bah/src/parser.bah"
-struct Tok ____BAH_COMPILER_VAR_723 = {};
-____BAH_COMPILER_VAR_723.cont = "\0\0\0\0""";
-____BAH_COMPILER_VAR_723.ogCont = "\0\0\0\0""";
-____BAH_COMPILER_VAR_723.type = TOKEN_NO_TYPE;
-____BAH_COMPILER_VAR_723.line = 1;
-____BAH_COMPILER_VAR_723.begLine = 1;
-____BAH_COMPILER_VAR_723.bahType = "\0\0\0\0""";
-____BAH_COMPILER_VAR_723.type = TOKEN_TYPE_VAR;
-____BAH_COMPILER_VAR_723.cont = tmpV->name;
-____BAH_COMPILER_VAR_723.bahType = string__str(&elemType);
-____BAH_COMPILER_VAR_723.isValue = true;
-t = ____BAH_COMPILER_VAR_723;
+struct Tok ____BAH_COMPILER_VAR_718 = {};
+____BAH_COMPILER_VAR_718.cont = "\0\0\0\0""";
+____BAH_COMPILER_VAR_718.ogCont = "\0\0\0\0""";
+____BAH_COMPILER_VAR_718.type = TOKEN_NO_TYPE;
+____BAH_COMPILER_VAR_718.line = 1;
+____BAH_COMPILER_VAR_718.begLine = 1;
+____BAH_COMPILER_VAR_718.bahType = "\0\0\0\0""";
+____BAH_COMPILER_VAR_718.type = TOKEN_TYPE_VAR;
+____BAH_COMPILER_VAR_718.cont = tmpV->name;
+____BAH_COMPILER_VAR_718.bahType = string__str(&elemType);
+____BAH_COMPILER_VAR_718.isValue = true;
+t = ____BAH_COMPILER_VAR_718;
 }
 
 #line 1038 "/home/alois/Documents/bah-bah/src/parser.bah"
@@ -15536,7 +15520,7 @@ char * tt = getTypeFromToken(&t,true,elems);
 if (__builtin_expect((compTypes(tt,elemBahTypeStr)==false), 0)) {
 
 #line 1040 "/home/alois/Documents/bah-bah/src/parser.bah"
-char** ____BAH_COMPILER_VAR_724 = alloca(4 * sizeof(char*));____BAH_COMPILER_VAR_724[3] = elemBahTypeStr;____BAH_COMPILER_VAR_724[2] = "\05\0\0\0"") as ";____BAH_COMPILER_VAR_724[1] = tt;____BAH_COMPILER_VAR_724[0] = "\024\0\0\0""Cannot use {TOKEN} (";char * ____BAH_COMPILER_VAR_725 =__Bah_multiple_concat(____BAH_COMPILER_VAR_724, 4);throwErr(&t,____BAH_COMPILER_VAR_725);
+char** ____BAH_COMPILER_VAR_719 = alloca(4 * sizeof(char*));____BAH_COMPILER_VAR_719[3] = elemBahTypeStr;____BAH_COMPILER_VAR_719[2] = "\05\0\0\0"") as ";____BAH_COMPILER_VAR_719[1] = tt;____BAH_COMPILER_VAR_719[0] = "\024\0\0\0""Cannot use {TOKEN} (";char * ____BAH_COMPILER_VAR_720 =__Bah_multiple_concat(____BAH_COMPILER_VAR_719, 4);throwErr(&t,____BAH_COMPILER_VAR_720);
 }
 
 #line 1043 "/home/alois/Documents/bah-bah/src/parser.bah"
@@ -15546,7 +15530,7 @@ char * strArrayLength = intToStr(arrayLength);
 arrayLength = arrayLength+1;
 
 #line 1046 "/home/alois/Documents/bah-bah/src/parser.bah"
-char** ____BAH_COMPILER_VAR_726 = alloca(7 * sizeof(char*));____BAH_COMPILER_VAR_726[6] = "\02\0\0\0"";\n";____BAH_COMPILER_VAR_726[5] = t.cont;____BAH_COMPILER_VAR_726[4] = "\04\0\0\0""] = ";____BAH_COMPILER_VAR_726[3] = strArrayLength;____BAH_COMPILER_VAR_726[2] = "\07\0\0\0""->data[";____BAH_COMPILER_VAR_726[1] = v->name;____BAH_COMPILER_VAR_726[0] = NEXT_LINE;char * ____BAH_COMPILER_VAR_727 =__Bah_multiple_concat(____BAH_COMPILER_VAR_726, 7);NEXT_LINE = ____BAH_COMPILER_VAR_727;
+char** ____BAH_COMPILER_VAR_721 = alloca(7 * sizeof(char*));____BAH_COMPILER_VAR_721[6] = "\02\0\0\0"";\n";____BAH_COMPILER_VAR_721[5] = t.cont;____BAH_COMPILER_VAR_721[4] = "\04\0\0\0""] = ";____BAH_COMPILER_VAR_721[3] = strArrayLength;____BAH_COMPILER_VAR_721[2] = "\07\0\0\0""->data[";____BAH_COMPILER_VAR_721[1] = v->name;____BAH_COMPILER_VAR_721[0] = NEXT_LINE;char * ____BAH_COMPILER_VAR_722 =__Bah_multiple_concat(____BAH_COMPILER_VAR_721, 7);NEXT_LINE = ____BAH_COMPILER_VAR_722;
 
 #line 1047 "/home/alois/Documents/bah-bah/src/parser.bah"
 ++i;
@@ -15584,7 +15568,7 @@ allocLength = 50;
 char * allocLengthStr = intToStr(allocLength);
 
 #line 1060 "/home/alois/Documents/bah-bah/src/parser.bah"
-char** ____BAH_COMPILER_VAR_728 = alloca(11 * sizeof(char*));____BAH_COMPILER_VAR_728[10] = NEXT_LINE;____BAH_COMPILER_VAR_728[9] = "\02\0\0\0"";\n";____BAH_COMPILER_VAR_728[8] = allocLengthStr;____BAH_COMPILER_VAR_728[7] = "\017\0\0\0""->realLength = ";____BAH_COMPILER_VAR_728[6] = v->name;____BAH_COMPILER_VAR_728[5] = "\027\0\0\0"");\n                    ";____BAH_COMPILER_VAR_728[4] = allocLengthStr;____BAH_COMPILER_VAR_728[3] = "\04\0\0\0"") * ";____BAH_COMPILER_VAR_728[2] = elemTypeStr;____BAH_COMPILER_VAR_728[1] = "\034\0\0\0""->data = memoryAlloc(sizeof(";____BAH_COMPILER_VAR_728[0] = v->name;char * ____BAH_COMPILER_VAR_729 =__Bah_multiple_concat(____BAH_COMPILER_VAR_728, 11);NEXT_LINE = ____BAH_COMPILER_VAR_729;
+char** ____BAH_COMPILER_VAR_723 = alloca(11 * sizeof(char*));____BAH_COMPILER_VAR_723[10] = NEXT_LINE;____BAH_COMPILER_VAR_723[9] = "\02\0\0\0"";\n";____BAH_COMPILER_VAR_723[8] = allocLengthStr;____BAH_COMPILER_VAR_723[7] = "\017\0\0\0""->realLength = ";____BAH_COMPILER_VAR_723[6] = v->name;____BAH_COMPILER_VAR_723[5] = "\027\0\0\0"");\n                    ";____BAH_COMPILER_VAR_723[4] = allocLengthStr;____BAH_COMPILER_VAR_723[3] = "\04\0\0\0"") * ";____BAH_COMPILER_VAR_723[2] = elemTypeStr;____BAH_COMPILER_VAR_723[1] = "\034\0\0\0""->data = memoryAlloc(sizeof(";____BAH_COMPILER_VAR_723[0] = v->name;char * ____BAH_COMPILER_VAR_724 =__Bah_multiple_concat(____BAH_COMPILER_VAR_723, 11);NEXT_LINE = ____BAH_COMPILER_VAR_724;
 
 #line 1062 "/home/alois/Documents/bah-bah/src/parser.bah"
 break;
@@ -15607,7 +15591,7 @@ i = i+1;
 char * strArrayLength = intToStr(arrayLength);
 
 #line 1071 "/home/alois/Documents/bah-bah/src/parser.bah"
-char** ____BAH_COMPILER_VAR_730 = alloca(10 * sizeof(char*));____BAH_COMPILER_VAR_730[9] = NEXT_LINE;____BAH_COMPILER_VAR_730[8] = "\03\0\0\0"");\n";____BAH_COMPILER_VAR_730[7] = elemTypeStr;____BAH_COMPILER_VAR_730[6] = "\024\0\0\0""->elemSize = sizeof(";____BAH_COMPILER_VAR_730[5] = v->name;____BAH_COMPILER_VAR_730[4] = "\02\0\0\0"";\n";____BAH_COMPILER_VAR_730[3] = strArrayLength;____BAH_COMPILER_VAR_730[2] = "\013\0\0\0""->length = ";____BAH_COMPILER_VAR_730[1] = v->name;____BAH_COMPILER_VAR_730[0] = "\01\0\0\0""\n";char * ____BAH_COMPILER_VAR_731 =__Bah_multiple_concat(____BAH_COMPILER_VAR_730, 10);NEXT_LINE = ____BAH_COMPILER_VAR_731;
+char** ____BAH_COMPILER_VAR_725 = alloca(10 * sizeof(char*));____BAH_COMPILER_VAR_725[9] = NEXT_LINE;____BAH_COMPILER_VAR_725[8] = "\03\0\0\0"");\n";____BAH_COMPILER_VAR_725[7] = elemTypeStr;____BAH_COMPILER_VAR_725[6] = "\024\0\0\0""->elemSize = sizeof(";____BAH_COMPILER_VAR_725[5] = v->name;____BAH_COMPILER_VAR_725[4] = "\02\0\0\0"";\n";____BAH_COMPILER_VAR_725[3] = strArrayLength;____BAH_COMPILER_VAR_725[2] = "\013\0\0\0""->length = ";____BAH_COMPILER_VAR_725[1] = v->name;____BAH_COMPILER_VAR_725[0] = "\01\0\0\0""\n";char * ____BAH_COMPILER_VAR_726 =__Bah_multiple_concat(____BAH_COMPILER_VAR_725, 10);NEXT_LINE = ____BAH_COMPILER_VAR_726;
 
 #line 1075 "/home/alois/Documents/bah-bah/src/parser.bah"
 return code;
@@ -15617,7 +15601,7 @@ return code;
 array(char *)* equalsTokens;
 
 #line 1080 "/home/alois/Documents/bah-bah/src/parser.bah"
-char ____BAH_COMPILER_VAR_737(array(char *)* arr, char * el) {
+char ____BAH_COMPILER_VAR_732(array(char *)* arr, char * el) {
         if (arr == 0) {
             return 0;
         };
@@ -15650,7 +15634,7 @@ ft = l->data[0];
 char parsed = true;
 
 #line 1089 "/home/alois/Documents/bah-bah/src/parser.bah"
-char** ____BAH_COMPILER_VAR_732 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_732[1] = "\02\0\0\0"";\n";____BAH_COMPILER_VAR_732[0] = ft.cont;char * ____BAH_COMPILER_VAR_733 =__Bah_multiple_concat(____BAH_COMPILER_VAR_732, 2);OUTPUT = rope__add(OUTPUT, rope(____BAH_COMPILER_VAR_733));
+char** ____BAH_COMPILER_VAR_727 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_727[1] = "\02\0\0\0"";\n";____BAH_COMPILER_VAR_727[0] = ft.cont;char * ____BAH_COMPILER_VAR_728 =__Bah_multiple_concat(____BAH_COMPILER_VAR_727, 2);OUTPUT = rope__add(OUTPUT, rope(____BAH_COMPILER_VAR_728));
 
 #line 1090 "/home/alois/Documents/bah-bah/src/parser.bah"
 return;
@@ -15696,12 +15680,12 @@ if ((v==null)) {
 exists = false;
 
 #line 1106 "/home/alois/Documents/bah-bah/src/parser.bah"
-struct variable* ____BAH_COMPILER_VAR_734 = memoryAlloc(sizeof(struct variable));
-____BAH_COMPILER_VAR_734->name = "\0\0\0\0""";
-____BAH_COMPILER_VAR_734->type = "\0\0\0\0""";
-____BAH_COMPILER_VAR_734->constVal = "\0\0\0\0""";
-____BAH_COMPILER_VAR_734->from = "\0\0\0\0""";
-v = ____BAH_COMPILER_VAR_734;
+struct variable* ____BAH_COMPILER_VAR_729 = memoryAlloc(sizeof(struct variable));
+____BAH_COMPILER_VAR_729->name = "\0\0\0\0""";
+____BAH_COMPILER_VAR_729->type = "\0\0\0\0""";
+____BAH_COMPILER_VAR_729->constVal = "\0\0\0\0""";
+____BAH_COMPILER_VAR_729->from = "\0\0\0\0""";
+v = ____BAH_COMPILER_VAR_729;
 
 #line 1107 "/home/alois/Documents/bah-bah/src/parser.bah"
 v->name = ft.cont;
@@ -15767,7 +15751,7 @@ rv->lastSet = elems;
 }
 
 #line 1134 "/home/alois/Documents/bah-bah/src/parser.bah"
-char** ____BAH_COMPILER_VAR_735 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_735[1] = "\02\0\0\0"";\n";____BAH_COMPILER_VAR_735[0] = t.cont;char * ____BAH_COMPILER_VAR_736 =__Bah_multiple_concat(____BAH_COMPILER_VAR_735, 2);OUTPUT = rope__add(OUTPUT, rope(____BAH_COMPILER_VAR_736));
+char** ____BAH_COMPILER_VAR_730 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_730[1] = "\02\0\0\0"";\n";____BAH_COMPILER_VAR_730[0] = t.cont;char * ____BAH_COMPILER_VAR_731 =__Bah_multiple_concat(____BAH_COMPILER_VAR_730, 2);OUTPUT = rope__add(OUTPUT, rope(____BAH_COMPILER_VAR_731));
 
 #line 1135 "/home/alois/Documents/bah-bah/src/parser.bah"
 return;
@@ -15784,7 +15768,7 @@ throwErr(&ft,"\032\0\0\0""Missing '=' after {TOKEN}.");
 struct Tok operT = l->data[1];
 
 #line 1142 "/home/alois/Documents/bah-bah/src/parser.bah"
-if (____BAH_COMPILER_VAR_737(equalsTokens, operT.cont)&&(strcmp(operT.cont, "\01\0\0\0""=") != 0)) {
+if (____BAH_COMPILER_VAR_732(equalsTokens, operT.cont)&&(strcmp(operT.cont, "\01\0\0\0""=") != 0)) {
 
 #line 1143 "/home/alois/Documents/bah-bah/src/parser.bah"
 array(struct Tok)* nl = memoryAlloc(sizeof(array(struct Tok)));
@@ -15818,7 +15802,7 @@ operTok.cont = string__str(&oper);
 if (l->data[2].isOper) {
 
 #line 1153 "/home/alois/Documents/bah-bah/src/parser.bah"
-char** ____BAH_COMPILER_VAR_738 = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_738[2] = "\01\0\0\0"")";____BAH_COMPILER_VAR_738[1] = l->data[2].cont;____BAH_COMPILER_VAR_738[0] = "\01\0\0\0""(";char * ____BAH_COMPILER_VAR_739 =__Bah_multiple_concat(____BAH_COMPILER_VAR_738, 3);l->data[2].cont = ____BAH_COMPILER_VAR_739;
+char** ____BAH_COMPILER_VAR_733 = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_733[2] = "\01\0\0\0"")";____BAH_COMPILER_VAR_733[1] = l->data[2].cont;____BAH_COMPILER_VAR_733[0] = "\01\0\0\0""(";char * ____BAH_COMPILER_VAR_734 =__Bah_multiple_concat(____BAH_COMPILER_VAR_733, 3);l->data[2].cont = ____BAH_COMPILER_VAR_734;
 }
 
 #line 1156 "/home/alois/Documents/bah-bah/src/parser.bah"
@@ -15840,9 +15824,9 @@ operT.cont = "\01\0\0\0""=";
 
 #line 1165 "/home/alois/Documents/bah-bah/src/parser.bah"
 
-    unsigned int ____BAH_COMPILER_VAR_740 = len(nl);
-    __Bah_realocate_arr(nl, ____BAH_COMPILER_VAR_740);
-    nl->data[____BAH_COMPILER_VAR_740] = operT;
+    unsigned int ____BAH_COMPILER_VAR_735 = len(nl);
+    __Bah_realocate_arr(nl, ____BAH_COMPILER_VAR_735);
+    nl->data[____BAH_COMPILER_VAR_735] = operT;
 
 #line 1167 "/home/alois/Documents/bah-bah/src/parser.bah"
 register long int j = 0;
@@ -15854,9 +15838,9 @@ for (; (j<len(tmpL));
 
 #line 1168 "/home/alois/Documents/bah-bah/src/parser.bah"
 
-    unsigned int ____BAH_COMPILER_VAR_741 = len(nl);
-    __Bah_realocate_arr(nl, ____BAH_COMPILER_VAR_741);
-    nl->data[____BAH_COMPILER_VAR_741] = tmpL->data[j];
+    unsigned int ____BAH_COMPILER_VAR_736 = len(nl);
+    __Bah_realocate_arr(nl, ____BAH_COMPILER_VAR_736);
+    nl->data[____BAH_COMPILER_VAR_736] = tmpL->data[j];
 };
 
 #line 1172 "/home/alois/Documents/bah-bah/src/parser.bah"
@@ -15909,7 +15893,7 @@ continue;
 if ((isEqual==false)) {
 
 #line 1191 "/home/alois/Documents/bah-bah/src/parser.bah"
-char** ____BAH_COMPILER_VAR_742 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_742[1] = t.cont;____BAH_COMPILER_VAR_742[0] = currentType;char * ____BAH_COMPILER_VAR_743 =__Bah_multiple_concat(____BAH_COMPILER_VAR_742, 2);currentType = ____BAH_COMPILER_VAR_743;
+char** ____BAH_COMPILER_VAR_737 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_737[1] = t.cont;____BAH_COMPILER_VAR_737[0] = currentType;char * ____BAH_COMPILER_VAR_738 =__Bah_multiple_concat(____BAH_COMPILER_VAR_737, 2);currentType = ____BAH_COMPILER_VAR_738;
 }
 
 #line 1192 "/home/alois/Documents/bah-bah/src/parser.bah"
@@ -15939,7 +15923,7 @@ throwErr(&t,"\066\0\0\0""Cannot declare a {TOKEN} without a type (chan <type>)."
 struct Tok nt = l->data[i];
 
 #line 1205 "/home/alois/Documents/bah-bah/src/parser.bah"
-char** ____BAH_COMPILER_VAR_744 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_744[1] = nt.cont;____BAH_COMPILER_VAR_744[0] = "\05\0\0\0""chan:";char * ____BAH_COMPILER_VAR_745 =__Bah_multiple_concat(____BAH_COMPILER_VAR_744, 2);v->type = ____BAH_COMPILER_VAR_745;
+char** ____BAH_COMPILER_VAR_739 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_739[1] = nt.cont;____BAH_COMPILER_VAR_739[0] = "\05\0\0\0""chan:";char * ____BAH_COMPILER_VAR_740 =__Bah_multiple_concat(____BAH_COMPILER_VAR_739, 2);v->type = ____BAH_COMPILER_VAR_740;
 
 #line 1206 "/home/alois/Documents/bah-bah/src/parser.bah"
 code = "\011\0\0\0""channel()";
@@ -15975,7 +15959,7 @@ throwErr(&t,"\065\0\0\0""Cannot declare a {TOKEN} without a type (map <type>).")
 struct Tok nt = l->data[i];
 
 #line 1218 "/home/alois/Documents/bah-bah/src/parser.bah"
-char** ____BAH_COMPILER_VAR_746 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_746[1] = nt.cont;____BAH_COMPILER_VAR_746[0] = "\04\0\0\0""map:";char * ____BAH_COMPILER_VAR_747 =__Bah_multiple_concat(____BAH_COMPILER_VAR_746, 2);v->type = ____BAH_COMPILER_VAR_747;
+char** ____BAH_COMPILER_VAR_741 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_741[1] = nt.cont;____BAH_COMPILER_VAR_741[0] = "\04\0\0\0""map:";char * ____BAH_COMPILER_VAR_742 =__Bah_multiple_concat(____BAH_COMPILER_VAR_741, 2);v->type = ____BAH_COMPILER_VAR_742;
 
 #line 1219 "/home/alois/Documents/bah-bah/src/parser.bah"
 code = "\014\0\0\0""mapWrapper()";
@@ -16018,15 +16002,15 @@ throwErr(&nt,"\044\0\0\0""Expected buffer length, not {TOKEN}.");
 }
 
 #line 1234 "/home/alois/Documents/bah-bah/src/parser.bah"
-char** ____BAH_COMPILER_VAR_748 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_748[1] = nt.cont;____BAH_COMPILER_VAR_748[0] = "\07\0\0\0""buffer:";char * ____BAH_COMPILER_VAR_749 =__Bah_multiple_concat(____BAH_COMPILER_VAR_748, 2);v->type = ____BAH_COMPILER_VAR_749;
+char** ____BAH_COMPILER_VAR_743 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_743[1] = nt.cont;____BAH_COMPILER_VAR_743[0] = "\07\0\0\0""buffer:";char * ____BAH_COMPILER_VAR_744 =__Bah_multiple_concat(____BAH_COMPILER_VAR_743, 2);v->type = ____BAH_COMPILER_VAR_744;
 
 #line 1235 "/home/alois/Documents/bah-bah/src/parser.bah"
-struct variable* ____BAH_COMPILER_VAR_750 = memoryAlloc(sizeof(struct variable));
-____BAH_COMPILER_VAR_750->name = "\0\0\0\0""";
-____BAH_COMPILER_VAR_750->type = "\0\0\0\0""";
-____BAH_COMPILER_VAR_750->constVal = "\0\0\0\0""";
-____BAH_COMPILER_VAR_750->from = "\0\0\0\0""";
-struct variable* av = ____BAH_COMPILER_VAR_750;
+struct variable* ____BAH_COMPILER_VAR_745 = memoryAlloc(sizeof(struct variable));
+____BAH_COMPILER_VAR_745->name = "\0\0\0\0""";
+____BAH_COMPILER_VAR_745->type = "\0\0\0\0""";
+____BAH_COMPILER_VAR_745->constVal = "\0\0\0\0""";
+____BAH_COMPILER_VAR_745->from = "\0\0\0\0""";
+struct variable* av = ____BAH_COMPILER_VAR_745;
 
 #line 1236 "/home/alois/Documents/bah-bah/src/parser.bah"
 av->type = "\05\0\0\0""char*";
@@ -16036,15 +16020,15 @@ av->name = genCompilerVar();
 
 #line 1238 "/home/alois/Documents/bah-bah/src/parser.bah"
 
-    unsigned int ____BAH_COMPILER_VAR_751 = len(elems->vars);
-    __Bah_realocate_arr(elems->vars, ____BAH_COMPILER_VAR_751);
-    elems->vars->data[____BAH_COMPILER_VAR_751] = av;
+    unsigned int ____BAH_COMPILER_VAR_746 = len(elems->vars);
+    __Bah_realocate_arr(elems->vars, ____BAH_COMPILER_VAR_746);
+    elems->vars->data[____BAH_COMPILER_VAR_746] = av;
 
 #line 1239 "/home/alois/Documents/bah-bah/src/parser.bah"
 struct string cType = getCType(av->type,elems);
 
 #line 1240 "/home/alois/Documents/bah-bah/src/parser.bah"
-char** ____BAH_COMPILER_VAR_752 = alloca(5 * sizeof(char*));____BAH_COMPILER_VAR_752[4] = "\02\0\0\0""];";____BAH_COMPILER_VAR_752[3] = nt.cont;____BAH_COMPILER_VAR_752[2] = "\01\0\0\0""[";____BAH_COMPILER_VAR_752[1] = av->name;____BAH_COMPILER_VAR_752[0] = "\05\0\0\0""char ";char * ____BAH_COMPILER_VAR_753 =__Bah_multiple_concat(____BAH_COMPILER_VAR_752, 5);OUTPUT = rope__add(OUTPUT, rope(____BAH_COMPILER_VAR_753));
+char** ____BAH_COMPILER_VAR_747 = alloca(5 * sizeof(char*));____BAH_COMPILER_VAR_747[4] = "\02\0\0\0""];";____BAH_COMPILER_VAR_747[3] = nt.cont;____BAH_COMPILER_VAR_747[2] = "\01\0\0\0""[";____BAH_COMPILER_VAR_747[1] = av->name;____BAH_COMPILER_VAR_747[0] = "\05\0\0\0""char ";char * ____BAH_COMPILER_VAR_748 =__Bah_multiple_concat(____BAH_COMPILER_VAR_747, 5);OUTPUT = rope__add(OUTPUT, rope(____BAH_COMPILER_VAR_748));
 
 #line 1241 "/home/alois/Documents/bah-bah/src/parser.bah"
 code = av->name;
@@ -16068,8 +16052,8 @@ char * tp = getTypeFromToken(&t,true,elems);
 
 #line 1253 "/home/alois/Documents/bah-bah/src/parser.bah"
 
-                struct string ____BAH_COMPILER_VAR_754 = string(compilerState.currentDir);
-                if ((isUnsafe==false)&&(string__hasPrefix(&____BAH_COMPILER_VAR_754,BAH_DIR)==false)&&isRCPpointerType(tp)) {
+                struct string ____BAH_COMPILER_VAR_749 = string(compilerState.currentDir);
+                if ((isUnsafe==false)&&(string__hasPrefix(&____BAH_COMPILER_VAR_749,BAH_DIR)==false)&&isRCPpointerType(tp)) {
 
 #line 1254 "/home/alois/Documents/bah-bah/src/parser.bah"
 if ((strcmp(t.cont, "\04\0\0\0""null") == 0)||(tp[strlen(tp)-1+4]==33)) {
@@ -16209,7 +16193,7 @@ if ((exists==true)) {
 if (__builtin_expect((compTypes(tp,v->type)==false), 0)) {
 
 #line 1308 "/home/alois/Documents/bah-bah/src/parser.bah"
-char** ____BAH_COMPILER_VAR_755 = alloca(5 * sizeof(char*));____BAH_COMPILER_VAR_755[4] = "\01\0\0\0"".";____BAH_COMPILER_VAR_755[3] = v->type;____BAH_COMPILER_VAR_755[2] = "\05\0\0\0"") as ";____BAH_COMPILER_VAR_755[1] = tp;____BAH_COMPILER_VAR_755[0] = "\024\0\0\0""Cannot use {TOKEN} (";char * ____BAH_COMPILER_VAR_756 =__Bah_multiple_concat(____BAH_COMPILER_VAR_755, 5);throwErr(&t,____BAH_COMPILER_VAR_756);
+char** ____BAH_COMPILER_VAR_750 = alloca(5 * sizeof(char*));____BAH_COMPILER_VAR_750[4] = "\01\0\0\0"".";____BAH_COMPILER_VAR_750[3] = v->type;____BAH_COMPILER_VAR_750[2] = "\05\0\0\0"") as ";____BAH_COMPILER_VAR_750[1] = tp;____BAH_COMPILER_VAR_750[0] = "\024\0\0\0""Cannot use {TOKEN} (";char * ____BAH_COMPILER_VAR_751 =__Bah_multiple_concat(____BAH_COMPILER_VAR_750, 5);throwErr(&t,____BAH_COMPILER_VAR_751);
 }
 }
 
@@ -16233,7 +16217,7 @@ else {
 if (__builtin_expect((compTypes(tp,v->type)==false), 0)) {
 
 #line 1316 "/home/alois/Documents/bah-bah/src/parser.bah"
-char** ____BAH_COMPILER_VAR_757 = alloca(5 * sizeof(char*));____BAH_COMPILER_VAR_757[4] = "\01\0\0\0"".";____BAH_COMPILER_VAR_757[3] = v->type;____BAH_COMPILER_VAR_757[2] = "\05\0\0\0"") as ";____BAH_COMPILER_VAR_757[1] = tp;____BAH_COMPILER_VAR_757[0] = "\024\0\0\0""Cannot use {TOKEN} (";char * ____BAH_COMPILER_VAR_758 =__Bah_multiple_concat(____BAH_COMPILER_VAR_757, 5);throwErr(&t,____BAH_COMPILER_VAR_758);
+char** ____BAH_COMPILER_VAR_752 = alloca(5 * sizeof(char*));____BAH_COMPILER_VAR_752[4] = "\01\0\0\0"".";____BAH_COMPILER_VAR_752[3] = v->type;____BAH_COMPILER_VAR_752[2] = "\05\0\0\0"") as ";____BAH_COMPILER_VAR_752[1] = tp;____BAH_COMPILER_VAR_752[0] = "\024\0\0\0""Cannot use {TOKEN} (";char * ____BAH_COMPILER_VAR_753 =__Bah_multiple_concat(____BAH_COMPILER_VAR_752, 5);throwErr(&t,____BAH_COMPILER_VAR_753);
 }
 }
 }
@@ -16261,9 +16245,9 @@ if ((strcmp(elems->vars->data[k]->name, ov->name) == 0)) {
 
 #line 1327 "/home/alois/Documents/bah-bah/src/parser.bah"
 
-    unsigned int ____BAH_COMPILER_VAR_759 = len(elems->deletedVars);
-    __Bah_realocate_arr(elems->deletedVars, ____BAH_COMPILER_VAR_759);
-    elems->deletedVars->data[____BAH_COMPILER_VAR_759] = elems->vars->data[k];
+    unsigned int ____BAH_COMPILER_VAR_754 = len(elems->deletedVars);
+    __Bah_realocate_arr(elems->deletedVars, ____BAH_COMPILER_VAR_754);
+    elems->deletedVars->data[____BAH_COMPILER_VAR_754] = elems->vars->data[k];
 
 #line 1328 "/home/alois/Documents/bah-bah/src/parser.bah"
 delete(elems->vars,k);
@@ -16279,7 +16263,7 @@ break;
 if ((strcmp(t.cont, "\0\0\0\0""") != 0)&&(strHasPrefix(t.cont,"\01\0\0\0""{")==false)) {
 
 #line 1337 "/home/alois/Documents/bah-bah/src/parser.bah"
-char** ____BAH_COMPILER_VAR_760 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_760[1] = t.cont;____BAH_COMPILER_VAR_760[0] = code;char * ____BAH_COMPILER_VAR_761 =__Bah_multiple_concat(____BAH_COMPILER_VAR_760, 2);code = ____BAH_COMPILER_VAR_761;
+char** ____BAH_COMPILER_VAR_755 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_755[1] = t.cont;____BAH_COMPILER_VAR_755[0] = code;char * ____BAH_COMPILER_VAR_756 =__Bah_multiple_concat(____BAH_COMPILER_VAR_755, 2);code = ____BAH_COMPILER_VAR_756;
 
 #line 1338 "/home/alois/Documents/bah-bah/src/parser.bah"
 if ((t.isOper==false)&&(RCPavailable()==true)) {
@@ -16306,7 +16290,7 @@ if ((s!=null)&&(strCount(iv->type,"\01\0\0\0""*")==0)&&(s->isBinding==false)) {
 if ((strCount(iv->name,"\01\0\0\0""*")==0)) {
 
 #line 1346 "/home/alois/Documents/bah-bah/src/parser.bah"
-char** ____BAH_COMPILER_VAR_762 = alloca(6 * sizeof(char*));____BAH_COMPILER_VAR_762[5] = "\05\0\0\0""), 0)";____BAH_COMPILER_VAR_762[4] = iv->name;____BAH_COMPILER_VAR_762[3] = "\011\0\0\0"", sizeof(";____BAH_COMPILER_VAR_762[2] = iv->name;____BAH_COMPILER_VAR_762[1] = "\021\0\0\0""; RCP_scanStack(&";____BAH_COMPILER_VAR_762[0] = code;char * ____BAH_COMPILER_VAR_763 =__Bah_multiple_concat(____BAH_COMPILER_VAR_762, 6);code = ____BAH_COMPILER_VAR_763;
+char** ____BAH_COMPILER_VAR_757 = alloca(6 * sizeof(char*));____BAH_COMPILER_VAR_757[5] = "\05\0\0\0""), 0)";____BAH_COMPILER_VAR_757[4] = iv->name;____BAH_COMPILER_VAR_757[3] = "\011\0\0\0"", sizeof(";____BAH_COMPILER_VAR_757[2] = iv->name;____BAH_COMPILER_VAR_757[1] = "\021\0\0\0""; RCP_scanStack(&";____BAH_COMPILER_VAR_757[0] = code;char * ____BAH_COMPILER_VAR_758 =__Bah_multiple_concat(____BAH_COMPILER_VAR_757, 6);code = ____BAH_COMPILER_VAR_758;
 }
 
 #line 1347 "/home/alois/Documents/bah-bah/src/parser.bah"
@@ -16322,14 +16306,14 @@ if ((string__count(&ivn,"\01\0\0\0""*")>0)) {
 string__replace(&ivn,"\01\0\0\0""*","\0\0\0\0""");
 
 #line 1351 "/home/alois/Documents/bah-bah/src/parser.bah"
-char** ____BAH_COMPILER_VAR_764 = alloca(5 * sizeof(char*));____BAH_COMPILER_VAR_764[4] = "\05\0\0\0""), 0)";____BAH_COMPILER_VAR_764[3] = iv->name;____BAH_COMPILER_VAR_764[2] = "\011\0\0\0"", sizeof(";____BAH_COMPILER_VAR_764[1] = string__str(&ivn);____BAH_COMPILER_VAR_764[0] = "\020\0\0\0""; RCP_scanStack(";char * ____BAH_COMPILER_VAR_765 =__Bah_multiple_concat(____BAH_COMPILER_VAR_764, 5);char** ____BAH_COMPILER_VAR_766 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_766[1] = ____BAH_COMPILER_VAR_765;____BAH_COMPILER_VAR_766[0] = code;char * ____BAH_COMPILER_VAR_767 =__Bah_multiple_concat(____BAH_COMPILER_VAR_766, 2);code = ____BAH_COMPILER_VAR_767;
+char** ____BAH_COMPILER_VAR_759 = alloca(5 * sizeof(char*));____BAH_COMPILER_VAR_759[4] = "\05\0\0\0""), 0)";____BAH_COMPILER_VAR_759[3] = iv->name;____BAH_COMPILER_VAR_759[2] = "\011\0\0\0"", sizeof(";____BAH_COMPILER_VAR_759[1] = string__str(&ivn);____BAH_COMPILER_VAR_759[0] = "\020\0\0\0""; RCP_scanStack(";char * ____BAH_COMPILER_VAR_760 =__Bah_multiple_concat(____BAH_COMPILER_VAR_759, 5);char** ____BAH_COMPILER_VAR_761 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_761[1] = ____BAH_COMPILER_VAR_760;____BAH_COMPILER_VAR_761[0] = code;char * ____BAH_COMPILER_VAR_762 =__Bah_multiple_concat(____BAH_COMPILER_VAR_761, 2);code = ____BAH_COMPILER_VAR_762;
 }
 
 #line 1352 "/home/alois/Documents/bah-bah/src/parser.bah"
 else {
 
 #line 1353 "/home/alois/Documents/bah-bah/src/parser.bah"
-char** ____BAH_COMPILER_VAR_768 = alloca(4 * sizeof(char*));____BAH_COMPILER_VAR_768[3] = "\01\0\0\0"")";____BAH_COMPILER_VAR_768[2] = iv->name;____BAH_COMPILER_VAR_768[1] = "\013\0\0\0""; RCP_incr(";____BAH_COMPILER_VAR_768[0] = code;char * ____BAH_COMPILER_VAR_769 =__Bah_multiple_concat(____BAH_COMPILER_VAR_768, 4);code = ____BAH_COMPILER_VAR_769;
+char** ____BAH_COMPILER_VAR_763 = alloca(4 * sizeof(char*));____BAH_COMPILER_VAR_763[3] = "\01\0\0\0"")";____BAH_COMPILER_VAR_763[2] = iv->name;____BAH_COMPILER_VAR_763[1] = "\013\0\0\0""; RCP_incr(";____BAH_COMPILER_VAR_763[0] = code;char * ____BAH_COMPILER_VAR_764 =__Bah_multiple_concat(____BAH_COMPILER_VAR_763, 4);code = ____BAH_COMPILER_VAR_764;
 }
 }
 }
@@ -16361,7 +16345,7 @@ throwErr(&l->data[i+1],"\061\0\0\0""{TOKEN} not expected after struct initializa
 }
 
 #line 1373 "/home/alois/Documents/bah-bah/src/parser.bah"
-char** ____BAH_COMPILER_VAR_770 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_770[1] = t.cont;____BAH_COMPILER_VAR_770[0] = code;char * ____BAH_COMPILER_VAR_771 =__Bah_multiple_concat(____BAH_COMPILER_VAR_770, 2);code = ____BAH_COMPILER_VAR_771;
+char** ____BAH_COMPILER_VAR_765 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_765[1] = t.cont;____BAH_COMPILER_VAR_765[0] = code;char * ____BAH_COMPILER_VAR_766 =__Bah_multiple_concat(____BAH_COMPILER_VAR_765, 2);code = ____BAH_COMPILER_VAR_766;
 }
 
 #line 1376 "/home/alois/Documents/bah-bah/src/parser.bah"
@@ -16407,8 +16391,8 @@ if ((currentFn!=null)) {
 
 #line 1397 "/home/alois/Documents/bah-bah/src/parser.bah"
 
-                struct string ____BAH_COMPILER_VAR_772 = string(v->name);
-                if ((strcmp(v->name, "\04\0\0\0""this") == 0)||string__hasPrefix(&____BAH_COMPILER_VAR_772,"\06\0\0\0""this->")) {
+                struct string ____BAH_COMPILER_VAR_767 = string(v->name);
+                if ((strcmp(v->name, "\04\0\0\0""this") == 0)||string__hasPrefix(&____BAH_COMPILER_VAR_767,"\06\0\0\0""this->")) {
 
 #line 1398 "/home/alois/Documents/bah-bah/src/parser.bah"
 currentFn->isMut = true;
@@ -16429,7 +16413,7 @@ if (__builtin_expect((strlen(currentType)>0), 0)) {
 struct Tok st = l->data[1];
 
 #line 1406 "/home/alois/Documents/bah-bah/src/parser.bah"
-char** ____BAH_COMPILER_VAR_773 = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_773[2] = "\015\0\0\0""' to {TOKEN}.";____BAH_COMPILER_VAR_773[1] = ft.cont;____BAH_COMPILER_VAR_773[0] = "\060\0\0\0""Cannot change the type of already declared var '";char * ____BAH_COMPILER_VAR_774 =__Bah_multiple_concat(____BAH_COMPILER_VAR_773, 3);throwErr(&st,____BAH_COMPILER_VAR_774);
+char** ____BAH_COMPILER_VAR_768 = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_768[2] = "\015\0\0\0""' to {TOKEN}.";____BAH_COMPILER_VAR_768[1] = ft.cont;____BAH_COMPILER_VAR_768[0] = "\060\0\0\0""Cannot change the type of already declared var '";char * ____BAH_COMPILER_VAR_769 =__Bah_multiple_concat(____BAH_COMPILER_VAR_768, 3);throwErr(&st,____BAH_COMPILER_VAR_769);
 }
 
 #line 1408 "/home/alois/Documents/bah-bah/src/parser.bah"
@@ -16454,19 +16438,19 @@ if ((toVar==true)) {
 if ((RCPselfRef(v)==false)) {
 
 #line 1415 "/home/alois/Documents/bah-bah/src/parser.bah"
-char** ____BAH_COMPILER_VAR_775 = alloca(9 * sizeof(char*));____BAH_COMPILER_VAR_775[8] = "\01\0\0\0"")";____BAH_COMPILER_VAR_775[7] = code;____BAH_COMPILER_VAR_775[6] = "\016\0\0\0""*)RCP_incrIL(&";____BAH_COMPILER_VAR_775[5] = string__str(&cType);____BAH_COMPILER_VAR_775[4] = "\06\0\0\0"") = *(";____BAH_COMPILER_VAR_775[3] = v->name;____BAH_COMPILER_VAR_775[2] = "\016\0\0\0""*)RCP_decrIL(&";____BAH_COMPILER_VAR_775[1] = string__str(&cType);____BAH_COMPILER_VAR_775[0] = "\02\0\0\0""*(";char * ____BAH_COMPILER_VAR_776 =__Bah_multiple_concat(____BAH_COMPILER_VAR_775, 9);code = ____BAH_COMPILER_VAR_776;
+char** ____BAH_COMPILER_VAR_770 = alloca(9 * sizeof(char*));____BAH_COMPILER_VAR_770[8] = "\01\0\0\0"")";____BAH_COMPILER_VAR_770[7] = code;____BAH_COMPILER_VAR_770[6] = "\016\0\0\0""*)RCP_incrIL(&";____BAH_COMPILER_VAR_770[5] = string__str(&cType);____BAH_COMPILER_VAR_770[4] = "\06\0\0\0"") = *(";____BAH_COMPILER_VAR_770[3] = v->name;____BAH_COMPILER_VAR_770[2] = "\016\0\0\0""*)RCP_decrIL(&";____BAH_COMPILER_VAR_770[1] = string__str(&cType);____BAH_COMPILER_VAR_770[0] = "\02\0\0\0""*(";char * ____BAH_COMPILER_VAR_771 =__Bah_multiple_concat(____BAH_COMPILER_VAR_770, 9);code = ____BAH_COMPILER_VAR_771;
 }
 
 #line 1416 "/home/alois/Documents/bah-bah/src/parser.bah"
 else {
 
 #line 1417 "/home/alois/Documents/bah-bah/src/parser.bah"
-struct variable* ____BAH_COMPILER_VAR_777 = memoryAlloc(sizeof(struct variable));
-____BAH_COMPILER_VAR_777->name = "\0\0\0\0""";
-____BAH_COMPILER_VAR_777->type = "\0\0\0\0""";
-____BAH_COMPILER_VAR_777->constVal = "\0\0\0\0""";
-____BAH_COMPILER_VAR_777->from = "\0\0\0\0""";
-struct variable* tmpV = ____BAH_COMPILER_VAR_777;
+struct variable* ____BAH_COMPILER_VAR_772 = memoryAlloc(sizeof(struct variable));
+____BAH_COMPILER_VAR_772->name = "\0\0\0\0""";
+____BAH_COMPILER_VAR_772->type = "\0\0\0\0""";
+____BAH_COMPILER_VAR_772->constVal = "\0\0\0\0""";
+____BAH_COMPILER_VAR_772->from = "\0\0\0\0""";
+struct variable* tmpV = ____BAH_COMPILER_VAR_772;
 
 #line 1418 "/home/alois/Documents/bah-bah/src/parser.bah"
 tmpV->name = genCompilerVar();
@@ -16478,7 +16462,7 @@ tmpV->type = v->type;
 struct rope* dv = decrVar(tmpV,elems);
 
 #line 1421 "/home/alois/Documents/bah-bah/src/parser.bah"
-char** ____BAH_COMPILER_VAR_778 = alloca(13 * sizeof(char*));____BAH_COMPILER_VAR_778[12] = rope__toStr(dv);____BAH_COMPILER_VAR_778[11] = "\02\0\0\0"");";____BAH_COMPILER_VAR_778[10] = code;____BAH_COMPILER_VAR_778[9] = "\016\0\0\0""*)RCP_incrIL(&";____BAH_COMPILER_VAR_778[8] = string__str(&cType);____BAH_COMPILER_VAR_778[7] = "\05\0\0\0"" = *(";____BAH_COMPILER_VAR_778[6] = v->name;____BAH_COMPILER_VAR_778[5] = "\02\0\0\0""; ";____BAH_COMPILER_VAR_778[4] = v->name;____BAH_COMPILER_VAR_778[3] = "\03\0\0\0"" = ";____BAH_COMPILER_VAR_778[2] = tmpV->name;____BAH_COMPILER_VAR_778[1] = "\01\0\0\0"" ";____BAH_COMPILER_VAR_778[0] = string__str(&cType);char * ____BAH_COMPILER_VAR_779 =__Bah_multiple_concat(____BAH_COMPILER_VAR_778, 13);code = ____BAH_COMPILER_VAR_779;
+char** ____BAH_COMPILER_VAR_773 = alloca(13 * sizeof(char*));____BAH_COMPILER_VAR_773[12] = rope__toStr(dv);____BAH_COMPILER_VAR_773[11] = "\02\0\0\0"");";____BAH_COMPILER_VAR_773[10] = code;____BAH_COMPILER_VAR_773[9] = "\016\0\0\0""*)RCP_incrIL(&";____BAH_COMPILER_VAR_773[8] = string__str(&cType);____BAH_COMPILER_VAR_773[7] = "\05\0\0\0"" = *(";____BAH_COMPILER_VAR_773[6] = v->name;____BAH_COMPILER_VAR_773[5] = "\02\0\0\0""; ";____BAH_COMPILER_VAR_773[4] = v->name;____BAH_COMPILER_VAR_773[3] = "\03\0\0\0"" = ";____BAH_COMPILER_VAR_773[2] = tmpV->name;____BAH_COMPILER_VAR_773[1] = "\01\0\0\0"" ";____BAH_COMPILER_VAR_773[0] = string__str(&cType);char * ____BAH_COMPILER_VAR_774 =__Bah_multiple_concat(____BAH_COMPILER_VAR_773, 13);code = ____BAH_COMPILER_VAR_774;
 }
 }
 
@@ -16486,12 +16470,12 @@ char** ____BAH_COMPILER_VAR_778 = alloca(13 * sizeof(char*));____BAH_COMPILER_VA
 else {
 
 #line 1424 "/home/alois/Documents/bah-bah/src/parser.bah"
-struct variable* ____BAH_COMPILER_VAR_780 = memoryAlloc(sizeof(struct variable));
-____BAH_COMPILER_VAR_780->name = "\0\0\0\0""";
-____BAH_COMPILER_VAR_780->type = "\0\0\0\0""";
-____BAH_COMPILER_VAR_780->constVal = "\0\0\0\0""";
-____BAH_COMPILER_VAR_780->from = "\0\0\0\0""";
-struct variable* tmpV = ____BAH_COMPILER_VAR_780;
+struct variable* ____BAH_COMPILER_VAR_775 = memoryAlloc(sizeof(struct variable));
+____BAH_COMPILER_VAR_775->name = "\0\0\0\0""";
+____BAH_COMPILER_VAR_775->type = "\0\0\0\0""";
+____BAH_COMPILER_VAR_775->constVal = "\0\0\0\0""";
+____BAH_COMPILER_VAR_775->from = "\0\0\0\0""";
+struct variable* tmpV = ____BAH_COMPILER_VAR_775;
 
 #line 1425 "/home/alois/Documents/bah-bah/src/parser.bah"
 tmpV->name = genCompilerVar();
@@ -16503,7 +16487,7 @@ tmpV->type = v->type;
 struct rope* dv = decrVar(tmpV,elems);
 
 #line 1428 "/home/alois/Documents/bah-bah/src/parser.bah"
-char** ____BAH_COMPILER_VAR_781 = alloca(11 * sizeof(char*));____BAH_COMPILER_VAR_781[10] = rope__toStr(dv);____BAH_COMPILER_VAR_781[9] = "\01\0\0\0"";";____BAH_COMPILER_VAR_781[8] = code;____BAH_COMPILER_VAR_781[7] = "\03\0\0\0"" = ";____BAH_COMPILER_VAR_781[6] = v->name;____BAH_COMPILER_VAR_781[5] = "\02\0\0\0""; ";____BAH_COMPILER_VAR_781[4] = v->name;____BAH_COMPILER_VAR_781[3] = "\03\0\0\0"" = ";____BAH_COMPILER_VAR_781[2] = tmpV->name;____BAH_COMPILER_VAR_781[1] = "\01\0\0\0"" ";____BAH_COMPILER_VAR_781[0] = string__str(&cType);char * ____BAH_COMPILER_VAR_782 =__Bah_multiple_concat(____BAH_COMPILER_VAR_781, 11);code = ____BAH_COMPILER_VAR_782;
+char** ____BAH_COMPILER_VAR_776 = alloca(11 * sizeof(char*));____BAH_COMPILER_VAR_776[10] = rope__toStr(dv);____BAH_COMPILER_VAR_776[9] = "\01\0\0\0"";";____BAH_COMPILER_VAR_776[8] = code;____BAH_COMPILER_VAR_776[7] = "\03\0\0\0"" = ";____BAH_COMPILER_VAR_776[6] = v->name;____BAH_COMPILER_VAR_776[5] = "\02\0\0\0""; ";____BAH_COMPILER_VAR_776[4] = v->name;____BAH_COMPILER_VAR_776[3] = "\03\0\0\0"" = ";____BAH_COMPILER_VAR_776[2] = tmpV->name;____BAH_COMPILER_VAR_776[1] = "\01\0\0\0"" ";____BAH_COMPILER_VAR_776[0] = string__str(&cType);char * ____BAH_COMPILER_VAR_777 =__Bah_multiple_concat(____BAH_COMPILER_VAR_776, 11);code = ____BAH_COMPILER_VAR_777;
 }
 }
 
@@ -16520,7 +16504,7 @@ if ((s!=null)&&(RCPavailable()==true)&&(RCPselfRef(v)==false)&&(s->isBinding==fa
 if ((strCount(v->name,"\01\0\0\0""*")==0)) {
 
 #line 1434 "/home/alois/Documents/bah-bah/src/parser.bah"
-char** ____BAH_COMPILER_VAR_783 = alloca(5 * sizeof(char*));____BAH_COMPILER_VAR_783[4] = "\07\0\0\0""), 1); ";____BAH_COMPILER_VAR_783[3] = v->name;____BAH_COMPILER_VAR_783[2] = "\011\0\0\0"", sizeof(";____BAH_COMPILER_VAR_783[1] = v->name;____BAH_COMPILER_VAR_783[0] = "\017\0\0\0""RCP_scanStack(&";char * ____BAH_COMPILER_VAR_784 =__Bah_multiple_concat(____BAH_COMPILER_VAR_783, 5);preCode = ____BAH_COMPILER_VAR_784;
+char** ____BAH_COMPILER_VAR_778 = alloca(5 * sizeof(char*));____BAH_COMPILER_VAR_778[4] = "\07\0\0\0""), 1); ";____BAH_COMPILER_VAR_778[3] = v->name;____BAH_COMPILER_VAR_778[2] = "\011\0\0\0"", sizeof(";____BAH_COMPILER_VAR_778[1] = v->name;____BAH_COMPILER_VAR_778[0] = "\017\0\0\0""RCP_scanStack(&";char * ____BAH_COMPILER_VAR_779 =__Bah_multiple_concat(____BAH_COMPILER_VAR_778, 5);preCode = ____BAH_COMPILER_VAR_779;
 }
 
 #line 1435 "/home/alois/Documents/bah-bah/src/parser.bah"
@@ -16533,18 +16517,18 @@ struct string vn = string(v->name);
 string__replace(&vn,"\01\0\0\0""*","\0\0\0\0""");
 
 #line 1438 "/home/alois/Documents/bah-bah/src/parser.bah"
-char** ____BAH_COMPILER_VAR_785 = alloca(5 * sizeof(char*));____BAH_COMPILER_VAR_785[4] = "\07\0\0\0""), 1); ";____BAH_COMPILER_VAR_785[3] = v->name;____BAH_COMPILER_VAR_785[2] = "\011\0\0\0"", sizeof(";____BAH_COMPILER_VAR_785[1] = string__str(&vn);____BAH_COMPILER_VAR_785[0] = "\016\0\0\0""RCP_scanStack(";char * ____BAH_COMPILER_VAR_786 =__Bah_multiple_concat(____BAH_COMPILER_VAR_785, 5);preCode = ____BAH_COMPILER_VAR_786;
+char** ____BAH_COMPILER_VAR_780 = alloca(5 * sizeof(char*));____BAH_COMPILER_VAR_780[4] = "\07\0\0\0""), 1); ";____BAH_COMPILER_VAR_780[3] = v->name;____BAH_COMPILER_VAR_780[2] = "\011\0\0\0"", sizeof(";____BAH_COMPILER_VAR_780[1] = string__str(&vn);____BAH_COMPILER_VAR_780[0] = "\016\0\0\0""RCP_scanStack(";char * ____BAH_COMPILER_VAR_781 =__Bah_multiple_concat(____BAH_COMPILER_VAR_780, 5);preCode = ____BAH_COMPILER_VAR_781;
 }
 
 #line 1440 "/home/alois/Documents/bah-bah/src/parser.bah"
-char** ____BAH_COMPILER_VAR_787 = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_787[2] = code;____BAH_COMPILER_VAR_787[1] = "\03\0\0\0"" = ";____BAH_COMPILER_VAR_787[0] = v->name;char * ____BAH_COMPILER_VAR_788 =__Bah_multiple_concat(____BAH_COMPILER_VAR_787, 3);code = ____BAH_COMPILER_VAR_788;
+char** ____BAH_COMPILER_VAR_782 = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_782[2] = code;____BAH_COMPILER_VAR_782[1] = "\03\0\0\0"" = ";____BAH_COMPILER_VAR_782[0] = v->name;char * ____BAH_COMPILER_VAR_783 =__Bah_multiple_concat(____BAH_COMPILER_VAR_782, 3);code = ____BAH_COMPILER_VAR_783;
 }
 
 #line 1441 "/home/alois/Documents/bah-bah/src/parser.bah"
 else {
 
 #line 1442 "/home/alois/Documents/bah-bah/src/parser.bah"
-char** ____BAH_COMPILER_VAR_789 = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_789[2] = code;____BAH_COMPILER_VAR_789[1] = "\03\0\0\0"" = ";____BAH_COMPILER_VAR_789[0] = v->name;char * ____BAH_COMPILER_VAR_790 =__Bah_multiple_concat(____BAH_COMPILER_VAR_789, 3);code = ____BAH_COMPILER_VAR_790;
+char** ____BAH_COMPILER_VAR_784 = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_784[2] = code;____BAH_COMPILER_VAR_784[1] = "\03\0\0\0"" = ";____BAH_COMPILER_VAR_784[0] = v->name;char * ____BAH_COMPILER_VAR_785 =__Bah_multiple_concat(____BAH_COMPILER_VAR_784, 3);code = ____BAH_COMPILER_VAR_785;
 }
 }
 }
@@ -16559,7 +16543,7 @@ strTrim(&code);
 if ((strHasPrefix(code,"\01\0\0\0""{")==false)) {
 
 #line 1448 "/home/alois/Documents/bah-bah/src/parser.bah"
-char** ____BAH_COMPILER_VAR_791 = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_791[2] = code;____BAH_COMPILER_VAR_791[1] = "\03\0\0\0"" = ";____BAH_COMPILER_VAR_791[0] = v->name;char * ____BAH_COMPILER_VAR_792 =__Bah_multiple_concat(____BAH_COMPILER_VAR_791, 3);code = ____BAH_COMPILER_VAR_792;
+char** ____BAH_COMPILER_VAR_786 = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_786[2] = code;____BAH_COMPILER_VAR_786[1] = "\03\0\0\0"" = ";____BAH_COMPILER_VAR_786[0] = v->name;char * ____BAH_COMPILER_VAR_787 =__Bah_multiple_concat(____BAH_COMPILER_VAR_786, 3);code = ____BAH_COMPILER_VAR_787;
 }
 }
 
@@ -16574,7 +16558,7 @@ code = genArrRealloc(v,preCode,val,elems);
 else {
 
 #line 1454 "/home/alois/Documents/bah-bah/src/parser.bah"
-char** ____BAH_COMPILER_VAR_793 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_793[1] = code;____BAH_COMPILER_VAR_793[0] = preCode;char * ____BAH_COMPILER_VAR_794 =__Bah_multiple_concat(____BAH_COMPILER_VAR_793, 2);code = ____BAH_COMPILER_VAR_794;
+char** ____BAH_COMPILER_VAR_788 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_788[1] = code;____BAH_COMPILER_VAR_788[0] = preCode;char * ____BAH_COMPILER_VAR_789 =__Bah_multiple_concat(____BAH_COMPILER_VAR_788, 2);code = ____BAH_COMPILER_VAR_789;
 }
 }
 
@@ -16639,7 +16623,7 @@ struct variable* arg = tmpfn->args->data[j];
 struct string ct = getCType(arg->type,elems);
 
 #line 1480 "/home/alois/Documents/bah-bah/src/parser.bah"
-char** ____BAH_COMPILER_VAR_795 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_795[1] = string__str(&ct);____BAH_COMPILER_VAR_795[0] = tmpfnArgsCType;char * ____BAH_COMPILER_VAR_796 =__Bah_multiple_concat(____BAH_COMPILER_VAR_795, 2);tmpfnArgsCType = ____BAH_COMPILER_VAR_796;
+char** ____BAH_COMPILER_VAR_790 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_790[1] = string__str(&ct);____BAH_COMPILER_VAR_790[0] = tmpfnArgsCType;char * ____BAH_COMPILER_VAR_791 =__Bah_multiple_concat(____BAH_COMPILER_VAR_790, 2);tmpfnArgsCType = ____BAH_COMPILER_VAR_791;
 
 #line 1481 "/home/alois/Documents/bah-bah/src/parser.bah"
 j = j+1;
@@ -16648,12 +16632,12 @@ j = j+1;
 if ((j<len(tmpfn->args))) {
 
 #line 1483 "/home/alois/Documents/bah-bah/src/parser.bah"
-char** ____BAH_COMPILER_VAR_797 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_797[1] = "\01\0\0\0"",";____BAH_COMPILER_VAR_797[0] = tmpfnArgsCType;char * ____BAH_COMPILER_VAR_798 =__Bah_multiple_concat(____BAH_COMPILER_VAR_797, 2);tmpfnArgsCType = ____BAH_COMPILER_VAR_798;
+char** ____BAH_COMPILER_VAR_792 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_792[1] = "\01\0\0\0"",";____BAH_COMPILER_VAR_792[0] = tmpfnArgsCType;char * ____BAH_COMPILER_VAR_793 =__Bah_multiple_concat(____BAH_COMPILER_VAR_792, 2);tmpfnArgsCType = ____BAH_COMPILER_VAR_793;
 }
 };
 
 #line 1487 "/home/alois/Documents/bah-bah/src/parser.bah"
-char** ____BAH_COMPILER_VAR_799 = alloca(6 * sizeof(char*));____BAH_COMPILER_VAR_799[5] = "\01\0\0\0"")";____BAH_COMPILER_VAR_799[4] = tmpfnArgsCType;____BAH_COMPILER_VAR_799[3] = "\02\0\0\0"")(";____BAH_COMPILER_VAR_799[2] = v->name;____BAH_COMPILER_VAR_799[1] = "\03\0\0\0"" (*";____BAH_COMPILER_VAR_799[0] = string__str(&tmpfnRetCType);char * ____BAH_COMPILER_VAR_800 =__Bah_multiple_concat(____BAH_COMPILER_VAR_799, 6);vct = ____BAH_COMPILER_VAR_800;
+char** ____BAH_COMPILER_VAR_794 = alloca(6 * sizeof(char*));____BAH_COMPILER_VAR_794[5] = "\01\0\0\0"")";____BAH_COMPILER_VAR_794[4] = tmpfnArgsCType;____BAH_COMPILER_VAR_794[3] = "\02\0\0\0"")(";____BAH_COMPILER_VAR_794[2] = v->name;____BAH_COMPILER_VAR_794[1] = "\03\0\0\0"" (*";____BAH_COMPILER_VAR_794[0] = string__str(&tmpfnRetCType);char * ____BAH_COMPILER_VAR_795 =__Bah_multiple_concat(____BAH_COMPILER_VAR_794, 6);vct = ____BAH_COMPILER_VAR_795;
 }
 
 #line 1488 "/home/alois/Documents/bah-bah/src/parser.bah"
@@ -16676,14 +16660,14 @@ struct string cType = getCType(v->type,elems);
 if (isGlobal()) {
 
 #line 1497 "/home/alois/Documents/bah-bah/src/parser.bah"
-char** ____BAH_COMPILER_VAR_801 = alloca(6 * sizeof(char*));____BAH_COMPILER_VAR_801[5] = "\03\0\0\0"");\n";____BAH_COMPILER_VAR_801[4] = code;____BAH_COMPILER_VAR_801[3] = "\016\0\0\0""*)RCP_incrIL(&";____BAH_COMPILER_VAR_801[2] = string__str(&cType);____BAH_COMPILER_VAR_801[1] = "\05\0\0\0"" = *(";____BAH_COMPILER_VAR_801[0] = v->name;char * ____BAH_COMPILER_VAR_802 =__Bah_multiple_concat(____BAH_COMPILER_VAR_801, 6);INIT = rope__add(INIT, rope(____BAH_COMPILER_VAR_802));
+char** ____BAH_COMPILER_VAR_796 = alloca(6 * sizeof(char*));____BAH_COMPILER_VAR_796[5] = "\03\0\0\0"");\n";____BAH_COMPILER_VAR_796[4] = code;____BAH_COMPILER_VAR_796[3] = "\016\0\0\0""*)RCP_incrIL(&";____BAH_COMPILER_VAR_796[2] = string__str(&cType);____BAH_COMPILER_VAR_796[1] = "\05\0\0\0"" = *(";____BAH_COMPILER_VAR_796[0] = v->name;char * ____BAH_COMPILER_VAR_797 =__Bah_multiple_concat(____BAH_COMPILER_VAR_796, 6);INIT = rope__add(INIT, rope(____BAH_COMPILER_VAR_797));
 }
 
 #line 1498 "/home/alois/Documents/bah-bah/src/parser.bah"
 else {
 
 #line 1499 "/home/alois/Documents/bah-bah/src/parser.bah"
-char** ____BAH_COMPILER_VAR_803 = alloca(6 * sizeof(char*));____BAH_COMPILER_VAR_803[5] = "\01\0\0\0"")";____BAH_COMPILER_VAR_803[4] = code;____BAH_COMPILER_VAR_803[3] = "\016\0\0\0""*)RCP_incrIL(&";____BAH_COMPILER_VAR_803[2] = string__str(&cType);____BAH_COMPILER_VAR_803[1] = "\05\0\0\0"" = *(";____BAH_COMPILER_VAR_803[0] = vct;char * ____BAH_COMPILER_VAR_804 =__Bah_multiple_concat(____BAH_COMPILER_VAR_803, 6);code = ____BAH_COMPILER_VAR_804;
+char** ____BAH_COMPILER_VAR_798 = alloca(6 * sizeof(char*));____BAH_COMPILER_VAR_798[5] = "\01\0\0\0"")";____BAH_COMPILER_VAR_798[4] = code;____BAH_COMPILER_VAR_798[3] = "\016\0\0\0""*)RCP_incrIL(&";____BAH_COMPILER_VAR_798[2] = string__str(&cType);____BAH_COMPILER_VAR_798[1] = "\05\0\0\0"" = *(";____BAH_COMPILER_VAR_798[0] = vct;char * ____BAH_COMPILER_VAR_799 =__Bah_multiple_concat(____BAH_COMPILER_VAR_798, 6);code = ____BAH_COMPILER_VAR_799;
 }
 }
 
@@ -16694,14 +16678,14 @@ else {
 if (isGlobal()) {
 
 #line 1503 "/home/alois/Documents/bah-bah/src/parser.bah"
-char** ____BAH_COMPILER_VAR_805 = alloca(4 * sizeof(char*));____BAH_COMPILER_VAR_805[3] = "\02\0\0\0"";\n";____BAH_COMPILER_VAR_805[2] = code;____BAH_COMPILER_VAR_805[1] = "\03\0\0\0"" = ";____BAH_COMPILER_VAR_805[0] = v->name;char * ____BAH_COMPILER_VAR_806 =__Bah_multiple_concat(____BAH_COMPILER_VAR_805, 4);INIT = rope__add(INIT, rope(____BAH_COMPILER_VAR_806));
+char** ____BAH_COMPILER_VAR_800 = alloca(4 * sizeof(char*));____BAH_COMPILER_VAR_800[3] = "\02\0\0\0"";\n";____BAH_COMPILER_VAR_800[2] = code;____BAH_COMPILER_VAR_800[1] = "\03\0\0\0"" = ";____BAH_COMPILER_VAR_800[0] = v->name;char * ____BAH_COMPILER_VAR_801 =__Bah_multiple_concat(____BAH_COMPILER_VAR_800, 4);INIT = rope__add(INIT, rope(____BAH_COMPILER_VAR_801));
 }
 
 #line 1504 "/home/alois/Documents/bah-bah/src/parser.bah"
 else {
 
 #line 1505 "/home/alois/Documents/bah-bah/src/parser.bah"
-char** ____BAH_COMPILER_VAR_807 = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_807[2] = code;____BAH_COMPILER_VAR_807[1] = "\03\0\0\0"" = ";____BAH_COMPILER_VAR_807[0] = vct;char * ____BAH_COMPILER_VAR_808 =__Bah_multiple_concat(____BAH_COMPILER_VAR_807, 3);code = ____BAH_COMPILER_VAR_808;
+char** ____BAH_COMPILER_VAR_802 = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_802[2] = code;____BAH_COMPILER_VAR_802[1] = "\03\0\0\0"" = ";____BAH_COMPILER_VAR_802[0] = vct;char * ____BAH_COMPILER_VAR_803 =__Bah_multiple_concat(____BAH_COMPILER_VAR_802, 3);code = ____BAH_COMPILER_VAR_803;
 }
 }
 }
@@ -16713,7 +16697,7 @@ else {
 if (isRCPpointerType(v->type)&&(shouldOnlyDecl==false)) {
 
 #line 1510 "/home/alois/Documents/bah-bah/src/parser.bah"
-char** ____BAH_COMPILER_VAR_809 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_809[1] = "\06\0\0\0""= null";____BAH_COMPILER_VAR_809[0] = vct;char * ____BAH_COMPILER_VAR_810 =__Bah_multiple_concat(____BAH_COMPILER_VAR_809, 2);code = ____BAH_COMPILER_VAR_810;
+char** ____BAH_COMPILER_VAR_804 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_804[1] = "\06\0\0\0""= null";____BAH_COMPILER_VAR_804[0] = vct;char * ____BAH_COMPILER_VAR_805 =__Bah_multiple_concat(____BAH_COMPILER_VAR_804, 2);code = ____BAH_COMPILER_VAR_805;
 }
 
 #line 1511 "/home/alois/Documents/bah-bah/src/parser.bah"
@@ -16728,7 +16712,7 @@ code = vct;
 if ((shouldOnlyDecl==true)) {
 
 #line 1517 "/home/alois/Documents/bah-bah/src/parser.bah"
-char** ____BAH_COMPILER_VAR_811 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_811[1] = vct;____BAH_COMPILER_VAR_811[0] = "\07\0\0\0""extern ";char * ____BAH_COMPILER_VAR_812 =__Bah_multiple_concat(____BAH_COMPILER_VAR_811, 2);vct = ____BAH_COMPILER_VAR_812;
+char** ____BAH_COMPILER_VAR_806 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_806[1] = vct;____BAH_COMPILER_VAR_806[0] = "\07\0\0\0""extern ";char * ____BAH_COMPILER_VAR_807 =__Bah_multiple_concat(____BAH_COMPILER_VAR_806, 2);vct = ____BAH_COMPILER_VAR_807;
 }
 
 #line 1520 "/home/alois/Documents/bah-bah/src/parser.bah"
@@ -16750,9 +16734,9 @@ v->declScope = elems;
 
 #line 1526 "/home/alois/Documents/bah-bah/src/parser.bah"
 
-    unsigned int ____BAH_COMPILER_VAR_813 = len(elems->vars);
-    __Bah_realocate_arr(elems->vars, ____BAH_COMPILER_VAR_813);
-    elems->vars->data[____BAH_COMPILER_VAR_813] = v;
+    unsigned int ____BAH_COMPILER_VAR_808 = len(elems->vars);
+    __Bah_realocate_arr(elems->vars, ____BAH_COMPILER_VAR_808);
+    elems->vars->data[____BAH_COMPILER_VAR_808] = v;
 
 #line 1528 "/home/alois/Documents/bah-bah/src/parser.bah"
 if (fixMeEnabled()) {
@@ -16762,82 +16746,82 @@ fixMeRegisterVar(v,&ft);
 }
 
 #line 1533 "/home/alois/Documents/bah-bah/src/parser.bah"
-struct variable* ____BAH_COMPILER_VAR_814 = v;
-char ** ____BAH_COMPILER_VAR_816 = (char **)((char*)(____BAH_COMPILER_VAR_814) + offsetof(struct variable, name));
-struct reflectElement ____BAH_COMPILER_VAR_817 = __reflect(____BAH_COMPILER_VAR_816, sizeof(char *), "\010\0\0\0""cpstring", "\04\0\0\0""name", 0, 0, 0, 0, offsetof(struct variable, name));
-char ** ____BAH_COMPILER_VAR_818 = (char **)((char*)(____BAH_COMPILER_VAR_814) + offsetof(struct variable, type));
-struct reflectElement ____BAH_COMPILER_VAR_819 = __reflect(____BAH_COMPILER_VAR_818, sizeof(char *), "\010\0\0\0""cpstring", "\04\0\0\0""type", 0, 0, 0, 0, offsetof(struct variable, type));
-char* ____BAH_COMPILER_VAR_820 = (char*)((char*)(____BAH_COMPILER_VAR_814) + offsetof(struct variable, isConst));
-struct reflectElement ____BAH_COMPILER_VAR_821 = __reflect(____BAH_COMPILER_VAR_820, sizeof(char), "\04\0\0\0""bool", "\07\0\0\0""isConst", 0, 0, 0, 0, offsetof(struct variable, isConst));
-char ** ____BAH_COMPILER_VAR_822 = (char **)((char*)(____BAH_COMPILER_VAR_814) + offsetof(struct variable, constVal));
-struct reflectElement ____BAH_COMPILER_VAR_823 = __reflect(____BAH_COMPILER_VAR_822, sizeof(char *), "\010\0\0\0""cpstring", "\010\0\0\0""constVal", 0, 0, 0, 0, offsetof(struct variable, constVal));
-char* ____BAH_COMPILER_VAR_824 = (char*)((char*)(____BAH_COMPILER_VAR_814) + offsetof(struct variable, isArray));
-struct reflectElement ____BAH_COMPILER_VAR_825 = __reflect(____BAH_COMPILER_VAR_824, sizeof(char), "\04\0\0\0""bool", "\07\0\0\0""isArray", 0, 0, 0, 0, offsetof(struct variable, isArray));
-char ** ____BAH_COMPILER_VAR_826 = (char **)((char*)(____BAH_COMPILER_VAR_814) + offsetof(struct variable, from));
-struct reflectElement ____BAH_COMPILER_VAR_827 = __reflect(____BAH_COMPILER_VAR_826, sizeof(char *), "\010\0\0\0""cpstring", "\04\0\0\0""from", 0, 0, 0, 0, offsetof(struct variable, from));
-void ** ____BAH_COMPILER_VAR_828 = (void **)((char*)(____BAH_COMPILER_VAR_814) + offsetof(struct variable, declScope));
-struct reflectElement ____BAH_COMPILER_VAR_829 = __reflect(____BAH_COMPILER_VAR_828, sizeof(void *), "\03\0\0\0""ptr", "\011\0\0\0""declScope", 0, 0, 0, 0, offsetof(struct variable, declScope));
-char* ____BAH_COMPILER_VAR_830 = (char*)((char*)(____BAH_COMPILER_VAR_814) + offsetof(struct variable, isGlobal));
-struct reflectElement ____BAH_COMPILER_VAR_831 = __reflect(____BAH_COMPILER_VAR_830, sizeof(char), "\04\0\0\0""bool", "\010\0\0\0""isGlobal", 0, 0, 0, 0, offsetof(struct variable, isGlobal));
-struct rope** ____BAH_COMPILER_VAR_832 = (struct rope**)((char*)(____BAH_COMPILER_VAR_814) + offsetof(struct variable, declRope));
-char ** ____BAH_COMPILER_VAR_834 = (char **)((char*)(____BAH_COMPILER_VAR_832) + offsetof(struct rope, str));
-struct reflectElement ____BAH_COMPILER_VAR_835 = __reflect(____BAH_COMPILER_VAR_834, sizeof(char *), "\010\0\0\0""cpstring", "\03\0\0\0""str", 0, 0, 0, 0, offsetof(struct rope, str));
-int* ____BAH_COMPILER_VAR_836 = (int*)((char*)(____BAH_COMPILER_VAR_832) + offsetof(struct rope, totalLen));
-struct reflectElement ____BAH_COMPILER_VAR_837 = __reflect(____BAH_COMPILER_VAR_836, sizeof(int), "\05\0\0\0""int32", "\010\0\0\0""totalLen", 0, 0, 0, 0, offsetof(struct rope, totalLen));
-void ** ____BAH_COMPILER_VAR_838 = (void **)((char*)(____BAH_COMPILER_VAR_832) + offsetof(struct rope, left));
-struct reflectElement ____BAH_COMPILER_VAR_839 = __reflect(____BAH_COMPILER_VAR_838, sizeof(void *), "\03\0\0\0""ptr", "\04\0\0\0""left", 0, 0, 0, 0, offsetof(struct rope, left));
-void ** ____BAH_COMPILER_VAR_840 = (void **)((char*)(____BAH_COMPILER_VAR_832) + offsetof(struct rope, right));
-struct reflectElement ____BAH_COMPILER_VAR_841 = __reflect(____BAH_COMPILER_VAR_840, sizeof(void *), "\03\0\0\0""ptr", "\05\0\0\0""right", 0, 0, 0, 0, offsetof(struct rope, right));
+struct variable* ____BAH_COMPILER_VAR_809 = v;
+char ** ____BAH_COMPILER_VAR_811 = (char **)((char*)(____BAH_COMPILER_VAR_809) + offsetof(struct variable, name));
+struct reflectElement ____BAH_COMPILER_VAR_812 = __reflect(____BAH_COMPILER_VAR_811, sizeof(char *), "\010\0\0\0""cpstring", "\04\0\0\0""name", 0, 0, 0, 0, offsetof(struct variable, name));
+char ** ____BAH_COMPILER_VAR_813 = (char **)((char*)(____BAH_COMPILER_VAR_809) + offsetof(struct variable, type));
+struct reflectElement ____BAH_COMPILER_VAR_814 = __reflect(____BAH_COMPILER_VAR_813, sizeof(char *), "\010\0\0\0""cpstring", "\04\0\0\0""type", 0, 0, 0, 0, offsetof(struct variable, type));
+char* ____BAH_COMPILER_VAR_815 = (char*)((char*)(____BAH_COMPILER_VAR_809) + offsetof(struct variable, isConst));
+struct reflectElement ____BAH_COMPILER_VAR_816 = __reflect(____BAH_COMPILER_VAR_815, sizeof(char), "\04\0\0\0""bool", "\07\0\0\0""isConst", 0, 0, 0, 0, offsetof(struct variable, isConst));
+char ** ____BAH_COMPILER_VAR_817 = (char **)((char*)(____BAH_COMPILER_VAR_809) + offsetof(struct variable, constVal));
+struct reflectElement ____BAH_COMPILER_VAR_818 = __reflect(____BAH_COMPILER_VAR_817, sizeof(char *), "\010\0\0\0""cpstring", "\010\0\0\0""constVal", 0, 0, 0, 0, offsetof(struct variable, constVal));
+char* ____BAH_COMPILER_VAR_819 = (char*)((char*)(____BAH_COMPILER_VAR_809) + offsetof(struct variable, isArray));
+struct reflectElement ____BAH_COMPILER_VAR_820 = __reflect(____BAH_COMPILER_VAR_819, sizeof(char), "\04\0\0\0""bool", "\07\0\0\0""isArray", 0, 0, 0, 0, offsetof(struct variable, isArray));
+char ** ____BAH_COMPILER_VAR_821 = (char **)((char*)(____BAH_COMPILER_VAR_809) + offsetof(struct variable, from));
+struct reflectElement ____BAH_COMPILER_VAR_822 = __reflect(____BAH_COMPILER_VAR_821, sizeof(char *), "\010\0\0\0""cpstring", "\04\0\0\0""from", 0, 0, 0, 0, offsetof(struct variable, from));
+void ** ____BAH_COMPILER_VAR_823 = (void **)((char*)(____BAH_COMPILER_VAR_809) + offsetof(struct variable, declScope));
+struct reflectElement ____BAH_COMPILER_VAR_824 = __reflect(____BAH_COMPILER_VAR_823, sizeof(void *), "\03\0\0\0""ptr", "\011\0\0\0""declScope", 0, 0, 0, 0, offsetof(struct variable, declScope));
+char* ____BAH_COMPILER_VAR_825 = (char*)((char*)(____BAH_COMPILER_VAR_809) + offsetof(struct variable, isGlobal));
+struct reflectElement ____BAH_COMPILER_VAR_826 = __reflect(____BAH_COMPILER_VAR_825, sizeof(char), "\04\0\0\0""bool", "\010\0\0\0""isGlobal", 0, 0, 0, 0, offsetof(struct variable, isGlobal));
+struct rope** ____BAH_COMPILER_VAR_827 = (struct rope**)((char*)(____BAH_COMPILER_VAR_809) + offsetof(struct variable, declRope));
+char ** ____BAH_COMPILER_VAR_829 = (char **)((char*)(____BAH_COMPILER_VAR_827) + offsetof(struct rope, str));
+struct reflectElement ____BAH_COMPILER_VAR_830 = __reflect(____BAH_COMPILER_VAR_829, sizeof(char *), "\010\0\0\0""cpstring", "\03\0\0\0""str", 0, 0, 0, 0, offsetof(struct rope, str));
+int* ____BAH_COMPILER_VAR_831 = (int*)((char*)(____BAH_COMPILER_VAR_827) + offsetof(struct rope, totalLen));
+struct reflectElement ____BAH_COMPILER_VAR_832 = __reflect(____BAH_COMPILER_VAR_831, sizeof(int), "\05\0\0\0""int32", "\010\0\0\0""totalLen", 0, 0, 0, 0, offsetof(struct rope, totalLen));
+void ** ____BAH_COMPILER_VAR_833 = (void **)((char*)(____BAH_COMPILER_VAR_827) + offsetof(struct rope, left));
+struct reflectElement ____BAH_COMPILER_VAR_834 = __reflect(____BAH_COMPILER_VAR_833, sizeof(void *), "\03\0\0\0""ptr", "\04\0\0\0""left", 0, 0, 0, 0, offsetof(struct rope, left));
+void ** ____BAH_COMPILER_VAR_835 = (void **)((char*)(____BAH_COMPILER_VAR_827) + offsetof(struct rope, right));
+struct reflectElement ____BAH_COMPILER_VAR_836 = __reflect(____BAH_COMPILER_VAR_835, sizeof(void *), "\03\0\0\0""ptr", "\05\0\0\0""right", 0, 0, 0, 0, offsetof(struct rope, right));
 
-        array(struct reflectElement) * ____BAH_COMPILER_VAR_833 = memoryAlloc(sizeof(array(struct reflectElement)));
-        ____BAH_COMPILER_VAR_833->elemSize = sizeof(struct reflectElement);
-        ____BAH_COMPILER_VAR_833->length = 4;
-        ____BAH_COMPILER_VAR_833->data = memoryAlloc(____BAH_COMPILER_VAR_833->length * ____BAH_COMPILER_VAR_833->elemSize);
-        ____BAH_COMPILER_VAR_833->data[0] = ____BAH_COMPILER_VAR_835;
-____BAH_COMPILER_VAR_833->data[1] = ____BAH_COMPILER_VAR_837;
-____BAH_COMPILER_VAR_833->data[2] = ____BAH_COMPILER_VAR_839;
-____BAH_COMPILER_VAR_833->data[3] = ____BAH_COMPILER_VAR_841;
-struct reflectElement ____BAH_COMPILER_VAR_842 = __reflect(____BAH_COMPILER_VAR_832, sizeof(struct rope), "\05\0\0\0""rope*", "\010\0\0\0""declRope", 0, 0, 1, ____BAH_COMPILER_VAR_833, offsetof(struct variable, declRope));
-char* ____BAH_COMPILER_VAR_843 = (char*)((char*)(____BAH_COMPILER_VAR_814) + offsetof(struct variable, canBeNull));
-struct reflectElement ____BAH_COMPILER_VAR_844 = __reflect(____BAH_COMPILER_VAR_843, sizeof(char), "\04\0\0\0""bool", "\011\0\0\0""canBeNull", 0, 0, 0, 0, offsetof(struct variable, canBeNull));
-void ** ____BAH_COMPILER_VAR_845 = (void **)((char*)(____BAH_COMPILER_VAR_814) + offsetof(struct variable, iterScope));
-struct reflectElement ____BAH_COMPILER_VAR_846 = __reflect(____BAH_COMPILER_VAR_845, sizeof(void *), "\03\0\0\0""ptr", "\011\0\0\0""iterScope", 0, 0, 0, 0, offsetof(struct variable, iterScope));
-char* ____BAH_COMPILER_VAR_847 = (char*)((char*)(____BAH_COMPILER_VAR_814) + offsetof(struct variable, canBeReg));
-struct reflectElement ____BAH_COMPILER_VAR_848 = __reflect(____BAH_COMPILER_VAR_847, sizeof(char), "\04\0\0\0""bool", "\010\0\0\0""canBeReg", 0, 0, 0, 0, offsetof(struct variable, canBeReg));
-char* ____BAH_COMPILER_VAR_849 = (char*)((char*)(____BAH_COMPILER_VAR_814) + offsetof(struct variable, isReg));
-struct reflectElement ____BAH_COMPILER_VAR_850 = __reflect(____BAH_COMPILER_VAR_849, sizeof(char), "\04\0\0\0""bool", "\05\0\0\0""isReg", 0, 0, 0, 0, offsetof(struct variable, isReg));
-void ** ____BAH_COMPILER_VAR_851 = (void **)((char*)(____BAH_COMPILER_VAR_814) + offsetof(struct variable, lastSet));
-struct reflectElement ____BAH_COMPILER_VAR_852 = __reflect(____BAH_COMPILER_VAR_851, sizeof(void *), "\03\0\0\0""ptr", "\07\0\0\0""lastSet", 0, 0, 0, 0, offsetof(struct variable, lastSet));
-char* ____BAH_COMPILER_VAR_853 = (char*)((char*)(____BAH_COMPILER_VAR_814) + offsetof(struct variable, isArg));
-struct reflectElement ____BAH_COMPILER_VAR_854 = __reflect(____BAH_COMPILER_VAR_853, sizeof(char), "\04\0\0\0""bool", "\05\0\0\0""isArg", 0, 0, 0, 0, offsetof(struct variable, isArg));
+        array(struct reflectElement) * ____BAH_COMPILER_VAR_828 = memoryAlloc(sizeof(array(struct reflectElement)));
+        ____BAH_COMPILER_VAR_828->elemSize = sizeof(struct reflectElement);
+        ____BAH_COMPILER_VAR_828->length = 4;
+        ____BAH_COMPILER_VAR_828->data = memoryAlloc(____BAH_COMPILER_VAR_828->length * ____BAH_COMPILER_VAR_828->elemSize);
+        ____BAH_COMPILER_VAR_828->data[0] = ____BAH_COMPILER_VAR_830;
+____BAH_COMPILER_VAR_828->data[1] = ____BAH_COMPILER_VAR_832;
+____BAH_COMPILER_VAR_828->data[2] = ____BAH_COMPILER_VAR_834;
+____BAH_COMPILER_VAR_828->data[3] = ____BAH_COMPILER_VAR_836;
+struct reflectElement ____BAH_COMPILER_VAR_837 = __reflect(____BAH_COMPILER_VAR_827, sizeof(struct rope), "\05\0\0\0""rope*", "\010\0\0\0""declRope", 0, 0, 1, ____BAH_COMPILER_VAR_828, offsetof(struct variable, declRope));
+char* ____BAH_COMPILER_VAR_838 = (char*)((char*)(____BAH_COMPILER_VAR_809) + offsetof(struct variable, canBeNull));
+struct reflectElement ____BAH_COMPILER_VAR_839 = __reflect(____BAH_COMPILER_VAR_838, sizeof(char), "\04\0\0\0""bool", "\011\0\0\0""canBeNull", 0, 0, 0, 0, offsetof(struct variable, canBeNull));
+void ** ____BAH_COMPILER_VAR_840 = (void **)((char*)(____BAH_COMPILER_VAR_809) + offsetof(struct variable, iterScope));
+struct reflectElement ____BAH_COMPILER_VAR_841 = __reflect(____BAH_COMPILER_VAR_840, sizeof(void *), "\03\0\0\0""ptr", "\011\0\0\0""iterScope", 0, 0, 0, 0, offsetof(struct variable, iterScope));
+char* ____BAH_COMPILER_VAR_842 = (char*)((char*)(____BAH_COMPILER_VAR_809) + offsetof(struct variable, canBeReg));
+struct reflectElement ____BAH_COMPILER_VAR_843 = __reflect(____BAH_COMPILER_VAR_842, sizeof(char), "\04\0\0\0""bool", "\010\0\0\0""canBeReg", 0, 0, 0, 0, offsetof(struct variable, canBeReg));
+char* ____BAH_COMPILER_VAR_844 = (char*)((char*)(____BAH_COMPILER_VAR_809) + offsetof(struct variable, isReg));
+struct reflectElement ____BAH_COMPILER_VAR_845 = __reflect(____BAH_COMPILER_VAR_844, sizeof(char), "\04\0\0\0""bool", "\05\0\0\0""isReg", 0, 0, 0, 0, offsetof(struct variable, isReg));
+void ** ____BAH_COMPILER_VAR_846 = (void **)((char*)(____BAH_COMPILER_VAR_809) + offsetof(struct variable, lastSet));
+struct reflectElement ____BAH_COMPILER_VAR_847 = __reflect(____BAH_COMPILER_VAR_846, sizeof(void *), "\03\0\0\0""ptr", "\07\0\0\0""lastSet", 0, 0, 0, 0, offsetof(struct variable, lastSet));
+char* ____BAH_COMPILER_VAR_848 = (char*)((char*)(____BAH_COMPILER_VAR_809) + offsetof(struct variable, isArg));
+struct reflectElement ____BAH_COMPILER_VAR_849 = __reflect(____BAH_COMPILER_VAR_848, sizeof(char), "\04\0\0\0""bool", "\05\0\0\0""isArg", 0, 0, 0, 0, offsetof(struct variable, isArg));
 
-        array(struct reflectElement) * ____BAH_COMPILER_VAR_815 = memoryAlloc(sizeof(array(struct reflectElement)));
-        ____BAH_COMPILER_VAR_815->elemSize = sizeof(struct reflectElement);
-        ____BAH_COMPILER_VAR_815->length = 15;
-        ____BAH_COMPILER_VAR_815->data = memoryAlloc(____BAH_COMPILER_VAR_815->length * ____BAH_COMPILER_VAR_815->elemSize);
-        ____BAH_COMPILER_VAR_815->data[0] = ____BAH_COMPILER_VAR_817;
-____BAH_COMPILER_VAR_815->data[1] = ____BAH_COMPILER_VAR_819;
-____BAH_COMPILER_VAR_815->data[2] = ____BAH_COMPILER_VAR_821;
-____BAH_COMPILER_VAR_815->data[3] = ____BAH_COMPILER_VAR_823;
-____BAH_COMPILER_VAR_815->data[4] = ____BAH_COMPILER_VAR_825;
-____BAH_COMPILER_VAR_815->data[5] = ____BAH_COMPILER_VAR_827;
-____BAH_COMPILER_VAR_815->data[6] = ____BAH_COMPILER_VAR_829;
-____BAH_COMPILER_VAR_815->data[7] = ____BAH_COMPILER_VAR_831;
-____BAH_COMPILER_VAR_815->data[8] = ____BAH_COMPILER_VAR_842;
-____BAH_COMPILER_VAR_815->data[9] = ____BAH_COMPILER_VAR_844;
-____BAH_COMPILER_VAR_815->data[10] = ____BAH_COMPILER_VAR_846;
-____BAH_COMPILER_VAR_815->data[11] = ____BAH_COMPILER_VAR_848;
-____BAH_COMPILER_VAR_815->data[12] = ____BAH_COMPILER_VAR_850;
-____BAH_COMPILER_VAR_815->data[13] = ____BAH_COMPILER_VAR_852;
-____BAH_COMPILER_VAR_815->data[14] = ____BAH_COMPILER_VAR_854;
-struct reflectElement ____BAH_COMPILER_VAR_855 = __reflect(____BAH_COMPILER_VAR_814, sizeof(struct variable), "\011\0\0\0""variable*", "\01\0\0\0""v", 0, 0, 1, ____BAH_COMPILER_VAR_815, 0);
-debugPrint("\017\0\0\0""var_declaration",ft.line,____BAH_COMPILER_VAR_855);
+        array(struct reflectElement) * ____BAH_COMPILER_VAR_810 = memoryAlloc(sizeof(array(struct reflectElement)));
+        ____BAH_COMPILER_VAR_810->elemSize = sizeof(struct reflectElement);
+        ____BAH_COMPILER_VAR_810->length = 15;
+        ____BAH_COMPILER_VAR_810->data = memoryAlloc(____BAH_COMPILER_VAR_810->length * ____BAH_COMPILER_VAR_810->elemSize);
+        ____BAH_COMPILER_VAR_810->data[0] = ____BAH_COMPILER_VAR_812;
+____BAH_COMPILER_VAR_810->data[1] = ____BAH_COMPILER_VAR_814;
+____BAH_COMPILER_VAR_810->data[2] = ____BAH_COMPILER_VAR_816;
+____BAH_COMPILER_VAR_810->data[3] = ____BAH_COMPILER_VAR_818;
+____BAH_COMPILER_VAR_810->data[4] = ____BAH_COMPILER_VAR_820;
+____BAH_COMPILER_VAR_810->data[5] = ____BAH_COMPILER_VAR_822;
+____BAH_COMPILER_VAR_810->data[6] = ____BAH_COMPILER_VAR_824;
+____BAH_COMPILER_VAR_810->data[7] = ____BAH_COMPILER_VAR_826;
+____BAH_COMPILER_VAR_810->data[8] = ____BAH_COMPILER_VAR_837;
+____BAH_COMPILER_VAR_810->data[9] = ____BAH_COMPILER_VAR_839;
+____BAH_COMPILER_VAR_810->data[10] = ____BAH_COMPILER_VAR_841;
+____BAH_COMPILER_VAR_810->data[11] = ____BAH_COMPILER_VAR_843;
+____BAH_COMPILER_VAR_810->data[12] = ____BAH_COMPILER_VAR_845;
+____BAH_COMPILER_VAR_810->data[13] = ____BAH_COMPILER_VAR_847;
+____BAH_COMPILER_VAR_810->data[14] = ____BAH_COMPILER_VAR_849;
+struct reflectElement ____BAH_COMPILER_VAR_850 = __reflect(____BAH_COMPILER_VAR_809, sizeof(struct variable), "\011\0\0\0""variable*", "\01\0\0\0""v", 0, 0, 1, ____BAH_COMPILER_VAR_810, 0);
+debugPrint("\017\0\0\0""var_declaration",ft.line,____BAH_COMPILER_VAR_850);
 
 #line 1536 "/home/alois/Documents/bah-bah/src/parser.bah"
 if (isGlobal()) {
 
 #line 1537 "/home/alois/Documents/bah-bah/src/parser.bah"
-char** ____BAH_COMPILER_VAR_856 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_856[1] = "\02\0\0\0"";\n";____BAH_COMPILER_VAR_856[0] = vct;char * ____BAH_COMPILER_VAR_857 =__Bah_multiple_concat(____BAH_COMPILER_VAR_856, 2);OUTPUT = rope__add(OUTPUT, rope(____BAH_COMPILER_VAR_857));
+char** ____BAH_COMPILER_VAR_851 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_851[1] = "\02\0\0\0"";\n";____BAH_COMPILER_VAR_851[0] = vct;char * ____BAH_COMPILER_VAR_852 =__Bah_multiple_concat(____BAH_COMPILER_VAR_851, 2);OUTPUT = rope__add(OUTPUT, rope(____BAH_COMPILER_VAR_852));
 }
 }
 
@@ -16859,7 +16843,7 @@ NEXT_LINE = "\0\0\0\0""";
 else {
 
 #line 1547 "/home/alois/Documents/bah-bah/src/parser.bah"
-char** ____BAH_COMPILER_VAR_858 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_858[1] = "\02\0\0\0"";\n";____BAH_COMPILER_VAR_858[0] = code;char * ____BAH_COMPILER_VAR_859 =__Bah_multiple_concat(____BAH_COMPILER_VAR_858, 2);struct rope* declR = rope(____BAH_COMPILER_VAR_859);
+char** ____BAH_COMPILER_VAR_853 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_853[1] = "\02\0\0\0"";\n";____BAH_COMPILER_VAR_853[0] = code;char * ____BAH_COMPILER_VAR_854 =__Bah_multiple_concat(____BAH_COMPILER_VAR_853, 2);struct rope* declR = rope(____BAH_COMPILER_VAR_854);
 
 #line 1548 "/home/alois/Documents/bah-bah/src/parser.bah"
 if ((exists==false)) {
@@ -16901,7 +16885,7 @@ struct variable* arg = tmpfn->args->data[j];
 struct string ct = getCType(arg->type,elems);
 
 #line 1569 "/home/alois/Documents/bah-bah/src/parser.bah"
-char** ____BAH_COMPILER_VAR_860 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_860[1] = string__str(&ct);____BAH_COMPILER_VAR_860[0] = tmpfnArgsCType;char * ____BAH_COMPILER_VAR_861 =__Bah_multiple_concat(____BAH_COMPILER_VAR_860, 2);tmpfnArgsCType = ____BAH_COMPILER_VAR_861;
+char** ____BAH_COMPILER_VAR_855 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_855[1] = string__str(&ct);____BAH_COMPILER_VAR_855[0] = tmpfnArgsCType;char * ____BAH_COMPILER_VAR_856 =__Bah_multiple_concat(____BAH_COMPILER_VAR_855, 2);tmpfnArgsCType = ____BAH_COMPILER_VAR_856;
 
 #line 1570 "/home/alois/Documents/bah-bah/src/parser.bah"
 j = j+1;
@@ -16910,16 +16894,16 @@ j = j+1;
 if ((j<len(tmpfn->args))) {
 
 #line 1572 "/home/alois/Documents/bah-bah/src/parser.bah"
-char** ____BAH_COMPILER_VAR_862 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_862[1] = "\01\0\0\0"",";____BAH_COMPILER_VAR_862[0] = tmpfnArgsCType;char * ____BAH_COMPILER_VAR_863 =__Bah_multiple_concat(____BAH_COMPILER_VAR_862, 2);tmpfnArgsCType = ____BAH_COMPILER_VAR_863;
+char** ____BAH_COMPILER_VAR_857 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_857[1] = "\01\0\0\0"",";____BAH_COMPILER_VAR_857[0] = tmpfnArgsCType;char * ____BAH_COMPILER_VAR_858 =__Bah_multiple_concat(____BAH_COMPILER_VAR_857, 2);tmpfnArgsCType = ____BAH_COMPILER_VAR_858;
 }
 };
 
 #line 1576 "/home/alois/Documents/bah-bah/src/parser.bah"
-char** ____BAH_COMPILER_VAR_864 = alloca(6 * sizeof(char*));____BAH_COMPILER_VAR_864[5] = "\01\0\0\0"")";____BAH_COMPILER_VAR_864[4] = tmpfnArgsCType;____BAH_COMPILER_VAR_864[3] = "\02\0\0\0"")(";____BAH_COMPILER_VAR_864[2] = elemName;____BAH_COMPILER_VAR_864[1] = "\03\0\0\0"" (*";____BAH_COMPILER_VAR_864[0] = string__str(&tmpfnRetCType);char * ____BAH_COMPILER_VAR_865 =__Bah_multiple_concat(____BAH_COMPILER_VAR_864, 6);return ____BAH_COMPILER_VAR_865;
+char** ____BAH_COMPILER_VAR_859 = alloca(6 * sizeof(char*));____BAH_COMPILER_VAR_859[5] = "\01\0\0\0"")";____BAH_COMPILER_VAR_859[4] = tmpfnArgsCType;____BAH_COMPILER_VAR_859[3] = "\02\0\0\0"")(";____BAH_COMPILER_VAR_859[2] = elemName;____BAH_COMPILER_VAR_859[1] = "\03\0\0\0"" (*";____BAH_COMPILER_VAR_859[0] = string__str(&tmpfnRetCType);char * ____BAH_COMPILER_VAR_860 =__Bah_multiple_concat(____BAH_COMPILER_VAR_859, 6);return ____BAH_COMPILER_VAR_860;
 };
 
 #line 1580 "/home/alois/Documents/bah-bah/src/parser.bah"
-char ____BAH_COMPILER_VAR_876(array(char *)* arr, char * el) {
+char ____BAH_COMPILER_VAR_871(array(char *)* arr, char * el) {
         if (arr == 0) {
             return 0;
         };
@@ -16930,7 +16914,7 @@ char ____BAH_COMPILER_VAR_876(array(char *)* arr, char * el) {
         }
         return 0;
         }
-char ____BAH_COMPILER_VAR_895(array(char *)* arr, char * el) {
+char ____BAH_COMPILER_VAR_890(array(char *)* arr, char * el) {
         if (arr == 0) {
             return 0;
         };
@@ -16960,7 +16944,7 @@ throwErr(&ft,"\044\0\0\0""Cannot use {TOKEN} as function name.");
 }
 
 #line 1588 "/home/alois/Documents/bah-bah/src/parser.bah"
-char** ____BAH_COMPILER_VAR_866 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_866[1] = ft.cont;____BAH_COMPILER_VAR_866[0] = prev;char * ____BAH_COMPILER_VAR_867 =__Bah_multiple_concat(____BAH_COMPILER_VAR_866, 2);fn->name = ____BAH_COMPILER_VAR_867;
+char** ____BAH_COMPILER_VAR_861 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_861[1] = ft.cont;____BAH_COMPILER_VAR_861[0] = prev;char * ____BAH_COMPILER_VAR_862 =__Bah_multiple_concat(____BAH_COMPILER_VAR_861, 2);fn->name = ____BAH_COMPILER_VAR_862;
 
 #line 1590 "/home/alois/Documents/bah-bah/src/parser.bah"
 array(struct variable*)* arguments = memoryAlloc(sizeof(array(struct variable*)));
@@ -16969,7 +16953,7 @@ arguments->length = 0;
 arguments->elemSize = sizeof(struct variable*);
 
 #line 1592 "/home/alois/Documents/bah-bah/src/parser.bah"
-char** ____BAH_COMPILER_VAR_868 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_868[1] = "\01\0\0\0""(";____BAH_COMPILER_VAR_868[0] = fn->name;char * ____BAH_COMPILER_VAR_869 =__Bah_multiple_concat(____BAH_COMPILER_VAR_868, 2);char * code = ____BAH_COMPILER_VAR_869;
+char** ____BAH_COMPILER_VAR_863 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_863[1] = "\01\0\0\0""(";____BAH_COMPILER_VAR_863[0] = fn->name;char * ____BAH_COMPILER_VAR_864 =__Bah_multiple_concat(____BAH_COMPILER_VAR_863, 2);char * code = ____BAH_COMPILER_VAR_864;
 
 #line 1595 "/home/alois/Documents/bah-bah/src/parser.bah"
 j = j+2;
@@ -17058,7 +17042,7 @@ break;
 else {
 
 #line 1629 "/home/alois/Documents/bah-bah/src/parser.bah"
-char** ____BAH_COMPILER_VAR_870 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_870[1] = t.cont;____BAH_COMPILER_VAR_870[0] = argType;char * ____BAH_COMPILER_VAR_871 =__Bah_multiple_concat(____BAH_COMPILER_VAR_870, 2);argType = ____BAH_COMPILER_VAR_871;
+char** ____BAH_COMPILER_VAR_865 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_865[1] = t.cont;____BAH_COMPILER_VAR_865[0] = argType;char * ____BAH_COMPILER_VAR_866 =__Bah_multiple_concat(____BAH_COMPILER_VAR_865, 2);argType = ____BAH_COMPILER_VAR_866;
 }
 }
 
@@ -17077,12 +17061,12 @@ j = j+1;
 };
 
 #line 1638 "/home/alois/Documents/bah-bah/src/parser.bah"
-struct variable* ____BAH_COMPILER_VAR_872 = memoryAlloc(sizeof(struct variable));
-____BAH_COMPILER_VAR_872->name = "\0\0\0\0""";
-____BAH_COMPILER_VAR_872->type = "\0\0\0\0""";
-____BAH_COMPILER_VAR_872->constVal = "\0\0\0\0""";
-____BAH_COMPILER_VAR_872->from = "\0\0\0\0""";
-struct variable* argument = ____BAH_COMPILER_VAR_872;
+struct variable* ____BAH_COMPILER_VAR_867 = memoryAlloc(sizeof(struct variable));
+____BAH_COMPILER_VAR_867->name = "\0\0\0\0""";
+____BAH_COMPILER_VAR_867->type = "\0\0\0\0""";
+____BAH_COMPILER_VAR_867->constVal = "\0\0\0\0""";
+____BAH_COMPILER_VAR_867->from = "\0\0\0\0""";
+struct variable* argument = ____BAH_COMPILER_VAR_867;
 
 #line 1639 "/home/alois/Documents/bah-bah/src/parser.bah"
 argument->name = argName;
@@ -17092,9 +17076,9 @@ argument->type = argType;
 
 #line 1641 "/home/alois/Documents/bah-bah/src/parser.bah"
 
-    unsigned int ____BAH_COMPILER_VAR_873 = len(arguments);
-    __Bah_realocate_arr(arguments, ____BAH_COMPILER_VAR_873);
-    arguments->data[____BAH_COMPILER_VAR_873] = argument;
+    unsigned int ____BAH_COMPILER_VAR_868 = len(arguments);
+    __Bah_realocate_arr(arguments, ____BAH_COMPILER_VAR_868);
+    arguments->data[____BAH_COMPILER_VAR_868] = argument;
 
 #line 1644 "/home/alois/Documents/bah-bah/src/parser.bah"
 struct string argCType = getCType(argType,elems);
@@ -17125,22 +17109,22 @@ string__trimRight(&cfrt,nbast);
 string__replace(&cfrt,"\02\0\0\0""[]","\05\0\0\0""_ARR_");
 
 #line 1655 "/home/alois/Documents/bah-bah/src/parser.bah"
-char** ____BAH_COMPILER_VAR_874 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_874[1] = string__str(&cfrt);____BAH_COMPILER_VAR_874[0] = "\017\0\0\0""__BAH_ARR_TYPE_";char * ____BAH_COMPILER_VAR_875 =__Bah_multiple_concat(____BAH_COMPILER_VAR_874, 2);newArgType = ____BAH_COMPILER_VAR_875;
+char** ____BAH_COMPILER_VAR_869 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_869[1] = string__str(&cfrt);____BAH_COMPILER_VAR_869[0] = "\017\0\0\0""__BAH_ARR_TYPE_";char * ____BAH_COMPILER_VAR_870 =__Bah_multiple_concat(____BAH_COMPILER_VAR_869, 2);newArgType = ____BAH_COMPILER_VAR_870;
 
 #line 1656 "/home/alois/Documents/bah-bah/src/parser.bah"
 array(char *)* csatd = compilerState.arrTypesDecl;
 
 #line 1657 "/home/alois/Documents/bah-bah/src/parser.bah"
-if ((____BAH_COMPILER_VAR_876(csatd, newArgType)==false)) {
+if ((____BAH_COMPILER_VAR_871(csatd, newArgType)==false)) {
 
 #line 1658 "/home/alois/Documents/bah-bah/src/parser.bah"
 
-    unsigned int ____BAH_COMPILER_VAR_877 = len(csatd);
-    __Bah_realocate_arr(csatd, ____BAH_COMPILER_VAR_877);
-    csatd->data[____BAH_COMPILER_VAR_877] = newArgType;
+    unsigned int ____BAH_COMPILER_VAR_872 = len(csatd);
+    __Bah_realocate_arr(csatd, ____BAH_COMPILER_VAR_872);
+    csatd->data[____BAH_COMPILER_VAR_872] = newArgType;
 
 #line 1659 "/home/alois/Documents/bah-bah/src/parser.bah"
-char** ____BAH_COMPILER_VAR_878 = alloca(6 * sizeof(char*));____BAH_COMPILER_VAR_878[5] = "\02\0\0\0"";\n";____BAH_COMPILER_VAR_878[4] = newArgType;____BAH_COMPILER_VAR_878[3] = "\01\0\0\0"" ";____BAH_COMPILER_VAR_878[2] = string__str(&argCType);____BAH_COMPILER_VAR_878[1] = "\010\0\0\0""typedef ";____BAH_COMPILER_VAR_878[0] = tpdf;char * ____BAH_COMPILER_VAR_879 =__Bah_multiple_concat(____BAH_COMPILER_VAR_878, 6);tpdf = ____BAH_COMPILER_VAR_879;
+char** ____BAH_COMPILER_VAR_873 = alloca(6 * sizeof(char*));____BAH_COMPILER_VAR_873[5] = "\02\0\0\0"";\n";____BAH_COMPILER_VAR_873[4] = newArgType;____BAH_COMPILER_VAR_873[3] = "\01\0\0\0"" ";____BAH_COMPILER_VAR_873[2] = string__str(&argCType);____BAH_COMPILER_VAR_873[1] = "\010\0\0\0""typedef ";____BAH_COMPILER_VAR_873[0] = tpdf;char * ____BAH_COMPILER_VAR_874 =__Bah_multiple_concat(____BAH_COMPILER_VAR_873, 6);tpdf = ____BAH_COMPILER_VAR_874;
 }
 }
 
@@ -17148,28 +17132,28 @@ char** ____BAH_COMPILER_VAR_878 = alloca(6 * sizeof(char*));____BAH_COMPILER_VAR
 if ((string__hasPrefix(&cfrt,"\011\0\0\0""function(")==1)) {
 
 #line 1663 "/home/alois/Documents/bah-bah/src/parser.bah"
-char** ____BAH_COMPILER_VAR_880 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_880[1] = getCfunctionType(&cfrt,argName,elems);____BAH_COMPILER_VAR_880[0] = code;char * ____BAH_COMPILER_VAR_881 =__Bah_multiple_concat(____BAH_COMPILER_VAR_880, 2);code = ____BAH_COMPILER_VAR_881;
+char** ____BAH_COMPILER_VAR_875 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_875[1] = getCfunctionType(&cfrt,argName,elems);____BAH_COMPILER_VAR_875[0] = code;char * ____BAH_COMPILER_VAR_876 =__Bah_multiple_concat(____BAH_COMPILER_VAR_875, 2);code = ____BAH_COMPILER_VAR_876;
 }
 
 #line 1664 "/home/alois/Documents/bah-bah/src/parser.bah"
 else {
 
 #line 1665 "/home/alois/Documents/bah-bah/src/parser.bah"
-char** ____BAH_COMPILER_VAR_882 = alloca(4 * sizeof(char*));____BAH_COMPILER_VAR_882[3] = argName;____BAH_COMPILER_VAR_882[2] = "\01\0\0\0"" ";____BAH_COMPILER_VAR_882[1] = newArgType;____BAH_COMPILER_VAR_882[0] = code;char * ____BAH_COMPILER_VAR_883 =__Bah_multiple_concat(____BAH_COMPILER_VAR_882, 4);code = ____BAH_COMPILER_VAR_883;
+char** ____BAH_COMPILER_VAR_877 = alloca(4 * sizeof(char*));____BAH_COMPILER_VAR_877[3] = argName;____BAH_COMPILER_VAR_877[2] = "\01\0\0\0"" ";____BAH_COMPILER_VAR_877[1] = newArgType;____BAH_COMPILER_VAR_877[0] = code;char * ____BAH_COMPILER_VAR_878 =__Bah_multiple_concat(____BAH_COMPILER_VAR_877, 4);code = ____BAH_COMPILER_VAR_878;
 }
 
 #line 1667 "/home/alois/Documents/bah-bah/src/parser.bah"
 if ((isComa==true)) {
 
 #line 1668 "/home/alois/Documents/bah-bah/src/parser.bah"
-char** ____BAH_COMPILER_VAR_884 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_884[1] = "\01\0\0\0"",";____BAH_COMPILER_VAR_884[0] = code;char * ____BAH_COMPILER_VAR_885 =__Bah_multiple_concat(____BAH_COMPILER_VAR_884, 2);code = ____BAH_COMPILER_VAR_885;
+char** ____BAH_COMPILER_VAR_879 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_879[1] = "\01\0\0\0"",";____BAH_COMPILER_VAR_879[0] = code;char * ____BAH_COMPILER_VAR_880 =__Bah_multiple_concat(____BAH_COMPILER_VAR_879, 2);code = ____BAH_COMPILER_VAR_880;
 }
 
 #line 1669 "/home/alois/Documents/bah-bah/src/parser.bah"
 else {
 
 #line 1670 "/home/alois/Documents/bah-bah/src/parser.bah"
-char** ____BAH_COMPILER_VAR_886 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_886[1] = "\01\0\0\0"")";____BAH_COMPILER_VAR_886[0] = code;char * ____BAH_COMPILER_VAR_887 =__Bah_multiple_concat(____BAH_COMPILER_VAR_886, 2);code = ____BAH_COMPILER_VAR_887;
+char** ____BAH_COMPILER_VAR_881 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_881[1] = "\01\0\0\0"")";____BAH_COMPILER_VAR_881[0] = code;char * ____BAH_COMPILER_VAR_882 =__Bah_multiple_concat(____BAH_COMPILER_VAR_881, 2);code = ____BAH_COMPILER_VAR_882;
 
 #line 1671 "/home/alois/Documents/bah-bah/src/parser.bah"
 break;
@@ -17184,19 +17168,19 @@ j = j+1;
 else {
 
 #line 1676 "/home/alois/Documents/bah-bah/src/parser.bah"
-char** ____BAH_COMPILER_VAR_888 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_888[1] = "\01\0\0\0"")";____BAH_COMPILER_VAR_888[0] = code;char * ____BAH_COMPILER_VAR_889 =__Bah_multiple_concat(____BAH_COMPILER_VAR_888, 2);code = ____BAH_COMPILER_VAR_889;
+char** ____BAH_COMPILER_VAR_883 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_883[1] = "\01\0\0\0"")";____BAH_COMPILER_VAR_883[0] = code;char * ____BAH_COMPILER_VAR_884 =__Bah_multiple_concat(____BAH_COMPILER_VAR_883, 2);code = ____BAH_COMPILER_VAR_884;
 }
 
 #line 1679 "/home/alois/Documents/bah-bah/src/parser.bah"
 j = j+1;
 
 #line 1681 "/home/alois/Documents/bah-bah/src/parser.bah"
-struct variable* ____BAH_COMPILER_VAR_890 = memoryAlloc(sizeof(struct variable));
-____BAH_COMPILER_VAR_890->name = "\0\0\0\0""";
-____BAH_COMPILER_VAR_890->type = "\0\0\0\0""";
-____BAH_COMPILER_VAR_890->constVal = "\0\0\0\0""";
-____BAH_COMPILER_VAR_890->from = "\0\0\0\0""";
-struct variable* returns = ____BAH_COMPILER_VAR_890;
+struct variable* ____BAH_COMPILER_VAR_885 = memoryAlloc(sizeof(struct variable));
+____BAH_COMPILER_VAR_885->name = "\0\0\0\0""";
+____BAH_COMPILER_VAR_885->type = "\0\0\0\0""";
+____BAH_COMPILER_VAR_885->constVal = "\0\0\0\0""";
+____BAH_COMPILER_VAR_885->from = "\0\0\0\0""";
+struct variable* returns = ____BAH_COMPILER_VAR_885;
 
 #line 1682 "/home/alois/Documents/bah-bah/src/parser.bah"
 returns->type = "\0\0\0\0""";
@@ -17215,7 +17199,7 @@ break;
 }
 
 #line 1688 "/home/alois/Documents/bah-bah/src/parser.bah"
-char** ____BAH_COMPILER_VAR_891 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_891[1] = t.cont;____BAH_COMPILER_VAR_891[0] = returns->type;char * ____BAH_COMPILER_VAR_892 =__Bah_multiple_concat(____BAH_COMPILER_VAR_891, 2);returns->type = ____BAH_COMPILER_VAR_892;
+char** ____BAH_COMPILER_VAR_886 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_886[1] = t.cont;____BAH_COMPILER_VAR_886[0] = returns->type;char * ____BAH_COMPILER_VAR_887 =__Bah_multiple_concat(____BAH_COMPILER_VAR_886, 2);returns->type = ____BAH_COMPILER_VAR_887;
 
 #line 1689 "/home/alois/Documents/bah-bah/src/parser.bah"
 j = j+1;
@@ -17275,27 +17259,27 @@ string__trimRight(&cfrt,nbast);
 string__replace(&cfrt,"\02\0\0\0""[]","\05\0\0\0""_ARR_");
 
 #line 1712 "/home/alois/Documents/bah-bah/src/parser.bah"
-char** ____BAH_COMPILER_VAR_893 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_893[1] = string__str(&cfrt);____BAH_COMPILER_VAR_893[0] = "\017\0\0\0""__BAH_ARR_TYPE_";char * ____BAH_COMPILER_VAR_894 =__Bah_multiple_concat(____BAH_COMPILER_VAR_893, 2);newFnRetType = ____BAH_COMPILER_VAR_894;
+char** ____BAH_COMPILER_VAR_888 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_888[1] = string__str(&cfrt);____BAH_COMPILER_VAR_888[0] = "\017\0\0\0""__BAH_ARR_TYPE_";char * ____BAH_COMPILER_VAR_889 =__Bah_multiple_concat(____BAH_COMPILER_VAR_888, 2);newFnRetType = ____BAH_COMPILER_VAR_889;
 
 #line 1713 "/home/alois/Documents/bah-bah/src/parser.bah"
 array(char *)* csatd = compilerState.arrTypesDecl;
 
 #line 1714 "/home/alois/Documents/bah-bah/src/parser.bah"
-if ((____BAH_COMPILER_VAR_895(csatd, newFnRetType)==false)) {
+if ((____BAH_COMPILER_VAR_890(csatd, newFnRetType)==false)) {
 
 #line 1715 "/home/alois/Documents/bah-bah/src/parser.bah"
 
-    unsigned int ____BAH_COMPILER_VAR_896 = len(csatd);
-    __Bah_realocate_arr(csatd, ____BAH_COMPILER_VAR_896);
-    csatd->data[____BAH_COMPILER_VAR_896] = newFnRetType;
+    unsigned int ____BAH_COMPILER_VAR_891 = len(csatd);
+    __Bah_realocate_arr(csatd, ____BAH_COMPILER_VAR_891);
+    csatd->data[____BAH_COMPILER_VAR_891] = newFnRetType;
 
 #line 1716 "/home/alois/Documents/bah-bah/src/parser.bah"
-char** ____BAH_COMPILER_VAR_897 = alloca(6 * sizeof(char*));____BAH_COMPILER_VAR_897[5] = "\02\0\0\0"";\n";____BAH_COMPILER_VAR_897[4] = newFnRetType;____BAH_COMPILER_VAR_897[3] = "\01\0\0\0"" ";____BAH_COMPILER_VAR_897[2] = string__str(&fnRetType);____BAH_COMPILER_VAR_897[1] = "\010\0\0\0""typedef ";____BAH_COMPILER_VAR_897[0] = tpdf;char * ____BAH_COMPILER_VAR_898 =__Bah_multiple_concat(____BAH_COMPILER_VAR_897, 6);tpdf = ____BAH_COMPILER_VAR_898;
+char** ____BAH_COMPILER_VAR_892 = alloca(6 * sizeof(char*));____BAH_COMPILER_VAR_892[5] = "\02\0\0\0"";\n";____BAH_COMPILER_VAR_892[4] = newFnRetType;____BAH_COMPILER_VAR_892[3] = "\01\0\0\0"" ";____BAH_COMPILER_VAR_892[2] = string__str(&fnRetType);____BAH_COMPILER_VAR_892[1] = "\010\0\0\0""typedef ";____BAH_COMPILER_VAR_892[0] = tpdf;char * ____BAH_COMPILER_VAR_893 =__Bah_multiple_concat(____BAH_COMPILER_VAR_892, 6);tpdf = ____BAH_COMPILER_VAR_893;
 }
 }
 
 #line 1719 "/home/alois/Documents/bah-bah/src/parser.bah"
-char** ____BAH_COMPILER_VAR_899 = alloca(4 * sizeof(char*));____BAH_COMPILER_VAR_899[3] = code;____BAH_COMPILER_VAR_899[2] = "\01\0\0\0"" ";____BAH_COMPILER_VAR_899[1] = newFnRetType;____BAH_COMPILER_VAR_899[0] = tpdf;char * ____BAH_COMPILER_VAR_900 =__Bah_multiple_concat(____BAH_COMPILER_VAR_899, 4);code = ____BAH_COMPILER_VAR_900;
+char** ____BAH_COMPILER_VAR_894 = alloca(4 * sizeof(char*));____BAH_COMPILER_VAR_894[3] = code;____BAH_COMPILER_VAR_894[2] = "\01\0\0\0"" ";____BAH_COMPILER_VAR_894[1] = newFnRetType;____BAH_COMPILER_VAR_894[0] = tpdf;char * ____BAH_COMPILER_VAR_895 =__Bah_multiple_concat(____BAH_COMPILER_VAR_894, 4);code = ____BAH_COMPILER_VAR_895;
 
 #line 1723 "/home/alois/Documents/bah-bah/src/parser.bah"
 return code;
@@ -17305,26 +17289,26 @@ return code;
 void parseStruct(__BAH_ARR_TYPE_Tok l,struct Elems* elems){
 
 #line 1728 "/home/alois/Documents/bah-bah/src/parser.bah"
-struct cStruct* ____BAH_COMPILER_VAR_901 = memoryAlloc(sizeof(struct cStruct));
-____BAH_COMPILER_VAR_901->name = "\0\0\0\0""";
-____BAH_COMPILER_VAR_901->members = memoryAlloc(sizeof(array(struct structMemb*)));
-            ____BAH_COMPILER_VAR_901->members->length = 0;
-            ____BAH_COMPILER_VAR_901->members->elemSize = sizeof(struct structMemb*);
-            ____BAH_COMPILER_VAR_901->methods = memoryAlloc(sizeof(array(struct func*)));
-            ____BAH_COMPILER_VAR_901->methods->length = 0;
-            ____BAH_COMPILER_VAR_901->methods->elemSize = sizeof(struct func*);
-            ____BAH_COMPILER_VAR_901->postCode = "\0\0\0\0""";
-____BAH_COMPILER_VAR_901->extendedFrom = "\0\0\0\0""";
-struct cStruct* s = ____BAH_COMPILER_VAR_901;
+struct cStruct* ____BAH_COMPILER_VAR_896 = memoryAlloc(sizeof(struct cStruct));
+____BAH_COMPILER_VAR_896->name = "\0\0\0\0""";
+____BAH_COMPILER_VAR_896->members = memoryAlloc(sizeof(array(struct structMemb*)));
+            ____BAH_COMPILER_VAR_896->members->length = 0;
+            ____BAH_COMPILER_VAR_896->members->elemSize = sizeof(struct structMemb*);
+            ____BAH_COMPILER_VAR_896->methods = memoryAlloc(sizeof(array(struct func*)));
+            ____BAH_COMPILER_VAR_896->methods->length = 0;
+            ____BAH_COMPILER_VAR_896->methods->elemSize = sizeof(struct func*);
+            ____BAH_COMPILER_VAR_896->postCode = "\0\0\0\0""";
+____BAH_COMPILER_VAR_896->extendedFrom = "\0\0\0\0""";
+struct cStruct* s = ____BAH_COMPILER_VAR_896;
 
 #line 1729 "/home/alois/Documents/bah-bah/src/parser.bah"
 array(struct cStruct*)* structs = elems->structs;
 
 #line 1730 "/home/alois/Documents/bah-bah/src/parser.bah"
 
-    unsigned int ____BAH_COMPILER_VAR_902 = len(structs);
-    __Bah_realocate_arr(structs, ____BAH_COMPILER_VAR_902);
-    structs->data[____BAH_COMPILER_VAR_902] = s;
+    unsigned int ____BAH_COMPILER_VAR_897 = len(structs);
+    __Bah_realocate_arr(structs, ____BAH_COMPILER_VAR_897);
+    structs->data[____BAH_COMPILER_VAR_897] = s;
 
 #line 1731 "/home/alois/Documents/bah-bah/src/parser.bah"
 array(struct func*)* methds = s->methods;
@@ -17474,7 +17458,7 @@ struct variable* arg = tmpfn->args->data[j];
 struct string ct = getCType(arg->type,elems);
 
 #line 1781 "/home/alois/Documents/bah-bah/src/parser.bah"
-char** ____BAH_COMPILER_VAR_903 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_903[1] = string__str(&ct);____BAH_COMPILER_VAR_903[0] = tmpfnArgsCType;char * ____BAH_COMPILER_VAR_904 =__Bah_multiple_concat(____BAH_COMPILER_VAR_903, 2);tmpfnArgsCType = ____BAH_COMPILER_VAR_904;
+char** ____BAH_COMPILER_VAR_898 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_898[1] = string__str(&ct);____BAH_COMPILER_VAR_898[0] = tmpfnArgsCType;char * ____BAH_COMPILER_VAR_899 =__Bah_multiple_concat(____BAH_COMPILER_VAR_898, 2);tmpfnArgsCType = ____BAH_COMPILER_VAR_899;
 
 #line 1782 "/home/alois/Documents/bah-bah/src/parser.bah"
 j = j+1;
@@ -17483,12 +17467,12 @@ j = j+1;
 if ((j<len(tmpfn->args))) {
 
 #line 1784 "/home/alois/Documents/bah-bah/src/parser.bah"
-char** ____BAH_COMPILER_VAR_905 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_905[1] = "\01\0\0\0"",";____BAH_COMPILER_VAR_905[0] = tmpfnArgsCType;char * ____BAH_COMPILER_VAR_906 =__Bah_multiple_concat(____BAH_COMPILER_VAR_905, 2);tmpfnArgsCType = ____BAH_COMPILER_VAR_906;
+char** ____BAH_COMPILER_VAR_900 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_900[1] = "\01\0\0\0"",";____BAH_COMPILER_VAR_900[0] = tmpfnArgsCType;char * ____BAH_COMPILER_VAR_901 =__Bah_multiple_concat(____BAH_COMPILER_VAR_900, 2);tmpfnArgsCType = ____BAH_COMPILER_VAR_901;
 }
 };
 
 #line 1787 "/home/alois/Documents/bah-bah/src/parser.bah"
-char** ____BAH_COMPILER_VAR_907 = alloca(6 * sizeof(char*));____BAH_COMPILER_VAR_907[5] = "\01\0\0\0"")";____BAH_COMPILER_VAR_907[4] = tmpfnArgsCType;____BAH_COMPILER_VAR_907[3] = "\02\0\0\0"")(";____BAH_COMPILER_VAR_907[2] = em->name;____BAH_COMPILER_VAR_907[1] = "\03\0\0\0"" (*";____BAH_COMPILER_VAR_907[0] = string__str(&tmpfnRetCType);char * ____BAH_COMPILER_VAR_908 =__Bah_multiple_concat(____BAH_COMPILER_VAR_907, 6);membDeclStr = ____BAH_COMPILER_VAR_908;
+char** ____BAH_COMPILER_VAR_902 = alloca(6 * sizeof(char*));____BAH_COMPILER_VAR_902[5] = "\01\0\0\0"")";____BAH_COMPILER_VAR_902[4] = tmpfnArgsCType;____BAH_COMPILER_VAR_902[3] = "\02\0\0\0"")(";____BAH_COMPILER_VAR_902[2] = em->name;____BAH_COMPILER_VAR_902[1] = "\03\0\0\0"" (*";____BAH_COMPILER_VAR_902[0] = string__str(&tmpfnRetCType);char * ____BAH_COMPILER_VAR_903 =__Bah_multiple_concat(____BAH_COMPILER_VAR_902, 6);membDeclStr = ____BAH_COMPILER_VAR_903;
 }
 
 #line 1788 "/home/alois/Documents/bah-bah/src/parser.bah"
@@ -17516,15 +17500,15 @@ membDeclStr = membDecl.content;
 
 #line 1797 "/home/alois/Documents/bah-bah/src/parser.bah"
 
-    unsigned int ____BAH_COMPILER_VAR_909 = len(allMembs);
-    __Bah_realocate_arr(allMembs, ____BAH_COMPILER_VAR_909);
-    allMembs->data[____BAH_COMPILER_VAR_909] = membDeclStr;
+    unsigned int ____BAH_COMPILER_VAR_904 = len(allMembs);
+    __Bah_realocate_arr(allMembs, ____BAH_COMPILER_VAR_904);
+    allMembs->data[____BAH_COMPILER_VAR_904] = membDeclStr;
 
 #line 1798 "/home/alois/Documents/bah-bah/src/parser.bah"
 
-    unsigned int ____BAH_COMPILER_VAR_910 = len(members);
-    __Bah_realocate_arr(members, ____BAH_COMPILER_VAR_910);
-    members->data[____BAH_COMPILER_VAR_910] = em;
+    unsigned int ____BAH_COMPILER_VAR_905 = len(members);
+    __Bah_realocate_arr(members, ____BAH_COMPILER_VAR_905);
+    members->data[____BAH_COMPILER_VAR_905] = em;
 
 #line 1799 "/home/alois/Documents/bah-bah/src/parser.bah"
 j = j+1;
@@ -17607,13 +17591,13 @@ throwErr(&l->data[len(l)-1],"\075\0\0\0""Not enough argument in member declarati
 }
 
 #line 1829 "/home/alois/Documents/bah-bah/src/parser.bah"
-struct structMemb* ____BAH_COMPILER_VAR_911 = memoryAlloc(sizeof(struct structMemb));
-____BAH_COMPILER_VAR_911->name = "\0\0\0\0""";
-____BAH_COMPILER_VAR_911->type = "\0\0\0\0""";
-____BAH_COMPILER_VAR_911->constVal = "\0\0\0\0""";
-____BAH_COMPILER_VAR_911->from = "\0\0\0\0""";
-____BAH_COMPILER_VAR_911->def = "\0\0\0\0""";
-struct structMemb* memb = ____BAH_COMPILER_VAR_911;
+struct structMemb* ____BAH_COMPILER_VAR_906 = memoryAlloc(sizeof(struct structMemb));
+____BAH_COMPILER_VAR_906->name = "\0\0\0\0""";
+____BAH_COMPILER_VAR_906->type = "\0\0\0\0""";
+____BAH_COMPILER_VAR_906->constVal = "\0\0\0\0""";
+____BAH_COMPILER_VAR_906->from = "\0\0\0\0""";
+____BAH_COMPILER_VAR_906->def = "\0\0\0\0""";
+struct structMemb* memb = ____BAH_COMPILER_VAR_906;
 
 #line 1830 "/home/alois/Documents/bah-bah/src/parser.bah"
 if (__builtin_expect((t.type!=TOKEN_TYPE_VAR), 0)) {
@@ -17665,18 +17649,18 @@ throwErr(&t,"\062\0\0\0""Member name should be followed by ':' not {TOKEN}.");
 else {
 
 #line 1847 "/home/alois/Documents/bah-bah/src/parser.bah"
-char** ____BAH_COMPILER_VAR_912 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_912[1] = "\02\0\0\0""__";____BAH_COMPILER_VAR_912[0] = s->name;char * ____BAH_COMPILER_VAR_913 =__Bah_multiple_concat(____BAH_COMPILER_VAR_912, 2);char * fnPrefix = ____BAH_COMPILER_VAR_913;
+char** ____BAH_COMPILER_VAR_907 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_907[1] = "\02\0\0\0""__";____BAH_COMPILER_VAR_907[0] = s->name;char * ____BAH_COMPILER_VAR_908 =__Bah_multiple_concat(____BAH_COMPILER_VAR_907, 2);char * fnPrefix = ____BAH_COMPILER_VAR_908;
 
 #line 1848 "/home/alois/Documents/bah-bah/src/parser.bah"
-struct func* ____BAH_COMPILER_VAR_914 = memoryAlloc(sizeof(struct func));
-____BAH_COMPILER_VAR_914->name = "\0\0\0\0""";
-____BAH_COMPILER_VAR_914->args = memoryAlloc(sizeof(array(struct variable*)));
-            ____BAH_COMPILER_VAR_914->args->length = 0;
-            ____BAH_COMPILER_VAR_914->args->elemSize = sizeof(struct variable*);
-            ____BAH_COMPILER_VAR_914->from = "\0\0\0\0""";
-____BAH_COMPILER_VAR_914->file = "\0\0\0\0""";
-____BAH_COMPILER_VAR_914->line = 1;
-struct func* fn = ____BAH_COMPILER_VAR_914;
+struct func* ____BAH_COMPILER_VAR_909 = memoryAlloc(sizeof(struct func));
+____BAH_COMPILER_VAR_909->name = "\0\0\0\0""";
+____BAH_COMPILER_VAR_909->args = memoryAlloc(sizeof(array(struct variable*)));
+            ____BAH_COMPILER_VAR_909->args->length = 0;
+            ____BAH_COMPILER_VAR_909->args->elemSize = sizeof(struct variable*);
+            ____BAH_COMPILER_VAR_909->from = "\0\0\0\0""";
+____BAH_COMPILER_VAR_909->file = "\0\0\0\0""";
+____BAH_COMPILER_VAR_909->line = 1;
+struct func* fn = ____BAH_COMPILER_VAR_909;
 
 #line 1849 "/home/alois/Documents/bah-bah/src/parser.bah"
 array(struct Tok)* nl = memoryAlloc(sizeof(array(struct Tok)));
@@ -17702,9 +17686,9 @@ break;
 
 #line 1855 "/home/alois/Documents/bah-bah/src/parser.bah"
 
-    unsigned int ____BAH_COMPILER_VAR_915 = len(nl);
-    __Bah_realocate_arr(nl, ____BAH_COMPILER_VAR_915);
-    nl->data[____BAH_COMPILER_VAR_915] = t;
+    unsigned int ____BAH_COMPILER_VAR_910 = len(nl);
+    __Bah_realocate_arr(nl, ____BAH_COMPILER_VAR_910);
+    nl->data[____BAH_COMPILER_VAR_910] = t;
 
 #line 1856 "/home/alois/Documents/bah-bah/src/parser.bah"
 if ((j==i)) {
@@ -17720,24 +17704,24 @@ t.isValue = true;
 
 #line 1860 "/home/alois/Documents/bah-bah/src/parser.bah"
 
-    unsigned int ____BAH_COMPILER_VAR_916 = len(nl);
-    __Bah_realocate_arr(nl, ____BAH_COMPILER_VAR_916);
-    nl->data[____BAH_COMPILER_VAR_916] = t;
+    unsigned int ____BAH_COMPILER_VAR_911 = len(nl);
+    __Bah_realocate_arr(nl, ____BAH_COMPILER_VAR_911);
+    nl->data[____BAH_COMPILER_VAR_911] = t;
 
 #line 1862 "/home/alois/Documents/bah-bah/src/parser.bah"
 t.type = TOKEN_TYPE_VAR;
 
 #line 1863 "/home/alois/Documents/bah-bah/src/parser.bah"
-char** ____BAH_COMPILER_VAR_917 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_917[1] = "\01\0\0\0""*";____BAH_COMPILER_VAR_917[0] = s->name;char * ____BAH_COMPILER_VAR_918 =__Bah_multiple_concat(____BAH_COMPILER_VAR_917, 2);t.cont = ____BAH_COMPILER_VAR_918;
+char** ____BAH_COMPILER_VAR_912 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_912[1] = "\01\0\0\0""*";____BAH_COMPILER_VAR_912[0] = s->name;char * ____BAH_COMPILER_VAR_913 =__Bah_multiple_concat(____BAH_COMPILER_VAR_912, 2);t.cont = ____BAH_COMPILER_VAR_913;
 
 #line 1864 "/home/alois/Documents/bah-bah/src/parser.bah"
 t.isValue = true;
 
 #line 1865 "/home/alois/Documents/bah-bah/src/parser.bah"
 
-    unsigned int ____BAH_COMPILER_VAR_919 = len(nl);
-    __Bah_realocate_arr(nl, ____BAH_COMPILER_VAR_919);
-    nl->data[____BAH_COMPILER_VAR_919] = t;
+    unsigned int ____BAH_COMPILER_VAR_914 = len(nl);
+    __Bah_realocate_arr(nl, ____BAH_COMPILER_VAR_914);
+    nl->data[____BAH_COMPILER_VAR_914] = t;
 
 #line 1867 "/home/alois/Documents/bah-bah/src/parser.bah"
 struct Tok nt = l->data[j+1];
@@ -17756,9 +17740,9 @@ t.isValue = false;
 
 #line 1872 "/home/alois/Documents/bah-bah/src/parser.bah"
 
-    unsigned int ____BAH_COMPILER_VAR_920 = len(nl);
-    __Bah_realocate_arr(nl, ____BAH_COMPILER_VAR_920);
-    nl->data[____BAH_COMPILER_VAR_920] = t;
+    unsigned int ____BAH_COMPILER_VAR_915 = len(nl);
+    __Bah_realocate_arr(nl, ____BAH_COMPILER_VAR_915);
+    nl->data[____BAH_COMPILER_VAR_915] = t;
 }
 }
 
@@ -17826,9 +17810,9 @@ a->isArg = true;
 
 #line 1899 "/home/alois/Documents/bah-bah/src/parser.bah"
 
-    unsigned int ____BAH_COMPILER_VAR_921 = len(fnElems->vars);
-    __Bah_realocate_arr(fnElems->vars, ____BAH_COMPILER_VAR_921);
-    fnElems->vars->data[____BAH_COMPILER_VAR_921] = a;
+    unsigned int ____BAH_COMPILER_VAR_916 = len(fnElems->vars);
+    __Bah_realocate_arr(fnElems->vars, ____BAH_COMPILER_VAR_916);
+    fnElems->vars->data[____BAH_COMPILER_VAR_916] = a;
 };
 
 #line 1902 "/home/alois/Documents/bah-bah/src/parser.bah"
@@ -17836,9 +17820,9 @@ array(struct func*)* fns = elems->fns;
 
 #line 1903 "/home/alois/Documents/bah-bah/src/parser.bah"
 
-    unsigned int ____BAH_COMPILER_VAR_922 = len(fns);
-    __Bah_realocate_arr(fns, ____BAH_COMPILER_VAR_922);
-    fns->data[____BAH_COMPILER_VAR_922] = fn;
+    unsigned int ____BAH_COMPILER_VAR_917 = len(fns);
+    __Bah_realocate_arr(fns, ____BAH_COMPILER_VAR_917);
+    fns->data[____BAH_COMPILER_VAR_917] = fn;
 
 #line 1905 "/home/alois/Documents/bah-bah/src/parser.bah"
 array(struct Tok)* tokens = memoryAlloc(sizeof(array(struct Tok)));
@@ -17888,24 +17872,24 @@ break;
 
 #line 1921 "/home/alois/Documents/bah-bah/src/parser.bah"
 
-    unsigned int ____BAH_COMPILER_VAR_923 = len(tokens);
-    __Bah_realocate_arr(tokens, ____BAH_COMPILER_VAR_923);
-    tokens->data[____BAH_COMPILER_VAR_923] = t;
+    unsigned int ____BAH_COMPILER_VAR_918 = len(tokens);
+    __Bah_realocate_arr(tokens, ____BAH_COMPILER_VAR_918);
+    tokens->data[____BAH_COMPILER_VAR_918] = t;
 
 #line 1922 "/home/alois/Documents/bah-bah/src/parser.bah"
 ++i;
 };
 
 #line 1926 "/home/alois/Documents/bah-bah/src/parser.bah"
-struct func* ____BAH_COMPILER_VAR_924 = memoryAlloc(sizeof(struct func));
-____BAH_COMPILER_VAR_924->name = "\0\0\0\0""";
-____BAH_COMPILER_VAR_924->args = memoryAlloc(sizeof(array(struct variable*)));
-            ____BAH_COMPILER_VAR_924->args->length = 0;
-            ____BAH_COMPILER_VAR_924->args->elemSize = sizeof(struct variable*);
-            ____BAH_COMPILER_VAR_924->from = "\0\0\0\0""";
-____BAH_COMPILER_VAR_924->file = "\0\0\0\0""";
-____BAH_COMPILER_VAR_924->line = 1;
-struct func* mfn = ____BAH_COMPILER_VAR_924;
+struct func* ____BAH_COMPILER_VAR_919 = memoryAlloc(sizeof(struct func));
+____BAH_COMPILER_VAR_919->name = "\0\0\0\0""";
+____BAH_COMPILER_VAR_919->args = memoryAlloc(sizeof(array(struct variable*)));
+            ____BAH_COMPILER_VAR_919->args->length = 0;
+            ____BAH_COMPILER_VAR_919->args->elemSize = sizeof(struct variable*);
+            ____BAH_COMPILER_VAR_919->from = "\0\0\0\0""";
+____BAH_COMPILER_VAR_919->file = "\0\0\0\0""";
+____BAH_COMPILER_VAR_919->line = 1;
+struct func* mfn = ____BAH_COMPILER_VAR_919;
 
 #line 1927 "/home/alois/Documents/bah-bah/src/parser.bah"
 mfn->args = fn->args;
@@ -17924,9 +17908,9 @@ strTrimLeft(&mfn->name,strlen(fnPrefix));
 
 #line 1934 "/home/alois/Documents/bah-bah/src/parser.bah"
 
-    unsigned int ____BAH_COMPILER_VAR_925 = len(methds);
-    __Bah_realocate_arr(methds, ____BAH_COMPILER_VAR_925);
-    methds->data[____BAH_COMPILER_VAR_925] = mfn;
+    unsigned int ____BAH_COMPILER_VAR_920 = len(methds);
+    __Bah_realocate_arr(methds, ____BAH_COMPILER_VAR_920);
+    methds->data[____BAH_COMPILER_VAR_920] = mfn;
 
 #line 1937 "/home/alois/Documents/bah-bah/src/parser.bah"
 if ((shouldOnlyDecl==false)) {
@@ -17975,7 +17959,7 @@ if ((fn->returned==false)) {
 if (__builtin_expect((strlen(fn->returns->type)>0), 0)) {
 
 #line 1953 "/home/alois/Documents/bah-bah/src/parser.bah"
-char** ____BAH_COMPILER_VAR_926 = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_926[2] = "\022\0\0\0""' is not returned.";____BAH_COMPILER_VAR_926[1] = fn->name;____BAH_COMPILER_VAR_926[0] = "\012\0\0\0""Function '";char * ____BAH_COMPILER_VAR_927 =__Bah_multiple_concat(____BAH_COMPILER_VAR_926, 3);throwErr(&l->data[len(l)-1],____BAH_COMPILER_VAR_927);
+char** ____BAH_COMPILER_VAR_921 = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_921[2] = "\022\0\0\0""' is not returned.";____BAH_COMPILER_VAR_921[1] = fn->name;____BAH_COMPILER_VAR_921[0] = "\012\0\0\0""Function '";char * ____BAH_COMPILER_VAR_922 =__Bah_multiple_concat(____BAH_COMPILER_VAR_921, 3);throwErr(&l->data[len(l)-1],____BAH_COMPILER_VAR_922);
 }
 
 #line 1955 "/home/alois/Documents/bah-bah/src/parser.bah"
@@ -18004,7 +17988,7 @@ mfn->isImported = true;
 if ((doesOutput==true)) {
 
 #line 1966 "/home/alois/Documents/bah-bah/src/parser.bah"
-char** ____BAH_COMPILER_VAR_928 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_928[1] = rope__toStr(code);____BAH_COMPILER_VAR_928[0] = nextLine;char * ____BAH_COMPILER_VAR_929 =__Bah_multiple_concat(____BAH_COMPILER_VAR_928, 2);nextLine = ____BAH_COMPILER_VAR_929;
+char** ____BAH_COMPILER_VAR_923 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_923[1] = rope__toStr(code);____BAH_COMPILER_VAR_923[0] = nextLine;char * ____BAH_COMPILER_VAR_924 =__Bah_multiple_concat(____BAH_COMPILER_VAR_923, 2);nextLine = ____BAH_COMPILER_VAR_924;
 }
 
 #line 1985 "/home/alois/Documents/bah-bah/src/parser.bah"
@@ -18051,7 +18035,7 @@ break;
 }
 
 #line 2003 "/home/alois/Documents/bah-bah/src/parser.bah"
-char** ____BAH_COMPILER_VAR_930 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_930[1] = t.cont;____BAH_COMPILER_VAR_930[0] = mbmType;char * ____BAH_COMPILER_VAR_931 =__Bah_multiple_concat(____BAH_COMPILER_VAR_930, 2);mbmType = ____BAH_COMPILER_VAR_931;
+char** ____BAH_COMPILER_VAR_925 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_925[1] = t.cont;____BAH_COMPILER_VAR_925[0] = mbmType;char * ____BAH_COMPILER_VAR_926 =__Bah_multiple_concat(____BAH_COMPILER_VAR_925, 2);mbmType = ____BAH_COMPILER_VAR_926;
 
 #line 2004 "/home/alois/Documents/bah-bah/src/parser.bah"
 ++i;
@@ -18092,7 +18076,7 @@ char * tt = getTypeFromToken(&t,true,elems);
 if (__builtin_expect((compTypes(tt,memb->type)==false), 0)) {
 
 #line 2019 "/home/alois/Documents/bah-bah/src/parser.bah"
-char** ____BAH_COMPILER_VAR_932 = alloca(5 * sizeof(char*));____BAH_COMPILER_VAR_932[4] = "\014\0\0\0"" for member.";____BAH_COMPILER_VAR_932[3] = memb->type;____BAH_COMPILER_VAR_932[2] = "\05\0\0\0"") as ";____BAH_COMPILER_VAR_932[1] = tt;____BAH_COMPILER_VAR_932[0] = "\024\0\0\0""Cannot use {TOKEN} (";char * ____BAH_COMPILER_VAR_933 =__Bah_multiple_concat(____BAH_COMPILER_VAR_932, 5);throwErr(&t,____BAH_COMPILER_VAR_933);
+char** ____BAH_COMPILER_VAR_927 = alloca(5 * sizeof(char*));____BAH_COMPILER_VAR_927[4] = "\014\0\0\0"" for member.";____BAH_COMPILER_VAR_927[3] = memb->type;____BAH_COMPILER_VAR_927[2] = "\05\0\0\0"") as ";____BAH_COMPILER_VAR_927[1] = tt;____BAH_COMPILER_VAR_927[0] = "\024\0\0\0""Cannot use {TOKEN} (";char * ____BAH_COMPILER_VAR_928 =__Bah_multiple_concat(____BAH_COMPILER_VAR_927, 5);throwErr(&t,____BAH_COMPILER_VAR_928);
 }
 
 #line 2021 "/home/alois/Documents/bah-bah/src/parser.bah"
@@ -18116,9 +18100,9 @@ s->hasRCPmemb = true;
 
 #line 2030 "/home/alois/Documents/bah-bah/src/parser.bah"
 
-    unsigned int ____BAH_COMPILER_VAR_934 = len(members);
-    __Bah_realocate_arr(members, ____BAH_COMPILER_VAR_934);
-    members->data[____BAH_COMPILER_VAR_934] = memb;
+    unsigned int ____BAH_COMPILER_VAR_929 = len(members);
+    __Bah_realocate_arr(members, ____BAH_COMPILER_VAR_929);
+    members->data[____BAH_COMPILER_VAR_929] = memb;
 
 #line 2032 "/home/alois/Documents/bah-bah/src/parser.bah"
 char * membDeclStr= null;
@@ -18151,7 +18135,7 @@ struct variable* arg = tmpfn->args->data[j];
 struct string ct = getCType(arg->type,elems);
 
 #line 2041 "/home/alois/Documents/bah-bah/src/parser.bah"
-char** ____BAH_COMPILER_VAR_935 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_935[1] = string__str(&ct);____BAH_COMPILER_VAR_935[0] = tmpfnArgsCType;char * ____BAH_COMPILER_VAR_936 =__Bah_multiple_concat(____BAH_COMPILER_VAR_935, 2);tmpfnArgsCType = ____BAH_COMPILER_VAR_936;
+char** ____BAH_COMPILER_VAR_930 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_930[1] = string__str(&ct);____BAH_COMPILER_VAR_930[0] = tmpfnArgsCType;char * ____BAH_COMPILER_VAR_931 =__Bah_multiple_concat(____BAH_COMPILER_VAR_930, 2);tmpfnArgsCType = ____BAH_COMPILER_VAR_931;
 
 #line 2042 "/home/alois/Documents/bah-bah/src/parser.bah"
 j = j+1;
@@ -18160,12 +18144,12 @@ j = j+1;
 if ((j<len(tmpfn->args))) {
 
 #line 2044 "/home/alois/Documents/bah-bah/src/parser.bah"
-char** ____BAH_COMPILER_VAR_937 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_937[1] = "\01\0\0\0"",";____BAH_COMPILER_VAR_937[0] = tmpfnArgsCType;char * ____BAH_COMPILER_VAR_938 =__Bah_multiple_concat(____BAH_COMPILER_VAR_937, 2);tmpfnArgsCType = ____BAH_COMPILER_VAR_938;
+char** ____BAH_COMPILER_VAR_932 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_932[1] = "\01\0\0\0"",";____BAH_COMPILER_VAR_932[0] = tmpfnArgsCType;char * ____BAH_COMPILER_VAR_933 =__Bah_multiple_concat(____BAH_COMPILER_VAR_932, 2);tmpfnArgsCType = ____BAH_COMPILER_VAR_933;
 }
 };
 
 #line 2047 "/home/alois/Documents/bah-bah/src/parser.bah"
-char** ____BAH_COMPILER_VAR_939 = alloca(6 * sizeof(char*));____BAH_COMPILER_VAR_939[5] = "\01\0\0\0"")";____BAH_COMPILER_VAR_939[4] = tmpfnArgsCType;____BAH_COMPILER_VAR_939[3] = "\02\0\0\0"")(";____BAH_COMPILER_VAR_939[2] = memb->name;____BAH_COMPILER_VAR_939[1] = "\03\0\0\0"" (*";____BAH_COMPILER_VAR_939[0] = string__str(&tmpfnRetCType);char * ____BAH_COMPILER_VAR_940 =__Bah_multiple_concat(____BAH_COMPILER_VAR_939, 6);membDeclStr = ____BAH_COMPILER_VAR_940;
+char** ____BAH_COMPILER_VAR_934 = alloca(6 * sizeof(char*));____BAH_COMPILER_VAR_934[5] = "\01\0\0\0"")";____BAH_COMPILER_VAR_934[4] = tmpfnArgsCType;____BAH_COMPILER_VAR_934[3] = "\02\0\0\0"")(";____BAH_COMPILER_VAR_934[2] = memb->name;____BAH_COMPILER_VAR_934[1] = "\03\0\0\0"" (*";____BAH_COMPILER_VAR_934[0] = string__str(&tmpfnRetCType);char * ____BAH_COMPILER_VAR_935 =__Bah_multiple_concat(____BAH_COMPILER_VAR_934, 6);membDeclStr = ____BAH_COMPILER_VAR_935;
 }
 
 #line 2048 "/home/alois/Documents/bah-bah/src/parser.bah"
@@ -18175,7 +18159,7 @@ else {
 struct string membDecl = getCType(memb->type,elems);
 
 #line 2050 "/home/alois/Documents/bah-bah/src/parser.bah"
-char** ____BAH_COMPILER_VAR_941 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_941[1] = memb->name;____BAH_COMPILER_VAR_941[0] = "\01\0\0\0"" ";char * ____BAH_COMPILER_VAR_942 =__Bah_multiple_concat(____BAH_COMPILER_VAR_941, 2);string__append(&membDecl,____BAH_COMPILER_VAR_942);
+char** ____BAH_COMPILER_VAR_936 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_936[1] = memb->name;____BAH_COMPILER_VAR_936[0] = "\01\0\0\0"" ";char * ____BAH_COMPILER_VAR_937 =__Bah_multiple_concat(____BAH_COMPILER_VAR_936, 2);string__append(&membDecl,____BAH_COMPILER_VAR_937);
 
 #line 2051 "/home/alois/Documents/bah-bah/src/parser.bah"
 membDeclStr = string__str(&membDecl);
@@ -18183,9 +18167,9 @@ membDeclStr = string__str(&membDecl);
 
 #line 2053 "/home/alois/Documents/bah-bah/src/parser.bah"
 
-    unsigned int ____BAH_COMPILER_VAR_943 = len(allMembs);
-    __Bah_realocate_arr(allMembs, ____BAH_COMPILER_VAR_943);
-    allMembs->data[____BAH_COMPILER_VAR_943] = membDeclStr;
+    unsigned int ____BAH_COMPILER_VAR_938 = len(allMembs);
+    __Bah_realocate_arr(allMembs, ____BAH_COMPILER_VAR_938);
+    allMembs->data[____BAH_COMPILER_VAR_938] = membDeclStr;
 
 #line 2054 "/home/alois/Documents/bah-bah/src/parser.bah"
 ++i;
@@ -18204,7 +18188,7 @@ OUTPUT = OOUT;
 NEXT_LINE = nextLine;
 
 #line 2060 "/home/alois/Documents/bah-bah/src/parser.bah"
-char** ____BAH_COMPILER_VAR_944 = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_944[2] = "\03\0\0\0"" {\n";____BAH_COMPILER_VAR_944[1] = s->name;____BAH_COMPILER_VAR_944[0] = "\07\0\0\0""struct ";char * ____BAH_COMPILER_VAR_945 =__Bah_multiple_concat(____BAH_COMPILER_VAR_944, 3);struct rope* code = rope(____BAH_COMPILER_VAR_945);
+char** ____BAH_COMPILER_VAR_939 = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_939[2] = "\03\0\0\0"" {\n";____BAH_COMPILER_VAR_939[1] = s->name;____BAH_COMPILER_VAR_939[0] = "\07\0\0\0""struct ";char * ____BAH_COMPILER_VAR_940 =__Bah_multiple_concat(____BAH_COMPILER_VAR_939, 3);struct rope* code = rope(____BAH_COMPILER_VAR_940);
 
 #line 2061 "/home/alois/Documents/bah-bah/src/parser.bah"
 i = 0;
@@ -18216,7 +18200,7 @@ while ((i<len(allMembs))) {
 char * m = allMembs->data[i];
 
 #line 2063 "/home/alois/Documents/bah-bah/src/parser.bah"
-char** ____BAH_COMPILER_VAR_946 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_946[1] = "\02\0\0\0"";\n";____BAH_COMPILER_VAR_946[0] = m;char * ____BAH_COMPILER_VAR_947 =__Bah_multiple_concat(____BAH_COMPILER_VAR_946, 2);code = rope__add(code, rope(____BAH_COMPILER_VAR_947));
+char** ____BAH_COMPILER_VAR_941 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_941[1] = "\02\0\0\0"";\n";____BAH_COMPILER_VAR_941[0] = m;char * ____BAH_COMPILER_VAR_942 =__Bah_multiple_concat(____BAH_COMPILER_VAR_941, 2);code = rope__add(code, rope(____BAH_COMPILER_VAR_942));
 
 #line 2064 "/home/alois/Documents/bah-bah/src/parser.bah"
 ++i;
@@ -18242,11 +18226,11 @@ OUTPUT = rope__add(OUTPUT, rope(phd));
 if ((debug==true)) {
 
 #line 2075 "/home/alois/Documents/bah-bah/src/parser.bah"
-struct debugStruct* ____BAH_COMPILER_VAR_948 = memoryAlloc(sizeof(struct debugStruct));
-____BAH_COMPILER_VAR_948->membs = memoryAlloc(sizeof(array(struct variable*)));
-            ____BAH_COMPILER_VAR_948->membs->length = 0;
-            ____BAH_COMPILER_VAR_948->membs->elemSize = sizeof(struct variable*);
-            struct debugStruct* ds = ____BAH_COMPILER_VAR_948;
+struct debugStruct* ____BAH_COMPILER_VAR_943 = memoryAlloc(sizeof(struct debugStruct));
+____BAH_COMPILER_VAR_943->membs = memoryAlloc(sizeof(array(struct variable*)));
+            ____BAH_COMPILER_VAR_943->membs->length = 0;
+            ____BAH_COMPILER_VAR_943->membs->elemSize = sizeof(struct variable*);
+            struct debugStruct* ds = ____BAH_COMPILER_VAR_943;
 
 #line 2076 "/home/alois/Documents/bah-bah/src/parser.bah"
 ds->name = s->name;
@@ -18261,12 +18245,12 @@ while ((i<len(s->members))) {
 struct structMemb* m = s->members->data[i];
 
 #line 2079 "/home/alois/Documents/bah-bah/src/parser.bah"
-struct variable* ____BAH_COMPILER_VAR_949 = memoryAlloc(sizeof(struct variable));
-____BAH_COMPILER_VAR_949->name = "\0\0\0\0""";
-____BAH_COMPILER_VAR_949->type = "\0\0\0\0""";
-____BAH_COMPILER_VAR_949->constVal = "\0\0\0\0""";
-____BAH_COMPILER_VAR_949->from = "\0\0\0\0""";
-struct variable* mv = ____BAH_COMPILER_VAR_949;
+struct variable* ____BAH_COMPILER_VAR_944 = memoryAlloc(sizeof(struct variable));
+____BAH_COMPILER_VAR_944->name = "\0\0\0\0""";
+____BAH_COMPILER_VAR_944->type = "\0\0\0\0""";
+____BAH_COMPILER_VAR_944->constVal = "\0\0\0\0""";
+____BAH_COMPILER_VAR_944->from = "\0\0\0\0""";
+struct variable* mv = ____BAH_COMPILER_VAR_944;
 
 #line 2080 "/home/alois/Documents/bah-bah/src/parser.bah"
 mv->name = m->name;
@@ -18282,100 +18266,100 @@ mv->isArray = m->isArray;
 
 #line 2084 "/home/alois/Documents/bah-bah/src/parser.bah"
 
-    unsigned int ____BAH_COMPILER_VAR_950 = i;
-    __Bah_realocate_arr(ds->membs, ____BAH_COMPILER_VAR_950);
-    ds->membs->data[____BAH_COMPILER_VAR_950] = mv;
+    unsigned int ____BAH_COMPILER_VAR_945 = i;
+    __Bah_realocate_arr(ds->membs, ____BAH_COMPILER_VAR_945);
+    ds->membs->data[____BAH_COMPILER_VAR_945] = mv;
 
 #line 2085 "/home/alois/Documents/bah-bah/src/parser.bah"
 i = i+1;
 };
 
 #line 2088 "/home/alois/Documents/bah-bah/src/parser.bah"
-struct debugStruct* ____BAH_COMPILER_VAR_951 = ds;
-char ** ____BAH_COMPILER_VAR_953 = (char **)((char*)(____BAH_COMPILER_VAR_951) + offsetof(struct debugStruct, name));
-struct reflectElement ____BAH_COMPILER_VAR_954 = __reflect(____BAH_COMPILER_VAR_953, sizeof(char *), "\010\0\0\0""cpstring", "\04\0\0\0""name", 0, 0, 0, 0, offsetof(struct debugStruct, name));
-array(struct variable*)** ____BAH_COMPILER_VAR_955 = (array(struct variable*)**)((char*)(____BAH_COMPILER_VAR_951) + offsetof(struct debugStruct, membs));
-struct variable** ____BAH_COMPILER_VAR_956 = 0;
-char ** ____BAH_COMPILER_VAR_958 = (char **)((char*)(____BAH_COMPILER_VAR_956) + offsetof(struct variable, name));
-struct reflectElement ____BAH_COMPILER_VAR_959 = __reflect(____BAH_COMPILER_VAR_958, sizeof(char *), "\010\0\0\0""cpstring", "\04\0\0\0""name", 0, 0, 0, 0, offsetof(struct variable, name));
-char ** ____BAH_COMPILER_VAR_960 = (char **)((char*)(____BAH_COMPILER_VAR_956) + offsetof(struct variable, type));
-struct reflectElement ____BAH_COMPILER_VAR_961 = __reflect(____BAH_COMPILER_VAR_960, sizeof(char *), "\010\0\0\0""cpstring", "\04\0\0\0""type", 0, 0, 0, 0, offsetof(struct variable, type));
-char* ____BAH_COMPILER_VAR_962 = (char*)((char*)(____BAH_COMPILER_VAR_956) + offsetof(struct variable, isConst));
-struct reflectElement ____BAH_COMPILER_VAR_963 = __reflect(____BAH_COMPILER_VAR_962, sizeof(char), "\04\0\0\0""bool", "\07\0\0\0""isConst", 0, 0, 0, 0, offsetof(struct variable, isConst));
-char ** ____BAH_COMPILER_VAR_964 = (char **)((char*)(____BAH_COMPILER_VAR_956) + offsetof(struct variable, constVal));
-struct reflectElement ____BAH_COMPILER_VAR_965 = __reflect(____BAH_COMPILER_VAR_964, sizeof(char *), "\010\0\0\0""cpstring", "\010\0\0\0""constVal", 0, 0, 0, 0, offsetof(struct variable, constVal));
-char* ____BAH_COMPILER_VAR_966 = (char*)((char*)(____BAH_COMPILER_VAR_956) + offsetof(struct variable, isArray));
-struct reflectElement ____BAH_COMPILER_VAR_967 = __reflect(____BAH_COMPILER_VAR_966, sizeof(char), "\04\0\0\0""bool", "\07\0\0\0""isArray", 0, 0, 0, 0, offsetof(struct variable, isArray));
-char ** ____BAH_COMPILER_VAR_968 = (char **)((char*)(____BAH_COMPILER_VAR_956) + offsetof(struct variable, from));
-struct reflectElement ____BAH_COMPILER_VAR_969 = __reflect(____BAH_COMPILER_VAR_968, sizeof(char *), "\010\0\0\0""cpstring", "\04\0\0\0""from", 0, 0, 0, 0, offsetof(struct variable, from));
-void ** ____BAH_COMPILER_VAR_970 = (void **)((char*)(____BAH_COMPILER_VAR_956) + offsetof(struct variable, declScope));
-struct reflectElement ____BAH_COMPILER_VAR_971 = __reflect(____BAH_COMPILER_VAR_970, sizeof(void *), "\03\0\0\0""ptr", "\011\0\0\0""declScope", 0, 0, 0, 0, offsetof(struct variable, declScope));
-char* ____BAH_COMPILER_VAR_972 = (char*)((char*)(____BAH_COMPILER_VAR_956) + offsetof(struct variable, isGlobal));
-struct reflectElement ____BAH_COMPILER_VAR_973 = __reflect(____BAH_COMPILER_VAR_972, sizeof(char), "\04\0\0\0""bool", "\010\0\0\0""isGlobal", 0, 0, 0, 0, offsetof(struct variable, isGlobal));
-struct rope** ____BAH_COMPILER_VAR_974 = (struct rope**)((char*)(____BAH_COMPILER_VAR_956) + offsetof(struct variable, declRope));
-char ** ____BAH_COMPILER_VAR_976 = (char **)((char*)(____BAH_COMPILER_VAR_974) + offsetof(struct rope, str));
-struct reflectElement ____BAH_COMPILER_VAR_977 = __reflect(____BAH_COMPILER_VAR_976, sizeof(char *), "\010\0\0\0""cpstring", "\03\0\0\0""str", 0, 0, 0, 0, offsetof(struct rope, str));
-int* ____BAH_COMPILER_VAR_978 = (int*)((char*)(____BAH_COMPILER_VAR_974) + offsetof(struct rope, totalLen));
-struct reflectElement ____BAH_COMPILER_VAR_979 = __reflect(____BAH_COMPILER_VAR_978, sizeof(int), "\05\0\0\0""int32", "\010\0\0\0""totalLen", 0, 0, 0, 0, offsetof(struct rope, totalLen));
-void ** ____BAH_COMPILER_VAR_980 = (void **)((char*)(____BAH_COMPILER_VAR_974) + offsetof(struct rope, left));
-struct reflectElement ____BAH_COMPILER_VAR_981 = __reflect(____BAH_COMPILER_VAR_980, sizeof(void *), "\03\0\0\0""ptr", "\04\0\0\0""left", 0, 0, 0, 0, offsetof(struct rope, left));
-void ** ____BAH_COMPILER_VAR_982 = (void **)((char*)(____BAH_COMPILER_VAR_974) + offsetof(struct rope, right));
-struct reflectElement ____BAH_COMPILER_VAR_983 = __reflect(____BAH_COMPILER_VAR_982, sizeof(void *), "\03\0\0\0""ptr", "\05\0\0\0""right", 0, 0, 0, 0, offsetof(struct rope, right));
+struct debugStruct* ____BAH_COMPILER_VAR_946 = ds;
+char ** ____BAH_COMPILER_VAR_948 = (char **)((char*)(____BAH_COMPILER_VAR_946) + offsetof(struct debugStruct, name));
+struct reflectElement ____BAH_COMPILER_VAR_949 = __reflect(____BAH_COMPILER_VAR_948, sizeof(char *), "\010\0\0\0""cpstring", "\04\0\0\0""name", 0, 0, 0, 0, offsetof(struct debugStruct, name));
+array(struct variable*)** ____BAH_COMPILER_VAR_950 = (array(struct variable*)**)((char*)(____BAH_COMPILER_VAR_946) + offsetof(struct debugStruct, membs));
+struct variable** ____BAH_COMPILER_VAR_951 = 0;
+char ** ____BAH_COMPILER_VAR_953 = (char **)((char*)(____BAH_COMPILER_VAR_951) + offsetof(struct variable, name));
+struct reflectElement ____BAH_COMPILER_VAR_954 = __reflect(____BAH_COMPILER_VAR_953, sizeof(char *), "\010\0\0\0""cpstring", "\04\0\0\0""name", 0, 0, 0, 0, offsetof(struct variable, name));
+char ** ____BAH_COMPILER_VAR_955 = (char **)((char*)(____BAH_COMPILER_VAR_951) + offsetof(struct variable, type));
+struct reflectElement ____BAH_COMPILER_VAR_956 = __reflect(____BAH_COMPILER_VAR_955, sizeof(char *), "\010\0\0\0""cpstring", "\04\0\0\0""type", 0, 0, 0, 0, offsetof(struct variable, type));
+char* ____BAH_COMPILER_VAR_957 = (char*)((char*)(____BAH_COMPILER_VAR_951) + offsetof(struct variable, isConst));
+struct reflectElement ____BAH_COMPILER_VAR_958 = __reflect(____BAH_COMPILER_VAR_957, sizeof(char), "\04\0\0\0""bool", "\07\0\0\0""isConst", 0, 0, 0, 0, offsetof(struct variable, isConst));
+char ** ____BAH_COMPILER_VAR_959 = (char **)((char*)(____BAH_COMPILER_VAR_951) + offsetof(struct variable, constVal));
+struct reflectElement ____BAH_COMPILER_VAR_960 = __reflect(____BAH_COMPILER_VAR_959, sizeof(char *), "\010\0\0\0""cpstring", "\010\0\0\0""constVal", 0, 0, 0, 0, offsetof(struct variable, constVal));
+char* ____BAH_COMPILER_VAR_961 = (char*)((char*)(____BAH_COMPILER_VAR_951) + offsetof(struct variable, isArray));
+struct reflectElement ____BAH_COMPILER_VAR_962 = __reflect(____BAH_COMPILER_VAR_961, sizeof(char), "\04\0\0\0""bool", "\07\0\0\0""isArray", 0, 0, 0, 0, offsetof(struct variable, isArray));
+char ** ____BAH_COMPILER_VAR_963 = (char **)((char*)(____BAH_COMPILER_VAR_951) + offsetof(struct variable, from));
+struct reflectElement ____BAH_COMPILER_VAR_964 = __reflect(____BAH_COMPILER_VAR_963, sizeof(char *), "\010\0\0\0""cpstring", "\04\0\0\0""from", 0, 0, 0, 0, offsetof(struct variable, from));
+void ** ____BAH_COMPILER_VAR_965 = (void **)((char*)(____BAH_COMPILER_VAR_951) + offsetof(struct variable, declScope));
+struct reflectElement ____BAH_COMPILER_VAR_966 = __reflect(____BAH_COMPILER_VAR_965, sizeof(void *), "\03\0\0\0""ptr", "\011\0\0\0""declScope", 0, 0, 0, 0, offsetof(struct variable, declScope));
+char* ____BAH_COMPILER_VAR_967 = (char*)((char*)(____BAH_COMPILER_VAR_951) + offsetof(struct variable, isGlobal));
+struct reflectElement ____BAH_COMPILER_VAR_968 = __reflect(____BAH_COMPILER_VAR_967, sizeof(char), "\04\0\0\0""bool", "\010\0\0\0""isGlobal", 0, 0, 0, 0, offsetof(struct variable, isGlobal));
+struct rope** ____BAH_COMPILER_VAR_969 = (struct rope**)((char*)(____BAH_COMPILER_VAR_951) + offsetof(struct variable, declRope));
+char ** ____BAH_COMPILER_VAR_971 = (char **)((char*)(____BAH_COMPILER_VAR_969) + offsetof(struct rope, str));
+struct reflectElement ____BAH_COMPILER_VAR_972 = __reflect(____BAH_COMPILER_VAR_971, sizeof(char *), "\010\0\0\0""cpstring", "\03\0\0\0""str", 0, 0, 0, 0, offsetof(struct rope, str));
+int* ____BAH_COMPILER_VAR_973 = (int*)((char*)(____BAH_COMPILER_VAR_969) + offsetof(struct rope, totalLen));
+struct reflectElement ____BAH_COMPILER_VAR_974 = __reflect(____BAH_COMPILER_VAR_973, sizeof(int), "\05\0\0\0""int32", "\010\0\0\0""totalLen", 0, 0, 0, 0, offsetof(struct rope, totalLen));
+void ** ____BAH_COMPILER_VAR_975 = (void **)((char*)(____BAH_COMPILER_VAR_969) + offsetof(struct rope, left));
+struct reflectElement ____BAH_COMPILER_VAR_976 = __reflect(____BAH_COMPILER_VAR_975, sizeof(void *), "\03\0\0\0""ptr", "\04\0\0\0""left", 0, 0, 0, 0, offsetof(struct rope, left));
+void ** ____BAH_COMPILER_VAR_977 = (void **)((char*)(____BAH_COMPILER_VAR_969) + offsetof(struct rope, right));
+struct reflectElement ____BAH_COMPILER_VAR_978 = __reflect(____BAH_COMPILER_VAR_977, sizeof(void *), "\03\0\0\0""ptr", "\05\0\0\0""right", 0, 0, 0, 0, offsetof(struct rope, right));
 
-        array(struct reflectElement) * ____BAH_COMPILER_VAR_975 = memoryAlloc(sizeof(array(struct reflectElement)));
-        ____BAH_COMPILER_VAR_975->elemSize = sizeof(struct reflectElement);
-        ____BAH_COMPILER_VAR_975->length = 4;
-        ____BAH_COMPILER_VAR_975->data = memoryAlloc(____BAH_COMPILER_VAR_975->length * ____BAH_COMPILER_VAR_975->elemSize);
-        ____BAH_COMPILER_VAR_975->data[0] = ____BAH_COMPILER_VAR_977;
-____BAH_COMPILER_VAR_975->data[1] = ____BAH_COMPILER_VAR_979;
-____BAH_COMPILER_VAR_975->data[2] = ____BAH_COMPILER_VAR_981;
-____BAH_COMPILER_VAR_975->data[3] = ____BAH_COMPILER_VAR_983;
-struct reflectElement ____BAH_COMPILER_VAR_984 = __reflect(____BAH_COMPILER_VAR_974, sizeof(struct rope), "\05\0\0\0""rope*", "\010\0\0\0""declRope", 0, 0, 1, ____BAH_COMPILER_VAR_975, offsetof(struct variable, declRope));
-char* ____BAH_COMPILER_VAR_985 = (char*)((char*)(____BAH_COMPILER_VAR_956) + offsetof(struct variable, canBeNull));
-struct reflectElement ____BAH_COMPILER_VAR_986 = __reflect(____BAH_COMPILER_VAR_985, sizeof(char), "\04\0\0\0""bool", "\011\0\0\0""canBeNull", 0, 0, 0, 0, offsetof(struct variable, canBeNull));
-void ** ____BAH_COMPILER_VAR_987 = (void **)((char*)(____BAH_COMPILER_VAR_956) + offsetof(struct variable, iterScope));
-struct reflectElement ____BAH_COMPILER_VAR_988 = __reflect(____BAH_COMPILER_VAR_987, sizeof(void *), "\03\0\0\0""ptr", "\011\0\0\0""iterScope", 0, 0, 0, 0, offsetof(struct variable, iterScope));
-char* ____BAH_COMPILER_VAR_989 = (char*)((char*)(____BAH_COMPILER_VAR_956) + offsetof(struct variable, canBeReg));
-struct reflectElement ____BAH_COMPILER_VAR_990 = __reflect(____BAH_COMPILER_VAR_989, sizeof(char), "\04\0\0\0""bool", "\010\0\0\0""canBeReg", 0, 0, 0, 0, offsetof(struct variable, canBeReg));
-char* ____BAH_COMPILER_VAR_991 = (char*)((char*)(____BAH_COMPILER_VAR_956) + offsetof(struct variable, isReg));
-struct reflectElement ____BAH_COMPILER_VAR_992 = __reflect(____BAH_COMPILER_VAR_991, sizeof(char), "\04\0\0\0""bool", "\05\0\0\0""isReg", 0, 0, 0, 0, offsetof(struct variable, isReg));
-void ** ____BAH_COMPILER_VAR_993 = (void **)((char*)(____BAH_COMPILER_VAR_956) + offsetof(struct variable, lastSet));
-struct reflectElement ____BAH_COMPILER_VAR_994 = __reflect(____BAH_COMPILER_VAR_993, sizeof(void *), "\03\0\0\0""ptr", "\07\0\0\0""lastSet", 0, 0, 0, 0, offsetof(struct variable, lastSet));
-char* ____BAH_COMPILER_VAR_995 = (char*)((char*)(____BAH_COMPILER_VAR_956) + offsetof(struct variable, isArg));
-struct reflectElement ____BAH_COMPILER_VAR_996 = __reflect(____BAH_COMPILER_VAR_995, sizeof(char), "\04\0\0\0""bool", "\05\0\0\0""isArg", 0, 0, 0, 0, offsetof(struct variable, isArg));
-
-        array(struct reflectElement) * ____BAH_COMPILER_VAR_957 = memoryAlloc(sizeof(array(struct reflectElement)));
-        ____BAH_COMPILER_VAR_957->elemSize = sizeof(struct reflectElement);
-        ____BAH_COMPILER_VAR_957->length = 15;
-        ____BAH_COMPILER_VAR_957->data = memoryAlloc(____BAH_COMPILER_VAR_957->length * ____BAH_COMPILER_VAR_957->elemSize);
-        ____BAH_COMPILER_VAR_957->data[0] = ____BAH_COMPILER_VAR_959;
-____BAH_COMPILER_VAR_957->data[1] = ____BAH_COMPILER_VAR_961;
-____BAH_COMPILER_VAR_957->data[2] = ____BAH_COMPILER_VAR_963;
-____BAH_COMPILER_VAR_957->data[3] = ____BAH_COMPILER_VAR_965;
-____BAH_COMPILER_VAR_957->data[4] = ____BAH_COMPILER_VAR_967;
-____BAH_COMPILER_VAR_957->data[5] = ____BAH_COMPILER_VAR_969;
-____BAH_COMPILER_VAR_957->data[6] = ____BAH_COMPILER_VAR_971;
-____BAH_COMPILER_VAR_957->data[7] = ____BAH_COMPILER_VAR_973;
-____BAH_COMPILER_VAR_957->data[8] = ____BAH_COMPILER_VAR_984;
-____BAH_COMPILER_VAR_957->data[9] = ____BAH_COMPILER_VAR_986;
-____BAH_COMPILER_VAR_957->data[10] = ____BAH_COMPILER_VAR_988;
-____BAH_COMPILER_VAR_957->data[11] = ____BAH_COMPILER_VAR_990;
-____BAH_COMPILER_VAR_957->data[12] = ____BAH_COMPILER_VAR_992;
-____BAH_COMPILER_VAR_957->data[13] = ____BAH_COMPILER_VAR_994;
-____BAH_COMPILER_VAR_957->data[14] = ____BAH_COMPILER_VAR_996;
-struct reflectElement ____BAH_COMPILER_VAR_997 = __reflect(____BAH_COMPILER_VAR_956, sizeof(struct variable), "\011\0\0\0""variable*", "\0\0\0\0""", 0, 0, 1, ____BAH_COMPILER_VAR_957, 0);
-
-        struct reflectElement ____BAH_COMPILER_VAR_998 = ____BAH_COMPILER_VAR_997;
-        struct reflectElement ____BAH_COMPILER_VAR_999 = __reflect(____BAH_COMPILER_VAR_955, sizeof(array(struct variable*)*), "\013\0\0\0""[]variable*", "\05\0\0\0""membs", 1, &____BAH_COMPILER_VAR_998, 0, 0, offsetof(struct debugStruct, membs));
+        array(struct reflectElement) * ____BAH_COMPILER_VAR_970 = memoryAlloc(sizeof(array(struct reflectElement)));
+        ____BAH_COMPILER_VAR_970->elemSize = sizeof(struct reflectElement);
+        ____BAH_COMPILER_VAR_970->length = 4;
+        ____BAH_COMPILER_VAR_970->data = memoryAlloc(____BAH_COMPILER_VAR_970->length * ____BAH_COMPILER_VAR_970->elemSize);
+        ____BAH_COMPILER_VAR_970->data[0] = ____BAH_COMPILER_VAR_972;
+____BAH_COMPILER_VAR_970->data[1] = ____BAH_COMPILER_VAR_974;
+____BAH_COMPILER_VAR_970->data[2] = ____BAH_COMPILER_VAR_976;
+____BAH_COMPILER_VAR_970->data[3] = ____BAH_COMPILER_VAR_978;
+struct reflectElement ____BAH_COMPILER_VAR_979 = __reflect(____BAH_COMPILER_VAR_969, sizeof(struct rope), "\05\0\0\0""rope*", "\010\0\0\0""declRope", 0, 0, 1, ____BAH_COMPILER_VAR_970, offsetof(struct variable, declRope));
+char* ____BAH_COMPILER_VAR_980 = (char*)((char*)(____BAH_COMPILER_VAR_951) + offsetof(struct variable, canBeNull));
+struct reflectElement ____BAH_COMPILER_VAR_981 = __reflect(____BAH_COMPILER_VAR_980, sizeof(char), "\04\0\0\0""bool", "\011\0\0\0""canBeNull", 0, 0, 0, 0, offsetof(struct variable, canBeNull));
+void ** ____BAH_COMPILER_VAR_982 = (void **)((char*)(____BAH_COMPILER_VAR_951) + offsetof(struct variable, iterScope));
+struct reflectElement ____BAH_COMPILER_VAR_983 = __reflect(____BAH_COMPILER_VAR_982, sizeof(void *), "\03\0\0\0""ptr", "\011\0\0\0""iterScope", 0, 0, 0, 0, offsetof(struct variable, iterScope));
+char* ____BAH_COMPILER_VAR_984 = (char*)((char*)(____BAH_COMPILER_VAR_951) + offsetof(struct variable, canBeReg));
+struct reflectElement ____BAH_COMPILER_VAR_985 = __reflect(____BAH_COMPILER_VAR_984, sizeof(char), "\04\0\0\0""bool", "\010\0\0\0""canBeReg", 0, 0, 0, 0, offsetof(struct variable, canBeReg));
+char* ____BAH_COMPILER_VAR_986 = (char*)((char*)(____BAH_COMPILER_VAR_951) + offsetof(struct variable, isReg));
+struct reflectElement ____BAH_COMPILER_VAR_987 = __reflect(____BAH_COMPILER_VAR_986, sizeof(char), "\04\0\0\0""bool", "\05\0\0\0""isReg", 0, 0, 0, 0, offsetof(struct variable, isReg));
+void ** ____BAH_COMPILER_VAR_988 = (void **)((char*)(____BAH_COMPILER_VAR_951) + offsetof(struct variable, lastSet));
+struct reflectElement ____BAH_COMPILER_VAR_989 = __reflect(____BAH_COMPILER_VAR_988, sizeof(void *), "\03\0\0\0""ptr", "\07\0\0\0""lastSet", 0, 0, 0, 0, offsetof(struct variable, lastSet));
+char* ____BAH_COMPILER_VAR_990 = (char*)((char*)(____BAH_COMPILER_VAR_951) + offsetof(struct variable, isArg));
+struct reflectElement ____BAH_COMPILER_VAR_991 = __reflect(____BAH_COMPILER_VAR_990, sizeof(char), "\04\0\0\0""bool", "\05\0\0\0""isArg", 0, 0, 0, 0, offsetof(struct variable, isArg));
 
         array(struct reflectElement) * ____BAH_COMPILER_VAR_952 = memoryAlloc(sizeof(array(struct reflectElement)));
         ____BAH_COMPILER_VAR_952->elemSize = sizeof(struct reflectElement);
-        ____BAH_COMPILER_VAR_952->length = 2;
+        ____BAH_COMPILER_VAR_952->length = 15;
         ____BAH_COMPILER_VAR_952->data = memoryAlloc(____BAH_COMPILER_VAR_952->length * ____BAH_COMPILER_VAR_952->elemSize);
         ____BAH_COMPILER_VAR_952->data[0] = ____BAH_COMPILER_VAR_954;
-____BAH_COMPILER_VAR_952->data[1] = ____BAH_COMPILER_VAR_999;
-struct reflectElement ____BAH_COMPILER_VAR_1000 = __reflect(____BAH_COMPILER_VAR_951, sizeof(struct debugStruct), "\014\0\0\0""debugStruct*", "\02\0\0\0""ds", 0, 0, 1, ____BAH_COMPILER_VAR_952, 0);
-debugPrint("\016\0\0\0""struct_declare",nameToken.line,____BAH_COMPILER_VAR_1000);
+____BAH_COMPILER_VAR_952->data[1] = ____BAH_COMPILER_VAR_956;
+____BAH_COMPILER_VAR_952->data[2] = ____BAH_COMPILER_VAR_958;
+____BAH_COMPILER_VAR_952->data[3] = ____BAH_COMPILER_VAR_960;
+____BAH_COMPILER_VAR_952->data[4] = ____BAH_COMPILER_VAR_962;
+____BAH_COMPILER_VAR_952->data[5] = ____BAH_COMPILER_VAR_964;
+____BAH_COMPILER_VAR_952->data[6] = ____BAH_COMPILER_VAR_966;
+____BAH_COMPILER_VAR_952->data[7] = ____BAH_COMPILER_VAR_968;
+____BAH_COMPILER_VAR_952->data[8] = ____BAH_COMPILER_VAR_979;
+____BAH_COMPILER_VAR_952->data[9] = ____BAH_COMPILER_VAR_981;
+____BAH_COMPILER_VAR_952->data[10] = ____BAH_COMPILER_VAR_983;
+____BAH_COMPILER_VAR_952->data[11] = ____BAH_COMPILER_VAR_985;
+____BAH_COMPILER_VAR_952->data[12] = ____BAH_COMPILER_VAR_987;
+____BAH_COMPILER_VAR_952->data[13] = ____BAH_COMPILER_VAR_989;
+____BAH_COMPILER_VAR_952->data[14] = ____BAH_COMPILER_VAR_991;
+struct reflectElement ____BAH_COMPILER_VAR_992 = __reflect(____BAH_COMPILER_VAR_951, sizeof(struct variable), "\011\0\0\0""variable*", "\0\0\0\0""", 0, 0, 1, ____BAH_COMPILER_VAR_952, 0);
+
+        struct reflectElement ____BAH_COMPILER_VAR_993 = ____BAH_COMPILER_VAR_992;
+        struct reflectElement ____BAH_COMPILER_VAR_994 = __reflect(____BAH_COMPILER_VAR_950, sizeof(array(struct variable*)*), "\013\0\0\0""[]variable*", "\05\0\0\0""membs", 1, &____BAH_COMPILER_VAR_993, 0, 0, offsetof(struct debugStruct, membs));
+
+        array(struct reflectElement) * ____BAH_COMPILER_VAR_947 = memoryAlloc(sizeof(array(struct reflectElement)));
+        ____BAH_COMPILER_VAR_947->elemSize = sizeof(struct reflectElement);
+        ____BAH_COMPILER_VAR_947->length = 2;
+        ____BAH_COMPILER_VAR_947->data = memoryAlloc(____BAH_COMPILER_VAR_947->length * ____BAH_COMPILER_VAR_947->elemSize);
+        ____BAH_COMPILER_VAR_947->data[0] = ____BAH_COMPILER_VAR_949;
+____BAH_COMPILER_VAR_947->data[1] = ____BAH_COMPILER_VAR_994;
+struct reflectElement ____BAH_COMPILER_VAR_995 = __reflect(____BAH_COMPILER_VAR_946, sizeof(struct debugStruct), "\014\0\0\0""debugStruct*", "\02\0\0\0""ds", 0, 0, 1, ____BAH_COMPILER_VAR_947, 0);
+debugPrint("\016\0\0\0""struct_declare",nameToken.line,____BAH_COMPILER_VAR_995);
 }
 };
 
@@ -18421,15 +18405,15 @@ doesOutput = false;
 if ((strcmp(st.cont, "\01\0\0\0""(") == 0)) {
 
 #line 2114 "/home/alois/Documents/bah-bah/src/parser.bah"
-struct func* ____BAH_COMPILER_VAR_1001 = memoryAlloc(sizeof(struct func));
-____BAH_COMPILER_VAR_1001->name = "\0\0\0\0""";
-____BAH_COMPILER_VAR_1001->args = memoryAlloc(sizeof(array(struct variable*)));
-            ____BAH_COMPILER_VAR_1001->args->length = 0;
-            ____BAH_COMPILER_VAR_1001->args->elemSize = sizeof(struct variable*);
-            ____BAH_COMPILER_VAR_1001->from = "\0\0\0\0""";
-____BAH_COMPILER_VAR_1001->file = "\0\0\0\0""";
-____BAH_COMPILER_VAR_1001->line = 1;
-struct func* fn = ____BAH_COMPILER_VAR_1001;
+struct func* ____BAH_COMPILER_VAR_996 = memoryAlloc(sizeof(struct func));
+____BAH_COMPILER_VAR_996->name = "\0\0\0\0""";
+____BAH_COMPILER_VAR_996->args = memoryAlloc(sizeof(array(struct variable*)));
+            ____BAH_COMPILER_VAR_996->args->length = 0;
+            ____BAH_COMPILER_VAR_996->args->elemSize = sizeof(struct variable*);
+            ____BAH_COMPILER_VAR_996->from = "\0\0\0\0""";
+____BAH_COMPILER_VAR_996->file = "\0\0\0\0""";
+____BAH_COMPILER_VAR_996->line = 1;
+struct func* fn = ____BAH_COMPILER_VAR_996;
 
 #line 2115 "/home/alois/Documents/bah-bah/src/parser.bah"
 char * code = parseFnHeader("\0\0\0\0""",l,&i,fn,elems);
@@ -18445,15 +18429,15 @@ fn->isCbinding = (doesOutput==false);
 
 #line 2119 "/home/alois/Documents/bah-bah/src/parser.bah"
 
-    unsigned int ____BAH_COMPILER_VAR_1002 = len(fns);
-    __Bah_realocate_arr(fns, ____BAH_COMPILER_VAR_1002);
-    fns->data[____BAH_COMPILER_VAR_1002] = fn;
+    unsigned int ____BAH_COMPILER_VAR_997 = len(fns);
+    __Bah_realocate_arr(fns, ____BAH_COMPILER_VAR_997);
+    fns->data[____BAH_COMPILER_VAR_997] = fn;
 
 #line 2120 "/home/alois/Documents/bah-bah/src/parser.bah"
 if ((doesOutput==true)) {
 
 #line 2121 "/home/alois/Documents/bah-bah/src/parser.bah"
-char** ____BAH_COMPILER_VAR_1003 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1003[1] = "\02\0\0\0"";\n";____BAH_COMPILER_VAR_1003[0] = code;char * ____BAH_COMPILER_VAR_1004 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1003, 2);OUTPUT = rope__add(OUTPUT, rope(____BAH_COMPILER_VAR_1004));
+char** ____BAH_COMPILER_VAR_998 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_998[1] = "\02\0\0\0"";\n";____BAH_COMPILER_VAR_998[0] = code;char * ____BAH_COMPILER_VAR_999 =__Bah_multiple_concat(____BAH_COMPILER_VAR_998, 2);OUTPUT = rope__add(OUTPUT, rope(____BAH_COMPILER_VAR_999));
 }
 }
 
@@ -18475,7 +18459,7 @@ for (; (i<len(l));
 struct Tok t = l->data[i];
 
 #line 2128 "/home/alois/Documents/bah-bah/src/parser.bah"
-char** ____BAH_COMPILER_VAR_1005 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1005[1] = t.cont;____BAH_COMPILER_VAR_1005[0] = tp;char * ____BAH_COMPILER_VAR_1006 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1005, 2);tp = ____BAH_COMPILER_VAR_1006;
+char** ____BAH_COMPILER_VAR_1000 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1000[1] = t.cont;____BAH_COMPILER_VAR_1000[0] = tp;char * ____BAH_COMPILER_VAR_1001 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1000, 2);tp = ____BAH_COMPILER_VAR_1001;
 };
 
 #line 2130 "/home/alois/Documents/bah-bah/src/parser.bah"
@@ -18495,15 +18479,15 @@ char * cTypeNewTypeStr = string__str(&cTypeNewType);
 if ((doesOutput==true)) {
 
 #line 2136 "/home/alois/Documents/bah-bah/src/parser.bah"
-char** ____BAH_COMPILER_VAR_1007 = alloca(5 * sizeof(char*));____BAH_COMPILER_VAR_1007[4] = "\02\0\0\0"";\n";____BAH_COMPILER_VAR_1007[3] = ft.cont;____BAH_COMPILER_VAR_1007[2] = "\01\0\0\0"" ";____BAH_COMPILER_VAR_1007[1] = cTypeNewTypeStr;____BAH_COMPILER_VAR_1007[0] = "\010\0\0\0""typedef ";char * ____BAH_COMPILER_VAR_1008 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1007, 5);OUTPUT = rope__add(OUTPUT, rope(____BAH_COMPILER_VAR_1008));
+char** ____BAH_COMPILER_VAR_1002 = alloca(5 * sizeof(char*));____BAH_COMPILER_VAR_1002[4] = "\02\0\0\0"";\n";____BAH_COMPILER_VAR_1002[3] = ft.cont;____BAH_COMPILER_VAR_1002[2] = "\01\0\0\0"" ";____BAH_COMPILER_VAR_1002[1] = cTypeNewTypeStr;____BAH_COMPILER_VAR_1002[0] = "\010\0\0\0""typedef ";char * ____BAH_COMPILER_VAR_1003 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1002, 5);OUTPUT = rope__add(OUTPUT, rope(____BAH_COMPILER_VAR_1003));
 }
 
 #line 2139 "/home/alois/Documents/bah-bah/src/parser.bah"
 if ((debug==true)) {
 
 #line 2140 "/home/alois/Documents/bah-bah/src/parser.bah"
-struct debugType* ____BAH_COMPILER_VAR_1009 = memoryAlloc(sizeof(struct debugType));
-struct debugType* dt = ____BAH_COMPILER_VAR_1009;
+struct debugType* ____BAH_COMPILER_VAR_1004 = memoryAlloc(sizeof(struct debugType));
+struct debugType* dt = ____BAH_COMPILER_VAR_1004;
 
 #line 2141 "/home/alois/Documents/bah-bah/src/parser.bah"
 dt->name = ft.cont;
@@ -18512,20 +18496,20 @@ dt->name = ft.cont;
 dt->refers = tp;
 
 #line 2143 "/home/alois/Documents/bah-bah/src/parser.bah"
-struct debugType* ____BAH_COMPILER_VAR_1010 = dt;
-char ** ____BAH_COMPILER_VAR_1012 = (char **)((char*)(____BAH_COMPILER_VAR_1010) + offsetof(struct debugType, name));
-struct reflectElement ____BAH_COMPILER_VAR_1013 = __reflect(____BAH_COMPILER_VAR_1012, sizeof(char *), "\010\0\0\0""cpstring", "\04\0\0\0""name", 0, 0, 0, 0, offsetof(struct debugType, name));
-char ** ____BAH_COMPILER_VAR_1014 = (char **)((char*)(____BAH_COMPILER_VAR_1010) + offsetof(struct debugType, refers));
-struct reflectElement ____BAH_COMPILER_VAR_1015 = __reflect(____BAH_COMPILER_VAR_1014, sizeof(char *), "\010\0\0\0""cpstring", "\06\0\0\0""refers", 0, 0, 0, 0, offsetof(struct debugType, refers));
+struct debugType* ____BAH_COMPILER_VAR_1005 = dt;
+char ** ____BAH_COMPILER_VAR_1007 = (char **)((char*)(____BAH_COMPILER_VAR_1005) + offsetof(struct debugType, name));
+struct reflectElement ____BAH_COMPILER_VAR_1008 = __reflect(____BAH_COMPILER_VAR_1007, sizeof(char *), "\010\0\0\0""cpstring", "\04\0\0\0""name", 0, 0, 0, 0, offsetof(struct debugType, name));
+char ** ____BAH_COMPILER_VAR_1009 = (char **)((char*)(____BAH_COMPILER_VAR_1005) + offsetof(struct debugType, refers));
+struct reflectElement ____BAH_COMPILER_VAR_1010 = __reflect(____BAH_COMPILER_VAR_1009, sizeof(char *), "\010\0\0\0""cpstring", "\06\0\0\0""refers", 0, 0, 0, 0, offsetof(struct debugType, refers));
 
-        array(struct reflectElement) * ____BAH_COMPILER_VAR_1011 = memoryAlloc(sizeof(array(struct reflectElement)));
-        ____BAH_COMPILER_VAR_1011->elemSize = sizeof(struct reflectElement);
-        ____BAH_COMPILER_VAR_1011->length = 2;
-        ____BAH_COMPILER_VAR_1011->data = memoryAlloc(____BAH_COMPILER_VAR_1011->length * ____BAH_COMPILER_VAR_1011->elemSize);
-        ____BAH_COMPILER_VAR_1011->data[0] = ____BAH_COMPILER_VAR_1013;
-____BAH_COMPILER_VAR_1011->data[1] = ____BAH_COMPILER_VAR_1015;
-struct reflectElement ____BAH_COMPILER_VAR_1016 = __reflect(____BAH_COMPILER_VAR_1010, sizeof(struct debugType), "\012\0\0\0""debugType*", "\02\0\0\0""dt", 0, 0, 1, ____BAH_COMPILER_VAR_1011, 0);
-debugPrint("\014\0\0\0""type_declare",ft.line,____BAH_COMPILER_VAR_1016);
+        array(struct reflectElement) * ____BAH_COMPILER_VAR_1006 = memoryAlloc(sizeof(array(struct reflectElement)));
+        ____BAH_COMPILER_VAR_1006->elemSize = sizeof(struct reflectElement);
+        ____BAH_COMPILER_VAR_1006->length = 2;
+        ____BAH_COMPILER_VAR_1006->data = memoryAlloc(____BAH_COMPILER_VAR_1006->length * ____BAH_COMPILER_VAR_1006->elemSize);
+        ____BAH_COMPILER_VAR_1006->data[0] = ____BAH_COMPILER_VAR_1008;
+____BAH_COMPILER_VAR_1006->data[1] = ____BAH_COMPILER_VAR_1010;
+struct reflectElement ____BAH_COMPILER_VAR_1011 = __reflect(____BAH_COMPILER_VAR_1005, sizeof(struct debugType), "\012\0\0\0""debugType*", "\02\0\0\0""dt", 0, 0, 1, ____BAH_COMPILER_VAR_1006, 0);
+debugPrint("\014\0\0\0""type_declare",ft.line,____BAH_COMPILER_VAR_1011);
 }
 
 #line 2146 "/home/alois/Documents/bah-bah/src/parser.bah"
@@ -18533,9 +18517,9 @@ array(char *)* tps = elems->types;
 
 #line 2147 "/home/alois/Documents/bah-bah/src/parser.bah"
 
-    unsigned int ____BAH_COMPILER_VAR_1017 = len(tps);
-    __Bah_realocate_arr(tps, ____BAH_COMPILER_VAR_1017);
-    tps->data[____BAH_COMPILER_VAR_1017] = ft.cont;
+    unsigned int ____BAH_COMPILER_VAR_1012 = len(tps);
+    __Bah_realocate_arr(tps, ____BAH_COMPILER_VAR_1012);
+    tps->data[____BAH_COMPILER_VAR_1012] = ft.cont;
 }
 };
 
@@ -18611,9 +18595,9 @@ continue;
 
 #line 2180 "/home/alois/Documents/bah-bah/src/parser.bah"
 
-    unsigned int ____BAH_COMPILER_VAR_1018 = len(clibs);
-    __Bah_realocate_arr(clibs, ____BAH_COMPILER_VAR_1018);
-    clibs->data[____BAH_COMPILER_VAR_1018] = ccstr;
+    unsigned int ____BAH_COMPILER_VAR_1013 = len(clibs);
+    __Bah_realocate_arr(clibs, ____BAH_COMPILER_VAR_1013);
+    clibs->data[____BAH_COMPILER_VAR_1013] = ccstr;
 
 #line 2182 "/home/alois/Documents/bah-bah/src/parser.bah"
 ++i;
@@ -18678,12 +18662,12 @@ fn->used = true;
 }
 
 #line 2212 "/home/alois/Documents/bah-bah/src/parser.bah"
-struct variable* ____BAH_COMPILER_VAR_1019 = memoryAlloc(sizeof(struct variable));
-____BAH_COMPILER_VAR_1019->name = "\0\0\0\0""";
-____BAH_COMPILER_VAR_1019->type = "\0\0\0\0""";
-____BAH_COMPILER_VAR_1019->constVal = "\0\0\0\0""";
-____BAH_COMPILER_VAR_1019->from = "\0\0\0\0""";
-struct variable* v = ____BAH_COMPILER_VAR_1019;
+struct variable* ____BAH_COMPILER_VAR_1014 = memoryAlloc(sizeof(struct variable));
+____BAH_COMPILER_VAR_1014->name = "\0\0\0\0""";
+____BAH_COMPILER_VAR_1014->type = "\0\0\0\0""";
+____BAH_COMPILER_VAR_1014->constVal = "\0\0\0\0""";
+____BAH_COMPILER_VAR_1014->from = "\0\0\0\0""";
+struct variable* v = ____BAH_COMPILER_VAR_1014;
 
 #line 2214 "/home/alois/Documents/bah-bah/src/parser.bah"
 if (isGlobal()) {
@@ -18709,9 +18693,9 @@ array(struct variable*)* vars = elems->vars;
 
 #line 2223 "/home/alois/Documents/bah-bah/src/parser.bah"
 
-    unsigned int ____BAH_COMPILER_VAR_1020 = len(vars);
-    __Bah_realocate_arr(vars, ____BAH_COMPILER_VAR_1020);
-    vars->data[____BAH_COMPILER_VAR_1020] = v;
+    unsigned int ____BAH_COMPILER_VAR_1015 = len(vars);
+    __Bah_realocate_arr(vars, ____BAH_COMPILER_VAR_1015);
+    vars->data[____BAH_COMPILER_VAR_1015] = v;
 
 #line 2225 "/home/alois/Documents/bah-bah/src/parser.bah"
 if ((valt.type==TOKEN_TYPE_STR)) {
@@ -18721,7 +18705,7 @@ valt.cont = strLitteralToBahStr(valt.cont);
 }
 
 #line 2229 "/home/alois/Documents/bah-bah/src/parser.bah"
-char** ____BAH_COMPILER_VAR_1021 = alloca(5 * sizeof(char*));____BAH_COMPILER_VAR_1021[4] = "\01\0\0\0""\n";____BAH_COMPILER_VAR_1021[3] = valt.cont;____BAH_COMPILER_VAR_1021[2] = "\01\0\0\0"" ";____BAH_COMPILER_VAR_1021[1] = v->name;____BAH_COMPILER_VAR_1021[0] = "\010\0\0\0""#define ";char * ____BAH_COMPILER_VAR_1022 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1021, 5);OUTPUT = rope__add(OUTPUT, rope(____BAH_COMPILER_VAR_1022));
+char** ____BAH_COMPILER_VAR_1016 = alloca(5 * sizeof(char*));____BAH_COMPILER_VAR_1016[4] = "\01\0\0\0""\n";____BAH_COMPILER_VAR_1016[3] = valt.cont;____BAH_COMPILER_VAR_1016[2] = "\01\0\0\0"" ";____BAH_COMPILER_VAR_1016[1] = v->name;____BAH_COMPILER_VAR_1016[0] = "\010\0\0\0""#define ";char * ____BAH_COMPILER_VAR_1017 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1016, 5);OUTPUT = rope__add(OUTPUT, rope(____BAH_COMPILER_VAR_1017));
 };
 
 #line 2235 "/home/alois/Documents/bah-bah/src/parser.bah"
@@ -18757,7 +18741,7 @@ if ((len(l)==1)) {
 if (__builtin_expect((strlen(currentFn->returns->type)!=0), 0)) {
 
 #line 2248 "/home/alois/Documents/bah-bah/src/parser.bah"
-char** ____BAH_COMPILER_VAR_1023 = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_1023[2] = "\01\0\0\0"".";____BAH_COMPILER_VAR_1023[1] = currentFn->returns->type;____BAH_COMPILER_VAR_1023[0] = "\031\0\0\0""Cannot return nothing as ";char * ____BAH_COMPILER_VAR_1024 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1023, 3);throwErr(&l->data[0],____BAH_COMPILER_VAR_1024);
+char** ____BAH_COMPILER_VAR_1018 = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_1018[2] = "\01\0\0\0"".";____BAH_COMPILER_VAR_1018[1] = currentFn->returns->type;____BAH_COMPILER_VAR_1018[0] = "\031\0\0\0""Cannot return nothing as ";char * ____BAH_COMPILER_VAR_1019 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1018, 3);throwErr(&l->data[0],____BAH_COMPILER_VAR_1019);
 }
 }
 
@@ -18791,8 +18775,8 @@ if ((tmpV!=null)) {
 
 #line 2260 "/home/alois/Documents/bah-bah/src/parser.bah"
 
-                struct string ____BAH_COMPILER_VAR_1025 = string(compilerState.currentDir);
-                if ((isUnsafe==false)&&(string__hasPrefix(&____BAH_COMPILER_VAR_1025,BAH_DIR)==false)&&(currentFn->returns->type[strlen(currentFn->returns->type)-1+4]!=33)) {
+                struct string ____BAH_COMPILER_VAR_1020 = string(compilerState.currentDir);
+                if ((isUnsafe==false)&&(string__hasPrefix(&____BAH_COMPILER_VAR_1020,BAH_DIR)==false)&&(currentFn->returns->type[strlen(currentFn->returns->type)-1+4]!=33)) {
 
 #line 2261 "/home/alois/Documents/bah-bah/src/parser.bah"
 if ((tmpV->canBeNull==true)||(strcmp(rv, "\04\0\0\0""null") == 0)) {
@@ -18801,7 +18785,7 @@ if ((tmpV->canBeNull==true)||(strcmp(rv, "\04\0\0\0""null") == 0)) {
 currentFn->returns->canBeNull = true;
 
 #line 2263 "/home/alois/Documents/bah-bah/src/parser.bah"
-char** ____BAH_COMPILER_VAR_1026 = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_1026[2] = "\071\0\0\0""' that can be null as pointer.\n\tUse maybe values instead.";____BAH_COMPILER_VAR_1026[1] = tmpV->name;____BAH_COMPILER_VAR_1026[0] = "\013\0\0\0""Returning '";char * ____BAH_COMPILER_VAR_1027 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1026, 3);throwNoticeLine(____BAH_COMPILER_VAR_1027,rvt.line);
+char** ____BAH_COMPILER_VAR_1021 = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_1021[2] = "\071\0\0\0""' that can be null as pointer.\n\tUse maybe values instead.";____BAH_COMPILER_VAR_1021[1] = tmpV->name;____BAH_COMPILER_VAR_1021[0] = "\013\0\0\0""Returning '";char * ____BAH_COMPILER_VAR_1022 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1021, 3);throwNoticeLine(____BAH_COMPILER_VAR_1022,rvt.line);
 }
 }
 }
@@ -18817,14 +18801,14 @@ rv = genCompilerVar();
 struct string cType = getCType(tt,elems);
 
 #line 2270 "/home/alois/Documents/bah-bah/src/parser.bah"
-char** ____BAH_COMPILER_VAR_1028 = alloca(6 * sizeof(char*));____BAH_COMPILER_VAR_1028[5] = "\02\0\0\0"";\n";____BAH_COMPILER_VAR_1028[4] = rvt.cont;____BAH_COMPILER_VAR_1028[3] = "\01\0\0\0""=";____BAH_COMPILER_VAR_1028[2] = rv;____BAH_COMPILER_VAR_1028[1] = "\01\0\0\0"" ";____BAH_COMPILER_VAR_1028[0] = string__str(&cType);char * ____BAH_COMPILER_VAR_1029 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1028, 6);OUTPUT = rope__add(OUTPUT, rope(____BAH_COMPILER_VAR_1029));
+char** ____BAH_COMPILER_VAR_1023 = alloca(6 * sizeof(char*));____BAH_COMPILER_VAR_1023[5] = "\02\0\0\0"";\n";____BAH_COMPILER_VAR_1023[4] = rvt.cont;____BAH_COMPILER_VAR_1023[3] = "\01\0\0\0""=";____BAH_COMPILER_VAR_1023[2] = rv;____BAH_COMPILER_VAR_1023[1] = "\01\0\0\0"" ";____BAH_COMPILER_VAR_1023[0] = string__str(&cType);char * ____BAH_COMPILER_VAR_1024 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1023, 6);OUTPUT = rope__add(OUTPUT, rope(____BAH_COMPILER_VAR_1024));
 }
 
 #line 2272 "/home/alois/Documents/bah-bah/src/parser.bah"
 if (__builtin_expect((compTypes(tt,currentFn->returns->type)==false), 0)) {
 
 #line 2273 "/home/alois/Documents/bah-bah/src/parser.bah"
-char** ____BAH_COMPILER_VAR_1030 = alloca(5 * sizeof(char*));____BAH_COMPILER_VAR_1030[4] = "\01\0\0\0"".";____BAH_COMPILER_VAR_1030[3] = currentFn->returns->type;____BAH_COMPILER_VAR_1030[2] = "\05\0\0\0"") as ";____BAH_COMPILER_VAR_1030[1] = tt;____BAH_COMPILER_VAR_1030[0] = "\027\0\0\0""Cannot return {TOKEN} (";char * ____BAH_COMPILER_VAR_1031 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1030, 5);throwErr(&rvt,____BAH_COMPILER_VAR_1031);
+char** ____BAH_COMPILER_VAR_1025 = alloca(5 * sizeof(char*));____BAH_COMPILER_VAR_1025[4] = "\01\0\0\0"".";____BAH_COMPILER_VAR_1025[3] = currentFn->returns->type;____BAH_COMPILER_VAR_1025[2] = "\05\0\0\0"") as ";____BAH_COMPILER_VAR_1025[1] = tt;____BAH_COMPILER_VAR_1025[0] = "\027\0\0\0""Cannot return {TOKEN} (";char * ____BAH_COMPILER_VAR_1026 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1025, 5);throwErr(&rvt,____BAH_COMPILER_VAR_1026);
 }
 }
 
@@ -18861,7 +18845,7 @@ rvar = genCompilerVar();
 struct string cType = getCType(currentFn->returns->type,elems);
 
 #line 2288 "/home/alois/Documents/bah-bah/src/parser.bah"
-char** ____BAH_COMPILER_VAR_1032 = alloca(6 * sizeof(char*));____BAH_COMPILER_VAR_1032[5] = "\02\0\0\0"";\n";____BAH_COMPILER_VAR_1032[4] = rv;____BAH_COMPILER_VAR_1032[3] = "\03\0\0\0"" = ";____BAH_COMPILER_VAR_1032[2] = rvar;____BAH_COMPILER_VAR_1032[1] = "\01\0\0\0"" ";____BAH_COMPILER_VAR_1032[0] = string__str(&cType);char * ____BAH_COMPILER_VAR_1033 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1032, 6);OUTPUT = rope__add(OUTPUT, rope(____BAH_COMPILER_VAR_1033));
+char** ____BAH_COMPILER_VAR_1027 = alloca(6 * sizeof(char*));____BAH_COMPILER_VAR_1027[5] = "\02\0\0\0"";\n";____BAH_COMPILER_VAR_1027[4] = rv;____BAH_COMPILER_VAR_1027[3] = "\03\0\0\0"" = ";____BAH_COMPILER_VAR_1027[2] = rvar;____BAH_COMPILER_VAR_1027[1] = "\01\0\0\0"" ";____BAH_COMPILER_VAR_1027[0] = string__str(&cType);char * ____BAH_COMPILER_VAR_1028 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1027, 6);OUTPUT = rope__add(OUTPUT, rope(____BAH_COMPILER_VAR_1028));
 
 #line 2289 "/home/alois/Documents/bah-bah/src/parser.bah"
 if ((tmpV!=null)&&(tmpV->declScope!=elems)) {
@@ -18878,7 +18862,7 @@ struct string stt = string(tt);
 if (string__hasPrefix(&stt,"\07\0\0\0""buffer:")) {
 
 #line 2295 "/home/alois/Documents/bah-bah/src/parser.bah"
-char** ____BAH_COMPILER_VAR_1034 = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_1034[2] = "\01\0\0\0"")";____BAH_COMPILER_VAR_1034[1] = rvar;____BAH_COMPILER_VAR_1034[0] = "\012\0\0\0""buffToStr(";char * ____BAH_COMPILER_VAR_1035 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1034, 3);rvar = ____BAH_COMPILER_VAR_1035;
+char** ____BAH_COMPILER_VAR_1029 = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_1029[2] = "\01\0\0\0"")";____BAH_COMPILER_VAR_1029[1] = rvar;____BAH_COMPILER_VAR_1029[0] = "\012\0\0\0""buffToStr(";char * ____BAH_COMPILER_VAR_1030 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1029, 3);rvar = ____BAH_COMPILER_VAR_1030;
 }
 
 #line 2296 "/home/alois/Documents/bah-bah/src/parser.bah"
@@ -18892,12 +18876,12 @@ char * v = genCompilerVar();
 
 #line 2299 "/home/alois/Documents/bah-bah/src/parser.bah"
 
-                struct string ____BAH_COMPILER_VAR_1036 = getCType(tt,elems);
+                struct string ____BAH_COMPILER_VAR_1031 = getCType(tt,elems);
                 
-                struct string ____BAH_COMPILER_VAR_1037 = getCType(string__str(&parts->data[2]),elems);
+                struct string ____BAH_COMPILER_VAR_1032 = getCType(string__str(&parts->data[2]),elems);
                 
-                struct string ____BAH_COMPILER_VAR_1038 = getCType(string__str(&parts->data[2]),elems);
-                char** ____BAH_COMPILER_VAR_1039 = alloca(17 * sizeof(char*));____BAH_COMPILER_VAR_1039[16] = "\02\0\0\0"");";____BAH_COMPILER_VAR_1039[15] = string__str(&parts->data[1]);____BAH_COMPILER_VAR_1039[14] = "\04\0\0\0"") * ";____BAH_COMPILER_VAR_1039[13] = string__str(&____BAH_COMPILER_VAR_1038);____BAH_COMPILER_VAR_1039[12] = "\011\0\0\0"", sizeof(";____BAH_COMPILER_VAR_1039[11] = rv;____BAH_COMPILER_VAR_1039[10] = "\02\0\0\0"", ";____BAH_COMPILER_VAR_1039[9] = v;____BAH_COMPILER_VAR_1039[8] = "\027\0\0\0""));\n            memcpy(";____BAH_COMPILER_VAR_1039[7] = string__str(&____BAH_COMPILER_VAR_1037);____BAH_COMPILER_VAR_1039[6] = "\012\0\0\0"" * sizeof(";____BAH_COMPILER_VAR_1039[5] = string__str(&parts->data[1]);____BAH_COMPILER_VAR_1039[4] = "\017\0\0\0"" = memoryAlloc(";____BAH_COMPILER_VAR_1039[3] = v;____BAH_COMPILER_VAR_1039[2] = "\01\0\0\0"" ";____BAH_COMPILER_VAR_1039[1] = string__str(&____BAH_COMPILER_VAR_1036);____BAH_COMPILER_VAR_1039[0] = "\0\0\0\0""";char * ____BAH_COMPILER_VAR_1040 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1039, 17);OUTPUT = rope__add(OUTPUT, rope(____BAH_COMPILER_VAR_1040));
+                struct string ____BAH_COMPILER_VAR_1033 = getCType(string__str(&parts->data[2]),elems);
+                char** ____BAH_COMPILER_VAR_1034 = alloca(17 * sizeof(char*));____BAH_COMPILER_VAR_1034[16] = "\02\0\0\0"");";____BAH_COMPILER_VAR_1034[15] = string__str(&parts->data[1]);____BAH_COMPILER_VAR_1034[14] = "\04\0\0\0"") * ";____BAH_COMPILER_VAR_1034[13] = string__str(&____BAH_COMPILER_VAR_1033);____BAH_COMPILER_VAR_1034[12] = "\011\0\0\0"", sizeof(";____BAH_COMPILER_VAR_1034[11] = rv;____BAH_COMPILER_VAR_1034[10] = "\02\0\0\0"", ";____BAH_COMPILER_VAR_1034[9] = v;____BAH_COMPILER_VAR_1034[8] = "\027\0\0\0""));\n            memcpy(";____BAH_COMPILER_VAR_1034[7] = string__str(&____BAH_COMPILER_VAR_1032);____BAH_COMPILER_VAR_1034[6] = "\012\0\0\0"" * sizeof(";____BAH_COMPILER_VAR_1034[5] = string__str(&parts->data[1]);____BAH_COMPILER_VAR_1034[4] = "\017\0\0\0"" = memoryAlloc(";____BAH_COMPILER_VAR_1034[3] = v;____BAH_COMPILER_VAR_1034[2] = "\01\0\0\0"" ";____BAH_COMPILER_VAR_1034[1] = string__str(&____BAH_COMPILER_VAR_1031);____BAH_COMPILER_VAR_1034[0] = "\0\0\0\0""";char * ____BAH_COMPILER_VAR_1035 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1034, 17);OUTPUT = rope__add(OUTPUT, rope(____BAH_COMPILER_VAR_1035));
 
 #line 2301 "/home/alois/Documents/bah-bah/src/parser.bah"
 rvar = v;
@@ -18922,9 +18906,9 @@ for (; (j<len(currentFn->args));
 
 #line 2306 "/home/alois/Documents/bah-bah/src/parser.bah"
 
-    unsigned int ____BAH_COMPILER_VAR_1041 = j;
-    __Bah_realocate_arr(excl, ____BAH_COMPILER_VAR_1041);
-    excl->data[____BAH_COMPILER_VAR_1041] = currentFn->args->data[j];
+    unsigned int ____BAH_COMPILER_VAR_1036 = j;
+    __Bah_realocate_arr(excl, ____BAH_COMPILER_VAR_1036);
+    excl->data[____BAH_COMPILER_VAR_1036] = currentFn->args->data[j];
 };
 
 #line 2308 "/home/alois/Documents/bah-bah/src/parser.bah"
@@ -18932,9 +18916,9 @@ if ((tmpV!=null)) {
 
 #line 2309 "/home/alois/Documents/bah-bah/src/parser.bah"
 
-    unsigned int ____BAH_COMPILER_VAR_1042 = len(excl);
-    __Bah_realocate_arr(excl, ____BAH_COMPILER_VAR_1042);
-    excl->data[____BAH_COMPILER_VAR_1042] = tmpV;
+    unsigned int ____BAH_COMPILER_VAR_1037 = len(excl);
+    __Bah_realocate_arr(excl, ____BAH_COMPILER_VAR_1037);
+    excl->data[____BAH_COMPILER_VAR_1037] = tmpV;
 }
 
 #line 2311 "/home/alois/Documents/bah-bah/src/parser.bah"
@@ -18945,7 +18929,7 @@ endRCPscope(elems,excl);
 fixMeEndScope(elems,&l->data[0]);
 
 #line 2314 "/home/alois/Documents/bah-bah/src/parser.bah"
-char** ____BAH_COMPILER_VAR_1043 = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_1043[2] = "\02\0\0\0"";\n";____BAH_COMPILER_VAR_1043[1] = rvar;____BAH_COMPILER_VAR_1043[0] = "\07\0\0\0""return ";char * ____BAH_COMPILER_VAR_1044 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1043, 3);OUTPUT = rope__add(OUTPUT, rope(____BAH_COMPILER_VAR_1044));
+char** ____BAH_COMPILER_VAR_1038 = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_1038[2] = "\02\0\0\0"";\n";____BAH_COMPILER_VAR_1038[1] = rvar;____BAH_COMPILER_VAR_1038[0] = "\07\0\0\0""return ";char * ____BAH_COMPILER_VAR_1039 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1038, 3);OUTPUT = rope__add(OUTPUT, rope(____BAH_COMPILER_VAR_1039));
 }
 
 #line 2315 "/home/alois/Documents/bah-bah/src/parser.bah"
@@ -18970,9 +18954,9 @@ for (; (j<len(currentFn->args));
 
 #line 2319 "/home/alois/Documents/bah-bah/src/parser.bah"
 
-    unsigned int ____BAH_COMPILER_VAR_1045 = j;
-    __Bah_realocate_arr(excl, ____BAH_COMPILER_VAR_1045);
-    excl->data[____BAH_COMPILER_VAR_1045] = currentFn->args->data[j];
+    unsigned int ____BAH_COMPILER_VAR_1040 = j;
+    __Bah_realocate_arr(excl, ____BAH_COMPILER_VAR_1040);
+    excl->data[____BAH_COMPILER_VAR_1040] = currentFn->args->data[j];
 };
 
 #line 2321 "/home/alois/Documents/bah-bah/src/parser.bah"
@@ -18980,9 +18964,9 @@ if ((tmpV!=null)) {
 
 #line 2322 "/home/alois/Documents/bah-bah/src/parser.bah"
 
-    unsigned int ____BAH_COMPILER_VAR_1046 = len(excl);
-    __Bah_realocate_arr(excl, ____BAH_COMPILER_VAR_1046);
-    excl->data[____BAH_COMPILER_VAR_1046] = tmpV;
+    unsigned int ____BAH_COMPILER_VAR_1041 = len(excl);
+    __Bah_realocate_arr(excl, ____BAH_COMPILER_VAR_1041);
+    excl->data[____BAH_COMPILER_VAR_1041] = tmpV;
 }
 
 #line 2324 "/home/alois/Documents/bah-bah/src/parser.bah"
@@ -19056,9 +19040,9 @@ t = l->data[i];
 
 #line 2350 "/home/alois/Documents/bah-bah/src/parser.bah"
 
-    unsigned int ____BAH_COMPILER_VAR_1047 = len(tokens);
-    __Bah_realocate_arr(tokens, ____BAH_COMPILER_VAR_1047);
-    tokens->data[____BAH_COMPILER_VAR_1047] = t;
+    unsigned int ____BAH_COMPILER_VAR_1042 = len(tokens);
+    __Bah_realocate_arr(tokens, ____BAH_COMPILER_VAR_1042);
+    tokens->data[____BAH_COMPILER_VAR_1042] = t;
 
 #line 2351 "/home/alois/Documents/bah-bah/src/parser.bah"
 ++i;
@@ -19071,7 +19055,7 @@ begIfHandle = rope("\0\0\0\0""");
 OUTPUT = rope__add(OUTPUT, begIfHandle);
 
 #line 2358 "/home/alois/Documents/bah-bah/src/parser.bah"
-char** ____BAH_COMPILER_VAR_1048 = alloca(4 * sizeof(char*));____BAH_COMPILER_VAR_1048[3] = "\04\0\0\0"") {\n";____BAH_COMPILER_VAR_1048[2] = condt.cont;____BAH_COMPILER_VAR_1048[1] = prevIfShortcut;____BAH_COMPILER_VAR_1048[0] = "\04\0\0\0""if (";char * ____BAH_COMPILER_VAR_1049 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1048, 4);struct rope* ifHeader = rope(____BAH_COMPILER_VAR_1049);
+char** ____BAH_COMPILER_VAR_1043 = alloca(4 * sizeof(char*));____BAH_COMPILER_VAR_1043[3] = "\04\0\0\0"") {\n";____BAH_COMPILER_VAR_1043[2] = condt.cont;____BAH_COMPILER_VAR_1043[1] = prevIfShortcut;____BAH_COMPILER_VAR_1043[0] = "\04\0\0\0""if (";char * ____BAH_COMPILER_VAR_1044 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1043, 4);struct rope* ifHeader = rope(____BAH_COMPILER_VAR_1044);
 
 #line 2360 "/home/alois/Documents/bah-bah/src/parser.bah"
 OUTPUT = rope__add(OUTPUT, ifHeader);
@@ -19098,9 +19082,9 @@ bc.checkNull = (bc.checkNull==false);
 
 #line 2368 "/home/alois/Documents/bah-bah/src/parser.bah"
 
-    unsigned int ____BAH_COMPILER_VAR_1050 = i;
-    __Bah_realocate_arr(ifElems->branchChecks, ____BAH_COMPILER_VAR_1050);
-    ifElems->branchChecks->data[____BAH_COMPILER_VAR_1050] = bc;
+    unsigned int ____BAH_COMPILER_VAR_1045 = i;
+    __Bah_realocate_arr(ifElems->branchChecks, ____BAH_COMPILER_VAR_1045);
+    ifElems->branchChecks->data[____BAH_COMPILER_VAR_1045] = bc;
 };
 }
 
@@ -19114,9 +19098,9 @@ for (; (i<len(currChecks));
 
 #line 2373 "/home/alois/Documents/bah-bah/src/parser.bah"
 
-    unsigned int ____BAH_COMPILER_VAR_1051 = len(ifElems->branchChecks);
-    __Bah_realocate_arr(ifElems->branchChecks, ____BAH_COMPILER_VAR_1051);
-    ifElems->branchChecks->data[____BAH_COMPILER_VAR_1051] = currChecks->data[i];
+    unsigned int ____BAH_COMPILER_VAR_1046 = len(ifElems->branchChecks);
+    __Bah_realocate_arr(ifElems->branchChecks, ____BAH_COMPILER_VAR_1046);
+    ifElems->branchChecks->data[____BAH_COMPILER_VAR_1046] = currChecks->data[i];
 };
 
 #line 2375 "/home/alois/Documents/bah-bah/src/parser.bah"
@@ -19138,7 +19122,7 @@ parseLines(tokens,ifElems);
 if ((ifElems->currFlowEnd==true)) {
 
 #line 2383 "/home/alois/Documents/bah-bah/src/parser.bah"
-char** ____BAH_COMPILER_VAR_1052 = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_1052[2] = "\010\0\0\0"", 0)) {\n";____BAH_COMPILER_VAR_1052[1] = condt.cont;____BAH_COMPILER_VAR_1052[0] = "\025\0\0\0""if (__builtin_expect(";char * ____BAH_COMPILER_VAR_1053 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1052, 3);OUTPUT->totalLen = OUTPUT->totalLen+ropeSet(ifHeader,____BAH_COMPILER_VAR_1053);
+char** ____BAH_COMPILER_VAR_1047 = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_1047[2] = "\010\0\0\0"", 0)) {\n";____BAH_COMPILER_VAR_1047[1] = condt.cont;____BAH_COMPILER_VAR_1047[0] = "\025\0\0\0""if (__builtin_expect(";char * ____BAH_COMPILER_VAR_1048 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1047, 3);OUTPUT->totalLen = OUTPUT->totalLen+ropeSet(ifHeader,____BAH_COMPILER_VAR_1048);
 }
 
 #line 2387 "/home/alois/Documents/bah-bah/src/parser.bah"
@@ -19214,9 +19198,9 @@ while ((i<len(l))) {
 
 #line 2417 "/home/alois/Documents/bah-bah/src/parser.bah"
 
-    unsigned int ____BAH_COMPILER_VAR_1054 = len(memory);
-    __Bah_realocate_arr(memory, ____BAH_COMPILER_VAR_1054);
-    memory->data[____BAH_COMPILER_VAR_1054] = l->data[i];
+    unsigned int ____BAH_COMPILER_VAR_1049 = len(memory);
+    __Bah_realocate_arr(memory, ____BAH_COMPILER_VAR_1049);
+    memory->data[____BAH_COMPILER_VAR_1049] = l->data[i];
 
 #line 2418 "/home/alois/Documents/bah-bah/src/parser.bah"
 ++i;
@@ -19256,9 +19240,9 @@ while ((i<max)) {
 
 #line 2430 "/home/alois/Documents/bah-bah/src/parser.bah"
 
-    unsigned int ____BAH_COMPILER_VAR_1055 = len(memory);
-    __Bah_realocate_arr(memory, ____BAH_COMPILER_VAR_1055);
-    memory->data[____BAH_COMPILER_VAR_1055] = l->data[i];
+    unsigned int ____BAH_COMPILER_VAR_1050 = len(memory);
+    __Bah_realocate_arr(memory, ____BAH_COMPILER_VAR_1050);
+    memory->data[____BAH_COMPILER_VAR_1050] = l->data[i];
 
 #line 2431 "/home/alois/Documents/bah-bah/src/parser.bah"
 ++i;
@@ -19286,9 +19270,9 @@ bc.checkNull = (bc.checkNull==false);
 
 #line 2439 "/home/alois/Documents/bah-bah/src/parser.bah"
 
-    unsigned int ____BAH_COMPILER_VAR_1056 = i;
-    __Bah_realocate_arr(ifElems->branchChecks, ____BAH_COMPILER_VAR_1056);
-    ifElems->branchChecks->data[____BAH_COMPILER_VAR_1056] = bc;
+    unsigned int ____BAH_COMPILER_VAR_1051 = i;
+    __Bah_realocate_arr(ifElems->branchChecks, ____BAH_COMPILER_VAR_1051);
+    ifElems->branchChecks->data[____BAH_COMPILER_VAR_1051] = bc;
 };
 
 #line 2442 "/home/alois/Documents/bah-bah/src/parser.bah"
@@ -19449,9 +19433,9 @@ break;
 
 #line 2512 "/home/alois/Documents/bah-bah/src/parser.bah"
 
-    unsigned int ____BAH_COMPILER_VAR_1057 = len(inst);
-    __Bah_realocate_arr(inst, ____BAH_COMPILER_VAR_1057);
-    inst->data[____BAH_COMPILER_VAR_1057] = t;
+    unsigned int ____BAH_COMPILER_VAR_1052 = len(inst);
+    __Bah_realocate_arr(inst, ____BAH_COMPILER_VAR_1052);
+    inst->data[____BAH_COMPILER_VAR_1052] = t;
 };
 
 #line 2515 "/home/alois/Documents/bah-bah/src/parser.bah"
@@ -19498,13 +19482,13 @@ t = l->data[i];
 
 #line 2532 "/home/alois/Documents/bah-bah/src/parser.bah"
 
-    unsigned int ____BAH_COMPILER_VAR_1058 = len(tokens);
-    __Bah_realocate_arr(tokens, ____BAH_COMPILER_VAR_1058);
-    tokens->data[____BAH_COMPILER_VAR_1058] = t;
+    unsigned int ____BAH_COMPILER_VAR_1053 = len(tokens);
+    __Bah_realocate_arr(tokens, ____BAH_COMPILER_VAR_1053);
+    tokens->data[____BAH_COMPILER_VAR_1053] = t;
 };
 
 #line 2535 "/home/alois/Documents/bah-bah/src/parser.bah"
-char** ____BAH_COMPILER_VAR_1059 = alloca(5 * sizeof(char*));____BAH_COMPILER_VAR_1059[4] = "\04\0\0\0"") {\n";____BAH_COMPILER_VAR_1059[3] = string__str(&instC);____BAH_COMPILER_VAR_1059[2] = "\02\0\0\0""; ";____BAH_COMPILER_VAR_1059[1] = condt.cont;____BAH_COMPILER_VAR_1059[0] = "\07\0\0\0""for (; ";char * ____BAH_COMPILER_VAR_1060 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1059, 5);OUTPUT = rope__add(OUTPUT, rope(____BAH_COMPILER_VAR_1060));
+char** ____BAH_COMPILER_VAR_1054 = alloca(5 * sizeof(char*));____BAH_COMPILER_VAR_1054[4] = "\04\0\0\0"") {\n";____BAH_COMPILER_VAR_1054[3] = string__str(&instC);____BAH_COMPILER_VAR_1054[2] = "\02\0\0\0""; ";____BAH_COMPILER_VAR_1054[1] = condt.cont;____BAH_COMPILER_VAR_1054[0] = "\07\0\0\0""for (; ";char * ____BAH_COMPILER_VAR_1055 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1054, 5);OUTPUT = rope__add(OUTPUT, rope(____BAH_COMPILER_VAR_1055));
 }
 
 #line 2537 "/home/alois/Documents/bah-bah/src/parser.bah"
@@ -19536,13 +19520,13 @@ t = l->data[i];
 
 #line 2545 "/home/alois/Documents/bah-bah/src/parser.bah"
 
-    unsigned int ____BAH_COMPILER_VAR_1061 = len(tokens);
-    __Bah_realocate_arr(tokens, ____BAH_COMPILER_VAR_1061);
-    tokens->data[____BAH_COMPILER_VAR_1061] = t;
+    unsigned int ____BAH_COMPILER_VAR_1056 = len(tokens);
+    __Bah_realocate_arr(tokens, ____BAH_COMPILER_VAR_1056);
+    tokens->data[____BAH_COMPILER_VAR_1056] = t;
 };
 
 #line 2547 "/home/alois/Documents/bah-bah/src/parser.bah"
-char** ____BAH_COMPILER_VAR_1062 = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_1062[2] = "\04\0\0\0"") {\n";____BAH_COMPILER_VAR_1062[1] = condt.cont;____BAH_COMPILER_VAR_1062[0] = "\07\0\0\0""while (";char * ____BAH_COMPILER_VAR_1063 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1062, 3);OUTPUT = rope__add(OUTPUT, rope(____BAH_COMPILER_VAR_1063));
+char** ____BAH_COMPILER_VAR_1057 = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_1057[2] = "\04\0\0\0"") {\n";____BAH_COMPILER_VAR_1057[1] = condt.cont;____BAH_COMPILER_VAR_1057[0] = "\07\0\0\0""while (";char * ____BAH_COMPILER_VAR_1058 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1057, 3);OUTPUT = rope__add(OUTPUT, rope(____BAH_COMPILER_VAR_1058));
 }
 
 #line 2549 "/home/alois/Documents/bah-bah/src/parser.bah"
@@ -19599,7 +19583,7 @@ if ((v->iterScope==elems)) {
 if ((v->lastSet!=ifElems)&&(Elems__isChildren(ifElems,v->lastSet)==false)) {
 
 #line 2567 "/home/alois/Documents/bah-bah/src/parser.bah"
-char** ____BAH_COMPILER_VAR_1064 = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_1064[2] = "\163\0\0\0""' but its value is not changed inside the scope of the for loop.\n    This may result in the loop never terminating.";____BAH_COMPILER_VAR_1064[1] = v->name;____BAH_COMPILER_VAR_1064[0] = "\041\0\0\0""For loop iterates over variable '";char * ____BAH_COMPILER_VAR_1065 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1064, 3);throwWarningLine(____BAH_COMPILER_VAR_1065,t.line);
+char** ____BAH_COMPILER_VAR_1059 = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_1059[2] = "\163\0\0\0""' but its value is not changed inside the scope of the for loop.\n    This may result in the loop never terminating.";____BAH_COMPILER_VAR_1059[1] = v->name;____BAH_COMPILER_VAR_1059[0] = "\041\0\0\0""For loop iterates over variable '";char * ____BAH_COMPILER_VAR_1060 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1059, 3);throwWarningLine(____BAH_COMPILER_VAR_1060,t.line);
 }
 
 #line 2570 "/home/alois/Documents/bah-bah/src/parser.bah"
@@ -19664,11 +19648,11 @@ fixMeEndScope(elems,&ft);
 fixMeEndScope(compilerState.currForElems,&ft);
 
 #line 2601 "/home/alois/Documents/bah-bah/src/parser.bah"
-char** ____BAH_COMPILER_VAR_1066 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1066[1] = "\02\0\0\0"";\n";____BAH_COMPILER_VAR_1066[0] = ft.cont;char * ____BAH_COMPILER_VAR_1067 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1066, 2);OUTPUT = rope__add(OUTPUT, rope(____BAH_COMPILER_VAR_1067));
+char** ____BAH_COMPILER_VAR_1061 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1061[1] = "\02\0\0\0"";\n";____BAH_COMPILER_VAR_1061[0] = ft.cont;char * ____BAH_COMPILER_VAR_1062 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1061, 2);OUTPUT = rope__add(OUTPUT, rope(____BAH_COMPILER_VAR_1062));
 };
 
 #line 2605 "/home/alois/Documents/bah-bah/src/parser.bah"
-char ____BAH_COMPILER_VAR_1068(array(char *)* arr, char * el) {
+char ____BAH_COMPILER_VAR_1063(array(char *)* arr, char * el) {
         if (arr == 0) {
             return 0;
         };
@@ -19682,54 +19666,54 @@ char ____BAH_COMPILER_VAR_1068(array(char *)* arr, char * el) {
 void makeEvalFunc(struct func* fn,struct Elems* elems){
 
 #line 2606 "/home/alois/Documents/bah-bah/src/parser.bah"
-if (____BAH_COMPILER_VAR_1068(compilerState.evals, fn->name)) {
+if (____BAH_COMPILER_VAR_1063(compilerState.evals, fn->name)) {
 
 #line 2607 "/home/alois/Documents/bah-bah/src/parser.bah"
 return;
 }
 
 #line 2610 "/home/alois/Documents/bah-bah/src/parser.bah"
-char** ____BAH_COMPILER_VAR_1069 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1069[1] = fn->name;____BAH_COMPILER_VAR_1069[0] = "\013\0\0\0""__Bah_eval_";char * ____BAH_COMPILER_VAR_1070 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1069, 2);struct func* ____BAH_COMPILER_VAR_1071 = memoryAlloc(sizeof(struct func));
-____BAH_COMPILER_VAR_1071->name = "\0\0\0\0""";
-____BAH_COMPILER_VAR_1071->args = memoryAlloc(sizeof(array(struct variable*)));
-            ____BAH_COMPILER_VAR_1071->args->length = 0;
-            ____BAH_COMPILER_VAR_1071->args->elemSize = sizeof(struct variable*);
-            ____BAH_COMPILER_VAR_1071->from = "\0\0\0\0""";
-____BAH_COMPILER_VAR_1071->file = "\0\0\0\0""";
-____BAH_COMPILER_VAR_1071->line = 1;
-____BAH_COMPILER_VAR_1071->name = ____BAH_COMPILER_VAR_1070;
-struct func* efn = ____BAH_COMPILER_VAR_1071;
+char** ____BAH_COMPILER_VAR_1064 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1064[1] = fn->name;____BAH_COMPILER_VAR_1064[0] = "\013\0\0\0""__Bah_eval_";char * ____BAH_COMPILER_VAR_1065 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1064, 2);struct func* ____BAH_COMPILER_VAR_1066 = memoryAlloc(sizeof(struct func));
+____BAH_COMPILER_VAR_1066->name = "\0\0\0\0""";
+____BAH_COMPILER_VAR_1066->args = memoryAlloc(sizeof(array(struct variable*)));
+            ____BAH_COMPILER_VAR_1066->args->length = 0;
+            ____BAH_COMPILER_VAR_1066->args->elemSize = sizeof(struct variable*);
+            ____BAH_COMPILER_VAR_1066->from = "\0\0\0\0""";
+____BAH_COMPILER_VAR_1066->file = "\0\0\0\0""";
+____BAH_COMPILER_VAR_1066->line = 1;
+____BAH_COMPILER_VAR_1066->name = ____BAH_COMPILER_VAR_1065;
+struct func* efn = ____BAH_COMPILER_VAR_1066;
 
 #line 2613 "/home/alois/Documents/bah-bah/src/parser.bah"
-struct variable* ____BAH_COMPILER_VAR_1072 = memoryAlloc(sizeof(struct variable));
-____BAH_COMPILER_VAR_1072->name = "\0\0\0\0""";
-____BAH_COMPILER_VAR_1072->type = "\0\0\0\0""";
-____BAH_COMPILER_VAR_1072->constVal = "\0\0\0\0""";
-____BAH_COMPILER_VAR_1072->from = "\0\0\0\0""";
-____BAH_COMPILER_VAR_1072->type = "\03\0\0\0""ptr";
-efn->returns = ____BAH_COMPILER_VAR_1072;
+struct variable* ____BAH_COMPILER_VAR_1067 = memoryAlloc(sizeof(struct variable));
+____BAH_COMPILER_VAR_1067->name = "\0\0\0\0""";
+____BAH_COMPILER_VAR_1067->type = "\0\0\0\0""";
+____BAH_COMPILER_VAR_1067->constVal = "\0\0\0\0""";
+____BAH_COMPILER_VAR_1067->from = "\0\0\0\0""";
+____BAH_COMPILER_VAR_1067->type = "\03\0\0\0""ptr";
+efn->returns = ____BAH_COMPILER_VAR_1067;
 
 #line 2617 "/home/alois/Documents/bah-bah/src/parser.bah"
-struct variable* ____BAH_COMPILER_VAR_1073 = memoryAlloc(sizeof(struct variable));
-____BAH_COMPILER_VAR_1073->name = "\0\0\0\0""";
-____BAH_COMPILER_VAR_1073->type = "\0\0\0\0""";
-____BAH_COMPILER_VAR_1073->constVal = "\0\0\0\0""";
-____BAH_COMPILER_VAR_1073->from = "\0\0\0\0""";
-____BAH_COMPILER_VAR_1073->name = "\06\0\0\0""fnArgs";
-____BAH_COMPILER_VAR_1073->type = "\05\0\0\0""[]ptr";
+struct variable* ____BAH_COMPILER_VAR_1068 = memoryAlloc(sizeof(struct variable));
+____BAH_COMPILER_VAR_1068->name = "\0\0\0\0""";
+____BAH_COMPILER_VAR_1068->type = "\0\0\0\0""";
+____BAH_COMPILER_VAR_1068->constVal = "\0\0\0\0""";
+____BAH_COMPILER_VAR_1068->from = "\0\0\0\0""";
+____BAH_COMPILER_VAR_1068->name = "\06\0\0\0""fnArgs";
+____BAH_COMPILER_VAR_1068->type = "\05\0\0\0""[]ptr";
 efn->args = memoryAlloc(sizeof(array(struct variable*)));
 
 efn->args->length = 1;
 efn->args->elemSize = sizeof(struct variable*);
 efn->args->data = memoryAlloc(sizeof(struct variable*) * 50);
                     efn->args->realLength = 50;
-efn->args->data[0] = ____BAH_COMPILER_VAR_1073;
+efn->args->data[0] = ____BAH_COMPILER_VAR_1068;
 
 #line 2624 "/home/alois/Documents/bah-bah/src/parser.bah"
 char * fnBinding = "\0\0\0\0""";
 
 #line 2625 "/home/alois/Documents/bah-bah/src/parser.bah"
-char** ____BAH_COMPILER_VAR_1074 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1074[1] = "\01\0\0\0""(";____BAH_COMPILER_VAR_1074[0] = fn->name;char * ____BAH_COMPILER_VAR_1075 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1074, 2);char * fnCall = ____BAH_COMPILER_VAR_1075;
+char** ____BAH_COMPILER_VAR_1069 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1069[1] = "\01\0\0\0""(";____BAH_COMPILER_VAR_1069[0] = fn->name;char * ____BAH_COMPILER_VAR_1070 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1069, 2);char * fnCall = ____BAH_COMPILER_VAR_1070;
 
 #line 2626 "/home/alois/Documents/bah-bah/src/parser.bah"
 register long int i = 0;
@@ -19756,27 +19740,27 @@ string__append(&cType,"\01\0\0\0""*");
 }
 
 #line 2633 "/home/alois/Documents/bah-bah/src/parser.bah"
-char** ____BAH_COMPILER_VAR_1076 = alloca(6 * sizeof(char*));____BAH_COMPILER_VAR_1076[5] = "\02\0\0\0""];";____BAH_COMPILER_VAR_1076[4] = intToStr(i);____BAH_COMPILER_VAR_1076[3] = "\020\0\0\0"" = fnArgs->data[";____BAH_COMPILER_VAR_1076[2] = v;____BAH_COMPILER_VAR_1076[1] = "\01\0\0\0"" ";____BAH_COMPILER_VAR_1076[0] = string__str(&cType);char * ____BAH_COMPILER_VAR_1077 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1076, 6);char** ____BAH_COMPILER_VAR_1078 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1078[1] = ____BAH_COMPILER_VAR_1077;____BAH_COMPILER_VAR_1078[0] = fnBinding;char * ____BAH_COMPILER_VAR_1079 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1078, 2);fnBinding = ____BAH_COMPILER_VAR_1079;
+char** ____BAH_COMPILER_VAR_1071 = alloca(6 * sizeof(char*));____BAH_COMPILER_VAR_1071[5] = "\02\0\0\0""];";____BAH_COMPILER_VAR_1071[4] = intToStr(i);____BAH_COMPILER_VAR_1071[3] = "\020\0\0\0"" = fnArgs->data[";____BAH_COMPILER_VAR_1071[2] = v;____BAH_COMPILER_VAR_1071[1] = "\01\0\0\0"" ";____BAH_COMPILER_VAR_1071[0] = string__str(&cType);char * ____BAH_COMPILER_VAR_1072 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1071, 6);char** ____BAH_COMPILER_VAR_1073 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1073[1] = ____BAH_COMPILER_VAR_1072;____BAH_COMPILER_VAR_1073[0] = fnBinding;char * ____BAH_COMPILER_VAR_1074 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1073, 2);fnBinding = ____BAH_COMPILER_VAR_1074;
 
 #line 2634 "/home/alois/Documents/bah-bah/src/parser.bah"
 if ((i!=0)) {
 
 #line 2635 "/home/alois/Documents/bah-bah/src/parser.bah"
-char** ____BAH_COMPILER_VAR_1080 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1080[1] = "\02\0\0\0"", ";____BAH_COMPILER_VAR_1080[0] = fnCall;char * ____BAH_COMPILER_VAR_1081 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1080, 2);fnCall = ____BAH_COMPILER_VAR_1081;
+char** ____BAH_COMPILER_VAR_1075 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1075[1] = "\02\0\0\0"", ";____BAH_COMPILER_VAR_1075[0] = fnCall;char * ____BAH_COMPILER_VAR_1076 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1075, 2);fnCall = ____BAH_COMPILER_VAR_1076;
 }
 
 #line 2637 "/home/alois/Documents/bah-bah/src/parser.bah"
 if (isRCPpointerType(a->type)) {
 
 #line 2638 "/home/alois/Documents/bah-bah/src/parser.bah"
-char** ____BAH_COMPILER_VAR_1082 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1082[1] = v;____BAH_COMPILER_VAR_1082[0] = fnCall;char * ____BAH_COMPILER_VAR_1083 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1082, 2);fnCall = ____BAH_COMPILER_VAR_1083;
+char** ____BAH_COMPILER_VAR_1077 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1077[1] = v;____BAH_COMPILER_VAR_1077[0] = fnCall;char * ____BAH_COMPILER_VAR_1078 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1077, 2);fnCall = ____BAH_COMPILER_VAR_1078;
 }
 
 #line 2639 "/home/alois/Documents/bah-bah/src/parser.bah"
 else {
 
 #line 2640 "/home/alois/Documents/bah-bah/src/parser.bah"
-char** ____BAH_COMPILER_VAR_1084 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1084[1] = v;____BAH_COMPILER_VAR_1084[0] = "\01\0\0\0""*";char * ____BAH_COMPILER_VAR_1085 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1084, 2);char** ____BAH_COMPILER_VAR_1086 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1086[1] = ____BAH_COMPILER_VAR_1085;____BAH_COMPILER_VAR_1086[0] = fnCall;char * ____BAH_COMPILER_VAR_1087 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1086, 2);fnCall = ____BAH_COMPILER_VAR_1087;
+char** ____BAH_COMPILER_VAR_1079 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1079[1] = v;____BAH_COMPILER_VAR_1079[0] = "\01\0\0\0""*";char * ____BAH_COMPILER_VAR_1080 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1079, 2);char** ____BAH_COMPILER_VAR_1081 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1081[1] = ____BAH_COMPILER_VAR_1080;____BAH_COMPILER_VAR_1081[0] = fnCall;char * ____BAH_COMPILER_VAR_1082 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1081, 2);fnCall = ____BAH_COMPILER_VAR_1082;
 }
 };
 
@@ -19800,28 +19784,28 @@ struct string cType = getCType(fn->returns->type,elems);
 if ((strcmp(string__str(&cType), "\04\0\0\0""void") != 0)) {
 
 #line 2650 "/home/alois/Documents/bah-bah/src/parser.bah"
-char** ____BAH_COMPILER_VAR_1088 = alloca(4 * sizeof(char*));____BAH_COMPILER_VAR_1088[3] = "\010\0\0\0""));*r = ";____BAH_COMPILER_VAR_1088[2] = string__str(&cType);____BAH_COMPILER_VAR_1088[1] = "\031\0\0\0""* r = memoryAlloc(sizeof(";____BAH_COMPILER_VAR_1088[0] = string__str(&cType);char * ____BAH_COMPILER_VAR_1089 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1088, 4);setReturnValue = ____BAH_COMPILER_VAR_1089;
+char** ____BAH_COMPILER_VAR_1083 = alloca(4 * sizeof(char*));____BAH_COMPILER_VAR_1083[3] = "\010\0\0\0""));*r = ";____BAH_COMPILER_VAR_1083[2] = string__str(&cType);____BAH_COMPILER_VAR_1083[1] = "\031\0\0\0""* r = memoryAlloc(sizeof(";____BAH_COMPILER_VAR_1083[0] = string__str(&cType);char * ____BAH_COMPILER_VAR_1084 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1083, 4);setReturnValue = ____BAH_COMPILER_VAR_1084;
 }
 }
 
 #line 2654 "/home/alois/Documents/bah-bah/src/parser.bah"
-char** ____BAH_COMPILER_VAR_1090 = alloca(12 * sizeof(char*));____BAH_COMPILER_VAR_1090[11] = "\042\0\0\0"");\n        return (void*)r;\n    };";____BAH_COMPILER_VAR_1090[10] = fnCall;____BAH_COMPILER_VAR_1090[9] = setReturnValue;____BAH_COMPILER_VAR_1090[8] = "\011\0\0\0""\n        ";____BAH_COMPILER_VAR_1090[7] = fnBinding;____BAH_COMPILER_VAR_1090[6] = "\125\0\0\0""() with the wrong number of arguments.\", \"BAH_COMPILER_INTERNAL\");\n        }\n        ";____BAH_COMPILER_VAR_1090[5] = fn->name;____BAH_COMPILER_VAR_1090[4] = "\073\0\0\0"") {\n            __BAH_panic((char*)\"eval: calling function ";____BAH_COMPILER_VAR_1090[3] = intToStr(len(fn->args));____BAH_COMPILER_VAR_1090[2] = "\067\0\0\0""(array(void*)* fnArgs) {\n        if (fnArgs->length != ";____BAH_COMPILER_VAR_1090[1] = efn->name;____BAH_COMPILER_VAR_1090[0] = "\046\0\0\0""void* __attribute__((optimize(\"O0\"))) ";char * ____BAH_COMPILER_VAR_1091 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1090, 12);OUTPUT = rope__add(OUTPUT, rope(____BAH_COMPILER_VAR_1091));
+char** ____BAH_COMPILER_VAR_1085 = alloca(12 * sizeof(char*));____BAH_COMPILER_VAR_1085[11] = "\042\0\0\0"");\n        return (void*)r;\n    };";____BAH_COMPILER_VAR_1085[10] = fnCall;____BAH_COMPILER_VAR_1085[9] = setReturnValue;____BAH_COMPILER_VAR_1085[8] = "\011\0\0\0""\n        ";____BAH_COMPILER_VAR_1085[7] = fnBinding;____BAH_COMPILER_VAR_1085[6] = "\125\0\0\0""() with the wrong number of arguments.\", \"BAH_COMPILER_INTERNAL\");\n        }\n        ";____BAH_COMPILER_VAR_1085[5] = fn->name;____BAH_COMPILER_VAR_1085[4] = "\073\0\0\0"") {\n            __BAH_panic((char*)\"eval: calling function ";____BAH_COMPILER_VAR_1085[3] = intToStr(len(fn->args));____BAH_COMPILER_VAR_1085[2] = "\067\0\0\0""(array(void*)* fnArgs) {\n        if (fnArgs->length != ";____BAH_COMPILER_VAR_1085[1] = efn->name;____BAH_COMPILER_VAR_1085[0] = "\046\0\0\0""void* __attribute__((optimize(\"O0\"))) ";char * ____BAH_COMPILER_VAR_1086 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1085, 12);OUTPUT = rope__add(OUTPUT, rope(____BAH_COMPILER_VAR_1086));
 
 #line 2663 "/home/alois/Documents/bah-bah/src/parser.bah"
 
-    unsigned int ____BAH_COMPILER_VAR_1092 = len(compilerState.evals);
-    __Bah_realocate_arr(compilerState.evals, ____BAH_COMPILER_VAR_1092);
-    compilerState.evals->data[____BAH_COMPILER_VAR_1092] = fn->name;
+    unsigned int ____BAH_COMPILER_VAR_1087 = len(compilerState.evals);
+    __Bah_realocate_arr(compilerState.evals, ____BAH_COMPILER_VAR_1087);
+    compilerState.evals->data[____BAH_COMPILER_VAR_1087] = fn->name;
 
 #line 2664 "/home/alois/Documents/bah-bah/src/parser.bah"
 
-    unsigned int ____BAH_COMPILER_VAR_1093 = len(elems->fns);
-    __Bah_realocate_arr(elems->fns, ____BAH_COMPILER_VAR_1093);
-    elems->fns->data[____BAH_COMPILER_VAR_1093] = efn;
+    unsigned int ____BAH_COMPILER_VAR_1088 = len(elems->fns);
+    __Bah_realocate_arr(elems->fns, ____BAH_COMPILER_VAR_1088);
+    elems->fns->data[____BAH_COMPILER_VAR_1088] = efn;
 };
 
 #line 2667 "/home/alois/Documents/bah-bah/src/parser.bah"
-char ____BAH_COMPILER_VAR_1094(array(char *)* arr, char * el) {
+char ____BAH_COMPILER_VAR_1089(array(char *)* arr, char * el) {
         if (arr == 0) {
             return 0;
         };
@@ -19877,13 +19861,13 @@ return;
 if ((strcmp(ft.cont, "\05\0\0\0""#eval") == 0)) {
 
 #line 2692 "/home/alois/Documents/bah-bah/src/parser.bah"
-if ((____BAH_COMPILER_VAR_1094(compilerState.includes, "\010\0\0\0""eval.bah")==false)) {
+if ((____BAH_COMPILER_VAR_1089(compilerState.includes, "\010\0\0\0""eval.bah")==false)) {
 
 #line 2693 "/home/alois/Documents/bah-bah/src/parser.bah"
 if (__builtin_expect((includeFile("\010\0\0\0""eval.bah",elems)==false), 0)) {
 
 #line 2694 "/home/alois/Documents/bah-bah/src/parser.bah"
-char** ____BAH_COMPILER_VAR_1095 = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_1095[2] = "\02\0\0\0"").";____BAH_COMPILER_VAR_1095[1] = BAH_DIR;____BAH_COMPILER_VAR_1095[0] = "\072\0\0\0""Could not find file 'eval.bah'. Check your bah directory (";char * ____BAH_COMPILER_VAR_1096 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1095, 3);throwErr(&l->data[0],____BAH_COMPILER_VAR_1096);
+char** ____BAH_COMPILER_VAR_1090 = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_1090[2] = "\02\0\0\0"").";____BAH_COMPILER_VAR_1090[1] = BAH_DIR;____BAH_COMPILER_VAR_1090[0] = "\072\0\0\0""Could not find file 'eval.bah'. Check your bah directory (";char * ____BAH_COMPILER_VAR_1091 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1090, 3);throwErr(&l->data[0],____BAH_COMPILER_VAR_1091);
 }
 }
 
@@ -20114,9 +20098,9 @@ while ((i<len(l)-1)) {
 
 #line 2787 "/home/alois/Documents/bah-bah/src/parser.bah"
 
-    unsigned int ____BAH_COMPILER_VAR_1097 = i-2;
-    __Bah_realocate_arr(nl, ____BAH_COMPILER_VAR_1097);
-    nl->data[____BAH_COMPILER_VAR_1097] = l->data[i];
+    unsigned int ____BAH_COMPILER_VAR_1092 = i-2;
+    __Bah_realocate_arr(nl, ____BAH_COMPILER_VAR_1092);
+    nl->data[____BAH_COMPILER_VAR_1092] = l->data[i];
 
 #line 2788 "/home/alois/Documents/bah-bah/src/parser.bah"
 i = i+1;
@@ -20177,9 +20161,9 @@ if ((found==false)) {
 
 #line 2814 "/home/alois/Documents/bah-bah/src/parser.bah"
 
-    unsigned int ____BAH_COMPILER_VAR_1098 = len(compilerState.cLibs);
-    __Bah_realocate_arr(compilerState.cLibs, ____BAH_COMPILER_VAR_1098);
-    compilerState.cLibs->data[____BAH_COMPILER_VAR_1098] = "\010\0\0\0""lpthread";
+    unsigned int ____BAH_COMPILER_VAR_1093 = len(compilerState.cLibs);
+    __Bah_realocate_arr(compilerState.cLibs, ____BAH_COMPILER_VAR_1093);
+    compilerState.cLibs->data[____BAH_COMPILER_VAR_1093] = "\010\0\0\0""lpthread";
 }
 
 #line 2817 "/home/alois/Documents/bah-bah/src/parser.bah"
@@ -20198,7 +20182,7 @@ struct func* fn = searchFuncByToken(&fnT,elems);
 if (__builtin_expect((fn==null), 0)) {
 
 #line 2825 "/home/alois/Documents/bah-bah/src/parser.bah"
-char** ____BAH_COMPILER_VAR_1099 = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_1099[2] = "\023\0\0\0""', arround {TOKEN}.";____BAH_COMPILER_VAR_1099[1] = string__str(&fnName);____BAH_COMPILER_VAR_1099[0] = "\101\0\0\0""Internal compiler error.\n Error parsing async call for function '";char * ____BAH_COMPILER_VAR_1100 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1099, 3);throwErr(&fnT,____BAH_COMPILER_VAR_1100);
+char** ____BAH_COMPILER_VAR_1094 = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_1094[2] = "\023\0\0\0""', arround {TOKEN}.";____BAH_COMPILER_VAR_1094[1] = string__str(&fnName);____BAH_COMPILER_VAR_1094[0] = "\101\0\0\0""Internal compiler error.\n Error parsing async call for function '";char * ____BAH_COMPILER_VAR_1095 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1094, 3);throwErr(&fnT,____BAH_COMPILER_VAR_1095);
 }
 
 #line 2827 "/home/alois/Documents/bah-bah/src/parser.bah"
@@ -20223,10 +20207,10 @@ struct variable* a = fn->args->data[i];
 struct string cType = getCType(a->type,elems);
 
 #line 2834 "/home/alois/Documents/bah-bah/src/parser.bah"
-char** ____BAH_COMPILER_VAR_1101 = alloca(5 * sizeof(char*));____BAH_COMPILER_VAR_1101[4] = "\02\0\0\0"";\n";____BAH_COMPILER_VAR_1101[3] = a->name;____BAH_COMPILER_VAR_1101[2] = "\01\0\0\0"" ";____BAH_COMPILER_VAR_1101[1] = string__str(&cType);____BAH_COMPILER_VAR_1101[0] = sMembs;char * ____BAH_COMPILER_VAR_1102 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1101, 5);sMembs = ____BAH_COMPILER_VAR_1102;
+char** ____BAH_COMPILER_VAR_1096 = alloca(5 * sizeof(char*));____BAH_COMPILER_VAR_1096[4] = "\02\0\0\0"";\n";____BAH_COMPILER_VAR_1096[3] = a->name;____BAH_COMPILER_VAR_1096[2] = "\01\0\0\0"" ";____BAH_COMPILER_VAR_1096[1] = string__str(&cType);____BAH_COMPILER_VAR_1096[0] = sMembs;char * ____BAH_COMPILER_VAR_1097 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1096, 5);sMembs = ____BAH_COMPILER_VAR_1097;
 
 #line 2835 "/home/alois/Documents/bah-bah/src/parser.bah"
-char** ____BAH_COMPILER_VAR_1103 = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_1103[2] = a->name;____BAH_COMPILER_VAR_1103[1] = "\06\0\0\0""args->";____BAH_COMPILER_VAR_1103[0] = unSerMembs;char * ____BAH_COMPILER_VAR_1104 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1103, 3);unSerMembs = ____BAH_COMPILER_VAR_1104;
+char** ____BAH_COMPILER_VAR_1098 = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_1098[2] = a->name;____BAH_COMPILER_VAR_1098[1] = "\06\0\0\0""args->";____BAH_COMPILER_VAR_1098[0] = unSerMembs;char * ____BAH_COMPILER_VAR_1099 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1098, 3);unSerMembs = ____BAH_COMPILER_VAR_1099;
 
 #line 2836 "/home/alois/Documents/bah-bah/src/parser.bah"
 i = i+1;
@@ -20235,12 +20219,12 @@ i = i+1;
 if ((i<len(fn->args))) {
 
 #line 2838 "/home/alois/Documents/bah-bah/src/parser.bah"
-char** ____BAH_COMPILER_VAR_1105 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1105[1] = "\02\0\0\0"", ";____BAH_COMPILER_VAR_1105[0] = unSerMembs;char * ____BAH_COMPILER_VAR_1106 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1105, 2);unSerMembs = ____BAH_COMPILER_VAR_1106;
+char** ____BAH_COMPILER_VAR_1100 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1100[1] = "\02\0\0\0"", ";____BAH_COMPILER_VAR_1100[0] = unSerMembs;char * ____BAH_COMPILER_VAR_1101 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1100, 2);unSerMembs = ____BAH_COMPILER_VAR_1101;
 }
 };
 
 #line 2842 "/home/alois/Documents/bah-bah/src/parser.bah"
-char** ____BAH_COMPILER_VAR_1107 = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_1107[2] = "\01\0\0\0""}";____BAH_COMPILER_VAR_1107[1] = sMembs;____BAH_COMPILER_VAR_1107[0] = "\011\0\0\0""struct {\n";char * ____BAH_COMPILER_VAR_1108 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1107, 3);char * tmpArgsStruct = ____BAH_COMPILER_VAR_1108;
+char** ____BAH_COMPILER_VAR_1102 = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_1102[2] = "\01\0\0\0""}";____BAH_COMPILER_VAR_1102[1] = sMembs;____BAH_COMPILER_VAR_1102[0] = "\011\0\0\0""struct {\n";char * ____BAH_COMPILER_VAR_1103 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1102, 3);char * tmpArgsStruct = ____BAH_COMPILER_VAR_1103;
 
 #line 2843 "/home/alois/Documents/bah-bah/src/parser.bah"
 char * fnWrapper = genCompilerVar();
@@ -20283,7 +20267,7 @@ tCreate = "\021\0\0\0""GC_pthread_create";
 }
 
 #line 2860 "/home/alois/Documents/bah-bah/src/parser.bah"
-char** ____BAH_COMPILER_VAR_1109 = alloca(25 * sizeof(char*));____BAH_COMPILER_VAR_1109[24] = "\035\0\0\0"", tmpArgs);\n    }; \n    \n    ";____BAH_COMPILER_VAR_1109[23] = fnWrapper;____BAH_COMPILER_VAR_1109[22] = "\011\0\0\0""(&id, 0, ";____BAH_COMPILER_VAR_1109[21] = tCreate;____BAH_COMPILER_VAR_1109[20] = "\042\0\0\0""));\n        pthread_t id;\n        ";____BAH_COMPILER_VAR_1109[19] = tmpArgs;____BAH_COMPILER_VAR_1109[18] = "\011\0\0\0"", sizeof(";____BAH_COMPILER_VAR_1109[17] = tmpArgs;____BAH_COMPILER_VAR_1109[16] = "\035\0\0\0""));\n        memcpy(tmpArgs, &";____BAH_COMPILER_VAR_1109[15] = tmpArgs;____BAH_COMPILER_VAR_1109[14] = "\056\0\0\0""};\n        void* tmpArgs = memoryAlloc(sizeof(";____BAH_COMPILER_VAR_1109[13] = string__str(&sFnT);____BAH_COMPILER_VAR_1109[12] = "\04\0\0\0"" = {";____BAH_COMPILER_VAR_1109[11] = tmpArgs;____BAH_COMPILER_VAR_1109[10] = "\01\0\0\0"" ";____BAH_COMPILER_VAR_1109[9] = tmpArgsStruct;____BAH_COMPILER_VAR_1109[8] = "\030\0\0\0"");\n    };\n    {\n        ";____BAH_COMPILER_VAR_1109[7] = unSerMembs;____BAH_COMPILER_VAR_1109[6] = "\01\0\0\0""(";____BAH_COMPILER_VAR_1109[5] = string__str(&fnName);____BAH_COMPILER_VAR_1109[4] = "\022\0\0\0""* args) {\n        ";____BAH_COMPILER_VAR_1109[3] = tmpArgsStruct;____BAH_COMPILER_VAR_1109[2] = "\01\0\0\0""(";____BAH_COMPILER_VAR_1109[1] = fnWrapper;____BAH_COMPILER_VAR_1109[0] = "\012\0\0\0""\n    void ";char * ____BAH_COMPILER_VAR_1110 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1109, 25);OUTPUT = rope__add(OUTPUT, rope(____BAH_COMPILER_VAR_1110));
+char** ____BAH_COMPILER_VAR_1104 = alloca(25 * sizeof(char*));____BAH_COMPILER_VAR_1104[24] = "\035\0\0\0"", tmpArgs);\n    }; \n    \n    ";____BAH_COMPILER_VAR_1104[23] = fnWrapper;____BAH_COMPILER_VAR_1104[22] = "\011\0\0\0""(&id, 0, ";____BAH_COMPILER_VAR_1104[21] = tCreate;____BAH_COMPILER_VAR_1104[20] = "\042\0\0\0""));\n        pthread_t id;\n        ";____BAH_COMPILER_VAR_1104[19] = tmpArgs;____BAH_COMPILER_VAR_1104[18] = "\011\0\0\0"", sizeof(";____BAH_COMPILER_VAR_1104[17] = tmpArgs;____BAH_COMPILER_VAR_1104[16] = "\035\0\0\0""));\n        memcpy(tmpArgs, &";____BAH_COMPILER_VAR_1104[15] = tmpArgs;____BAH_COMPILER_VAR_1104[14] = "\056\0\0\0""};\n        void* tmpArgs = memoryAlloc(sizeof(";____BAH_COMPILER_VAR_1104[13] = string__str(&sFnT);____BAH_COMPILER_VAR_1104[12] = "\04\0\0\0"" = {";____BAH_COMPILER_VAR_1104[11] = tmpArgs;____BAH_COMPILER_VAR_1104[10] = "\01\0\0\0"" ";____BAH_COMPILER_VAR_1104[9] = tmpArgsStruct;____BAH_COMPILER_VAR_1104[8] = "\030\0\0\0"");\n    };\n    {\n        ";____BAH_COMPILER_VAR_1104[7] = unSerMembs;____BAH_COMPILER_VAR_1104[6] = "\01\0\0\0""(";____BAH_COMPILER_VAR_1104[5] = string__str(&fnName);____BAH_COMPILER_VAR_1104[4] = "\022\0\0\0""* args) {\n        ";____BAH_COMPILER_VAR_1104[3] = tmpArgsStruct;____BAH_COMPILER_VAR_1104[2] = "\01\0\0\0""(";____BAH_COMPILER_VAR_1104[1] = fnWrapper;____BAH_COMPILER_VAR_1104[0] = "\012\0\0\0""\n    void ";char * ____BAH_COMPILER_VAR_1105 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1104, 25);OUTPUT = rope__add(OUTPUT, rope(____BAH_COMPILER_VAR_1105));
 };
 
 #line 2875 "/home/alois/Documents/bah-bah/src/parser.bah"
@@ -20316,9 +20300,9 @@ if ((v!=null)) {
 
 #line 2886 "/home/alois/Documents/bah-bah/src/parser.bah"
 
-    unsigned int ____BAH_COMPILER_VAR_1111 = len(compilerState.RCPvars);
-    __Bah_realocate_arr(compilerState.RCPvars, ____BAH_COMPILER_VAR_1111);
-    compilerState.RCPvars->data[____BAH_COMPILER_VAR_1111] = v;
+    unsigned int ____BAH_COMPILER_VAR_1106 = len(compilerState.RCPvars);
+    __Bah_realocate_arr(compilerState.RCPvars, ____BAH_COMPILER_VAR_1106);
+    compilerState.RCPvars->data[____BAH_COMPILER_VAR_1106] = v;
 }
 }
 
@@ -20376,7 +20360,7 @@ struct string ntt = string(getTypeFromToken(&nt,true,elems));
 if (__builtin_expect((string__hasPrefix(&ntt,"\05\0\0\0""chan:")==0), 0)) {
 
 #line 2911 "/home/alois/Documents/bah-bah/src/parser.bah"
-char** ____BAH_COMPILER_VAR_1112 = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_1112[2] = "\015\0\0\0"") as channel.";____BAH_COMPILER_VAR_1112[1] = string__str(&ntt);____BAH_COMPILER_VAR_1112[0] = "\030\0\0\0""Cannot use var {TOKEN} (";char * ____BAH_COMPILER_VAR_1113 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1112, 3);throwErr(&nt,____BAH_COMPILER_VAR_1113);
+char** ____BAH_COMPILER_VAR_1107 = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_1107[2] = "\015\0\0\0"") as channel.";____BAH_COMPILER_VAR_1107[1] = string__str(&ntt);____BAH_COMPILER_VAR_1107[0] = "\030\0\0\0""Cannot use var {TOKEN} (";char * ____BAH_COMPILER_VAR_1108 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1107, 3);throwErr(&nt,____BAH_COMPILER_VAR_1108);
 }
 
 #line 2913 "/home/alois/Documents/bah-bah/src/parser.bah"
@@ -20399,7 +20383,7 @@ if (isRCPpointerType(string__str(&ntt))) {
 struct string ct = getCType(string__str(&ntt),elems);
 
 #line 2923 "/home/alois/Documents/bah-bah/src/parser.bah"
-char** ____BAH_COMPILER_VAR_1114 = alloca(7 * sizeof(char*));____BAH_COMPILER_VAR_1114[6] = "\01\0\0\0"")";____BAH_COMPILER_VAR_1114[5] = nt.cont;____BAH_COMPILER_VAR_1114[4] = "\012\0\0\0""->receive(";____BAH_COMPILER_VAR_1114[3] = nt.cont;____BAH_COMPILER_VAR_1114[2] = "\01\0\0\0"")";____BAH_COMPILER_VAR_1114[1] = string__str(&ct);____BAH_COMPILER_VAR_1114[0] = "\01\0\0\0""(";char * ____BAH_COMPILER_VAR_1115 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1114, 7);t.cont = ____BAH_COMPILER_VAR_1115;
+char** ____BAH_COMPILER_VAR_1109 = alloca(7 * sizeof(char*));____BAH_COMPILER_VAR_1109[6] = "\01\0\0\0"")";____BAH_COMPILER_VAR_1109[5] = nt.cont;____BAH_COMPILER_VAR_1109[4] = "\012\0\0\0""->receive(";____BAH_COMPILER_VAR_1109[3] = nt.cont;____BAH_COMPILER_VAR_1109[2] = "\01\0\0\0"")";____BAH_COMPILER_VAR_1109[1] = string__str(&ct);____BAH_COMPILER_VAR_1109[0] = "\01\0\0\0""(";char * ____BAH_COMPILER_VAR_1110 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1109, 7);t.cont = ____BAH_COMPILER_VAR_1110;
 }
 
 #line 2924 "/home/alois/Documents/bah-bah/src/parser.bah"
@@ -20412,17 +20396,17 @@ struct string ct = getCType(string__str(&ntt),elems);
 if (RCPavailable()) {
 
 #line 2927 "/home/alois/Documents/bah-bah/src/parser.bah"
-char** ____BAH_COMPILER_VAR_1116 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1116[1] = "\01\0\0\0""*";____BAH_COMPILER_VAR_1116[0] = string__str(&ntt);char * ____BAH_COMPILER_VAR_1117 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1116, 2);char** ____BAH_COMPILER_VAR_1118 = alloca(7 * sizeof(char*));____BAH_COMPILER_VAR_1118[6] = "\01\0\0\0"")";____BAH_COMPILER_VAR_1118[5] = nt.cont;____BAH_COMPILER_VAR_1118[4] = "\012\0\0\0""->receive(";____BAH_COMPILER_VAR_1118[3] = nt.cont;____BAH_COMPILER_VAR_1118[2] = "\02\0\0\0""*)";____BAH_COMPILER_VAR_1118[1] = string__str(&ct);____BAH_COMPILER_VAR_1118[0] = "\01\0\0\0""(";char * ____BAH_COMPILER_VAR_1119 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1118, 7);tmpV = registerRCPvar(____BAH_COMPILER_VAR_1117,____BAH_COMPILER_VAR_1119,elems);
+char** ____BAH_COMPILER_VAR_1111 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1111[1] = "\01\0\0\0""*";____BAH_COMPILER_VAR_1111[0] = string__str(&ntt);char * ____BAH_COMPILER_VAR_1112 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1111, 2);char** ____BAH_COMPILER_VAR_1113 = alloca(7 * sizeof(char*));____BAH_COMPILER_VAR_1113[6] = "\01\0\0\0"")";____BAH_COMPILER_VAR_1113[5] = nt.cont;____BAH_COMPILER_VAR_1113[4] = "\012\0\0\0""->receive(";____BAH_COMPILER_VAR_1113[3] = nt.cont;____BAH_COMPILER_VAR_1113[2] = "\02\0\0\0""*)";____BAH_COMPILER_VAR_1113[1] = string__str(&ct);____BAH_COMPILER_VAR_1113[0] = "\01\0\0\0""(";char * ____BAH_COMPILER_VAR_1114 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1113, 7);tmpV = registerRCPvar(____BAH_COMPILER_VAR_1112,____BAH_COMPILER_VAR_1114,elems);
 
 #line 2928 "/home/alois/Documents/bah-bah/src/parser.bah"
-char** ____BAH_COMPILER_VAR_1120 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1120[1] = tmpV;____BAH_COMPILER_VAR_1120[0] = "\01\0\0\0""*";char * ____BAH_COMPILER_VAR_1121 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1120, 2);t.cont = ____BAH_COMPILER_VAR_1121;
+char** ____BAH_COMPILER_VAR_1115 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1115[1] = tmpV;____BAH_COMPILER_VAR_1115[0] = "\01\0\0\0""*";char * ____BAH_COMPILER_VAR_1116 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1115, 2);t.cont = ____BAH_COMPILER_VAR_1116;
 }
 
 #line 2929 "/home/alois/Documents/bah-bah/src/parser.bah"
 else {
 
 #line 2930 "/home/alois/Documents/bah-bah/src/parser.bah"
-char** ____BAH_COMPILER_VAR_1122 = alloca(7 * sizeof(char*));____BAH_COMPILER_VAR_1122[6] = "\01\0\0\0"")";____BAH_COMPILER_VAR_1122[5] = nt.cont;____BAH_COMPILER_VAR_1122[4] = "\012\0\0\0""->receive(";____BAH_COMPILER_VAR_1122[3] = nt.cont;____BAH_COMPILER_VAR_1122[2] = "\02\0\0\0""*)";____BAH_COMPILER_VAR_1122[1] = string__str(&ct);____BAH_COMPILER_VAR_1122[0] = "\02\0\0\0""*(";char * ____BAH_COMPILER_VAR_1123 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1122, 7);t.cont = ____BAH_COMPILER_VAR_1123;
+char** ____BAH_COMPILER_VAR_1117 = alloca(7 * sizeof(char*));____BAH_COMPILER_VAR_1117[6] = "\01\0\0\0"")";____BAH_COMPILER_VAR_1117[5] = nt.cont;____BAH_COMPILER_VAR_1117[4] = "\012\0\0\0""->receive(";____BAH_COMPILER_VAR_1117[3] = nt.cont;____BAH_COMPILER_VAR_1117[2] = "\02\0\0\0""*)";____BAH_COMPILER_VAR_1117[1] = string__str(&ct);____BAH_COMPILER_VAR_1117[0] = "\02\0\0\0""*(";char * ____BAH_COMPILER_VAR_1118 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1117, 7);t.cont = ____BAH_COMPILER_VAR_1118;
 }
 }
 
@@ -20511,7 +20495,7 @@ struct string ptt = string(getTypeFromToken(&pt,true,elems));
 if (__builtin_expect((string__hasPrefix(&ptt,"\05\0\0\0""chan:")==0), 0)) {
 
 #line 2968 "/home/alois/Documents/bah-bah/src/parser.bah"
-char** ____BAH_COMPILER_VAR_1124 = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_1124[2] = "\015\0\0\0"") as channel.";____BAH_COMPILER_VAR_1124[1] = ntt;____BAH_COMPILER_VAR_1124[0] = "\030\0\0\0""Cannot use var {TOKEN} (";char * ____BAH_COMPILER_VAR_1125 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1124, 3);throwErr(&pt,____BAH_COMPILER_VAR_1125);
+char** ____BAH_COMPILER_VAR_1119 = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_1119[2] = "\015\0\0\0"") as channel.";____BAH_COMPILER_VAR_1119[1] = ntt;____BAH_COMPILER_VAR_1119[0] = "\030\0\0\0""Cannot use var {TOKEN} (";char * ____BAH_COMPILER_VAR_1120 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1119, 3);throwErr(&pt,____BAH_COMPILER_VAR_1120);
 }
 
 #line 2970 "/home/alois/Documents/bah-bah/src/parser.bah"
@@ -20528,7 +20512,7 @@ throwErr(&t,"\071\0\0\0""Cannot send ({TOKEN}) to a channel outside of a functio
 if (__builtin_expect((compTypes(string__str(&ptt),ntt)==false), 0)) {
 
 #line 2977 "/home/alois/Documents/bah-bah/src/parser.bah"
-char** ____BAH_COMPILER_VAR_1126 = alloca(5 * sizeof(char*));____BAH_COMPILER_VAR_1126[4] = "\01\0\0\0"".";____BAH_COMPILER_VAR_1126[3] = string__str(&ptt);____BAH_COMPILER_VAR_1126[2] = "\025\0\0\0"") to channel of type ";____BAH_COMPILER_VAR_1126[1] = ntt;____BAH_COMPILER_VAR_1126[0] = "\025\0\0\0""Cannot send {TOKEN} (";char * ____BAH_COMPILER_VAR_1127 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1126, 5);throwErr(&nt,____BAH_COMPILER_VAR_1127);
+char** ____BAH_COMPILER_VAR_1121 = alloca(5 * sizeof(char*));____BAH_COMPILER_VAR_1121[4] = "\01\0\0\0"".";____BAH_COMPILER_VAR_1121[3] = string__str(&ptt);____BAH_COMPILER_VAR_1121[2] = "\025\0\0\0"") to channel of type ";____BAH_COMPILER_VAR_1121[1] = ntt;____BAH_COMPILER_VAR_1121[0] = "\025\0\0\0""Cannot send {TOKEN} (";char * ____BAH_COMPILER_VAR_1122 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1121, 5);throwErr(&nt,____BAH_COMPILER_VAR_1122);
 }
 
 #line 2980 "/home/alois/Documents/bah-bah/src/parser.bah"
@@ -20538,7 +20522,7 @@ char** ____BAH_COMPILER_VAR_1126 = alloca(5 * sizeof(char*));____BAH_COMPILER_VA
 if (isRCPpointerType(string__str(&ptt))) {
 
 #line 2982 "/home/alois/Documents/bah-bah/src/parser.bah"
-char** ____BAH_COMPILER_VAR_1128 = alloca(6 * sizeof(char*));____BAH_COMPILER_VAR_1128[5] = "\03\0\0\0"");\n";____BAH_COMPILER_VAR_1128[4] = nt.cont;____BAH_COMPILER_VAR_1128[3] = "\02\0\0\0"", ";____BAH_COMPILER_VAR_1128[2] = pt.cont;____BAH_COMPILER_VAR_1128[1] = "\07\0\0\0""->send(";____BAH_COMPILER_VAR_1128[0] = pt.cont;char * ____BAH_COMPILER_VAR_1129 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1128, 6);OUTPUT = rope__add(OUTPUT, rope(____BAH_COMPILER_VAR_1129));
+char** ____BAH_COMPILER_VAR_1123 = alloca(6 * sizeof(char*));____BAH_COMPILER_VAR_1123[5] = "\03\0\0\0"");\n";____BAH_COMPILER_VAR_1123[4] = nt.cont;____BAH_COMPILER_VAR_1123[3] = "\02\0\0\0"", ";____BAH_COMPILER_VAR_1123[2] = pt.cont;____BAH_COMPILER_VAR_1123[1] = "\07\0\0\0""->send(";____BAH_COMPILER_VAR_1123[0] = pt.cont;char * ____BAH_COMPILER_VAR_1124 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1123, 6);OUTPUT = rope__add(OUTPUT, rope(____BAH_COMPILER_VAR_1124));
 }
 
 #line 2983 "/home/alois/Documents/bah-bah/src/parser.bah"
@@ -20551,7 +20535,7 @@ struct string ct = getCType(ntt,elems);
 char * tmpV = genCompilerVar();
 
 #line 2986 "/home/alois/Documents/bah-bah/src/parser.bah"
-char** ____BAH_COMPILER_VAR_1130 = alloca(15 * sizeof(char*));____BAH_COMPILER_VAR_1130[14] = "\04\0\0\0""));\n";____BAH_COMPILER_VAR_1130[13] = tmpV;____BAH_COMPILER_VAR_1130[12] = "\011\0\0\0"", sizeof(";____BAH_COMPILER_VAR_1130[11] = tmpV;____BAH_COMPILER_VAR_1130[10] = "\03\0\0\0"", &";____BAH_COMPILER_VAR_1130[9] = pt.cont;____BAH_COMPILER_VAR_1130[8] = "\012\0\0\0""->sendAny(";____BAH_COMPILER_VAR_1130[7] = pt.cont;____BAH_COMPILER_VAR_1130[6] = "\026\0\0\0"";\n                    ";____BAH_COMPILER_VAR_1130[5] = nt.cont;____BAH_COMPILER_VAR_1130[4] = "\03\0\0\0"" = ";____BAH_COMPILER_VAR_1130[3] = tmpV;____BAH_COMPILER_VAR_1130[2] = "\01\0\0\0"" ";____BAH_COMPILER_VAR_1130[1] = string__str(&ct);____BAH_COMPILER_VAR_1130[0] = "\025\0\0\0""\n                    ";char * ____BAH_COMPILER_VAR_1131 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1130, 15);OUTPUT = rope__add(OUTPUT, rope(____BAH_COMPILER_VAR_1131));
+char** ____BAH_COMPILER_VAR_1125 = alloca(15 * sizeof(char*));____BAH_COMPILER_VAR_1125[14] = "\04\0\0\0""));\n";____BAH_COMPILER_VAR_1125[13] = tmpV;____BAH_COMPILER_VAR_1125[12] = "\011\0\0\0"", sizeof(";____BAH_COMPILER_VAR_1125[11] = tmpV;____BAH_COMPILER_VAR_1125[10] = "\03\0\0\0"", &";____BAH_COMPILER_VAR_1125[9] = pt.cont;____BAH_COMPILER_VAR_1125[8] = "\012\0\0\0""->sendAny(";____BAH_COMPILER_VAR_1125[7] = pt.cont;____BAH_COMPILER_VAR_1125[6] = "\026\0\0\0"";\n                    ";____BAH_COMPILER_VAR_1125[5] = nt.cont;____BAH_COMPILER_VAR_1125[4] = "\03\0\0\0"" = ";____BAH_COMPILER_VAR_1125[3] = tmpV;____BAH_COMPILER_VAR_1125[2] = "\01\0\0\0"" ";____BAH_COMPILER_VAR_1125[1] = string__str(&ct);____BAH_COMPILER_VAR_1125[0] = "\025\0\0\0""\n                    ";char * ____BAH_COMPILER_VAR_1126 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1125, 15);OUTPUT = rope__add(OUTPUT, rope(____BAH_COMPILER_VAR_1126));
 }
 
 #line 2991 "/home/alois/Documents/bah-bah/src/parser.bah"
@@ -20567,9 +20551,9 @@ return nl;
 
 #line 2995 "/home/alois/Documents/bah-bah/src/parser.bah"
 
-    unsigned int ____BAH_COMPILER_VAR_1132 = len(nl);
-    __Bah_realocate_arr(nl, ____BAH_COMPILER_VAR_1132);
-    nl->data[____BAH_COMPILER_VAR_1132] = t;
+    unsigned int ____BAH_COMPILER_VAR_1127 = len(nl);
+    __Bah_realocate_arr(nl, ____BAH_COMPILER_VAR_1127);
+    nl->data[____BAH_COMPILER_VAR_1127] = t;
 };
 
 #line 2997 "/home/alois/Documents/bah-bah/src/parser.bah"
@@ -20702,7 +20686,7 @@ for (; (i<len(l));
 struct Tok t = l->data[i];
 
 #line 51 "/home/alois/Documents/bah-bah/src/values.bah"
-char** ____BAH_COMPILER_VAR_1133 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1133[1] = t.ogCont;____BAH_COMPILER_VAR_1133[0] = fnt.ogCont;char * ____BAH_COMPILER_VAR_1134 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1133, 2);fnt.ogCont = ____BAH_COMPILER_VAR_1134;
+char** ____BAH_COMPILER_VAR_1128 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1128[1] = t.ogCont;____BAH_COMPILER_VAR_1128[0] = fnt.ogCont;char * ____BAH_COMPILER_VAR_1129 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1128, 2);fnt.ogCont = ____BAH_COMPILER_VAR_1129;
 
 #line 52 "/home/alois/Documents/bah-bah/src/values.bah"
 if ((strcmp(t.cont, "\01\0\0\0""(") == 0)||(strcmp(t.cont, "\01\0\0\0""{") == 0)||(strcmp(t.cont, "\01\0\0\0""[") == 0)) {
@@ -20727,9 +20711,9 @@ break;
 
 #line 60 "/home/alois/Documents/bah-bah/src/values.bah"
 
-    unsigned int ____BAH_COMPILER_VAR_1135 = len(memory);
-    __Bah_realocate_arr(memory, ____BAH_COMPILER_VAR_1135);
-    memory->data[____BAH_COMPILER_VAR_1135] = t;
+    unsigned int ____BAH_COMPILER_VAR_1130 = len(memory);
+    __Bah_realocate_arr(memory, ____BAH_COMPILER_VAR_1130);
+    memory->data[____BAH_COMPILER_VAR_1130] = t;
 };
 
 #line 62 "/home/alois/Documents/bah-bah/src/values.bah"
@@ -20765,17 +20749,17 @@ for (; (j<len(memory));
 struct Tok t = memory->data[j];
 
 #line 71 "/home/alois/Documents/bah-bah/src/values.bah"
-char** ____BAH_COMPILER_VAR_1136 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1136[1] = t.cont;____BAH_COMPILER_VAR_1136[0] = fnt.cont;char * ____BAH_COMPILER_VAR_1137 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1136, 2);fnt.cont = ____BAH_COMPILER_VAR_1137;
+char** ____BAH_COMPILER_VAR_1131 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1131[1] = t.cont;____BAH_COMPILER_VAR_1131[0] = fnt.cont;char * ____BAH_COMPILER_VAR_1132 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1131, 2);fnt.cont = ____BAH_COMPILER_VAR_1132;
 };
 
 #line 73 "/home/alois/Documents/bah-bah/src/values.bah"
-char** ____BAH_COMPILER_VAR_1138 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1138[1] = "\01\0\0\0"")";____BAH_COMPILER_VAR_1138[0] = fnt.cont;char * ____BAH_COMPILER_VAR_1139 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1138, 2);fnt.cont = ____BAH_COMPILER_VAR_1139;
+char** ____BAH_COMPILER_VAR_1133 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1133[1] = "\01\0\0\0"")";____BAH_COMPILER_VAR_1133[0] = fnt.cont;char * ____BAH_COMPILER_VAR_1134 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1133, 2);fnt.cont = ____BAH_COMPILER_VAR_1134;
 
 #line 74 "/home/alois/Documents/bah-bah/src/values.bah"
 
-    unsigned int ____BAH_COMPILER_VAR_1140 = tokPos;
-    __Bah_realocate_arr(l, ____BAH_COMPILER_VAR_1140);
-    l->data[____BAH_COMPILER_VAR_1140] = fnt;
+    unsigned int ____BAH_COMPILER_VAR_1135 = tokPos;
+    __Bah_realocate_arr(l, ____BAH_COMPILER_VAR_1135);
+    l->data[____BAH_COMPILER_VAR_1135] = fnt;
 
 #line 75 "/home/alois/Documents/bah-bah/src/values.bah"
 return tokPos;
@@ -20796,7 +20780,7 @@ setNullStateBranchFlowEnd(elems);
 }
 
 #line 87 "/home/alois/Documents/bah-bah/src/values.bah"
-char** ____BAH_COMPILER_VAR_1141 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1141[1] = "\01\0\0\0""(";____BAH_COMPILER_VAR_1141[0] = fn->name;char * ____BAH_COMPILER_VAR_1142 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1141, 2);fnt.cont = ____BAH_COMPILER_VAR_1142;
+char** ____BAH_COMPILER_VAR_1136 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1136[1] = "\01\0\0\0""(";____BAH_COMPILER_VAR_1136[0] = fn->name;char * ____BAH_COMPILER_VAR_1137 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1136, 2);fnt.cont = ____BAH_COMPILER_VAR_1137;
 
 #line 88 "/home/alois/Documents/bah-bah/src/values.bah"
 if ((fn->returns!=null)&&(strcmp(fn->returns->type, "\0\0\0\0""") != 0)) {
@@ -20821,7 +20805,7 @@ long int nbEncls = 1;
 i = tokPos+1;
 
 #line 99 "/home/alois/Documents/bah-bah/src/values.bah"
-char** ____BAH_COMPILER_VAR_1143 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1143[1] = "\01\0\0\0""(";____BAH_COMPILER_VAR_1143[0] = fn->name;char * ____BAH_COMPILER_VAR_1144 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1143, 2);fnt.ogCont = ____BAH_COMPILER_VAR_1144;
+char** ____BAH_COMPILER_VAR_1138 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1138[1] = "\01\0\0\0""(";____BAH_COMPILER_VAR_1138[0] = fn->name;char * ____BAH_COMPILER_VAR_1139 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1138, 2);fnt.ogCont = ____BAH_COMPILER_VAR_1139;
 
 #line 100 "/home/alois/Documents/bah-bah/src/values.bah"
 long int start = i;
@@ -20835,7 +20819,7 @@ for (; (i<len(l));
 struct Tok t = l->data[i];
 
 #line 103 "/home/alois/Documents/bah-bah/src/values.bah"
-char** ____BAH_COMPILER_VAR_1145 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1145[1] = t.ogCont;____BAH_COMPILER_VAR_1145[0] = fnt.ogCont;char * ____BAH_COMPILER_VAR_1146 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1145, 2);fnt.ogCont = ____BAH_COMPILER_VAR_1146;
+char** ____BAH_COMPILER_VAR_1140 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1140[1] = t.ogCont;____BAH_COMPILER_VAR_1140[0] = fnt.ogCont;char * ____BAH_COMPILER_VAR_1141 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1140, 2);fnt.ogCont = ____BAH_COMPILER_VAR_1141;
 
 #line 104 "/home/alois/Documents/bah-bah/src/values.bah"
 if ((strcmp(t.cont, "\01\0\0\0""(") == 0)||(strcmp(t.cont, "\01\0\0\0""{") == 0)||(strcmp(t.cont, "\01\0\0\0""[") == 0)) {
@@ -20892,62 +20876,62 @@ for (; (j<len(memory));
 struct Tok t = memory->data[j];
 
 #line 124 "/home/alois/Documents/bah-bah/src/values.bah"
-char** ____BAH_COMPILER_VAR_1147 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1147[1] = t.cont;____BAH_COMPILER_VAR_1147[0] = fnt.cont;char * ____BAH_COMPILER_VAR_1148 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1147, 2);fnt.cont = ____BAH_COMPILER_VAR_1148;
+char** ____BAH_COMPILER_VAR_1142 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1142[1] = t.cont;____BAH_COMPILER_VAR_1142[0] = fnt.cont;char * ____BAH_COMPILER_VAR_1143 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1142, 2);fnt.cont = ____BAH_COMPILER_VAR_1143;
 };
 
 #line 126 "/home/alois/Documents/bah-bah/src/values.bah"
 
-    unsigned int ____BAH_COMPILER_VAR_1149 = tokPos;
-    __Bah_realocate_arr(l, ____BAH_COMPILER_VAR_1149);
-    l->data[____BAH_COMPILER_VAR_1149] = fnt;
+    unsigned int ____BAH_COMPILER_VAR_1144 = tokPos;
+    __Bah_realocate_arr(l, ____BAH_COMPILER_VAR_1144);
+    l->data[____BAH_COMPILER_VAR_1144] = fnt;
 
 #line 127 "/home/alois/Documents/bah-bah/src/values.bah"
 return tokPos;
 }
 
 #line 130 "/home/alois/Documents/bah-bah/src/values.bah"
-char** ____BAH_COMPILER_VAR_1150 = alloca(5 * sizeof(char*));____BAH_COMPILER_VAR_1150[4] = "\01\0\0\0""\"";____BAH_COMPILER_VAR_1150[3] = intToStr(fnt.line);____BAH_COMPILER_VAR_1150[2] = "\01\0\0\0"":";____BAH_COMPILER_VAR_1150[1] = compilerState.currentFile;____BAH_COMPILER_VAR_1150[0] = "\01\0\0\0""\"";char * ____BAH_COMPILER_VAR_1151 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1150, 5);char * currLine = ____BAH_COMPILER_VAR_1151;
+char** ____BAH_COMPILER_VAR_1145 = alloca(5 * sizeof(char*));____BAH_COMPILER_VAR_1145[4] = "\01\0\0\0""\"";____BAH_COMPILER_VAR_1145[3] = intToStr(fnt.line);____BAH_COMPILER_VAR_1145[2] = "\01\0\0\0"":";____BAH_COMPILER_VAR_1145[1] = compilerState.currentFile;____BAH_COMPILER_VAR_1145[0] = "\01\0\0\0""\"";char * ____BAH_COMPILER_VAR_1146 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1145, 5);char * currLine = ____BAH_COMPILER_VAR_1146;
 
 #line 131 "/home/alois/Documents/bah-bah/src/values.bah"
 if ((strcmp(fn->name, "\05\0\0\0""panic") == 0)) {
 
 #line 132 "/home/alois/Documents/bah-bah/src/values.bah"
-struct Tok ____BAH_COMPILER_VAR_1152 = {};
-____BAH_COMPILER_VAR_1152.cont = "\0\0\0\0""";
-____BAH_COMPILER_VAR_1152.ogCont = "\0\0\0\0""";
-____BAH_COMPILER_VAR_1152.type = TOKEN_NO_TYPE;
-____BAH_COMPILER_VAR_1152.line = 1;
-____BAH_COMPILER_VAR_1152.begLine = 1;
-____BAH_COMPILER_VAR_1152.bahType = "\0\0\0\0""";
-____BAH_COMPILER_VAR_1152.type = TOKEN_TYPE_SYNTAX;
-____BAH_COMPILER_VAR_1152.cont = "\01\0\0\0"",";
-____BAH_COMPILER_VAR_1152.line = fnt.line;
+struct Tok ____BAH_COMPILER_VAR_1147 = {};
+____BAH_COMPILER_VAR_1147.cont = "\0\0\0\0""";
+____BAH_COMPILER_VAR_1147.ogCont = "\0\0\0\0""";
+____BAH_COMPILER_VAR_1147.type = TOKEN_NO_TYPE;
+____BAH_COMPILER_VAR_1147.line = 1;
+____BAH_COMPILER_VAR_1147.begLine = 1;
+____BAH_COMPILER_VAR_1147.bahType = "\0\0\0\0""";
+____BAH_COMPILER_VAR_1147.type = TOKEN_TYPE_SYNTAX;
+____BAH_COMPILER_VAR_1147.cont = "\01\0\0\0"",";
+____BAH_COMPILER_VAR_1147.line = fnt.line;
 
-    unsigned int ____BAH_COMPILER_VAR_1153 = len(memory);
-    __Bah_realocate_arr(memory, ____BAH_COMPILER_VAR_1153);
-    memory->data[____BAH_COMPILER_VAR_1153] = ____BAH_COMPILER_VAR_1152;
+    unsigned int ____BAH_COMPILER_VAR_1148 = len(memory);
+    __Bah_realocate_arr(memory, ____BAH_COMPILER_VAR_1148);
+    memory->data[____BAH_COMPILER_VAR_1148] = ____BAH_COMPILER_VAR_1147;
 
 #line 137 "/home/alois/Documents/bah-bah/src/values.bah"
-struct Tok ____BAH_COMPILER_VAR_1154 = {};
-____BAH_COMPILER_VAR_1154.cont = "\0\0\0\0""";
-____BAH_COMPILER_VAR_1154.ogCont = "\0\0\0\0""";
-____BAH_COMPILER_VAR_1154.type = TOKEN_NO_TYPE;
-____BAH_COMPILER_VAR_1154.line = 1;
-____BAH_COMPILER_VAR_1154.begLine = 1;
-____BAH_COMPILER_VAR_1154.bahType = "\0\0\0\0""";
-____BAH_COMPILER_VAR_1154.type = TOKEN_TYPE_STR;
-____BAH_COMPILER_VAR_1154.cont = currLine;
-____BAH_COMPILER_VAR_1154.line = fnt.line;
+struct Tok ____BAH_COMPILER_VAR_1149 = {};
+____BAH_COMPILER_VAR_1149.cont = "\0\0\0\0""";
+____BAH_COMPILER_VAR_1149.ogCont = "\0\0\0\0""";
+____BAH_COMPILER_VAR_1149.type = TOKEN_NO_TYPE;
+____BAH_COMPILER_VAR_1149.line = 1;
+____BAH_COMPILER_VAR_1149.begLine = 1;
+____BAH_COMPILER_VAR_1149.bahType = "\0\0\0\0""";
+____BAH_COMPILER_VAR_1149.type = TOKEN_TYPE_STR;
+____BAH_COMPILER_VAR_1149.cont = currLine;
+____BAH_COMPILER_VAR_1149.line = fnt.line;
 
-    unsigned int ____BAH_COMPILER_VAR_1155 = len(memory);
-    __Bah_realocate_arr(memory, ____BAH_COMPILER_VAR_1155);
-    memory->data[____BAH_COMPILER_VAR_1155] = ____BAH_COMPILER_VAR_1154;
+    unsigned int ____BAH_COMPILER_VAR_1150 = len(memory);
+    __Bah_realocate_arr(memory, ____BAH_COMPILER_VAR_1150);
+    memory->data[____BAH_COMPILER_VAR_1150] = ____BAH_COMPILER_VAR_1149;
 
 #line 142 "/home/alois/Documents/bah-bah/src/values.bah"
 fn = searchFunc("\013\0\0\0""__BAH_panic",elems,true);
 
 #line 143 "/home/alois/Documents/bah-bah/src/values.bah"
-char** ____BAH_COMPILER_VAR_1156 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1156[1] = "\01\0\0\0""(";____BAH_COMPILER_VAR_1156[0] = fn->name;char * ____BAH_COMPILER_VAR_1157 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1156, 2);fnt.cont = ____BAH_COMPILER_VAR_1157;
+char** ____BAH_COMPILER_VAR_1151 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1151[1] = "\01\0\0\0""(";____BAH_COMPILER_VAR_1151[0] = fn->name;char * ____BAH_COMPILER_VAR_1152 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1151, 2);fnt.cont = ____BAH_COMPILER_VAR_1152;
 }
 
 #line 144 "/home/alois/Documents/bah-bah/src/values.bah"
@@ -20975,22 +20959,22 @@ if ((v->isConst==false)) {
 
 #line 149 "/home/alois/Documents/bah-bah/src/values.bah"
 
-    unsigned int ____BAH_COMPILER_VAR_1158 = len(symbols);
-    __Bah_realocate_arr(symbols, ____BAH_COMPILER_VAR_1158);
-    symbols->data[____BAH_COMPILER_VAR_1158] = v;
+    unsigned int ____BAH_COMPILER_VAR_1153 = len(symbols);
+    __Bah_realocate_arr(symbols, ____BAH_COMPILER_VAR_1153);
+    symbols->data[____BAH_COMPILER_VAR_1153] = v;
 }
 };
 
 #line 152 "/home/alois/Documents/bah-bah/src/values.bah"
-struct variable* ____BAH_COMPILER_VAR_1159 = memoryAlloc(sizeof(struct variable));
-____BAH_COMPILER_VAR_1159->name = "\0\0\0\0""";
-____BAH_COMPILER_VAR_1159->type = "\0\0\0\0""";
-____BAH_COMPILER_VAR_1159->constVal = "\0\0\0\0""";
-____BAH_COMPILER_VAR_1159->from = "\0\0\0\0""";
-____BAH_COMPILER_VAR_1159->name = genCompilerVar();
-____BAH_COMPILER_VAR_1159->type = "\020\0\0\0""[]reflectElement";
-____BAH_COMPILER_VAR_1159->isArray = true;
-struct variable* tmpV = ____BAH_COMPILER_VAR_1159;
+struct variable* ____BAH_COMPILER_VAR_1154 = memoryAlloc(sizeof(struct variable));
+____BAH_COMPILER_VAR_1154->name = "\0\0\0\0""";
+____BAH_COMPILER_VAR_1154->type = "\0\0\0\0""";
+____BAH_COMPILER_VAR_1154->constVal = "\0\0\0\0""";
+____BAH_COMPILER_VAR_1154->from = "\0\0\0\0""";
+____BAH_COMPILER_VAR_1154->name = genCompilerVar();
+____BAH_COMPILER_VAR_1154->type = "\020\0\0\0""[]reflectElement";
+____BAH_COMPILER_VAR_1154->isArray = true;
+struct variable* tmpV = ____BAH_COMPILER_VAR_1154;
 
 #line 157 "/home/alois/Documents/bah-bah/src/values.bah"
 char * decls = "\0\0\0\0""";
@@ -21013,40 +20997,105 @@ char * vname = v->name;
 if ((strCount(v->type,"\01\0\0\0""*")==0)) {
 
 #line 162 "/home/alois/Documents/bah-bah/src/values.bah"
-char** ____BAH_COMPILER_VAR_1160 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1160[1] = v->name;____BAH_COMPILER_VAR_1160[0] = "\01\0\0\0""&";char * ____BAH_COMPILER_VAR_1161 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1160, 2);vname = ____BAH_COMPILER_VAR_1161;
+char** ____BAH_COMPILER_VAR_1155 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1155[1] = v->name;____BAH_COMPILER_VAR_1155[0] = "\01\0\0\0""&";char * ____BAH_COMPILER_VAR_1156 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1155, 2);vname = ____BAH_COMPILER_VAR_1156;
 }
 
 #line 164 "/home/alois/Documents/bah-bah/src/values.bah"
-struct Tok ____BAH_COMPILER_VAR_1162 = {};
-____BAH_COMPILER_VAR_1162.cont = "\0\0\0\0""";
-____BAH_COMPILER_VAR_1162.ogCont = "\0\0\0\0""";
-____BAH_COMPILER_VAR_1162.type = TOKEN_NO_TYPE;
-____BAH_COMPILER_VAR_1162.line = 1;
-____BAH_COMPILER_VAR_1162.begLine = 1;
-____BAH_COMPILER_VAR_1162.bahType = "\0\0\0\0""";
-____BAH_COMPILER_VAR_1162.type = TOKEN_TYPE_VAR;
-____BAH_COMPILER_VAR_1162.cont = vname;
-____BAH_COMPILER_VAR_1162.bahType = v->type;
-____BAH_COMPILER_VAR_1162.isValue = true;
-struct Tok tmpT = ____BAH_COMPILER_VAR_1162;
+struct Tok ____BAH_COMPILER_VAR_1157 = {};
+____BAH_COMPILER_VAR_1157.cont = "\0\0\0\0""";
+____BAH_COMPILER_VAR_1157.ogCont = "\0\0\0\0""";
+____BAH_COMPILER_VAR_1157.type = TOKEN_NO_TYPE;
+____BAH_COMPILER_VAR_1157.line = 1;
+____BAH_COMPILER_VAR_1157.begLine = 1;
+____BAH_COMPILER_VAR_1157.bahType = "\0\0\0\0""";
+____BAH_COMPILER_VAR_1157.type = TOKEN_TYPE_VAR;
+____BAH_COMPILER_VAR_1157.cont = vname;
+____BAH_COMPILER_VAR_1157.bahType = v->type;
+____BAH_COMPILER_VAR_1157.isValue = true;
+struct Tok tmpT = ____BAH_COMPILER_VAR_1157;
 
 #line 170 "/home/alois/Documents/bah-bah/src/values.bah"
 tmpT = parseReflect(tmpT,v->type,elems,true,v->name,"\01\0\0\0""0");
 
 #line 171 "/home/alois/Documents/bah-bah/src/values.bah"
-char** ____BAH_COMPILER_VAR_1163 = alloca(6 * sizeof(char*));____BAH_COMPILER_VAR_1163[5] = "\02\0\0\0"";\n";____BAH_COMPILER_VAR_1163[4] = tmpT.cont;____BAH_COMPILER_VAR_1163[3] = "\04\0\0\0""] = ";____BAH_COMPILER_VAR_1163[2] = intToStr(j);____BAH_COMPILER_VAR_1163[1] = "\07\0\0\0""->data[";____BAH_COMPILER_VAR_1163[0] = tmpV->name;char * ____BAH_COMPILER_VAR_1164 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1163, 6);char** ____BAH_COMPILER_VAR_1165 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1165[1] = ____BAH_COMPILER_VAR_1164;____BAH_COMPILER_VAR_1165[0] = decls;char * ____BAH_COMPILER_VAR_1166 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1165, 2);decls = ____BAH_COMPILER_VAR_1166;
+char** ____BAH_COMPILER_VAR_1158 = alloca(6 * sizeof(char*));____BAH_COMPILER_VAR_1158[5] = "\02\0\0\0"";\n";____BAH_COMPILER_VAR_1158[4] = tmpT.cont;____BAH_COMPILER_VAR_1158[3] = "\04\0\0\0""] = ";____BAH_COMPILER_VAR_1158[2] = intToStr(j);____BAH_COMPILER_VAR_1158[1] = "\07\0\0\0""->data[";____BAH_COMPILER_VAR_1158[0] = tmpV->name;char * ____BAH_COMPILER_VAR_1159 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1158, 6);char** ____BAH_COMPILER_VAR_1160 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1160[1] = ____BAH_COMPILER_VAR_1159;____BAH_COMPILER_VAR_1160[0] = decls;char * ____BAH_COMPILER_VAR_1161 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1160, 2);decls = ____BAH_COMPILER_VAR_1161;
 };
 
 #line 173 "/home/alois/Documents/bah-bah/src/values.bah"
 
-    unsigned int ____BAH_COMPILER_VAR_1167 = len(elems->vars);
-    __Bah_realocate_arr(elems->vars, ____BAH_COMPILER_VAR_1167);
-    elems->vars->data[____BAH_COMPILER_VAR_1167] = tmpV;
+    unsigned int ____BAH_COMPILER_VAR_1162 = len(elems->vars);
+    __Bah_realocate_arr(elems->vars, ____BAH_COMPILER_VAR_1162);
+    elems->vars->data[____BAH_COMPILER_VAR_1162] = tmpV;
 
 #line 174 "/home/alois/Documents/bah-bah/src/values.bah"
-char** ____BAH_COMPILER_VAR_1168 = alloca(15 * sizeof(char*));____BAH_COMPILER_VAR_1168[14] = "\011\0\0\0""\n        ";____BAH_COMPILER_VAR_1168[13] = decls;____BAH_COMPILER_VAR_1168[12] = "\064\0\0\0""->elemSize = sizeof(struct reflectElement);\n        ";____BAH_COMPILER_VAR_1168[11] = tmpV->name;____BAH_COMPILER_VAR_1168[10] = "\012\0\0\0"";\n        ";____BAH_COMPILER_VAR_1168[9] = intToStr(len(symbols));____BAH_COMPILER_VAR_1168[8] = "\013\0\0\0""->length = ";____BAH_COMPILER_VAR_1168[7] = tmpV->name;____BAH_COMPILER_VAR_1168[6] = "\013\0\0\0"");\n        ";____BAH_COMPILER_VAR_1168[5] = intToStr(len(symbols));____BAH_COMPILER_VAR_1168[4] = "\065\0\0\0""->data = memoryAlloc(sizeof(struct reflectElement) * ";____BAH_COMPILER_VAR_1168[3] = tmpV->name;____BAH_COMPILER_VAR_1168[2] = "\076\0\0\0"" = memoryAlloc(sizeof(array(struct reflectElement)));\n        ";____BAH_COMPILER_VAR_1168[1] = tmpV->name;____BAH_COMPILER_VAR_1168[0] = "\047\0\0\0""\n        array(struct reflectElement)* ";char * ____BAH_COMPILER_VAR_1169 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1168, 15);OUTPUT = rope__add(OUTPUT, rope(____BAH_COMPILER_VAR_1169));
+char** ____BAH_COMPILER_VAR_1163 = alloca(15 * sizeof(char*));____BAH_COMPILER_VAR_1163[14] = "\011\0\0\0""\n        ";____BAH_COMPILER_VAR_1163[13] = decls;____BAH_COMPILER_VAR_1163[12] = "\064\0\0\0""->elemSize = sizeof(struct reflectElement);\n        ";____BAH_COMPILER_VAR_1163[11] = tmpV->name;____BAH_COMPILER_VAR_1163[10] = "\012\0\0\0"";\n        ";____BAH_COMPILER_VAR_1163[9] = intToStr(len(symbols));____BAH_COMPILER_VAR_1163[8] = "\013\0\0\0""->length = ";____BAH_COMPILER_VAR_1163[7] = tmpV->name;____BAH_COMPILER_VAR_1163[6] = "\013\0\0\0"");\n        ";____BAH_COMPILER_VAR_1163[5] = intToStr(len(symbols));____BAH_COMPILER_VAR_1163[4] = "\065\0\0\0""->data = memoryAlloc(sizeof(struct reflectElement) * ";____BAH_COMPILER_VAR_1163[3] = tmpV->name;____BAH_COMPILER_VAR_1163[2] = "\076\0\0\0"" = memoryAlloc(sizeof(array(struct reflectElement)));\n        ";____BAH_COMPILER_VAR_1163[1] = tmpV->name;____BAH_COMPILER_VAR_1163[0] = "\047\0\0\0""\n        array(struct reflectElement)* ";char * ____BAH_COMPILER_VAR_1164 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1163, 15);OUTPUT = rope__add(OUTPUT, rope(____BAH_COMPILER_VAR_1164));
 
 #line 181 "/home/alois/Documents/bah-bah/src/values.bah"
+struct Tok ____BAH_COMPILER_VAR_1165 = {};
+____BAH_COMPILER_VAR_1165.cont = "\0\0\0\0""";
+____BAH_COMPILER_VAR_1165.ogCont = "\0\0\0\0""";
+____BAH_COMPILER_VAR_1165.type = TOKEN_NO_TYPE;
+____BAH_COMPILER_VAR_1165.line = 1;
+____BAH_COMPILER_VAR_1165.begLine = 1;
+____BAH_COMPILER_VAR_1165.bahType = "\0\0\0\0""";
+____BAH_COMPILER_VAR_1165.type = TOKEN_TYPE_VAR;
+____BAH_COMPILER_VAR_1165.cont = tmpV->name;
+____BAH_COMPILER_VAR_1165.line = fnt.line;
+____BAH_COMPILER_VAR_1165.isValue = true;
+
+    unsigned int ____BAH_COMPILER_VAR_1166 = 0;
+    __Bah_realocate_arr(memory, ____BAH_COMPILER_VAR_1166);
+    memory->data[____BAH_COMPILER_VAR_1166] = ____BAH_COMPILER_VAR_1165;
+}
+
+#line 187 "/home/alois/Documents/bah-bah/src/values.bah"
+else if ((strcmp(fn->name, "\012\0\0\0""breakPoint") == 0)) {
+
+#line 188 "/home/alois/Documents/bah-bah/src/values.bah"
+struct Tok ____BAH_COMPILER_VAR_1167 = {};
+____BAH_COMPILER_VAR_1167.cont = "\0\0\0\0""";
+____BAH_COMPILER_VAR_1167.ogCont = "\0\0\0\0""";
+____BAH_COMPILER_VAR_1167.type = TOKEN_NO_TYPE;
+____BAH_COMPILER_VAR_1167.line = 1;
+____BAH_COMPILER_VAR_1167.begLine = 1;
+____BAH_COMPILER_VAR_1167.bahType = "\0\0\0\0""";
+____BAH_COMPILER_VAR_1167.type = TOKEN_TYPE_VAR;
+____BAH_COMPILER_VAR_1167.cont = "\015\0\0\0""__dumpSymbols";
+____BAH_COMPILER_VAR_1167.line = fnt.line;
+struct Tok ____BAH_COMPILER_VAR_1168 = {};
+____BAH_COMPILER_VAR_1168.cont = "\0\0\0\0""";
+____BAH_COMPILER_VAR_1168.ogCont = "\0\0\0\0""";
+____BAH_COMPILER_VAR_1168.type = TOKEN_NO_TYPE;
+____BAH_COMPILER_VAR_1168.line = 1;
+____BAH_COMPILER_VAR_1168.begLine = 1;
+____BAH_COMPILER_VAR_1168.bahType = "\0\0\0\0""";
+____BAH_COMPILER_VAR_1168.type = TOKEN_TYPE_SYNTAX;
+____BAH_COMPILER_VAR_1168.cont = "\01\0\0\0""(";
+____BAH_COMPILER_VAR_1168.line = fnt.line;
+struct Tok ____BAH_COMPILER_VAR_1169 = {};
+____BAH_COMPILER_VAR_1169.cont = "\0\0\0\0""";
+____BAH_COMPILER_VAR_1169.ogCont = "\0\0\0\0""";
+____BAH_COMPILER_VAR_1169.type = TOKEN_NO_TYPE;
+____BAH_COMPILER_VAR_1169.line = 1;
+____BAH_COMPILER_VAR_1169.begLine = 1;
+____BAH_COMPILER_VAR_1169.bahType = "\0\0\0\0""";
+____BAH_COMPILER_VAR_1169.type = TOKEN_TYPE_SYNTAX;
+____BAH_COMPILER_VAR_1169.cont = "\01\0\0\0"")";
+____BAH_COMPILER_VAR_1169.line = fnt.line;
+memory = memoryAlloc(sizeof(array(struct Tok)));
+
+memory->length = 3;
+memory->elemSize = sizeof(struct Tok);
+memory->data = memoryAlloc(sizeof(struct Tok) * 50);
+                    memory->realLength = 50;
+memory->data[0] = ____BAH_COMPILER_VAR_1167;
+memory->data[1] = ____BAH_COMPILER_VAR_1168;
+memory->data[2] = ____BAH_COMPILER_VAR_1169;
+
+#line 205 "/home/alois/Documents/bah-bah/src/values.bah"
+memory = prePross(memory,LINE_TYPE_FN_CALL,elems);
+
+#line 206 "/home/alois/Documents/bah-bah/src/values.bah"
 struct Tok ____BAH_COMPILER_VAR_1170 = {};
 ____BAH_COMPILER_VAR_1170.cont = "\0\0\0\0""";
 ____BAH_COMPILER_VAR_1170.ogCont = "\0\0\0\0""";
@@ -21054,20 +21103,15 @@ ____BAH_COMPILER_VAR_1170.type = TOKEN_NO_TYPE;
 ____BAH_COMPILER_VAR_1170.line = 1;
 ____BAH_COMPILER_VAR_1170.begLine = 1;
 ____BAH_COMPILER_VAR_1170.bahType = "\0\0\0\0""";
-____BAH_COMPILER_VAR_1170.type = TOKEN_TYPE_VAR;
-____BAH_COMPILER_VAR_1170.cont = tmpV->name;
+____BAH_COMPILER_VAR_1170.type = TOKEN_TYPE_SYNTAX;
+____BAH_COMPILER_VAR_1170.cont = "\01\0\0\0"",";
 ____BAH_COMPILER_VAR_1170.line = fnt.line;
-____BAH_COMPILER_VAR_1170.isValue = true;
 
-    unsigned int ____BAH_COMPILER_VAR_1171 = 0;
+    unsigned int ____BAH_COMPILER_VAR_1171 = len(memory);
     __Bah_realocate_arr(memory, ____BAH_COMPILER_VAR_1171);
     memory->data[____BAH_COMPILER_VAR_1171] = ____BAH_COMPILER_VAR_1170;
-}
 
-#line 187 "/home/alois/Documents/bah-bah/src/values.bah"
-else if ((strcmp(fn->name, "\012\0\0\0""breakPoint") == 0)) {
-
-#line 188 "/home/alois/Documents/bah-bah/src/values.bah"
+#line 211 "/home/alois/Documents/bah-bah/src/values.bah"
 struct Tok ____BAH_COMPILER_VAR_1172 = {};
 ____BAH_COMPILER_VAR_1172.cont = "\0\0\0\0""";
 ____BAH_COMPILER_VAR_1172.ogCont = "\0\0\0\0""";
@@ -21075,79 +21119,19 @@ ____BAH_COMPILER_VAR_1172.type = TOKEN_NO_TYPE;
 ____BAH_COMPILER_VAR_1172.line = 1;
 ____BAH_COMPILER_VAR_1172.begLine = 1;
 ____BAH_COMPILER_VAR_1172.bahType = "\0\0\0\0""";
-____BAH_COMPILER_VAR_1172.type = TOKEN_TYPE_VAR;
-____BAH_COMPILER_VAR_1172.cont = "\015\0\0\0""__dumpSymbols";
+____BAH_COMPILER_VAR_1172.type = TOKEN_TYPE_STR;
+____BAH_COMPILER_VAR_1172.cont = currLine;
 ____BAH_COMPILER_VAR_1172.line = fnt.line;
-struct Tok ____BAH_COMPILER_VAR_1173 = {};
-____BAH_COMPILER_VAR_1173.cont = "\0\0\0\0""";
-____BAH_COMPILER_VAR_1173.ogCont = "\0\0\0\0""";
-____BAH_COMPILER_VAR_1173.type = TOKEN_NO_TYPE;
-____BAH_COMPILER_VAR_1173.line = 1;
-____BAH_COMPILER_VAR_1173.begLine = 1;
-____BAH_COMPILER_VAR_1173.bahType = "\0\0\0\0""";
-____BAH_COMPILER_VAR_1173.type = TOKEN_TYPE_SYNTAX;
-____BAH_COMPILER_VAR_1173.cont = "\01\0\0\0""(";
-____BAH_COMPILER_VAR_1173.line = fnt.line;
-struct Tok ____BAH_COMPILER_VAR_1174 = {};
-____BAH_COMPILER_VAR_1174.cont = "\0\0\0\0""";
-____BAH_COMPILER_VAR_1174.ogCont = "\0\0\0\0""";
-____BAH_COMPILER_VAR_1174.type = TOKEN_NO_TYPE;
-____BAH_COMPILER_VAR_1174.line = 1;
-____BAH_COMPILER_VAR_1174.begLine = 1;
-____BAH_COMPILER_VAR_1174.bahType = "\0\0\0\0""";
-____BAH_COMPILER_VAR_1174.type = TOKEN_TYPE_SYNTAX;
-____BAH_COMPILER_VAR_1174.cont = "\01\0\0\0"")";
-____BAH_COMPILER_VAR_1174.line = fnt.line;
-memory = memoryAlloc(sizeof(array(struct Tok)));
 
-memory->length = 3;
-memory->elemSize = sizeof(struct Tok);
-memory->data = memoryAlloc(sizeof(struct Tok) * 50);
-                    memory->realLength = 50;
-memory->data[0] = ____BAH_COMPILER_VAR_1172;
-memory->data[1] = ____BAH_COMPILER_VAR_1173;
-memory->data[2] = ____BAH_COMPILER_VAR_1174;
-
-#line 205 "/home/alois/Documents/bah-bah/src/values.bah"
-memory = prePross(memory,LINE_TYPE_FN_CALL,elems);
-
-#line 206 "/home/alois/Documents/bah-bah/src/values.bah"
-struct Tok ____BAH_COMPILER_VAR_1175 = {};
-____BAH_COMPILER_VAR_1175.cont = "\0\0\0\0""";
-____BAH_COMPILER_VAR_1175.ogCont = "\0\0\0\0""";
-____BAH_COMPILER_VAR_1175.type = TOKEN_NO_TYPE;
-____BAH_COMPILER_VAR_1175.line = 1;
-____BAH_COMPILER_VAR_1175.begLine = 1;
-____BAH_COMPILER_VAR_1175.bahType = "\0\0\0\0""";
-____BAH_COMPILER_VAR_1175.type = TOKEN_TYPE_SYNTAX;
-____BAH_COMPILER_VAR_1175.cont = "\01\0\0\0"",";
-____BAH_COMPILER_VAR_1175.line = fnt.line;
-
-    unsigned int ____BAH_COMPILER_VAR_1176 = len(memory);
-    __Bah_realocate_arr(memory, ____BAH_COMPILER_VAR_1176);
-    memory->data[____BAH_COMPILER_VAR_1176] = ____BAH_COMPILER_VAR_1175;
-
-#line 211 "/home/alois/Documents/bah-bah/src/values.bah"
-struct Tok ____BAH_COMPILER_VAR_1177 = {};
-____BAH_COMPILER_VAR_1177.cont = "\0\0\0\0""";
-____BAH_COMPILER_VAR_1177.ogCont = "\0\0\0\0""";
-____BAH_COMPILER_VAR_1177.type = TOKEN_NO_TYPE;
-____BAH_COMPILER_VAR_1177.line = 1;
-____BAH_COMPILER_VAR_1177.begLine = 1;
-____BAH_COMPILER_VAR_1177.bahType = "\0\0\0\0""";
-____BAH_COMPILER_VAR_1177.type = TOKEN_TYPE_STR;
-____BAH_COMPILER_VAR_1177.cont = currLine;
-____BAH_COMPILER_VAR_1177.line = fnt.line;
-
-    unsigned int ____BAH_COMPILER_VAR_1178 = len(memory);
-    __Bah_realocate_arr(memory, ____BAH_COMPILER_VAR_1178);
-    memory->data[____BAH_COMPILER_VAR_1178] = ____BAH_COMPILER_VAR_1177;
+    unsigned int ____BAH_COMPILER_VAR_1173 = len(memory);
+    __Bah_realocate_arr(memory, ____BAH_COMPILER_VAR_1173);
+    memory->data[____BAH_COMPILER_VAR_1173] = ____BAH_COMPILER_VAR_1172;
 
 #line 216 "/home/alois/Documents/bah-bah/src/values.bah"
 fn = searchFunc("\021\0\0\0""breakPoint__inner",elems,true);
 
 #line 217 "/home/alois/Documents/bah-bah/src/values.bah"
-char** ____BAH_COMPILER_VAR_1179 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1179[1] = "\01\0\0\0""(";____BAH_COMPILER_VAR_1179[0] = fn->name;char * ____BAH_COMPILER_VAR_1180 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1179, 2);fnt.cont = ____BAH_COMPILER_VAR_1180;
+char** ____BAH_COMPILER_VAR_1174 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1174[1] = "\01\0\0\0""(";____BAH_COMPILER_VAR_1174[0] = fn->name;char * ____BAH_COMPILER_VAR_1175 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1174, 2);fnt.cont = ____BAH_COMPILER_VAR_1175;
 }
 
 #line 218 "/home/alois/Documents/bah-bah/src/values.bah"
@@ -21168,7 +21152,7 @@ for (; (j<len(memory));
 struct Tok tmpT = memory->data[j];
 
 #line 222 "/home/alois/Documents/bah-bah/src/values.bah"
-char** ____BAH_COMPILER_VAR_1181 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1181[1] = tmpT.cont;____BAH_COMPILER_VAR_1181[0] = tp;char * ____BAH_COMPILER_VAR_1182 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1181, 2);tp = ____BAH_COMPILER_VAR_1182;
+char** ____BAH_COMPILER_VAR_1176 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1176[1] = tmpT.cont;____BAH_COMPILER_VAR_1176[0] = tp;char * ____BAH_COMPILER_VAR_1177 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1176, 2);tp = ____BAH_COMPILER_VAR_1177;
 };
 
 #line 224 "/home/alois/Documents/bah-bah/src/values.bah"
@@ -21181,7 +21165,7 @@ if ((tmpV!=null)) {
 struct string cType = getCType(tmpV->type,elems);
 
 #line 227 "/home/alois/Documents/bah-bah/src/values.bah"
-char** ____BAH_COMPILER_VAR_1183 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1183[1] = "\01\0\0\0"")";____BAH_COMPILER_VAR_1183[0] = string__str(&cType);char * ____BAH_COMPILER_VAR_1184 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1183, 2);char** ____BAH_COMPILER_VAR_1185 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1185[1] = ____BAH_COMPILER_VAR_1184;____BAH_COMPILER_VAR_1185[0] = fnt.cont;char * ____BAH_COMPILER_VAR_1186 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1185, 2);fnt.cont = ____BAH_COMPILER_VAR_1186;
+char** ____BAH_COMPILER_VAR_1178 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1178[1] = "\01\0\0\0"")";____BAH_COMPILER_VAR_1178[0] = string__str(&cType);char * ____BAH_COMPILER_VAR_1179 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1178, 2);char** ____BAH_COMPILER_VAR_1180 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1180[1] = ____BAH_COMPILER_VAR_1179;____BAH_COMPILER_VAR_1180[0] = fnt.cont;char * ____BAH_COMPILER_VAR_1181 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1180, 2);fnt.cont = ____BAH_COMPILER_VAR_1181;
 }
 
 #line 228 "/home/alois/Documents/bah-bah/src/values.bah"
@@ -21201,7 +21185,7 @@ throwErr(&ft,"\033\0\0\0""Cannot get size of {TOKEN}.");
 }
 
 #line 234 "/home/alois/Documents/bah-bah/src/values.bah"
-char** ____BAH_COMPILER_VAR_1187 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1187[1] = "\01\0\0\0"")";____BAH_COMPILER_VAR_1187[0] = string__str(&cType);char * ____BAH_COMPILER_VAR_1188 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1187, 2);char** ____BAH_COMPILER_VAR_1189 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1189[1] = ____BAH_COMPILER_VAR_1188;____BAH_COMPILER_VAR_1189[0] = fnt.cont;char * ____BAH_COMPILER_VAR_1190 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1189, 2);fnt.cont = ____BAH_COMPILER_VAR_1190;
+char** ____BAH_COMPILER_VAR_1182 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1182[1] = "\01\0\0\0"")";____BAH_COMPILER_VAR_1182[0] = string__str(&cType);char * ____BAH_COMPILER_VAR_1183 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1182, 2);char** ____BAH_COMPILER_VAR_1184 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1184[1] = ____BAH_COMPILER_VAR_1183;____BAH_COMPILER_VAR_1184[0] = fnt.cont;char * ____BAH_COMPILER_VAR_1185 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1184, 2);fnt.cont = ____BAH_COMPILER_VAR_1185;
 }
 
 #line 236 "/home/alois/Documents/bah-bah/src/values.bah"
@@ -21218,9 +21202,9 @@ fnt.bahRef = fn;
 
 #line 240 "/home/alois/Documents/bah-bah/src/values.bah"
 
-    unsigned int ____BAH_COMPILER_VAR_1191 = tokPos;
-    __Bah_realocate_arr(l, ____BAH_COMPILER_VAR_1191);
-    l->data[____BAH_COMPILER_VAR_1191] = fnt;
+    unsigned int ____BAH_COMPILER_VAR_1186 = tokPos;
+    __Bah_realocate_arr(l, ____BAH_COMPILER_VAR_1186);
+    l->data[____BAH_COMPILER_VAR_1186] = fnt;
 
 #line 241 "/home/alois/Documents/bah-bah/src/values.bah"
 return tokPos;
@@ -21250,7 +21234,7 @@ amp = "\0\0\0\0""";
 }
 
 #line 255 "/home/alois/Documents/bah-bah/src/values.bah"
-char** ____BAH_COMPILER_VAR_1192 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1192[1] = parent->name;____BAH_COMPILER_VAR_1192[0] = amp;char * ____BAH_COMPILER_VAR_1193 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1192, 2);char** ____BAH_COMPILER_VAR_1194 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1194[1] = ____BAH_COMPILER_VAR_1193;____BAH_COMPILER_VAR_1194[0] = fnt.cont;char * ____BAH_COMPILER_VAR_1195 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1194, 2);fnt.cont = ____BAH_COMPILER_VAR_1195;
+char** ____BAH_COMPILER_VAR_1187 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1187[1] = parent->name;____BAH_COMPILER_VAR_1187[0] = amp;char * ____BAH_COMPILER_VAR_1188 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1187, 2);char** ____BAH_COMPILER_VAR_1189 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1189[1] = ____BAH_COMPILER_VAR_1188;____BAH_COMPILER_VAR_1189[0] = fnt.cont;char * ____BAH_COMPILER_VAR_1190 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1189, 2);fnt.cont = ____BAH_COMPILER_VAR_1190;
 
 #line 256 "/home/alois/Documents/bah-bah/src/values.bah"
 ++argIndex;
@@ -21259,7 +21243,7 @@ char** ____BAH_COMPILER_VAR_1192 = alloca(2 * sizeof(char*));____BAH_COMPILER_VA
 if ((len(fn->args)>argIndex)) {
 
 #line 258 "/home/alois/Documents/bah-bah/src/values.bah"
-char** ____BAH_COMPILER_VAR_1196 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1196[1] = "\01\0\0\0"",";____BAH_COMPILER_VAR_1196[0] = fnt.cont;char * ____BAH_COMPILER_VAR_1197 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1196, 2);fnt.cont = ____BAH_COMPILER_VAR_1197;
+char** ____BAH_COMPILER_VAR_1191 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1191[1] = "\01\0\0\0"",";____BAH_COMPILER_VAR_1191[0] = fnt.cont;char * ____BAH_COMPILER_VAR_1192 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1191, 2);fnt.cont = ____BAH_COMPILER_VAR_1192;
 }
 }
 
@@ -21284,7 +21268,7 @@ struct Tok t = memory->data[j];
 if (__builtin_expect((argIndex==len(fn->args)), 0)) {
 
 #line 270 "/home/alois/Documents/bah-bah/src/values.bah"
-char** ____BAH_COMPILER_VAR_1198 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1198[1] = getFuncDef(fn);____BAH_COMPILER_VAR_1198[0] = "\056\0\0\0""Too many arguments, expected ')' not {TOKEN}.\n";char * ____BAH_COMPILER_VAR_1199 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1198, 2);throwErr(&t,____BAH_COMPILER_VAR_1199);
+char** ____BAH_COMPILER_VAR_1193 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1193[1] = getFuncDef(fn);____BAH_COMPILER_VAR_1193[0] = "\056\0\0\0""Too many arguments, expected ')' not {TOKEN}.\n";char * ____BAH_COMPILER_VAR_1194 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1193, 2);throwErr(&t,____BAH_COMPILER_VAR_1194);
 }
 
 #line 272 "/home/alois/Documents/bah-bah/src/values.bah"
@@ -21332,7 +21316,7 @@ string__replace(&tts,"\01\0\0\0"":","\04\0\0\0""_DP_");
 string__replace(&tts,"\02\0\0\0""[]","\05\0\0\0""_ARR_");
 
 #line 291 "/home/alois/Documents/bah-bah/src/values.bah"
-char** ____BAH_COMPILER_VAR_1200 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1200[1] = string__str(&tts);____BAH_COMPILER_VAR_1200[0] = "\02\0\0\0""__";char * ____BAH_COMPILER_VAR_1201 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1200, 2);char** ____BAH_COMPILER_VAR_1202 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1202[1] = ____BAH_COMPILER_VAR_1201;____BAH_COMPILER_VAR_1202[0] = fn->name;char * ____BAH_COMPILER_VAR_1203 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1202, 2);fn->name = ____BAH_COMPILER_VAR_1203;
+char** ____BAH_COMPILER_VAR_1195 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1195[1] = string__str(&tts);____BAH_COMPILER_VAR_1195[0] = "\02\0\0\0""__";char * ____BAH_COMPILER_VAR_1196 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1195, 2);char** ____BAH_COMPILER_VAR_1197 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1197[1] = ____BAH_COMPILER_VAR_1196;____BAH_COMPILER_VAR_1197[0] = fn->name;char * ____BAH_COMPILER_VAR_1198 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1197, 2);fn->name = ____BAH_COMPILER_VAR_1198;
 }
 
 #line 292 "/home/alois/Documents/bah-bah/src/values.bah"
@@ -21342,24 +21326,24 @@ else {
 if (__builtin_expect((compTypes(arg->type,tt)==false), 0)) {
 
 #line 294 "/home/alois/Documents/bah-bah/src/values.bah"
-char** ____BAH_COMPILER_VAR_1204 = alloca(6 * sizeof(char*));____BAH_COMPILER_VAR_1204[5] = getFuncDef(fn);____BAH_COMPILER_VAR_1204[4] = "\023\0\0\0"" in function call.\n";____BAH_COMPILER_VAR_1204[3] = arg->type;____BAH_COMPILER_VAR_1204[2] = "\05\0\0\0"") as ";____BAH_COMPILER_VAR_1204[1] = tt;____BAH_COMPILER_VAR_1204[0] = "\024\0\0\0""Cannot use {TOKEN} (";char * ____BAH_COMPILER_VAR_1205 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1204, 6);throwErr(&t,____BAH_COMPILER_VAR_1205);
+char** ____BAH_COMPILER_VAR_1199 = alloca(6 * sizeof(char*));____BAH_COMPILER_VAR_1199[5] = getFuncDef(fn);____BAH_COMPILER_VAR_1199[4] = "\023\0\0\0"" in function call.\n";____BAH_COMPILER_VAR_1199[3] = arg->type;____BAH_COMPILER_VAR_1199[2] = "\05\0\0\0"") as ";____BAH_COMPILER_VAR_1199[1] = tt;____BAH_COMPILER_VAR_1199[0] = "\024\0\0\0""Cannot use {TOKEN} (";char * ____BAH_COMPILER_VAR_1200 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1199, 6);throwErr(&t,____BAH_COMPILER_VAR_1200);
 }
 }
 
 #line 298 "/home/alois/Documents/bah-bah/src/values.bah"
 
-                struct string ____BAH_COMPILER_VAR_1206 = string(tt);
-                if (string__hasPrefix(&____BAH_COMPILER_VAR_1206,"\07\0\0\0""buffer:")&&(fn->isCbinding==false)&&(strcmp(arg->type, "\010\0\0\0""cpstring") == 0)) {
+                struct string ____BAH_COMPILER_VAR_1201 = string(tt);
+                if (string__hasPrefix(&____BAH_COMPILER_VAR_1201,"\07\0\0\0""buffer:")&&(fn->isCbinding==false)&&(strcmp(arg->type, "\010\0\0\0""cpstring") == 0)) {
 
 #line 299 "/home/alois/Documents/bah-bah/src/values.bah"
-char** ____BAH_COMPILER_VAR_1207 = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_1207[2] = "\01\0\0\0"")";____BAH_COMPILER_VAR_1207[1] = t.cont;____BAH_COMPILER_VAR_1207[0] = "\012\0\0\0""buffToStr(";char * ____BAH_COMPILER_VAR_1208 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1207, 3);t.cont = ____BAH_COMPILER_VAR_1208;
+char** ____BAH_COMPILER_VAR_1202 = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_1202[2] = "\01\0\0\0"")";____BAH_COMPILER_VAR_1202[1] = t.cont;____BAH_COMPILER_VAR_1202[0] = "\012\0\0\0""buffToStr(";char * ____BAH_COMPILER_VAR_1203 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1202, 3);t.cont = ____BAH_COMPILER_VAR_1203;
 }
 
 #line 302 "/home/alois/Documents/bah-bah/src/values.bah"
 if ((strcmp(tt, "\010\0\0\0""cpstring") == 0)&&fn->isCbinding&&(strcmp(fn->name, "\06\0\0\0""strlen") != 0)) {
 
 #line 303 "/home/alois/Documents/bah-bah/src/values.bah"
-char** ____BAH_COMPILER_VAR_1209 = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_1209[2] = "\01\0\0\0"")";____BAH_COMPILER_VAR_1209[1] = t.cont;____BAH_COMPILER_VAR_1209[0] = "\05\0\0\0""cStr(";char * ____BAH_COMPILER_VAR_1210 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1209, 3);t.cont = ____BAH_COMPILER_VAR_1210;
+char** ____BAH_COMPILER_VAR_1204 = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_1204[2] = "\01\0\0\0"")";____BAH_COMPILER_VAR_1204[1] = t.cont;____BAH_COMPILER_VAR_1204[0] = "\05\0\0\0""cStr(";char * ____BAH_COMPILER_VAR_1205 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1204, 3);t.cont = ____BAH_COMPILER_VAR_1205;
 }
 
 #line 306 "/home/alois/Documents/bah-bah/src/values.bah"
@@ -21389,11 +21373,11 @@ char * vName = genCompilerVar();
 
 #line 317 "/home/alois/Documents/bah-bah/src/values.bah"
 
-                struct string ____BAH_COMPILER_VAR_1211 = getCType(afn->returns->type,elems);
-                char** ____BAH_COMPILER_VAR_1212 = alloca(4 * sizeof(char*));____BAH_COMPILER_VAR_1212[3] = "\01\0\0\0"";";____BAH_COMPILER_VAR_1212[2] = vName;____BAH_COMPILER_VAR_1212[1] = "\01\0\0\0"" ";____BAH_COMPILER_VAR_1212[0] = string__str(&____BAH_COMPILER_VAR_1211);char * ____BAH_COMPILER_VAR_1213 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1212, 4);char * code = ____BAH_COMPILER_VAR_1213;
+                struct string ____BAH_COMPILER_VAR_1206 = getCType(afn->returns->type,elems);
+                char** ____BAH_COMPILER_VAR_1207 = alloca(4 * sizeof(char*));____BAH_COMPILER_VAR_1207[3] = "\01\0\0\0"";";____BAH_COMPILER_VAR_1207[2] = vName;____BAH_COMPILER_VAR_1207[1] = "\01\0\0\0"" ";____BAH_COMPILER_VAR_1207[0] = string__str(&____BAH_COMPILER_VAR_1206);char * ____BAH_COMPILER_VAR_1208 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1207, 4);char * code = ____BAH_COMPILER_VAR_1208;
 
 #line 318 "/home/alois/Documents/bah-bah/src/values.bah"
-char** ____BAH_COMPILER_VAR_1214 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1214[1] = code;____BAH_COMPILER_VAR_1214[0] = rope__toStr(begIfHandle);char * ____BAH_COMPILER_VAR_1215 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1214, 2);long int diff = ropeSet(begIfHandle,____BAH_COMPILER_VAR_1215);
+char** ____BAH_COMPILER_VAR_1209 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1209[1] = code;____BAH_COMPILER_VAR_1209[0] = rope__toStr(begIfHandle);char * ____BAH_COMPILER_VAR_1210 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1209, 2);long int diff = ropeSet(begIfHandle,____BAH_COMPILER_VAR_1210);
 
 #line 319 "/home/alois/Documents/bah-bah/src/values.bah"
 println(intToStr(diff));
@@ -21402,20 +21386,20 @@ println(intToStr(diff));
 OUTPUT->totalLen = OUTPUT->totalLen+diff;
 
 #line 321 "/home/alois/Documents/bah-bah/src/values.bah"
-char** ____BAH_COMPILER_VAR_1216 = alloca(5 * sizeof(char*));____BAH_COMPILER_VAR_1216[4] = "\01\0\0\0"")";____BAH_COMPILER_VAR_1216[3] = t.cont;____BAH_COMPILER_VAR_1216[2] = "\01\0\0\0""=";____BAH_COMPILER_VAR_1216[1] = vName;____BAH_COMPILER_VAR_1216[0] = "\01\0\0\0""(";char * ____BAH_COMPILER_VAR_1217 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1216, 5);t.cont = ____BAH_COMPILER_VAR_1217;
+char** ____BAH_COMPILER_VAR_1211 = alloca(5 * sizeof(char*));____BAH_COMPILER_VAR_1211[4] = "\01\0\0\0"")";____BAH_COMPILER_VAR_1211[3] = t.cont;____BAH_COMPILER_VAR_1211[2] = "\01\0\0\0""=";____BAH_COMPILER_VAR_1211[1] = vName;____BAH_COMPILER_VAR_1211[0] = "\01\0\0\0""(";char * ____BAH_COMPILER_VAR_1212 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1211, 5);t.cont = ____BAH_COMPILER_VAR_1212;
 
 #line 322 "/home/alois/Documents/bah-bah/src/values.bah"
-struct variable* ____BAH_COMPILER_VAR_1218 = memoryAlloc(sizeof(struct variable));
-____BAH_COMPILER_VAR_1218->name = "\0\0\0\0""";
-____BAH_COMPILER_VAR_1218->type = "\0\0\0\0""";
-____BAH_COMPILER_VAR_1218->constVal = "\0\0\0\0""";
-____BAH_COMPILER_VAR_1218->from = "\0\0\0\0""";
-____BAH_COMPILER_VAR_1218->name = vName;
-____BAH_COMPILER_VAR_1218->type = afn->returns->type;
+struct variable* ____BAH_COMPILER_VAR_1213 = memoryAlloc(sizeof(struct variable));
+____BAH_COMPILER_VAR_1213->name = "\0\0\0\0""";
+____BAH_COMPILER_VAR_1213->type = "\0\0\0\0""";
+____BAH_COMPILER_VAR_1213->constVal = "\0\0\0\0""";
+____BAH_COMPILER_VAR_1213->from = "\0\0\0\0""";
+____BAH_COMPILER_VAR_1213->name = vName;
+____BAH_COMPILER_VAR_1213->type = afn->returns->type;
 
-    unsigned int ____BAH_COMPILER_VAR_1219 = len(elems->vars);
-    __Bah_realocate_arr(elems->vars, ____BAH_COMPILER_VAR_1219);
-    elems->vars->data[____BAH_COMPILER_VAR_1219] = ____BAH_COMPILER_VAR_1218;
+    unsigned int ____BAH_COMPILER_VAR_1214 = len(elems->vars);
+    __Bah_realocate_arr(elems->vars, ____BAH_COMPILER_VAR_1214);
+    elems->vars->data[____BAH_COMPILER_VAR_1214] = ____BAH_COMPILER_VAR_1213;
 }
 
 #line 326 "/home/alois/Documents/bah-bah/src/values.bah"
@@ -21428,7 +21412,7 @@ t.cont = registerRCPvar(afn->returns->type,t.cont,elems);
 }
 
 #line 332 "/home/alois/Documents/bah-bah/src/values.bah"
-char** ____BAH_COMPILER_VAR_1220 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1220[1] = t.cont;____BAH_COMPILER_VAR_1220[0] = fnt.cont;char * ____BAH_COMPILER_VAR_1221 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1220, 2);fnt.cont = ____BAH_COMPILER_VAR_1221;
+char** ____BAH_COMPILER_VAR_1215 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1215[1] = t.cont;____BAH_COMPILER_VAR_1215[0] = fnt.cont;char * ____BAH_COMPILER_VAR_1216 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1215, 2);fnt.cont = ____BAH_COMPILER_VAR_1216;
 
 #line 334 "/home/alois/Documents/bah-bah/src/values.bah"
 ++argIndex;
@@ -21446,18 +21430,18 @@ t = memory->data[j];
 if (__builtin_expect((strcmp(t.cont, "\01\0\0\0"",") != 0), 0)) {
 
 #line 340 "/home/alois/Documents/bah-bah/src/values.bah"
-char** ____BAH_COMPILER_VAR_1222 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1222[1] = getFuncDef(fn);____BAH_COMPILER_VAR_1222[0] = "\057\0\0\0""Need separator between arguments, not {TOKEN}.\n";char * ____BAH_COMPILER_VAR_1223 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1222, 2);throwErr(&t,____BAH_COMPILER_VAR_1223);
+char** ____BAH_COMPILER_VAR_1217 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1217[1] = getFuncDef(fn);____BAH_COMPILER_VAR_1217[0] = "\057\0\0\0""Need separator between arguments, not {TOKEN}.\n";char * ____BAH_COMPILER_VAR_1218 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1217, 2);throwErr(&t,____BAH_COMPILER_VAR_1218);
 }
 
 #line 342 "/home/alois/Documents/bah-bah/src/values.bah"
 if (__builtin_expect((j+1>=len(memory)), 0)) {
 
 #line 343 "/home/alois/Documents/bah-bah/src/values.bah"
-char** ____BAH_COMPILER_VAR_1224 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1224[1] = getFuncDef(fn);____BAH_COMPILER_VAR_1224[0] = "\051\0\0\0""Trailing {TOKEN} with no argument after.\n";char * ____BAH_COMPILER_VAR_1225 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1224, 2);throwErr(&t,____BAH_COMPILER_VAR_1225);
+char** ____BAH_COMPILER_VAR_1219 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1219[1] = getFuncDef(fn);____BAH_COMPILER_VAR_1219[0] = "\051\0\0\0""Trailing {TOKEN} with no argument after.\n";char * ____BAH_COMPILER_VAR_1220 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1219, 2);throwErr(&t,____BAH_COMPILER_VAR_1220);
 }
 
 #line 345 "/home/alois/Documents/bah-bah/src/values.bah"
-char** ____BAH_COMPILER_VAR_1226 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1226[1] = "\01\0\0\0"",";____BAH_COMPILER_VAR_1226[0] = fnt.cont;char * ____BAH_COMPILER_VAR_1227 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1226, 2);fnt.cont = ____BAH_COMPILER_VAR_1227;
+char** ____BAH_COMPILER_VAR_1221 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1221[1] = "\01\0\0\0"",";____BAH_COMPILER_VAR_1221[0] = fnt.cont;char * ____BAH_COMPILER_VAR_1222 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1221, 2);fnt.cont = ____BAH_COMPILER_VAR_1222;
 }
 };
 
@@ -21465,14 +21449,14 @@ char** ____BAH_COMPILER_VAR_1226 = alloca(2 * sizeof(char*));____BAH_COMPILER_VA
 if (__builtin_expect((argIndex!=len(fn->args)), 0)) {
 
 #line 351 "/home/alois/Documents/bah-bah/src/values.bah"
-char** ____BAH_COMPILER_VAR_1228 = alloca(4 * sizeof(char*));____BAH_COMPILER_VAR_1228[3] = getFuncDef(fn);____BAH_COMPILER_VAR_1228[2] = "\03\0\0\0""'.\n";____BAH_COMPILER_VAR_1228[1] = fn->name;____BAH_COMPILER_VAR_1228[0] = "\046\0\0\0""Not enough argument {TOKEN}, calling '";char * ____BAH_COMPILER_VAR_1229 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1228, 4);throwErr(&fnt,____BAH_COMPILER_VAR_1229);
+char** ____BAH_COMPILER_VAR_1223 = alloca(4 * sizeof(char*));____BAH_COMPILER_VAR_1223[3] = getFuncDef(fn);____BAH_COMPILER_VAR_1223[2] = "\03\0\0\0""'.\n";____BAH_COMPILER_VAR_1223[1] = fn->name;____BAH_COMPILER_VAR_1223[0] = "\046\0\0\0""Not enough argument {TOKEN}, calling '";char * ____BAH_COMPILER_VAR_1224 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1223, 4);throwErr(&fnt,____BAH_COMPILER_VAR_1224);
 }
 
 #line 354 "/home/alois/Documents/bah-bah/src/values.bah"
 if ((generic!=null)) {
 
 #line 355 "/home/alois/Documents/bah-bah/src/values.bah"
-char** ____BAH_COMPILER_VAR_1230 = alloca(4 * sizeof(char*));____BAH_COMPILER_VAR_1230[3] = cpstringSubsitute(fnt.cont, ogFntContL, strlen(fnt.cont));____BAH_COMPILER_VAR_1230[2] = "\01\0\0\0""(";____BAH_COMPILER_VAR_1230[1] = fn->name;____BAH_COMPILER_VAR_1230[0] = "\012\0\0\0""__generic_";char * ____BAH_COMPILER_VAR_1231 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1230, 4);fnt.cont = ____BAH_COMPILER_VAR_1231;
+char** ____BAH_COMPILER_VAR_1225 = alloca(4 * sizeof(char*));____BAH_COMPILER_VAR_1225[3] = cpstringSubsitute(fnt.cont, ogFntContL, strlen(fnt.cont));____BAH_COMPILER_VAR_1225[2] = "\01\0\0\0""(";____BAH_COMPILER_VAR_1225[1] = fn->name;____BAH_COMPILER_VAR_1225[0] = "\012\0\0\0""__generic_";char * ____BAH_COMPILER_VAR_1226 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1225, 4);fnt.cont = ____BAH_COMPILER_VAR_1226;
 
 #line 356 "/home/alois/Documents/bah-bah/src/values.bah"
 if ((genericFunc__isAlreadyDecl(generic,fn->name)==false)) {
@@ -21486,27 +21470,27 @@ genericFunc__declare(generic,fn,elems);
 fnt.bahRef = fn;
 
 #line 363 "/home/alois/Documents/bah-bah/src/values.bah"
-char** ____BAH_COMPILER_VAR_1232 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1232[1] = "\01\0\0\0"")";____BAH_COMPILER_VAR_1232[0] = fnt.cont;char * ____BAH_COMPILER_VAR_1233 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1232, 2);fnt.cont = ____BAH_COMPILER_VAR_1233;
+char** ____BAH_COMPILER_VAR_1227 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1227[1] = "\01\0\0\0"")";____BAH_COMPILER_VAR_1227[0] = fnt.cont;char * ____BAH_COMPILER_VAR_1228 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1227, 2);fnt.cont = ____BAH_COMPILER_VAR_1228;
 
 #line 364 "/home/alois/Documents/bah-bah/src/values.bah"
 if ((strcmp(fn->name, "\06\0\0\0""strlen") == 0)&&(strcmp(ltt, "\010\0\0\0""cpstring") != 0)) {
 
 #line 365 "/home/alois/Documents/bah-bah/src/values.bah"
-char** ____BAH_COMPILER_VAR_1234 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1234[1] = fnt.cont;____BAH_COMPILER_VAR_1234[0] = "\01\0\0\0""C";char * ____BAH_COMPILER_VAR_1235 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1234, 2);fnt.cont = ____BAH_COMPILER_VAR_1235;
+char** ____BAH_COMPILER_VAR_1229 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1229[1] = fnt.cont;____BAH_COMPILER_VAR_1229[0] = "\01\0\0\0""C";char * ____BAH_COMPILER_VAR_1230 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1229, 2);fnt.cont = ____BAH_COMPILER_VAR_1230;
 }
 
 #line 366 "/home/alois/Documents/bah-bah/src/values.bah"
 else if ((strcmp(fn->name, "\03\0\0\0""len") == 0)&&(strcmp(ltt, "\010\0\0\0""cpstring") == 0)) {
 
 #line 367 "/home/alois/Documents/bah-bah/src/values.bah"
-char** ____BAH_COMPILER_VAR_1236 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1236[1] = fnt.cont;____BAH_COMPILER_VAR_1236[0] = "\03\0\0\0""str";char * ____BAH_COMPILER_VAR_1237 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1236, 2);fnt.cont = ____BAH_COMPILER_VAR_1237;
+char** ____BAH_COMPILER_VAR_1231 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1231[1] = fnt.cont;____BAH_COMPILER_VAR_1231[0] = "\03\0\0\0""str";char * ____BAH_COMPILER_VAR_1232 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1231, 2);fnt.cont = ____BAH_COMPILER_VAR_1232;
 }
 
 #line 368 "/home/alois/Documents/bah-bah/src/values.bah"
 else if (fn->isCbinding&&(strcmp(fn->returns->type, "\010\0\0\0""cpstring") == 0)) {
 
 #line 369 "/home/alois/Documents/bah-bah/src/values.bah"
-char** ____BAH_COMPILER_VAR_1238 = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_1238[2] = "\01\0\0\0"")";____BAH_COMPILER_VAR_1238[1] = fnt.cont;____BAH_COMPILER_VAR_1238[0] = "\012\0\0\0""cStrToBah(";char * ____BAH_COMPILER_VAR_1239 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1238, 3);fnt.cont = ____BAH_COMPILER_VAR_1239;
+char** ____BAH_COMPILER_VAR_1233 = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_1233[2] = "\01\0\0\0"")";____BAH_COMPILER_VAR_1233[1] = fnt.cont;____BAH_COMPILER_VAR_1233[0] = "\012\0\0\0""cStrToBah(";char * ____BAH_COMPILER_VAR_1234 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1233, 3);fnt.cont = ____BAH_COMPILER_VAR_1234;
 }
 
 #line 372 "/home/alois/Documents/bah-bah/src/values.bah"
@@ -21518,18 +21502,18 @@ throwNoticeLine("\117\0\0\0""Function strlen() can be used for char*. Use len() 
 
 #line 375 "/home/alois/Documents/bah-bah/src/values.bah"
 
-                struct string ____BAH_COMPILER_VAR_1240 = string(ltt);
-                if (__builtin_expect((isUnsafe==false)&&(strcmp(fn->name, "\03\0\0\0""len") == 0)&&(strcmp(ltt, "\010\0\0\0""cpstring") != 0)&&(string__hasPrefix(&____BAH_COMPILER_VAR_1240,"\02\0\0\0""[]")==false), 0)) {
+                struct string ____BAH_COMPILER_VAR_1235 = string(ltt);
+                if (__builtin_expect((isUnsafe==false)&&(strcmp(fn->name, "\03\0\0\0""len") == 0)&&(strcmp(ltt, "\010\0\0\0""cpstring") != 0)&&(string__hasPrefix(&____BAH_COMPILER_VAR_1235,"\02\0\0\0""[]")==false), 0)) {
 
 #line 376 "/home/alois/Documents/bah-bah/src/values.bah"
-char** ____BAH_COMPILER_VAR_1241 = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_1241[2] = "\027\0\0\0"") as cpstring or array.";____BAH_COMPILER_VAR_1241[1] = ltt;____BAH_COMPILER_VAR_1241[0] = "\031\0\0\0""Cannot use len({TOKEN}) (";char * ____BAH_COMPILER_VAR_1242 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1241, 3);throwErr(&memory->data[0],____BAH_COMPILER_VAR_1242);
+char** ____BAH_COMPILER_VAR_1236 = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_1236[2] = "\027\0\0\0"") as cpstring or array.";____BAH_COMPILER_VAR_1236[1] = ltt;____BAH_COMPILER_VAR_1236[0] = "\031\0\0\0""Cannot use len({TOKEN}) (";char * ____BAH_COMPILER_VAR_1237 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1236, 3);throwErr(&memory->data[0],____BAH_COMPILER_VAR_1237);
 }
 
 #line 379 "/home/alois/Documents/bah-bah/src/values.bah"
 
-    unsigned int ____BAH_COMPILER_VAR_1243 = tokPos;
-    __Bah_realocate_arr(l, ____BAH_COMPILER_VAR_1243);
-    l->data[____BAH_COMPILER_VAR_1243] = fnt;
+    unsigned int ____BAH_COMPILER_VAR_1238 = tokPos;
+    __Bah_realocate_arr(l, ____BAH_COMPILER_VAR_1238);
+    l->data[____BAH_COMPILER_VAR_1238] = fnt;
 
 #line 380 "/home/alois/Documents/bah-bah/src/values.bah"
 return tokPos;
@@ -21557,14 +21541,14 @@ if ((s==null)) {
 if (__builtin_expect((tt[strlen(tt)-1+4]==33), 0)) {
 
 #line 395 "/home/alois/Documents/bah-bah/src/values.bah"
-char** ____BAH_COMPILER_VAR_1244 = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_1244[2] = "\017\0\0\0"") as structure.";____BAH_COMPILER_VAR_1244[1] = tt;____BAH_COMPILER_VAR_1244[0] = "\040\0\0\0""Cannot use maybe value {TOKEN} (";char * ____BAH_COMPILER_VAR_1245 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1244, 3);throwErr(&t,____BAH_COMPILER_VAR_1245);
+char** ____BAH_COMPILER_VAR_1239 = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_1239[2] = "\017\0\0\0"") as structure.";____BAH_COMPILER_VAR_1239[1] = tt;____BAH_COMPILER_VAR_1239[0] = "\040\0\0\0""Cannot use maybe value {TOKEN} (";char * ____BAH_COMPILER_VAR_1240 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1239, 3);throwErr(&t,____BAH_COMPILER_VAR_1240);
 }
 
 #line 396 "/home/alois/Documents/bah-bah/src/values.bah"
 else {
 
 #line 397 "/home/alois/Documents/bah-bah/src/values.bah"
-char** ____BAH_COMPILER_VAR_1246 = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_1246[2] = "\02\0\0\0"").";____BAH_COMPILER_VAR_1246[1] = tt;____BAH_COMPILER_VAR_1246[0] = "\027\0\0\0""Unkown struct {TOKEN} (";char * ____BAH_COMPILER_VAR_1247 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1246, 3);throwErr(&t,____BAH_COMPILER_VAR_1247);
+char** ____BAH_COMPILER_VAR_1241 = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_1241[2] = "\02\0\0\0"").";____BAH_COMPILER_VAR_1241[1] = tt;____BAH_COMPILER_VAR_1241[0] = "\027\0\0\0""Unkown struct {TOKEN} (";char * ____BAH_COMPILER_VAR_1242 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1241, 3);throwErr(&t,____BAH_COMPILER_VAR_1242);
 }
 }
 
@@ -21641,29 +21625,29 @@ char * tmpV = genCompilerVar();
 struct string cType = getCType(tt,elems);
 
 #line 437 "/home/alois/Documents/bah-bah/src/values.bah"
-char** ____BAH_COMPILER_VAR_1248 = alloca(7 * sizeof(char*));____BAH_COMPILER_VAR_1248[6] = "\022\0\0\0"";\n                ";____BAH_COMPILER_VAR_1248[5] = t.cont;____BAH_COMPILER_VAR_1248[4] = "\03\0\0\0"" = ";____BAH_COMPILER_VAR_1248[3] = tmpV;____BAH_COMPILER_VAR_1248[2] = "\01\0\0\0"" ";____BAH_COMPILER_VAR_1248[1] = string__str(&cType);____BAH_COMPILER_VAR_1248[0] = "\021\0\0\0""\n                ";char * ____BAH_COMPILER_VAR_1249 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1248, 7);OUTPUT = rope__add(OUTPUT, rope(____BAH_COMPILER_VAR_1249));
+char** ____BAH_COMPILER_VAR_1243 = alloca(7 * sizeof(char*));____BAH_COMPILER_VAR_1243[6] = "\022\0\0\0"";\n                ";____BAH_COMPILER_VAR_1243[5] = t.cont;____BAH_COMPILER_VAR_1243[4] = "\03\0\0\0"" = ";____BAH_COMPILER_VAR_1243[3] = tmpV;____BAH_COMPILER_VAR_1243[2] = "\01\0\0\0"" ";____BAH_COMPILER_VAR_1243[1] = string__str(&cType);____BAH_COMPILER_VAR_1243[0] = "\021\0\0\0""\n                ";char * ____BAH_COMPILER_VAR_1244 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1243, 7);OUTPUT = rope__add(OUTPUT, rope(____BAH_COMPILER_VAR_1244));
 
 #line 440 "/home/alois/Documents/bah-bah/src/values.bah"
 t.cont = tmpV;
 
 #line 441 "/home/alois/Documents/bah-bah/src/values.bah"
-struct variable* ____BAH_COMPILER_VAR_1250 = memoryAlloc(sizeof(struct variable));
-____BAH_COMPILER_VAR_1250->name = "\0\0\0\0""";
-____BAH_COMPILER_VAR_1250->type = "\0\0\0\0""";
-____BAH_COMPILER_VAR_1250->constVal = "\0\0\0\0""";
-____BAH_COMPILER_VAR_1250->from = "\0\0\0\0""";
-____BAH_COMPILER_VAR_1250->name = tmpV;
-____BAH_COMPILER_VAR_1250->type = tt;
-parent = ____BAH_COMPILER_VAR_1250;
+struct variable* ____BAH_COMPILER_VAR_1245 = memoryAlloc(sizeof(struct variable));
+____BAH_COMPILER_VAR_1245->name = "\0\0\0\0""";
+____BAH_COMPILER_VAR_1245->type = "\0\0\0\0""";
+____BAH_COMPILER_VAR_1245->constVal = "\0\0\0\0""";
+____BAH_COMPILER_VAR_1245->from = "\0\0\0\0""";
+____BAH_COMPILER_VAR_1245->name = tmpV;
+____BAH_COMPILER_VAR_1245->type = tt;
+parent = ____BAH_COMPILER_VAR_1245;
 
 #line 445 "/home/alois/Documents/bah-bah/src/values.bah"
 if (RCPavailable()) {
 
 #line 446 "/home/alois/Documents/bah-bah/src/values.bah"
 
-    unsigned int ____BAH_COMPILER_VAR_1251 = len(elems->vars);
-    __Bah_realocate_arr(elems->vars, ____BAH_COMPILER_VAR_1251);
-    elems->vars->data[____BAH_COMPILER_VAR_1251] = parent;
+    unsigned int ____BAH_COMPILER_VAR_1246 = len(elems->vars);
+    __Bah_realocate_arr(elems->vars, ____BAH_COMPILER_VAR_1246);
+    elems->vars->data[____BAH_COMPILER_VAR_1246] = parent;
 }
 }
 
@@ -21674,7 +21658,7 @@ struct func* fn = searchStructMethod(nt.cont,s,elems);
 if (__builtin_expect((fn==null), 0)) {
 
 #line 451 "/home/alois/Documents/bah-bah/src/values.bah"
-char** ____BAH_COMPILER_VAR_1252 = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_1252[2] = "\01\0\0\0"".";____BAH_COMPILER_VAR_1252[1] = s->name;____BAH_COMPILER_VAR_1252[0] = "\041\0\0\0""Unknown method {TOKEN} in struct ";char * ____BAH_COMPILER_VAR_1253 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1252, 3);throwErr(&nt,____BAH_COMPILER_VAR_1253);
+char** ____BAH_COMPILER_VAR_1247 = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_1247[2] = "\01\0\0\0"".";____BAH_COMPILER_VAR_1247[1] = s->name;____BAH_COMPILER_VAR_1247[0] = "\041\0\0\0""Unknown method {TOKEN} in struct ";char * ____BAH_COMPILER_VAR_1248 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1247, 3);throwErr(&nt,____BAH_COMPILER_VAR_1248);
 }
 
 #line 453 "/home/alois/Documents/bah-bah/src/values.bah"
@@ -21702,7 +21686,7 @@ currentFn->isMut = true;
 if ((fn->isVar==true)) {
 
 #line 463 "/home/alois/Documents/bah-bah/src/values.bah"
-char** ____BAH_COMPILER_VAR_1254 = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_1254[2] = fn->name;____BAH_COMPILER_VAR_1254[1] = sep;____BAH_COMPILER_VAR_1254[0] = t.cont;char * ____BAH_COMPILER_VAR_1255 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1254, 3);fn->name = ____BAH_COMPILER_VAR_1255;
+char** ____BAH_COMPILER_VAR_1249 = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_1249[2] = fn->name;____BAH_COMPILER_VAR_1249[1] = sep;____BAH_COMPILER_VAR_1249[0] = t.cont;char * ____BAH_COMPILER_VAR_1250 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1249, 3);fn->name = ____BAH_COMPILER_VAR_1250;
 }
 
 #line 465 "/home/alois/Documents/bah-bah/src/values.bah"
@@ -21722,16 +21706,16 @@ struct Tok fnt = l->data[i];
 delete(l,i);
 
 #line 471 "/home/alois/Documents/bah-bah/src/values.bah"
-char** ____BAH_COMPILER_VAR_1256 = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_1256[2] = nt.ogCont;____BAH_COMPILER_VAR_1256[1] = "\01\0\0\0"".";____BAH_COMPILER_VAR_1256[0] = t.ogCont;char * ____BAH_COMPILER_VAR_1257 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1256, 3);fnt.ogCont = ____BAH_COMPILER_VAR_1257;
+char** ____BAH_COMPILER_VAR_1251 = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_1251[2] = nt.ogCont;____BAH_COMPILER_VAR_1251[1] = "\01\0\0\0"".";____BAH_COMPILER_VAR_1251[0] = t.ogCont;char * ____BAH_COMPILER_VAR_1252 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1251, 3);fnt.ogCont = ____BAH_COMPILER_VAR_1252;
 
 #line 472 "/home/alois/Documents/bah-bah/src/values.bah"
 fnt.pos = t.pos;
 
 #line 475 "/home/alois/Documents/bah-bah/src/values.bah"
 
-    unsigned int ____BAH_COMPILER_VAR_1258 = tokPos;
-    __Bah_realocate_arr(l, ____BAH_COMPILER_VAR_1258);
-    l->data[____BAH_COMPILER_VAR_1258] = fnt;
+    unsigned int ____BAH_COMPILER_VAR_1253 = tokPos;
+    __Bah_realocate_arr(l, ____BAH_COMPILER_VAR_1253);
+    l->data[____BAH_COMPILER_VAR_1253] = fnt;
 
 #line 476 "/home/alois/Documents/bah-bah/src/values.bah"
 return tokPos;
@@ -21745,7 +21729,7 @@ struct structMemb* m = searchStructMemb(nt.cont,s,elems);
 if (__builtin_expect((m==null), 0)) {
 
 #line 483 "/home/alois/Documents/bah-bah/src/values.bah"
-char** ____BAH_COMPILER_VAR_1259 = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_1259[2] = "\02\0\0\0""'.";____BAH_COMPILER_VAR_1259[1] = s->name;____BAH_COMPILER_VAR_1259[0] = "\051\0\0\0""Unknown struct member {TOKEN} in struct '";char * ____BAH_COMPILER_VAR_1260 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1259, 3);throwErr(&nt,____BAH_COMPILER_VAR_1260);
+char** ____BAH_COMPILER_VAR_1254 = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_1254[2] = "\02\0\0\0""'.";____BAH_COMPILER_VAR_1254[1] = s->name;____BAH_COMPILER_VAR_1254[0] = "\051\0\0\0""Unknown struct member {TOKEN} in struct '";char * ____BAH_COMPILER_VAR_1255 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1254, 3);throwErr(&nt,____BAH_COMPILER_VAR_1255);
 }
 
 #line 485 "/home/alois/Documents/bah-bah/src/values.bah"
@@ -21762,7 +21746,7 @@ ast = "\01\0\0\0""*";
 if ((m->isFn==true)) {
 
 #line 490 "/home/alois/Documents/bah-bah/src/values.bah"
-char** ____BAH_COMPILER_VAR_1261 = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_1261[2] = m->name;____BAH_COMPILER_VAR_1261[1] = "\02\0\0\0""__";____BAH_COMPILER_VAR_1261[0] = s->name;char * ____BAH_COMPILER_VAR_1262 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1261, 3);t.cont = ____BAH_COMPILER_VAR_1262;
+char** ____BAH_COMPILER_VAR_1256 = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_1256[2] = m->name;____BAH_COMPILER_VAR_1256[1] = "\02\0\0\0""__";____BAH_COMPILER_VAR_1256[0] = s->name;char * ____BAH_COMPILER_VAR_1257 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1256, 3);t.cont = ____BAH_COMPILER_VAR_1257;
 }
 
 #line 491 "/home/alois/Documents/bah-bah/src/values.bah"
@@ -21776,30 +21760,30 @@ t.parent = searchVarByToken(&t,elems);
 }
 
 #line 495 "/home/alois/Documents/bah-bah/src/values.bah"
-char** ____BAH_COMPILER_VAR_1263 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1263[1] = nt.cont;____BAH_COMPILER_VAR_1263[0] = sep;char * ____BAH_COMPILER_VAR_1264 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1263, 2);char** ____BAH_COMPILER_VAR_1265 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1265[1] = ____BAH_COMPILER_VAR_1264;____BAH_COMPILER_VAR_1265[0] = t.cont;char * ____BAH_COMPILER_VAR_1266 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1265, 2);t.cont = ____BAH_COMPILER_VAR_1266;
+char** ____BAH_COMPILER_VAR_1258 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1258[1] = nt.cont;____BAH_COMPILER_VAR_1258[0] = sep;char * ____BAH_COMPILER_VAR_1259 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1258, 2);char** ____BAH_COMPILER_VAR_1260 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1260[1] = ____BAH_COMPILER_VAR_1259;____BAH_COMPILER_VAR_1260[0] = t.cont;char * ____BAH_COMPILER_VAR_1261 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1260, 2);t.cont = ____BAH_COMPILER_VAR_1261;
 }
 
 #line 497 "/home/alois/Documents/bah-bah/src/values.bah"
-char** ____BAH_COMPILER_VAR_1267 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1267[1] = nt.cont;____BAH_COMPILER_VAR_1267[0] = "\01\0\0\0"".";char * ____BAH_COMPILER_VAR_1268 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1267, 2);char** ____BAH_COMPILER_VAR_1269 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1269[1] = ____BAH_COMPILER_VAR_1268;____BAH_COMPILER_VAR_1269[0] = t.ogCont;char * ____BAH_COMPILER_VAR_1270 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1269, 2);t.ogCont = ____BAH_COMPILER_VAR_1270;
+char** ____BAH_COMPILER_VAR_1262 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1262[1] = nt.cont;____BAH_COMPILER_VAR_1262[0] = "\01\0\0\0"".";char * ____BAH_COMPILER_VAR_1263 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1262, 2);char** ____BAH_COMPILER_VAR_1264 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1264[1] = ____BAH_COMPILER_VAR_1263;____BAH_COMPILER_VAR_1264[0] = t.ogCont;char * ____BAH_COMPILER_VAR_1265 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1264, 2);t.ogCont = ____BAH_COMPILER_VAR_1265;
 
 #line 498 "/home/alois/Documents/bah-bah/src/values.bah"
-char** ____BAH_COMPILER_VAR_1271 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1271[1] = ast;____BAH_COMPILER_VAR_1271[0] = m->type;char * ____BAH_COMPILER_VAR_1272 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1271, 2);t.bahType = ____BAH_COMPILER_VAR_1272;
+char** ____BAH_COMPILER_VAR_1266 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1266[1] = ast;____BAH_COMPILER_VAR_1266[0] = m->type;char * ____BAH_COMPILER_VAR_1267 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1266, 2);t.bahType = ____BAH_COMPILER_VAR_1267;
 
 #line 499 "/home/alois/Documents/bah-bah/src/values.bah"
-struct variable* ____BAH_COMPILER_VAR_1273 = memoryAlloc(sizeof(struct variable));
-____BAH_COMPILER_VAR_1273->name = "\0\0\0\0""";
-____BAH_COMPILER_VAR_1273->type = "\0\0\0\0""";
-____BAH_COMPILER_VAR_1273->constVal = "\0\0\0\0""";
-____BAH_COMPILER_VAR_1273->from = "\0\0\0\0""";
-____BAH_COMPILER_VAR_1273->name = t.cont;
-____BAH_COMPILER_VAR_1273->type = t.bahType;
-t.bahRef = ____BAH_COMPILER_VAR_1273;
+struct variable* ____BAH_COMPILER_VAR_1268 = memoryAlloc(sizeof(struct variable));
+____BAH_COMPILER_VAR_1268->name = "\0\0\0\0""";
+____BAH_COMPILER_VAR_1268->type = "\0\0\0\0""";
+____BAH_COMPILER_VAR_1268->constVal = "\0\0\0\0""";
+____BAH_COMPILER_VAR_1268->from = "\0\0\0\0""";
+____BAH_COMPILER_VAR_1268->name = t.cont;
+____BAH_COMPILER_VAR_1268->type = t.bahType;
+t.bahRef = ____BAH_COMPILER_VAR_1268;
 
 #line 504 "/home/alois/Documents/bah-bah/src/values.bah"
 
-    unsigned int ____BAH_COMPILER_VAR_1274 = tokPos;
-    __Bah_realocate_arr(l, ____BAH_COMPILER_VAR_1274);
-    l->data[____BAH_COMPILER_VAR_1274] = t;
+    unsigned int ____BAH_COMPILER_VAR_1269 = tokPos;
+    __Bah_realocate_arr(l, ____BAH_COMPILER_VAR_1269);
+    l->data[____BAH_COMPILER_VAR_1269] = t;
 
 #line 505 "/home/alois/Documents/bah-bah/src/values.bah"
 return tokPos;
@@ -21834,7 +21818,7 @@ struct Tok t = pt;
 t.isValue = true;
 
 #line 521 "/home/alois/Documents/bah-bah/src/values.bah"
-char** ____BAH_COMPILER_VAR_1275 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1275[1] = "\01\0\0\0""[";____BAH_COMPILER_VAR_1275[0] = t.ogCont;char * ____BAH_COMPILER_VAR_1276 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1275, 2);t.ogCont = ____BAH_COMPILER_VAR_1276;
+char** ____BAH_COMPILER_VAR_1270 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1270[1] = "\01\0\0\0""[";____BAH_COMPILER_VAR_1270[0] = t.ogCont;char * ____BAH_COMPILER_VAR_1271 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1270, 2);t.ogCont = ____BAH_COMPILER_VAR_1271;
 
 #line 524 "/home/alois/Documents/bah-bah/src/values.bah"
 long int nbEncls = 1;
@@ -21870,7 +21854,7 @@ else if ((strcmp(tmpT.cont, "\01\0\0\0"")") == 0)||(strcmp(tmpT.cont, "\01\0\0\0
 --nbEncls;
 
 #line 533 "/home/alois/Documents/bah-bah/src/values.bah"
-char** ____BAH_COMPILER_VAR_1277 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1277[1] = "\01\0\0\0""]";____BAH_COMPILER_VAR_1277[0] = t.ogCont;char * ____BAH_COMPILER_VAR_1278 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1277, 2);t.ogCont = ____BAH_COMPILER_VAR_1278;
+char** ____BAH_COMPILER_VAR_1272 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1272[1] = "\01\0\0\0""]";____BAH_COMPILER_VAR_1272[0] = t.ogCont;char * ____BAH_COMPILER_VAR_1273 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1272, 2);t.ogCont = ____BAH_COMPILER_VAR_1273;
 
 #line 534 "/home/alois/Documents/bah-bah/src/values.bah"
 if ((nbEncls==0)) {
@@ -21881,13 +21865,13 @@ break;
 }
 
 #line 538 "/home/alois/Documents/bah-bah/src/values.bah"
-char** ____BAH_COMPILER_VAR_1279 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1279[1] = tmpT.ogCont;____BAH_COMPILER_VAR_1279[0] = t.ogCont;char * ____BAH_COMPILER_VAR_1280 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1279, 2);t.ogCont = ____BAH_COMPILER_VAR_1280;
+char** ____BAH_COMPILER_VAR_1274 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1274[1] = tmpT.ogCont;____BAH_COMPILER_VAR_1274[0] = t.ogCont;char * ____BAH_COMPILER_VAR_1275 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1274, 2);t.ogCont = ____BAH_COMPILER_VAR_1275;
 
 #line 539 "/home/alois/Documents/bah-bah/src/values.bah"
 
-    unsigned int ____BAH_COMPILER_VAR_1281 = len(memory);
-    __Bah_realocate_arr(memory, ____BAH_COMPILER_VAR_1281);
-    memory->data[____BAH_COMPILER_VAR_1281] = tmpT;
+    unsigned int ____BAH_COMPILER_VAR_1276 = len(memory);
+    __Bah_realocate_arr(memory, ____BAH_COMPILER_VAR_1276);
+    memory->data[____BAH_COMPILER_VAR_1276] = tmpT;
 };
 
 #line 541 "/home/alois/Documents/bah-bah/src/values.bah"
@@ -22052,20 +22036,20 @@ string__trimLeft(&ptt,2);
 t.bahType = string__str(&ptt);
 
 #line 607 "/home/alois/Documents/bah-bah/src/values.bah"
-char** ____BAH_COMPILER_VAR_1282 = alloca(4 * sizeof(char*));____BAH_COMPILER_VAR_1282[3] = "\01\0\0\0""]";____BAH_COMPILER_VAR_1282[2] = index.cont;____BAH_COMPILER_VAR_1282[1] = "\07\0\0\0""->data[";____BAH_COMPILER_VAR_1282[0] = pt.cont;char * ____BAH_COMPILER_VAR_1283 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1282, 4);t.cont = ____BAH_COMPILER_VAR_1283;
+char** ____BAH_COMPILER_VAR_1277 = alloca(4 * sizeof(char*));____BAH_COMPILER_VAR_1277[3] = "\01\0\0\0""]";____BAH_COMPILER_VAR_1277[2] = index.cont;____BAH_COMPILER_VAR_1277[1] = "\07\0\0\0""->data[";____BAH_COMPILER_VAR_1277[0] = pt.cont;char * ____BAH_COMPILER_VAR_1278 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1277, 4);t.cont = ____BAH_COMPILER_VAR_1278;
 
 #line 609 "/home/alois/Documents/bah-bah/src/values.bah"
 if ((tokPos+1<len(l))&&(strcmp(l->data[tokPos+1].cont, "\01\0\0\0"".") == 0)) {
 
 #line 610 "/home/alois/Documents/bah-bah/src/values.bah"
-struct variable* ____BAH_COMPILER_VAR_1284 = memoryAlloc(sizeof(struct variable));
-____BAH_COMPILER_VAR_1284->name = "\0\0\0\0""";
-____BAH_COMPILER_VAR_1284->type = "\0\0\0\0""";
-____BAH_COMPILER_VAR_1284->constVal = "\0\0\0\0""";
-____BAH_COMPILER_VAR_1284->from = "\0\0\0\0""";
-____BAH_COMPILER_VAR_1284->name = t.cont;
-____BAH_COMPILER_VAR_1284->type = t.bahType;
-struct variable* tmpV = ____BAH_COMPILER_VAR_1284;
+struct variable* ____BAH_COMPILER_VAR_1279 = memoryAlloc(sizeof(struct variable));
+____BAH_COMPILER_VAR_1279->name = "\0\0\0\0""";
+____BAH_COMPILER_VAR_1279->type = "\0\0\0\0""";
+____BAH_COMPILER_VAR_1279->constVal = "\0\0\0\0""";
+____BAH_COMPILER_VAR_1279->from = "\0\0\0\0""";
+____BAH_COMPILER_VAR_1279->name = t.cont;
+____BAH_COMPILER_VAR_1279->type = t.bahType;
+struct variable* tmpV = ____BAH_COMPILER_VAR_1279;
 
 #line 614 "/home/alois/Documents/bah-bah/src/values.bah"
 t.bahRef = tmpV;
@@ -22082,14 +22066,14 @@ t.bahType = string__str(&ptt);
 if ((strcmp(to, "\0\0\0\0""") == 0)) {
 
 #line 620 "/home/alois/Documents/bah-bah/src/values.bah"
-char** ____BAH_COMPILER_VAR_1285 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1285[1] = "\010\0\0\0""->length";____BAH_COMPILER_VAR_1285[0] = pt.cont;char * ____BAH_COMPILER_VAR_1286 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1285, 2);to = ____BAH_COMPILER_VAR_1286;
+char** ____BAH_COMPILER_VAR_1280 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1280[1] = "\010\0\0\0""->length";____BAH_COMPILER_VAR_1280[0] = pt.cont;char * ____BAH_COMPILER_VAR_1281 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1280, 2);to = ____BAH_COMPILER_VAR_1281;
 }
 
 #line 622 "/home/alois/Documents/bah-bah/src/values.bah"
 t.isFunc = true;
 
 #line 623 "/home/alois/Documents/bah-bah/src/values.bah"
-char** ____BAH_COMPILER_VAR_1287 = alloca(7 * sizeof(char*));____BAH_COMPILER_VAR_1287[6] = "\01\0\0\0"")";____BAH_COMPILER_VAR_1287[5] = to;____BAH_COMPILER_VAR_1287[4] = "\02\0\0\0"", ";____BAH_COMPILER_VAR_1287[3] = from;____BAH_COMPILER_VAR_1287[2] = "\02\0\0\0"", ";____BAH_COMPILER_VAR_1287[1] = pt.cont;____BAH_COMPILER_VAR_1287[0] = "\020\0\0\0""arraySubstitute(";char * ____BAH_COMPILER_VAR_1288 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1287, 7);t.cont = ____BAH_COMPILER_VAR_1288;
+char** ____BAH_COMPILER_VAR_1282 = alloca(7 * sizeof(char*));____BAH_COMPILER_VAR_1282[6] = "\01\0\0\0"")";____BAH_COMPILER_VAR_1282[5] = to;____BAH_COMPILER_VAR_1282[4] = "\02\0\0\0"", ";____BAH_COMPILER_VAR_1282[3] = from;____BAH_COMPILER_VAR_1282[2] = "\02\0\0\0"", ";____BAH_COMPILER_VAR_1282[1] = pt.cont;____BAH_COMPILER_VAR_1282[0] = "\020\0\0\0""arraySubstitute(";char * ____BAH_COMPILER_VAR_1283 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1282, 7);t.cont = ____BAH_COMPILER_VAR_1283;
 }
 }
 
@@ -22113,7 +22097,7 @@ throwErr(&index,"\051\0\0\0""Cannot use {TOKEN} as buffer index (int).");
 }
 
 #line 633 "/home/alois/Documents/bah-bah/src/values.bah"
-char** ____BAH_COMPILER_VAR_1289 = alloca(4 * sizeof(char*));____BAH_COMPILER_VAR_1289[3] = "\01\0\0\0""]";____BAH_COMPILER_VAR_1289[2] = index.cont;____BAH_COMPILER_VAR_1289[1] = "\01\0\0\0""[";____BAH_COMPILER_VAR_1289[0] = pt.cont;char * ____BAH_COMPILER_VAR_1290 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1289, 4);t.cont = ____BAH_COMPILER_VAR_1290;
+char** ____BAH_COMPILER_VAR_1284 = alloca(4 * sizeof(char*));____BAH_COMPILER_VAR_1284[3] = "\01\0\0\0""]";____BAH_COMPILER_VAR_1284[2] = index.cont;____BAH_COMPILER_VAR_1284[1] = "\01\0\0\0""[";____BAH_COMPILER_VAR_1284[0] = pt.cont;char * ____BAH_COMPILER_VAR_1285 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1284, 4);t.cont = ____BAH_COMPILER_VAR_1285;
 }
 
 #line 634 "/home/alois/Documents/bah-bah/src/values.bah"
@@ -22126,14 +22110,14 @@ t.bahType = "\010\0\0\0""cpstring";
 if ((strcmp(to, "\0\0\0\0""") == 0)) {
 
 #line 637 "/home/alois/Documents/bah-bah/src/values.bah"
-char** ____BAH_COMPILER_VAR_1291 = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_1291[2] = "\01\0\0\0"")";____BAH_COMPILER_VAR_1291[1] = pt.cont;____BAH_COMPILER_VAR_1291[0] = "\07\0\0\0""strlen(";char * ____BAH_COMPILER_VAR_1292 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1291, 3);to = ____BAH_COMPILER_VAR_1292;
+char** ____BAH_COMPILER_VAR_1286 = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_1286[2] = "\01\0\0\0"")";____BAH_COMPILER_VAR_1286[1] = pt.cont;____BAH_COMPILER_VAR_1286[0] = "\07\0\0\0""strlen(";char * ____BAH_COMPILER_VAR_1287 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1286, 3);to = ____BAH_COMPILER_VAR_1287;
 }
 
 #line 639 "/home/alois/Documents/bah-bah/src/values.bah"
 t.isFunc = true;
 
 #line 640 "/home/alois/Documents/bah-bah/src/values.bah"
-char** ____BAH_COMPILER_VAR_1293 = alloca(7 * sizeof(char*));____BAH_COMPILER_VAR_1293[6] = "\01\0\0\0"")";____BAH_COMPILER_VAR_1293[5] = to;____BAH_COMPILER_VAR_1293[4] = "\02\0\0\0"", ";____BAH_COMPILER_VAR_1293[3] = from;____BAH_COMPILER_VAR_1293[2] = "\02\0\0\0"", ";____BAH_COMPILER_VAR_1293[1] = pt.cont;____BAH_COMPILER_VAR_1293[0] = "\022\0\0\0""cpstringSubsitute(";char * ____BAH_COMPILER_VAR_1294 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1293, 7);t.cont = ____BAH_COMPILER_VAR_1294;
+char** ____BAH_COMPILER_VAR_1288 = alloca(7 * sizeof(char*));____BAH_COMPILER_VAR_1288[6] = "\01\0\0\0"")";____BAH_COMPILER_VAR_1288[5] = to;____BAH_COMPILER_VAR_1288[4] = "\02\0\0\0"", ";____BAH_COMPILER_VAR_1288[3] = from;____BAH_COMPILER_VAR_1288[2] = "\02\0\0\0"", ";____BAH_COMPILER_VAR_1288[1] = pt.cont;____BAH_COMPILER_VAR_1288[0] = "\022\0\0\0""cpstringSubsitute(";char * ____BAH_COMPILER_VAR_1289 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1288, 7);t.cont = ____BAH_COMPILER_VAR_1289;
 }
 }
 
@@ -22167,47 +22151,47 @@ throwErr(&index,"\053\0\0\0""Cannot use {TOKEN} as map index (cpstring).");
 if ((tokPos==0)&&(ltp==LINE_TYPE_VAR)) {
 
 #line 653 "/home/alois/Documents/bah-bah/src/values.bah"
-struct variable* ____BAH_COMPILER_VAR_1295 = memoryAlloc(sizeof(struct variable));
-____BAH_COMPILER_VAR_1295->name = "\0\0\0\0""";
-____BAH_COMPILER_VAR_1295->type = "\0\0\0\0""";
-____BAH_COMPILER_VAR_1295->constVal = "\0\0\0\0""";
-____BAH_COMPILER_VAR_1295->from = "\0\0\0\0""";
-____BAH_COMPILER_VAR_1295->name = genCompilerVar();
-____BAH_COMPILER_VAR_1295->type = string__str(&ptt);
-struct variable* tmpV = ____BAH_COMPILER_VAR_1295;
+struct variable* ____BAH_COMPILER_VAR_1290 = memoryAlloc(sizeof(struct variable));
+____BAH_COMPILER_VAR_1290->name = "\0\0\0\0""";
+____BAH_COMPILER_VAR_1290->type = "\0\0\0\0""";
+____BAH_COMPILER_VAR_1290->constVal = "\0\0\0\0""";
+____BAH_COMPILER_VAR_1290->from = "\0\0\0\0""";
+____BAH_COMPILER_VAR_1290->name = genCompilerVar();
+____BAH_COMPILER_VAR_1290->type = string__str(&ptt);
+struct variable* tmpV = ____BAH_COMPILER_VAR_1290;
 
 #line 657 "/home/alois/Documents/bah-bah/src/values.bah"
 
-    unsigned int ____BAH_COMPILER_VAR_1296 = len(elems->vars);
-    __Bah_realocate_arr(elems->vars, ____BAH_COMPILER_VAR_1296);
-    elems->vars->data[____BAH_COMPILER_VAR_1296] = tmpV;
+    unsigned int ____BAH_COMPILER_VAR_1291 = len(elems->vars);
+    __Bah_realocate_arr(elems->vars, ____BAH_COMPILER_VAR_1291);
+    elems->vars->data[____BAH_COMPILER_VAR_1291] = tmpV;
 
 #line 658 "/home/alois/Documents/bah-bah/src/values.bah"
 if (isGlobal()) {
 
 #line 659 "/home/alois/Documents/bah-bah/src/values.bah"
-char** ____BAH_COMPILER_VAR_1297 = alloca(4 * sizeof(char*));____BAH_COMPILER_VAR_1297[3] = "\02\0\0\0"";\n";____BAH_COMPILER_VAR_1297[2] = tmpV->name;____BAH_COMPILER_VAR_1297[1] = "\01\0\0\0"" ";____BAH_COMPILER_VAR_1297[0] = string__str(&elemType);char * ____BAH_COMPILER_VAR_1298 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1297, 4);INIT = rope__add(INIT, rope(____BAH_COMPILER_VAR_1298));
+char** ____BAH_COMPILER_VAR_1292 = alloca(4 * sizeof(char*));____BAH_COMPILER_VAR_1292[3] = "\02\0\0\0"";\n";____BAH_COMPILER_VAR_1292[2] = tmpV->name;____BAH_COMPILER_VAR_1292[1] = "\01\0\0\0"" ";____BAH_COMPILER_VAR_1292[0] = string__str(&elemType);char * ____BAH_COMPILER_VAR_1293 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1292, 4);INIT = rope__add(INIT, rope(____BAH_COMPILER_VAR_1293));
 }
 
 #line 660 "/home/alois/Documents/bah-bah/src/values.bah"
 else {
 
 #line 661 "/home/alois/Documents/bah-bah/src/values.bah"
-char** ____BAH_COMPILER_VAR_1299 = alloca(4 * sizeof(char*));____BAH_COMPILER_VAR_1299[3] = "\02\0\0\0"";\n";____BAH_COMPILER_VAR_1299[2] = tmpV->name;____BAH_COMPILER_VAR_1299[1] = "\01\0\0\0"" ";____BAH_COMPILER_VAR_1299[0] = string__str(&elemType);char * ____BAH_COMPILER_VAR_1300 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1299, 4);OUTPUT = rope__add(OUTPUT, rope(____BAH_COMPILER_VAR_1300));
+char** ____BAH_COMPILER_VAR_1294 = alloca(4 * sizeof(char*));____BAH_COMPILER_VAR_1294[3] = "\02\0\0\0"";\n";____BAH_COMPILER_VAR_1294[2] = tmpV->name;____BAH_COMPILER_VAR_1294[1] = "\01\0\0\0"" ";____BAH_COMPILER_VAR_1294[0] = string__str(&elemType);char * ____BAH_COMPILER_VAR_1295 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1294, 4);OUTPUT = rope__add(OUTPUT, rope(____BAH_COMPILER_VAR_1295));
 }
 
 #line 663 "/home/alois/Documents/bah-bah/src/values.bah"
 if (isRCPpointerType(string__str(&ptt))) {
 
 #line 664 "/home/alois/Documents/bah-bah/src/values.bah"
-char** ____BAH_COMPILER_VAR_1301 = alloca(8 * sizeof(char*));____BAH_COMPILER_VAR_1301[7] = "\03\0\0\0"");\n";____BAH_COMPILER_VAR_1301[6] = tmpV->name;____BAH_COMPILER_VAR_1301[5] = "\02\0\0\0"", ";____BAH_COMPILER_VAR_1301[4] = index.cont;____BAH_COMPILER_VAR_1301[3] = "\02\0\0\0"", ";____BAH_COMPILER_VAR_1301[2] = pt.cont;____BAH_COMPILER_VAR_1301[1] = "\06\0\0\0""->set(";____BAH_COMPILER_VAR_1301[0] = pt.cont;char * ____BAH_COMPILER_VAR_1302 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1301, 8);NEXT_LINE = ____BAH_COMPILER_VAR_1302;
+char** ____BAH_COMPILER_VAR_1296 = alloca(8 * sizeof(char*));____BAH_COMPILER_VAR_1296[7] = "\03\0\0\0"");\n";____BAH_COMPILER_VAR_1296[6] = tmpV->name;____BAH_COMPILER_VAR_1296[5] = "\02\0\0\0"", ";____BAH_COMPILER_VAR_1296[4] = index.cont;____BAH_COMPILER_VAR_1296[3] = "\02\0\0\0"", ";____BAH_COMPILER_VAR_1296[2] = pt.cont;____BAH_COMPILER_VAR_1296[1] = "\06\0\0\0""->set(";____BAH_COMPILER_VAR_1296[0] = pt.cont;char * ____BAH_COMPILER_VAR_1297 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1296, 8);NEXT_LINE = ____BAH_COMPILER_VAR_1297;
 }
 
 #line 665 "/home/alois/Documents/bah-bah/src/values.bah"
 else {
 
 #line 666 "/home/alois/Documents/bah-bah/src/values.bah"
-char** ____BAH_COMPILER_VAR_1303 = alloca(9 * sizeof(char*));____BAH_COMPILER_VAR_1303[8] = "\04\0\0\0""));\n";____BAH_COMPILER_VAR_1303[7] = string__str(&elemType);____BAH_COMPILER_VAR_1303[6] = "\011\0\0\0"", sizeof(";____BAH_COMPILER_VAR_1303[5] = tmpV->name;____BAH_COMPILER_VAR_1303[4] = "\03\0\0\0"", &";____BAH_COMPILER_VAR_1303[3] = index.cont;____BAH_COMPILER_VAR_1303[2] = "\02\0\0\0"", ";____BAH_COMPILER_VAR_1303[1] = pt.cont;____BAH_COMPILER_VAR_1303[0] = "\023\0\0\0""mapWrapper__setAny(";char * ____BAH_COMPILER_VAR_1304 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1303, 9);NEXT_LINE = ____BAH_COMPILER_VAR_1304;
+char** ____BAH_COMPILER_VAR_1298 = alloca(9 * sizeof(char*));____BAH_COMPILER_VAR_1298[8] = "\04\0\0\0""));\n";____BAH_COMPILER_VAR_1298[7] = string__str(&elemType);____BAH_COMPILER_VAR_1298[6] = "\011\0\0\0"", sizeof(";____BAH_COMPILER_VAR_1298[5] = tmpV->name;____BAH_COMPILER_VAR_1298[4] = "\03\0\0\0"", &";____BAH_COMPILER_VAR_1298[3] = index.cont;____BAH_COMPILER_VAR_1298[2] = "\02\0\0\0"", ";____BAH_COMPILER_VAR_1298[1] = pt.cont;____BAH_COMPILER_VAR_1298[0] = "\023\0\0\0""mapWrapper__setAny(";char * ____BAH_COMPILER_VAR_1299 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1298, 9);NEXT_LINE = ____BAH_COMPILER_VAR_1299;
 }
 
 #line 668 "/home/alois/Documents/bah-bah/src/values.bah"
@@ -22233,7 +22217,7 @@ char * tmpV = genCompilerVar();
 if (isRCPpointerType(string__str(&ptt))) {
 
 #line 675 "/home/alois/Documents/bah-bah/src/values.bah"
-char** ____BAH_COMPILER_VAR_1305 = alloca(10 * sizeof(char*));____BAH_COMPILER_VAR_1305[9] = "\03\0\0\0"");\n";____BAH_COMPILER_VAR_1305[8] = index.cont;____BAH_COMPILER_VAR_1305[7] = "\02\0\0\0"", ";____BAH_COMPILER_VAR_1305[6] = t.cont;____BAH_COMPILER_VAR_1305[5] = "\06\0\0\0""->get(";____BAH_COMPILER_VAR_1305[4] = t.cont;____BAH_COMPILER_VAR_1305[3] = "\01\0\0\0""=";____BAH_COMPILER_VAR_1305[2] = tmpV;____BAH_COMPILER_VAR_1305[1] = "\01\0\0\0"" ";____BAH_COMPILER_VAR_1305[0] = string__str(&elemType);char * ____BAH_COMPILER_VAR_1306 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1305, 10);res = rope(____BAH_COMPILER_VAR_1306);
+char** ____BAH_COMPILER_VAR_1300 = alloca(10 * sizeof(char*));____BAH_COMPILER_VAR_1300[9] = "\03\0\0\0"");\n";____BAH_COMPILER_VAR_1300[8] = index.cont;____BAH_COMPILER_VAR_1300[7] = "\02\0\0\0"", ";____BAH_COMPILER_VAR_1300[6] = t.cont;____BAH_COMPILER_VAR_1300[5] = "\06\0\0\0""->get(";____BAH_COMPILER_VAR_1300[4] = t.cont;____BAH_COMPILER_VAR_1300[3] = "\01\0\0\0""=";____BAH_COMPILER_VAR_1300[2] = tmpV;____BAH_COMPILER_VAR_1300[1] = "\01\0\0\0"" ";____BAH_COMPILER_VAR_1300[0] = string__str(&elemType);char * ____BAH_COMPILER_VAR_1301 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1300, 10);res = rope(____BAH_COMPILER_VAR_1301);
 
 #line 676 "/home/alois/Documents/bah-bah/src/values.bah"
 t.cont = tmpV;
@@ -22243,27 +22227,27 @@ t.cont = tmpV;
 else {
 
 #line 678 "/home/alois/Documents/bah-bah/src/values.bah"
-char** ____BAH_COMPILER_VAR_1307 = alloca(10 * sizeof(char*));____BAH_COMPILER_VAR_1307[9] = "\03\0\0\0"");\n";____BAH_COMPILER_VAR_1307[8] = index.cont;____BAH_COMPILER_VAR_1307[7] = "\02\0\0\0"", ";____BAH_COMPILER_VAR_1307[6] = pt.cont;____BAH_COMPILER_VAR_1307[5] = "\06\0\0\0""->get(";____BAH_COMPILER_VAR_1307[4] = pt.cont;____BAH_COMPILER_VAR_1307[3] = "\01\0\0\0""=";____BAH_COMPILER_VAR_1307[2] = tmpV;____BAH_COMPILER_VAR_1307[1] = "\02\0\0\0""* ";____BAH_COMPILER_VAR_1307[0] = string__str(&elemType);char * ____BAH_COMPILER_VAR_1308 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1307, 10);res = rope(____BAH_COMPILER_VAR_1308);
+char** ____BAH_COMPILER_VAR_1302 = alloca(10 * sizeof(char*));____BAH_COMPILER_VAR_1302[9] = "\03\0\0\0"");\n";____BAH_COMPILER_VAR_1302[8] = index.cont;____BAH_COMPILER_VAR_1302[7] = "\02\0\0\0"", ";____BAH_COMPILER_VAR_1302[6] = pt.cont;____BAH_COMPILER_VAR_1302[5] = "\06\0\0\0""->get(";____BAH_COMPILER_VAR_1302[4] = pt.cont;____BAH_COMPILER_VAR_1302[3] = "\01\0\0\0""=";____BAH_COMPILER_VAR_1302[2] = tmpV;____BAH_COMPILER_VAR_1302[1] = "\02\0\0\0""* ";____BAH_COMPILER_VAR_1302[0] = string__str(&elemType);char * ____BAH_COMPILER_VAR_1303 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1302, 10);res = rope(____BAH_COMPILER_VAR_1303);
 
 #line 679 "/home/alois/Documents/bah-bah/src/values.bah"
-char** ____BAH_COMPILER_VAR_1309 = alloca(5 * sizeof(char*));____BAH_COMPILER_VAR_1309[4] = "\01\0\0\0"")";____BAH_COMPILER_VAR_1309[3] = tmpV;____BAH_COMPILER_VAR_1309[2] = "\03\0\0\0"")(*";____BAH_COMPILER_VAR_1309[1] = string__str(&elemType);____BAH_COMPILER_VAR_1309[0] = "\01\0\0\0""(";char * ____BAH_COMPILER_VAR_1310 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1309, 5);t.cont = ____BAH_COMPILER_VAR_1310;
+char** ____BAH_COMPILER_VAR_1304 = alloca(5 * sizeof(char*));____BAH_COMPILER_VAR_1304[4] = "\01\0\0\0"")";____BAH_COMPILER_VAR_1304[3] = tmpV;____BAH_COMPILER_VAR_1304[2] = "\03\0\0\0"")(*";____BAH_COMPILER_VAR_1304[1] = string__str(&elemType);____BAH_COMPILER_VAR_1304[0] = "\01\0\0\0""(";char * ____BAH_COMPILER_VAR_1305 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1304, 5);t.cont = ____BAH_COMPILER_VAR_1305;
 }
 
 #line 681 "/home/alois/Documents/bah-bah/src/values.bah"
 if (RCPavailable()) {
 
 #line 682 "/home/alois/Documents/bah-bah/src/values.bah"
-struct variable* ____BAH_COMPILER_VAR_1311 = memoryAlloc(sizeof(struct variable));
-____BAH_COMPILER_VAR_1311->name = "\0\0\0\0""";
-____BAH_COMPILER_VAR_1311->type = "\0\0\0\0""";
-____BAH_COMPILER_VAR_1311->constVal = "\0\0\0\0""";
-____BAH_COMPILER_VAR_1311->from = "\0\0\0\0""";
-____BAH_COMPILER_VAR_1311->name = tmpV;
-____BAH_COMPILER_VAR_1311->type = string__str(&ptt);
+struct variable* ____BAH_COMPILER_VAR_1306 = memoryAlloc(sizeof(struct variable));
+____BAH_COMPILER_VAR_1306->name = "\0\0\0\0""";
+____BAH_COMPILER_VAR_1306->type = "\0\0\0\0""";
+____BAH_COMPILER_VAR_1306->constVal = "\0\0\0\0""";
+____BAH_COMPILER_VAR_1306->from = "\0\0\0\0""";
+____BAH_COMPILER_VAR_1306->name = tmpV;
+____BAH_COMPILER_VAR_1306->type = string__str(&ptt);
 
-    unsigned int ____BAH_COMPILER_VAR_1312 = len(elems->vars);
-    __Bah_realocate_arr(elems->vars, ____BAH_COMPILER_VAR_1312);
-    elems->vars->data[____BAH_COMPILER_VAR_1312] = ____BAH_COMPILER_VAR_1311;
+    unsigned int ____BAH_COMPILER_VAR_1307 = len(elems->vars);
+    __Bah_realocate_arr(elems->vars, ____BAH_COMPILER_VAR_1307);
+    elems->vars->data[____BAH_COMPILER_VAR_1307] = ____BAH_COMPILER_VAR_1306;
 }
 
 #line 687 "/home/alois/Documents/bah-bah/src/values.bah"
@@ -22308,7 +22292,7 @@ throwErr(&index,"\053\0\0\0""Cannot use {TOKEN} as cpstring index (int).");
 }
 
 #line 703 "/home/alois/Documents/bah-bah/src/values.bah"
-char** ____BAH_COMPILER_VAR_1313 = alloca(4 * sizeof(char*));____BAH_COMPILER_VAR_1313[3] = "\03\0\0\0""+4]";____BAH_COMPILER_VAR_1313[2] = index.cont;____BAH_COMPILER_VAR_1313[1] = "\01\0\0\0""[";____BAH_COMPILER_VAR_1313[0] = pt.cont;char * ____BAH_COMPILER_VAR_1314 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1313, 4);t.cont = ____BAH_COMPILER_VAR_1314;
+char** ____BAH_COMPILER_VAR_1308 = alloca(4 * sizeof(char*));____BAH_COMPILER_VAR_1308[3] = "\03\0\0\0""+4]";____BAH_COMPILER_VAR_1308[2] = index.cont;____BAH_COMPILER_VAR_1308[1] = "\01\0\0\0""[";____BAH_COMPILER_VAR_1308[0] = pt.cont;char * ____BAH_COMPILER_VAR_1309 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1308, 4);t.cont = ____BAH_COMPILER_VAR_1309;
 }
 
 #line 704 "/home/alois/Documents/bah-bah/src/values.bah"
@@ -22318,11 +22302,11 @@ else {
 if ((strcmp(to, "\0\0\0\0""") == 0)) {
 
 #line 706 "/home/alois/Documents/bah-bah/src/values.bah"
-char** ____BAH_COMPILER_VAR_1315 = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_1315[2] = "\01\0\0\0"")";____BAH_COMPILER_VAR_1315[1] = pt.cont;____BAH_COMPILER_VAR_1315[0] = "\07\0\0\0""strlen(";char * ____BAH_COMPILER_VAR_1316 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1315, 3);to = ____BAH_COMPILER_VAR_1316;
+char** ____BAH_COMPILER_VAR_1310 = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_1310[2] = "\01\0\0\0"")";____BAH_COMPILER_VAR_1310[1] = pt.cont;____BAH_COMPILER_VAR_1310[0] = "\07\0\0\0""strlen(";char * ____BAH_COMPILER_VAR_1311 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1310, 3);to = ____BAH_COMPILER_VAR_1311;
 }
 
 #line 708 "/home/alois/Documents/bah-bah/src/values.bah"
-char** ____BAH_COMPILER_VAR_1317 = alloca(7 * sizeof(char*));____BAH_COMPILER_VAR_1317[6] = "\01\0\0\0"")";____BAH_COMPILER_VAR_1317[5] = to;____BAH_COMPILER_VAR_1317[4] = "\02\0\0\0"", ";____BAH_COMPILER_VAR_1317[3] = from;____BAH_COMPILER_VAR_1317[2] = "\02\0\0\0"", ";____BAH_COMPILER_VAR_1317[1] = pt.cont;____BAH_COMPILER_VAR_1317[0] = "\022\0\0\0""cpstringSubsitute(";char * ____BAH_COMPILER_VAR_1318 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1317, 7);t.cont = ____BAH_COMPILER_VAR_1318;
+char** ____BAH_COMPILER_VAR_1312 = alloca(7 * sizeof(char*));____BAH_COMPILER_VAR_1312[6] = "\01\0\0\0"")";____BAH_COMPILER_VAR_1312[5] = to;____BAH_COMPILER_VAR_1312[4] = "\02\0\0\0"", ";____BAH_COMPILER_VAR_1312[3] = from;____BAH_COMPILER_VAR_1312[2] = "\02\0\0\0"", ";____BAH_COMPILER_VAR_1312[1] = pt.cont;____BAH_COMPILER_VAR_1312[0] = "\022\0\0\0""cpstringSubsitute(";char * ____BAH_COMPILER_VAR_1313 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1312, 7);t.cont = ____BAH_COMPILER_VAR_1313;
 }
 }
 
@@ -22358,7 +22342,7 @@ long int ind = strToInt(index.cont);
 if (__builtin_expect((ind>=strToInt(string__str(&parts->data[1]))), 0)) {
 
 #line 722 "/home/alois/Documents/bah-bah/src/values.bah"
-char** ____BAH_COMPILER_VAR_1319 = alloca(5 * sizeof(char*));____BAH_COMPILER_VAR_1319[4] = "\01\0\0\0"".";____BAH_COMPILER_VAR_1319[3] = string__str(&parts->data[1]);____BAH_COMPILER_VAR_1319[2] = "\013\0\0\0"" of length ";____BAH_COMPILER_VAR_1319[1] = pt.cont;____BAH_COMPILER_VAR_1319[0] = "\046\0\0\0""Cannot access index {TOKEN} of tupple ";char * ____BAH_COMPILER_VAR_1320 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1319, 5);throwErr(&index,____BAH_COMPILER_VAR_1320);
+char** ____BAH_COMPILER_VAR_1314 = alloca(5 * sizeof(char*));____BAH_COMPILER_VAR_1314[4] = "\01\0\0\0"".";____BAH_COMPILER_VAR_1314[3] = string__str(&parts->data[1]);____BAH_COMPILER_VAR_1314[2] = "\013\0\0\0"" of length ";____BAH_COMPILER_VAR_1314[1] = pt.cont;____BAH_COMPILER_VAR_1314[0] = "\046\0\0\0""Cannot access index {TOKEN} of tupple ";char * ____BAH_COMPILER_VAR_1315 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1314, 5);throwErr(&index,____BAH_COMPILER_VAR_1315);
 }
 }
 
@@ -22374,7 +22358,7 @@ throwErr(&index,"\050\0\0\0""Cannot use {TOKEN} as tuple index (int).");
 }
 
 #line 729 "/home/alois/Documents/bah-bah/src/values.bah"
-char** ____BAH_COMPILER_VAR_1321 = alloca(4 * sizeof(char*));____BAH_COMPILER_VAR_1321[3] = "\01\0\0\0""]";____BAH_COMPILER_VAR_1321[2] = index.cont;____BAH_COMPILER_VAR_1321[1] = "\01\0\0\0""[";____BAH_COMPILER_VAR_1321[0] = pt.cont;char * ____BAH_COMPILER_VAR_1322 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1321, 4);t.cont = ____BAH_COMPILER_VAR_1322;
+char** ____BAH_COMPILER_VAR_1316 = alloca(4 * sizeof(char*));____BAH_COMPILER_VAR_1316[3] = "\01\0\0\0""]";____BAH_COMPILER_VAR_1316[2] = index.cont;____BAH_COMPILER_VAR_1316[1] = "\01\0\0\0""[";____BAH_COMPILER_VAR_1316[0] = pt.cont;char * ____BAH_COMPILER_VAR_1317 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1316, 4);t.cont = ____BAH_COMPILER_VAR_1317;
 
 #line 730 "/home/alois/Documents/bah-bah/src/values.bah"
 t.bahType = string__str(&parts->data[2]);
@@ -22384,7 +22368,7 @@ t.bahType = string__str(&parts->data[2]);
 else {
 
 #line 732 "/home/alois/Documents/bah-bah/src/values.bah"
-char** ____BAH_COMPILER_VAR_1323 = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_1323[2] = "\013\0\0\0"") as array.";____BAH_COMPILER_VAR_1323[1] = string__str(&ptt);____BAH_COMPILER_VAR_1323[0] = "\024\0\0\0""Cannot use {TOKEN} (";char * ____BAH_COMPILER_VAR_1324 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1323, 3);throwErr(&pt,____BAH_COMPILER_VAR_1324);
+char** ____BAH_COMPILER_VAR_1318 = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_1318[2] = "\013\0\0\0"") as array.";____BAH_COMPILER_VAR_1318[1] = string__str(&ptt);____BAH_COMPILER_VAR_1318[0] = "\024\0\0\0""Cannot use {TOKEN} (";char * ____BAH_COMPILER_VAR_1319 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1318, 3);throwErr(&pt,____BAH_COMPILER_VAR_1319);
 }
 
 #line 735 "/home/alois/Documents/bah-bah/src/values.bah"
@@ -22392,16 +22376,16 @@ t.isValue = true;
 
 #line 736 "/home/alois/Documents/bah-bah/src/values.bah"
 
-    unsigned int ____BAH_COMPILER_VAR_1325 = tokPos;
-    __Bah_realocate_arr(l, ____BAH_COMPILER_VAR_1325);
-    l->data[____BAH_COMPILER_VAR_1325] = t;
+    unsigned int ____BAH_COMPILER_VAR_1320 = tokPos;
+    __Bah_realocate_arr(l, ____BAH_COMPILER_VAR_1320);
+    l->data[____BAH_COMPILER_VAR_1320] = t;
 
 #line 738 "/home/alois/Documents/bah-bah/src/values.bah"
 return tokPos;
 };
 
 #line 741 "/home/alois/Documents/bah-bah/src/values.bah"
-char ____BAH_COMPILER_VAR_1337(array(char *)* arr, char * el) {
+char ____BAH_COMPILER_VAR_1332(array(char *)* arr, char * el) {
         if (arr == 0) {
             return 0;
         };
@@ -22451,7 +22435,7 @@ char * odecl = rope__toStr(v->declRope);
 if ((strHasPrefix(odecl,"\011\0\0\0""register ")==false)) {
 
 #line 761 "/home/alois/Documents/bah-bah/src/values.bah"
-char** ____BAH_COMPILER_VAR_1326 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1326[1] = odecl;____BAH_COMPILER_VAR_1326[0] = "\011\0\0\0""register ";char * ____BAH_COMPILER_VAR_1327 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1326, 2);OUTPUT->totalLen = OUTPUT->totalLen+ropeSet(v->declRope,____BAH_COMPILER_VAR_1327);
+char** ____BAH_COMPILER_VAR_1321 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1321[1] = odecl;____BAH_COMPILER_VAR_1321[0] = "\011\0\0\0""register ";char * ____BAH_COMPILER_VAR_1322 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1321, 2);OUTPUT->totalLen = OUTPUT->totalLen+ropeSet(v->declRope,____BAH_COMPILER_VAR_1322);
 }
 
 #line 763 "/home/alois/Documents/bah-bah/src/values.bah"
@@ -22498,7 +22482,7 @@ struct string arrT = string(ntt);
 if (__builtin_expect((string__hasPrefix(&arrT,"\02\0\0\0""[]")==0), 0)) {
 
 #line 785 "/home/alois/Documents/bah-bah/src/values.bah"
-char** ____BAH_COMPILER_VAR_1328 = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_1328[2] = "\013\0\0\0"") as array.";____BAH_COMPILER_VAR_1328[1] = ntt;____BAH_COMPILER_VAR_1328[0] = "\024\0\0\0""Cannot use {TOKEN} (";char * ____BAH_COMPILER_VAR_1329 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1328, 3);throwErr(&nt,____BAH_COMPILER_VAR_1329);
+char** ____BAH_COMPILER_VAR_1323 = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_1323[2] = "\013\0\0\0"") as array.";____BAH_COMPILER_VAR_1323[1] = ntt;____BAH_COMPILER_VAR_1323[0] = "\024\0\0\0""Cannot use {TOKEN} (";char * ____BAH_COMPILER_VAR_1324 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1323, 3);throwErr(&nt,____BAH_COMPILER_VAR_1324);
 }
 
 #line 787 "/home/alois/Documents/bah-bah/src/values.bah"
@@ -22508,7 +22492,7 @@ string__trimLeft(&arrT,2);
 if (__builtin_expect((compTypes(ptt,string__str(&arrT))==false), 0)) {
 
 #line 789 "/home/alois/Documents/bah-bah/src/values.bah"
-char** ____BAH_COMPILER_VAR_1330 = alloca(5 * sizeof(char*));____BAH_COMPILER_VAR_1330[4] = "\01\0\0\0"".";____BAH_COMPILER_VAR_1330[3] = ntt;____BAH_COMPILER_VAR_1330[2] = "\05\0\0\0"") in ";____BAH_COMPILER_VAR_1330[1] = ptt;____BAH_COMPILER_VAR_1330[0] = "\033\0\0\0""Cannot search for {TOKEN} (";char * ____BAH_COMPILER_VAR_1331 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1330, 5);throwErr(&pt,____BAH_COMPILER_VAR_1331);
+char** ____BAH_COMPILER_VAR_1325 = alloca(5 * sizeof(char*));____BAH_COMPILER_VAR_1325[4] = "\01\0\0\0"".";____BAH_COMPILER_VAR_1325[3] = ntt;____BAH_COMPILER_VAR_1325[2] = "\05\0\0\0"") in ";____BAH_COMPILER_VAR_1325[1] = ptt;____BAH_COMPILER_VAR_1325[0] = "\033\0\0\0""Cannot search for {TOKEN} (";char * ____BAH_COMPILER_VAR_1326 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1325, 5);throwErr(&pt,____BAH_COMPILER_VAR_1326);
 }
 
 #line 791 "/home/alois/Documents/bah-bah/src/values.bah"
@@ -22545,36 +22529,36 @@ string__trimRight(&arrT,nbast);
 string__replace(&arrT,"\02\0\0\0""[]","\05\0\0\0""_ARR_");
 
 #line 803 "/home/alois/Documents/bah-bah/src/values.bah"
-char** ____BAH_COMPILER_VAR_1332 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1332[1] = string__str(&arrT);____BAH_COMPILER_VAR_1332[0] = "\017\0\0\0""__BAH_ARR_TYPE_";char * ____BAH_COMPILER_VAR_1333 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1332, 2);char * newArgType = ____BAH_COMPILER_VAR_1333;
+char** ____BAH_COMPILER_VAR_1327 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1327[1] = string__str(&arrT);____BAH_COMPILER_VAR_1327[0] = "\017\0\0\0""__BAH_ARR_TYPE_";char * ____BAH_COMPILER_VAR_1328 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1327, 2);char * newArgType = ____BAH_COMPILER_VAR_1328;
 
 #line 804 "/home/alois/Documents/bah-bah/src/values.bah"
 array(char *)* csatd = compilerState.arrTypesDecl;
 
 #line 805 "/home/alois/Documents/bah-bah/src/values.bah"
 
-                struct string ____BAH_COMPILER_VAR_1334 = getCType(ptt,elems);
-                char** ____BAH_COMPILER_VAR_1335 = alloca(9 * sizeof(char*));____BAH_COMPILER_VAR_1335[8] = "\123\0\0\0"") {\n                return 1;\n            };\n        }\n        return 0;\n        }\n";____BAH_COMPILER_VAR_1335[7] = comp;____BAH_COMPILER_VAR_1335[6] = "\176\0\0\0"" el) {\n        if (arr == 0) {\n            return 0;\n        };\n        for(int i=arr->length-1; i!=-1;i--) {\n            if (";____BAH_COMPILER_VAR_1335[5] = string__str(&____BAH_COMPILER_VAR_1334);____BAH_COMPILER_VAR_1335[4] = "\06\0\0\0"" arr, ";____BAH_COMPILER_VAR_1335[3] = newArgType;____BAH_COMPILER_VAR_1335[2] = "\01\0\0\0""(";____BAH_COMPILER_VAR_1335[1] = name;____BAH_COMPILER_VAR_1335[0] = "\05\0\0\0""char ";char * ____BAH_COMPILER_VAR_1336 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1335, 9);char * fnTest = ____BAH_COMPILER_VAR_1336;
+                struct string ____BAH_COMPILER_VAR_1329 = getCType(ptt,elems);
+                char** ____BAH_COMPILER_VAR_1330 = alloca(9 * sizeof(char*));____BAH_COMPILER_VAR_1330[8] = "\123\0\0\0"") {\n                return 1;\n            };\n        }\n        return 0;\n        }\n";____BAH_COMPILER_VAR_1330[7] = comp;____BAH_COMPILER_VAR_1330[6] = "\176\0\0\0"" el) {\n        if (arr == 0) {\n            return 0;\n        };\n        for(int i=arr->length-1; i!=-1;i--) {\n            if (";____BAH_COMPILER_VAR_1330[5] = string__str(&____BAH_COMPILER_VAR_1329);____BAH_COMPILER_VAR_1330[4] = "\06\0\0\0"" arr, ";____BAH_COMPILER_VAR_1330[3] = newArgType;____BAH_COMPILER_VAR_1330[2] = "\01\0\0\0""(";____BAH_COMPILER_VAR_1330[1] = name;____BAH_COMPILER_VAR_1330[0] = "\05\0\0\0""char ";char * ____BAH_COMPILER_VAR_1331 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1330, 9);char * fnTest = ____BAH_COMPILER_VAR_1331;
 
 #line 816 "/home/alois/Documents/bah-bah/src/values.bah"
-if ((____BAH_COMPILER_VAR_1337(csatd, newArgType)==false)) {
+if ((____BAH_COMPILER_VAR_1332(csatd, newArgType)==false)) {
 
 #line 817 "/home/alois/Documents/bah-bah/src/values.bah"
 
-    unsigned int ____BAH_COMPILER_VAR_1338 = len(csatd);
-    __Bah_realocate_arr(csatd, ____BAH_COMPILER_VAR_1338);
-    csatd->data[____BAH_COMPILER_VAR_1338] = newArgType;
+    unsigned int ____BAH_COMPILER_VAR_1333 = len(csatd);
+    __Bah_realocate_arr(csatd, ____BAH_COMPILER_VAR_1333);
+    csatd->data[____BAH_COMPILER_VAR_1333] = newArgType;
 
 #line 818 "/home/alois/Documents/bah-bah/src/values.bah"
 
-                struct string ____BAH_COMPILER_VAR_1339 = getCType(ntt,elems);
-                char** ____BAH_COMPILER_VAR_1340 = alloca(6 * sizeof(char*));____BAH_COMPILER_VAR_1340[5] = fnTest;____BAH_COMPILER_VAR_1340[4] = "\02\0\0\0"";\n";____BAH_COMPILER_VAR_1340[3] = newArgType;____BAH_COMPILER_VAR_1340[2] = "\01\0\0\0"" ";____BAH_COMPILER_VAR_1340[1] = string__str(&____BAH_COMPILER_VAR_1339);____BAH_COMPILER_VAR_1340[0] = "\010\0\0\0""typedef ";char * ____BAH_COMPILER_VAR_1341 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1340, 6);fnTest = ____BAH_COMPILER_VAR_1341;
+                struct string ____BAH_COMPILER_VAR_1334 = getCType(ntt,elems);
+                char** ____BAH_COMPILER_VAR_1335 = alloca(6 * sizeof(char*));____BAH_COMPILER_VAR_1335[5] = fnTest;____BAH_COMPILER_VAR_1335[4] = "\02\0\0\0"";\n";____BAH_COMPILER_VAR_1335[3] = newArgType;____BAH_COMPILER_VAR_1335[2] = "\01\0\0\0"" ";____BAH_COMPILER_VAR_1335[1] = string__str(&____BAH_COMPILER_VAR_1334);____BAH_COMPILER_VAR_1335[0] = "\010\0\0\0""typedef ";char * ____BAH_COMPILER_VAR_1336 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1335, 6);fnTest = ____BAH_COMPILER_VAR_1336;
 }
 
 #line 820 "/home/alois/Documents/bah-bah/src/values.bah"
 rope__append(postDeclHandle,rope(fnTest));
 
 #line 822 "/home/alois/Documents/bah-bah/src/values.bah"
-char** ____BAH_COMPILER_VAR_1342 = alloca(6 * sizeof(char*));____BAH_COMPILER_VAR_1342[5] = "\01\0\0\0"")";____BAH_COMPILER_VAR_1342[4] = pt.cont;____BAH_COMPILER_VAR_1342[3] = "\02\0\0\0"", ";____BAH_COMPILER_VAR_1342[2] = nt.cont;____BAH_COMPILER_VAR_1342[1] = "\01\0\0\0""(";____BAH_COMPILER_VAR_1342[0] = name;char * ____BAH_COMPILER_VAR_1343 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1342, 6);char * fnCall = ____BAH_COMPILER_VAR_1343;
+char** ____BAH_COMPILER_VAR_1337 = alloca(6 * sizeof(char*));____BAH_COMPILER_VAR_1337[5] = "\01\0\0\0"")";____BAH_COMPILER_VAR_1337[4] = pt.cont;____BAH_COMPILER_VAR_1337[3] = "\02\0\0\0"", ";____BAH_COMPILER_VAR_1337[2] = nt.cont;____BAH_COMPILER_VAR_1337[1] = "\01\0\0\0""(";____BAH_COMPILER_VAR_1337[0] = name;char * ____BAH_COMPILER_VAR_1338 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1337, 6);char * fnCall = ____BAH_COMPILER_VAR_1338;
 
 #line 824 "/home/alois/Documents/bah-bah/src/values.bah"
 pt.isExpensive = true;
@@ -22590,7 +22574,7 @@ else {
 if (__builtin_expect((compTypes(ptt,ntt)==false), 0)) {
 
 #line 828 "/home/alois/Documents/bah-bah/src/values.bah"
-char** ____BAH_COMPILER_VAR_1344 = alloca(5 * sizeof(char*));____BAH_COMPILER_VAR_1344[4] = "\01\0\0\0"".";____BAH_COMPILER_VAR_1344[3] = ptt;____BAH_COMPILER_VAR_1344[2] = "\014\0\0\0"") with type ";____BAH_COMPILER_VAR_1344[1] = ntt;____BAH_COMPILER_VAR_1344[0] = "\030\0\0\0""Cannot compare {TOKEN} (";char * ____BAH_COMPILER_VAR_1345 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1344, 5);throwErr(&nt,____BAH_COMPILER_VAR_1345);
+char** ____BAH_COMPILER_VAR_1339 = alloca(5 * sizeof(char*));____BAH_COMPILER_VAR_1339[4] = "\01\0\0\0"".";____BAH_COMPILER_VAR_1339[3] = ptt;____BAH_COMPILER_VAR_1339[2] = "\014\0\0\0"") with type ";____BAH_COMPILER_VAR_1339[1] = ntt;____BAH_COMPILER_VAR_1339[0] = "\030\0\0\0""Cannot compare {TOKEN} (";char * ____BAH_COMPILER_VAR_1340 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1339, 5);throwErr(&nt,____BAH_COMPILER_VAR_1340);
 }
 
 #line 830 "/home/alois/Documents/bah-bah/src/values.bah"
@@ -22600,42 +22584,42 @@ if ((strcmp(ptt, "\010\0\0\0""cpstring") == 0)) {
 if ((strcmp(t.cont, "\02\0\0\0""==") == 0)) {
 
 #line 832 "/home/alois/Documents/bah-bah/src/values.bah"
-char** ____BAH_COMPILER_VAR_1346 = alloca(5 * sizeof(char*));____BAH_COMPILER_VAR_1346[4] = "\07\0\0\0"") == 0)";____BAH_COMPILER_VAR_1346[3] = nt.cont;____BAH_COMPILER_VAR_1346[2] = "\02\0\0\0"", ";____BAH_COMPILER_VAR_1346[1] = pt.cont;____BAH_COMPILER_VAR_1346[0] = "\010\0\0\0""(strcmp(";char * ____BAH_COMPILER_VAR_1347 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1346, 5);pt.cont = ____BAH_COMPILER_VAR_1347;
+char** ____BAH_COMPILER_VAR_1341 = alloca(5 * sizeof(char*));____BAH_COMPILER_VAR_1341[4] = "\07\0\0\0"") == 0)";____BAH_COMPILER_VAR_1341[3] = nt.cont;____BAH_COMPILER_VAR_1341[2] = "\02\0\0\0"", ";____BAH_COMPILER_VAR_1341[1] = pt.cont;____BAH_COMPILER_VAR_1341[0] = "\010\0\0\0""(strcmp(";char * ____BAH_COMPILER_VAR_1342 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1341, 5);pt.cont = ____BAH_COMPILER_VAR_1342;
 }
 
 #line 834 "/home/alois/Documents/bah-bah/src/values.bah"
 else if ((strcmp(t.cont, "\02\0\0\0""!=") == 0)) {
 
 #line 835 "/home/alois/Documents/bah-bah/src/values.bah"
-char** ____BAH_COMPILER_VAR_1348 = alloca(5 * sizeof(char*));____BAH_COMPILER_VAR_1348[4] = "\07\0\0\0"") != 0)";____BAH_COMPILER_VAR_1348[3] = nt.cont;____BAH_COMPILER_VAR_1348[2] = "\02\0\0\0"", ";____BAH_COMPILER_VAR_1348[1] = pt.cont;____BAH_COMPILER_VAR_1348[0] = "\010\0\0\0""(strcmp(";char * ____BAH_COMPILER_VAR_1349 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1348, 5);pt.cont = ____BAH_COMPILER_VAR_1349;
+char** ____BAH_COMPILER_VAR_1343 = alloca(5 * sizeof(char*));____BAH_COMPILER_VAR_1343[4] = "\07\0\0\0"") != 0)";____BAH_COMPILER_VAR_1343[3] = nt.cont;____BAH_COMPILER_VAR_1343[2] = "\02\0\0\0"", ";____BAH_COMPILER_VAR_1343[1] = pt.cont;____BAH_COMPILER_VAR_1343[0] = "\010\0\0\0""(strcmp(";char * ____BAH_COMPILER_VAR_1344 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1343, 5);pt.cont = ____BAH_COMPILER_VAR_1344;
 }
 
 #line 836 "/home/alois/Documents/bah-bah/src/values.bah"
 else if ((strcmp(t.cont, "\01\0\0\0"">") == 0)) {
 
 #line 837 "/home/alois/Documents/bah-bah/src/values.bah"
-char** ____BAH_COMPILER_VAR_1350 = alloca(5 * sizeof(char*));____BAH_COMPILER_VAR_1350[4] = "\02\0\0\0""))";____BAH_COMPILER_VAR_1350[3] = nt.cont;____BAH_COMPILER_VAR_1350[2] = "\013\0\0\0"") > srtlen(";____BAH_COMPILER_VAR_1350[1] = pt.cont;____BAH_COMPILER_VAR_1350[0] = "\010\0\0\0""(strlen(";char * ____BAH_COMPILER_VAR_1351 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1350, 5);pt.cont = ____BAH_COMPILER_VAR_1351;
+char** ____BAH_COMPILER_VAR_1345 = alloca(5 * sizeof(char*));____BAH_COMPILER_VAR_1345[4] = "\02\0\0\0""))";____BAH_COMPILER_VAR_1345[3] = nt.cont;____BAH_COMPILER_VAR_1345[2] = "\013\0\0\0"") > srtlen(";____BAH_COMPILER_VAR_1345[1] = pt.cont;____BAH_COMPILER_VAR_1345[0] = "\010\0\0\0""(strlen(";char * ____BAH_COMPILER_VAR_1346 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1345, 5);pt.cont = ____BAH_COMPILER_VAR_1346;
 }
 
 #line 838 "/home/alois/Documents/bah-bah/src/values.bah"
 else if ((strcmp(t.cont, "\01\0\0\0""<") == 0)) {
 
 #line 839 "/home/alois/Documents/bah-bah/src/values.bah"
-char** ____BAH_COMPILER_VAR_1352 = alloca(5 * sizeof(char*));____BAH_COMPILER_VAR_1352[4] = "\02\0\0\0""))";____BAH_COMPILER_VAR_1352[3] = nt.cont;____BAH_COMPILER_VAR_1352[2] = "\013\0\0\0"") < srtlen(";____BAH_COMPILER_VAR_1352[1] = pt.cont;____BAH_COMPILER_VAR_1352[0] = "\010\0\0\0""(strlen(";char * ____BAH_COMPILER_VAR_1353 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1352, 5);pt.cont = ____BAH_COMPILER_VAR_1353;
+char** ____BAH_COMPILER_VAR_1347 = alloca(5 * sizeof(char*));____BAH_COMPILER_VAR_1347[4] = "\02\0\0\0""))";____BAH_COMPILER_VAR_1347[3] = nt.cont;____BAH_COMPILER_VAR_1347[2] = "\013\0\0\0"") < srtlen(";____BAH_COMPILER_VAR_1347[1] = pt.cont;____BAH_COMPILER_VAR_1347[0] = "\010\0\0\0""(strlen(";char * ____BAH_COMPILER_VAR_1348 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1347, 5);pt.cont = ____BAH_COMPILER_VAR_1348;
 }
 
 #line 840 "/home/alois/Documents/bah-bah/src/values.bah"
 else if ((strcmp(t.cont, "\02\0\0\0"">=") == 0)) {
 
 #line 841 "/home/alois/Documents/bah-bah/src/values.bah"
-char** ____BAH_COMPILER_VAR_1354 = alloca(5 * sizeof(char*));____BAH_COMPILER_VAR_1354[4] = "\02\0\0\0""))";____BAH_COMPILER_VAR_1354[3] = nt.cont;____BAH_COMPILER_VAR_1354[2] = "\014\0\0\0"") >= srtlen(";____BAH_COMPILER_VAR_1354[1] = pt.cont;____BAH_COMPILER_VAR_1354[0] = "\010\0\0\0""(strlen(";char * ____BAH_COMPILER_VAR_1355 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1354, 5);pt.cont = ____BAH_COMPILER_VAR_1355;
+char** ____BAH_COMPILER_VAR_1349 = alloca(5 * sizeof(char*));____BAH_COMPILER_VAR_1349[4] = "\02\0\0\0""))";____BAH_COMPILER_VAR_1349[3] = nt.cont;____BAH_COMPILER_VAR_1349[2] = "\014\0\0\0"") >= srtlen(";____BAH_COMPILER_VAR_1349[1] = pt.cont;____BAH_COMPILER_VAR_1349[0] = "\010\0\0\0""(strlen(";char * ____BAH_COMPILER_VAR_1350 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1349, 5);pt.cont = ____BAH_COMPILER_VAR_1350;
 }
 
 #line 842 "/home/alois/Documents/bah-bah/src/values.bah"
 else if ((strcmp(t.cont, "\02\0\0\0""<=") == 0)) {
 
 #line 843 "/home/alois/Documents/bah-bah/src/values.bah"
-char** ____BAH_COMPILER_VAR_1356 = alloca(5 * sizeof(char*));____BAH_COMPILER_VAR_1356[4] = "\02\0\0\0""))";____BAH_COMPILER_VAR_1356[3] = nt.cont;____BAH_COMPILER_VAR_1356[2] = "\014\0\0\0"") <= srtlen(";____BAH_COMPILER_VAR_1356[1] = pt.cont;____BAH_COMPILER_VAR_1356[0] = "\010\0\0\0""(strlen(";char * ____BAH_COMPILER_VAR_1357 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1356, 5);pt.cont = ____BAH_COMPILER_VAR_1357;
+char** ____BAH_COMPILER_VAR_1351 = alloca(5 * sizeof(char*));____BAH_COMPILER_VAR_1351[4] = "\02\0\0\0""))";____BAH_COMPILER_VAR_1351[3] = nt.cont;____BAH_COMPILER_VAR_1351[2] = "\014\0\0\0"") <= srtlen(";____BAH_COMPILER_VAR_1351[1] = pt.cont;____BAH_COMPILER_VAR_1351[0] = "\010\0\0\0""(strlen(";char * ____BAH_COMPILER_VAR_1352 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1351, 5);pt.cont = ____BAH_COMPILER_VAR_1352;
 }
 
 #line 845 "/home/alois/Documents/bah-bah/src/values.bah"
@@ -22696,26 +22680,26 @@ ntIsNull = (fn->returns->type[strlen(fn->returns->type)-1+4]==33);
 if ((strcmp(t.cont, "\02\0\0\0""==") == 0)) {
 
 #line 865 "/home/alois/Documents/bah-bah/src/values.bah"
-struct varCheck ____BAH_COMPILER_VAR_1358 = {};
-____BAH_COMPILER_VAR_1358.v = ptV;
-____BAH_COMPILER_VAR_1358.checkNull = ntIsNull;
+struct varCheck ____BAH_COMPILER_VAR_1353 = {};
+____BAH_COMPILER_VAR_1353.v = ptV;
+____BAH_COMPILER_VAR_1353.checkNull = ntIsNull;
 
-    unsigned int ____BAH_COMPILER_VAR_1359 = len(currChecks);
-    __Bah_realocate_arr(currChecks, ____BAH_COMPILER_VAR_1359);
-    currChecks->data[____BAH_COMPILER_VAR_1359] = ____BAH_COMPILER_VAR_1358;
+    unsigned int ____BAH_COMPILER_VAR_1354 = len(currChecks);
+    __Bah_realocate_arr(currChecks, ____BAH_COMPILER_VAR_1354);
+    currChecks->data[____BAH_COMPILER_VAR_1354] = ____BAH_COMPILER_VAR_1353;
 }
 
 #line 869 "/home/alois/Documents/bah-bah/src/values.bah"
 else if ((strcmp(t.cont, "\02\0\0\0""!=") == 0)) {
 
 #line 870 "/home/alois/Documents/bah-bah/src/values.bah"
-struct varCheck ____BAH_COMPILER_VAR_1360 = {};
-____BAH_COMPILER_VAR_1360.v = ptV;
-____BAH_COMPILER_VAR_1360.checkNull = (ntIsNull==false);
+struct varCheck ____BAH_COMPILER_VAR_1355 = {};
+____BAH_COMPILER_VAR_1355.v = ptV;
+____BAH_COMPILER_VAR_1355.checkNull = (ntIsNull==false);
 
-    unsigned int ____BAH_COMPILER_VAR_1361 = len(currChecks);
-    __Bah_realocate_arr(currChecks, ____BAH_COMPILER_VAR_1361);
-    currChecks->data[____BAH_COMPILER_VAR_1361] = ____BAH_COMPILER_VAR_1360;
+    unsigned int ____BAH_COMPILER_VAR_1356 = len(currChecks);
+    __Bah_realocate_arr(currChecks, ____BAH_COMPILER_VAR_1356);
+    currChecks->data[____BAH_COMPILER_VAR_1356] = ____BAH_COMPILER_VAR_1355;
 }
 }
 }
@@ -22735,7 +22719,7 @@ pt.isExpensive = false;
 }
 
 #line 882 "/home/alois/Documents/bah-bah/src/values.bah"
-char** ____BAH_COMPILER_VAR_1362 = alloca(5 * sizeof(char*));____BAH_COMPILER_VAR_1362[4] = "\01\0\0\0"")";____BAH_COMPILER_VAR_1362[3] = nt.cont;____BAH_COMPILER_VAR_1362[2] = t.cont;____BAH_COMPILER_VAR_1362[1] = pt.cont;____BAH_COMPILER_VAR_1362[0] = "\01\0\0\0""(";char * ____BAH_COMPILER_VAR_1363 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1362, 5);pt.cont = ____BAH_COMPILER_VAR_1363;
+char** ____BAH_COMPILER_VAR_1357 = alloca(5 * sizeof(char*));____BAH_COMPILER_VAR_1357[4] = "\01\0\0\0"")";____BAH_COMPILER_VAR_1357[3] = nt.cont;____BAH_COMPILER_VAR_1357[2] = t.cont;____BAH_COMPILER_VAR_1357[1] = pt.cont;____BAH_COMPILER_VAR_1357[0] = "\01\0\0\0""(";char * ____BAH_COMPILER_VAR_1358 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1357, 5);pt.cont = ____BAH_COMPILER_VAR_1358;
 }
 }
 
@@ -22750,16 +22734,16 @@ pt.isValue = true;
 
 #line 890 "/home/alois/Documents/bah-bah/src/values.bah"
 
-    unsigned int ____BAH_COMPILER_VAR_1364 = tokPos;
-    __Bah_realocate_arr(l, ____BAH_COMPILER_VAR_1364);
-    l->data[____BAH_COMPILER_VAR_1364] = pt;
+    unsigned int ____BAH_COMPILER_VAR_1359 = tokPos;
+    __Bah_realocate_arr(l, ____BAH_COMPILER_VAR_1359);
+    l->data[____BAH_COMPILER_VAR_1359] = pt;
 
 #line 891 "/home/alois/Documents/bah-bah/src/values.bah"
 return tokPos;
 };
 
 #line 895 "/home/alois/Documents/bah-bah/src/values.bah"
-char ____BAH_COMPILER_VAR_1373(array(char *)* arr, char * el) {
+char ____BAH_COMPILER_VAR_1368(array(char *)* arr, char * el) {
         if (arr == 0) {
             return 0;
         };
@@ -22770,7 +22754,7 @@ char ____BAH_COMPILER_VAR_1373(array(char *)* arr, char * el) {
         }
         return 0;
         }
-char ____BAH_COMPILER_VAR_1374(array(char *)* arr, char * el) {
+char ____BAH_COMPILER_VAR_1369(array(char *)* arr, char * el) {
         if (arr == 0) {
             return 0;
         };
@@ -22808,13 +22792,13 @@ if ((strcmp(nt.cont, t.cont) == 0)) {
 pt.isOper = true;
 
 #line 911 "/home/alois/Documents/bah-bah/src/values.bah"
-char** ____BAH_COMPILER_VAR_1365 = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_1365[2] = pt.cont;____BAH_COMPILER_VAR_1365[1] = t.cont;____BAH_COMPILER_VAR_1365[0] = t.cont;char * ____BAH_COMPILER_VAR_1366 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1365, 3);pt.cont = ____BAH_COMPILER_VAR_1366;
+char** ____BAH_COMPILER_VAR_1360 = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_1360[2] = pt.cont;____BAH_COMPILER_VAR_1360[1] = t.cont;____BAH_COMPILER_VAR_1360[0] = t.cont;char * ____BAH_COMPILER_VAR_1361 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1360, 3);pt.cont = ____BAH_COMPILER_VAR_1361;
 
 #line 912 "/home/alois/Documents/bah-bah/src/values.bah"
 
-    unsigned int ____BAH_COMPILER_VAR_1367 = tokPos;
-    __Bah_realocate_arr(l, ____BAH_COMPILER_VAR_1367);
-    l->data[____BAH_COMPILER_VAR_1367] = pt;
+    unsigned int ____BAH_COMPILER_VAR_1362 = tokPos;
+    __Bah_realocate_arr(l, ____BAH_COMPILER_VAR_1362);
+    l->data[____BAH_COMPILER_VAR_1362] = pt;
 
 #line 913 "/home/alois/Documents/bah-bah/src/values.bah"
 return tokPos;
@@ -22827,7 +22811,7 @@ char * ntt = getTypeFromToken(&nt,true,elems);
 if (__builtin_expect((compTypes(ptt,ntt)==false), 0)) {
 
 #line 919 "/home/alois/Documents/bah-bah/src/values.bah"
-char** ____BAH_COMPILER_VAR_1368 = alloca(5 * sizeof(char*));____BAH_COMPILER_VAR_1368[4] = "\01\0\0\0"".";____BAH_COMPILER_VAR_1368[3] = ptt;____BAH_COMPILER_VAR_1368[2] = "\05\0\0\0"") as ";____BAH_COMPILER_VAR_1368[1] = ntt;____BAH_COMPILER_VAR_1368[0] = "\030\0\0\0""Cannot operate {TOKEN} (";char * ____BAH_COMPILER_VAR_1369 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1368, 5);throwErr(&nt,____BAH_COMPILER_VAR_1369);
+char** ____BAH_COMPILER_VAR_1363 = alloca(5 * sizeof(char*));____BAH_COMPILER_VAR_1363[4] = "\01\0\0\0"".";____BAH_COMPILER_VAR_1363[3] = ptt;____BAH_COMPILER_VAR_1363[2] = "\05\0\0\0"") as ";____BAH_COMPILER_VAR_1363[1] = ntt;____BAH_COMPILER_VAR_1363[0] = "\030\0\0\0""Cannot operate {TOKEN} (";char * ____BAH_COMPILER_VAR_1364 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1363, 5);throwErr(&nt,____BAH_COMPILER_VAR_1364);
 }
 
 #line 922 "/home/alois/Documents/bah-bah/src/values.bah"
@@ -22900,14 +22884,14 @@ char * tt = getTypeFromToken(&currStrTk,true,elems);
 if (__builtin_expect((compTypes(tt,"\010\0\0\0""cpstring")==false), 0)) {
 
 #line 953 "/home/alois/Documents/bah-bah/src/values.bah"
-char** ____BAH_COMPILER_VAR_1370 = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_1370[2] = "\02\0\0\0"").";____BAH_COMPILER_VAR_1370[1] = tt;____BAH_COMPILER_VAR_1370[0] = "\052\0\0\0""Cannot concatenate cpstring with {TOKEN} (";char * ____BAH_COMPILER_VAR_1371 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1370, 3);throwErr(&currStrTk,____BAH_COMPILER_VAR_1371);
+char** ____BAH_COMPILER_VAR_1365 = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_1365[2] = "\02\0\0\0"").";____BAH_COMPILER_VAR_1365[1] = tt;____BAH_COMPILER_VAR_1365[0] = "\052\0\0\0""Cannot concatenate cpstring with {TOKEN} (";char * ____BAH_COMPILER_VAR_1366 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1365, 3);throwErr(&currStrTk,____BAH_COMPILER_VAR_1366);
 }
 
 #line 956 "/home/alois/Documents/bah-bah/src/values.bah"
 
-    unsigned int ____BAH_COMPILER_VAR_1372 = len(strs);
-    __Bah_realocate_arr(strs, ____BAH_COMPILER_VAR_1372);
-    strs->data[____BAH_COMPILER_VAR_1372] = currStrTk.cont;
+    unsigned int ____BAH_COMPILER_VAR_1367 = len(strs);
+    __Bah_realocate_arr(strs, ____BAH_COMPILER_VAR_1367);
+    strs->data[____BAH_COMPILER_VAR_1367] = currStrTk.cont;
 
 #line 959 "/home/alois/Documents/bah-bah/src/values.bah"
 if ((i-1>=0)) {
@@ -22922,7 +22906,7 @@ t = l->data[i];
 if ((strcmp(t.cont, "\01\0\0\0""+") != 0)) {
 
 #line 963 "/home/alois/Documents/bah-bah/src/values.bah"
-if (__builtin_expect(____BAH_COMPILER_VAR_1373(signs, t.cont), 0)) {
+if (__builtin_expect(____BAH_COMPILER_VAR_1368(signs, t.cont), 0)) {
 
 #line 964 "/home/alois/Documents/bah-bah/src/values.bah"
 throwErr(&t,"\063\0\0\0""Can only do concatenation on cpstring, not {TOKEN}.");
@@ -22956,7 +22940,7 @@ deleteRange(l,i,rangeEnds);
 }
 
 #line 977 "/home/alois/Documents/bah-bah/src/values.bah"
-else if (__builtin_expect(____BAH_COMPILER_VAR_1374(signs, nat.cont), 0)) {
+else if (__builtin_expect(____BAH_COMPILER_VAR_1369(signs, nat.cont), 0)) {
 
 #line 978 "/home/alois/Documents/bah-bah/src/values.bah"
 throwErr(&nat,"\063\0\0\0""Can only do concatenation on cpstring, not {TOKEN}.");
@@ -23036,7 +23020,7 @@ mName = "\03\0\0\0""div";
 else {
 
 #line 1009 "/home/alois/Documents/bah-bah/src/values.bah"
-char** ____BAH_COMPILER_VAR_1375 = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_1375[2] = "\02\0\0\0"").";____BAH_COMPILER_VAR_1375[1] = ptt;____BAH_COMPILER_VAR_1375[0] = "\047\0\0\0""Undefined operation on struct {TOKEN} (";char * ____BAH_COMPILER_VAR_1376 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1375, 3);throwErr(&pt,____BAH_COMPILER_VAR_1376);
+char** ____BAH_COMPILER_VAR_1370 = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_1370[2] = "\02\0\0\0"").";____BAH_COMPILER_VAR_1370[1] = ptt;____BAH_COMPILER_VAR_1370[0] = "\047\0\0\0""Undefined operation on struct {TOKEN} (";char * ____BAH_COMPILER_VAR_1371 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1370, 3);throwErr(&pt,____BAH_COMPILER_VAR_1371);
 }
 
 #line 1011 "/home/alois/Documents/bah-bah/src/values.bah"
@@ -23049,7 +23033,7 @@ if ((methd!=null)&&(methd->isFn==true)) {
 if (RCPavailable()) {
 
 #line 1014 "/home/alois/Documents/bah-bah/src/values.bah"
-char** ____BAH_COMPILER_VAR_1377 = alloca(9 * sizeof(char*));____BAH_COMPILER_VAR_1377[8] = "\01\0\0\0"")";____BAH_COMPILER_VAR_1377[7] = nt.cont;____BAH_COMPILER_VAR_1377[6] = "\02\0\0\0"", ";____BAH_COMPILER_VAR_1377[5] = pt.cont;____BAH_COMPILER_VAR_1377[4] = amp;____BAH_COMPILER_VAR_1377[3] = "\01\0\0\0""(";____BAH_COMPILER_VAR_1377[2] = mName;____BAH_COMPILER_VAR_1377[1] = "\02\0\0\0""__";____BAH_COMPILER_VAR_1377[0] = s->name;char * ____BAH_COMPILER_VAR_1378 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1377, 9);pt.cont = registerRCPvar(ptt,____BAH_COMPILER_VAR_1378,elems);
+char** ____BAH_COMPILER_VAR_1372 = alloca(9 * sizeof(char*));____BAH_COMPILER_VAR_1372[8] = "\01\0\0\0"")";____BAH_COMPILER_VAR_1372[7] = nt.cont;____BAH_COMPILER_VAR_1372[6] = "\02\0\0\0"", ";____BAH_COMPILER_VAR_1372[5] = pt.cont;____BAH_COMPILER_VAR_1372[4] = amp;____BAH_COMPILER_VAR_1372[3] = "\01\0\0\0""(";____BAH_COMPILER_VAR_1372[2] = mName;____BAH_COMPILER_VAR_1372[1] = "\02\0\0\0""__";____BAH_COMPILER_VAR_1372[0] = s->name;char * ____BAH_COMPILER_VAR_1373 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1372, 9);pt.cont = registerRCPvar(ptt,____BAH_COMPILER_VAR_1373,elems);
 
 #line 1015 "/home/alois/Documents/bah-bah/src/values.bah"
 pt.type = TOKEN_TYPE_VAR;
@@ -23065,7 +23049,7 @@ pt.isOper = false;
 else {
 
 #line 1017 "/home/alois/Documents/bah-bah/src/values.bah"
-char** ____BAH_COMPILER_VAR_1379 = alloca(9 * sizeof(char*));____BAH_COMPILER_VAR_1379[8] = "\01\0\0\0"")";____BAH_COMPILER_VAR_1379[7] = nt.cont;____BAH_COMPILER_VAR_1379[6] = "\02\0\0\0"", ";____BAH_COMPILER_VAR_1379[5] = pt.cont;____BAH_COMPILER_VAR_1379[4] = amp;____BAH_COMPILER_VAR_1379[3] = "\01\0\0\0""(";____BAH_COMPILER_VAR_1379[2] = mName;____BAH_COMPILER_VAR_1379[1] = "\02\0\0\0""__";____BAH_COMPILER_VAR_1379[0] = s->name;char * ____BAH_COMPILER_VAR_1380 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1379, 9);pt.cont = ____BAH_COMPILER_VAR_1380;
+char** ____BAH_COMPILER_VAR_1374 = alloca(9 * sizeof(char*));____BAH_COMPILER_VAR_1374[8] = "\01\0\0\0"")";____BAH_COMPILER_VAR_1374[7] = nt.cont;____BAH_COMPILER_VAR_1374[6] = "\02\0\0\0"", ";____BAH_COMPILER_VAR_1374[5] = pt.cont;____BAH_COMPILER_VAR_1374[4] = amp;____BAH_COMPILER_VAR_1374[3] = "\01\0\0\0""(";____BAH_COMPILER_VAR_1374[2] = mName;____BAH_COMPILER_VAR_1374[1] = "\02\0\0\0""__";____BAH_COMPILER_VAR_1374[0] = s->name;char * ____BAH_COMPILER_VAR_1375 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1374, 9);pt.cont = ____BAH_COMPILER_VAR_1375;
 
 #line 1018 "/home/alois/Documents/bah-bah/src/values.bah"
 pt.isFunc = true;
@@ -23077,7 +23061,7 @@ pt.isFunc = true;
 else {
 
 #line 1022 "/home/alois/Documents/bah-bah/src/values.bah"
-char** ____BAH_COMPILER_VAR_1381 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1381[1] = nt.cont;____BAH_COMPILER_VAR_1381[0] = t.cont;char * ____BAH_COMPILER_VAR_1382 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1381, 2);char** ____BAH_COMPILER_VAR_1383 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1383[1] = ____BAH_COMPILER_VAR_1382;____BAH_COMPILER_VAR_1383[0] = pt.cont;char * ____BAH_COMPILER_VAR_1384 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1383, 2);pt.cont = ____BAH_COMPILER_VAR_1384;
+char** ____BAH_COMPILER_VAR_1376 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1376[1] = nt.cont;____BAH_COMPILER_VAR_1376[0] = t.cont;char * ____BAH_COMPILER_VAR_1377 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1376, 2);char** ____BAH_COMPILER_VAR_1378 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1378[1] = ____BAH_COMPILER_VAR_1377;____BAH_COMPILER_VAR_1378[0] = pt.cont;char * ____BAH_COMPILER_VAR_1379 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1378, 2);pt.cont = ____BAH_COMPILER_VAR_1379;
 }
 
 #line 1024 "/home/alois/Documents/bah-bah/src/values.bah"
@@ -23089,9 +23073,9 @@ pt.isNotExpsvOper = false;
 
 #line 1028 "/home/alois/Documents/bah-bah/src/values.bah"
 
-    unsigned int ____BAH_COMPILER_VAR_1385 = tokPos;
-    __Bah_realocate_arr(l, ____BAH_COMPILER_VAR_1385);
-    l->data[____BAH_COMPILER_VAR_1385] = pt;
+    unsigned int ____BAH_COMPILER_VAR_1380 = tokPos;
+    __Bah_realocate_arr(l, ____BAH_COMPILER_VAR_1380);
+    l->data[____BAH_COMPILER_VAR_1380] = pt;
 
 #line 1029 "/home/alois/Documents/bah-bah/src/values.bah"
 return tokPos;
@@ -23122,7 +23106,7 @@ struct string ptt = string(getTypeFromToken(&pt,true,elems));
 if (__builtin_expect((string__hasPrefix(&ptt,"\05\0\0\0""chan:")==0), 0)) {
 
 #line 1044 "/home/alois/Documents/bah-bah/src/values.bah"
-char** ____BAH_COMPILER_VAR_1386 = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_1386[2] = "\012\0\0\0"") as chan.";____BAH_COMPILER_VAR_1386[1] = string__str(&ptt);____BAH_COMPILER_VAR_1386[0] = "\024\0\0\0""Cannot use {TOKEN} (";char * ____BAH_COMPILER_VAR_1387 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1386, 3);throwErr(&pt,____BAH_COMPILER_VAR_1387);
+char** ____BAH_COMPILER_VAR_1381 = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_1381[2] = "\012\0\0\0"") as chan.";____BAH_COMPILER_VAR_1381[1] = string__str(&ptt);____BAH_COMPILER_VAR_1381[0] = "\024\0\0\0""Cannot use {TOKEN} (";char * ____BAH_COMPILER_VAR_1382 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1381, 3);throwErr(&pt,____BAH_COMPILER_VAR_1382);
 }
 
 #line 1046 "/home/alois/Documents/bah-bah/src/values.bah"
@@ -23139,14 +23123,14 @@ throwErr(&pt,"\055\0\0\0""Cannot send to channel {TOKEN} of a function.");
 if (__builtin_expect((compTypes(ntt,string__str(&ptt))==false), 0)) {
 
 #line 1053 "/home/alois/Documents/bah-bah/src/values.bah"
-char** ____BAH_COMPILER_VAR_1388 = alloca(5 * sizeof(char*));____BAH_COMPILER_VAR_1388[4] = "\01\0\0\0"".";____BAH_COMPILER_VAR_1388[3] = string__str(&ptt);____BAH_COMPILER_VAR_1388[2] = "\017\0\0\0"") through chan:";____BAH_COMPILER_VAR_1388[1] = ntt;____BAH_COMPILER_VAR_1388[0] = "\025\0\0\0""Cannot send {TOKEN} (";char * ____BAH_COMPILER_VAR_1389 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1388, 5);throwErr(&nt,____BAH_COMPILER_VAR_1389);
+char** ____BAH_COMPILER_VAR_1383 = alloca(5 * sizeof(char*));____BAH_COMPILER_VAR_1383[4] = "\01\0\0\0"".";____BAH_COMPILER_VAR_1383[3] = string__str(&ptt);____BAH_COMPILER_VAR_1383[2] = "\017\0\0\0"") through chan:";____BAH_COMPILER_VAR_1383[1] = ntt;____BAH_COMPILER_VAR_1383[0] = "\025\0\0\0""Cannot send {TOKEN} (";char * ____BAH_COMPILER_VAR_1384 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1383, 5);throwErr(&nt,____BAH_COMPILER_VAR_1384);
 }
 
 #line 1056 "/home/alois/Documents/bah-bah/src/values.bah"
 if (isRCPpointerType(string__str(&ptt))) {
 
 #line 1057 "/home/alois/Documents/bah-bah/src/values.bah"
-char** ____BAH_COMPILER_VAR_1390 = alloca(5 * sizeof(char*));____BAH_COMPILER_VAR_1390[4] = "\03\0\0\0"");\n";____BAH_COMPILER_VAR_1390[3] = nt.cont;____BAH_COMPILER_VAR_1390[2] = "\02\0\0\0"", ";____BAH_COMPILER_VAR_1390[1] = pt.cont;____BAH_COMPILER_VAR_1390[0] = "\016\0\0\0""channel__send(";char * ____BAH_COMPILER_VAR_1391 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1390, 5);OUTPUT = rope__add(OUTPUT, rope(____BAH_COMPILER_VAR_1391));
+char** ____BAH_COMPILER_VAR_1385 = alloca(5 * sizeof(char*));____BAH_COMPILER_VAR_1385[4] = "\03\0\0\0"");\n";____BAH_COMPILER_VAR_1385[3] = nt.cont;____BAH_COMPILER_VAR_1385[2] = "\02\0\0\0"", ";____BAH_COMPILER_VAR_1385[1] = pt.cont;____BAH_COMPILER_VAR_1385[0] = "\016\0\0\0""channel__send(";char * ____BAH_COMPILER_VAR_1386 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1385, 5);OUTPUT = rope__add(OUTPUT, rope(____BAH_COMPILER_VAR_1386));
 }
 
 #line 1058 "/home/alois/Documents/bah-bah/src/values.bah"
@@ -23159,7 +23143,7 @@ struct string ct = getCType(ntt,elems);
 char * tmpV = genCompilerVar();
 
 #line 1061 "/home/alois/Documents/bah-bah/src/values.bah"
-char** ____BAH_COMPILER_VAR_1392 = alloca(13 * sizeof(char*));____BAH_COMPILER_VAR_1392[12] = "\014\0\0\0""));\n        ";____BAH_COMPILER_VAR_1392[11] = tmpV;____BAH_COMPILER_VAR_1392[10] = "\011\0\0\0"", sizeof(";____BAH_COMPILER_VAR_1392[9] = tmpV;____BAH_COMPILER_VAR_1392[8] = "\03\0\0\0"", &";____BAH_COMPILER_VAR_1392[7] = pt.cont;____BAH_COMPILER_VAR_1392[6] = "\033\0\0\0"";\n        channel__sendAny(";____BAH_COMPILER_VAR_1392[5] = nt.cont;____BAH_COMPILER_VAR_1392[4] = "\03\0\0\0"" = ";____BAH_COMPILER_VAR_1392[3] = tmpV;____BAH_COMPILER_VAR_1392[2] = "\01\0\0\0"" ";____BAH_COMPILER_VAR_1392[1] = string__str(&ct);____BAH_COMPILER_VAR_1392[0] = "\011\0\0\0""\n        ";char * ____BAH_COMPILER_VAR_1393 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1392, 13);OUTPUT = rope__add(OUTPUT, rope(____BAH_COMPILER_VAR_1393));
+char** ____BAH_COMPILER_VAR_1387 = alloca(13 * sizeof(char*));____BAH_COMPILER_VAR_1387[12] = "\014\0\0\0""));\n        ";____BAH_COMPILER_VAR_1387[11] = tmpV;____BAH_COMPILER_VAR_1387[10] = "\011\0\0\0"", sizeof(";____BAH_COMPILER_VAR_1387[9] = tmpV;____BAH_COMPILER_VAR_1387[8] = "\03\0\0\0"", &";____BAH_COMPILER_VAR_1387[7] = pt.cont;____BAH_COMPILER_VAR_1387[6] = "\033\0\0\0"";\n        channel__sendAny(";____BAH_COMPILER_VAR_1387[5] = nt.cont;____BAH_COMPILER_VAR_1387[4] = "\03\0\0\0"" = ";____BAH_COMPILER_VAR_1387[3] = tmpV;____BAH_COMPILER_VAR_1387[2] = "\01\0\0\0"" ";____BAH_COMPILER_VAR_1387[1] = string__str(&ct);____BAH_COMPILER_VAR_1387[0] = "\011\0\0\0""\n        ";char * ____BAH_COMPILER_VAR_1388 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1387, 13);OUTPUT = rope__add(OUTPUT, rope(____BAH_COMPILER_VAR_1388));
 }
 
 #line 1067 "/home/alois/Documents/bah-bah/src/values.bah"
@@ -23185,7 +23169,7 @@ struct string ntt = string(getTypeFromToken(&nt,true,elems));
 if (__builtin_expect((string__hasPrefix(&ntt,"\05\0\0\0""chan:")==0), 0)) {
 
 #line 1079 "/home/alois/Documents/bah-bah/src/values.bah"
-char** ____BAH_COMPILER_VAR_1394 = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_1394[2] = "\012\0\0\0"") as chan.";____BAH_COMPILER_VAR_1394[1] = string__str(&ntt);____BAH_COMPILER_VAR_1394[0] = "\024\0\0\0""Cannot use {TOKEN} (";char * ____BAH_COMPILER_VAR_1395 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1394, 3);throwErr(&nt,____BAH_COMPILER_VAR_1395);
+char** ____BAH_COMPILER_VAR_1389 = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_1389[2] = "\012\0\0\0"") as chan.";____BAH_COMPILER_VAR_1389[1] = string__str(&ntt);____BAH_COMPILER_VAR_1389[0] = "\024\0\0\0""Cannot use {TOKEN} (";char * ____BAH_COMPILER_VAR_1390 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1389, 3);throwErr(&nt,____BAH_COMPILER_VAR_1390);
 }
 
 #line 1082 "/home/alois/Documents/bah-bah/src/values.bah"
@@ -23205,7 +23189,7 @@ struct string ct = getCType(string__str(&ntt),elems);
 if (isRCPpointerType(string__str(&ntt))) {
 
 #line 1090 "/home/alois/Documents/bah-bah/src/values.bah"
-char** ____BAH_COMPILER_VAR_1396 = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_1396[2] = "\01\0\0\0"")";____BAH_COMPILER_VAR_1396[1] = nt.cont;____BAH_COMPILER_VAR_1396[0] = "\021\0\0\0""channel__receive(";char * ____BAH_COMPILER_VAR_1397 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1396, 3);char * tmpV = registerRCPvar(string__str(&ntt),____BAH_COMPILER_VAR_1397,elems);
+char** ____BAH_COMPILER_VAR_1391 = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_1391[2] = "\01\0\0\0"")";____BAH_COMPILER_VAR_1391[1] = nt.cont;____BAH_COMPILER_VAR_1391[0] = "\021\0\0\0""channel__receive(";char * ____BAH_COMPILER_VAR_1392 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1391, 3);char * tmpV = registerRCPvar(string__str(&ntt),____BAH_COMPILER_VAR_1392,elems);
 
 #line 1091 "/home/alois/Documents/bah-bah/src/values.bah"
 nt.cont = tmpV;
@@ -23218,17 +23202,17 @@ else {
 if (RCPavailable()) {
 
 #line 1094 "/home/alois/Documents/bah-bah/src/values.bah"
-char** ____BAH_COMPILER_VAR_1398 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1398[1] = "\01\0\0\0""*";____BAH_COMPILER_VAR_1398[0] = string__str(&ntt);char * ____BAH_COMPILER_VAR_1399 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1398, 2);char** ____BAH_COMPILER_VAR_1400 = alloca(5 * sizeof(char*));____BAH_COMPILER_VAR_1400[4] = "\01\0\0\0"")";____BAH_COMPILER_VAR_1400[3] = nt.cont;____BAH_COMPILER_VAR_1400[2] = "\023\0\0\0""*)channel__receive(";____BAH_COMPILER_VAR_1400[1] = string__str(&ct);____BAH_COMPILER_VAR_1400[0] = "\01\0\0\0""(";char * ____BAH_COMPILER_VAR_1401 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1400, 5);char * tmpV = registerRCPvar(____BAH_COMPILER_VAR_1399,____BAH_COMPILER_VAR_1401,elems);
+char** ____BAH_COMPILER_VAR_1393 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1393[1] = "\01\0\0\0""*";____BAH_COMPILER_VAR_1393[0] = string__str(&ntt);char * ____BAH_COMPILER_VAR_1394 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1393, 2);char** ____BAH_COMPILER_VAR_1395 = alloca(5 * sizeof(char*));____BAH_COMPILER_VAR_1395[4] = "\01\0\0\0"")";____BAH_COMPILER_VAR_1395[3] = nt.cont;____BAH_COMPILER_VAR_1395[2] = "\023\0\0\0""*)channel__receive(";____BAH_COMPILER_VAR_1395[1] = string__str(&ct);____BAH_COMPILER_VAR_1395[0] = "\01\0\0\0""(";char * ____BAH_COMPILER_VAR_1396 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1395, 5);char * tmpV = registerRCPvar(____BAH_COMPILER_VAR_1394,____BAH_COMPILER_VAR_1396,elems);
 
 #line 1095 "/home/alois/Documents/bah-bah/src/values.bah"
-char** ____BAH_COMPILER_VAR_1402 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1402[1] = tmpV;____BAH_COMPILER_VAR_1402[0] = "\01\0\0\0""*";char * ____BAH_COMPILER_VAR_1403 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1402, 2);nt.cont = ____BAH_COMPILER_VAR_1403;
+char** ____BAH_COMPILER_VAR_1397 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1397[1] = tmpV;____BAH_COMPILER_VAR_1397[0] = "\01\0\0\0""*";char * ____BAH_COMPILER_VAR_1398 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1397, 2);nt.cont = ____BAH_COMPILER_VAR_1398;
 }
 
 #line 1096 "/home/alois/Documents/bah-bah/src/values.bah"
 else {
 
 #line 1097 "/home/alois/Documents/bah-bah/src/values.bah"
-char** ____BAH_COMPILER_VAR_1404 = alloca(5 * sizeof(char*));____BAH_COMPILER_VAR_1404[4] = "\01\0\0\0"")";____BAH_COMPILER_VAR_1404[3] = nt.cont;____BAH_COMPILER_VAR_1404[2] = "\023\0\0\0""*)channel__receive(";____BAH_COMPILER_VAR_1404[1] = string__str(&ct);____BAH_COMPILER_VAR_1404[0] = "\02\0\0\0""*(";char * ____BAH_COMPILER_VAR_1405 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1404, 5);nt.cont = ____BAH_COMPILER_VAR_1405;
+char** ____BAH_COMPILER_VAR_1399 = alloca(5 * sizeof(char*));____BAH_COMPILER_VAR_1399[4] = "\01\0\0\0"")";____BAH_COMPILER_VAR_1399[3] = nt.cont;____BAH_COMPILER_VAR_1399[2] = "\023\0\0\0""*)channel__receive(";____BAH_COMPILER_VAR_1399[1] = string__str(&ct);____BAH_COMPILER_VAR_1399[0] = "\02\0\0\0""*(";char * ____BAH_COMPILER_VAR_1400 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1399, 5);nt.cont = ____BAH_COMPILER_VAR_1400;
 }
 }
 
@@ -23246,9 +23230,9 @@ nt.bahType = string__str(&ntt);
 
 #line 1106 "/home/alois/Documents/bah-bah/src/values.bah"
 
-    unsigned int ____BAH_COMPILER_VAR_1406 = posTok;
-    __Bah_realocate_arr(l, ____BAH_COMPILER_VAR_1406);
-    l->data[____BAH_COMPILER_VAR_1406] = nt;
+    unsigned int ____BAH_COMPILER_VAR_1401 = posTok;
+    __Bah_realocate_arr(l, ____BAH_COMPILER_VAR_1401);
+    l->data[____BAH_COMPILER_VAR_1401] = nt;
 
 #line 1108 "/home/alois/Documents/bah-bah/src/values.bah"
 return posTok;
@@ -23356,14 +23340,14 @@ char * tt = getTypeFromToken(&t,true,elems);
 if (__builtin_expect((compTypes(tupT,tt)==false), 0)) {
 
 #line 1153 "/home/alois/Documents/bah-bah/src/values.bah"
-char** ____BAH_COMPILER_VAR_1407 = alloca(5 * sizeof(char*));____BAH_COMPILER_VAR_1407[4] = "\026\0\0\0"" in tuple declaration.";____BAH_COMPILER_VAR_1407[3] = tupT;____BAH_COMPILER_VAR_1407[2] = "\05\0\0\0"") as ";____BAH_COMPILER_VAR_1407[1] = tt;____BAH_COMPILER_VAR_1407[0] = "\024\0\0\0""Cannot use {TOKEN} (";char * ____BAH_COMPILER_VAR_1408 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1407, 5);throwErr(&t,____BAH_COMPILER_VAR_1408);
+char** ____BAH_COMPILER_VAR_1402 = alloca(5 * sizeof(char*));____BAH_COMPILER_VAR_1402[4] = "\026\0\0\0"" in tuple declaration.";____BAH_COMPILER_VAR_1402[3] = tupT;____BAH_COMPILER_VAR_1402[2] = "\05\0\0\0"") as ";____BAH_COMPILER_VAR_1402[1] = tt;____BAH_COMPILER_VAR_1402[0] = "\024\0\0\0""Cannot use {TOKEN} (";char * ____BAH_COMPILER_VAR_1403 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1402, 5);throwErr(&t,____BAH_COMPILER_VAR_1403);
 }
 
 #line 1155 "/home/alois/Documents/bah-bah/src/values.bah"
 
-    unsigned int ____BAH_COMPILER_VAR_1409 = len(vals);
-    __Bah_realocate_arr(vals, ____BAH_COMPILER_VAR_1409);
-    vals->data[____BAH_COMPILER_VAR_1409] = t.cont;
+    unsigned int ____BAH_COMPILER_VAR_1404 = len(vals);
+    __Bah_realocate_arr(vals, ____BAH_COMPILER_VAR_1404);
+    vals->data[____BAH_COMPILER_VAR_1404] = t.cont;
 
 #line 1156 "/home/alois/Documents/bah-bah/src/values.bah"
 struct Tok nt = memory->data[j+1];
@@ -23384,15 +23368,15 @@ throwErr(&nt,"\104\0\0\0""Expected separator between values in tuple declaration
 };
 
 #line 1164 "/home/alois/Documents/bah-bah/src/values.bah"
-char** ____BAH_COMPILER_VAR_1410 = alloca(4 * sizeof(char*));____BAH_COMPILER_VAR_1410[3] = tupT;____BAH_COMPILER_VAR_1410[2] = "\01\0\0\0"":";____BAH_COMPILER_VAR_1410[1] = intToStr(len(vals));____BAH_COMPILER_VAR_1410[0] = "\06\0\0\0""tuple:";char * ____BAH_COMPILER_VAR_1411 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1410, 4);char * type = ____BAH_COMPILER_VAR_1411;
+char** ____BAH_COMPILER_VAR_1405 = alloca(4 * sizeof(char*));____BAH_COMPILER_VAR_1405[3] = tupT;____BAH_COMPILER_VAR_1405[2] = "\01\0\0\0"":";____BAH_COMPILER_VAR_1405[1] = intToStr(len(vals));____BAH_COMPILER_VAR_1405[0] = "\06\0\0\0""tuple:";char * ____BAH_COMPILER_VAR_1406 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1405, 4);char * type = ____BAH_COMPILER_VAR_1406;
 
 #line 1166 "/home/alois/Documents/bah-bah/src/values.bah"
 deleteRange(l,tokPos+1,j+1);
 
 #line 1168 "/home/alois/Documents/bah-bah/src/values.bah"
 
-                struct string ____BAH_COMPILER_VAR_1412 = getCType(tupT,elems);
-                char** ____BAH_COMPILER_VAR_1413 = alloca(5 * sizeof(char*));____BAH_COMPILER_VAR_1413[4] = "\01\0\0\0"")";____BAH_COMPILER_VAR_1413[3] = intToStr(len(vals));____BAH_COMPILER_VAR_1413[2] = "\04\0\0\0"") * ";____BAH_COMPILER_VAR_1413[1] = string__str(&____BAH_COMPILER_VAR_1412);____BAH_COMPILER_VAR_1413[0] = "\016\0\0\0""alloca(sizeof(";char * ____BAH_COMPILER_VAR_1414 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1413, 5);char * v = registerRCPvar(type,____BAH_COMPILER_VAR_1414,elems);
+                struct string ____BAH_COMPILER_VAR_1407 = getCType(tupT,elems);
+                char** ____BAH_COMPILER_VAR_1408 = alloca(5 * sizeof(char*));____BAH_COMPILER_VAR_1408[4] = "\01\0\0\0"")";____BAH_COMPILER_VAR_1408[3] = intToStr(len(vals));____BAH_COMPILER_VAR_1408[2] = "\04\0\0\0"") * ";____BAH_COMPILER_VAR_1408[1] = string__str(&____BAH_COMPILER_VAR_1407);____BAH_COMPILER_VAR_1408[0] = "\016\0\0\0""alloca(sizeof(";char * ____BAH_COMPILER_VAR_1409 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1408, 5);char * v = registerRCPvar(type,____BAH_COMPILER_VAR_1409,elems);
 
 #line 1170 "/home/alois/Documents/bah-bah/src/values.bah"
 char * r = "\0\0\0\0""";
@@ -23406,7 +23390,7 @@ for (; (i<len(vals));
 ++i) {
 
 #line 1172 "/home/alois/Documents/bah-bah/src/values.bah"
-char** ____BAH_COMPILER_VAR_1415 = alloca(6 * sizeof(char*));____BAH_COMPILER_VAR_1415[5] = "\01\0\0\0"";";____BAH_COMPILER_VAR_1415[4] = vals->data[i];____BAH_COMPILER_VAR_1415[3] = "\04\0\0\0""] = ";____BAH_COMPILER_VAR_1415[2] = intToStr(i);____BAH_COMPILER_VAR_1415[1] = "\01\0\0\0""[";____BAH_COMPILER_VAR_1415[0] = v;char * ____BAH_COMPILER_VAR_1416 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1415, 6);char** ____BAH_COMPILER_VAR_1417 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1417[1] = ____BAH_COMPILER_VAR_1416;____BAH_COMPILER_VAR_1417[0] = r;char * ____BAH_COMPILER_VAR_1418 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1417, 2);r = ____BAH_COMPILER_VAR_1418;
+char** ____BAH_COMPILER_VAR_1410 = alloca(6 * sizeof(char*));____BAH_COMPILER_VAR_1410[5] = "\01\0\0\0"";";____BAH_COMPILER_VAR_1410[4] = vals->data[i];____BAH_COMPILER_VAR_1410[3] = "\04\0\0\0""] = ";____BAH_COMPILER_VAR_1410[2] = intToStr(i);____BAH_COMPILER_VAR_1410[1] = "\01\0\0\0""[";____BAH_COMPILER_VAR_1410[0] = v;char * ____BAH_COMPILER_VAR_1411 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1410, 6);char** ____BAH_COMPILER_VAR_1412 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1412[1] = ____BAH_COMPILER_VAR_1411;____BAH_COMPILER_VAR_1412[0] = r;char * ____BAH_COMPILER_VAR_1413 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1412, 2);r = ____BAH_COMPILER_VAR_1413;
 };
 
 #line 1175 "/home/alois/Documents/bah-bah/src/values.bah"
@@ -23424,20 +23408,20 @@ OUTPUT = rope__add(OUTPUT, rope(r));
 }
 
 #line 1181 "/home/alois/Documents/bah-bah/src/values.bah"
-struct Tok ____BAH_COMPILER_VAR_1419 = {};
-____BAH_COMPILER_VAR_1419.cont = "\0\0\0\0""";
-____BAH_COMPILER_VAR_1419.ogCont = "\0\0\0\0""";
-____BAH_COMPILER_VAR_1419.type = TOKEN_NO_TYPE;
-____BAH_COMPILER_VAR_1419.line = 1;
-____BAH_COMPILER_VAR_1419.begLine = 1;
-____BAH_COMPILER_VAR_1419.bahType = "\0\0\0\0""";
-____BAH_COMPILER_VAR_1419.type = TOKEN_TYPE_VAR;
-____BAH_COMPILER_VAR_1419.bahType = type;
-____BAH_COMPILER_VAR_1419.cont = v;
+struct Tok ____BAH_COMPILER_VAR_1414 = {};
+____BAH_COMPILER_VAR_1414.cont = "\0\0\0\0""";
+____BAH_COMPILER_VAR_1414.ogCont = "\0\0\0\0""";
+____BAH_COMPILER_VAR_1414.type = TOKEN_NO_TYPE;
+____BAH_COMPILER_VAR_1414.line = 1;
+____BAH_COMPILER_VAR_1414.begLine = 1;
+____BAH_COMPILER_VAR_1414.bahType = "\0\0\0\0""";
+____BAH_COMPILER_VAR_1414.type = TOKEN_TYPE_VAR;
+____BAH_COMPILER_VAR_1414.bahType = type;
+____BAH_COMPILER_VAR_1414.cont = v;
 
-    unsigned int ____BAH_COMPILER_VAR_1420 = tokPos;
-    __Bah_realocate_arr(l, ____BAH_COMPILER_VAR_1420);
-    l->data[____BAH_COMPILER_VAR_1420] = ____BAH_COMPILER_VAR_1419;
+    unsigned int ____BAH_COMPILER_VAR_1415 = tokPos;
+    __Bah_realocate_arr(l, ____BAH_COMPILER_VAR_1415);
+    l->data[____BAH_COMPILER_VAR_1415] = ____BAH_COMPILER_VAR_1414;
 
 #line 1187 "/home/alois/Documents/bah-bah/src/values.bah"
 return tokPos;
@@ -23482,7 +23466,7 @@ return true;
 };
 
 #line 1206 "/home/alois/Documents/bah-bah/src/values.bah"
-char ____BAH_COMPILER_VAR_1421(array(char *)* arr, char * el) {
+char ____BAH_COMPILER_VAR_1416(array(char *)* arr, char * el) {
         if (arr == 0) {
             return 0;
         };
@@ -23519,7 +23503,7 @@ if ((i+1<len(l))) {
 struct Tok nt = l->data[i+1];
 
 #line 1215 "/home/alois/Documents/bah-bah/src/values.bah"
-if ((strcmp(nt.cont, "\01\0\0\0""[") == 0)||(strcmp(nt.cont, "\01\0\0\0"".") == 0)||(strcmp(nt.cont, "\01\0\0\0""(") == 0)||____BAH_COMPILER_VAR_1421(signs, nt.cont)||(nt.isValue&&(nt.cont[0+4]==45))) {
+if ((strcmp(nt.cont, "\01\0\0\0""[") == 0)||(strcmp(nt.cont, "\01\0\0\0"".") == 0)||(strcmp(nt.cont, "\01\0\0\0""(") == 0)||____BAH_COMPILER_VAR_1416(signs, nt.cont)||(nt.isValue&&(nt.cont[0+4]==45))) {
 
 #line 1216 "/home/alois/Documents/bah-bah/src/values.bah"
 return false;
@@ -23531,7 +23515,7 @@ return true;
 };
 
 #line 3002 "/home/alois/Documents/bah-bah/src/parser.bah"
-char ____BAH_COMPILER_VAR_1427(array(char *)* arr, char * el) {
+char ____BAH_COMPILER_VAR_1422(array(char *)* arr, char * el) {
         if (arr == 0) {
             return 0;
         };
@@ -23542,7 +23526,7 @@ char ____BAH_COMPILER_VAR_1427(array(char *)* arr, char * el) {
         }
         return 0;
         }
-char ____BAH_COMPILER_VAR_1434(array(char *)* arr, char * el) {
+char ____BAH_COMPILER_VAR_1429(array(char *)* arr, char * el) {
         if (arr == 0) {
             return 0;
         };
@@ -23625,14 +23609,14 @@ fl = line;
 }
 
 #line 3029 "/home/alois/Documents/bah-bah/src/parser.bah"
-struct Tok ____BAH_COMPILER_VAR_1422 = {};
-____BAH_COMPILER_VAR_1422.cont = "\0\0\0\0""";
-____BAH_COMPILER_VAR_1422.ogCont = "\0\0\0\0""";
-____BAH_COMPILER_VAR_1422.type = TOKEN_NO_TYPE;
-____BAH_COMPILER_VAR_1422.line = 1;
-____BAH_COMPILER_VAR_1422.begLine = 1;
-____BAH_COMPILER_VAR_1422.bahType = "\0\0\0\0""";
-struct Tok pt = ____BAH_COMPILER_VAR_1422;
+struct Tok ____BAH_COMPILER_VAR_1417 = {};
+____BAH_COMPILER_VAR_1417.cont = "\0\0\0\0""";
+____BAH_COMPILER_VAR_1417.ogCont = "\0\0\0\0""";
+____BAH_COMPILER_VAR_1417.type = TOKEN_NO_TYPE;
+____BAH_COMPILER_VAR_1417.line = 1;
+____BAH_COMPILER_VAR_1417.begLine = 1;
+____BAH_COMPILER_VAR_1417.bahType = "\0\0\0\0""";
+struct Tok pt = ____BAH_COMPILER_VAR_1417;
 
 #line 3030 "/home/alois/Documents/bah-bah/src/parser.bah"
 unsigned long int l = len(fl);
@@ -23743,14 +23727,14 @@ pt = fl->data[i-1];
 else {
 
 #line 3069 "/home/alois/Documents/bah-bah/src/parser.bah"
-struct Tok ____BAH_COMPILER_VAR_1423 = {};
-____BAH_COMPILER_VAR_1423.cont = "\0\0\0\0""";
-____BAH_COMPILER_VAR_1423.ogCont = "\0\0\0\0""";
-____BAH_COMPILER_VAR_1423.type = TOKEN_NO_TYPE;
-____BAH_COMPILER_VAR_1423.line = 1;
-____BAH_COMPILER_VAR_1423.begLine = 1;
-____BAH_COMPILER_VAR_1423.bahType = "\0\0\0\0""";
-pt = ____BAH_COMPILER_VAR_1423;
+struct Tok ____BAH_COMPILER_VAR_1418 = {};
+____BAH_COMPILER_VAR_1418.cont = "\0\0\0\0""";
+____BAH_COMPILER_VAR_1418.ogCont = "\0\0\0\0""";
+____BAH_COMPILER_VAR_1418.type = TOKEN_NO_TYPE;
+____BAH_COMPILER_VAR_1418.line = 1;
+____BAH_COMPILER_VAR_1418.begLine = 1;
+____BAH_COMPILER_VAR_1418.bahType = "\0\0\0\0""";
+pt = ____BAH_COMPILER_VAR_1418;
 }
 
 #line 3072 "/home/alois/Documents/bah-bah/src/parser.bah"
@@ -23813,20 +23797,20 @@ t.bahType = string__str(&ptc);
 struct string cType = getCType(string__str(&ptc),elems);
 
 #line 3091 "/home/alois/Documents/bah-bah/src/parser.bah"
-char** ____BAH_COMPILER_VAR_1424 = alloca(4 * sizeof(char*));____BAH_COMPILER_VAR_1424[3] = t.cont;____BAH_COMPILER_VAR_1424[2] = "\01\0\0\0"")";____BAH_COMPILER_VAR_1424[1] = string__str(&cType);____BAH_COMPILER_VAR_1424[0] = "\01\0\0\0""(";char * ____BAH_COMPILER_VAR_1425 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1424, 4);t.cont = ____BAH_COMPILER_VAR_1425;
+char** ____BAH_COMPILER_VAR_1419 = alloca(4 * sizeof(char*));____BAH_COMPILER_VAR_1419[3] = t.cont;____BAH_COMPILER_VAR_1419[2] = "\01\0\0\0"")";____BAH_COMPILER_VAR_1419[1] = string__str(&cType);____BAH_COMPILER_VAR_1419[0] = "\01\0\0\0""(";char * ____BAH_COMPILER_VAR_1420 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1419, 4);t.cont = ____BAH_COMPILER_VAR_1420;
 
 #line 3092 "/home/alois/Documents/bah-bah/src/parser.bah"
 
-    unsigned int ____BAH_COMPILER_VAR_1426 = i-1;
-    __Bah_realocate_arr(fl, ____BAH_COMPILER_VAR_1426);
-    fl->data[____BAH_COMPILER_VAR_1426] = t;
+    unsigned int ____BAH_COMPILER_VAR_1421 = i-1;
+    __Bah_realocate_arr(fl, ____BAH_COMPILER_VAR_1421);
+    fl->data[____BAH_COMPILER_VAR_1421] = t;
 
 #line 3093 "/home/alois/Documents/bah-bah/src/parser.bah"
 i = i-2;
 }
 
 #line 3094 "/home/alois/Documents/bah-bah/src/parser.bah"
-else if (____BAH_COMPILER_VAR_1427(signs, pt.cont)) {
+else if (____BAH_COMPILER_VAR_1422(signs, pt.cont)) {
 
 #line 3095 "/home/alois/Documents/bah-bah/src/parser.bah"
 if ((strcmp(t.cont, pt.cont) == 0)&&(i>1)) {
@@ -23844,7 +23828,7 @@ long int posTok = i-2;
 deleteRange(fl,i-1,i);
 
 #line 3100 "/home/alois/Documents/bah-bah/src/parser.bah"
-char** ____BAH_COMPILER_VAR_1428 = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_1428[2] = ppt.cont;____BAH_COMPILER_VAR_1428[1] = t.cont;____BAH_COMPILER_VAR_1428[0] = t.cont;char * ____BAH_COMPILER_VAR_1429 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1428, 3);ppt.cont = ____BAH_COMPILER_VAR_1429;
+char** ____BAH_COMPILER_VAR_1423 = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_1423[2] = ppt.cont;____BAH_COMPILER_VAR_1423[1] = t.cont;____BAH_COMPILER_VAR_1423[0] = t.cont;char * ____BAH_COMPILER_VAR_1424 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1423, 3);ppt.cont = ____BAH_COMPILER_VAR_1424;
 
 #line 3101 "/home/alois/Documents/bah-bah/src/parser.bah"
 ppt.isValue = true;
@@ -23854,9 +23838,9 @@ ppt.isOper = true;
 
 #line 3103 "/home/alois/Documents/bah-bah/src/parser.bah"
 
-    unsigned int ____BAH_COMPILER_VAR_1430 = posTok;
-    __Bah_realocate_arr(fl, ____BAH_COMPILER_VAR_1430);
-    fl->data[____BAH_COMPILER_VAR_1430] = ppt;
+    unsigned int ____BAH_COMPILER_VAR_1425 = posTok;
+    __Bah_realocate_arr(fl, ____BAH_COMPILER_VAR_1425);
+    fl->data[____BAH_COMPILER_VAR_1425] = ppt;
 
 #line 3104 "/home/alois/Documents/bah-bah/src/parser.bah"
 i = posTok-1;
@@ -23897,13 +23881,13 @@ pt.bahType = ptt;
 pt.isOper = true;
 
 #line 3117 "/home/alois/Documents/bah-bah/src/parser.bah"
-char** ____BAH_COMPILER_VAR_1431 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1431[1] = t.cont;____BAH_COMPILER_VAR_1431[0] = pt.cont;char * ____BAH_COMPILER_VAR_1432 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1431, 2);pt.cont = ____BAH_COMPILER_VAR_1432;
+char** ____BAH_COMPILER_VAR_1426 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1426[1] = t.cont;____BAH_COMPILER_VAR_1426[0] = pt.cont;char * ____BAH_COMPILER_VAR_1427 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1426, 2);pt.cont = ____BAH_COMPILER_VAR_1427;
 
 #line 3118 "/home/alois/Documents/bah-bah/src/parser.bah"
 
-    unsigned int ____BAH_COMPILER_VAR_1433 = i-1;
-    __Bah_realocate_arr(fl, ____BAH_COMPILER_VAR_1433);
-    fl->data[____BAH_COMPILER_VAR_1433] = pt;
+    unsigned int ____BAH_COMPILER_VAR_1428 = i-1;
+    __Bah_realocate_arr(fl, ____BAH_COMPILER_VAR_1428);
+    fl->data[____BAH_COMPILER_VAR_1428] = pt;
 
 #line 3119 "/home/alois/Documents/bah-bah/src/parser.bah"
 i = i-2;
@@ -23911,7 +23895,7 @@ i = i-2;
 }
 
 #line 3121 "/home/alois/Documents/bah-bah/src/parser.bah"
-else if (____BAH_COMPILER_VAR_1434(comparators, pt.cont)&&isValue(fl,i)) {
+else if (____BAH_COMPILER_VAR_1429(comparators, pt.cont)&&isValue(fl,i)) {
 
 #line 3122 "/home/alois/Documents/bah-bah/src/parser.bah"
 i = valueBool(fl,i,ltp,elems)-1;
@@ -23984,28 +23968,28 @@ char * ntt = getTypeFromToken(&nt,true,elems);
 if (__builtin_expect((compTypes(ptt,ntt)==false)||(compTypes(ptt,"\04\0\0\0""bool")==false), 0)) {
 
 #line 3148 "/home/alois/Documents/bah-bah/src/parser.bah"
-char** ____BAH_COMPILER_VAR_1435 = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_1435[2] = "\01\0\0\0"".";____BAH_COMPILER_VAR_1435[1] = ptt;____BAH_COMPILER_VAR_1435[0] = "\026\0\0\0""Cannot use {TOKEN} on ";char * ____BAH_COMPILER_VAR_1436 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1435, 3);throwErr(&t,____BAH_COMPILER_VAR_1436);
+char** ____BAH_COMPILER_VAR_1430 = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_1430[2] = "\01\0\0\0"".";____BAH_COMPILER_VAR_1430[1] = ptt;____BAH_COMPILER_VAR_1430[0] = "\026\0\0\0""Cannot use {TOKEN} on ";char * ____BAH_COMPILER_VAR_1431 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1430, 3);throwErr(&t,____BAH_COMPILER_VAR_1431);
 }
 
 #line 3151 "/home/alois/Documents/bah-bah/src/parser.bah"
 if ((strcmp(t.cont, "\02\0\0\0""||") == 0)&&(isExprExpensive(&pt)==false)&&(isExprExpensive(&nt)==false)) {
 
 #line 3152 "/home/alois/Documents/bah-bah/src/parser.bah"
-char** ____BAH_COMPILER_VAR_1437 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1437[1] = nt.cont;____BAH_COMPILER_VAR_1437[0] = "\02\0\0\0""||";char * ____BAH_COMPILER_VAR_1438 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1437, 2);char** ____BAH_COMPILER_VAR_1439 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1439[1] = ____BAH_COMPILER_VAR_1438;____BAH_COMPILER_VAR_1439[0] = pt.cont;char * ____BAH_COMPILER_VAR_1440 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1439, 2);pt.cont = ____BAH_COMPILER_VAR_1440;
+char** ____BAH_COMPILER_VAR_1432 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1432[1] = nt.cont;____BAH_COMPILER_VAR_1432[0] = "\02\0\0\0""||";char * ____BAH_COMPILER_VAR_1433 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1432, 2);char** ____BAH_COMPILER_VAR_1434 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1434[1] = ____BAH_COMPILER_VAR_1433;____BAH_COMPILER_VAR_1434[0] = pt.cont;char * ____BAH_COMPILER_VAR_1435 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1434, 2);pt.cont = ____BAH_COMPILER_VAR_1435;
 }
 
 #line 3153 "/home/alois/Documents/bah-bah/src/parser.bah"
 else {
 
 #line 3154 "/home/alois/Documents/bah-bah/src/parser.bah"
-char** ____BAH_COMPILER_VAR_1441 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1441[1] = nt.cont;____BAH_COMPILER_VAR_1441[0] = t.cont;char * ____BAH_COMPILER_VAR_1442 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1441, 2);char** ____BAH_COMPILER_VAR_1443 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1443[1] = ____BAH_COMPILER_VAR_1442;____BAH_COMPILER_VAR_1443[0] = pt.cont;char * ____BAH_COMPILER_VAR_1444 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1443, 2);pt.cont = ____BAH_COMPILER_VAR_1444;
+char** ____BAH_COMPILER_VAR_1436 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1436[1] = nt.cont;____BAH_COMPILER_VAR_1436[0] = t.cont;char * ____BAH_COMPILER_VAR_1437 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1436, 2);char** ____BAH_COMPILER_VAR_1438 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1438[1] = ____BAH_COMPILER_VAR_1437;____BAH_COMPILER_VAR_1438[0] = pt.cont;char * ____BAH_COMPILER_VAR_1439 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1438, 2);pt.cont = ____BAH_COMPILER_VAR_1439;
 }
 
 #line 3156 "/home/alois/Documents/bah-bah/src/parser.bah"
 
-    unsigned int ____BAH_COMPILER_VAR_1445 = i-1;
-    __Bah_realocate_arr(fl, ____BAH_COMPILER_VAR_1445);
-    fl->data[____BAH_COMPILER_VAR_1445] = pt;
+    unsigned int ____BAH_COMPILER_VAR_1440 = i-1;
+    __Bah_realocate_arr(fl, ____BAH_COMPILER_VAR_1440);
+    fl->data[____BAH_COMPILER_VAR_1440] = pt;
 
 #line 3157 "/home/alois/Documents/bah-bah/src/parser.bah"
 deleteRange(fl,i,i+1);
@@ -24022,8 +24006,8 @@ char * tt = getTypeFromToken(&t,true,elems);
 
 #line 3161 "/home/alois/Documents/bah-bah/src/parser.bah"
 
-                struct string ____BAH_COMPILER_VAR_1446 = string(tt);
-                if (__builtin_expect(string__hasPrefix(&____BAH_COMPILER_VAR_1446,"\06\0\0\0""tuple:"), 0)) {
+                struct string ____BAH_COMPILER_VAR_1441 = string(tt);
+                if (__builtin_expect(string__hasPrefix(&____BAH_COMPILER_VAR_1441,"\06\0\0\0""tuple:"), 0)) {
 
 #line 3162 "/home/alois/Documents/bah-bah/src/parser.bah"
 throwErr(&t,"\046\0\0\0""Cannot get pointer of a tuple {TOKEN}.");
@@ -24049,9 +24033,9 @@ while ((sepI<len(line))) {
 
 #line 3174 "/home/alois/Documents/bah-bah/src/parser.bah"
 
-    unsigned int ____BAH_COMPILER_VAR_1447 = len(fl);
-    __Bah_realocate_arr(fl, ____BAH_COMPILER_VAR_1447);
-    fl->data[____BAH_COMPILER_VAR_1447] = line->data[sepI];
+    unsigned int ____BAH_COMPILER_VAR_1442 = len(fl);
+    __Bah_realocate_arr(fl, ____BAH_COMPILER_VAR_1442);
+    fl->data[____BAH_COMPILER_VAR_1442] = line->data[sepI];
 
 #line 3175 "/home/alois/Documents/bah-bah/src/parser.bah"
 ++sepI;
@@ -24069,15 +24053,15 @@ void parseFnDeclare(__BAH_ARR_TYPE_Tok l,struct Elems* elems){
 long int i = 0;
 
 #line 3186 "/home/alois/Documents/bah-bah/src/parser.bah"
-struct func* ____BAH_COMPILER_VAR_1448 = memoryAlloc(sizeof(struct func));
-____BAH_COMPILER_VAR_1448->name = "\0\0\0\0""";
-____BAH_COMPILER_VAR_1448->args = memoryAlloc(sizeof(array(struct variable*)));
-            ____BAH_COMPILER_VAR_1448->args->length = 0;
-            ____BAH_COMPILER_VAR_1448->args->elemSize = sizeof(struct variable*);
-            ____BAH_COMPILER_VAR_1448->from = "\0\0\0\0""";
-____BAH_COMPILER_VAR_1448->file = "\0\0\0\0""";
-____BAH_COMPILER_VAR_1448->line = 1;
-struct func* fn = ____BAH_COMPILER_VAR_1448;
+struct func* ____BAH_COMPILER_VAR_1443 = memoryAlloc(sizeof(struct func));
+____BAH_COMPILER_VAR_1443->name = "\0\0\0\0""";
+____BAH_COMPILER_VAR_1443->args = memoryAlloc(sizeof(array(struct variable*)));
+            ____BAH_COMPILER_VAR_1443->args->length = 0;
+            ____BAH_COMPILER_VAR_1443->args->elemSize = sizeof(struct variable*);
+            ____BAH_COMPILER_VAR_1443->from = "\0\0\0\0""";
+____BAH_COMPILER_VAR_1443->file = "\0\0\0\0""";
+____BAH_COMPILER_VAR_1443->line = 1;
+struct func* fn = ____BAH_COMPILER_VAR_1443;
 
 #line 3188 "/home/alois/Documents/bah-bah/src/parser.bah"
 if ((RCPavailable()==false)&&(RCPenabled==true)) {
@@ -24111,7 +24095,7 @@ if (__builtin_expect((ogFn->isBinding==false), 0)) {
 char * lineStr = intToStr(ogFn->line);
 
 #line 3200 "/home/alois/Documents/bah-bah/src/parser.bah"
-char** ____BAH_COMPILER_VAR_1449 = alloca(5 * sizeof(char*));____BAH_COMPILER_VAR_1449[4] = "\01\0\0\0"".";____BAH_COMPILER_VAR_1449[3] = lineStr;____BAH_COMPILER_VAR_1449[2] = "\01\0\0\0"":";____BAH_COMPILER_VAR_1449[1] = ogFn->file;____BAH_COMPILER_VAR_1449[0] = "\071\0\0\0""Cannot redeclare function {TOKEN}, previous declaration: ";char * ____BAH_COMPILER_VAR_1450 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1449, 5);throwErr(&ft,____BAH_COMPILER_VAR_1450);
+char** ____BAH_COMPILER_VAR_1444 = alloca(5 * sizeof(char*));____BAH_COMPILER_VAR_1444[4] = "\01\0\0\0"".";____BAH_COMPILER_VAR_1444[3] = lineStr;____BAH_COMPILER_VAR_1444[2] = "\01\0\0\0"":";____BAH_COMPILER_VAR_1444[1] = ogFn->file;____BAH_COMPILER_VAR_1444[0] = "\071\0\0\0""Cannot redeclare function {TOKEN}, previous declaration: ";char * ____BAH_COMPILER_VAR_1445 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1444, 5);throwErr(&ft,____BAH_COMPILER_VAR_1445);
 }
 }
 
@@ -24150,11 +24134,11 @@ throwErr(&ft,"\150\0\0\0""{TOKEN} function should take []cpstring as argument. S
 if ((debug==true)) {
 
 #line 3221 "/home/alois/Documents/bah-bah/src/parser.bah"
-struct debugFunction* ____BAH_COMPILER_VAR_1451 = memoryAlloc(sizeof(struct debugFunction));
-____BAH_COMPILER_VAR_1451->args = memoryAlloc(sizeof(array(struct variable*)));
-            ____BAH_COMPILER_VAR_1451->args->length = 0;
-            ____BAH_COMPILER_VAR_1451->args->elemSize = sizeof(struct variable*);
-            struct debugFunction* df = ____BAH_COMPILER_VAR_1451;
+struct debugFunction* ____BAH_COMPILER_VAR_1446 = memoryAlloc(sizeof(struct debugFunction));
+____BAH_COMPILER_VAR_1446->args = memoryAlloc(sizeof(array(struct variable*)));
+            ____BAH_COMPILER_VAR_1446->args->length = 0;
+            ____BAH_COMPILER_VAR_1446->args->elemSize = sizeof(struct variable*);
+            struct debugFunction* df = ____BAH_COMPILER_VAR_1446;
 
 #line 3222 "/home/alois/Documents/bah-bah/src/parser.bah"
 df->name = fn->name;
@@ -24166,94 +24150,94 @@ df->args = fn->args;
 df->returns = fn->returns->type;
 
 #line 3225 "/home/alois/Documents/bah-bah/src/parser.bah"
-struct debugFunction* ____BAH_COMPILER_VAR_1452 = df;
-char ** ____BAH_COMPILER_VAR_1454 = (char **)((char*)(____BAH_COMPILER_VAR_1452) + offsetof(struct debugFunction, name));
-struct reflectElement ____BAH_COMPILER_VAR_1455 = __reflect(____BAH_COMPILER_VAR_1454, sizeof(char *), "\010\0\0\0""cpstring", "\04\0\0\0""name", 0, 0, 0, 0, offsetof(struct debugFunction, name));
-char ** ____BAH_COMPILER_VAR_1456 = (char **)((char*)(____BAH_COMPILER_VAR_1452) + offsetof(struct debugFunction, returns));
-struct reflectElement ____BAH_COMPILER_VAR_1457 = __reflect(____BAH_COMPILER_VAR_1456, sizeof(char *), "\010\0\0\0""cpstring", "\07\0\0\0""returns", 0, 0, 0, 0, offsetof(struct debugFunction, returns));
-array(struct variable*)** ____BAH_COMPILER_VAR_1458 = (array(struct variable*)**)((char*)(____BAH_COMPILER_VAR_1452) + offsetof(struct debugFunction, args));
-struct variable** ____BAH_COMPILER_VAR_1459 = 0;
-char ** ____BAH_COMPILER_VAR_1461 = (char **)((char*)(____BAH_COMPILER_VAR_1459) + offsetof(struct variable, name));
-struct reflectElement ____BAH_COMPILER_VAR_1462 = __reflect(____BAH_COMPILER_VAR_1461, sizeof(char *), "\010\0\0\0""cpstring", "\04\0\0\0""name", 0, 0, 0, 0, offsetof(struct variable, name));
-char ** ____BAH_COMPILER_VAR_1463 = (char **)((char*)(____BAH_COMPILER_VAR_1459) + offsetof(struct variable, type));
-struct reflectElement ____BAH_COMPILER_VAR_1464 = __reflect(____BAH_COMPILER_VAR_1463, sizeof(char *), "\010\0\0\0""cpstring", "\04\0\0\0""type", 0, 0, 0, 0, offsetof(struct variable, type));
-char* ____BAH_COMPILER_VAR_1465 = (char*)((char*)(____BAH_COMPILER_VAR_1459) + offsetof(struct variable, isConst));
-struct reflectElement ____BAH_COMPILER_VAR_1466 = __reflect(____BAH_COMPILER_VAR_1465, sizeof(char), "\04\0\0\0""bool", "\07\0\0\0""isConst", 0, 0, 0, 0, offsetof(struct variable, isConst));
-char ** ____BAH_COMPILER_VAR_1467 = (char **)((char*)(____BAH_COMPILER_VAR_1459) + offsetof(struct variable, constVal));
-struct reflectElement ____BAH_COMPILER_VAR_1468 = __reflect(____BAH_COMPILER_VAR_1467, sizeof(char *), "\010\0\0\0""cpstring", "\010\0\0\0""constVal", 0, 0, 0, 0, offsetof(struct variable, constVal));
-char* ____BAH_COMPILER_VAR_1469 = (char*)((char*)(____BAH_COMPILER_VAR_1459) + offsetof(struct variable, isArray));
-struct reflectElement ____BAH_COMPILER_VAR_1470 = __reflect(____BAH_COMPILER_VAR_1469, sizeof(char), "\04\0\0\0""bool", "\07\0\0\0""isArray", 0, 0, 0, 0, offsetof(struct variable, isArray));
-char ** ____BAH_COMPILER_VAR_1471 = (char **)((char*)(____BAH_COMPILER_VAR_1459) + offsetof(struct variable, from));
-struct reflectElement ____BAH_COMPILER_VAR_1472 = __reflect(____BAH_COMPILER_VAR_1471, sizeof(char *), "\010\0\0\0""cpstring", "\04\0\0\0""from", 0, 0, 0, 0, offsetof(struct variable, from));
-void ** ____BAH_COMPILER_VAR_1473 = (void **)((char*)(____BAH_COMPILER_VAR_1459) + offsetof(struct variable, declScope));
-struct reflectElement ____BAH_COMPILER_VAR_1474 = __reflect(____BAH_COMPILER_VAR_1473, sizeof(void *), "\03\0\0\0""ptr", "\011\0\0\0""declScope", 0, 0, 0, 0, offsetof(struct variable, declScope));
-char* ____BAH_COMPILER_VAR_1475 = (char*)((char*)(____BAH_COMPILER_VAR_1459) + offsetof(struct variable, isGlobal));
-struct reflectElement ____BAH_COMPILER_VAR_1476 = __reflect(____BAH_COMPILER_VAR_1475, sizeof(char), "\04\0\0\0""bool", "\010\0\0\0""isGlobal", 0, 0, 0, 0, offsetof(struct variable, isGlobal));
-struct rope** ____BAH_COMPILER_VAR_1477 = (struct rope**)((char*)(____BAH_COMPILER_VAR_1459) + offsetof(struct variable, declRope));
-char ** ____BAH_COMPILER_VAR_1479 = (char **)((char*)(____BAH_COMPILER_VAR_1477) + offsetof(struct rope, str));
-struct reflectElement ____BAH_COMPILER_VAR_1480 = __reflect(____BAH_COMPILER_VAR_1479, sizeof(char *), "\010\0\0\0""cpstring", "\03\0\0\0""str", 0, 0, 0, 0, offsetof(struct rope, str));
-int* ____BAH_COMPILER_VAR_1481 = (int*)((char*)(____BAH_COMPILER_VAR_1477) + offsetof(struct rope, totalLen));
-struct reflectElement ____BAH_COMPILER_VAR_1482 = __reflect(____BAH_COMPILER_VAR_1481, sizeof(int), "\05\0\0\0""int32", "\010\0\0\0""totalLen", 0, 0, 0, 0, offsetof(struct rope, totalLen));
-void ** ____BAH_COMPILER_VAR_1483 = (void **)((char*)(____BAH_COMPILER_VAR_1477) + offsetof(struct rope, left));
-struct reflectElement ____BAH_COMPILER_VAR_1484 = __reflect(____BAH_COMPILER_VAR_1483, sizeof(void *), "\03\0\0\0""ptr", "\04\0\0\0""left", 0, 0, 0, 0, offsetof(struct rope, left));
-void ** ____BAH_COMPILER_VAR_1485 = (void **)((char*)(____BAH_COMPILER_VAR_1477) + offsetof(struct rope, right));
-struct reflectElement ____BAH_COMPILER_VAR_1486 = __reflect(____BAH_COMPILER_VAR_1485, sizeof(void *), "\03\0\0\0""ptr", "\05\0\0\0""right", 0, 0, 0, 0, offsetof(struct rope, right));
+struct debugFunction* ____BAH_COMPILER_VAR_1447 = df;
+char ** ____BAH_COMPILER_VAR_1449 = (char **)((char*)(____BAH_COMPILER_VAR_1447) + offsetof(struct debugFunction, name));
+struct reflectElement ____BAH_COMPILER_VAR_1450 = __reflect(____BAH_COMPILER_VAR_1449, sizeof(char *), "\010\0\0\0""cpstring", "\04\0\0\0""name", 0, 0, 0, 0, offsetof(struct debugFunction, name));
+char ** ____BAH_COMPILER_VAR_1451 = (char **)((char*)(____BAH_COMPILER_VAR_1447) + offsetof(struct debugFunction, returns));
+struct reflectElement ____BAH_COMPILER_VAR_1452 = __reflect(____BAH_COMPILER_VAR_1451, sizeof(char *), "\010\0\0\0""cpstring", "\07\0\0\0""returns", 0, 0, 0, 0, offsetof(struct debugFunction, returns));
+array(struct variable*)** ____BAH_COMPILER_VAR_1453 = (array(struct variable*)**)((char*)(____BAH_COMPILER_VAR_1447) + offsetof(struct debugFunction, args));
+struct variable** ____BAH_COMPILER_VAR_1454 = 0;
+char ** ____BAH_COMPILER_VAR_1456 = (char **)((char*)(____BAH_COMPILER_VAR_1454) + offsetof(struct variable, name));
+struct reflectElement ____BAH_COMPILER_VAR_1457 = __reflect(____BAH_COMPILER_VAR_1456, sizeof(char *), "\010\0\0\0""cpstring", "\04\0\0\0""name", 0, 0, 0, 0, offsetof(struct variable, name));
+char ** ____BAH_COMPILER_VAR_1458 = (char **)((char*)(____BAH_COMPILER_VAR_1454) + offsetof(struct variable, type));
+struct reflectElement ____BAH_COMPILER_VAR_1459 = __reflect(____BAH_COMPILER_VAR_1458, sizeof(char *), "\010\0\0\0""cpstring", "\04\0\0\0""type", 0, 0, 0, 0, offsetof(struct variable, type));
+char* ____BAH_COMPILER_VAR_1460 = (char*)((char*)(____BAH_COMPILER_VAR_1454) + offsetof(struct variable, isConst));
+struct reflectElement ____BAH_COMPILER_VAR_1461 = __reflect(____BAH_COMPILER_VAR_1460, sizeof(char), "\04\0\0\0""bool", "\07\0\0\0""isConst", 0, 0, 0, 0, offsetof(struct variable, isConst));
+char ** ____BAH_COMPILER_VAR_1462 = (char **)((char*)(____BAH_COMPILER_VAR_1454) + offsetof(struct variable, constVal));
+struct reflectElement ____BAH_COMPILER_VAR_1463 = __reflect(____BAH_COMPILER_VAR_1462, sizeof(char *), "\010\0\0\0""cpstring", "\010\0\0\0""constVal", 0, 0, 0, 0, offsetof(struct variable, constVal));
+char* ____BAH_COMPILER_VAR_1464 = (char*)((char*)(____BAH_COMPILER_VAR_1454) + offsetof(struct variable, isArray));
+struct reflectElement ____BAH_COMPILER_VAR_1465 = __reflect(____BAH_COMPILER_VAR_1464, sizeof(char), "\04\0\0\0""bool", "\07\0\0\0""isArray", 0, 0, 0, 0, offsetof(struct variable, isArray));
+char ** ____BAH_COMPILER_VAR_1466 = (char **)((char*)(____BAH_COMPILER_VAR_1454) + offsetof(struct variable, from));
+struct reflectElement ____BAH_COMPILER_VAR_1467 = __reflect(____BAH_COMPILER_VAR_1466, sizeof(char *), "\010\0\0\0""cpstring", "\04\0\0\0""from", 0, 0, 0, 0, offsetof(struct variable, from));
+void ** ____BAH_COMPILER_VAR_1468 = (void **)((char*)(____BAH_COMPILER_VAR_1454) + offsetof(struct variable, declScope));
+struct reflectElement ____BAH_COMPILER_VAR_1469 = __reflect(____BAH_COMPILER_VAR_1468, sizeof(void *), "\03\0\0\0""ptr", "\011\0\0\0""declScope", 0, 0, 0, 0, offsetof(struct variable, declScope));
+char* ____BAH_COMPILER_VAR_1470 = (char*)((char*)(____BAH_COMPILER_VAR_1454) + offsetof(struct variable, isGlobal));
+struct reflectElement ____BAH_COMPILER_VAR_1471 = __reflect(____BAH_COMPILER_VAR_1470, sizeof(char), "\04\0\0\0""bool", "\010\0\0\0""isGlobal", 0, 0, 0, 0, offsetof(struct variable, isGlobal));
+struct rope** ____BAH_COMPILER_VAR_1472 = (struct rope**)((char*)(____BAH_COMPILER_VAR_1454) + offsetof(struct variable, declRope));
+char ** ____BAH_COMPILER_VAR_1474 = (char **)((char*)(____BAH_COMPILER_VAR_1472) + offsetof(struct rope, str));
+struct reflectElement ____BAH_COMPILER_VAR_1475 = __reflect(____BAH_COMPILER_VAR_1474, sizeof(char *), "\010\0\0\0""cpstring", "\03\0\0\0""str", 0, 0, 0, 0, offsetof(struct rope, str));
+int* ____BAH_COMPILER_VAR_1476 = (int*)((char*)(____BAH_COMPILER_VAR_1472) + offsetof(struct rope, totalLen));
+struct reflectElement ____BAH_COMPILER_VAR_1477 = __reflect(____BAH_COMPILER_VAR_1476, sizeof(int), "\05\0\0\0""int32", "\010\0\0\0""totalLen", 0, 0, 0, 0, offsetof(struct rope, totalLen));
+void ** ____BAH_COMPILER_VAR_1478 = (void **)((char*)(____BAH_COMPILER_VAR_1472) + offsetof(struct rope, left));
+struct reflectElement ____BAH_COMPILER_VAR_1479 = __reflect(____BAH_COMPILER_VAR_1478, sizeof(void *), "\03\0\0\0""ptr", "\04\0\0\0""left", 0, 0, 0, 0, offsetof(struct rope, left));
+void ** ____BAH_COMPILER_VAR_1480 = (void **)((char*)(____BAH_COMPILER_VAR_1472) + offsetof(struct rope, right));
+struct reflectElement ____BAH_COMPILER_VAR_1481 = __reflect(____BAH_COMPILER_VAR_1480, sizeof(void *), "\03\0\0\0""ptr", "\05\0\0\0""right", 0, 0, 0, 0, offsetof(struct rope, right));
 
-        array(struct reflectElement) * ____BAH_COMPILER_VAR_1478 = memoryAlloc(sizeof(array(struct reflectElement)));
-        ____BAH_COMPILER_VAR_1478->elemSize = sizeof(struct reflectElement);
-        ____BAH_COMPILER_VAR_1478->length = 4;
-        ____BAH_COMPILER_VAR_1478->data = memoryAlloc(____BAH_COMPILER_VAR_1478->length * ____BAH_COMPILER_VAR_1478->elemSize);
-        ____BAH_COMPILER_VAR_1478->data[0] = ____BAH_COMPILER_VAR_1480;
-____BAH_COMPILER_VAR_1478->data[1] = ____BAH_COMPILER_VAR_1482;
-____BAH_COMPILER_VAR_1478->data[2] = ____BAH_COMPILER_VAR_1484;
-____BAH_COMPILER_VAR_1478->data[3] = ____BAH_COMPILER_VAR_1486;
-struct reflectElement ____BAH_COMPILER_VAR_1487 = __reflect(____BAH_COMPILER_VAR_1477, sizeof(struct rope), "\05\0\0\0""rope*", "\010\0\0\0""declRope", 0, 0, 1, ____BAH_COMPILER_VAR_1478, offsetof(struct variable, declRope));
-char* ____BAH_COMPILER_VAR_1488 = (char*)((char*)(____BAH_COMPILER_VAR_1459) + offsetof(struct variable, canBeNull));
-struct reflectElement ____BAH_COMPILER_VAR_1489 = __reflect(____BAH_COMPILER_VAR_1488, sizeof(char), "\04\0\0\0""bool", "\011\0\0\0""canBeNull", 0, 0, 0, 0, offsetof(struct variable, canBeNull));
-void ** ____BAH_COMPILER_VAR_1490 = (void **)((char*)(____BAH_COMPILER_VAR_1459) + offsetof(struct variable, iterScope));
-struct reflectElement ____BAH_COMPILER_VAR_1491 = __reflect(____BAH_COMPILER_VAR_1490, sizeof(void *), "\03\0\0\0""ptr", "\011\0\0\0""iterScope", 0, 0, 0, 0, offsetof(struct variable, iterScope));
-char* ____BAH_COMPILER_VAR_1492 = (char*)((char*)(____BAH_COMPILER_VAR_1459) + offsetof(struct variable, canBeReg));
-struct reflectElement ____BAH_COMPILER_VAR_1493 = __reflect(____BAH_COMPILER_VAR_1492, sizeof(char), "\04\0\0\0""bool", "\010\0\0\0""canBeReg", 0, 0, 0, 0, offsetof(struct variable, canBeReg));
-char* ____BAH_COMPILER_VAR_1494 = (char*)((char*)(____BAH_COMPILER_VAR_1459) + offsetof(struct variable, isReg));
-struct reflectElement ____BAH_COMPILER_VAR_1495 = __reflect(____BAH_COMPILER_VAR_1494, sizeof(char), "\04\0\0\0""bool", "\05\0\0\0""isReg", 0, 0, 0, 0, offsetof(struct variable, isReg));
-void ** ____BAH_COMPILER_VAR_1496 = (void **)((char*)(____BAH_COMPILER_VAR_1459) + offsetof(struct variable, lastSet));
-struct reflectElement ____BAH_COMPILER_VAR_1497 = __reflect(____BAH_COMPILER_VAR_1496, sizeof(void *), "\03\0\0\0""ptr", "\07\0\0\0""lastSet", 0, 0, 0, 0, offsetof(struct variable, lastSet));
-char* ____BAH_COMPILER_VAR_1498 = (char*)((char*)(____BAH_COMPILER_VAR_1459) + offsetof(struct variable, isArg));
-struct reflectElement ____BAH_COMPILER_VAR_1499 = __reflect(____BAH_COMPILER_VAR_1498, sizeof(char), "\04\0\0\0""bool", "\05\0\0\0""isArg", 0, 0, 0, 0, offsetof(struct variable, isArg));
+        array(struct reflectElement) * ____BAH_COMPILER_VAR_1473 = memoryAlloc(sizeof(array(struct reflectElement)));
+        ____BAH_COMPILER_VAR_1473->elemSize = sizeof(struct reflectElement);
+        ____BAH_COMPILER_VAR_1473->length = 4;
+        ____BAH_COMPILER_VAR_1473->data = memoryAlloc(____BAH_COMPILER_VAR_1473->length * ____BAH_COMPILER_VAR_1473->elemSize);
+        ____BAH_COMPILER_VAR_1473->data[0] = ____BAH_COMPILER_VAR_1475;
+____BAH_COMPILER_VAR_1473->data[1] = ____BAH_COMPILER_VAR_1477;
+____BAH_COMPILER_VAR_1473->data[2] = ____BAH_COMPILER_VAR_1479;
+____BAH_COMPILER_VAR_1473->data[3] = ____BAH_COMPILER_VAR_1481;
+struct reflectElement ____BAH_COMPILER_VAR_1482 = __reflect(____BAH_COMPILER_VAR_1472, sizeof(struct rope), "\05\0\0\0""rope*", "\010\0\0\0""declRope", 0, 0, 1, ____BAH_COMPILER_VAR_1473, offsetof(struct variable, declRope));
+char* ____BAH_COMPILER_VAR_1483 = (char*)((char*)(____BAH_COMPILER_VAR_1454) + offsetof(struct variable, canBeNull));
+struct reflectElement ____BAH_COMPILER_VAR_1484 = __reflect(____BAH_COMPILER_VAR_1483, sizeof(char), "\04\0\0\0""bool", "\011\0\0\0""canBeNull", 0, 0, 0, 0, offsetof(struct variable, canBeNull));
+void ** ____BAH_COMPILER_VAR_1485 = (void **)((char*)(____BAH_COMPILER_VAR_1454) + offsetof(struct variable, iterScope));
+struct reflectElement ____BAH_COMPILER_VAR_1486 = __reflect(____BAH_COMPILER_VAR_1485, sizeof(void *), "\03\0\0\0""ptr", "\011\0\0\0""iterScope", 0, 0, 0, 0, offsetof(struct variable, iterScope));
+char* ____BAH_COMPILER_VAR_1487 = (char*)((char*)(____BAH_COMPILER_VAR_1454) + offsetof(struct variable, canBeReg));
+struct reflectElement ____BAH_COMPILER_VAR_1488 = __reflect(____BAH_COMPILER_VAR_1487, sizeof(char), "\04\0\0\0""bool", "\010\0\0\0""canBeReg", 0, 0, 0, 0, offsetof(struct variable, canBeReg));
+char* ____BAH_COMPILER_VAR_1489 = (char*)((char*)(____BAH_COMPILER_VAR_1454) + offsetof(struct variable, isReg));
+struct reflectElement ____BAH_COMPILER_VAR_1490 = __reflect(____BAH_COMPILER_VAR_1489, sizeof(char), "\04\0\0\0""bool", "\05\0\0\0""isReg", 0, 0, 0, 0, offsetof(struct variable, isReg));
+void ** ____BAH_COMPILER_VAR_1491 = (void **)((char*)(____BAH_COMPILER_VAR_1454) + offsetof(struct variable, lastSet));
+struct reflectElement ____BAH_COMPILER_VAR_1492 = __reflect(____BAH_COMPILER_VAR_1491, sizeof(void *), "\03\0\0\0""ptr", "\07\0\0\0""lastSet", 0, 0, 0, 0, offsetof(struct variable, lastSet));
+char* ____BAH_COMPILER_VAR_1493 = (char*)((char*)(____BAH_COMPILER_VAR_1454) + offsetof(struct variable, isArg));
+struct reflectElement ____BAH_COMPILER_VAR_1494 = __reflect(____BAH_COMPILER_VAR_1493, sizeof(char), "\04\0\0\0""bool", "\05\0\0\0""isArg", 0, 0, 0, 0, offsetof(struct variable, isArg));
 
-        array(struct reflectElement) * ____BAH_COMPILER_VAR_1460 = memoryAlloc(sizeof(array(struct reflectElement)));
-        ____BAH_COMPILER_VAR_1460->elemSize = sizeof(struct reflectElement);
-        ____BAH_COMPILER_VAR_1460->length = 15;
-        ____BAH_COMPILER_VAR_1460->data = memoryAlloc(____BAH_COMPILER_VAR_1460->length * ____BAH_COMPILER_VAR_1460->elemSize);
-        ____BAH_COMPILER_VAR_1460->data[0] = ____BAH_COMPILER_VAR_1462;
-____BAH_COMPILER_VAR_1460->data[1] = ____BAH_COMPILER_VAR_1464;
-____BAH_COMPILER_VAR_1460->data[2] = ____BAH_COMPILER_VAR_1466;
-____BAH_COMPILER_VAR_1460->data[3] = ____BAH_COMPILER_VAR_1468;
-____BAH_COMPILER_VAR_1460->data[4] = ____BAH_COMPILER_VAR_1470;
-____BAH_COMPILER_VAR_1460->data[5] = ____BAH_COMPILER_VAR_1472;
-____BAH_COMPILER_VAR_1460->data[6] = ____BAH_COMPILER_VAR_1474;
-____BAH_COMPILER_VAR_1460->data[7] = ____BAH_COMPILER_VAR_1476;
-____BAH_COMPILER_VAR_1460->data[8] = ____BAH_COMPILER_VAR_1487;
-____BAH_COMPILER_VAR_1460->data[9] = ____BAH_COMPILER_VAR_1489;
-____BAH_COMPILER_VAR_1460->data[10] = ____BAH_COMPILER_VAR_1491;
-____BAH_COMPILER_VAR_1460->data[11] = ____BAH_COMPILER_VAR_1493;
-____BAH_COMPILER_VAR_1460->data[12] = ____BAH_COMPILER_VAR_1495;
-____BAH_COMPILER_VAR_1460->data[13] = ____BAH_COMPILER_VAR_1497;
-____BAH_COMPILER_VAR_1460->data[14] = ____BAH_COMPILER_VAR_1499;
-struct reflectElement ____BAH_COMPILER_VAR_1500 = __reflect(____BAH_COMPILER_VAR_1459, sizeof(struct variable), "\011\0\0\0""variable*", "\0\0\0\0""", 0, 0, 1, ____BAH_COMPILER_VAR_1460, 0);
+        array(struct reflectElement) * ____BAH_COMPILER_VAR_1455 = memoryAlloc(sizeof(array(struct reflectElement)));
+        ____BAH_COMPILER_VAR_1455->elemSize = sizeof(struct reflectElement);
+        ____BAH_COMPILER_VAR_1455->length = 15;
+        ____BAH_COMPILER_VAR_1455->data = memoryAlloc(____BAH_COMPILER_VAR_1455->length * ____BAH_COMPILER_VAR_1455->elemSize);
+        ____BAH_COMPILER_VAR_1455->data[0] = ____BAH_COMPILER_VAR_1457;
+____BAH_COMPILER_VAR_1455->data[1] = ____BAH_COMPILER_VAR_1459;
+____BAH_COMPILER_VAR_1455->data[2] = ____BAH_COMPILER_VAR_1461;
+____BAH_COMPILER_VAR_1455->data[3] = ____BAH_COMPILER_VAR_1463;
+____BAH_COMPILER_VAR_1455->data[4] = ____BAH_COMPILER_VAR_1465;
+____BAH_COMPILER_VAR_1455->data[5] = ____BAH_COMPILER_VAR_1467;
+____BAH_COMPILER_VAR_1455->data[6] = ____BAH_COMPILER_VAR_1469;
+____BAH_COMPILER_VAR_1455->data[7] = ____BAH_COMPILER_VAR_1471;
+____BAH_COMPILER_VAR_1455->data[8] = ____BAH_COMPILER_VAR_1482;
+____BAH_COMPILER_VAR_1455->data[9] = ____BAH_COMPILER_VAR_1484;
+____BAH_COMPILER_VAR_1455->data[10] = ____BAH_COMPILER_VAR_1486;
+____BAH_COMPILER_VAR_1455->data[11] = ____BAH_COMPILER_VAR_1488;
+____BAH_COMPILER_VAR_1455->data[12] = ____BAH_COMPILER_VAR_1490;
+____BAH_COMPILER_VAR_1455->data[13] = ____BAH_COMPILER_VAR_1492;
+____BAH_COMPILER_VAR_1455->data[14] = ____BAH_COMPILER_VAR_1494;
+struct reflectElement ____BAH_COMPILER_VAR_1495 = __reflect(____BAH_COMPILER_VAR_1454, sizeof(struct variable), "\011\0\0\0""variable*", "\0\0\0\0""", 0, 0, 1, ____BAH_COMPILER_VAR_1455, 0);
 
-        struct reflectElement ____BAH_COMPILER_VAR_1501 = ____BAH_COMPILER_VAR_1500;
-        struct reflectElement ____BAH_COMPILER_VAR_1502 = __reflect(____BAH_COMPILER_VAR_1458, sizeof(array(struct variable*)*), "\013\0\0\0""[]variable*", "\04\0\0\0""args", 1, &____BAH_COMPILER_VAR_1501, 0, 0, offsetof(struct debugFunction, args));
+        struct reflectElement ____BAH_COMPILER_VAR_1496 = ____BAH_COMPILER_VAR_1495;
+        struct reflectElement ____BAH_COMPILER_VAR_1497 = __reflect(____BAH_COMPILER_VAR_1453, sizeof(array(struct variable*)*), "\013\0\0\0""[]variable*", "\04\0\0\0""args", 1, &____BAH_COMPILER_VAR_1496, 0, 0, offsetof(struct debugFunction, args));
 
-        array(struct reflectElement) * ____BAH_COMPILER_VAR_1453 = memoryAlloc(sizeof(array(struct reflectElement)));
-        ____BAH_COMPILER_VAR_1453->elemSize = sizeof(struct reflectElement);
-        ____BAH_COMPILER_VAR_1453->length = 3;
-        ____BAH_COMPILER_VAR_1453->data = memoryAlloc(____BAH_COMPILER_VAR_1453->length * ____BAH_COMPILER_VAR_1453->elemSize);
-        ____BAH_COMPILER_VAR_1453->data[0] = ____BAH_COMPILER_VAR_1455;
-____BAH_COMPILER_VAR_1453->data[1] = ____BAH_COMPILER_VAR_1457;
-____BAH_COMPILER_VAR_1453->data[2] = ____BAH_COMPILER_VAR_1502;
-struct reflectElement ____BAH_COMPILER_VAR_1503 = __reflect(____BAH_COMPILER_VAR_1452, sizeof(struct debugFunction), "\016\0\0\0""debugFunction*", "\02\0\0\0""df", 0, 0, 1, ____BAH_COMPILER_VAR_1453, 0);
-debugPrint("\012\0\0\0""fn_declare",ft.line,____BAH_COMPILER_VAR_1503);
+        array(struct reflectElement) * ____BAH_COMPILER_VAR_1448 = memoryAlloc(sizeof(array(struct reflectElement)));
+        ____BAH_COMPILER_VAR_1448->elemSize = sizeof(struct reflectElement);
+        ____BAH_COMPILER_VAR_1448->length = 3;
+        ____BAH_COMPILER_VAR_1448->data = memoryAlloc(____BAH_COMPILER_VAR_1448->length * ____BAH_COMPILER_VAR_1448->elemSize);
+        ____BAH_COMPILER_VAR_1448->data[0] = ____BAH_COMPILER_VAR_1450;
+____BAH_COMPILER_VAR_1448->data[1] = ____BAH_COMPILER_VAR_1452;
+____BAH_COMPILER_VAR_1448->data[2] = ____BAH_COMPILER_VAR_1497;
+struct reflectElement ____BAH_COMPILER_VAR_1498 = __reflect(____BAH_COMPILER_VAR_1447, sizeof(struct debugFunction), "\016\0\0\0""debugFunction*", "\02\0\0\0""df", 0, 0, 1, ____BAH_COMPILER_VAR_1448, 0);
+debugPrint("\012\0\0\0""fn_declare",ft.line,____BAH_COMPILER_VAR_1498);
 }
 
 #line 3228 "/home/alois/Documents/bah-bah/src/parser.bah"
@@ -24268,20 +24252,20 @@ for (; (j<len(fn->args));
 if ((strcmp(fn->args->data[j]->type, "\05\0\0\0""<any>") == 0)) {
 
 #line 3230 "/home/alois/Documents/bah-bah/src/parser.bah"
-struct genericFunc* ____BAH_COMPILER_VAR_1504 = memoryAlloc(sizeof(struct genericFunc));
-____BAH_COMPILER_VAR_1504->tokens = memoryAlloc(sizeof(array(struct Tok)));
-            ____BAH_COMPILER_VAR_1504->tokens->length = 0;
-            ____BAH_COMPILER_VAR_1504->tokens->elemSize = sizeof(struct Tok);
-            ____BAH_COMPILER_VAR_1504->declared = memoryAlloc(sizeof(array(struct func*)));
-            ____BAH_COMPILER_VAR_1504->declared->length = 0;
-            ____BAH_COMPILER_VAR_1504->declared->elemSize = sizeof(struct func*);
-            ____BAH_COMPILER_VAR_1504->tokens = arraySubstitute(l, i+1, len(l)-1);
-____BAH_COMPILER_VAR_1504->baseFn = fn;
-____BAH_COMPILER_VAR_1504->tokenName = &ft;
+struct genericFunc* ____BAH_COMPILER_VAR_1499 = memoryAlloc(sizeof(struct genericFunc));
+____BAH_COMPILER_VAR_1499->tokens = memoryAlloc(sizeof(array(struct Tok)));
+            ____BAH_COMPILER_VAR_1499->tokens->length = 0;
+            ____BAH_COMPILER_VAR_1499->tokens->elemSize = sizeof(struct Tok);
+            ____BAH_COMPILER_VAR_1499->declared = memoryAlloc(sizeof(array(struct func*)));
+            ____BAH_COMPILER_VAR_1499->declared->length = 0;
+            ____BAH_COMPILER_VAR_1499->declared->elemSize = sizeof(struct func*);
+            ____BAH_COMPILER_VAR_1499->tokens = arraySubstitute(l, i+1, len(l)-1);
+____BAH_COMPILER_VAR_1499->baseFn = fn;
+____BAH_COMPILER_VAR_1499->tokenName = &ft;
 
-    unsigned int ____BAH_COMPILER_VAR_1505 = len(generics);
-    __Bah_realocate_arr(generics, ____BAH_COMPILER_VAR_1505);
-    generics->data[____BAH_COMPILER_VAR_1505] = ____BAH_COMPILER_VAR_1504;
+    unsigned int ____BAH_COMPILER_VAR_1500 = len(generics);
+    __Bah_realocate_arr(generics, ____BAH_COMPILER_VAR_1500);
+    generics->data[____BAH_COMPILER_VAR_1500] = ____BAH_COMPILER_VAR_1499;
 
 #line 3235 "/home/alois/Documents/bah-bah/src/parser.bah"
 return;
@@ -24303,12 +24287,12 @@ fn->isImported = true;
 
 #line 3244 "/home/alois/Documents/bah-bah/src/parser.bah"
 
-    unsigned int ____BAH_COMPILER_VAR_1506 = len(elems->fns);
-    __Bah_realocate_arr(elems->fns, ____BAH_COMPILER_VAR_1506);
-    elems->fns->data[____BAH_COMPILER_VAR_1506] = fn;
+    unsigned int ____BAH_COMPILER_VAR_1501 = len(elems->fns);
+    __Bah_realocate_arr(elems->fns, ____BAH_COMPILER_VAR_1501);
+    elems->fns->data[____BAH_COMPILER_VAR_1501] = fn;
 
 #line 3245 "/home/alois/Documents/bah-bah/src/parser.bah"
-char** ____BAH_COMPILER_VAR_1507 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1507[1] = "\02\0\0\0"";\n";____BAH_COMPILER_VAR_1507[0] = code;char * ____BAH_COMPILER_VAR_1508 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1507, 2);OUTPUT = rope__add(OUTPUT, rope(____BAH_COMPILER_VAR_1508));
+char** ____BAH_COMPILER_VAR_1502 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1502[1] = "\02\0\0\0"";\n";____BAH_COMPILER_VAR_1502[0] = code;char * ____BAH_COMPILER_VAR_1503 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1502, 2);OUTPUT = rope__add(OUTPUT, rope(____BAH_COMPILER_VAR_1503));
 
 #line 3246 "/home/alois/Documents/bah-bah/src/parser.bah"
 return;
@@ -24321,7 +24305,7 @@ postDeclHandle = rope("\0\0\0\0""");
 OUTPUT = rope__add(OUTPUT, postDeclHandle);
 
 #line 3252 "/home/alois/Documents/bah-bah/src/parser.bah"
-char** ____BAH_COMPILER_VAR_1509 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1509[1] = "\02\0\0\0""{\n";____BAH_COMPILER_VAR_1509[0] = code;char * ____BAH_COMPILER_VAR_1510 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1509, 2);code = ____BAH_COMPILER_VAR_1510;
+char** ____BAH_COMPILER_VAR_1504 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1504[1] = "\02\0\0\0""{\n";____BAH_COMPILER_VAR_1504[0] = code;char * ____BAH_COMPILER_VAR_1505 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1504, 2);code = ____BAH_COMPILER_VAR_1505;
 
 #line 3254 "/home/alois/Documents/bah-bah/src/parser.bah"
 fn->code = rope(code);
@@ -24349,9 +24333,9 @@ a->isArg = true;
 
 #line 3264 "/home/alois/Documents/bah-bah/src/parser.bah"
 
-    unsigned int ____BAH_COMPILER_VAR_1511 = len(vs);
-    __Bah_realocate_arr(vs, ____BAH_COMPILER_VAR_1511);
-    vs->data[____BAH_COMPILER_VAR_1511] = a;
+    unsigned int ____BAH_COMPILER_VAR_1506 = len(vs);
+    __Bah_realocate_arr(vs, ____BAH_COMPILER_VAR_1506);
+    vs->data[____BAH_COMPILER_VAR_1506] = a;
 
 #line 3265 "/home/alois/Documents/bah-bah/src/parser.bah"
 j = j+1;
@@ -24381,9 +24365,9 @@ array(struct func*)* fns = elems->fns;
 
 #line 3275 "/home/alois/Documents/bah-bah/src/parser.bah"
 
-    unsigned int ____BAH_COMPILER_VAR_1512 = len(fns);
-    __Bah_realocate_arr(fns, ____BAH_COMPILER_VAR_1512);
-    fns->data[____BAH_COMPILER_VAR_1512] = fn;
+    unsigned int ____BAH_COMPILER_VAR_1507 = len(fns);
+    __Bah_realocate_arr(fns, ____BAH_COMPILER_VAR_1507);
+    fns->data[____BAH_COMPILER_VAR_1507] = fn;
 }
 
 #line 3278 "/home/alois/Documents/bah-bah/src/parser.bah"
@@ -24442,7 +24426,7 @@ if ((fn->returned==false)) {
 if (__builtin_expect((strlen(fn->returns->type)>0), 0)) {
 
 #line 3301 "/home/alois/Documents/bah-bah/src/parser.bah"
-char** ____BAH_COMPILER_VAR_1513 = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_1513[2] = "\022\0\0\0""' is not returned.";____BAH_COMPILER_VAR_1513[1] = fn->name;____BAH_COMPILER_VAR_1513[0] = "\012\0\0\0""Function '";char * ____BAH_COMPILER_VAR_1514 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1513, 3);throwErr(&l->data[len(l)-1],____BAH_COMPILER_VAR_1514);
+char** ____BAH_COMPILER_VAR_1508 = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_1508[2] = "\022\0\0\0""' is not returned.";____BAH_COMPILER_VAR_1508[1] = fn->name;____BAH_COMPILER_VAR_1508[0] = "\012\0\0\0""Function '";char * ____BAH_COMPILER_VAR_1509 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1508, 3);throwErr(&l->data[len(l)-1],____BAH_COMPILER_VAR_1509);
 }
 
 #line 3303 "/home/alois/Documents/bah-bah/src/parser.bah"
@@ -24515,11 +24499,11 @@ char * valType = getTypeFromToken(&valTok,true,elems);
 if (__builtin_expect((valType[strlen(valType)-1+4]!=33), 0)) {
 
 #line 3343 "/home/alois/Documents/bah-bah/src/parser.bah"
-char** ____BAH_COMPILER_VAR_1515 = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_1515[2] = "\021\0\0\0"") as maybe value.";____BAH_COMPILER_VAR_1515[1] = valType;____BAH_COMPILER_VAR_1515[0] = "\024\0\0\0""Cannot use {TOKEN} (";char * ____BAH_COMPILER_VAR_1516 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1515, 3);throwErr(&valTok,____BAH_COMPILER_VAR_1516);
+char** ____BAH_COMPILER_VAR_1510 = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_1510[2] = "\021\0\0\0"") as maybe value.";____BAH_COMPILER_VAR_1510[1] = valType;____BAH_COMPILER_VAR_1510[0] = "\024\0\0\0""Cannot use {TOKEN} (";char * ____BAH_COMPILER_VAR_1511 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1510, 3);throwErr(&valTok,____BAH_COMPILER_VAR_1511);
 }
 
 #line 3345 "/home/alois/Documents/bah-bah/src/parser.bah"
-char** ____BAH_COMPILER_VAR_1517 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1517[1] = "\01\0\0\0""*";____BAH_COMPILER_VAR_1517[0] = cpstringSubsitute(valType, 0, strlen(valType)-1);char * ____BAH_COMPILER_VAR_1518 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1517, 2);char * newType = ____BAH_COMPILER_VAR_1518;
+char** ____BAH_COMPILER_VAR_1512 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1512[1] = "\01\0\0\0""*";____BAH_COMPILER_VAR_1512[0] = cpstringSubsitute(valType, 0, strlen(valType)-1);char * ____BAH_COMPILER_VAR_1513 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1512, 2);char * newType = ____BAH_COMPILER_VAR_1513;
 
 #line 3348 "/home/alois/Documents/bah-bah/src/parser.bah"
 if (__builtin_expect((strcmp(line->data[4].cont, "\04\0\0\0""else") != 0)&&(strcmp(line->data[4].cont, "\04\0\0\0""then") != 0), 0)) {
@@ -24545,25 +24529,25 @@ char * code = "\0\0\0\0""";
 if ((v==null)) {
 
 #line 3360 "/home/alois/Documents/bah-bah/src/parser.bah"
-struct variable* ____BAH_COMPILER_VAR_1519 = memoryAlloc(sizeof(struct variable));
-____BAH_COMPILER_VAR_1519->name = "\0\0\0\0""";
-____BAH_COMPILER_VAR_1519->type = "\0\0\0\0""";
-____BAH_COMPILER_VAR_1519->constVal = "\0\0\0\0""";
-____BAH_COMPILER_VAR_1519->from = "\0\0\0\0""";
-____BAH_COMPILER_VAR_1519->name = varTok.cont;
-____BAH_COMPILER_VAR_1519->type = newType;
-v = ____BAH_COMPILER_VAR_1519;
+struct variable* ____BAH_COMPILER_VAR_1514 = memoryAlloc(sizeof(struct variable));
+____BAH_COMPILER_VAR_1514->name = "\0\0\0\0""";
+____BAH_COMPILER_VAR_1514->type = "\0\0\0\0""";
+____BAH_COMPILER_VAR_1514->constVal = "\0\0\0\0""";
+____BAH_COMPILER_VAR_1514->from = "\0\0\0\0""";
+____BAH_COMPILER_VAR_1514->name = varTok.cont;
+____BAH_COMPILER_VAR_1514->type = newType;
+v = ____BAH_COMPILER_VAR_1514;
 
 #line 3364 "/home/alois/Documents/bah-bah/src/parser.bah"
 
-    unsigned int ____BAH_COMPILER_VAR_1520 = len(elems->vars);
-    __Bah_realocate_arr(elems->vars, ____BAH_COMPILER_VAR_1520);
-    elems->vars->data[____BAH_COMPILER_VAR_1520] = v;
+    unsigned int ____BAH_COMPILER_VAR_1515 = len(elems->vars);
+    __Bah_realocate_arr(elems->vars, ____BAH_COMPILER_VAR_1515);
+    elems->vars->data[____BAH_COMPILER_VAR_1515] = v;
 
 #line 3365 "/home/alois/Documents/bah-bah/src/parser.bah"
 
-                struct string ____BAH_COMPILER_VAR_1521 = getCType(v->type,elems);
-                char** ____BAH_COMPILER_VAR_1522 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1522[1] = "\01\0\0\0"" ";____BAH_COMPILER_VAR_1522[0] = string__str(&____BAH_COMPILER_VAR_1521);char * ____BAH_COMPILER_VAR_1523 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1522, 2);code = ____BAH_COMPILER_VAR_1523;
+                struct string ____BAH_COMPILER_VAR_1516 = getCType(v->type,elems);
+                char** ____BAH_COMPILER_VAR_1517 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1517[1] = "\01\0\0\0"" ";____BAH_COMPILER_VAR_1517[0] = string__str(&____BAH_COMPILER_VAR_1516);char * ____BAH_COMPILER_VAR_1518 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1517, 2);code = ____BAH_COMPILER_VAR_1518;
 }
 
 #line 3366 "/home/alois/Documents/bah-bah/src/parser.bah"
@@ -24573,25 +24557,25 @@ else {
 if (__builtin_expect((strcmp(v->type, newType) != 0), 0)) {
 
 #line 3368 "/home/alois/Documents/bah-bah/src/parser.bah"
-char** ____BAH_COMPILER_VAR_1524 = alloca(5 * sizeof(char*));____BAH_COMPILER_VAR_1524[4] = "\01\0\0\0"".";____BAH_COMPILER_VAR_1524[3] = newType;____BAH_COMPILER_VAR_1524[2] = "\05\0\0\0"") as ";____BAH_COMPILER_VAR_1524[1] = v->type;____BAH_COMPILER_VAR_1524[0] = "\030\0\0\0""Cannot use var {TOKEN} (";char * ____BAH_COMPILER_VAR_1525 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1524, 5);throwErr(&varTok,____BAH_COMPILER_VAR_1525);
+char** ____BAH_COMPILER_VAR_1519 = alloca(5 * sizeof(char*));____BAH_COMPILER_VAR_1519[4] = "\01\0\0\0"".";____BAH_COMPILER_VAR_1519[3] = newType;____BAH_COMPILER_VAR_1519[2] = "\05\0\0\0"") as ";____BAH_COMPILER_VAR_1519[1] = v->type;____BAH_COMPILER_VAR_1519[0] = "\030\0\0\0""Cannot use var {TOKEN} (";char * ____BAH_COMPILER_VAR_1520 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1519, 5);throwErr(&varTok,____BAH_COMPILER_VAR_1520);
 }
 }
 
 #line 3371 "/home/alois/Documents/bah-bah/src/parser.bah"
-char** ____BAH_COMPILER_VAR_1526 = alloca(4 * sizeof(char*));____BAH_COMPILER_VAR_1526[3] = "\01\0\0\0"";";____BAH_COMPILER_VAR_1526[2] = valTok.cont;____BAH_COMPILER_VAR_1526[1] = "\03\0\0\0"" = ";____BAH_COMPILER_VAR_1526[0] = v->name;char * ____BAH_COMPILER_VAR_1527 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1526, 4);char** ____BAH_COMPILER_VAR_1528 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1528[1] = ____BAH_COMPILER_VAR_1527;____BAH_COMPILER_VAR_1528[0] = code;char * ____BAH_COMPILER_VAR_1529 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1528, 2);code = ____BAH_COMPILER_VAR_1529;
+char** ____BAH_COMPILER_VAR_1521 = alloca(4 * sizeof(char*));____BAH_COMPILER_VAR_1521[3] = "\01\0\0\0"";";____BAH_COMPILER_VAR_1521[2] = valTok.cont;____BAH_COMPILER_VAR_1521[1] = "\03\0\0\0"" = ";____BAH_COMPILER_VAR_1521[0] = v->name;char * ____BAH_COMPILER_VAR_1522 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1521, 4);char** ____BAH_COMPILER_VAR_1523 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1523[1] = ____BAH_COMPILER_VAR_1522;____BAH_COMPILER_VAR_1523[0] = code;char * ____BAH_COMPILER_VAR_1524 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1523, 2);code = ____BAH_COMPILER_VAR_1524;
 
 #line 3373 "/home/alois/Documents/bah-bah/src/parser.bah"
 if ((isThen==true)) {
 
 #line 3374 "/home/alois/Documents/bah-bah/src/parser.bah"
-char** ____BAH_COMPILER_VAR_1530 = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_1530[2] = "\013\0\0\0"" != null) {";____BAH_COMPILER_VAR_1530[1] = v->name;____BAH_COMPILER_VAR_1530[0] = "\04\0\0\0""if (";char * ____BAH_COMPILER_VAR_1531 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1530, 3);char** ____BAH_COMPILER_VAR_1532 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1532[1] = ____BAH_COMPILER_VAR_1531;____BAH_COMPILER_VAR_1532[0] = code;char * ____BAH_COMPILER_VAR_1533 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1532, 2);code = ____BAH_COMPILER_VAR_1533;
+char** ____BAH_COMPILER_VAR_1525 = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_1525[2] = "\013\0\0\0"" != null) {";____BAH_COMPILER_VAR_1525[1] = v->name;____BAH_COMPILER_VAR_1525[0] = "\04\0\0\0""if (";char * ____BAH_COMPILER_VAR_1526 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1525, 3);char** ____BAH_COMPILER_VAR_1527 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1527[1] = ____BAH_COMPILER_VAR_1526;____BAH_COMPILER_VAR_1527[0] = code;char * ____BAH_COMPILER_VAR_1528 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1527, 2);code = ____BAH_COMPILER_VAR_1528;
 }
 
 #line 3375 "/home/alois/Documents/bah-bah/src/parser.bah"
 else {
 
 #line 3376 "/home/alois/Documents/bah-bah/src/parser.bah"
-char** ____BAH_COMPILER_VAR_1534 = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_1534[2] = "\013\0\0\0"" == null) {";____BAH_COMPILER_VAR_1534[1] = v->name;____BAH_COMPILER_VAR_1534[0] = "\04\0\0\0""if (";char * ____BAH_COMPILER_VAR_1535 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1534, 3);char** ____BAH_COMPILER_VAR_1536 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1536[1] = ____BAH_COMPILER_VAR_1535;____BAH_COMPILER_VAR_1536[0] = code;char * ____BAH_COMPILER_VAR_1537 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1536, 2);code = ____BAH_COMPILER_VAR_1537;
+char** ____BAH_COMPILER_VAR_1529 = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_1529[2] = "\013\0\0\0"" == null) {";____BAH_COMPILER_VAR_1529[1] = v->name;____BAH_COMPILER_VAR_1529[0] = "\04\0\0\0""if (";char * ____BAH_COMPILER_VAR_1530 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1529, 3);char** ____BAH_COMPILER_VAR_1531 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1531[1] = ____BAH_COMPILER_VAR_1530;____BAH_COMPILER_VAR_1531[0] = code;char * ____BAH_COMPILER_VAR_1532 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1531, 2);code = ____BAH_COMPILER_VAR_1532;
 }
 
 #line 3379 "/home/alois/Documents/bah-bah/src/parser.bah"
@@ -24617,7 +24601,7 @@ OUTPUT = rope__add(OUTPUT, rope("\02\0\0\0""}\n"));
 else {
 
 #line 3390 "/home/alois/Documents/bah-bah/src/parser.bah"
-char** ____BAH_COMPILER_VAR_1538 = alloca(5 * sizeof(char*));____BAH_COMPILER_VAR_1538[4] = "\05\0\0\0""\");}\n";____BAH_COMPILER_VAR_1538[3] = intToStr(line->data[0].line);____BAH_COMPILER_VAR_1538[2] = "\01\0\0\0"":";____BAH_COMPILER_VAR_1538[1] = compilerState.currentFile;____BAH_COMPILER_VAR_1538[0] = "\057\0\0\0""\n__BAH_panic(\"Undefined capture resolution.\", \"";char * ____BAH_COMPILER_VAR_1539 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1538, 5);OUTPUT = rope__add(OUTPUT, rope(____BAH_COMPILER_VAR_1539));
+char** ____BAH_COMPILER_VAR_1533 = alloca(5 * sizeof(char*));____BAH_COMPILER_VAR_1533[4] = "\05\0\0\0""\");}\n";____BAH_COMPILER_VAR_1533[3] = intToStr(line->data[0].line);____BAH_COMPILER_VAR_1533[2] = "\01\0\0\0"":";____BAH_COMPILER_VAR_1533[1] = compilerState.currentFile;____BAH_COMPILER_VAR_1533[0] = "\057\0\0\0""\n__BAH_panic(\"Undefined capture resolution.\", \"";char * ____BAH_COMPILER_VAR_1534 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1533, 5);OUTPUT = rope__add(OUTPUT, rope(____BAH_COMPILER_VAR_1534));
 }
 };
 
@@ -24726,7 +24710,7 @@ parsed = true;
 else {
 
 #line 3437 "/home/alois/Documents/bah-bah/src/parser.bah"
-char** ____BAH_COMPILER_VAR_1540 = alloca(5 * sizeof(char*));____BAH_COMPILER_VAR_1540[4] = "\02\0\0\0""\"\n";____BAH_COMPILER_VAR_1540[3] = compilerState.currentFile;____BAH_COMPILER_VAR_1540[2] = "\02\0\0\0"" \"";____BAH_COMPILER_VAR_1540[1] = intToStr(line->data[0].line);____BAH_COMPILER_VAR_1540[0] = "\07\0\0\0""\n#line ";char * ____BAH_COMPILER_VAR_1541 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1540, 5);OUTPUT = rope__add(OUTPUT, rope(____BAH_COMPILER_VAR_1541));
+char** ____BAH_COMPILER_VAR_1535 = alloca(5 * sizeof(char*));____BAH_COMPILER_VAR_1535[4] = "\02\0\0\0""\"\n";____BAH_COMPILER_VAR_1535[3] = compilerState.currentFile;____BAH_COMPILER_VAR_1535[2] = "\02\0\0\0"" \"";____BAH_COMPILER_VAR_1535[1] = intToStr(line->data[0].line);____BAH_COMPILER_VAR_1535[0] = "\07\0\0\0""\n#line ";char * ____BAH_COMPILER_VAR_1536 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1535, 5);OUTPUT = rope__add(OUTPUT, rope(____BAH_COMPILER_VAR_1536));
 
 #line 3438 "/home/alois/Documents/bah-bah/src/parser.bah"
 if ((ltp==LINE_TYPE_STRUCT)) {
@@ -24813,7 +24797,7 @@ throwErr(&line->data[len(line)-1],"\052\0\0\0""Not expecting {TOKEN} after funct
 parsed = true;
 
 #line 3470 "/home/alois/Documents/bah-bah/src/parser.bah"
-char** ____BAH_COMPILER_VAR_1542 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1542[1] = "\02\0\0\0"";\n";____BAH_COMPILER_VAR_1542[0] = ft.cont;char * ____BAH_COMPILER_VAR_1543 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1542, 2);OUTPUT = rope__add(OUTPUT, rope(____BAH_COMPILER_VAR_1543));
+char** ____BAH_COMPILER_VAR_1537 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1537[1] = "\02\0\0\0"";\n";____BAH_COMPILER_VAR_1537[0] = ft.cont;char * ____BAH_COMPILER_VAR_1538 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1537, 2);OUTPUT = rope__add(OUTPUT, rope(____BAH_COMPILER_VAR_1538));
 }
 
 #line 3471 "/home/alois/Documents/bah-bah/src/parser.bah"
@@ -25016,9 +25000,9 @@ if ((t.type==TOKEN_TYPE_ENCL)) {
 
 #line 3546 "/home/alois/Documents/bah-bah/src/parser.bah"
 
-    unsigned int ____BAH_COMPILER_VAR_1544 = len(line);
-    __Bah_realocate_arr(line, ____BAH_COMPILER_VAR_1544);
-    line->data[____BAH_COMPILER_VAR_1544] = t;
+    unsigned int ____BAH_COMPILER_VAR_1539 = len(line);
+    __Bah_realocate_arr(line, ____BAH_COMPILER_VAR_1539);
+    line->data[____BAH_COMPILER_VAR_1539] = t;
 
 #line 3547 "/home/alois/Documents/bah-bah/src/parser.bah"
 struct Tok pt = tokens->data[i-1];
@@ -25073,9 +25057,9 @@ continue;
 
 #line 3567 "/home/alois/Documents/bah-bah/src/parser.bah"
 
-    unsigned int ____BAH_COMPILER_VAR_1545 = len(line);
-    __Bah_realocate_arr(line, ____BAH_COMPILER_VAR_1545);
-    line->data[____BAH_COMPILER_VAR_1545] = t;
+    unsigned int ____BAH_COMPILER_VAR_1540 = len(line);
+    __Bah_realocate_arr(line, ____BAH_COMPILER_VAR_1540);
+    line->data[____BAH_COMPILER_VAR_1540] = t;
 
 #line 3568 "/home/alois/Documents/bah-bah/src/parser.bah"
 ++i;
@@ -25128,7 +25112,7 @@ struct variable* arg = fn->args->data[j];
 struct string ct = getCType(arg->type,elems);
 
 #line 8 "/home/alois/Documents/bah-bah/src/declarative.bah"
-char** ____BAH_COMPILER_VAR_1546 = alloca(4 * sizeof(char*));____BAH_COMPILER_VAR_1546[3] = arg->name;____BAH_COMPILER_VAR_1546[2] = "\01\0\0\0"" ";____BAH_COMPILER_VAR_1546[1] = string__str(&ct);____BAH_COMPILER_VAR_1546[0] = tmpfnArgsCType;char * ____BAH_COMPILER_VAR_1547 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1546, 4);tmpfnArgsCType = ____BAH_COMPILER_VAR_1547;
+char** ____BAH_COMPILER_VAR_1541 = alloca(4 * sizeof(char*));____BAH_COMPILER_VAR_1541[3] = arg->name;____BAH_COMPILER_VAR_1541[2] = "\01\0\0\0"" ";____BAH_COMPILER_VAR_1541[1] = string__str(&ct);____BAH_COMPILER_VAR_1541[0] = tmpfnArgsCType;char * ____BAH_COMPILER_VAR_1542 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1541, 4);tmpfnArgsCType = ____BAH_COMPILER_VAR_1542;
 
 #line 9 "/home/alois/Documents/bah-bah/src/declarative.bah"
 j = j+1;
@@ -25137,12 +25121,12 @@ j = j+1;
 if ((j<len(fn->args))) {
 
 #line 11 "/home/alois/Documents/bah-bah/src/declarative.bah"
-char** ____BAH_COMPILER_VAR_1548 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1548[1] = "\02\0\0\0"", ";____BAH_COMPILER_VAR_1548[0] = tmpfnArgsCType;char * ____BAH_COMPILER_VAR_1549 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1548, 2);tmpfnArgsCType = ____BAH_COMPILER_VAR_1549;
+char** ____BAH_COMPILER_VAR_1543 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1543[1] = "\02\0\0\0"", ";____BAH_COMPILER_VAR_1543[0] = tmpfnArgsCType;char * ____BAH_COMPILER_VAR_1544 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1543, 2);tmpfnArgsCType = ____BAH_COMPILER_VAR_1544;
 }
 };
 
 #line 15 "/home/alois/Documents/bah-bah/src/declarative.bah"
-char** ____BAH_COMPILER_VAR_1550 = alloca(6 * sizeof(char*));____BAH_COMPILER_VAR_1550[5] = "\03\0\0\0"");\n";____BAH_COMPILER_VAR_1550[4] = tmpfnArgsCType;____BAH_COMPILER_VAR_1550[3] = "\01\0\0\0""(";____BAH_COMPILER_VAR_1550[2] = fn->name;____BAH_COMPILER_VAR_1550[1] = "\01\0\0\0"" ";____BAH_COMPILER_VAR_1550[0] = string__str(&tmpfnRetCType);char * ____BAH_COMPILER_VAR_1551 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1550, 6);OUTPUT = rope__add(OUTPUT, rope(____BAH_COMPILER_VAR_1551));
+char** ____BAH_COMPILER_VAR_1545 = alloca(6 * sizeof(char*));____BAH_COMPILER_VAR_1545[5] = "\03\0\0\0"");\n";____BAH_COMPILER_VAR_1545[4] = tmpfnArgsCType;____BAH_COMPILER_VAR_1545[3] = "\01\0\0\0""(";____BAH_COMPILER_VAR_1545[2] = fn->name;____BAH_COMPILER_VAR_1545[1] = "\01\0\0\0"" ";____BAH_COMPILER_VAR_1545[0] = string__str(&tmpfnRetCType);char * ____BAH_COMPILER_VAR_1546 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1545, 6);OUTPUT = rope__add(OUTPUT, rope(____BAH_COMPILER_VAR_1546));
 };
 
 #line 18 "/home/alois/Documents/bah-bah/src/declarative.bah"
@@ -25152,7 +25136,7 @@ void declareVar(struct variable* v,struct Elems* elems){
 if ((v->isConst==true)) {
 
 #line 20 "/home/alois/Documents/bah-bah/src/declarative.bah"
-char** ____BAH_COMPILER_VAR_1552 = alloca(5 * sizeof(char*));____BAH_COMPILER_VAR_1552[4] = "\01\0\0\0""\n";____BAH_COMPILER_VAR_1552[3] = v->constVal;____BAH_COMPILER_VAR_1552[2] = "\01\0\0\0"" ";____BAH_COMPILER_VAR_1552[1] = v->name;____BAH_COMPILER_VAR_1552[0] = "\010\0\0\0""#define ";char * ____BAH_COMPILER_VAR_1553 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1552, 5);OUTPUT = rope__add(OUTPUT, rope(____BAH_COMPILER_VAR_1553));
+char** ____BAH_COMPILER_VAR_1547 = alloca(5 * sizeof(char*));____BAH_COMPILER_VAR_1547[4] = "\01\0\0\0""\n";____BAH_COMPILER_VAR_1547[3] = v->constVal;____BAH_COMPILER_VAR_1547[2] = "\01\0\0\0"" ";____BAH_COMPILER_VAR_1547[1] = v->name;____BAH_COMPILER_VAR_1547[0] = "\010\0\0\0""#define ";char * ____BAH_COMPILER_VAR_1548 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1547, 5);OUTPUT = rope__add(OUTPUT, rope(____BAH_COMPILER_VAR_1548));
 }
 
 #line 21 "/home/alois/Documents/bah-bah/src/declarative.bah"
@@ -25162,7 +25146,7 @@ else {
 struct string cType = getCType(v->type,elems);
 
 #line 23 "/home/alois/Documents/bah-bah/src/declarative.bah"
-char** ____BAH_COMPILER_VAR_1554 = alloca(4 * sizeof(char*));____BAH_COMPILER_VAR_1554[3] = "\02\0\0\0"";\n";____BAH_COMPILER_VAR_1554[2] = v->name;____BAH_COMPILER_VAR_1554[1] = "\01\0\0\0"" ";____BAH_COMPILER_VAR_1554[0] = string__str(&cType);char * ____BAH_COMPILER_VAR_1555 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1554, 4);OUTPUT = rope__add(OUTPUT, rope(____BAH_COMPILER_VAR_1555));
+char** ____BAH_COMPILER_VAR_1549 = alloca(4 * sizeof(char*));____BAH_COMPILER_VAR_1549[3] = "\02\0\0\0"";\n";____BAH_COMPILER_VAR_1549[2] = v->name;____BAH_COMPILER_VAR_1549[1] = "\01\0\0\0"" ";____BAH_COMPILER_VAR_1549[0] = string__str(&cType);char * ____BAH_COMPILER_VAR_1550 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1549, 4);OUTPUT = rope__add(OUTPUT, rope(____BAH_COMPILER_VAR_1550));
 }
 };
 
@@ -25186,7 +25170,7 @@ for (; (i<len(compilerState.cIncludes));
 ++i) {
 
 #line 42 "/home/alois/Documents/bah-bah/src/declarative.bah"
-char** ____BAH_COMPILER_VAR_1556 = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_1556[2] = "\01\0\0\0""\n";____BAH_COMPILER_VAR_1556[1] = compilerState.cIncludes->data[i];____BAH_COMPILER_VAR_1556[0] = "\011\0\0\0""#include ";char * ____BAH_COMPILER_VAR_1557 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1556, 3);OUTPUT = rope__add(OUTPUT, rope(____BAH_COMPILER_VAR_1557));
+char** ____BAH_COMPILER_VAR_1551 = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_1551[2] = "\01\0\0\0""\n";____BAH_COMPILER_VAR_1551[1] = compilerState.cIncludes->data[i];____BAH_COMPILER_VAR_1551[0] = "\011\0\0\0""#include ";char * ____BAH_COMPILER_VAR_1552 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1551, 3);OUTPUT = rope__add(OUTPUT, rope(____BAH_COMPILER_VAR_1552));
 };
 
 #line 45 "/home/alois/Documents/bah-bah/src/declarative.bah"
@@ -25210,7 +25194,7 @@ string__trimLeft(&elemType,15);
 struct string elemCtype = getCType(string__str(&elemType),elems);
 
 #line 50 "/home/alois/Documents/bah-bah/src/declarative.bah"
-char** ____BAH_COMPILER_VAR_1558 = alloca(5 * sizeof(char*));____BAH_COMPILER_VAR_1558[4] = "\02\0\0\0"";\n";____BAH_COMPILER_VAR_1558[3] = t;____BAH_COMPILER_VAR_1558[2] = "\03\0\0\0"")* ";____BAH_COMPILER_VAR_1558[1] = string__str(&elemCtype);____BAH_COMPILER_VAR_1558[0] = "\016\0\0\0""typedef array(";char * ____BAH_COMPILER_VAR_1559 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1558, 5);OUTPUT = rope__add(OUTPUT, rope(____BAH_COMPILER_VAR_1559));
+char** ____BAH_COMPILER_VAR_1553 = alloca(5 * sizeof(char*));____BAH_COMPILER_VAR_1553[4] = "\02\0\0\0"";\n";____BAH_COMPILER_VAR_1553[3] = t;____BAH_COMPILER_VAR_1553[2] = "\03\0\0\0"")* ";____BAH_COMPILER_VAR_1553[1] = string__str(&elemCtype);____BAH_COMPILER_VAR_1553[0] = "\016\0\0\0""typedef array(";char * ____BAH_COMPILER_VAR_1554 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1553, 5);OUTPUT = rope__add(OUTPUT, rope(____BAH_COMPILER_VAR_1554));
 };
 
 #line 53 "/home/alois/Documents/bah-bah/src/declarative.bah"
@@ -25255,13 +25239,13 @@ declareFunc(fn,elems);
 char * memErrHandle(){
 
 #line 53 "/home/alois/Documents/bah-bah/src/main.bah"
-char** ____BAH_COMPILER_VAR_1560 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1560[1] = compilerState.currentFile;____BAH_COMPILER_VAR_1560[0] = "\06\0\0\0""file: ";char * ____BAH_COMPILER_VAR_1561 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1560, 2);char * r = ____BAH_COMPILER_VAR_1561;
+char** ____BAH_COMPILER_VAR_1555 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1555[1] = compilerState.currentFile;____BAH_COMPILER_VAR_1555[0] = "\06\0\0\0""file: ";char * ____BAH_COMPILER_VAR_1556 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1555, 2);char * r = ____BAH_COMPILER_VAR_1556;
 
 #line 54 "/home/alois/Documents/bah-bah/src/main.bah"
 if ((currentFn!=null)) {
 
 #line 55 "/home/alois/Documents/bah-bah/src/main.bah"
-char** ____BAH_COMPILER_VAR_1562 = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_1562[2] = "\02\0\0\0""()";____BAH_COMPILER_VAR_1562[1] = currentFn->name;____BAH_COMPILER_VAR_1562[0] = "\013\0\0\0""\nfunction: ";char * ____BAH_COMPILER_VAR_1563 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1562, 3);char** ____BAH_COMPILER_VAR_1564 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1564[1] = ____BAH_COMPILER_VAR_1563;____BAH_COMPILER_VAR_1564[0] = r;char * ____BAH_COMPILER_VAR_1565 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1564, 2);r = ____BAH_COMPILER_VAR_1565;
+char** ____BAH_COMPILER_VAR_1557 = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_1557[2] = "\02\0\0\0""()";____BAH_COMPILER_VAR_1557[1] = currentFn->name;____BAH_COMPILER_VAR_1557[0] = "\013\0\0\0""\nfunction: ";char * ____BAH_COMPILER_VAR_1558 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1557, 3);char** ____BAH_COMPILER_VAR_1559 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1559[1] = ____BAH_COMPILER_VAR_1558;____BAH_COMPILER_VAR_1559[0] = r;char * ____BAH_COMPILER_VAR_1560 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1559, 2);r = ____BAH_COMPILER_VAR_1560;
 }
 
 #line 57 "/home/alois/Documents/bah-bah/src/main.bah"
@@ -25285,14 +25269,14 @@ execName = absPath(execName);
 }
 
 #line 71 "/home/alois/Documents/bah-bah/src/main.bah"
-struct flags ____BAH_COMPILER_VAR_1566 = {};
-____BAH_COMPILER_VAR_1566.flags = memoryAlloc(sizeof(array(struct flag*)));
-            ____BAH_COMPILER_VAR_1566.flags->length = 0;
-            ____BAH_COMPILER_VAR_1566.flags->elemSize = sizeof(struct flag*);
-            ____BAH_COMPILER_VAR_1566.args = memoryAlloc(sizeof(array(char *)));
-            ____BAH_COMPILER_VAR_1566.args->length = 0;
-            ____BAH_COMPILER_VAR_1566.args->elemSize = sizeof(char *);
-            flags = ____BAH_COMPILER_VAR_1566;
+struct flags ____BAH_COMPILER_VAR_1561 = {};
+____BAH_COMPILER_VAR_1561.flags = memoryAlloc(sizeof(array(struct flag*)));
+            ____BAH_COMPILER_VAR_1561.flags->length = 0;
+            ____BAH_COMPILER_VAR_1561.flags->elemSize = sizeof(struct flag*);
+            ____BAH_COMPILER_VAR_1561.args = memoryAlloc(sizeof(array(char *)));
+            ____BAH_COMPILER_VAR_1561.args->length = 0;
+            ____BAH_COMPILER_VAR_1561.args->elemSize = sizeof(char *);
+            flags = ____BAH_COMPILER_VAR_1561;
 
 #line 72 "/home/alois/Documents/bah-bah/src/main.bah"
 flags__addString(&flags,"\01\0\0\0""o","\033\0\0\0""Name of the file to output.");
@@ -25325,13 +25309,13 @@ flags__addBool(&flags,"\016\0\0\0""verboseRuntime","\111\0\0\0""Enables verbose 
 flags__addBool(&flags,"\011\0\0\0""verboseCC","\066\0\0\0""Enables verbose C compiler output, USE IN LAST RESORT.");
 
 #line 89 "/home/alois/Documents/bah-bah/src/main.bah"
-char** ____BAH_COMPILER_VAR_1567 = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_1567[2] = "\01\0\0\0"".";____BAH_COMPILER_VAR_1567[1] = BAH_OS;____BAH_COMPILER_VAR_1567[0] = "\115\0\0\0""Select the target OS for cross compilling (linux, windows, darwin), default: ";char * ____BAH_COMPILER_VAR_1568 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1567, 3);flags__addString(&flags,"\06\0\0\0""target",____BAH_COMPILER_VAR_1568);
+char** ____BAH_COMPILER_VAR_1562 = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_1562[2] = "\01\0\0\0"".";____BAH_COMPILER_VAR_1562[1] = BAH_OS;____BAH_COMPILER_VAR_1562[0] = "\115\0\0\0""Select the target OS for cross compilling (linux, windows, darwin), default: ";char * ____BAH_COMPILER_VAR_1563 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1562, 3);flags__addString(&flags,"\06\0\0\0""target",____BAH_COMPILER_VAR_1563);
 
 #line 90 "/home/alois/Documents/bah-bah/src/main.bah"
-char** ____BAH_COMPILER_VAR_1569 = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_1569[2] = "\02\0\0\0"").";____BAH_COMPILER_VAR_1569[1] = BAH_DIR;____BAH_COMPILER_VAR_1569[0] = "\056\0\0\0""If your Bah directory is not the default one (";char * ____BAH_COMPILER_VAR_1570 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1569, 3);flags__addString(&flags,"\06\0\0\0""bahDir",____BAH_COMPILER_VAR_1570);
+char** ____BAH_COMPILER_VAR_1564 = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_1564[2] = "\02\0\0\0"").";____BAH_COMPILER_VAR_1564[1] = BAH_DIR;____BAH_COMPILER_VAR_1564[0] = "\056\0\0\0""If your Bah directory is not the default one (";char * ____BAH_COMPILER_VAR_1565 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1564, 3);flags__addString(&flags,"\06\0\0\0""bahDir",____BAH_COMPILER_VAR_1565);
 
 #line 91 "/home/alois/Documents/bah-bah/src/main.bah"
-char** ____BAH_COMPILER_VAR_1571 = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_1571[2] = "\01\0\0\0"".";____BAH_COMPILER_VAR_1571[1] = BAH_CC;____BAH_COMPILER_VAR_1571[0] = "\050\0\0\0""To change the C compiler used, default: ";char * ____BAH_COMPILER_VAR_1572 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1571, 3);flags__addString(&flags,"\02\0\0\0""CC",____BAH_COMPILER_VAR_1572);
+char** ____BAH_COMPILER_VAR_1566 = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_1566[2] = "\01\0\0\0"".";____BAH_COMPILER_VAR_1566[1] = BAH_CC;____BAH_COMPILER_VAR_1566[0] = "\050\0\0\0""To change the C compiler used, default: ";char * ____BAH_COMPILER_VAR_1567 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1566, 3);flags__addString(&flags,"\02\0\0\0""CC",____BAH_COMPILER_VAR_1567);
 
 #line 92 "/home/alois/Documents/bah-bah/src/main.bah"
 flags__addBool(&flags,"\06\0\0\0""object","\025\0\0\0""Compile as an object.");
@@ -25380,7 +25364,7 @@ if ((flags__isSet(&flags,"\06\0\0\0""target")==1)) {
 BAH_OS = flags__get(&flags,"\06\0\0\0""target");
 
 #line 111 "/home/alois/Documents/bah-bah/src/main.bah"
-char** ____BAH_COMPILER_VAR_1573 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1573[1] = BAH_OS;____BAH_COMPILER_VAR_1573[0] = "\016\0\0\0""Build target: ";char * ____BAH_COMPILER_VAR_1574 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1573, 2);println(____BAH_COMPILER_VAR_1574);
+char** ____BAH_COMPILER_VAR_1568 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1568[1] = BAH_OS;____BAH_COMPILER_VAR_1568[0] = "\016\0\0\0""Build target: ";char * ____BAH_COMPILER_VAR_1569 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1568, 2);println(____BAH_COMPILER_VAR_1569);
 }
 
 #line 113 "/home/alois/Documents/bah-bah/src/main.bah"
@@ -25393,11 +25377,11 @@ BAH_DIR = flags__get(&flags,"\06\0\0\0""bahDir");
 if ((BAH_DIR[strlen(BAH_DIR)-1+4]!=47)) {
 
 #line 116 "/home/alois/Documents/bah-bah/src/main.bah"
-char** ____BAH_COMPILER_VAR_1575 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1575[1] = "\01\0\0\0""/";____BAH_COMPILER_VAR_1575[0] = BAH_DIR;char * ____BAH_COMPILER_VAR_1576 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1575, 2);BAH_DIR = ____BAH_COMPILER_VAR_1576;
+char** ____BAH_COMPILER_VAR_1570 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1570[1] = "\01\0\0\0""/";____BAH_COMPILER_VAR_1570[0] = BAH_DIR;char * ____BAH_COMPILER_VAR_1571 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1570, 2);BAH_DIR = ____BAH_COMPILER_VAR_1571;
 }
 
 #line 118 "/home/alois/Documents/bah-bah/src/main.bah"
-char** ____BAH_COMPILER_VAR_1577 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1577[1] = BAH_DIR;____BAH_COMPILER_VAR_1577[0] = "\017\0\0\0""Bah directory: ";char * ____BAH_COMPILER_VAR_1578 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1577, 2);println(____BAH_COMPILER_VAR_1578);
+char** ____BAH_COMPILER_VAR_1572 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1572[1] = BAH_DIR;____BAH_COMPILER_VAR_1572[0] = "\017\0\0\0""Bah directory: ";char * ____BAH_COMPILER_VAR_1573 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1572, 2);println(____BAH_COMPILER_VAR_1573);
 }
 
 #line 120 "/home/alois/Documents/bah-bah/src/main.bah"
@@ -25407,7 +25391,7 @@ if ((flags__isSet(&flags,"\02\0\0\0""CC")==1)) {
 BAH_CC = flags__get(&flags,"\02\0\0\0""CC");
 
 #line 122 "/home/alois/Documents/bah-bah/src/main.bah"
-char** ____BAH_COMPILER_VAR_1579 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1579[1] = BAH_CC;____BAH_COMPILER_VAR_1579[0] = "\014\0\0\0""C compiler: ";char * ____BAH_COMPILER_VAR_1580 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1579, 2);println(____BAH_COMPILER_VAR_1580);
+char** ____BAH_COMPILER_VAR_1574 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1574[1] = BAH_CC;____BAH_COMPILER_VAR_1574[0] = "\014\0\0\0""C compiler: ";char * ____BAH_COMPILER_VAR_1575 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1574, 2);println(____BAH_COMPILER_VAR_1575);
 }
 
 #line 125 "/home/alois/Documents/bah-bah/src/main.bah"
@@ -25469,7 +25453,7 @@ RCPenabled = (flags__isSet(&flags,"\03\0\0\0""rcp")==1)||flags__isSet(&flags,"\0
 if ((flags__isSet(&flags,"\01\0\0\0""v")==1)) {
 
 #line 152 "/home/alois/Documents/bah-bah/src/main.bah"
-char** ____BAH_COMPILER_VAR_1581 = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_1581[2] = "\026\0\0\0"".\n© Alois Laurent Boe";____BAH_COMPILER_VAR_1581[1] = BAH_VERSION;____BAH_COMPILER_VAR_1581[0] = "\026\0\0\0""Bah compiler version: ";char * ____BAH_COMPILER_VAR_1582 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1581, 3);println(____BAH_COMPILER_VAR_1582);
+char** ____BAH_COMPILER_VAR_1576 = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_1576[2] = "\026\0\0\0"".\n© Alois Laurent Boe";____BAH_COMPILER_VAR_1576[1] = BAH_VERSION;____BAH_COMPILER_VAR_1576[0] = "\026\0\0\0""Bah compiler version: ";char * ____BAH_COMPILER_VAR_1577 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1576, 3);println(____BAH_COMPILER_VAR_1577);
 
 #line 153 "/home/alois/Documents/bah-bah/src/main.bah"
 return 0;
@@ -25520,33 +25504,33 @@ OUTPUT = rope__add(OUTPUT, rope("\173\01\0\0""\n            #include <gc.h>\n   
 }
 
 #line 235 "/home/alois/Documents/bah-bah/src/main.bah"
-struct compilerStateTag ____BAH_COMPILER_VAR_1583 = {};
-____BAH_COMPILER_VAR_1583.includes = memoryAlloc(sizeof(array(char *)));
-            ____BAH_COMPILER_VAR_1583.includes->length = 0;
-            ____BAH_COMPILER_VAR_1583.includes->elemSize = sizeof(char *);
-            ____BAH_COMPILER_VAR_1583.cIncludes = memoryAlloc(sizeof(array(char *)));
-            ____BAH_COMPILER_VAR_1583.cIncludes->length = 0;
-            ____BAH_COMPILER_VAR_1583.cIncludes->elemSize = sizeof(char *);
-            ____BAH_COMPILER_VAR_1583.cLibs = memoryAlloc(sizeof(array(char *)));
-            ____BAH_COMPILER_VAR_1583.cLibs->length = 0;
-            ____BAH_COMPILER_VAR_1583.cLibs->elemSize = sizeof(char *);
-            ____BAH_COMPILER_VAR_1583.currentDir = "\02\0\0\0""./";
-____BAH_COMPILER_VAR_1583.arrTypesDecl = memoryAlloc(sizeof(array(char *)));
-            ____BAH_COMPILER_VAR_1583.arrTypesDecl->length = 0;
-            ____BAH_COMPILER_VAR_1583.arrTypesDecl->elemSize = sizeof(char *);
-            ____BAH_COMPILER_VAR_1583.RCPvars = memoryAlloc(sizeof(array(struct variable*)));
-            ____BAH_COMPILER_VAR_1583.RCPvars->length = 0;
-            ____BAH_COMPILER_VAR_1583.RCPvars->elemSize = sizeof(struct variable*);
-            ____BAH_COMPILER_VAR_1583.evals = memoryAlloc(sizeof(array(char *)));
-            ____BAH_COMPILER_VAR_1583.evals->length = 0;
-            ____BAH_COMPILER_VAR_1583.evals->elemSize = sizeof(char *);
-            compilerState = ____BAH_COMPILER_VAR_1583;
+struct compilerStateTag ____BAH_COMPILER_VAR_1578 = {};
+____BAH_COMPILER_VAR_1578.includes = memoryAlloc(sizeof(array(char *)));
+            ____BAH_COMPILER_VAR_1578.includes->length = 0;
+            ____BAH_COMPILER_VAR_1578.includes->elemSize = sizeof(char *);
+            ____BAH_COMPILER_VAR_1578.cIncludes = memoryAlloc(sizeof(array(char *)));
+            ____BAH_COMPILER_VAR_1578.cIncludes->length = 0;
+            ____BAH_COMPILER_VAR_1578.cIncludes->elemSize = sizeof(char *);
+            ____BAH_COMPILER_VAR_1578.cLibs = memoryAlloc(sizeof(array(char *)));
+            ____BAH_COMPILER_VAR_1578.cLibs->length = 0;
+            ____BAH_COMPILER_VAR_1578.cLibs->elemSize = sizeof(char *);
+            ____BAH_COMPILER_VAR_1578.currentDir = "\02\0\0\0""./";
+____BAH_COMPILER_VAR_1578.arrTypesDecl = memoryAlloc(sizeof(array(char *)));
+            ____BAH_COMPILER_VAR_1578.arrTypesDecl->length = 0;
+            ____BAH_COMPILER_VAR_1578.arrTypesDecl->elemSize = sizeof(char *);
+            ____BAH_COMPILER_VAR_1578.RCPvars = memoryAlloc(sizeof(array(struct variable*)));
+            ____BAH_COMPILER_VAR_1578.RCPvars->length = 0;
+            ____BAH_COMPILER_VAR_1578.RCPvars->elemSize = sizeof(struct variable*);
+            ____BAH_COMPILER_VAR_1578.evals = memoryAlloc(sizeof(array(char *)));
+            ____BAH_COMPILER_VAR_1578.evals->length = 0;
+            ____BAH_COMPILER_VAR_1578.evals->elemSize = sizeof(char *);
+            compilerState = ____BAH_COMPILER_VAR_1578;
 
 #line 236 "/home/alois/Documents/bah-bah/src/main.bah"
 
-    unsigned int ____BAH_COMPILER_VAR_1584 = 0;
-    __Bah_realocate_arr(compilerState.arrTypesDecl, ____BAH_COMPILER_VAR_1584);
-    compilerState.arrTypesDecl->data[____BAH_COMPILER_VAR_1584] = "\027\0\0\0""__BAH_ARR_TYPE_cpstring";
+    unsigned int ____BAH_COMPILER_VAR_1579 = 0;
+    __Bah_realocate_arr(compilerState.arrTypesDecl, ____BAH_COMPILER_VAR_1579);
+    compilerState.arrTypesDecl->data[____BAH_COMPILER_VAR_1579] = "\027\0\0\0""__BAH_ARR_TYPE_cpstring";
 
 #line 239 "/home/alois/Documents/bah-bah/src/main.bah"
 char * fileName = absPath(args->data[1]);
@@ -25555,8 +25539,8 @@ char * fileName = absPath(args->data[1]);
 compilerState.currentFile = fileName;
 
 #line 241 "/home/alois/Documents/bah-bah/src/main.bah"
-struct fileStream ____BAH_COMPILER_VAR_1585 = {};
-struct fileStream fs = ____BAH_COMPILER_VAR_1585;
+struct fileStream ____BAH_COMPILER_VAR_1580 = {};
+struct fileStream fs = ____BAH_COMPILER_VAR_1580;
 
 #line 242 "/home/alois/Documents/bah-bah/src/main.bah"
 fileStream__open(&fs,fileName,"\01\0\0\0""r");
@@ -25568,7 +25552,7 @@ char * f = fileStream__readContent(&fs);
 if (__builtin_expect((fileStream__isValid(&fs)==0)||(fileStream__getSize(&fs)==0), 0)) {
 
 #line 245 "/home/alois/Documents/bah-bah/src/main.bah"
-char** ____BAH_COMPILER_VAR_1586 = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_1586[2] = "\02\0\0\0""'.";____BAH_COMPILER_VAR_1586[1] = args->data[1];____BAH_COMPILER_VAR_1586[0] = "\025\0\0\0""Could not open file '";char * ____BAH_COMPILER_VAR_1587 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1586, 3);println(____BAH_COMPILER_VAR_1587);
+char** ____BAH_COMPILER_VAR_1581 = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_1581[2] = "\02\0\0\0""'.";____BAH_COMPILER_VAR_1581[1] = args->data[1];____BAH_COMPILER_VAR_1581[0] = "\025\0\0\0""Could not open file '";char * ____BAH_COMPILER_VAR_1582 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1581, 3);println(____BAH_COMPILER_VAR_1582);
 
 #line 246 "/home/alois/Documents/bah-bah/src/main.bah"
 exit(1);
@@ -25587,33 +25571,33 @@ fileStream__close(&fs);
 if (__builtin_expect((len(tokens)==0), 0)) {
 
 #line 254 "/home/alois/Documents/bah-bah/src/main.bah"
-char** ____BAH_COMPILER_VAR_1588 = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_1588[2] = "\021\0\0\0""' not recognized.";____BAH_COMPILER_VAR_1588[1] = fileName;____BAH_COMPILER_VAR_1588[0] = "\06\0\0\0""File '";char * ____BAH_COMPILER_VAR_1589 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1588, 3);println(____BAH_COMPILER_VAR_1589);
+char** ____BAH_COMPILER_VAR_1583 = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_1583[2] = "\021\0\0\0""' not recognized.";____BAH_COMPILER_VAR_1583[1] = fileName;____BAH_COMPILER_VAR_1583[0] = "\06\0\0\0""File '";char * ____BAH_COMPILER_VAR_1584 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1583, 3);println(____BAH_COMPILER_VAR_1584);
 
 #line 255 "/home/alois/Documents/bah-bah/src/main.bah"
 exit(1);
 }
 
 #line 258 "/home/alois/Documents/bah-bah/src/main.bah"
-struct Elems* ____BAH_COMPILER_VAR_1590 = memoryAlloc(sizeof(struct Elems));
-____BAH_COMPILER_VAR_1590->vars = memoryAlloc(sizeof(array(struct variable*)));
-            ____BAH_COMPILER_VAR_1590->vars->length = 0;
-            ____BAH_COMPILER_VAR_1590->vars->elemSize = sizeof(struct variable*);
-            ____BAH_COMPILER_VAR_1590->structs = memoryAlloc(sizeof(array(struct cStruct*)));
-            ____BAH_COMPILER_VAR_1590->structs->length = 0;
-            ____BAH_COMPILER_VAR_1590->structs->elemSize = sizeof(struct cStruct*);
-            ____BAH_COMPILER_VAR_1590->types = memoryAlloc(sizeof(array(char *)));
-            ____BAH_COMPILER_VAR_1590->types->length = 0;
-            ____BAH_COMPILER_VAR_1590->types->elemSize = sizeof(char *);
-            ____BAH_COMPILER_VAR_1590->fns = memoryAlloc(sizeof(array(struct func*)));
-            ____BAH_COMPILER_VAR_1590->fns->length = 0;
-            ____BAH_COMPILER_VAR_1590->fns->elemSize = sizeof(struct func*);
-            ____BAH_COMPILER_VAR_1590->deletedVars = memoryAlloc(sizeof(array(struct variable*)));
-            ____BAH_COMPILER_VAR_1590->deletedVars->length = 0;
-            ____BAH_COMPILER_VAR_1590->deletedVars->elemSize = sizeof(struct variable*);
-            ____BAH_COMPILER_VAR_1590->branchChecks = memoryAlloc(sizeof(array(struct varCheck)));
-            ____BAH_COMPILER_VAR_1590->branchChecks->length = 0;
-            ____BAH_COMPILER_VAR_1590->branchChecks->elemSize = sizeof(struct varCheck);
-            struct Elems* elems = ____BAH_COMPILER_VAR_1590;
+struct Elems* ____BAH_COMPILER_VAR_1585 = memoryAlloc(sizeof(struct Elems));
+____BAH_COMPILER_VAR_1585->vars = memoryAlloc(sizeof(array(struct variable*)));
+            ____BAH_COMPILER_VAR_1585->vars->length = 0;
+            ____BAH_COMPILER_VAR_1585->vars->elemSize = sizeof(struct variable*);
+            ____BAH_COMPILER_VAR_1585->structs = memoryAlloc(sizeof(array(struct cStruct*)));
+            ____BAH_COMPILER_VAR_1585->structs->length = 0;
+            ____BAH_COMPILER_VAR_1585->structs->elemSize = sizeof(struct cStruct*);
+            ____BAH_COMPILER_VAR_1585->types = memoryAlloc(sizeof(array(char *)));
+            ____BAH_COMPILER_VAR_1585->types->length = 0;
+            ____BAH_COMPILER_VAR_1585->types->elemSize = sizeof(char *);
+            ____BAH_COMPILER_VAR_1585->fns = memoryAlloc(sizeof(array(struct func*)));
+            ____BAH_COMPILER_VAR_1585->fns->length = 0;
+            ____BAH_COMPILER_VAR_1585->fns->elemSize = sizeof(struct func*);
+            ____BAH_COMPILER_VAR_1585->deletedVars = memoryAlloc(sizeof(array(struct variable*)));
+            ____BAH_COMPILER_VAR_1585->deletedVars->length = 0;
+            ____BAH_COMPILER_VAR_1585->deletedVars->elemSize = sizeof(struct variable*);
+            ____BAH_COMPILER_VAR_1585->branchChecks = memoryAlloc(sizeof(array(struct varCheck)));
+            ____BAH_COMPILER_VAR_1585->branchChecks->length = 0;
+            ____BAH_COMPILER_VAR_1585->branchChecks->elemSize = sizeof(struct varCheck);
+            struct Elems* elems = ____BAH_COMPILER_VAR_1585;
 
 #line 261 "/home/alois/Documents/bah-bah/src/main.bah"
 if ((isObject==true)) {
@@ -25633,14 +25617,14 @@ shouldOnlyDecl = true;
 
 #line 278 "/home/alois/Documents/bah-bah/src/main.bah"
 
-                struct string ____BAH_COMPILER_VAR_1591 = string(fileName);
-                if ((flags__isSet(&flags,"\011\0\0\0""nobuiltin")==0)&&(string__hasSuffix(&____BAH_COMPILER_VAR_1591,"\010\0\0\0"".bahstrp")==false)) {
+                struct string ____BAH_COMPILER_VAR_1586 = string(fileName);
+                if ((flags__isSet(&flags,"\011\0\0\0""nobuiltin")==0)&&(string__hasSuffix(&____BAH_COMPILER_VAR_1586,"\010\0\0\0"".bahstrp")==false)) {
 
 #line 279 "/home/alois/Documents/bah-bah/src/main.bah"
 if (__builtin_expect((includeFile("\013\0\0\0""builtin.bah",elems)==false), 0)) {
 
 #line 280 "/home/alois/Documents/bah-bah/src/main.bah"
-char** ____BAH_COMPILER_VAR_1592 = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_1592[2] = "\01\0\0\0""'";____BAH_COMPILER_VAR_1592[1] = BAH_DIR;____BAH_COMPILER_VAR_1592[0] = "\047\0\0\0""Could not find std-libs, please check '";char * ____BAH_COMPILER_VAR_1593 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1592, 3);__BAH_panic(____BAH_COMPILER_VAR_1593,"\056\0\0\0""/home/alois/Documents/bah-bah/src/main.bah:280");
+char** ____BAH_COMPILER_VAR_1587 = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_1587[2] = "\01\0\0\0""'";____BAH_COMPILER_VAR_1587[1] = BAH_DIR;____BAH_COMPILER_VAR_1587[0] = "\047\0\0\0""Could not find std-libs, please check '";char * ____BAH_COMPILER_VAR_1588 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1587, 3);__BAH_panic(____BAH_COMPILER_VAR_1588,"\056\0\0\0""/home/alois/Documents/bah-bah/src/main.bah:280");
 }
 }
 
@@ -25651,7 +25635,7 @@ if ((isFixMeEnabled==true)) {
 if (__builtin_expect((includeFile("\011\0\0\0""fixme.bah",elems)==false), 0)) {
 
 #line 286 "/home/alois/Documents/bah-bah/src/main.bah"
-char** ____BAH_COMPILER_VAR_1594 = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_1594[2] = "\01\0\0\0""'";____BAH_COMPILER_VAR_1594[1] = BAH_DIR;____BAH_COMPILER_VAR_1594[0] = "\050\0\0\0""Could not find fixme.bah, please check '";char * ____BAH_COMPILER_VAR_1595 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1594, 3);__BAH_panic(____BAH_COMPILER_VAR_1595,"\056\0\0\0""/home/alois/Documents/bah-bah/src/main.bah:286");
+char** ____BAH_COMPILER_VAR_1589 = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_1589[2] = "\01\0\0\0""'";____BAH_COMPILER_VAR_1589[1] = BAH_DIR;____BAH_COMPILER_VAR_1589[0] = "\050\0\0\0""Could not find fixme.bah, please check '";char * ____BAH_COMPILER_VAR_1590 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1589, 3);__BAH_panic(____BAH_COMPILER_VAR_1590,"\056\0\0\0""/home/alois/Documents/bah-bah/src/main.bah:286");
 }
 }
 
@@ -25703,7 +25687,7 @@ continue;
 };
 
 #line 310 "/home/alois/Documents/bah-bah/src/main.bah"
-char** ____BAH_COMPILER_VAR_1596 = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_1596[2] = "\02\0\0\0""];";____BAH_COMPILER_VAR_1596[1] = intToStr(l);____BAH_COMPILER_VAR_1596[0] = "\071\0\0\0""volatile struct __Bah_fnName_mapper __tmp____Bah_fnNames[";char * ____BAH_COMPILER_VAR_1597 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1596, 3);OUTPUT = rope__add(OUTPUT, rope(____BAH_COMPILER_VAR_1597));
+char** ____BAH_COMPILER_VAR_1591 = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_1591[2] = "\02\0\0\0""];";____BAH_COMPILER_VAR_1591[1] = intToStr(l);____BAH_COMPILER_VAR_1591[0] = "\071\0\0\0""volatile struct __Bah_fnName_mapper __tmp____Bah_fnNames[";char * ____BAH_COMPILER_VAR_1592 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1591, 3);OUTPUT = rope__add(OUTPUT, rope(____BAH_COMPILER_VAR_1592));
 
 #line 311 "/home/alois/Documents/bah-bah/src/main.bah"
 long int j = 0;
@@ -25730,7 +25714,7 @@ continue;
 char * name = fn->name;
 
 #line 318 "/home/alois/Documents/bah-bah/src/main.bah"
-char** ____BAH_COMPILER_VAR_1598 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1598[1] = "\02\0\0\0""__";____BAH_COMPILER_VAR_1598[0] = fn->from;char * ____BAH_COMPILER_VAR_1599 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1598, 2);if ((strcmp(fn->from, "\0\0\0\0""") != 0)&&strHasPrefix(name,____BAH_COMPILER_VAR_1599)) {
+char** ____BAH_COMPILER_VAR_1593 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1593[1] = "\02\0\0\0""__";____BAH_COMPILER_VAR_1593[0] = fn->from;char * ____BAH_COMPILER_VAR_1594 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1593, 2);if ((strcmp(fn->from, "\0\0\0\0""") != 0)&&strHasPrefix(name,____BAH_COMPILER_VAR_1594)) {
 
 #line 319 "/home/alois/Documents/bah-bah/src/main.bah"
 struct string n = string(name);
@@ -25739,18 +25723,18 @@ struct string n = string(name);
 string__trimLeft(&n,strlen(fn->from)+2);
 
 #line 321 "/home/alois/Documents/bah-bah/src/main.bah"
-char** ____BAH_COMPILER_VAR_1600 = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_1600[2] = string__str(&n);____BAH_COMPILER_VAR_1600[1] = "\01\0\0\0"".";____BAH_COMPILER_VAR_1600[0] = fn->from;char * ____BAH_COMPILER_VAR_1601 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1600, 3);name = ____BAH_COMPILER_VAR_1601;
+char** ____BAH_COMPILER_VAR_1595 = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_1595[2] = string__str(&n);____BAH_COMPILER_VAR_1595[1] = "\01\0\0\0"".";____BAH_COMPILER_VAR_1595[0] = fn->from;char * ____BAH_COMPILER_VAR_1596 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1595, 3);name = ____BAH_COMPILER_VAR_1596;
 }
 
 #line 323 "/home/alois/Documents/bah-bah/src/main.bah"
-char** ____BAH_COMPILER_VAR_1602 = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_1602[2] = "\01\0\0\0""\"";____BAH_COMPILER_VAR_1602[1] = name;____BAH_COMPILER_VAR_1602[0] = "\01\0\0\0""\"";char * ____BAH_COMPILER_VAR_1603 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1602, 3);char** ____BAH_COMPILER_VAR_1604 = alloca(9 * sizeof(char*));____BAH_COMPILER_VAR_1604[8] = "\02\0\0\0"";\n";____BAH_COMPILER_VAR_1604[7] = fn->name;____BAH_COMPILER_VAR_1604[6] = "\06\0\0\0""].p = ";____BAH_COMPILER_VAR_1604[5] = intToStr(j);____BAH_COMPILER_VAR_1604[4] = "\043\0\0\0"";\n            __tmp____Bah_fnNames[";____BAH_COMPILER_VAR_1604[3] = strLitteralToBahStr(____BAH_COMPILER_VAR_1603);____BAH_COMPILER_VAR_1604[2] = "\06\0\0\0""].n = ";____BAH_COMPILER_VAR_1604[1] = intToStr(j);____BAH_COMPILER_VAR_1604[0] = "\042\0\0\0""\n            __tmp____Bah_fnNames[";char * ____BAH_COMPILER_VAR_1605 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1604, 9);INIT = rope__add(INIT, rope(____BAH_COMPILER_VAR_1605));
+char** ____BAH_COMPILER_VAR_1597 = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_1597[2] = "\01\0\0\0""\"";____BAH_COMPILER_VAR_1597[1] = name;____BAH_COMPILER_VAR_1597[0] = "\01\0\0\0""\"";char * ____BAH_COMPILER_VAR_1598 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1597, 3);char** ____BAH_COMPILER_VAR_1599 = alloca(9 * sizeof(char*));____BAH_COMPILER_VAR_1599[8] = "\02\0\0\0"";\n";____BAH_COMPILER_VAR_1599[7] = fn->name;____BAH_COMPILER_VAR_1599[6] = "\06\0\0\0""].p = ";____BAH_COMPILER_VAR_1599[5] = intToStr(j);____BAH_COMPILER_VAR_1599[4] = "\043\0\0\0"";\n            __tmp____Bah_fnNames[";____BAH_COMPILER_VAR_1599[3] = strLitteralToBahStr(____BAH_COMPILER_VAR_1598);____BAH_COMPILER_VAR_1599[2] = "\06\0\0\0""].n = ";____BAH_COMPILER_VAR_1599[1] = intToStr(j);____BAH_COMPILER_VAR_1599[0] = "\042\0\0\0""\n            __tmp____Bah_fnNames[";char * ____BAH_COMPILER_VAR_1600 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1599, 9);INIT = rope__add(INIT, rope(____BAH_COMPILER_VAR_1600));
 
 #line 326 "/home/alois/Documents/bah-bah/src/main.bah"
 ++j;
 };
 
 #line 328 "/home/alois/Documents/bah-bah/src/main.bah"
-char** ____BAH_COMPILER_VAR_1606 = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_1606[2] = "\01\0\0\0"";";____BAH_COMPILER_VAR_1606[1] = intToStr(l);____BAH_COMPILER_VAR_1606[0] = "\125\0\0\0""\n        __Bah_fnNames->data = __tmp____Bah_fnNames;\n        __Bah_fnNames->length = ";char * ____BAH_COMPILER_VAR_1607 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1606, 3);INIT = rope__add(INIT, rope(____BAH_COMPILER_VAR_1607));
+char** ____BAH_COMPILER_VAR_1601 = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_1601[2] = "\01\0\0\0"";";____BAH_COMPILER_VAR_1601[1] = intToStr(l);____BAH_COMPILER_VAR_1601[0] = "\125\0\0\0""\n        __Bah_fnNames->data = __tmp____Bah_fnNames;\n        __Bah_fnNames->length = ";char * ____BAH_COMPILER_VAR_1602 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1601, 3);INIT = rope__add(INIT, rope(____BAH_COMPILER_VAR_1602));
 }
 
 #line 333 "/home/alois/Documents/bah-bah/src/main.bah"
@@ -25787,7 +25771,7 @@ if ((isObject==false)) {
 long int totalTime = getTimeUnix()-startTime;
 
 #line 364 "/home/alois/Documents/bah-bah/src/main.bah"
-char** ____BAH_COMPILER_VAR_1608 = alloca(7 * sizeof(char*));____BAH_COMPILER_VAR_1608[6] = "\07\0\0\0""ms)\e[0m";____BAH_COMPILER_VAR_1608[5] = intToStr(totalLexerTime/1000000);____BAH_COMPILER_VAR_1608[4] = "\020\0\0\0""ms, lexer time: ";____BAH_COMPILER_VAR_1608[3] = intToStr(totalTime/1000000);____BAH_COMPILER_VAR_1608[2] = "\024\0\0\0"" lines, total time: ";____BAH_COMPILER_VAR_1608[1] = intToStr(totalLines);____BAH_COMPILER_VAR_1608[0] = "\011\0\0\0""Parsed. (";char * ____BAH_COMPILER_VAR_1609 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1608, 7);println(____BAH_COMPILER_VAR_1609);
+char** ____BAH_COMPILER_VAR_1603 = alloca(7 * sizeof(char*));____BAH_COMPILER_VAR_1603[6] = "\07\0\0\0""ms)\e[0m";____BAH_COMPILER_VAR_1603[5] = intToStr(totalLexerTime/1000000);____BAH_COMPILER_VAR_1603[4] = "\020\0\0\0""ms, lexer time: ";____BAH_COMPILER_VAR_1603[3] = intToStr(totalTime/1000000);____BAH_COMPILER_VAR_1603[2] = "\024\0\0\0"" lines, total time: ";____BAH_COMPILER_VAR_1603[1] = intToStr(totalLines);____BAH_COMPILER_VAR_1603[0] = "\011\0\0\0""Parsed. (";char * ____BAH_COMPILER_VAR_1604 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1603, 7);println(____BAH_COMPILER_VAR_1604);
 }
 
 #line 368 "/home/alois/Documents/bah-bah/src/main.bah"
@@ -25830,7 +25814,7 @@ char * obj = "\0\0\0\0""";
 if ((flags__isSet(&flags,"\06\0\0\0""object")==1)) {
 
 #line 387 "/home/alois/Documents/bah-bah/src/main.bah"
-char** ____BAH_COMPILER_VAR_1610 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1610[1] = "\02\0\0\0"".o";____BAH_COMPILER_VAR_1610[0] = fileName;char * ____BAH_COMPILER_VAR_1611 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1610, 2);fileName = ____BAH_COMPILER_VAR_1611;
+char** ____BAH_COMPILER_VAR_1605 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1605[1] = "\02\0\0\0"".o";____BAH_COMPILER_VAR_1605[0] = fileName;char * ____BAH_COMPILER_VAR_1606 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1605, 2);fileName = ____BAH_COMPILER_VAR_1606;
 
 #line 388 "/home/alois/Documents/bah-bah/src/main.bah"
 obj = "\02\0\0\0""-c";
@@ -25840,13 +25824,13 @@ obj = "\02\0\0\0""-c";
 char * randFileName = "\016\0\0\0""-x c - -x none";
 
 #line 392 "/home/alois/Documents/bah-bah/src/main.bah"
-char** ____BAH_COMPILER_VAR_1612 = alloca(17 * sizeof(char*));____BAH_COMPILER_VAR_1612[16] = fileName;____BAH_COMPILER_VAR_1612[15] = "\017\0\0\0"" -w -O1 -g1 -o ";____BAH_COMPILER_VAR_1612[14] = obj;____BAH_COMPILER_VAR_1612[13] = "\01\0\0\0"" ";____BAH_COMPILER_VAR_1612[12] = isStatic;____BAH_COMPILER_VAR_1612[11] = "\01\0\0\0"" ";____BAH_COMPILER_VAR_1612[10] = randFileName;____BAH_COMPILER_VAR_1612[9] = "\03\0\0\0""/\" ";____BAH_COMPILER_VAR_1612[8] = BAH_OS;____BAH_COMPILER_VAR_1612[7] = "\05\0\0\0""libs/";____BAH_COMPILER_VAR_1612[6] = BAH_DIR;____BAH_COMPILER_VAR_1612[5] = "\017\0\0\0""/include/\" -L \"";____BAH_COMPILER_VAR_1612[4] = BAH_OS;____BAH_COMPILER_VAR_1612[3] = "\05\0\0\0""libs/";____BAH_COMPILER_VAR_1612[2] = BAH_DIR;____BAH_COMPILER_VAR_1612[1] = "\05\0\0\0"" -I \"";____BAH_COMPILER_VAR_1612[0] = BAH_CC;char * ____BAH_COMPILER_VAR_1613 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1612, 17);char * gccArgs = ____BAH_COMPILER_VAR_1613;
+char** ____BAH_COMPILER_VAR_1607 = alloca(17 * sizeof(char*));____BAH_COMPILER_VAR_1607[16] = fileName;____BAH_COMPILER_VAR_1607[15] = "\017\0\0\0"" -w -O1 -g1 -o ";____BAH_COMPILER_VAR_1607[14] = obj;____BAH_COMPILER_VAR_1607[13] = "\01\0\0\0"" ";____BAH_COMPILER_VAR_1607[12] = isStatic;____BAH_COMPILER_VAR_1607[11] = "\01\0\0\0"" ";____BAH_COMPILER_VAR_1607[10] = randFileName;____BAH_COMPILER_VAR_1607[9] = "\03\0\0\0""/\" ";____BAH_COMPILER_VAR_1607[8] = BAH_OS;____BAH_COMPILER_VAR_1607[7] = "\05\0\0\0""libs/";____BAH_COMPILER_VAR_1607[6] = BAH_DIR;____BAH_COMPILER_VAR_1607[5] = "\017\0\0\0""/include/\" -L \"";____BAH_COMPILER_VAR_1607[4] = BAH_OS;____BAH_COMPILER_VAR_1607[3] = "\05\0\0\0""libs/";____BAH_COMPILER_VAR_1607[2] = BAH_DIR;____BAH_COMPILER_VAR_1607[1] = "\05\0\0\0"" -I \"";____BAH_COMPILER_VAR_1607[0] = BAH_CC;char * ____BAH_COMPILER_VAR_1608 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1607, 17);char * gccArgs = ____BAH_COMPILER_VAR_1608;
 
 #line 394 "/home/alois/Documents/bah-bah/src/main.bah"
 if ((flags__isSet(&flags,"\01\0\0\0""l")==1)) {
 
 #line 395 "/home/alois/Documents/bah-bah/src/main.bah"
-char** ____BAH_COMPILER_VAR_1614 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1614[1] = "\03\0\0\0"" -c";____BAH_COMPILER_VAR_1614[0] = gccArgs;char * ____BAH_COMPILER_VAR_1615 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1614, 2);gccArgs = ____BAH_COMPILER_VAR_1615;
+char** ____BAH_COMPILER_VAR_1609 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1609[1] = "\03\0\0\0"" -c";____BAH_COMPILER_VAR_1609[0] = gccArgs;char * ____BAH_COMPILER_VAR_1610 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1609, 2);gccArgs = ____BAH_COMPILER_VAR_1610;
 }
 
 #line 399 "/home/alois/Documents/bah-bah/src/main.bah"
@@ -25862,7 +25846,7 @@ while ((i<len(cLibs))) {
 char * l = cLibs->data[i];
 
 #line 402 "/home/alois/Documents/bah-bah/src/main.bah"
-char** ____BAH_COMPILER_VAR_1616 = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_1616[2] = l;____BAH_COMPILER_VAR_1616[1] = "\02\0\0\0"" -";____BAH_COMPILER_VAR_1616[0] = gccArgs;char * ____BAH_COMPILER_VAR_1617 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1616, 3);gccArgs = ____BAH_COMPILER_VAR_1617;
+char** ____BAH_COMPILER_VAR_1611 = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_1611[2] = l;____BAH_COMPILER_VAR_1611[1] = "\02\0\0\0"" -";____BAH_COMPILER_VAR_1611[0] = gccArgs;char * ____BAH_COMPILER_VAR_1612 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1611, 3);gccArgs = ____BAH_COMPILER_VAR_1612;
 
 #line 403 "/home/alois/Documents/bah-bah/src/main.bah"
 i = i+1;
@@ -25909,7 +25893,7 @@ return 1;
 if ((flags__isSet(&flags,"\01\0\0\0""l")==1)) {
 
 #line 426 "/home/alois/Documents/bah-bah/src/main.bah"
-char** ____BAH_COMPILER_VAR_1618 = alloca(4 * sizeof(char*));____BAH_COMPILER_VAR_1618[3] = fileName;____BAH_COMPILER_VAR_1618[2] = "\03\0\0\0"".a ";____BAH_COMPILER_VAR_1618[1] = fileName;____BAH_COMPILER_VAR_1618[0] = "\07\0\0\0""ar rcs ";char * ____BAH_COMPILER_VAR_1619 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1618, 4);cmd = command(____BAH_COMPILER_VAR_1619);
+char** ____BAH_COMPILER_VAR_1613 = alloca(4 * sizeof(char*));____BAH_COMPILER_VAR_1613[3] = fileName;____BAH_COMPILER_VAR_1613[2] = "\03\0\0\0"".a ";____BAH_COMPILER_VAR_1613[1] = fileName;____BAH_COMPILER_VAR_1613[0] = "\07\0\0\0""ar rcs ";char * ____BAH_COMPILER_VAR_1614 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1613, 4);cmd = command(____BAH_COMPILER_VAR_1614);
 
 #line 427 "/home/alois/Documents/bah-bah/src/main.bah"
 command__run(&cmd);
@@ -25923,11 +25907,11 @@ else {
 if ((flags__isSet(&flags,"\01\0\0\0""o")==0)) {
 
 #line 433 "/home/alois/Documents/bah-bah/src/main.bah"
-char** ____BAH_COMPILER_VAR_1620 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1620[1] = "\02\0\0\0"".c";____BAH_COMPILER_VAR_1620[0] = fileName;char * ____BAH_COMPILER_VAR_1621 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1620, 2);fileName = ____BAH_COMPILER_VAR_1621;
+char** ____BAH_COMPILER_VAR_1615 = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1615[1] = "\02\0\0\0"".c";____BAH_COMPILER_VAR_1615[0] = fileName;char * ____BAH_COMPILER_VAR_1616 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1615, 2);fileName = ____BAH_COMPILER_VAR_1616;
 }
 
 #line 436 "/home/alois/Documents/bah-bah/src/main.bah"
-char** ____BAH_COMPILER_VAR_1622 = alloca(14 * sizeof(char*));____BAH_COMPILER_VAR_1622[13] = "\010\0\0\0"" -O1 -w ";____BAH_COMPILER_VAR_1622[12] = isStatic;____BAH_COMPILER_VAR_1622[11] = "\01\0\0\0"" ";____BAH_COMPILER_VAR_1622[10] = fileName;____BAH_COMPILER_VAR_1622[9] = "\03\0\0\0""/\" ";____BAH_COMPILER_VAR_1622[8] = BAH_OS;____BAH_COMPILER_VAR_1622[7] = "\05\0\0\0""libs/";____BAH_COMPILER_VAR_1622[6] = BAH_DIR;____BAH_COMPILER_VAR_1622[5] = "\017\0\0\0""/include/\" -L \"";____BAH_COMPILER_VAR_1622[4] = BAH_OS;____BAH_COMPILER_VAR_1622[3] = "\05\0\0\0""libs/";____BAH_COMPILER_VAR_1622[2] = BAH_DIR;____BAH_COMPILER_VAR_1622[1] = "\05\0\0\0"" -I \"";____BAH_COMPILER_VAR_1622[0] = BAH_CC;char * ____BAH_COMPILER_VAR_1623 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1622, 14);char * gccArgs = ____BAH_COMPILER_VAR_1623;
+char** ____BAH_COMPILER_VAR_1617 = alloca(14 * sizeof(char*));____BAH_COMPILER_VAR_1617[13] = "\010\0\0\0"" -O1 -w ";____BAH_COMPILER_VAR_1617[12] = isStatic;____BAH_COMPILER_VAR_1617[11] = "\01\0\0\0"" ";____BAH_COMPILER_VAR_1617[10] = fileName;____BAH_COMPILER_VAR_1617[9] = "\03\0\0\0""/\" ";____BAH_COMPILER_VAR_1617[8] = BAH_OS;____BAH_COMPILER_VAR_1617[7] = "\05\0\0\0""libs/";____BAH_COMPILER_VAR_1617[6] = BAH_DIR;____BAH_COMPILER_VAR_1617[5] = "\017\0\0\0""/include/\" -L \"";____BAH_COMPILER_VAR_1617[4] = BAH_OS;____BAH_COMPILER_VAR_1617[3] = "\05\0\0\0""libs/";____BAH_COMPILER_VAR_1617[2] = BAH_DIR;____BAH_COMPILER_VAR_1617[1] = "\05\0\0\0"" -I \"";____BAH_COMPILER_VAR_1617[0] = BAH_CC;char * ____BAH_COMPILER_VAR_1618 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1617, 14);char * gccArgs = ____BAH_COMPILER_VAR_1618;
 
 #line 437 "/home/alois/Documents/bah-bah/src/main.bah"
 array(char *)* cLibs = compilerState.cLibs;
@@ -25942,18 +25926,18 @@ while ((i<len(cLibs))) {
 char * l = cLibs->data[i];
 
 #line 440 "/home/alois/Documents/bah-bah/src/main.bah"
-char** ____BAH_COMPILER_VAR_1624 = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_1624[2] = l;____BAH_COMPILER_VAR_1624[1] = "\02\0\0\0"" -";____BAH_COMPILER_VAR_1624[0] = gccArgs;char * ____BAH_COMPILER_VAR_1625 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1624, 3);gccArgs = ____BAH_COMPILER_VAR_1625;
+char** ____BAH_COMPILER_VAR_1619 = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_1619[2] = l;____BAH_COMPILER_VAR_1619[1] = "\02\0\0\0"" -";____BAH_COMPILER_VAR_1619[0] = gccArgs;char * ____BAH_COMPILER_VAR_1620 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1619, 3);gccArgs = ____BAH_COMPILER_VAR_1620;
 
 #line 441 "/home/alois/Documents/bah-bah/src/main.bah"
 i = i+1;
 };
 
 #line 445 "/home/alois/Documents/bah-bah/src/main.bah"
-char** ____BAH_COMPILER_VAR_1626 = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_1626[2] = "\02\0\0\0""'\n";____BAH_COMPILER_VAR_1626[1] = gccArgs;____BAH_COMPILER_VAR_1626[0] = "\021\0\0\0""//COMPILE WITH: '";char * ____BAH_COMPILER_VAR_1627 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1626, 3);OUTPUT = rope__add(rope(____BAH_COMPILER_VAR_1627), OUTPUT);
+char** ____BAH_COMPILER_VAR_1621 = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_1621[2] = "\02\0\0\0""'\n";____BAH_COMPILER_VAR_1621[1] = gccArgs;____BAH_COMPILER_VAR_1621[0] = "\021\0\0\0""//COMPILE WITH: '";char * ____BAH_COMPILER_VAR_1622 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1621, 3);OUTPUT = rope__add(rope(____BAH_COMPILER_VAR_1622), OUTPUT);
 
 #line 446 "/home/alois/Documents/bah-bah/src/main.bah"
-struct fileStream ____BAH_COMPILER_VAR_1628 = {};
-fs = ____BAH_COMPILER_VAR_1628;
+struct fileStream ____BAH_COMPILER_VAR_1623 = {};
+fs = ____BAH_COMPILER_VAR_1623;
 
 #line 447 "/home/alois/Documents/bah-bah/src/main.bah"
 fileStream__open(&fs,fileName,"\01\0\0\0""w");
@@ -25972,7 +25956,7 @@ if ((isObject==false)) {
 long int totalTime = getTimeUnix()-startTime;
 
 #line 455 "/home/alois/Documents/bah-bah/src/main.bah"
-char** ____BAH_COMPILER_VAR_1629 = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_1629[2] = "\07\0\0\0""ms)\e[0m";____BAH_COMPILER_VAR_1629[1] = intToStr(totalTime/1000000);____BAH_COMPILER_VAR_1629[0] = "\032\0\0\0""\e[1;32mDone. (compiled in ";char * ____BAH_COMPILER_VAR_1630 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1629, 3);println(____BAH_COMPILER_VAR_1630);
+char** ____BAH_COMPILER_VAR_1624 = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_1624[2] = "\07\0\0\0""ms)\e[0m";____BAH_COMPILER_VAR_1624[1] = intToStr(totalTime/1000000);____BAH_COMPILER_VAR_1624[0] = "\032\0\0\0""\e[1;32mDone. (compiled in ";char * ____BAH_COMPILER_VAR_1625 =__Bah_multiple_concat(____BAH_COMPILER_VAR_1624, 3);println(____BAH_COMPILER_VAR_1625);
 }
 
 #line 458 "/home/alois/Documents/bah-bah/src/main.bah"
