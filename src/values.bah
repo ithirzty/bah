@@ -309,10 +309,23 @@ valueFunc(fn func*, parent variable*, l []Tok, i int, ltp lineType, elems Elems*
             OUTPUT += incrVar(currSetVar, elems)
         }
 
-        if t.type == TOKEN_TYPE_FUNC {
+        if RCPavailable() && t.type == TOKEN_TYPE_FUNC {
             afn = searchFuncByToken(&t, elems)
             if afn != null && isRCPtype(afn.returns.type, elems) == true {
-                t.cont = registerRCPvar(afn.returns.type, t.cont, elems)
+                if ltp == LINE_TYPE_ELSE {
+                    vName = genCompilerVar()
+                    code = getCType(afn.returns.type, elems).str()+" "+vName+";"
+                    diff = ropeSet(begIfHandle, begIfHandle.toStr() + code)
+                    println(intToStr(diff))
+                    OUTPUT.totalLen += diff
+                    t.cont = "("+vName+"="+t.cont+")"
+                    elems.vars[len(elems.vars)] = new variable {
+                        name: vName
+                        type: afn.returns.type
+                    }
+                } else {
+                    t.cont = registerRCPvar(afn.returns.type, t.cont, elems)
+                }
             }
         }
 
@@ -782,7 +795,14 @@ valueBool(l []Tok, i int, ltp lineType, elems Elems*) int {
             comp = "arr->data[i] == el"
         }
         name = genCompilerVar()
-        fnTest = "char "+name+"("+getCType(ntt, elems).str()+" arr, "+getCType(ptt, elems).str()+" el) {
+        if arrT.hasSuffix("*") {
+            nbast = arrT.count("*")
+            arrT.trimRight(nbast)
+        }
+        arrT.replace("[]", "_ARR_")
+        newArgType = "__BAH_ARR_TYPE_" + arrT.str()
+        csatd = compilerState.arrTypesDecl
+        fnTest = "char "+name+"("+newArgType+" arr, "+getCType(ptt, elems).str()+" el) {
         if (arr == 0) {
             return 0;
         };
@@ -793,7 +813,11 @@ valueBool(l []Tok, i int, ltp lineType, elems Elems*) int {
         }
         return 0;
         }\n"
-        OUTPUT.totalLen +=  ropeSet(postDeclHandle, postDeclHandle.toStr() + fnTest)
+        if newArgType in csatd == false {
+            csatd[len(csatd)] = newArgType
+            fnTest = "typedef " + getCType(ntt, elems).str() + " " + newArgType + ";\n" + fnTest
+        }
+        postDeclHandle.append(rope(fnTest))
 
         fnCall = name+"("+nt.cont+", "+pt.cont+")" 
 

@@ -2066,8 +2066,8 @@ parseStruct(l []Tok, elems Elems*) {
         code = code + rope("};\n")
         OUTPUT += code
         phd = postDeclHandle.toStr()
-        OUTPUT.totalLen += ropeSet(postDeclHandle, "")
-        NEXT_LINE += phd
+        ropeSet(postDeclHandle, "")
+        OUTPUT += rope(phd)
     }
 
     if debug == true {
@@ -2350,6 +2350,10 @@ parseIf(l []Tok, fromElse bool, elems Elems*) {
         tokens[len(tokens)] = t
         i++
     }
+
+    begIfHandle = rope("")
+    OUTPUT += begIfHandle
+
 
     ifHeader = rope("if ("+prevIfShortcut+condt.cont+") {\n")
 

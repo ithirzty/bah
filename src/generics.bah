@@ -85,7 +85,7 @@ struct genericFunc {
 
         code = OUTPUT + rope("};\n")
         OUTPUT = oldOut
-        OUTPUT.totalLen +=  ropeSet(postDeclHandle, postDeclHandle.toStr() + code.toStr())
+        postDeclHandle.append(code)
     }
 }
 

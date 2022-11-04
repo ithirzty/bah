@@ -150,3 +150,5 @@ prevIfExits = false
 prevIfChecks = []varCheck
 
 prevIfShortcut = "" //fixes code emitted before a line being between '}' and 'else'
+
+begIfHandle = rope("")

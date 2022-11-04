@@ -101,7 +101,7 @@ isValidHTMLStringChar(c char) bool {
 
 //Used for skipping white spaces inside the current char array.
 //*Note: this is an internal function.*
-skipHTMLspace(s []char, i int) int {
+skipHTMLspace(s cpstring, i int) int {
     for i < len(s) {
         if isSpace(s[i]) == 0 {
             break
@@ -113,7 +113,7 @@ skipHTMLspace(s []char, i int) int {
 
 //Used for parsing a string. Will return an array of elements.
 //*Note: this is an internal function, if you are trying to parse a document, use parseHTML().*
-parseHTMLElements(s []char, parent htmlElement*) []htmlElement* {
+parseHTMLElements(s cpstring, parent htmlElement*) []htmlElement* {
 
     elems = []htmlElement*
 
@@ -229,8 +229,8 @@ parseHTMLElements(s []char, parent htmlElement*) []htmlElement* {
                 j = j + 1
             }
 
-            content = []char
-            text = []char
+            content = strBuilder{}
+            text = strBuilder{}
             nbTags = 1
             foundTag = false
             i = i + 1
@@ -265,12 +265,12 @@ parseHTMLElements(s []char, parent htmlElement*) []htmlElement* {
                             break
                         } else {
                             j=0; for j < len(buff) {
-                                content[len(content)] = buff[j]
+                                content.append(buff[j])
                                 j = j + 1
                             }
                         }
                     } else {
-                        content[len(content)] = c
+                        content.append(c)
                     }
                     i = i + 1
                 }
@@ -309,7 +309,7 @@ parseHTMLElements(s []char, parent htmlElement*) []htmlElement* {
                             }
                         }
                         if c == '/' {
-                            text[len(text)] = ' '
+                            text.append(' ')
                             nbTags = nbTags - 1
                         } else {
                             j = skipHTMLspace(s, i)
@@ -336,7 +336,7 @@ parseHTMLElements(s []char, parent htmlElement*) []htmlElement* {
                             nbTags = nbTags + 1
                         }
                         if nbTags > 0 {
-                            content[len(content)] = '<'
+                            content.append('<')
                         }
                         for i < len(s) {
                             c = s[i]
@@ -345,7 +345,7 @@ parseHTMLElements(s []char, parent htmlElement*) []htmlElement* {
                                 for i < len(s) {
                                     c = s[i]
                                     if nbTags > 0 {
-                                        content[len(content)] = c
+                                        content.append(c)
                                     }
                                     if c == <char>34 && s[i-1] != <char>92 {
                                         break
@@ -359,12 +359,12 @@ parseHTMLElements(s []char, parent htmlElement*) []htmlElement* {
                                 break
                             }
                             if nbTags > 0 {
-                                content[len(content)] = c
+                                content.append(c)
                             }
                             i = i + 1
                         }
                         if nbTags != 0 {
-                            content[len(content)] = s[i]
+                            content.append(s[i])
                             i = i + 1
                             continue
                         }
@@ -374,29 +374,26 @@ parseHTMLElements(s []char, parent htmlElement*) []htmlElement* {
                         break
                     }
 
-                    content[len(content)] = c
-                    ti = len(text)
+                    content.append(c)
+                    ti = len(text.str())
                     if ti > 0 {
-                        if isSpace(text[ti-1]) == 1 && isSpace(c) == 0 {
-                                text[ti] = c
-                        } else if isSpace(text[ti-1]) == 0 || isSpace(c) == 0 {
-                                text[ti] = c
+                        if isSpace(text.str()[ti-1]) == 1 && isSpace(c) == 0 {
+                                text.append(c)
+                        } else if isSpace(text.str()[ti-1]) == 0 || isSpace(c) == 0 {
+                                text.append(c)
                         }
                     } else {
-                        text[ti] = c
+                        text.append(c)
                     }
                     i = i + 1
                 }
             }
 
-            text[len(text)] = <char>0
-            content[len(content)] = <char>0
-
-            elem.text = arrAsStr(text)
-            elem.html = arrAsStr(content)
+            elem.text = text.str()
+            elem.html = content.str()
             elem.parent = parent
             if foundTag == true {
-                elem.children = parseHTMLElements(content, elem)
+                elem.children = parseHTMLElements(content.str(), elem)
             }
 
 
@@ -416,6 +413,6 @@ parseHTMLElements(s []char, parent htmlElement*) []htmlElement* {
 parseHTML(doc cpstring) htmlElement* {
     root = new htmlElement
     root.name = "document"
-    root.children = parseHTMLElements(strAsArr(doc), root)
+    root.children = parseHTMLElements(doc, root)
     return root
 }

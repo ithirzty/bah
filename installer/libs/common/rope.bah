@@ -1,116 +1,77 @@
-const ROPE_LEAF_LEN = 200
-
 //A rope is a structure that represents text.
 //Concatenation takes a constant time.
 //This is usefull for large strings that are built using a lot of concatenations.
 struct rope {
+    str: cpstring
+    totalLen: int32
     left: rope*
     right: rope*
-    str: cpstring
-    lCount: int32
-    len: int32 = 0
-    totalLen: int32
 
     //Used to add the content of the node to a specified cpstring.
     //*Note: this is an internal function.*
-    addStr(s cpstring, offset int*) {
+    addStr(s cpstring, off int*) {
         if this.left == null && this.right == null {
-            off = *offset
-            memcpy(noCheck(s+off+cpstringLenSize), this.str, this.lCount+1)
-            *offset += this.lCount+1
+            o = *off
+            memcpy(noCheck(s+cpstringLenSize+o), this.str, len(this.str))
+            *off = o + len(this.str)
             return
         }
-        l = *offset
-        this.left.addStr(s, offset)
-        this.right.addStr(s, offset)
+        
+        this.left.addStr(s, off)
+        this.right.addStr(s, off)
+    }
+
+    getLen() uint32 {
+        if this.left == null && this.right == null {
+            l = len(this.str)
+            return l
+        }
+        return this.left.getLen() + this.right.getLen()
     }
 
     //Used to get the rope as a cpstring.
     toStr() cpstring {
-        if this.left == null && this.right == null {
-            return this.str
-        }
-        s cpstring = memoryAllocSTR(this.totalLen + 1)
-        offset = 0
-        this.left.addStr(s, &offset)
-        this.right.addStr(s, &offset)
-
+        tl = this.getLen()
+        s = memoryAllocSTR(tl + 1)
+        off = 0
+        this.addStr(s, &off)
         return s
     }
 
     //Used for concatenation.
     //This is the method that will be called when doing `a + b`.
-    add(root2 rope*) rope* {
-        n1 = this.len
-        tmp = new rope
-        tmp.left = this
-        tmp.right = root2
-        tmp.totalLen = this.totalLen + root2.totalLen
-        tmp.str = null
-        return tmp
+    add(r rope*) rope* {
+        n = new rope {
+            left: this
+            right: r
+        }        
+        return n
     }
-}
 
-//This is used to initiate a new node.
-//a: the content of the node
-//l: the left offset
-//r: the right offset
-//*Note: this is an internal function.*
-createRopeStructure(par rope*, a cpstring, l int, r int) rope* {
-    tmp = new rope
-    
-    tmp.left = null
-    tmp.right = null
-    
-    // tmp.parent = par
-
-    if r - l > ROPE_LEAF_LEN {
-        tmp.str = null
-        tmp.lCount = r - l
-        tmp.lCount = tmp.lCount / 2
-        node = tmp
-        m = l + r
-        m = m / 2
-        node.left = createRopeStructure(node, a, l, m)
-        node.right = createRopeStructure(node, a, m+1, r)
-    } else {
-        node = tmp
-        tmp.lCount = r - l
-        tmp.str = a[l:r+1]
+    append(r rope*) {
+        l = new rope
+        *l = *this
+        this.left = l
+        this.right = r
+        this.str = ""
     }
-    return tmp
 }
 
 //Used for setting the content of a rope.
 //Returns the difference of size between the new one and the old one.
 //The return value needs to be added to the parent ropes.
 ropeSet(r rope*, a cpstring) int {
-    n1 = len(a)
-    diff = n1 - r.totalLen
-    nr = createRopeStructure(null, a, 0, n1-1)
-    nr.totalLen = n1
-    nr.len = n1
-    *r = *nr
-    return diff
-}
-
-//Old way of concatenating ropes by specifying in order the ropes to concatenate.
-concatenateRopes(root1 rope*, root2 rope*) rope* {
-    n1 = root1.len
-    tmp = new rope
-    tmp.left = root1
-    tmp.right = root2
-    tmp.totalLen = root1.totalLen + root2.totalLen
-    tmp.str = null
-    return tmp
+    r.str = a
+    r.left = null
+    r.right = null
+    return 0
 }
 
 //Used to initiate a rope with a cpstring.
 rope(a cpstring) rope* {
-    n1 = len(a)
-    r = createRopeStructure(null, a, 0, n1-1)
-    r.totalLen = n1
-    r.len = n1
+    r = new rope {
+        str: a
+    }
     return r
 }
 

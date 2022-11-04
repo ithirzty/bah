@@ -21,7 +21,7 @@ getFuncDef(fn func*) cpstring {
         }
     }
 
-    def += ") "+fn.returns.type + ASCII_GREEN + fn.file+":"+intToStr(fn.line) + ASCII_RESET
+    def += ") "+fn.returns.type + " " + ASCII_GREEN + fn.file+":"+intToStr(fn.line) + ASCII_RESET
     return def
 }
 

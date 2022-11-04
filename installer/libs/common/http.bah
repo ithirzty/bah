@@ -524,8 +524,8 @@ urlEncode(s cpstring) cpstring {
             r[len(r)] = c
         } else {
             r[len(r)] = '%'
-            sprintf(tmps, "%x", c)
-            l = strlen(tmps)
+            sprintf(<ptr>tmps, "%x", c)
+            l = strlen(<ptr>tmps)
             j=0; for j < l, j++ {
                 r[len(r)] = tmps[j]
             }
