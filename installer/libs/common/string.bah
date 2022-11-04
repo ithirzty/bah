@@ -436,7 +436,8 @@ splitString(s string, sep cpstring) []string {
     }
 
     end = i-len(sep)+1
-    if start != end {
+    if start < end {
+        println("-> "+intToStr(start)+":"+intToStr(end)+" ("+intToStr(s.length)+")")
         r[len(r)] = string(s.content[start:end])
     }
 

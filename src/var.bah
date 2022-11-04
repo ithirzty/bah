@@ -438,8 +438,17 @@ declareStructMethods(v variable*, s cStruct*, elems Elems*) cpstring {
 
 NB_COMP_VAR = 0
 
+currFileHashed = ""
+currFileHash = ""
+
+#define pathToVarName(s cpstring) cpstring
+
 genCompilerVar() cpstring {
-    name = "____BAH_COMPILER_VAR_"+intToStr(NB_COMP_VAR)
+    if currFileHashed != compilerState.currentFile {
+        currFileHash = pathToVarName(compilerState.currentFile)
+        currFileHashed = compilerState.currentFile
+    }
+    name = "____BAH_COMPILER_VAR_"+intToStr(NB_COMP_VAR)+"_"+currFileHash
     NB_COMP_VAR = NB_COMP_VAR + 1
     return name
 }
