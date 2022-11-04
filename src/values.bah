@@ -94,9 +94,10 @@ valueFunc(fn func*, parent variable*, l []Tok, i int, ltp lineType, elems Elems*
 
     //pre-processing arguments
     nbEncls = 1
-    memory = []Tok
+    // memory = []Tok
     i = tokPos+1
     fnt.ogCont = fn.name+"("
+    start = i
     for i < len(l), i++ {
         t = l[i]
         fnt.ogCont += t.ogCont
@@ -108,8 +109,8 @@ valueFunc(fn func*, parent variable*, l []Tok, i int, ltp lineType, elems Elems*
                 break
             }
         }
-        memory[len(memory)] = t
     }
+    memory = l[start:i]
     deleteRange(l, tokPos+1, i)
 
     //noCheck (for c lang in bah)
@@ -266,7 +267,7 @@ valueFunc(fn func*, parent variable*, l []Tok, i int, ltp lineType, elems Elems*
     j=0; for j < len(memory), j++ {
         t = memory[j]
         if argIndex == len(fn.args) {
-            throwErr(&t, "Too many arguments, expected ')' not {TOKEN}.")
+            throwErr(&t, "Too many arguments, expected ')' not {TOKEN}.\n"+getFuncDef(fn))
         }
         arg = fn.args[argIndex]
         tt = getTypeFromToken(&t, true, elems)
@@ -290,7 +291,7 @@ valueFunc(fn func*, parent variable*, l []Tok, i int, ltp lineType, elems Elems*
             fn.name += "__" + tts.str()
         } else {
             if compTypes(arg.type, tt) == false {
-                throwErr(&t, "Cannot use {TOKEN} ("+tt+") as "+arg.type+" in function call.")
+                throwErr(&t, "Cannot use {TOKEN} ("+tt+") as "+arg.type+" in function call.\n"+getFuncDef(fn))
             }
         }
 
@@ -323,7 +324,10 @@ valueFunc(fn func*, parent variable*, l []Tok, i int, ltp lineType, elems Elems*
             j++
             t = memory[j]
             if t.cont != "," {
-                throwErr(&t, "Need separator between arguments, not {TOKEN}.")
+                throwErr(&t, "Need separator between arguments, not {TOKEN}.\n"+getFuncDef(fn))
+            }
+            if j+1 >= len(memory) {
+                throwErr(&t, "Trailing {TOKEN} with no argument after.\n"+getFuncDef(fn))
             }
             fnt.cont += ","
         }
@@ -331,8 +335,7 @@ valueFunc(fn func*, parent variable*, l []Tok, i int, ltp lineType, elems Elems*
     }
 
     if argIndex != len(fn.args) {
-        lt = l[tokPos]
-        throwErr(&lt, "Not enough argument {TOKEN}, calling '"+fn.name+"'.")
+        throwErr(&fnt, "Not enough argument {TOKEN}, calling '"+fn.name+"'.\n"+getFuncDef(fn))
     }
 
     if generic != null {
@@ -889,8 +892,15 @@ valueOper(l []Tok, i int, elems Elems*) int {
     //check if the two values are the same type
     ntt = getTypeFromToken(&nt, true, elems)
     if compTypes(ptt, ntt) == false {
-        throwErr(&nt, "Cannot compare {TOKEN} ("+ntt+") as "+ptt+".")
+        throwErr(&nt, "Cannot operate {TOKEN} ("+ntt+") as "+ptt+".")
     }
+
+    if ptt == "ptr" {
+        throwErr(&pt, "Cannot do operation on {TOKEN} (ptr).")
+    }
+    if ntt == "ptr" {
+        throwErr(&nt, "Cannot do operation on {TOKEN} (ptr).")
+    } 
 
     //parse string concatenation
     if ptt == "cpstring" {
@@ -1178,7 +1188,7 @@ isValue(l []Tok, i int) bool {
     }
     if i+1 < len(l) {
         nt = l[i+1]
-        if nt.cont == "[" || nt.cont == "." || nt.cont == "(" || nt.cont in signs {
+        if nt.cont == "[" || nt.cont == "." || nt.cont == "(" || nt.cont in signs || (nt.isValue && nt.cont[0] == '-') {
             return false
         }
     }

@@ -1,13 +1,3 @@
-
-//ASCII COLORS
-const ASCII_RESET = "\\033[0m"
-
-const ASCII_YELLOW = "\\033[33m"
-const ASCII_BLUE = "\\033[36m"
-const ASCII_GREEN = "\\033[32m"
-const ASCII_MAGENTA = "\\033[35m"
-const ASCII_GREY = "\\033[2m"
-
 struct verboseOutVar {
     markup: cpstring
     content: cpstring

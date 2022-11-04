@@ -3,7 +3,7 @@ OPTI_checkFuncScopeRef(elems Elems*) {
     if strHasPrefix(compilerState.currentFile, BAH_DIR) == true {
         return
     }
-    i=0; for i < len(elems.vars), i++ {
+    i=len(elems.vars)-1; for i > 0, i-- {
         v = elems.vars[i]
         if v.isArg == false {
             continue
@@ -12,12 +12,7 @@ OPTI_checkFuncScopeRef(elems Elems*) {
             if isRCPpointerType(v.type) == false && v.type != "reflectElement" && string(v.name).hasPrefix("____BAH_COMPILER_VAR_") == false {
                 s = searchStruct(v.type, elems)
                 if s != null && currentFn != null {
-                    if debug {
-                        throwNoticeLine("in "+currentFn.name+"(): argument "+v.name+" ("+v.type+") could be passed by reference.", currentFn.line)
-
-                    } else {
-                        throwNoticeLine("in \e[1;37m"+currentFn.name+"()\e[0m: argument \e[1;37m"+v.name+"\e[0m ("+v.type+") could be passed by reference.", currentFn.line)
-                    }
+                    throwNoticeLine("in \e[1;37m"+currentFn.name+"()\e[0m: argument \e[1;37m"+v.name+"\e[0m ("+v.type+") could be passed by reference.\n"+getFuncDef(currentFn), currentFn.line)
                 }
             }
         }
@@ -55,10 +50,7 @@ byteToOctal(b byte) cpstring {
 //Returns an int encoded in C octal notation.
 escapeIntOctal(n int) cpstring {
     s char* = &n
-    r = ""
-    i=0; for i < 4, i++ {
-        r += byteToOctal(<byte>noCheck(s[i]))
-    }
+    r = byteToOctal(<byte>noCheck(s[0])) + byteToOctal(<byte>noCheck(s[1])) + byteToOctal(<byte>noCheck(s[2])) + byteToOctal(<byte>noCheck(s[3]))
     return r
 }
 

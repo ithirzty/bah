@@ -405,38 +405,34 @@ json_isPrintable(c uint32) bool {
 
 //Used for escaping strings for json marshalling.
 jsonEscapeStr(s cpstring) cpstring {
-    r = []char
+    r = strBuilder{}
     l = len(s)
 
-    i=0; for i < l {
+    i=0; for i < l, i++ {
         c = s[i]
         if c == <char>34 {
-            r[len(r)] = <char>92
+            r.append(<char>92)
         } else if c == <char>10 {
-                r[len(r)] = <char>92
-                r[len(r)] = 'n'
-                i = i + 1
+                r.append(<char>92)
+                r.append('n')
                 continue
         } else if c == <char>13 {
-                r[len(r)] = <char>92
-                r[len(r)] = 'r'
-                i = i + 1
+                r.append(<char>92)
+                r.append('r')
                 continue
         }
         if json_isPrintable(<uint32>c) == false {
             if <byte>c == <byte>195 {
-                r[len(r)] = c
-                r[len(r)] = s[i+1]
+                r.append(c)
+                r.append(s[i+1])
                 i++
             }
-            i++
             continue
         }
-        r[len(r)] = c
-        i = i + 1
+        r.append(c)
     }
 
-    return arrToStr(r)
+    return r.str()
 }
 
 //Function used by oldToJson() to convert a var to json string.
@@ -694,5 +690,5 @@ toJson(e reflectElement) cpstring {
         return "false"
     }
 
-    return "\"invalid: "+e.type+"\""
+    return "null"
 }

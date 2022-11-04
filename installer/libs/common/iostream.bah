@@ -349,7 +349,7 @@ isFolder(path cpstring) bool {
     if stat(path, &s) != 0 {
         return false
     }
-    if s.st_mode & noCheck(S_IFDIR) {
+    if s.st_mode & <int>noCheck(S_IFDIR) {
         return true
     }
     return false

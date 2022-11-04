@@ -56,7 +56,7 @@ evalRaw(code cpstring, syms []reflectElement) ptr {
                     }
                 }
                 currArg[len(currArg)] = <char>0
-                args[len(args)] = evalRaw(arrAsStr(currArg), syms)
+                args[len(args)] = evalRaw(arrToStr(currArg), syms)
                 
                 currArg = []char
                 isStr = false
@@ -71,16 +71,16 @@ evalRaw(code cpstring, syms []reflectElement) ptr {
             } else if isNumber(currArg[0]) || currArg[0] == '-' {
                 if '.' in currArg {
                     p float* = memoryAlloc(SIZE_OF_FLOAT)
-                    *p = strToFloat(arrAsStr(currArg))
+                    *p = strToFloat(arrToStr(currArg))
                     args[len(args)] = p
                 } else {
                     p int* = memoryAlloc(SIZE_OF_INT)
-                    *p = strToInt(arrAsStr(currArg))
+                    *p = strToInt(arrToStr(currArg))
                     args[len(args)] = p
                 }
-            } else if arrAsStr(currArg) == "true" || arrAsStr(currArg) == "false" || arrAsStr(currArg) == "null" {
+            } else if arrToStr(currArg) == "true" || arrToStr(currArg) == "false" || arrToStr(currArg) == "null" {
                     p int* = memoryAlloc(SIZE_OF_INT)
-                    if arrAsStr(currArg) == "true" {
+                    if arrToStr(currArg) == "true" {
                         *p = 1
                     } else {
                         *p = 0
@@ -107,9 +107,9 @@ evalRaw(code cpstring, syms []reflectElement) ptr {
                             }
                             name[j] = currArg[j]
                         }
-                        symArr = __debug_get_sym(syms, string(arrAsStr(name)))
+                        symArr = __debug_get_sym(syms, string(arrToStr(name)))
                         if symArr.isArray == false {
-                            panic("eval: cannot use '"+arrAsStr(name)+"' as an array.")
+                            panic("eval: cannot use '"+arrToStr(name)+"' as an array.")
                         }
 
                         p ptr* = symArr.value
@@ -117,14 +117,14 @@ evalRaw(code cpstring, syms []reflectElement) ptr {
                         tmpArr = *p
 
                         es int = noCheck(tmpArr->elemSize)
-                        offset = es * strToInt(arrAsStr(ind))
+                        offset = es * strToInt(arrToStr(ind))
 
                         ae = symArr.arrayElem
                         sym = *ae
                         base char* = noCheck(tmpArr->data)
                         sym.value = noCheck(base + offset)
                     } else {
-                        sym = __debug_get_sym(syms, string(arrAsStr(currArg)))
+                        sym = __debug_get_sym(syms, string(arrToStr(currArg)))
                     }
                     if sym.type == "cpstring" {
                         p ptr* = sym.value

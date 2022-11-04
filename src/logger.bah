@@ -25,6 +25,25 @@ debugStart() {
     println("[")
 }
 
+noASCIIescape(s cpstring) cpstring {
+    sb = strBuilder{}
+
+    i=0; for i < len(s), i++ {
+        if s[i] == <char>27 {
+            for i < len(s), i++ {
+                if s[i] == 'm' {
+                    break
+                }
+            }
+            continue
+        }
+        sb.append(s[i])
+    }
+
+    return sb.str()
+
+}
+
 debugPrint(name cpstring, line int, e reflectElement) {
     if debug == false {
         return

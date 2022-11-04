@@ -102,16 +102,6 @@ buffToStr(b char*) cpstring {
 	return s
 }
 
-argsToArr(a char**, l int) []cpstring {
-    r = []cpstring
-    allocateArray(r, l)
-    i=0; for i < l, i++ {
-        sp char** = <char**>(<int>a + i * sizeof(char*))
-        s = *sp
-        r[i] = buffToStr(s)
-    }
-    return r
-}
 
 __Bah_realocate_arr(arr []ptr, nLength uint32) {
 	if nLength < noCheck(arr->length) {
@@ -123,7 +113,7 @@ __Bah_realocate_arr(arr []ptr, nLength uint32) {
 		} else {
 			noCheck(arr->realLength = 50)
 		}
-		newPtr = memoryRealloc(noCheck(arr->data), noCheck(arr->realLength) * noCheck(arr->elemSize))
+		newPtr = memoryRealloc(noCheck(arr->data), <int>noCheck(arr->realLength) * <int>noCheck(arr->elemSize))
 		noCheck(arr->data = newPtr)
 		#rcp {
 			RCP_incr(newPtr)
@@ -131,6 +121,17 @@ __Bah_realocate_arr(arr []ptr, nLength uint32) {
 	}
 	noCheck(arr->length = arr->length + 1)
 	return
+}
+
+argsToArr(a char**, l int) []cpstring {
+    r = []cpstring
+    allocateArray(r, l)
+    i=0; for i < l, i++ {
+        sp char** = <char**>(<int>a + i * sizeof(char*))
+        s = *sp
+        r[i] = buffToStr(s)
+    }
+    return r
 }
 
 cStrToBah(s char*) cpstring {
@@ -164,7 +165,7 @@ __Bah_multiple_concat(b cpstring*, l uint32) cpstring {
     //concatenate all cpstring
     i=0; for i < l, i++ {
         memcpy(<ptr>(<int>r + offset + cpstringLenSize), noCheck(b[i]+cpstringLenSize), noCheck(lens[i]))
-        offset += noCheck(lens[i])
+        offset += <int>noCheck(lens[i])
     }
 
 	ln uint32* = r
@@ -406,7 +407,7 @@ cpstringSubsitute(s cpstring, i int, l int) cpstring {
 //Used by the compiler for operations like array[start:end].
 arraySubstitute(arr []ptr, i int, l int) ptr {
 	length = l - i
-	offset int = i * noCheck(arr->elemSize)
+	offset int = i * <int>noCheck(arr->elemSize)
 	na = []ptr
 	noCheck(na->elemSize = arr->elemSize)
 	noCheck(na->length = length)
@@ -417,8 +418,8 @@ arraySubstitute(arr []ptr, i int, l int) ptr {
 	} else {
 		allocLength = 50
 	}
-	size = allocLength * noCheck(arr->elemSize)
-	realSize = length * noCheck(arr->elemSize)
+	size = allocLength * <int>noCheck(arr->elemSize)
+	realSize = length * <int>noCheck(arr->elemSize)
 	data = memoryAlloc(size)
 	oData cpstring = noCheck(arr->data)
 	memcpy(data, noCheck(oData + offset), realSize)
