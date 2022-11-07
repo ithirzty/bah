@@ -462,6 +462,177 @@ signs = []cpstring{"|", "&", "%", "+", "-", "*", "/", "<<", ">>", "^"}
 
 #define prePross(line []Tok, ltp lineType, elems Elems*) []Tok
 
+parseStructValues(s cStruct*, isHeap bool, memory []Tok, elems Elems*) variable* {
+    sep = "."
+    if isHeap {
+        sep = "->"
+    }
+    
+    
+    //preprocess the memory
+    if len(memory) > 0 {
+        memory = prePross(memory, <lineType>-1, elems)
+    }
+
+    declType = 0 //list of members or members by name
+    //make temp var
+    rvn = genCompilerVar()
+    tmpV = new variable
+    tmpV.name = rvn
+    if isHeap {
+        tmpV.type = s.name+"*"
+        elems.vars[len(elems.vars)] = tmpV
+    } else {
+        tmpV.type = s.name
+    }
+    rst = getCType(tmpV.type, elems)
+    r rope*
+
+    //allocate memory
+    if isHeap {
+        structType = string(rst.str())
+        structType.trimRight(1)
+        r = rope(rst.str()+" "+rvn+" = memoryAlloc(sizeof("+structType.str()+"));\n"+declareStructMethods(tmpV, s, elems))
+    } else {
+        r = rope(rst.str()+" "+rvn+" = {};\n"+declareStructMethods(tmpV, s, elems))
+    }
+    j=0;k=0; for k < len(memory) {
+        t = memory[k]
+        //declaration 'member: value'
+        if k+2 < len(memory) {
+            st = memory[k+1]
+            vl = memory[k+2]
+            if st.cont == ":" {
+                if declType != 0 && declType != 1 {
+                    throwErr(&t, "Cannot declare member {TOKEN} by name in list declaration.")
+                }
+                declType = 1
+                if t.type != TOKEN_TYPE_VAR {
+                    throwErr(&t, "Cannot use {TOKEN} as struct member name.")
+                }
+                j=0; for j < len(s.members) {
+                    m = s.members[j]
+                    if m.name != t.cont {
+                        j = j + 1
+                        continue
+                    }
+                    if vl.cont == "{" {
+                        vs = searchStruct(m.type, elems)
+                        if vs == null {
+                            throwErr(&vl, "Expected value ("+m.type+"), got struct declaration {TOKEN} instead.")
+                        }
+
+                        k += 3
+                        start = k
+                        nbBraces = 1
+                        for k < len(memory), k++ {
+                            if memory[k].cont == "{" {
+                                nbBraces++
+                            } else if memory[k].cont == "}" {
+                                nbBraces--
+                                if nbBraces == 0 {
+                                    break
+                                }
+                            }
+                        }
+
+                        mm = memory[start:k]
+                        debugLine(mm)
+
+                        tmpV = parseStructValues(vs, isRCPpointerType(m.type), mm, elems)
+                        k -= 2
+
+                        vl = Tok {
+                            type: TOKEN_TYPE_VAR
+                            cont: tmpV.name
+                            bahType: tmpV.type
+                        }
+                        
+                    }
+                    vlt = getTypeFromToken(&vl, true, elems)
+                    if compTypes(vlt, m.type) == false {
+                        throwErr(&vl, "Cannot use {TOKEN} ("+vlt+") as '"+m.type+"'.")
+                    }
+                    r = r + rope(rvn+sep+m.name+" = "+vl.cont+";\n")
+                    break
+                }
+                if j == len(s.members) {
+                    throwErr(&t, "Struct '"+s.name+"' has no member called {TOKEN}.")
+                }
+                k = k + 3
+                continue
+            }
+        }
+        if declType != 0 && declType != 2 {
+            throwErr(&t, "Cannot declare member {TOKEN} without specifying its name.")
+        }
+        //declaration 'value, value...'
+        declType = 2
+        if j > len(s.members) {
+            throwErr(&t, "Too many members {TOKEN}.")
+        }
+        m = s.members[j]
+        j++
+
+        if t.cont == "{" {
+            vs = searchStruct(m.type, elems)
+            if vs == null {
+                throwErr(&t, "Expected value ("+m.type+"), got struct declaration {TOKEN} instead.")
+            }
+
+            k++
+            start = k
+            nbBraces = 1
+            for k < len(memory), k++ {
+                if memory[k].cont == "{" {
+                    nbBraces++
+                } else if memory[k].cont == "}" {
+                    nbBraces--
+                    if nbBraces == 0 {
+                        break
+                    }
+                }
+            }
+
+            mm = memory[start:k]
+            debugLine(mm)
+
+            tmpV = parseStructValues(vs, isRCPpointerType(m.type), mm, elems)
+
+            t = Tok {
+                type: TOKEN_TYPE_VAR
+                cont: tmpV.name
+                bahType: tmpV.type
+            }
+            
+        }
+
+        tt = getTypeFromToken(&t, true, elems)
+        if compTypes(tt, m.type) == false {
+            throwErr(&t, "Cannot use {TOKEN} ("+tt+") as '"+m.type+"'.")
+        }
+
+        r += rope(rvn+sep+m.name+" = "+t.cont+";\n")
+
+        if k+1 < len(memory) {
+            k++
+            st = memory[k]
+            if st.cont != "," {
+                throwErr(&st, "Need ',' separator between two values, not {TOKEN}.")
+            }
+        }
+        k++
+    }
+
+    //outputs C code
+    if isGlobal() {
+        INIT += r
+    } else {
+        OUTPUT += r
+    }
+
+    return tmpV
+}
 
 parseStructType(line []Tok, ltp lineType, elems Elems*) []Tok {
 //     recorder = timer.record("parseStructType")
@@ -522,12 +693,10 @@ parseStructType(line []Tok, ltp lineType, elems Elems*) []Tok {
                 nt = line[i]
                 if nt.cont == "{" {
                     isHeap = false
-                    sep = "."
                     if i-2 >= 0 {
                         newTk = line[i-2]
                         if newTk.cont == "new" {
                             isHeap = true
-                            sep = "->"
                         }
                     }
                     i++
@@ -551,106 +720,11 @@ parseStructType(line []Tok, ltp lineType, elems Elems*) []Tok {
                         memory[len(memory)] = t
                     }
 
-                    //preprocess the memory
-                    if len(memory) > 0 {
-                        memory = prePross(memory, <lineType>-1, elems)
-                    }
-
-
-                    declType = 0 //list of members or members by name
-                    //make temp var
-                    rvn = genCompilerVar()
-                    tmpV = new variable
-                    tmpV.name = rvn
-                    if isHeap == true {
-                        tmpV.type = s.name+"*"
-                        elems.vars[len(elems.vars)] = tmpV
-                    } else {
-                        tmpV.type = s.name
-                    }
-                    rst = getCType(tmpV.type, elems)
-                    r rope*
-
-                    //allocate memory
-                    if isHeap == true {
-                        structType = string(rst.str())
-                        structType.trimRight(1)
-                        r = rope(rst.str()+" "+rvn+" = memoryAlloc(sizeof("+structType.str()+"));\n"+declareStructMethods(tmpV, s, elems))
-                    } else {
-                        r = rope(rst.str()+" "+rvn+" = {};\n"+declareStructMethods(tmpV, s, elems))
-                    }
-                    j=0;k=0; for k < len(memory) {
-                        t = memory[k]
-                        //declaration 'member: value'
-                        if k+2 < len(memory) {
-                            st = memory[k+1]
-                            vl = memory[k+2]
-                            if st.cont == ":" {
-                                if declType != 0 && declType != 1 {
-                                    throwErr(&t, "Cannot declare member {TOKEN} by name in list declaration.")
-                                }
-                                declType = 1
-                                if t.type != TOKEN_TYPE_VAR {
-                                    throwErr(&t, "Cannot use {TOKEN} as struct member name.")
-                                }
-                                j=0; for j < len(s.members) {
-                                    m = s.members[j]
-                                    if m.name != t.cont {
-                                        j = j + 1
-                                        continue
-                                    }
-                                    vlt = getTypeFromToken(&vl, true, elems)
-                                    if compTypes(vlt, m.type) == false {
-                                        throwErr(&vl, "Cannot use {TOKEN} ("+vlt+") as '"+m.type+"'.")
-                                    }
-                                    r = r + rope(rvn+sep+m.name+" = "+vl.cont+";\n")
-                                    break
-                                }
-                                if j == len(s.members) {
-                                    throwErr(&t, "Struct '"+s.name+"' has no member called {TOKEN}.")
-                                }
-                                k = k + 3
-                                continue
-                            }
-                        }
-                        if declType != 0 && declType != 2 {
-                            throwErr(&t, "Cannot declare member {TOKEN} without specifying its name.")
-                        }
-                        //declaration 'value, value...'
-                        declType = 2
-                        if j > len(s.members) {
-                            throwErr(&t, "Too many members {TOKEN}.")
-                        }
-                        m = s.members[j]
-                        j++
-
-                        tt = getTypeFromToken(&t, true, elems)
-                        if compTypes(tt, m.type) == false {
-                            throwErr(&t, "Cannot use {TOKEN} ("+tt+") as '"+m.type+"'.")
-                        }
-
-                        r += rope(rvn+sep+m.name+" = "+t.cont+";\n")
-
-                        if k+1 < len(memory) {
-                            k++
-                            st = memory[k]
-                            if st.cont != "," {
-                                throwErr(&st, "Need ',' separator between two values, not {TOKEN}.")
-                            }
-                        }
-                        k++
-                    }
-
-                    //outputs C code
-                    if isGlobal() {
-                        INIT = INIT + r
-                    } else {
-                        OUTPUT = OUTPUT + r
-                    }
+                    tmpV = parseStructValues(s, isHeap, memory, elems)
 
                     //makes token with the temp variable
                     t.bahType = tmpV.type
-                    t.cont = rvn
+                    t.cont = tmpV.name
                     t.isValue = true
                     if isHeap == true {
                         nl[len(nl)-1] = t
