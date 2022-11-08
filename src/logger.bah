@@ -5,16 +5,33 @@ struct debugFunctionArgument {
     type: cpstring
 }
 
+struct debugVar {
+    name: cpstring
+    type: cpstring
+    isGlobal: bool
+    isConst: bool
+    
+    fromVar(v variable*) {
+        this.name = v.name
+        this.type = v.type
+        this.isGlobal = v.isGlobal
+        this.isConst = v.isConst
+    }
+    
+}
+
 struct debugFunction {
     name: cpstring
     returns: cpstring
-    args: []variable*
+    args: []debugVar*
 }
 
 struct debugStruct {
     name: cpstring
-    membs: []variable*
+    membs: []debugVar*
+    methods: []cpstring
 }
+
 
 struct debugType {
     name: cpstring
@@ -100,7 +117,8 @@ debugEndScope(line int, elems Elems*) {
     i=0; for i < len(elems.vars) {
         v = elems.vars[i]
         if v.declScope == elems && v.isConst == false {
-            debugPrint("var_end", line, v)
+            name = v.name
+            debugPrint("var_end", line, &name)
         }
         i = i + 1
     }

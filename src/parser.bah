@@ -1603,8 +1603,9 @@ parseVar(l []Tok, elems Elems*) {
             fixMeRegisterVar(v, &ft)
         }
 
-
-        debugPrint("var_declaration", ft.line, v)
+        dv = debugVar{}
+        dv.fromVar(v)
+        debugPrint("var_declaration", ft.line, &dv)
         // registerType(&fileDeps, v.type, elems)
 
         if isGlobal() {
@@ -1918,6 +1919,7 @@ parseStruct(l []Tok, elems Elems*) {
             if t.cont != "(" {
                 throwErr(&t, "Member name should be followed by ':' not {TOKEN}.")
             } else {
+                declT = t
                 fnPrefix = s.name + "__"
                 fn = new func
                 nl = []Tok
@@ -1976,6 +1978,18 @@ parseStruct(l []Tok, elems Elems*) {
                 fns = elems.fns
                 fns[len(fns)] = fn
 
+                if debug == true {
+                    df = new debugFunction
+                    df.name = fn.name
+                    j=0; for j < len(fn.args), j++ {
+                        dfa = new debugVar
+                        dfa.fromVar(fn.args[j])
+                        df.args[j] = dfa
+                    }
+                    df.returns = fn.returns.type
+                    debugPrint("fn_declare", declT.line, df)
+                }
+
                 tokens = []Tok
                 nbBraces = 1
                 t = l[i]
@@ -2006,7 +2020,6 @@ parseStruct(l []Tok, elems Elems*) {
                 strTrimLeft(&mfn.name, len(fnPrefix))
 
                 methds[len(methds)] = mfn
-                // registerFunc(&fileDeps, mfn, elems)
 
                 if shouldOnlyDecl == false {
                     if len(tokens) == 0 {
@@ -2028,7 +2041,6 @@ parseStruct(l []Tok, elems Elems*) {
                             }
                             endRCPscope(fnElems, fn.args)
                             fixMeEndScope(fnElems, &tokens[len(tokens)-1])
-                            // decrRCPstackVars(fn.args, elems)
                         }
                         code = code + OUTPUT + rope("};\n")
                     }
@@ -2039,22 +2051,6 @@ parseStruct(l []Tok, elems Elems*) {
                 if doesOutput == true {
                     nextLine = nextLine + code.toStr()
                 }
-
-                // mthdDecl = getCType(fn.returns.type, elems)
-                // mthdDecl.append("(*" + mfn.name + ")(")
-                // j=0; for j < len(arguments) {
-                //     a = arguments[j]
-                //     tp = getCType(a.type, elems)
-                //     tp.append(" "+a.name)
-                //     max = len(arguments) - 1
-                //     if j != max {
-                //         tp.append(",")
-                //     }
-                //     mthdDecl.append(tp.str())
-                //     j =j + 1
-                // }
-                // mthdDecl.append(")")
-                // allMembs[len(allMembs)] = mthdDecl.str()
 
                 i++
                 continue
@@ -2150,15 +2146,16 @@ parseStruct(l []Tok, elems Elems*) {
         ds.name = s.name
         i=0; for i < len(s.members) {
             m = s.members[i]
-            mv = new variable
-            mv.name = m.name
-            mv.type = m.type
-            mv.isConst = false
-            mv.isArray = m.isArray
+            mv = new debugVar
+            mv.fromVar(<variable*>m)
             ds.membs[i] = mv
             i = i + 1
         }
 
+        i=0; for i < len(s.methods), i++ {
+            me = s.methods[i]
+            ds.methods[i] = me.name
+        }
         debugPrint("struct_declare", nameToken.line, ds)
     }
 
@@ -3294,7 +3291,11 @@ parseFnDeclare(l []Tok, elems Elems*) {
     if debug == true {
         df = new debugFunction
         df.name = fn.name
-        df.args = fn.args
+        j=0; for j < len(fn.args), j++ {
+            dfa = new debugVar
+            dfa.fromVar(fn.args[j])
+            df.args[j] = dfa
+        }
         df.returns = fn.returns.type
         debugPrint("fn_declare", ft.line, df)
     }
