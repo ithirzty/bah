@@ -78,7 +78,7 @@ const LINE_TYPE_FOR_OPERATOR = <lineType>13
 const LINE_TYPE_PRE_KEYWORD  = <lineType>14
 const LINE_TYPE_ASYNC        = <lineType>15
 const LINE_TYPE_IMPORT       = <lineType>16
-const LINE_TYPE_CAPTURE      = <lineType>17
+const LINE_TYPE_LET          = <lineType>17
 
 prevLine = <lineType>-1
 
@@ -119,8 +119,8 @@ getLineType(line []Tok) lineType {
             return LINE_TYPE_ASYNC
         } else if ft.cont == "continue" || ft.cont == "break" {
             return LINE_TYPE_FOR_OPERATOR
-        } else if ft.cont == "capture" {
-            return LINE_TYPE_CAPTURE
+        } else if ft.cont == "let" {
+            return LINE_TYPE_LET
         } else {
             return LINE_TYPE_PRE_KEYWORD
         }
@@ -3412,10 +3412,16 @@ parseFnDeclare(l []Tok, elems Elems*) {
 
 }
 
-//Parses capture declaration and block handling.
-parseCapture(line []Tok, elems Elems*) {
+//Parses let declaration and block handling.
+//If an else block is used, it will be called if the value is null.
+//The code block must break the execution flow (return/exit/panic...).
+// let a = func() else {<code>}
+//If a then block is used, it will be called if the value is not null.
+//The declared variable will not continue to exist after the scope of the then block.
+// let b = func() then {<code>}
+parseLet(line []Tok, elems Elems*) {
     if len(line) < 7 {
-        throwErr(&line[0], "Invalid usage of {TOKEN} 'capture <var> = <maybe value> else {<code>}'")
+        throwErr(&line[0], "Invalid usage of {TOKEN} 'let <var> = <maybe value> else|then {<code>}'")
     }
 
     varTok = line[1]
@@ -3431,12 +3437,20 @@ parseCapture(line []Tok, elems Elems*) {
         throwErr(&line[2], "Expected '=' got {TOKEN}.")
     }
 
+    isMaybe = true
+    newType = ""
+
     //check valTok
     valType = getTypeFromToken(&valTok, true, elems)
     if valType[len(valType)-1] != '!' {
-        throwErr(&valTok, "Cannot use {TOKEN} ("+valType+") as maybe value.")
+        if isRCPpointerType(valType) == false {
+            throwErr(&valTok, "Cannot use {TOKEN} ("+valType+") as maybe value / pointer.")
+        }
+        isMaybe = false
+        newType = valType
+    } else {
+        newType = valType[:len(valType)-1]+"*"
     }
-    newType = valType[:len(valType)-1]+"*"
 
     //check else tok
     if line[4].cont != "else" && line[4].cont != "then" {
@@ -3447,6 +3461,8 @@ parseCapture(line []Tok, elems Elems*) {
         isThen = true
     }
 
+    tmpVar = ""
+
     //asign variable
     v = searchVar(varTok.cont, elems)
     code = ""
@@ -3454,18 +3470,27 @@ parseCapture(line []Tok, elems Elems*) {
         v = new variable {
             name: varTok.cont
             type: newType
+            canBeNull: isThen == false
         }
-        elems.vars[len(elems.vars)] = v
-        code = getCType(v.type, elems).str() + " "
+        if isThen == false {
+            elems.vars[len(elems.vars)] = v
+            code = getCType(v.type, elems).str() + " " + v.name + " = " + valTok.cont+";"
+        } else {
+            tmpVar = genCompilerVar()
+            code = getCType(v.type, elems).str() + " " + tmpVar + " = " + valTok.cont+";"
+        }
     } else {
         if v.type != newType {
             throwErr(&varTok, "Cannot use var {TOKEN} ("+v.type+") as "+newType+".")
         }
     }
-    code += v.name + " = " + valTok.cont+";"
+
+    captElems = dupElems(elems)
 
     if isThen == true {
-        code += "if ("+v.name+" != null) {"
+        code += "if ("+tmpVar+" != null) {\n"+getCType(v.type, elems).str() + " " + v.name + " = " + tmpVar+";\n"
+        captElems.vars[len(captElems.vars)] = v
+        elems.deletedVars[len(elems.deletedVars)] = v
     } else {
         code += "if ("+v.name+" == null) {"
     }
@@ -3474,15 +3499,27 @@ parseCapture(line []Tok, elems Elems*) {
 
     tokens = line[6:len(line)-1]
 
-    CaptElems = dupElems(elems)
+    beginRCPscopeLeaky(captElems)
 
-    parseLines(tokens, CaptElems)
+    parseLines(tokens, captElems)
+
+    endRCPscopeLeaky(captElems, null, true)
+
+    fixMeEndScope(captElems, &tokens[len(tokens)-1])
+    if debug == true {
+        lt = line[len(line)-1]
+        debugEndScope(lt.line, captElems)
+    }
+
+    v.canBeNull = isThen
 
     if isThen == true {
         OUTPUT += rope("}\n")
     } else {
-        OUTPUT += rope("\n__BAH_panic(\"Undefined capture resolution.\", \""+compilerState.currentFile+":"+intToStr(line[0].line)+"\");}\n")
+        OUTPUT += rope("\n__BAH_panic(\"Undefined let resolution.\", \""+compilerState.currentFile+":"+intToStr(line[0].line)+"\");}\n")
     }
+
+
 }
 
 //Parses a single line (that can contain a block such as an if statement and its code block).
@@ -3582,8 +3619,8 @@ parseLine(line []Tok, elems Elems*) {
         } else if ltp == LINE_TYPE_ASYNC {
             parseAsync(line, elems)
             parsed = true
-        } else if ltp == LINE_TYPE_CAPTURE {
-            parseCapture(line, elems)
+        } else if ltp == LINE_TYPE_LET {
+            parseLet(line, elems)
             parsed = true
         }
     }

@@ -45,7 +45,7 @@ struct Tok {
 enclavers = []char{'(', ')', '{', '}', '[', ']'}
 syntaxes = []char{'!', '=', '|', <char>38, '%', '+', '-', '*', '/', ',', '<', '>', ':', <char>59, '^'}
                                     //&                                                    //;
-keywords = []cpstring{"if", "else", "for", "struct", "const", "return", "extend", "new", "break", "continue", "default", "switch", "case", "while", "typedef", "function", "async", "in", "chan", "map", "buffer", "capture", "then"}
+keywords = []cpstring{"if", "else", "for", "struct", "const", "return", "extend", "new", "break", "continue", "default", "switch", "case", "while", "typedef", "function", "async", "in", "chan", "map", "buffer", "let", "then"}
                     //  x      x      x        x        x         x         x       x       x          x          -          -        -       -         -           x         x       x     x       x       x          x         x
                     // x: done
                     //  : not done
