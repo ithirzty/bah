@@ -7,3 +7,4 @@ stc/test.*
 stc/test
 .tmp_bah/
 src/cache.bah
+tests/test

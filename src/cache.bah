@@ -1,3 +1,9 @@
+//The cache is used when using '#import' to compile the imported object as an object file.
+//This object file will then not be recompiled unless a file of the object has been edited since last compilation,
+//or a new version of the compiler is used.
+//Note that you can purge the cache by deletint the cache folder's contents inside the Bah directory.
+
+//Represents an entry inside the cache.
 struct cacheFile {
     file: cpstring
     last: int
@@ -10,6 +16,8 @@ struct cacheFile {
 
 cache = []cacheFile*
 
+//Reads the cache, who could have guessed?
+//Scans the value of the cache inside the global variable called 'cache'.
 readCache()  {
     fs = fileStream{}
     fs.open(BAH_DIR + "cache/cache.json", "r")
@@ -27,6 +35,7 @@ readCache()  {
 
 }
 
+//Returns a cacheFile instance from an imported file name.
 getCacheFile(s cpstring) cacheFile* {
     if cache == null {
         return null
@@ -40,12 +49,14 @@ getCacheFile(s cpstring) cacheFile* {
     return null
 }
 
+//Updates a cacheFile instance to set the new modification date of the newly compiled file.
 updateCacheFile(c cacheFile*) {
     c.last = getLastModified(c.file)
     c.ver = BAH_VERSION
     c.date = getTimeUnix()
 }
 
+//Used for registering a new cacheFile instance from an imported file's name.
 makeCacheFile(f cpstring) {
     c = new cacheFile
     c.file = f
@@ -60,6 +71,7 @@ makeCacheFile(f cpstring) {
     cache[len(cache)] = c
 }
 
+//Used for saving the runtime copy of the cache to the cache file.
 writeCache() {
     fs = fileStream{}
     fs.open(BAH_DIR + "cache/cache.json", "w")
@@ -67,6 +79,7 @@ writeCache() {
     fs.close()
 }
 
+//Used to decide weither a file should be recompiled or if its cached version is still good.
 isValidCacheFile(cf cacheFile*) bool {
     if cf.last != getLastModified(cf.file) {
         return false

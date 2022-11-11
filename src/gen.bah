@@ -1,3 +1,8 @@
+//Functions used as helper to generate C code.
+
+//Used when setting the value of an array's member.
+//This will set the member at provided index, reallocate the array if needed,
+//and increment the length if the index is greater than all others.
 genArrRealloc(v variable*, preVal cpstring, val cpstring, elems Elems*) cpstring {
 
     vn = string(v.name)
@@ -15,9 +20,9 @@ genArrRealloc(v variable*, preVal cpstring, val cpstring, elems Elems*) cpstring
     "+preVal+nstr+"->data["+nLength+"] = "+val
 }
 
+//This is used to generate concatenation of n cpstrings.
+//The cpstring passed as 'strs' must be in reverse order.
 genConcat(strs []cpstring, elems Elems*) cpstring {
-    
-
     buff = genCompilerVar()
     r = "char** "+buff+" = alloca("+intToStr(len(strs))+" * sizeof(char*));"
 

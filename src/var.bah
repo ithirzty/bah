@@ -1,11 +1,19 @@
-#include "./globals.bah"
+//These are functions used for handling variables.
 
+#include "./globals.bah"
 
 #include "./errors.bah"
 #include "./lexer.bah"
 #include "./type.bah"
 #include "./fns.bah"
 
+#define RCPavailable() bool
+#define pathToVarName(s cpstring) cpstring
+#define strLitteralToBahStr(s cpstring) cpstring
+
+//Returns a pointer to the variable stored inside elems (scope).
+//This can be used because searchVar() create a new instance of a variable.
+//This function does not transform variable name, as such it searches variable by exact name.
 getRealVar(n cpstring, elems Elems*) variable* {
     i=len(elems.vars)-1; for i != -1, i-- {
         if elems.vars[i].name == n {
@@ -15,6 +23,7 @@ getRealVar(n cpstring, elems Elems*) variable* {
     return null
 }
 
+//Removes any '&' or '*' at the begininng of the var token.
 removeVarUnar(s string*) {
     i=0; for i < s.length, i++ {
         c = s.charAt(i)
@@ -27,12 +36,15 @@ removeVarUnar(s string*) {
     }
 }
 
+//Searches a var by relatively complex token content.
+//Returns a pointer to a new instance of the variable.
+//Will also search for struct member, array element and functions.
 searchVar(name cpstring, elems Elems*) variable* {
-//     recorder = timer.record("searchVar")
     ogName = name
     n = string(name)
     removeVarUnar(&n)
 
+    //may be an array element
     if n.charAt(n.length-1) == ']' {
         i=n.length; for i > 0, i-- {
             c = n.charAt(i)
@@ -74,7 +86,7 @@ searchVar(name cpstring, elems Elems*) variable* {
     
     name = n.content
 
-
+    //may be a struct's member
     if hasStructSep(&n) && n.count(")") == 0 {
         rn = splitStructSepBefore(&n)
         name = rn.content
@@ -124,6 +136,7 @@ searchVar(name cpstring, elems Elems*) variable* {
         return nv
     }
 
+    //may be a variable
     i=len(elems.vars)-1; for i != -1, i-- {
         v = elems.vars[i]
         if v.name == name {
@@ -151,6 +164,7 @@ searchVar(name cpstring, elems Elems*) variable* {
         }
     }
 
+    //may be a function
     i=0; for i < len(elems.fns), i++ {
         fn = elems.fns[i]
         if fn.name == name {
@@ -177,6 +191,7 @@ searchVar(name cpstring, elems Elems*) variable* {
 
 }
 
+//The fastest yet less flexible way of searching for a variable given a token.
 searchVarByToken(t Tok*, elems Elems*) variable* {
     if t.bahRef != null {
         return t.bahRef
@@ -186,6 +201,10 @@ searchVarByToken(t Tok*, elems Elems*) variable* {
     return getRealVar(cont.str(), elems)
 }
 
+//Works as searchVar() but will return Tok.bahRef if not null.
+//This can be faster but less predictable.
+//This is used when fuctions such as getTypeFromToken() has been called on a token that has not been modified since,
+//because such functions create that .bahRef shortcut.
 searchVirtVarByToken(t Tok*, elems Elems*) variable* {
     if t.isOper == true {
         return null
@@ -196,13 +215,8 @@ searchVirtVarByToken(t Tok*, elems Elems*) variable* {
     return searchVar(t.cont, elems)
 }
 
-setCType(v variable*, elems Elems*) cpstring {
-        tp = getCType(v.type, elems)
-        t = tp.str()
-        t = t + " " + v.name
-        return t
-}
-
+//Throws an error if a variable cannot be found because it has reached its end of life.
+//This is used for more exotics memory management systems.
 isMissingVar(t Tok*, elems Elems*) {
     i=0; for i < len(elems.deletedVars), i++ {
         if elems.deletedVars[i].name == t.cont {
@@ -211,238 +225,14 @@ isMissingVar(t Tok*, elems Elems*) {
     }
 }
 
-getTypeFromToken(t Tok*, strict bool, elems Elems*) cpstring {
-//     recorder = timer.record("getTypeFromToken")
-    if t.bahType != "" {
-        r = t.bahType
-        return r
-    }
-    if t.type == TOKEN_TYPE_VAR {
-        v = searchVar(t.cont, elems)
-        if v == null {
-            if strict == true {
-                isMissingVar(t, elems)
-                throwErr(t, "Unknown var {TOKEN}.")
-            } else {
-                return ""
-            }
-        }
-        if strict == true {
-            if v.type == "" {
-                throwErr(t, "Cannot use {TOKEN} because it does not have any type.")
-            }
-        }
-        t.bahType = v.type
-        return v.type
-    }
-
-    if t.type == TOKEN_TYPE_FLOAT {
-        return "float"
-    }
-    if t.type == TOKEN_TYPE_INT {
-        return "int"
-    }
-    if t.type == TOKEN_TYPE_STR {
-        return "cpstring"
-    }
-    if t.type == TOKEN_TYPE_CHAR {
-        return "char"
-    }
-    if t.type == TOKEN_TYPE_BOOL {
-        return "bool"
-    }
-    
-    throwErr(t, "Cannot use {TOKEN} as value.")
-    return ""
-
-}
-
-parseFnType(cvt string) func* {
-    nf = new func
-    cvt.trimLeft(9)
-    memory = []char
-    j=0; for j < cvt.length {
-        c = cvt.charAt(j)
-        if c == ')' {
-            break
-        }
-        arg = new variable
-        arg.name = "arg_"+intToStr(len(nf.args))
-        for j < cvt.length {
-            c = cvt.charAt(j)
-            if c == ',' || c == ')' {
-                break
-            }
-            memory[len(memory)] = c
-            j = j + 1
-        }
-        arg.type = arrToStr(memory)
-        clear(memory)
-        nf.args[len(nf.args)] = arg
-        if c == ')' {
-            break
-        }
-        j = j + 1
-    }
-    j = j + 1
-    for j < cvt.length {
-        c = cvt.charAt(j)
-        memory[len(memory)] = c
-        j = j + 1
-    }
-    nf.returns = new variable
-    nf.returns.name = "_return"
-    nf.returns.type = arrToStr(memory)
-    return nf
-}
-
-searchFunc(name cpstring, elems Elems*, inclCurr bool) func* {
-//     recorder = timer.record("searchFunc")
-    ogName = name
-    if name == "noCheck" {
-        fn = new func
-        fn.name = "noCheck"
-        return fn
-    }
-    n = string(name)
-    if hasStructSep(&n) {
-        fnName = splitStructSepAfter(n)
-        if n.charAt(n.length-1-fnName.length) == '.' {
-            n.trimRight(fnName.length + 1)
-        } else {
-            n.trimRight(fnName.length + 2)
-        }
-        name = n.str()
-        v = searchVar(name, elems)
-        if v == null {
-            return null
-        }
-        s = searchStruct(v.type, elems)
-        if s == null {
-            return null
-        }
-        memb = searchStructMemb(fnName.str(), s, elems)
-        if memb == null {
-            return null
-        }
-        name = fnName.content
-        name = memb.from+"__"+name
-
-    }
-    
-    fns = elems.fns
-    i=0; for i < len(fns) {
-        fn = fns[i]
-        if fn.name == name {
-            fn.used = true
-            return fn
-        }
-        i = i + 1
-    }
-
-    if inclCurr == true && currentFn != null {
-        if currentFn.name == name {
-            currentFn.used = true
-            return currentFn
-        }
-    }
-
-    v = searchVar(ogName, elems)
-    if v == null {
-        return null
-    }
-    nf = new func
-    nf.name = ogName
-    cvt = string(v.type)
-    if cvt.hasPrefix("function(") == 0 {
-        return null
-    }
-    pfn = parseFnType(cvt)
-    nf.returns = pfn.returns
-    nf.args = pfn.args
-    return nf
-}
-
-searchFuncByToken(t Tok*, elems Elems*) func* {
-    if t.bahRef != null {
-        return t.bahRef
-    }
-    fnName = splitStringBefore(string(t.cont), "(")
-    return searchFunc(fnName, elems, true)
-}
-
-#define RCPavailable() bool
-
-declareStructMethods(v variable*, s cStruct*, elems Elems*) cpstring {
-    code = ""
-    members = s.members
-    typec = string(v.type)
-    sep = "."
-    amp = "&"
-    if typec.count("*") {
-        sep = "->"
-        amp = ""
-    }
-    i=0; for i < len(members), i++ {
-        m = members[i]
-        cmpt = string(m.type)
-        if m.def != "" {
-            if m.def != "false" && m.def != "0" && m.def != "null" {
-                code = code + v.name + sep + m.name + " = " + m.def + ";\n"
-            }
-            continue
-        }
-        if cmpt.hasPrefix("[]") == 1 {
-            cmpt.trimLeft(2)
-            cmptstr = cmpt.str()
-            elemCType = getCType(cmptstr, elems)
-            elemCTypeStr = elemCType.str()
-            code = code + v.name + sep + m.name + " = memoryAlloc(sizeof(array("+elemCTypeStr+")));
-            "+v.name+sep+m.name+"->length = 0;
-            "+v.name+sep+m.name+"->elemSize = sizeof("+elemCTypeStr+");
-            "
-            continue
-        }
-        if cmpt.hasPrefix("map:") == 1 {
-            cmpt.trimLeft(4)
-            code += v.name + sep + m.name + " = mapWrapper();\n"
-            continue
-        }
-        if cmpt.hasPrefix("chan:") == 1 {
-            cmpt.trimLeft(5)
-            code += v.name + sep + m.name + " = channel();\n"
-        }
-    }
-
-    if s.isBinding == false {
-        found = 0
-        i=0; for i < len(s.methods), i++ {
-            m = s.methods[i]
-            if m.name == "_init" {
-                code += s.name+"__"+m.name+"("+amp+v.name+");\n"
-                found++
-            } else if m.name == "_end" {
-                if sep == "->" {
-                    code += "memoryOnEnd("+v.name+", "+s.name+"__"+m.name+");\n"
-                }
-                found++
-            }
-            if found == 2 {
-                break
-            }
-        }
-    }
-
-    return code
-}
 
 NB_COMP_VAR = 0
 
 currFileHashed = ""
 currFileHash = ""
 
-#define pathToVarName(s cpstring) cpstring
 
+//Generate a unique name for a temporary compiler variable.
 genCompilerVar() cpstring {
     if currFileHashed != compilerState.currentFile {
         currFileHash = pathToVarName(compilerState.currentFile)
@@ -453,6 +243,7 @@ genCompilerVar() cpstring {
     return name
 }
 
+//Returns true if v is in arr (by name).
 varInArr(v variable*, arr []variable*) bool {
     if arr == null {
         return false
@@ -467,6 +258,7 @@ varInArr(v variable*, arr []variable*) bool {
     return false
 }
 
+//Transforms a path as valid C variable name.
 pathToVarName(p cpstring) cpstring {
     a = strToArr(p)
     i=0; for i < len(a), i++ {
@@ -482,8 +274,8 @@ pathToVarName(p cpstring) cpstring {
     return arrToStr(a)
 }
 
-#define strLitteralToBahStr(s cpstring) cpstring
-
+//Generates the __Bah_init() function that initiates the default state of the compiled program.
+//For instance, this will set the declared value of each global variable.
 makeInit() {
     name = "__BAH_init"
     if isObject == true {
@@ -520,61 +312,7 @@ makeInit() {
     ")
 }
 
-checkedNull(v cpstring, elems Elems*) bool {
-    for elems != null, elems = elems.parent {
-        i=0; for i < len(elems.branchChecks), i++ {
-            bc = elems.branchChecks[i]
-            if bc.v == null {
-                continue
-            }
-            if bc.v.name == v {
-                return bc.checkNull
-            }
-        }
-        i=0; for i < len(currChecks), i++ {
-            bc = currChecks[i]
-            if bc.v == null {
-                continue
-            }
-            if bc.v.name == v {
-                return bc.checkNull
-            }
-        }
-    }
-    return false
-}
-
-checkedNotNull(v cpstring, elems Elems*) bool {
-    for elems != null, elems = elems.parent {
-        i=0; for i < len(elems.branchChecks), i++ {
-            bc = elems.branchChecks[i]
-            if bc.v == null {
-                continue
-            }
-            if bc.v.name == v {
-                return bc.checkNull == false
-            }
-        }
-        i=0; for i < len(currChecks), i++ {
-            bc = currChecks[i]
-            if bc.v == null {
-                continue
-            }
-            if bc.v.name == v {
-                return bc.checkNull == false
-            }
-        }
-    }
-    return false
-}
-
-canChangeNullState(v variable*, elems Elems*) bool {
-    if v.declScope == elems {
-        return true
-    }
-    return checkedNull(v.name, elems)
-}
-
+//Used for removing a C cast from a variable.
 removeCast(s cpstring) cpstring {
     i = len(s)-1; for i >= 0, i-- {
         if s[i] == ')' {

@@ -1,3 +1,5 @@
+//These functions are used to generate all kinds of 'user-friendly' messages to the terminal.
+
 #include "./lexer.bah"
 #include "./logger.bah"
 
@@ -10,8 +12,9 @@ const ASCII_GREEN = "\033[32m"
 const ASCII_MAGENTA = "\033[35m"
 const ASCII_GREY = "\033[2m"
 
-#define advertiseGeneric()
+#define advertiseGeneric() //defined in generics.bah
 
+//Generates a function definition to be printed as more context for an error.
 getFuncDef(fn func*) cpstring {
     def = ASCII_YELLOW + fn.name + ASCII_RESET + "("
     i=0; for i < len(fn.args),i++ {
@@ -25,8 +28,10 @@ getFuncDef(fn func*) cpstring {
     return def
 }
 
+//Prints a formatted error to the terminal/adds an entry in '-debug' mode.
+//It then exits the program.
+//This function is somewhat huge for its purpose because it will find the token position inside the source file and print the whole line.
 throwErr(tp ptr, format cpstring) {
-    //println(OUTPUT)
     str = ""
     info = ""
     pos = 0
@@ -105,6 +110,8 @@ throwErr(tp ptr, format cpstring) {
 
 }
 
+//Prints a warning to the terminal/adds an entry in '-debug' mode.
+//This will not terminate the program.
 throwWarning(s cpstring) {
     if debug {
         s = noASCIIescape(s)
@@ -114,6 +121,8 @@ throwWarning(s cpstring) {
     println("\e[1;33m[WARNING]\e[0m " + compilerState.currentFile + "\n\e[0m\t" + s + "\e[0m")
 }
 
+//Same as 'throwWarning()' but will also show the line number of the warning.
+//This is the function called when using '#warning'.
 throwWarningLine(s cpstring, l int) {
     if debug {
         s = noASCIIescape(s)
@@ -123,6 +132,8 @@ throwWarningLine(s cpstring, l int) {
     println("\e[1;33m[WARNING]\e[0m " + compilerState.currentFile + ":"+intToStr(l)+"\n\e[0m\t" + s + "\e[0m")
 }
 
+//Used for printinh a notice to the terminal/adding an entry in '-debug' mode.
+//This will not terminate the program.
 throwNoticeLine(s cpstring, l int) {
     if debug {
         s = noASCIIescape(s)

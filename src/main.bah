@@ -1,7 +1,6 @@
 #include "iostream.bah"
 #include "string.bah"
 #include "flags.bah"
-#include "rand.bah"
 #include "exec.bah"
 #include "time.bah"
 #include "rope.bah"
@@ -26,7 +25,7 @@
     BAH_CC = "gcc"
 }
 //////////////////////BUILD SPECIFIC THINGS//////////////////////
-const BAH_VERSION = "v1.3 (build 141)"
+const BAH_VERSION = "v1.3 (build 142)"
 
 debug = false
 verboseRuntime = false
@@ -49,6 +48,7 @@ isImportedSubObject = false
 #include "./parser.bah"
 #include "./declarative.bah"
 
+//This function is called on segfaults, it provides a bit more help on what went wrong.
 memErrHandle() cpstring {
     r = "file: "+compilerState.currentFile
     if currentFn != null {
@@ -57,45 +57,54 @@ memErrHandle() cpstring {
     return r
 }
 
+//Entry point of the program.
 main(args []cpstring) int {
-    // timer.open("res.json")
-
     onMemoryError = memErrHandle
     
     execName = args[0] //for calling a sub-process for compiling imports
 
+    //If the executable is not called from the path, get its absolute path for calling it when compiling objects with '#import'.
     if execName[0] == '.' || execName[0] == '/' {
         execName = absPath(execName)
     }
 
     flags = flags{}
+
+    //output type
     flags.addString("o", "Name of the file to output.")
     flags.addBool("c", "Translate bah file to C instead of compiling it.")
     flags.addBool("v", "Show version of the compiler.")
     flags.addBool("l", "Compile as a library.")
+    flags.addBool("object", "Compile as an object.")
+    flags.addBool("n", "Disables notices while keeping warnings enabled.")
     #linux {
         flags.addBool("d", "Compile as a dynamic executable. (useful if you are using a library that is only available shared but might reduce portability).")
     }
     #windows {
         flags.addBool("d", "Compile as a dynamic executable. (useful if you are using a library that is only available shared but might reduce portability).")
     }
-    flags.addBool("rcp", "Enables RCP (reference counter) instead of the garbage collector. Warning: if you are using self-reference, this will lead to memory leaks!")
-    flags.addBool("fastrcp", "Enables RCP without leak detection. It is recommended to test you programs with the -rcp flag to test for leak detection before using this flag.")
-    flags.addBool("debug", "Enables verbose json output.")
-    flags.addBool("verboseRuntime", "Enables verbose runtime, a debug mode of the compiled program. (obsolete)")
-    flags.addBool("verboseCC", "Enables verbose C compiler output, USE IN LAST RESORT.")
 
     //cross compiler
     flags.addString("target", "Select the target OS for cross compilling (linux, windows, darwin), default: "+BAH_OS+".")
     flags.addString("bahDir", "If your Bah directory is not the default one ("+BAH_DIR+").")
     flags.addString("CC", "To change the C compiler used, default: "+BAH_CC+".")
-    flags.addBool("object", "Compile as an object.")
+
+    
+    //optimizatioms
     flags.addBool("unsafe", "Compile without safety checking. This will make for faster executable but if your program crashes, it will show less informations.")
     flags.addBool("nobuiltin", "Does not include the builtin library (be really carefull, your program WILL break).")
     flags.addBool("optimize", "Includes optimized functions")
-    flags.addBool("n", "Disables notices while keeping warnings enabled.")
+
+    //memory management
+    flags.addBool("rcp", "Enables RCP (reference counter) instead of the garbage collector. Warning: if you are using self-reference, this will lead to memory leaks!")
+    flags.addBool("fastrcp", "Enables RCP without leak detection. It is recommended to test you programs with the -rcp flag to test for leak detection before using this flag.")
     flags.addBool("raii", "Enables RAII memory management.")
+    
+    //debugging
     flags.addBool("fixMe", "Enables runtime debugging engine, useful for segfaults... Note that your program will be slower and use more memory, this is only a debug option.")
+    flags.addBool("debug", "Enables verbose json output.")
+    flags.addBool("verboseRuntime", "Enables verbose runtime, a debug mode of the compiled program. (obsolete)")
+    flags.addBool("verboseCC", "Enables verbose C compiler output, USE IN LAST RESORT.")
     flags.parse(args)
 
     RAIIenabled = flags.isSet("raii") == 1
@@ -296,8 +305,9 @@ main(args []cpstring) int {
     }
 
     compilerState.currentDir = getDirFromFile(fileName) //for handling includes
-    parseLines(tokens, elems) //parse the frst file
+    parseLines(tokens, elems) //parse the first file
 
+    //registers functions names
     if isObject == false && isUnsafe == false {
         l = 0
         i=0; for i < len(elems.fns), i++ {
@@ -331,26 +341,6 @@ main(args []cpstring) int {
     }
 
     makeInit() //makes the init function
-
-    excludeFns = []cpstring {
-        "main",
-        "cpstringCharAt",
-        "cpstringSubsitute",
-        "channel",
-        "mapWrapper",
-        "arraySubstitute"
-    }
-
-    //optimization: if the file is not an object, removed unused functions.
-    // if isObject == false && compilerState.hasImports == false {
-    //     i=0; for i < len(elems.fns), i++ {
-    //         fn = elems.fns[i]
-    //         if fn.used == false && fn.code != null && fn.name in excludeFns == false {
-    //             ropeSet(fn.code, "//optimized out: "+fn.name+"\n")
-    //         }
-    //     }
-    // }
-
 
     //if we run in debug mode, we dont want to compile the program
     if debug == true {
@@ -454,6 +444,5 @@ main(args []cpstring) int {
         totalTime = getTimeUnix() - startTime
         println("\e[1;32mDone. (compiled in "+intToStr(totalTime / 1000000)+"ms)\e[0m")
     }
-    // timer.save()
     return 0
 }

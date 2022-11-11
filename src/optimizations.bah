@@ -1,4 +1,8 @@
-//User optimization, passing argumeny by reference
+//These functions are used for optimizing code.
+//There are two kinds of optimizations used: optimization done by the compiler,
+//and optimizations hinted to the programmer by the compiler.
+
+//User optimization (hint/notice), passing argumeny by reference
 OPTI_checkFuncScopeRef(elems Elems*) {
     if strHasPrefix(compilerState.currentFile, BAH_DIR) == true {
         return
@@ -47,13 +51,14 @@ byteToOctal(b byte) cpstring {
     return escp + r
 }
 
-//Returns an int encoded in C octal notation.
+//Returns a 4 bytes (32 bits) int encoded in C octal notation.
 escapeIntOctal(n int) cpstring {
     s char* = &n
     r = byteToOctal(<byte>noCheck(s[0])) + byteToOctal(<byte>noCheck(s[1])) + byteToOctal(<byte>noCheck(s[2])) + byteToOctal(<byte>noCheck(s[3]))
     return r
 }
 
+//Returns the length of a string litteral.
 getStrLen(s cpstring) uint {
     l = len(s)
     n = 0
@@ -79,6 +84,7 @@ getStrLen(s cpstring) uint {
     return n
 }
 
+//Makes a Bah string litteral from a str token.
 strLitteralToBahStr(s cpstring) cpstring {
     l = getStrLen(s)
     return "\"" + escapeIntOctal(l) + "\"" + s

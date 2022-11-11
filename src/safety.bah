@@ -1,3 +1,72 @@
+//Theses safety features can be disabled with '-unsafe' or need to be enabled using 'fixMe'.
+
+//Used to get if a variable as been checked as null inside the current scope:
+// if a == null {
+// ...current scope...
+//}
+checkedNull(v cpstring, elems Elems*) bool {
+    for elems != null, elems = elems.parent {
+        i=0; for i < len(elems.branchChecks), i++ {
+            bc = elems.branchChecks[i]
+            if bc.v == null {
+                continue
+            }
+            if bc.v.name == v {
+                return bc.checkNull
+            }
+        }
+        i=0; for i < len(currChecks), i++ {
+            bc = currChecks[i]
+            if bc.v == null {
+                continue
+            }
+            if bc.v.name == v {
+                return bc.checkNull
+            }
+        }
+    }
+    return false
+}
+
+//Used to get if a variable as been checked as not null inside the current scope:
+// if a != null {
+// ...current scope...
+//}
+checkedNotNull(v cpstring, elems Elems*) bool {
+    for elems != null, elems = elems.parent {
+        i=0; for i < len(elems.branchChecks), i++ {
+            bc = elems.branchChecks[i]
+            if bc.v == null {
+                continue
+            }
+            if bc.v.name == v {
+                return bc.checkNull == false
+            }
+        }
+        i=0; for i < len(currChecks), i++ {
+            bc = currChecks[i]
+            if bc.v == null {
+                continue
+            }
+            if bc.v.name == v {
+                return bc.checkNull == false
+            }
+        }
+    }
+    return false
+}
+
+//Returns true if the compiler is allowed to set the null state of the variable to false (variable.canBeNull = false).
+//The compiler is allowed to change the null state only if the variable was declared in the current scope,
+//or if the current scope has checked the variable as null.
+canChangeNullState(v variable*, elems Elems*) bool {
+    if v.declScope == elems {
+        return true
+    }
+    return checkedNull(v.name, elems)
+}
+
+//Checks if a value can be null inside a certain scope.
 checkCanBeNull(t Tok*, tt cpstring, elems Elems*) {
     if isUnsafe == false && string(compilerState.currentDir).hasPrefix(BAH_DIR) == false && isRCPpointerType(tt) && t.cont[0] != '&' && t.cont[0] != '*' {
         sv = searchVarByToken(t, elems)
@@ -14,6 +83,26 @@ checkCanBeNull(t Tok*, tt cpstring, elems Elems*) {
     }
 }
 
+//When this function is called on a scope, it tells its parent scope that the value checked in the current line's condition (elems.branchChecks)
+//can no longer be null because this branch also terminates its parent scope on end.
+//Examples:
+// ...parent scope...
+// if a == null {
+//     ...current scope...
+//     panic("a is null")
+// }
+//Or:
+// ...parent scope...
+// if a == null {
+//     ...current scope...
+//     return 0
+// }
+//Or:
+// ...parent scope...
+// if a == null {
+//     ...current scope...
+//     myCustomError()
+// }
 setNullStateBranchFlowEnd(elems Elems*) {
     if currentFn == null {
         return
@@ -61,6 +150,7 @@ setNullStateBranchFlowEnd(elems Elems*) {
     }
 }
 
+//Returns if '-fixMe' was set and the current file is not inside the bah directory.
 fixMeEnabled() bool {
     if isFixMeEnabled == false {
         return false
@@ -68,6 +158,7 @@ fixMeEnabled() bool {
     return isInside(BAH_DIR, compilerState.currentDir) == false
 }
 
+//Used to register a variable declaration for the fixMe engine to do its job.
 fixMeRegisterVar(v variable*, t Tok*) {
     if v.isReg == true {
         return
@@ -81,6 +172,7 @@ fixMeRegisterVar(v variable*, t Tok*) {
     "
 }
 
+//Used to tell the fixMe engine that a variable as reached its end of life (end of scope).
 fixMeEndScope(elems Elems*, t Tok*) {
     if fixMeEnabled() == false {
         return
@@ -104,11 +196,14 @@ fixMeEndScope(elems Elems*, t Tok*) {
     }
 }
 
+//Used for testing a variable before using it.
+//This will cause the compiled program to crash with an error if the variable is not sane.
+//This could be for instance because a pointer from a stack variable was stocked outside the variable's scope
+//and used after the variable end of life, causing the program to read random stack data.
 fixMeTestVar(t Tok*, ltp lineType, elems Elems*) {
     if fixMeEnabled() == false {
         return
     }
-
 
     name = t.cont
     tt = getTypeFromToken(t, true, elems)
@@ -138,6 +233,8 @@ fixMeTestVar(t Tok*, ltp lineType, elems Elems*) {
     OUTPUT += rope(fn+";\n")
 }
 
+//Returns true if the token representing a value as a known static value or if it is the product of a runtime computation.
+//For instance, a const has by definition a static value.
 isStaticToken(t Tok*, elems Elems*) bool {
     if t.type == TOKEN_TYPE_BOOL && (t.cont != "true" || t.cont != "false") {
         return false

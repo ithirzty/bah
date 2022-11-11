@@ -1,5 +1,87 @@
 #include "./globals.bah"
 
+#define searchVar(n cpstring, elems Elems*) variable*
+
+//This is stupid: are we in the global scope or inside a function.
 isGlobal() bool {
     return currentFn == null
+}
+
+//Searches a function by name.
+//This may return a new instance of func.
+//This will also search for variable with func type and struct methods.
+searchFunc(name cpstring, elems Elems*, inclCurr bool) func* {
+    ogName = name
+    if name == "noCheck" {
+        fn = new func
+        fn.name = "noCheck"
+        return fn
+    }
+    n = string(name)
+    if hasStructSep(&n) {
+        fnName = splitStructSepAfter(n)
+        if n.charAt(n.length-1-fnName.length) == '.' {
+            n.trimRight(fnName.length + 1)
+        } else {
+            n.trimRight(fnName.length + 2)
+        }
+        name = n.str()
+        v = searchVar(name, elems)
+        if v == null {
+            return null
+        }
+        s = searchStruct(v.type, elems)
+        if s == null {
+            return null
+        }
+        memb = searchStructMemb(fnName.str(), s, elems)
+        if memb == null {
+            return null
+        }
+        name = fnName.content
+        name = memb.from+"__"+name
+
+    }
+    
+    fns = elems.fns
+    i=0; for i < len(fns) {
+        fn = fns[i]
+        if fn.name == name {
+            fn.used = true
+            return fn
+        }
+        i = i + 1
+    }
+
+    if inclCurr == true && currentFn != null {
+        if currentFn.name == name {
+            currentFn.used = true
+            return currentFn
+        }
+    }
+
+    v = searchVar(ogName, elems)
+    if v == null {
+        return null
+    }
+    nf = new func
+    nf.name = ogName
+    cvt = string(v.type)
+    if cvt.hasPrefix("function(") == 0 {
+        return null
+    }
+    pfn = parseFnType(cvt)
+    nf.returns = pfn.returns
+    nf.args = pfn.args
+    return nf
+}
+
+//This may be a faster yet let predictable way of searching for a function given a token.
+//See searchVirtVarByToken() for more explaination.
+searchFuncByToken(t Tok*, elems Elems*) func* {
+    if t.bahRef != null {
+        return t.bahRef
+    }
+    fnName = splitStringBefore(string(t.cont), "(")
+    return searchFunc(fnName, elems, true)
 }

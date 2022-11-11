@@ -1,3 +1,9 @@
+//Values function take an array of token and the position of the token.
+//The multiple tokens used to parse the resulting token are then deleted from the array and replaced by the result.
+//They are ment to be called in a loop (in the function 'prePross()').
+//They then return the index of the affected token, which the loop iterator should be set to.
+
+//Makes a function token from ['var', '(', <'arg,'>, ')']. It can also parse struct methods and generics.
 valueFunc(fn func*, parent variable*, l []Tok, i int, ltp lineType, elems Elems*) int {
     tokPos = i
 
@@ -295,44 +301,47 @@ valueFunc(fn func*, parent variable*, l []Tok, i int, ltp lineType, elems Elems*
             }
         }
 
-        if string(tt).hasPrefix("buffer:") && fn.isCbinding == false && arg.type == "cpstring" {
-            t.cont = "buffToStr("+t.cont+")"
-        }
-
+        //Converts cpstring to char* when a C binding is called.
         if tt == "cpstring" && fn.isCbinding && fn.name != "strlen" {
             t.cont = "cStr("+t.cont+")"
         }
 
+        //Make sure that the argument passed cannot be null.
         checkCanBeNull(&t, tt, elems)
 
-        if RCPavailable() == true && ltp == LINE_TYPE_VAR && t.type == TOKEN_TYPE_VAR && t.isOper == false && currSetVar != null && t.cont == currSetVar.name && isRCPtype(currSetVar.type, elems) {
-            OUTPUT += incrVar(currSetVar, elems)
-        }
-
-        if RCPavailable() && t.type == TOKEN_TYPE_FUNC {
-            afn = searchFuncByToken(&t, elems)
-            if afn != null && isRCPtype(afn.returns.type, elems) == true {
-                if ltp == LINE_TYPE_ELSE {
-                    vName = genCompilerVar()
-                    code = getCType(afn.returns.type, elems).str()+" "+vName+";"
-                    diff = ropeSet(begIfHandle, begIfHandle.toStr() + code)
-                    println(intToStr(diff))
-                    OUTPUT.totalLen += diff
-                    t.cont = "("+vName+"="+t.cont+")"
-                    elems.vars[len(elems.vars)] = new variable {
-                        name: vName
-                        type: afn.returns.type
+        if RCPavailable() {
+            //If RCP is enabled, increase the var passed as argument only if it is the var beeing set ('a = someFunc(a)').
+            if t.type == TOKEN_TYPE_VAR && ltp == LINE_TYPE_VAR && t.isOper == false && currSetVar != null && t.cont == currSetVar.name && isRCPtype(currSetVar.type, elems) {
+                OUTPUT += incrVar(currSetVar, elems)
+            //If RCP os enabled and the value passed as argument is a function,
+            //extract it to a symbol to be able to decrease its return value at the end of the current scope.
+            } else if t.type == TOKEN_TYPE_FUNC {
+                afn = searchFuncByToken(&t, elems)
+                if afn != null && isRCPtype(afn.returns.type, elems) == true {
+                    if ltp == LINE_TYPE_ELSE {
+                        vName = genCompilerVar()
+                        code = getCType(afn.returns.type, elems).str()+" "+vName+";"
+                        diff = ropeSet(begIfHandle, begIfHandle.toStr() + code)
+                        OUTPUT.totalLen += diff
+                        t.cont = "("+vName+"="+t.cont+")"
+                        elems.vars[len(elems.vars)] = new variable {
+                            name: vName
+                            type: afn.returns.type
+                        }
+                    } else {
+                        t.cont = registerRCPvar(afn.returns.type, t.cont, elems)
                     }
-                } else {
-                    t.cont = registerRCPvar(afn.returns.type, t.cont, elems)
                 }
             }
+
         }
 
+        //Adds token contents to the func token.
         fnt.cont += t.cont
 
         argIndex++
 
+        //Make sure that the next token is a ',' or that this is the end of arguments.
         if j+1 < len(memory) {
             j++
             t = memory[j]
@@ -346,11 +355,14 @@ valueFunc(fn func*, parent variable*, l []Tok, i int, ltp lineType, elems Elems*
         }
 
     }
+    fnt.cont += ")"
 
     if argIndex != len(fn.args) {
         throwErr(&fnt, "Not enough argument {TOKEN}, calling '"+fn.name+"'.\n"+getFuncDef(fn))
     }
 
+    //If the function is a generic, its C name will be '__generic_' + function's name.
+    //We will need to replace it in the function token.
     if generic != null {
         fnt.cont = "__generic_" + fn.name + "(" + fnt.cont[ogFntContL:]
         if generic.isAlreadyDecl(fn.name) == false {
@@ -358,9 +370,10 @@ valueFunc(fn func*, parent variable*, l []Tok, i int, ltp lineType, elems Elems*
         }
     }
 
-
+    //Shortcut reference to find the function by token faster.
     fnt.bahRef = fn
-    fnt.cont += ")"
+
+    //Some basic string conversions.
     if fn.name == "strlen" && ltt != "cpstring" {
         fnt.cont = "C"+fnt.cont
     } else if fn.name == "len" && ltt == "cpstring" {
@@ -372,6 +385,7 @@ valueFunc(fn func*, parent variable*, l []Tok, i int, ltp lineType, elems Elems*
     if noticeEnabled == true && ltt == "cpstring" && fn.name == "strlen" {
         throwNoticeLine("Function strlen() can be used for char*. Use len() for better code readability.", l[tokPos].line)
     }
+
     if isUnsafe == false && fn.name == "len" && ltt != "cpstring" && string(ltt).hasPrefix("[]") == false {
         throwErr(&memory[0], "Cannot use len({TOKEN}) ("+ltt+") as cpstring or array.")
     }
@@ -381,14 +395,13 @@ valueFunc(fn func*, parent variable*, l []Tok, i int, ltp lineType, elems Elems*
 
 }
 
+//Makes a var token from ['var', '.', 'member'].
 valueStruct(l []Tok, i int, ltp lineType, elems Elems*) int {
     tokPos = i-1
-    // delete(l, i)
 
     //is prev token a struct type
     t = l[i-1]
     tt = getTypeFromToken(&t, true, elems)
-    // tt = balancePtr(tt, t.cont)
     s = searchStruct(tt, elems)
     if s == null {
         if tt[len(tt)-1] == '!' {
@@ -402,7 +415,6 @@ valueStruct(l []Tok, i int, ltp lineType, elems Elems*) int {
 
     //is next token a member name
     nt = l[i+1]
-    // delete(l, i)
     if nt.isValue == false {
         throwErr(&nt, "Cannot use {TOKEN} as member.")
     }
@@ -419,14 +431,13 @@ valueStruct(l []Tok, i int, ltp lineType, elems Elems*) int {
         fixMeTestVar(&t, ltp, elems)
     }
 
-    //member is a method
+    //calling a method, make some pre-processing before passing the result to valueFunc()
     if i < len(l) {
         ntt = l[i]
         if ntt.cont == "(" {
             parent variable*
             if t.type == TOKEN_TYPE_VAR {
                 if t.bahRef != null {
-                    // println("shortcut: "+t.cont)
                     parent = t.bahRef
                 } else {
                     parent = searchVar(t.cont, elems)
@@ -470,8 +481,6 @@ valueStruct(l []Tok, i int, ltp lineType, elems Elems*) int {
             delete(l, i)
             fnt.ogCont = t.ogCont + "." + nt.ogCont
             fnt.pos = t.pos
-            // fnt.cont = t.cont + sep + fnt.cont
-            // fnt.cont = t.cont + sep + fnt.cont
             l[tokPos] = fnt
             return tokPos
         }
@@ -486,6 +495,10 @@ valueStruct(l []Tok, i int, ltp lineType, elems Elems*) int {
     if t.cont[0] == '&' {
         ast = "*"
     }
+
+    //Accessed member can be a method even if it is not called.
+    //Because function pointers of methods are not stored inside the struct,
+    //we need to return the C name of the function.
     if m.isFn == true {
         t.cont = s.name+"__"+m.name
     } else {
@@ -494,6 +507,7 @@ valueStruct(l []Tok, i int, ltp lineType, elems Elems*) int {
         }
         t.cont += sep + nt.cont
     }
+
     t.ogCont += "."+nt.cont
     t.bahType = m.type + ast
     t.bahRef = new variable {
@@ -505,6 +519,8 @@ valueStruct(l []Tok, i int, ltp lineType, elems Elems*) int {
     return tokPos
 }
 
+//Makes a var token from ['a', '[', 'i', ']'].
+//Also handles a[s:e], a[s:] and a[:e].
 valueArr(l []Tok, i int, ltp lineType, elems Elems*) int {
     tokPos = i-1
     //get previous value
@@ -556,6 +572,7 @@ valueArr(l []Tok, i int, ltp lineType, elems Elems*) int {
         second Tok
         third Tok
 
+        //a[s:e]
         if len(memory) == 3 {
             second = memory[1]
             third = memory[2]
@@ -572,17 +589,17 @@ valueArr(l []Tok, i int, ltp lineType, elems Elems*) int {
             }
             from = first.cont
             to = third.cont
-        } else if len(memory) == 2 {
+        } else if len(memory) == 2 { //a[s:] or a[:e]
             second = memory[1]
 
-            if first.cont == ":" {
+            if first.cont == ":" { //a[:e]
                 from = "0"
                 secondT = getTypeFromToken(&second, true, elems)
                 if compTypes(secondT, "int") == false {
                     throwErr(&second, "Cannot use {TOKEN} as int.")
                 }
                 to = second.cont
-            } else if second.cont == ":" {
+            } else if second.cont == ":" { //a[s:]
                 firstT = getTypeFromToken(&first, true, elems)
                 if compTypes(firstT, "int") == false {
                     throwErr(&first, "Cannot use {TOKEN} as int.")
@@ -708,7 +725,7 @@ valueArr(l []Tok, i int, ltp lineType, elems Elems*) int {
             t.cont = "cpstringSubsitute("+pt.cont+", "+from+", "+to+")"
 
         }
-    } else if ptt.hasPrefix("tuple:") {
+    } else if ptt.hasPrefix("tuple:") { // is a tuple
         t.isOper = true
         v = searchVar(pt.cont, elems)
         if v == null {
@@ -738,9 +755,10 @@ valueArr(l []Tok, i int, ltp lineType, elems Elems*) int {
     return tokPos
 }
 
+//Makes a bool token from a condition ['a', '==', 'b'].
 valueBool(l []Tok, i int, ltp lineType, elems Elems*) int {
 
-    tokPos = i-2
+    tokPos = i-2 //because 'i' is the index of 'b' in 'a == b'.
 
     // get previous value
     pt = l[tokPos]
@@ -750,7 +768,7 @@ valueBool(l []Tok, i int, ltp lineType, elems Elems*) int {
 
     deleteRange(l, tokPos, tokPos+1)
 
-    //sets looping variable as register is faster
+    //sets looping variable as register (optimization).
     if isFixMeEnabled == false && ltp == LINE_TYPE_FOR && ptt == "int" || ptt == "float" {
         v = getRealVar(pt.cont, elems)
         if v != null {
@@ -765,7 +783,9 @@ valueBool(l []Tok, i int, ltp lineType, elems Elems*) int {
         }
     }
 
-    //checking condition of branch for safety checks
+    //Checking condition of branch for safety checks,
+    //if the the previous condition did not allow a null value inside the code block and this previous
+    //condition is not chained with '&&', a null value could be passed inside the scope.
     if isUnsafe == false {
         if tokPos > 0 {
             if l[tokPos-1].cont != "&&" {
@@ -788,6 +808,8 @@ valueBool(l []Tok, i int, ltp lineType, elems Elems*) int {
         if compTypes(ptt, arrT.str()) == false {
             throwErr(&pt, "Cannot search for {TOKEN} ("+ptt+") in "+ntt+".")
         }
+        
+        //Generate the C function that will be called to check weither a is inside the array b.
         comp = ""
         if ptt == "cpstring" {
             comp = "arr->data[i] != 0 && strcmp(arr->data[i], el) == 0"
@@ -817,6 +839,8 @@ valueBool(l []Tok, i int, ltp lineType, elems Elems*) int {
             csatd[len(csatd)] = newArgType
             fnTest = "typedef " + getCType(ntt, elems).str() + " " + newArgType + ";\n" + fnTest
         }
+        
+        //Declare the function inside the global scope.
         postDeclHandle.append(rope(fnTest))
 
         fnCall = name+"("+nt.cont+", "+pt.cont+")" 
@@ -891,7 +915,8 @@ valueBool(l []Tok, i int, ltp lineType, elems Elems*) int {
     return tokPos
 }
 
-
+//Makes a var token from an operation: ['a', '+', 'b'].
+//Also handles 'a++' and 'a--'.
 valueOper(l []Tok, i int, elems Elems*) int {
     tokPos = i - 2
     //get previous value
@@ -940,7 +965,6 @@ valueOper(l []Tok, i int, elems Elems*) int {
         if tokPos -1 >= 0 {
             nat = l[tokPos-1]
             if nat.cont == "+" {
-                // delete(l, tokPos-1)
                 rangeEnds = tokPos-1
                 i = tokPos-2
                 nb = 2
@@ -955,7 +979,6 @@ valueOper(l []Tok, i int, elems Elems*) int {
                     //add to the array of cpstrings to allocate
                     strs[len(strs)] = currStrTk.cont
 
-                    // delete(l, i)
                     if i-1 >= 0 {
                         i--
                         t = l[i]
@@ -967,7 +990,6 @@ valueOper(l []Tok, i int, elems Elems*) int {
                                 break
                             }
                         }
-                        // delete(l, i) 
                     } else {
                         i = 0
                         break
@@ -988,6 +1010,7 @@ valueOper(l []Tok, i int, elems Elems*) int {
     } else {
 
         s = searchStruct(ptt, elems)
+        //Cannot do operation on struct, except if they are defined as methods (.add(), .sub()...).
         if s != null {
             sep = "."
             amp = "&"
@@ -1019,6 +1042,7 @@ valueOper(l []Tok, i int, elems Elems*) int {
                 }
             }
         } else {
+            //The two values are primitive types, then symply concatenate their contents.
             pt.cont += t.cont + nt.cont
         }
         pt.isOper = true
@@ -1029,6 +1053,7 @@ valueOper(l []Tok, i int, elems Elems*) int {
     return tokPos
 }
 
+//Makes a var token from ['a', '->', 'c'].
 valueSendChan(l []Tok, i int, elems Elems*) int {
     posTok = i-2
     //value to send
@@ -1053,9 +1078,10 @@ valueSendChan(l []Tok, i int, elems Elems*) int {
         throwErr(&nt, "Cannot send {TOKEN} ("+ntt+") through chan:"+ptt.str()+".")
     }
 
+    //If it is a pointer, send it throug the channel.
     if isRCPpointerType(ptt.str()) {
         OUTPUT += rope("channel__send("+pt.cont+", "+nt.cont+");\n")
-    } else {
+    } else { //Else, because the scope may expire before it is received, copy the value's content to a heap pointer.
         ct = getCType(ntt, elems)
         tmpV = genCompilerVar()
         OUTPUT += rope("
@@ -1067,9 +1093,10 @@ valueSendChan(l []Tok, i int, elems Elems*) int {
     return posTok
 }
 
+//Makes a func token from ['<-', 'c'].
 valueChan(l []Tok, i int, elems Elems*) int {
     posTok = i-1
-    delete(l, posTok) //->
+    delete(l, posTok) //<-
 
     //channel token
     nt = l[posTok]
@@ -1086,10 +1113,11 @@ valueChan(l []Tok, i int, elems Elems*) int {
     }
 
     ct = getCType(ntt.str(), elems)
+    //If the value is a pointer, simply return it.
     if isRCPpointerType(ntt.str()) {
         tmpV = registerRCPvar(ntt.str(), "channel__receive("+nt.cont+")", elems)
         nt.cont = tmpV
-    } else {
+    } else { //Else, dereference the pointer to get the value.
         if RCPavailable() {
             tmpV = registerRCPvar(ntt.str()+"*", "("+ct.str()+"*)channel__receive("+nt.cont+")", elems)
             nt.cont = "*"+tmpV
@@ -1108,6 +1136,7 @@ valueChan(l []Tok, i int, elems Elems*) int {
     return posTok
 }
 
+//Makes a var token from a tuple declaration: [a,b].
 valueTuple(l []Tok, i int, elems Elems*) int {
     tokPos = i
 
@@ -1187,6 +1216,11 @@ valueTuple(l []Tok, i int, elems Elems*) int {
     return tokPos
 }
 
+//Is the token a 'small' value.
+//This means a function call/variable (including array element and struct element).
+//This will return false if the token is a not yet parsed parenthesis: ['(', 'a', '+', 'b', ')'].
+//A small value is smaller than a value because it can form an operation,
+//if the value is inside an operation, it is not a 'small' value because it can be evaluated further.
 isSmallValue(l []Tok, i int) bool {
     t = l[i]
     if t.type == TOKEN_TYPE_CAST || t.cont == "(" {
@@ -1203,6 +1237,9 @@ isSmallValue(l []Tok, i int) bool {
     return true
 }
 
+//Does the same as the function above 'isSmallValue()' but if the value is an operand of a not yet parsed operation,
+//then it is not yet a value but a small value because it can be evaluated further.
+//This returns true only if the value cannot be evaluated further.
 isValue(l []Tok, i int) bool {
     t = l[i]
     if t.type == TOKEN_TYPE_CAST || t.cont == "(" {
@@ -1218,40 +1255,3 @@ isValue(l []Tok, i int) bool {
     }
     return true
 }
-
-
-// matchToken(t Tok, mt Tok) bool {
-//     if t.type != mt.type {
-//         return false
-//     }
-//     if t.isValue == true {
-//         return true
-//     }
-//     if t.cont == mt.cont {
-//         return true
-//     }
-//     return false
-// }
-
-// matchLine(l []Tok, j int, m []Tok) bool {
-//     i=0; for i < len(m), i++ {
-//         if j >= len(l) {
-//             return false
-//         }
-//         if m[i].cont == "%%" {
-//             i++
-//             for j < len(l), j++ {
-//                 if matchToken(l[j], m[i]) {
-//                     break
-//                 }
-//             }
-//             if j == len(l) {
-//                 return false
-//             }
-//         } else if matchToken(l[j], m[i]) == false {
-//             return false
-//         }
-//         j++
-//     }
-//     return true
-// }

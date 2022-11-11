@@ -51,6 +51,7 @@ keywords = []cpstring{"if", "else", "for", "struct", "const", "return", "extend"
                     //  : not done
                     // -: not planned
 
+//Generates a token from all of its properties.
 makeToken(pos int, lineNb int, cont []char, type tokenType) Tok {
     t = Tok{}
     t.cont = arrToStr(cont)
@@ -69,10 +70,12 @@ makeToken(pos int, lineNb int, cont []char, type tokenType) Tok {
     return t
 }
 
+//If current char is a '-' and next char is a number, returns true.
 isMinus(c char, nc char) bool {
     return c == '-' && isNumber(nc)
 }
 
+//We never want to have to throw this error as the file is not yet parsed, we have very little information.
 lexerErr(line int, pos int, msg cpstring) {
     lineStr = intToStr(line)
     posStr = intToStr(pos)
@@ -80,8 +83,8 @@ lexerErr(line int, pos int, msg cpstring) {
     exit(1)
 }
 
+//Takes a file as input, outputs an array of tokens.
 lexer(s cpstring, codeLength uint) []Tok {
-//    recorder = timer.record("lexer")
     dur = getTimeUnix()
     tokens = []Tok
 
@@ -99,7 +102,6 @@ lexer(s cpstring, codeLength uint) []Tok {
         }
         //testing for comments
         if c == '/' {
-//            recorderComms = timer.record("lexer-comments")
             nc = s[i+1]
             if nc == '/' {
                 //ignore the content untill we hit a new line
@@ -158,7 +160,6 @@ lexer(s cpstring, codeLength uint) []Tok {
             lt.begLine = begLine
             tokens[len(tokens) - 1] = lt
         } else if isNumber(c) || isMinus(c, nc) { //token is a number
-//            recorderNums = timer.record("lexer-nums")
             memory[0] = c
             pos = i
             i = i + 1
@@ -192,7 +193,6 @@ lexer(s cpstring, codeLength uint) []Tok {
             i--
             tokens[len(tokens)] = makeToken(pos, lineNb, memory, currentType)
         } else if c == <char>39 { //is a character
-//            recorderChars = timer.record("lexer-char")
             i++
             n = s[i]
             toInt = intToStr(<int>nc)
@@ -204,7 +204,6 @@ lexer(s cpstring, codeLength uint) []Tok {
             }
             tokens[len(tokens)] = makeToken(i-1, lineNb, memory, TOKEN_TYPE_CHAR)
         } else if c == <char>35 { //is a hash keyword
-//            recorderHash = timer.record("lexer-hash")
             pos = i
             memory[0] = c
             i++
@@ -217,12 +216,13 @@ lexer(s cpstring, codeLength uint) []Tok {
             }
             i--
             tokens[len(tokens)] = makeToken(pos, lineNb, memory, TOKEN_TYPE_KEYWORD)
+        } else if c == '.' { //token is a separator
+            memory[0] = c
+            tokens[len(tokens)] = makeToken(i, lineNb, memory, TOKEN_TYPE_SEP)
         } else if c in enclavers { //token is enclaver
-//            recorderEncl = timer.record("lexer-encls")
             memory[0] = c
             tokens[len(tokens)] = makeToken(i, lineNb, memory, TOKEN_TYPE_ENCL)
         } else if c in syntaxes { //token is a syntax element
-//            recorderSyn = timer.record("lexer-syntax")
             
 
             if c == '<' {
@@ -282,12 +282,7 @@ lexer(s cpstring, codeLength uint) []Tok {
             }
             i--
             tokens[len(tokens)] = makeToken(pos, lineNb, memory, TOKEN_TYPE_SYNTAX)
-        } else if c == '.' { //token is a separator
-//            recorderSep = timer.record("lexer-sep")
-            memory[0] = c
-            tokens[len(tokens)] = makeToken(i, lineNb, memory, TOKEN_TYPE_SEP)
         } else if isAlphaNumeric(c) || c == '_' { //token is a var / keyword
-//            recorderVars = timer.record("lexer-var")
             memory[0] = c
             pos = i
             i++

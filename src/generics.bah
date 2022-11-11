@@ -1,8 +1,10 @@
+//Generics are the closest things to templates in Bah.
+//They are function with one or many arguments that are defined as type <any>.
 
 #define dupElems(e Elems*) Elems*
 #define parseLines(l []Tok, elems Elems*)
 
-currGen ptr
+currGen ptr //used for error handling
 
 //Wrapper for a generic function (function with an argument of <any> type)
 struct genericFunc {
@@ -12,6 +14,7 @@ struct genericFunc {
     tokenName: Tok*
     callToken: Tok*
 
+    //Used for duping the base function declaration to redeclare it with the correct types.
     dupBaseFn() func* {
         r = new func
         r.name = this.baseFn.name
@@ -25,10 +28,12 @@ struct genericFunc {
         return r
     }
 
+    //Used for error handling, to fetch the call line.
     setCurrGeneric(t Tok*) {
         this.callToken = t
     }
 
+    //If the generic has already been declared with these types, we do not need to redeclare it.
     isAlreadyDecl(n cpstring) bool {
         i=0; for i < len(this.declared), i++ {
             if this.declared[i].name == n {
@@ -38,6 +43,7 @@ struct genericFunc {
         return false
     }
 
+    //Takes the baseFunction, redeclares it with current types.
     declare(fn func*, elems Elems*) {
         oldOut = OUTPUT
         this.declared[len(this.declared)] = fn
@@ -78,9 +84,6 @@ struct genericFunc {
                 throwErr(this.tokenName, "Function '"+fn.name+"' is not returned.")
             }
             endRCPscope(fnElems, fn.args)
-            // decrRCPstackVars(fn.args, elems)
-        } else {
-            // removeDefs(fnElems)
         }
 
         code = OUTPUT + rope("};\n")
@@ -89,8 +92,10 @@ struct genericFunc {
     }
 }
 
-generics = []genericFunc*
+generics = []genericFunc* //All declared generics.
 
+//Used for error handling.
+//If the error is thrown while parsing a generic, this will print more information about the current generic.
 advertiseGeneric() {
     if currGen == null {
         return

@@ -1,3 +1,8 @@
+//These functions parse the Bah code. This is the hearth of the compiler.
+//Each line type has a parsing function that comes with it.
+//A line is not a file line. It starts at the beginning of a file line and ends when the scope is null.
+//As such, a line can be 'if a == b{\nreturn 0\n}'.
+
 #include "iostream.bah"
 
 #include "./logger.bah"
@@ -10,8 +15,16 @@
 #include "./optimizations.bah"
 #include "./generics.bah"
 
+comparators = []cpstring{"==", "!=", ">", "<", "<=", ">=", "in"}
+compSep = []cpstring{"||", "&&"}
+signs = []cpstring{"|", "&", "%", "+", "-", "*", "/", "<<", ">>", "^"}
+equalsTokens = []cpstring{"=", "+=", "-=", "*=", "/="}
 
-//Only for debug purposes
+
+#define parseLines(ts []Tok, elems Elems*)
+#define parseLine(l []Tok, elems Elems*)
+
+//Only for debug purposes.
 debugLine(line []Tok) {
     cont = ""
     i=0; for i < len(line) {
@@ -22,7 +35,8 @@ debugLine(line []Tok) {
     println(cont)
 }
 
-//duplicates the elems for making an inner scope
+//Duplicates elems (scope).
+//Generally used for making an inner/child scope.
 dupElems(elems Elems*) Elems* {
     nElems = new Elems
     nElems.parent = elems
@@ -45,33 +59,32 @@ dupElems(elems Elems*) Elems* {
     return nElems
 }
 
+//All line types
 #define lineType int
-
-const LINE_TYPE_INCLUDE = <lineType>0
-const LINE_TYPE_DEFINE = <lineType>1
-const LINE_TYPE_CONST = <lineType>2
-const LINE_TYPE_VAR = <lineType>3
-const LINE_TYPE_FN_DECL = <lineType>4
-const LINE_TYPE_FN_CALL = <lineType>5
-const LINE_TYPE_STRUCT = <lineType>6
-const LINE_TYPE_CLIB = <lineType>7
-const LINE_TYPE_RETURN = <lineType>8
-const LINE_TYPE_IF = <lineType>9
-const LINE_TYPE_ELSE = <lineType>10
-const LINE_TYPE_MACRO = <lineType>11
-const LINE_TYPE_FOR = <lineType>12
+const LINE_TYPE_INCLUDE      = <lineType>0
+const LINE_TYPE_DEFINE       = <lineType>1
+const LINE_TYPE_CONST        = <lineType>2
+const LINE_TYPE_VAR          = <lineType>3
+const LINE_TYPE_FN_DECL      = <lineType>4
+const LINE_TYPE_FN_CALL      = <lineType>5
+const LINE_TYPE_STRUCT       = <lineType>6
+const LINE_TYPE_CLIB         = <lineType>7
+const LINE_TYPE_RETURN       = <lineType>8
+const LINE_TYPE_IF           = <lineType>9
+const LINE_TYPE_ELSE         = <lineType>10
+const LINE_TYPE_MACRO        = <lineType>11
+const LINE_TYPE_FOR          = <lineType>12
 const LINE_TYPE_FOR_OPERATOR = <lineType>13
-const LINE_TYPE_PRE_KEYWORD = <lineType>14
-const LINE_TYPE_ASYNC = <lineType>15
-const LINE_TYPE_IMPORT = <lineType>16
-const LINE_TYPE_CAPTURE = <lineType>17
+const LINE_TYPE_PRE_KEYWORD  = <lineType>14
+const LINE_TYPE_ASYNC        = <lineType>15
+const LINE_TYPE_IMPORT       = <lineType>16
+const LINE_TYPE_CAPTURE      = <lineType>17
 
 prevLine = <lineType>-1
 
 #include "./safety.bah"
 
-
-//returns a line type from its tokens
+//Given a line as tokens array, returns the line type.
 getLineType(line []Tok) lineType {
 
     ft = line[0]
@@ -129,9 +142,8 @@ getLineType(line []Tok) lineType {
     return <lineType>-1
 }
 
-
+//Transforms ['<cast>', 'a'] -> 'a' with cast data.
 parseCast(line []Tok, elems Elems*, guard bool) []Tok {
-//     recorder = timer.record("parseCast")
 
     nl = []Tok
     i=0
@@ -174,6 +186,7 @@ parseCast(line []Tok, elems Elems*, guard bool) []Tok {
     return nl
 }
 
+//Returns a directory from a file name.
 getDirFromFile(f cpstring) cpstring {
     l int = len(f)
     i = l-1; for i >= 0 {
@@ -191,7 +204,7 @@ getDirFromFile(f cpstring) cpstring {
     return f
 }
 
-#define parseLines(ts []Tok, elems Elems*)
+//Includes a file.
 includeFile(ccstr cpstring, elems Elems*) bool {
 
     needDisableRCP = false
@@ -291,6 +304,7 @@ includeFile(ccstr cpstring, elems Elems*) bool {
     return true
 }
 
+//Compiles an object from an imported file.
 parallelObjCompile(fn cpstring, oName cpstring, done chan:bool) {
     readCache()
     cf = getCacheFile(fn)
@@ -339,6 +353,7 @@ parallelObjCompile(fn cpstring, oName cpstring, done chan:bool) {
     true -> done
 }
 
+//Parses file import.
 parseImport(l []Tok, elems Elems*) {
     compilerState.hasImports = true
     //basic usage check
@@ -426,6 +441,7 @@ parseImport(l []Tok, elems Elems*) {
     isImportedSubObject = oiiso
 }
 
+//Parses file include.
 parseInclude(l []Tok, elems Elems*) {
     //basic usage check
     if len(l) != 2 && len(l) != 3 {
@@ -457,11 +473,9 @@ parseInclude(l []Tok, elems Elems*) {
     }
 }
 
-signs = []cpstring{"|", "&", "%", "+", "-", "*", "/", "<<", ">>", "^"}
-
-
 #define prePross(line []Tok, ltp lineType, elems Elems*) []Tok
 
+//Parses values of inline struct declaration.
 parseStructValues(s cStruct*, isHeap bool, memory []Tok, elems Elems*) variable* {
     sep = "."
     if isHeap {
@@ -634,8 +648,8 @@ parseStructValues(s cStruct*, isHeap bool, memory []Tok, elems Elems*) variable*
     return tmpV
 }
 
+//Parses inline struct declaration.
 parseStructType(line []Tok, ltp lineType, elems Elems*) []Tok {
-//     recorder = timer.record("parseStructType")
     //vars declaration are handled separatly
     if ltp == LINE_TYPE_VAR {
         return line
@@ -747,8 +761,8 @@ parseStructType(line []Tok, ltp lineType, elems Elems*) []Tok {
     return nl
 }
 
+//Parses inline arrays declaration.
 parseArrayType(line []Tok, elems Elems*, guard bool) []Tok {
-//     recorder = timer.record("parseArrayType")
 
     i=0;if guard == true {
         for i < len(line), i++ {
@@ -811,10 +825,7 @@ parseArrayType(line []Tok, elems Elems*, guard bool) []Tok {
     return nl
 }
 
-comparators = []cpstring{"==", "!=", ">", "<", "<=", ">=", "in"}
-compSep = []cpstring{"||", "&&"}
-
-
+//Prepends '&' and '*' to var tokens contents.
 parsePointers(l []Tok, elems Elems*) []Tok {
     i=0; for i < len(l), i++ {
         t = l[i]
@@ -856,7 +867,7 @@ parsePointers(l []Tok, elems Elems*) []Tok {
     return l
 }
 
-
+//OBSOLETE
 parseSerialize(e Tok*, elems Elems*) cpstring {
 
 
@@ -902,6 +913,7 @@ parseSerialize(e Tok*, elems Elems*) cpstring {
     return code + ")"
 }
 
+//Makes a reflection structure from a variable.
 parseReflect(t Tok, tt cpstring, elems Elems*, parsedPointer bool, ogName cpstring, offset cpstring) Tok {
 
     isArr = "0"
@@ -1041,7 +1053,7 @@ parseReflect(t Tok, tt cpstring, elems Elems*, parsedPointer bool, ogName cpstri
     return t
 }
 
-
+//Parses array declarations such as: 'a = []type'.
 parseArrayDecl(v variable*, l []Tok, i int, max int, elems Elems*) cpstring {
     arrayLength = 0
     arrType = getCType(v.type, elems)
@@ -1149,10 +1161,8 @@ parseArrayDecl(v variable*, l []Tok, i int, max int, elems Elems*) cpstring {
     return code
 }
 
-equalsTokens = []cpstring{"=", "+=", "-=", "*=", "/="}
-
+//Parses var declaration and usage.
 parseVar(l []Tok, elems Elems*) {
-//     recorder = timer.record("parseVar")
     ft = l[0]
     if ft.isFunc == true {
         if len(l) > 1 {
@@ -1369,7 +1379,8 @@ parseVar(l []Tok, elems Elems*) {
                             rv = getRealVar(v.name, elems)
                             if rv != null {
                                 rv.canBeNull = false
-                            }                        }
+                            }
+                        }
                     } else {
                         v.canBeNull = false
                     }
@@ -1633,6 +1644,7 @@ parseVar(l []Tok, elems Elems*) {
 
 }
 
+//Used for getting the C type from a function.
 getCfunctionType(cfrt string*, elemName cpstring, elems Elems*) cpstring {
 
     tmpfn = parseFnType(*cfrt)
@@ -1651,7 +1663,7 @@ getCfunctionType(cfrt string*, elemName cpstring, elems Elems*) cpstring {
     return tmpfnRetCType.str() + " (*"+elemName+")("+tmpfnArgsCType+")"
 }
 
-
+//Parses function definition header in function declaration.
 parseFnHeader(prev cpstring, l []Tok, i int*, fn func*, elems Elems*) cpstring {
 
     j = *i
@@ -1798,8 +1810,8 @@ parseFnHeader(prev cpstring, l []Tok, i int*, fn func*, elems Elems*) cpstring {
     return code
 }
 
+//Parses struct type definition.
 parseStruct(l []Tok, elems Elems*) {
-//     recorder = timer.record("parseStruct")
     s = new cStruct
     structs = elems.structs
     structs[len(structs)] = s
@@ -2162,6 +2174,7 @@ parseStruct(l []Tok, elems Elems*) {
 
 }
 
+//Parses #define (for c bindings and forward functions declarations).
 parseDefine(l []Tok, elems Elems*) {
 
     if len(l) < 3 {
@@ -2220,6 +2233,7 @@ parseDefine(l []Tok, elems Elems*) {
 
 }
 
+//Parses #cLib (for including c libraries/setting c flags).
 parseClib(line []Tok) {
 
     clibs = compilerState.cLibs
@@ -2255,6 +2269,7 @@ parseClib(line []Tok) {
 
 }
 
+//Parses const declaration.
 parseConst(l []Tok, elems Elems*) {
     l = parseCast(l, elems, true)
     if len(l) != 4 {
@@ -2301,8 +2316,7 @@ parseConst(l []Tok, elems Elems*) {
 
 }
 
-
-
+//Parses return.
 parseReturn(l []Tok, elems Elems*) {
 
     if len(l) > 2 {
@@ -2399,6 +2413,7 @@ parseReturn(l []Tok, elems Elems*) {
     }
 }
 
+//Parses if block.
 parseIf(l []Tok, fromElse bool, elems Elems*) {
     prevIfExits = false
         ft = l[0]
@@ -2467,6 +2482,7 @@ parseIf(l []Tok, fromElse bool, elems Elems*) {
     prevIfShortcut = ""
 }
 
+//Parses else block.
 parseElse(l []Tok, elems Elems*) {
 
     if prevLine != LINE_TYPE_IF {
@@ -2530,8 +2546,7 @@ parseElse(l []Tok, elems Elems*) {
 
 }
 
-#define parseLine(l []Tok, elems Elems*)
-
+//Parses for block.
 parseFor(l []Tok, elems Elems*) {
 
     if len(l) < 4 {
@@ -2654,6 +2669,7 @@ parseFor(l []Tok, elems Elems*) {
 
 }
 
+//Parses continue/break statements.
 parseForOp(l []Tok, elems Elems*) {
 
     ft = l[0]
@@ -2673,6 +2689,7 @@ parseForOp(l []Tok, elems Elems*) {
 
 }
 
+//Used for generating C wrapper for function evaluation.
 makeEvalFunc(fn func*, elems Elems*) {
     if fn.name in compilerState.evals {
         return
@@ -2735,6 +2752,7 @@ makeEvalFunc(fn func*, elems Elems*) {
     elems.fns[len(elems.fns)] = efn
 }
 
+//Parses #linux,#dynamic... block.
 parsePreKeyword(l []Tok, elems Elems*) {
 
     ft = l[0]
@@ -2863,6 +2881,7 @@ parsePreKeyword(l []Tok, elems Elems*) {
 
 }
 
+//Parses async function call.
 parseAsync(l []Tok, elems Elems*) {
     if len(l) != 2 {
         ft = l[0]
@@ -2943,8 +2962,8 @@ parseAsync(l []Tok, elems Elems*) {
     ")
 }
 
+//Adds all variables present in the line to an array (in -rcp mode).
 addRCPvars(l []Tok, ltp lineType, elems Elems*) {
-//     recorder = timer.record("addRCPvars")
     i=0
     if ltp == LINE_TYPE_VAR {
         i = 1
@@ -2962,9 +2981,8 @@ addRCPvars(l []Tok, ltp lineType, elems Elems*) {
 
 }
 
-
+//Parse chan declaration.
 parseChan(l []Tok, elems Elems*) []Tok {
-//     recorder = timer.record("parseChan")
     nl = []Tok
     i=0; for i < len(l), i++ {
         t = l[i]
@@ -3068,10 +3086,10 @@ parseChan(l []Tok, elems Elems*) []Tok {
     return nl
 }
 
-#include "values.bah"
+#include "values.bah" //for handling values
 
+//Used for reducing lines to ireducible tokens (parsing values and such).
 prePross(line []Tok, ltp lineType, elems Elems*) []Tok {
-//     recorder = timer.record("prePross")
     fl = []Tok
     i = 0
     sepI = 0
@@ -3252,6 +3270,7 @@ prePross(line []Tok, ltp lineType, elems Elems*) []Tok {
     return fl
 }
 
+//Parses function declaration.
 parseFnDeclare(l []Tok, elems Elems*) {
     i = 0
     fn = new func
@@ -3393,7 +3412,7 @@ parseFnDeclare(l []Tok, elems Elems*) {
 
 }
 
-
+//Parses capture declaration and block handling.
 parseCapture(line []Tok, elems Elems*) {
     if len(line) < 7 {
         throwErr(&line[0], "Invalid usage of {TOKEN} 'capture <var> = <maybe value> else {<code>}'")
@@ -3466,8 +3485,7 @@ parseCapture(line []Tok, elems Elems*) {
     }
 }
 
-//Handling lines
-
+//Parses a single line (that can contain a block such as an if statement and its code block).
 parseLine(line []Tok, elems Elems*) {
 
     if len(line) == 0 {
@@ -3583,6 +3601,7 @@ parseLine(line []Tok, elems Elems*) {
 
 }
 
+//Parses multiple lines (such as a file).
 parseLines(tokens []Tok, elems Elems*) {
 
     if len(tokens) == 0 {

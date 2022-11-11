@@ -1,3 +1,6 @@
+//These are functions used for memory management (such as -rcp).
+
+//Returns true if the 'ce' scope is 'e' scope or one of its ancestor.
 isOutterScope(ce ptr, e Elems*) bool {
     for e != null {
         if ce == e {
@@ -8,6 +11,7 @@ isOutterScope(ce ptr, e Elems*) bool {
     return false
 }
 
+//Used for decrementing the counter of a variable (in -rcp mode).
 decrVar(v variable*, elems Elems*) rope* {
     r = rope("")
     //is array
@@ -40,6 +44,7 @@ decrVar(v variable*, elems Elems*) rope* {
     return r
 }
 
+//Used for incrementing the counter of a variable (in -rcp mode).
 incrVar(v variable*, elems Elems*) rope* {
 
     if strCount(v.name, "*") > 0 {
@@ -54,10 +59,13 @@ incrVar(v variable*, elems Elems*) rope* {
     return rope("RCP_incr("+v.name+");")
 }
 
+//Stupid function: weither RCP is enabled or not.
 RCPavailable() bool {
     return RCPenabled == true
 }
 
+//Called when beginning a new scope, will increase all variable present in the outter scope,
+//except global variables (in -rcp mode).
 beginRCPscope(elems Elems*, excl []variable*) {
     if RCPavailable() == false {
         return
@@ -73,6 +81,8 @@ beginRCPscope(elems Elems*, excl []variable*) {
     }
 }
 
+//Called when beginning a new semi-scope such as 'if' blocks or 'for' blocks (in -rcp mode).
+//This will only increment the counter of variables that were declared inside the new scope.
 beginRCPscopeLeaky(elems Elems*) {
     if RCPavailable() == false {
         return
@@ -85,30 +95,10 @@ beginRCPscopeLeaky(elems Elems*) {
     }
 }
 
-// removeDefs(elems Elems*) {
-//     i=0; for i < len(elems.defined), i++ {
-//         OUTPUT += rope("\n#undef "+elems.defined[i]+"\n")
-//     }
-//     // i=len(elems.vars)-1; for i != -1, i-- {
-//     //     v = elems.vars[i]
-//     //     vn = string(v.name)
-//     //     if v.ogDeclScope == elems && vn.hasSuffix("__Bah_strlen") {
-//     //         c = v.count
-//     //         if *c == 0 {
-//     //             if v.metaRope != null {
-//     //                 OUTPUT.totalLen += ropeSet(v.metaRope, "//removed meta: "+v.name+"\n")
-//     //             } else {
-//     //                 OUTPUT.totalLen += ropeSet(v.declRope, "//removed declaration: "+v.name+"\n")
-//     //             }
-//     //             *c = -1
-//     //         }
-//     //     }
-//     // }
-// }
-
+//This is called on the end of a scope (in -rcp mode).
+//Decrements the counter of every non global variable present in the scope that are not present in the 'excl' array.
 endRCPscope(elems Elems*, excl []variable*) {
     if RCPavailable() == false {
-        // removeDefs(elems)
         return
     }
     i=0; for i < len(elems.vars), i++ {
@@ -120,14 +110,12 @@ endRCPscope(elems Elems*, excl []variable*) {
             OUTPUT += decrVar(v, elems)
         }
     }
-    // removeDefs(elems)
 }
 
+//This is called on the end of a semi-scope such as 'if' blocks or 'for' blocks (in -rcp mode).
+//Decrements the counter of variables that were declared inside the ending scope only.
 endRCPscopeLeaky(elems Elems*, excl variable*, undef bool) {
     if RCPavailable() == false {
-        // if undef == true {
-            // removeDefs(elems)
-        // }
         return
     }
     i=0; for i < len(elems.vars), i++ {
@@ -139,11 +127,9 @@ endRCPscopeLeaky(elems Elems*, excl variable*, undef bool) {
             OUTPUT += decrVar(v, elems)
         }
     }
-    // if undef == true {
-        // removeDefs(elems)
-    // }
 }
 
+//Used for assinging a compilerVar to a value, registering it inside scope variables for memory management purposes.
 registerRCPvar(t cpstring, c cpstring, elems Elems*) cpstring {
     av = new variable
     av.type = t
@@ -160,6 +146,7 @@ registerRCPvar(t cpstring, c cpstring, elems Elems*) cpstring {
     return av.name
 }
 
+//Returns true if the variable referenced is the same as the one beeing set.
 RCPselfRef(v variable*) bool {
     i=0; for i < len(compilerState.RCPvars) {
         r = compilerState.RCPvars[i]

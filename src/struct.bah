@@ -1,5 +1,13 @@
+//These functions are used for easier struct/member handling.
+
 #include "./globals.bah"
 
+#define searchFunc(n cpstring, e Elems*, c bool) func*
+#define parseFnType(n string) func*
+#define getCType(t cpstring, e Elems*) string
+
+//Returns true if the token content 'n' contains a struct separator (such as '.').
+//Struct separator '->' is also valid because of midway C code translation.
 hasStructSep(n string*) bool {
     max = n.length - 1
     i=0; for i < max, i++ {
@@ -14,6 +22,8 @@ hasStructSep(n string*) bool {
     return false
 }
 
+//Returns the token content before the struct separation.
+//a.b.c -> a
 splitStructSepBefore(n string*) string {
     
     if n.count(".") {
@@ -28,8 +38,10 @@ splitStructSepBefore(n string*) string {
     return string("")
 }
 
+//Returns the last member of a struct/member chain.
+//a.b.c -> c
 splitStructSepAfter(n string) string {
-    i=n.length; for i > 0 {
+    i=n.length-1; for i >= 0 {
         c = n.charAt(i)
         if c == '.' {
             break
@@ -46,7 +58,7 @@ splitStructSepAfter(n string) string {
     return n
 }
 
-
+//Searches a struct by name.
 searchStruct(name cpstring, elems Elems*) cStruct* {
     if len(name) == 0 {
         return null
@@ -71,6 +83,7 @@ searchStruct(name cpstring, elems Elems*) cStruct* {
     return null
 }
 
+//Searches a member by name inside a structure.
 searchStructMemb(name cpstring, s cStruct*, elems Elems*) structMemb* {
     n = string(name)
     if hasStructSep(&n) {
@@ -125,9 +138,7 @@ searchStructMemb(name cpstring, s cStruct*, elems Elems*) structMemb* {
     return searchStructMemb(name, es, elems)
 }
 
-#define searchFunc(n cpstring, e Elems*, c bool) func*
-#define parseFnType(n string) func*
-
+//Searches a method by name inside a structure.
 searchStructMethod(name cpstring, s cStruct*, elems Elems*) func* {
     if s == null {
         return null
@@ -151,4 +162,69 @@ searchStructMethod(name cpstring, s cStruct*, elems Elems*) func* {
     s = searchStruct(s.extendedFrom, elems)
 
     return searchStructMethod(name, s, elems)
+}
+
+//Legacy function that used to declare a struct's methods on inline struct declaration.
+//Now declares members default values, initializa array/map/channel members and call ._init if present.
+declareStructMethods(v variable*, s cStruct*, elems Elems*) cpstring {
+    code = ""
+    members = s.members
+    typec = string(v.type)
+    sep = "."
+    amp = "&"
+    if typec.count("*") {
+        sep = "->"
+        amp = ""
+    }
+    i=0; for i < len(members), i++ {
+        m = members[i]
+        cmpt = string(m.type)
+        if m.def != "" {
+            if m.def != "false" && m.def != "0" && m.def != "null" {
+                code = code + v.name + sep + m.name + " = " + m.def + ";\n"
+            }
+            continue
+        }
+        if cmpt.hasPrefix("[]") == 1 {
+            cmpt.trimLeft(2)
+            cmptstr = cmpt.str()
+            elemCType = getCType(cmptstr, elems)
+            elemCTypeStr = elemCType.str()
+            code = code + v.name + sep + m.name + " = memoryAlloc(sizeof(array("+elemCTypeStr+")));
+            "+v.name+sep+m.name+"->length = 0;
+            "+v.name+sep+m.name+"->elemSize = sizeof("+elemCTypeStr+");
+            "
+            continue
+        }
+        if cmpt.hasPrefix("map:") == 1 {
+            cmpt.trimLeft(4)
+            code += v.name + sep + m.name + " = mapWrapper();\n"
+            continue
+        }
+        if cmpt.hasPrefix("chan:") == 1 {
+            cmpt.trimLeft(5)
+            code += v.name + sep + m.name + " = channel();\n"
+        }
+    }
+
+    if s.isBinding == false {
+        found = 0
+        i=0; for i < len(s.methods), i++ {
+            m = s.methods[i]
+            if m.name == "_init" {
+                code += s.name+"__"+m.name+"("+amp+v.name+");\n"
+                found++
+            } else if m.name == "_end" {
+                if sep == "->" {
+                    code += "memoryOnEnd("+v.name+", "+s.name+"__"+m.name+");\n"
+                }
+                found++
+            }
+            if found == 2 {
+                break
+            }
+        }
+    }
+
+    return code
 }

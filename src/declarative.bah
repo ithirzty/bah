@@ -1,4 +1,7 @@
+//Theses functions are obsolete and will be replaced when a redoing the library output system.
+//The declarative functions are used to make declaration/definition of symbols without giving them a value (forward declaration).
 
+//Forward-declares a function as C function.
 declareFunc(fn func*, elems Elems*) {
     tmpfnRetCType = getCType(fn.returns.type, elems)
     tmpfnArgsCType = ""
@@ -15,6 +18,7 @@ declareFunc(fn func*, elems Elems*) {
     OUTPUT = OUTPUT + rope(tmpfnRetCType.str() + " " + fn.name + "("+tmpfnArgsCType+");\n")
 }
 
+//Forward-declares a variable as C variable.
 declareVar(v variable*, elems Elems*) {
     if v.isConst == true {
         OUTPUT = OUTPUT + rope("#define "+v.name+" "+v.constVal+"\n")
@@ -24,6 +28,7 @@ declareVar(v variable*, elems Elems*) {
     }
 }
 
+//Declare every symbol present inside a scope.
 declareAll(elems Elems*) {
 
     OUTPUT = rope("
