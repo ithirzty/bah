@@ -87,7 +87,7 @@ searchVar(name cpstring, elems Elems*) variable* {
     name = n.content
 
     //may be a struct's member
-    if hasStructSep(&n) && n.count(")") == 0 {
+    if hasStructSep(&n) && n.charAt(n.length-1) != ')' {
         rn = splitStructSepBefore(&n)
         name = rn.content
         if n.charAt(rn.length) == '.' {
@@ -116,19 +116,16 @@ searchVar(name cpstring, elems Elems*) variable* {
         nv.name = ogName
 
         r = nv.type
-        tcc = string(ogName)
-        if tcc.charAt(0) == '&' {
+        if ogName[0] == '&' {
             r += "*"
         }
-        nbUnaries = tcc.count("*")
+        nbUnaries = getVarUnaryLevel(ogName)
         if nbUnaries > 0 {
-            ct = string(r)
-            pointerLevel = ct.count("*")
+            pointerLevel = getTypeUnaryLevel(r)
             if pointerLevel < nbUnaries {
                 throwErr(null, "Cannot use '*' on '"+name+"' because it is not pointer.")
             }
-            ct.trimRight(nbUnaries)
-            r = ct.str()
+            r = r[:len(r)-nbUnaries]
         }
         nv.type = r
         nv.name = ogName
@@ -143,20 +140,17 @@ searchVar(name cpstring, elems Elems*) variable* {
             nv = new variable
             *nv = *v
             r = nv.type
-            tcc = string(ogName)
-            if tcc.count("&") {
-                r = r + "*"
+            if ogName[0] == '&' {
+                r += "*"
             }
 
-            nbUnaries = tcc.count("*")
+            nbUnaries = getVarUnaryLevel(ogName)
             if nbUnaries > 0 {
-                ct = string(r)
-                pointerLevel = ct.count("*")
+                pointerLevel = getTypeUnaryLevel(r)
                 if pointerLevel < nbUnaries {
                     throwErr(null, "Cannot use '*' on '"+name+"' because it is not pointer.")
                 }
-                ct.trimRight(nbUnaries)
-                r = ct.str()
+                r = r[:len(r)-nbUnaries]
             }
             nv.type = r
             nv.name = ogName

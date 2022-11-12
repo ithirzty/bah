@@ -1272,73 +1272,89 @@ http_request(connfd int) http_request {
     r = http_request{}
     r.socket = http_socket{}
     r.socket.sockfd = connfd
-    reqcps = r.socket.receive()
-    if reqcps == null {
+    req = r.socket.receive()
+    if req == null {
         return r
     }
-    req = string(reqcps)
+    l = len(req)
     i = 0
     //parse method (GET, POST, PUT, DELETE...)
-    method = string("")
-    for i < req.length {
-        c = req.charAt(i)
+    method = strBuilder{}
+    for i < l, i++ {
+        c = req[i]
         if c == ' ' {
             break
         }
-        cs = charToString(c)
-        method.append(cs)
-        i = i + 1
+        method.append(c)
     }
     r.method = method.str()
 
     //parse path (/)
-    path = string("")
-    i = i + 1
-    for i < req.length {
-        c = req.charAt(i)
+    path = strBuilder{}
+    i++
+    for i < l, i++ {
+        c = req[i]
         if c == ' ' {
             break
         }
-        cs = charToString(c)
-        path.append(cs)
-        i = i + 1
+        path.append(c)
     }
     r.path = path.str()
 
     //trim rest of request (HTTP/1.1)
-    for i < req.length {
-        c = req.charAt(i)
-        if c == <char>10 {
+    for i < l, i++ {
+        if req[i] == <char>10 {
+            i++
             break
         }
-        i = i + 1
     }
     
-    req.trimLeft(i)
-    lines = splitString(req, "\r\n")
-
-    isBody = false
-    r.body = new string
-    i=0; for i < len(lines) {
-        l = lines[i]
-        if isBody == true {
-            r.body.append(l.str() + "\r\n")
-        } else if l.length == 0 {
-            isBody = true
-        } else {
-            l.trim()
-            headerName = splitStringBefore(l, ":")
-            headerCont = string(l.str())
-            headerCont.trimLeft(strlen(headerName) + 1)
-            headerCont.trim()
-            r.setHeader(headerName, headerCont.str())
-        }
+    for i < len(req), i++ {
         
-        i = i + 1
+        headerName = ""
+        headerCont = ""
+        //Read header name until ':'
+        start = i
+        for i < len(req), i++ {
+            c = req[i]
+            if c == ':' {
+                headerName = req[start:i]
+                i++
+                break
+            }
+        }
+
+        //Read header content until "\r\n"
+        start = i
+        for i < len(req), i++ {
+            c = req[i]
+            if c == <char>13 {
+                if i+1 < len(req) && req[i+1] == <char>10 {
+                    headerCont = req[start:i]
+                    i += 2
+                    break
+                }
+            }
+        }
+
+        r.setHeader(headerName, headerCont)
+
+        //If "\r\n", end of headers, beggining of body
+        if req[i] == <char>13 {
+            if i+1 < len(req) {
+                if req[i+1] == <char>10 {
+                    i+= 2
+                    break
+                }
+            }
+        }
+        i--
     }
 
+    r.body = new string
+    r.body.set(req[i:])
 
-    r.request = reqcps
+    r.request = req
 
     return r
 }

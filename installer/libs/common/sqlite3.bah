@@ -8,7 +8,7 @@
 #define! sqlite3_open(filename cpstring, ppDb sqlite3**) int
 #define! sqlite3_close(ppDb sqlite3*)
 #define! sqlite3 int
-#define! sqlite3_exec(ppDb sqlite3*, sql cpstring, callback ptr, data ptr, err cpstring*) int
+#define! sqlite3_exec(ppDb sqlite3*, sql cpstring, callback ptr, data ptr, err char**) int
 
 #static {
     #warning "Lib sqlite3 is usually compilled dynamically (-d), may not link."
@@ -23,7 +23,7 @@ dbResponse_scan_inner(e reflectElement, val cpstring) {
         ep int* = e.value
         *ep = strToInt(val)
     } else if type == "cpstring" {
-        ep cpstring* = e.value
+        ep cpstring* = cStrToBah(e.value)
         if <ptr>val == null {
             *ep = null
         } else {
@@ -75,12 +75,12 @@ struct dbResponseRow {
 struct dbResponse {
     rows: []dbResponseRow*
 
-    err: cpstring = null
+    err: char* = null
 
     //If the response contains an error, this will print the error and panic.
     panic() {
         if <ptr>this.err != null {
-            panic(this.err)
+            panic(cStrToBah(this.err))
         }
     }
 
@@ -155,12 +155,10 @@ fillDBresponse(data ptr, argc int, argv cpstring*, azColName cpstring*) int {
             i++
             continue
         }
-        col = memoryAlloc(strlen(noCheck(azColName[i])) + 1)
-        strcpy(col, noCheck(azColName[i]))
-        arg = memoryAlloc(strlen(noCheck(argv[i])) + 1)
-        strcpy(arg, noCheck(argv[i]))
-        row.cols[i] = __STR(col)
-        row.argv[i] = __STR(arg) 
+        col = cStrToBah(noCheck(azColName[i]))
+        arg = cStrToBah(noCheck(argv[i]))
+        row.cols[i] = col
+        row.argv[i] = arg 
         i = i + 1
     }
     dbr.rows[len(dbr.rows)] = row

@@ -268,3 +268,23 @@ parseFnType(cvt string) func* {
     nf.returns.type = arrToStr(memory)
     return nf
 }
+
+//Returns the number of * at the end of a type.
+getTypeUnaryLevel(t cpstring) uint {
+    i = len(t)-1; for i > 0, i-- {
+        if t[i] != '*' {
+            return len(t)-1 - i
+        }
+    }
+    return 0
+}
+
+//Returns the number of * at the beginning of a var.
+getVarUnaryLevel(s cpstring) uint {
+    i = 0; for i < len(s), i++ {
+        if s[i] != '*' {
+            return i
+        }
+    }
+    return 0
+}
