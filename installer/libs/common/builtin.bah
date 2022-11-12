@@ -8,6 +8,7 @@
 
 #rcp {
 	#define RCP_decr(p ptr)
+	#define RCP_incrIL(p ptr*) ptr
 }
 
 #define __BAH_panic(e cpstring, l cpstring)

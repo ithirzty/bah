@@ -2601,7 +2601,8 @@ parseFor(l []Tok, elems Elems*) {
         oldOut = OUTPUT
         OUTPUT = rope("")
 
-        parseLine(inst, ifElems)
+        inst = prePross(inst, LINE_TYPE_ELSE, ifElems)
+        parseVar(inst, ifElems)
 
         instC = string(OUTPUT.toStr())
         OUTPUT = oldOut

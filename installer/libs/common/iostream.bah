@@ -321,13 +321,13 @@ listFiles(dir cpstring) []cpstring {
     files = []cpstring
     d = opendir(dir)
     file = readdir(d)
-    for file != null, file = readdir(d) {
+    for file != null {
         lf = len(files)
         name = cStrToBah(file.d_name)
-        if name == "." || name == ".." {
-            continue
+        if name != "." && name != ".." {
+            files[lf] = name
         }
-        files[lf] = name
+        file = readdir(d)
     }
     closedir(d)
     return files
