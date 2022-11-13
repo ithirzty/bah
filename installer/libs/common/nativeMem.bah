@@ -1,0 +1,67 @@
+#define! malloc(s int) ptr
+#define! free(p ptr)
+#define! realloc(o ptr, s int) ptr
+#define! malloc_usable_size(o ptr) int
+
+#define! pthread_mutex_t int
+#define! pthread_t int
+#define! pthread_attr_t int
+#define! pthread_attr_getstack(attr pthread_attr_t*, stackaddr ptr*, stacksize int*) int
+#define! pthread_create(id pthread_t*, attr pthread_attr_t*, func ptr, args ptr)
+#define! pthread_join(id pthread_t, ret ptr)
+#define! pthread_attr_init(attr pthread_attr_t*)
+#define! pthread_attr_destroy(attr pthread_attr_t*)
+#define! pthread_getattr_np(thread pthread_t, attr pthread_attr_t*)
+#define! usleep(us int)
+
+
+#define memoryAlloc(s int) ptr
+#define memoryAllocSTR(s int) cpstring
+#define memoryRealloc(o ptr, s int) ptr
+#define initiateMemory(args []cpstring)
+
+// memoryAlloc(s int) ptr {
+//     p = malloc(s)
+//     memset(p, null, s)
+//     return p
+// }
+
+// memoryRealloc(o ptr, s int) ptr {
+//     if o == null {
+//         return memoryAlloc(s)
+//     }
+//     // os = malloc_usable_size(o)
+//     p = realloc(o,s)
+//     // memset(<ptr>(<int>p + os), null, s - os - 1)
+//     return p
+// }
+
+clear(a ptr) {
+    arr = <[]ptr>a
+    memset(noCheck(arr->data), null, noCheck(arr->length * arr->elemSize))
+    noCheck(arr->length = 0)
+}
+
+cleanShutDown() {
+    exit(0)
+}
+
+__BAH_memcpy(dest cpstring, source cpstring, l int) {
+    lm = l % sizeof(int)
+    if lm != 0 {
+        for lm != 0, lm-- {
+            i = l - lm
+            noCheck(dest[i] = source[i])
+        }
+    }
+    destI int* = <ptr>(<int>dest - sizeof(int))
+    sourceI int* = <ptr>(<int>source - sizeof(int))
+    i=l/sizeof(int); for i != 0, i-- {
+        noCheck(destI[i] = sourceI[i])
+    }
+}
+
+
+const GC_pthread_create = pthread_create
+const GC_pthread_join = pthread_join
+const GC_malloc_atomic = memoryAlloc

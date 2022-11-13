@@ -961,6 +961,12 @@ makeRespFromBody(response response_buffer) http_response* {
             }
         }
 
+        for i < len(arr), i++ {
+            if isSpace(arr[i]) == false {
+                break
+            }
+        }
+
         //Read header content until "\r\n"
         start = i
         for i < len(arr), i++ {
@@ -1320,6 +1326,12 @@ http_request(connfd int) http_request {
             if c == ':' {
                 headerName = req[start:i]
                 i++
+                break
+            }
+        }
+
+        for i < len(req), i++ {
+            if isSpace(req[i]) == false {
                 break
             }
         }

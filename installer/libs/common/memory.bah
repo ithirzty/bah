@@ -206,21 +206,6 @@ unser(data []char) ptr {
     return r
 }
 
-#gc {
-    #define! GC_malloc_atomic(s int) ptr
-    //Used for allocating memory for a cpstring.
-    //The content of the memory block should not contain any pointer.
-    //It will not be checked for memory collection.
-    memoryAllocSTR(s int) cpstring {
-        r cpstring = memoryAlloc(s + cpstringLenSize)
-        ln uint32* = r
-        *ln = (s-1)
-        noCheck(r[s-1] = 0)
-        // memset(r, 0, s)
-        return r
-    }
-}
-
 //Used for deleting an element from an array by its index.
 //This will keep the order of the elements.
 delete(a ptr, i int) {

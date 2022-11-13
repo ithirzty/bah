@@ -211,8 +211,10 @@ includeFile(ccstr cpstring, elems Elems*) bool {
 
     //includes the correct memory manager file
     if ccstr == "BAH_MEM_COLLECTOR" {
-        if RAIIenabled == true {
-            ccstr = "raii.bah"
+        if lightGCenabled {
+            ccstr = "lightgc.bah"
+        } else if nativeMemenabled {
+            ccstr = "nativeMem.bah"
         } else if RCPenabled == true {
             needDisableRCP = true
             if flags.isSet("rcp") {
@@ -458,16 +460,19 @@ parseInclude(l []Tok, elems Elems*) {
     }
 
     //removes quotes from file name
-    sc = strt.cont
-    strTrimLeft(&sc, 1)
-    strTrimRight(&sc, 1)
-    if strHasPrefix(sc, "<") || strHasSuffix(sc, ".h") || strHasSuffix(sc, ".c") { // is a C file
+    sc = string(strt.cont)
+    sc.trimLeft(1)
+    sc.trimRight(1)
+    if sc.hasPrefix("<") || sc.hasSuffix(".h") || sc.hasSuffix(".c") { // is a C file
         if isSubObject == false || isSupressed == false {
-            OUTPUT = OUTPUT + rope("#include "+sc+"\n")
-            compilerState.cIncludes[len(compilerState.cIncludes)] = sc
+            if sc.hasPrefix("<") == false {
+                sc.set(strt.cont)
+            }
+            OUTPUT = OUTPUT + rope("#include "+sc.str()+"\n")
+            compilerState.cIncludes[len(compilerState.cIncludes)] = sc.str()
         }
     } else { //is a Bah file
-        if includeFile(sc, elems) == false {
+        if includeFile(sc.str(), elems) == false {
             throwErr(&strt, "Could not find file {TOKEN}.")
         }
     }
@@ -1404,18 +1409,18 @@ parseVar(l []Tok, elems Elems*) {
                 }
             }
 
-            if RAIIenabled == true && t.type == TOKEN_TYPE_VAR && isRCPtype(tp, elems) {
-                ov = searchVar(removeCast(t.cont), elems)
-                if ov != null {
-                    k=0; for k < len(elems.vars), k++ {
-                        if elems.vars[k].name == ov.name {
-                            elems.deletedVars[len(elems.deletedVars)] = elems.vars[k]
-                            delete(elems.vars, k)
-                            break
-                        }
-                    }
-                }
-            }
+            // if RAIIenabled == true && t.type == TOKEN_TYPE_VAR && isRCPtype(tp, elems) {
+            //     ov = searchVar(removeCast(t.cont), elems)
+            //     if ov != null {
+            //         k=0; for k < len(elems.vars), k++ {
+            //             if elems.vars[k].name == ov.name {
+            //                 elems.deletedVars[len(elems.deletedVars)] = elems.vars[k]
+            //                 delete(elems.vars, k)
+            //                 break
+            //             }
+            //         }
+            //     }
+            // }
 
 
             if t.cont != "" && strHasPrefix(t.cont, "{") == false {
@@ -2941,7 +2946,7 @@ parseAsync(l []Tok, elems Elems*) {
     if BAH_OS == "windows" {
         tCreate = "pthread_create"
     } else {
-        if RCPavailable() || RAIIenabled == true {
+        if RCPavailable() || nativeMemenabled || lightGCenabled {
             tCreate = "pthread_create"
         } else {
             tCreate = "GC_pthread_create"

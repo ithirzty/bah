@@ -34,6 +34,8 @@ cp /opt/bah/debug.bah ./libs/common/
 cp /opt/bah/map.bah ./libs/common/
 cp /opt/bah/stdopti.bahstrp ./libs/common/
 cp /opt/bah/fixme.bah ./libs/common/
+cp /opt/bah/nativeMem.bah ./libs/common/
+cp /opt/bah/lightgc.bah ./libs/common/
 #linux specific libs
 # cp /opt/bah/window.bah ./libs/linux/
 #static libs

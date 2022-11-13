@@ -1,0 +1,315 @@
+#include "nativeMem.bah"
+
+#include "memhelper.c"
+#define! stackbase int
+
+#define! pthread_mutex_t int
+#define! pthread_t int
+#define! pthread_cond_t int
+#define! pthread_cond_init(cond pthread_cond_t*, attr int) int
+#define! pthread_cond_signal(cond pthread_cond_t*) int
+#define! pthread_cond_destroy(cond pthread_cond_t*) int
+#define! pthread_cond_wait(cond pthread_cond_t*, mut pthread_mutex_t*) int
+#define! pthread_mutex_init(lock pthread_mutex_t*, m int)
+#define! pthread_mutex_lock(lock pthread_mutex_t*)
+#define! pthread_mutex_unlock(lock pthread_mutex_t*)
+#define! pthread_mutex_destroy(lock pthread_mutex_t*)
+#define! pthread_cond_init(cond pthread_cond_t*, attr int) int
+#define! pthread_cond_signal(cond pthread_cond_t*) int
+#define! pthread_cond_destroy(cond pthread_cond_t*) int
+#define! pthread_cond_wait(cond pthread_cond_t*, mut pthread_mutex_t*) int
+
+#define! __builtin_frame_address(n int) int
+#define! stack_pointer() int
+
+const GC_STATUS_SAFE = 0x0beef
+const GC_STATUS_GOOD = 0x01bad
+
+const GC_DebugOutput = false
+
+struct memgcPtr {
+    size: uint
+    ind: uint
+    g1: int
+    marked: int
+    g2: int
+    status: int = GC_STATUS_GOOD
+}
+
+#define! memcpy(dest ptr, src ptr, s int)
+
+struct memgcPtrWrapper {
+    ptrs: memgcPtr**
+    len: uint = 0
+    size: uint = 0
+    lock: pthread_mutex_t
+    scanCond: pthread_cond_t
+
+    iter: int
+
+    heapMax: int
+    heapMin: int
+    
+    stackBase: ptr
+    stackEnd: ptr
+
+
+    get(i uint) memgcPtr** {
+        return <memgcPtr**>(<int>this.ptrs + i * sizeof(memgcPtr*))
+    }
+
+    add(p memgcPtr*) {
+        this.len++
+        p.marked = this.iter
+        if this.len >= this.size {
+            offset = this.size * sizeof(memgcPtr*)
+            nl = (this.len + 50) * sizeof(memgcPtr*)
+            this.ptrs = realloc(this.ptrs, nl)
+            memset(<int>this.ptrs + offset, 0, nl - offset - 1)
+            this.size = this.len + 50
+        }
+
+        i=this.size-1; for i >= 0, i-- {
+            ind = this.get(i)
+            if *ind == null {
+                *ind = p
+                p.ind = i
+                break
+            }
+        }
+
+        rp = <int>p + sizeof(memgcPtr)
+        if GC_DebugOutput {
+            noCheck(printf("Alloc: %lu (%x)\n"+4, rp, p->status))
+        }
+
+        if this.len == 1 {
+            this.heapMin = rp
+            this.heapMax = rp
+            return
+        }
+
+        if rp > this.heapMax {
+            this.heapMax = rp
+        }
+        
+        if rp < this.heapMin {
+            this.heapMin = rp
+        }
+    }
+
+    update(p memgcPtr*) {
+        ind = this.get(p.ind)
+        *ind = p
+        p.marked = this.iter
+
+        rp = <int>p + sizeof(memgcPtr)
+        if rp > this.heapMax {
+            this.heapMax = rp
+        }
+
+        if rp < this.heapMin {
+            this.heapMin = rp
+        }
+    }
+
+    remove(p memgcPtr*) {
+        ind = this.get(p.ind)
+        *ind = null
+        this.len--
+    }
+
+    exists(p memgcPtr*) bool {
+        i=0; for i < this.size, i++ {
+            ind = this.get(i)
+            if *ind == p {
+                return true
+            }
+        }
+        return false
+    }
+
+    scanHeap(p memgcPtr*) {
+        if p.ind < 0 || p.ind >= this.size || p.g1 != 0 || p.g2 != 0  {
+            return
+        }
+        if p.status == GC_STATUS_SAFE {
+            tmp ptr = <int>p + sizeof(memgcPtr)
+            if GC_DebugOutput {
+                noCheck(printf("Marked (%d): %lu (%x)\n"+4, this->iter, tmp, p->status))
+            }
+            p.marked = this.iter
+            return
+        }
+        
+        if p.status == GC_STATUS_GOOD {
+            tmp ptr = <int>p + sizeof(memgcPtr)
+            if GC_DebugOutput {
+                noCheck(printf("Marked (%d): %lu (%x)\n"+4, this->iter, tmp, p->status))
+            }
+            p.marked = this.iter
+            to ptr = <int>p + p.size + sizeof(memgcPtr)
+            sp char* = <int>p + sizeof(memgcPtr)
+            for <int>sp < <int>to, sp++ {
+                pl int* = sp
+                v = *pl
+                if v != 0 && v >= <int>this.heapMin && v <= this.heapMax {
+                    this.scanHeap(<memgcPtr*>(<int>v - sizeof(memgcPtr)))
+                }
+            }
+        }
+
+    }
+
+    processPtrs(ptrs ptr*, l int) {
+        i=0; for i < l, i++ {
+            pl = <memgcPtr**>(<int>ptrs + i * sizeof(ptr))
+            pi = *pl
+            p = <memgcPtr*>(<int>pi - sizeof(memgcPtr))
+            this.scanHeap(p)
+        }
+
+    }
+
+    scan() {
+        buff = malloc(200 * sizeof(ptr))
+        this.iter=1; for 1==1, this.iter++ {
+            usleep(1000)
+            pthread_mutex_lock(&this.lock)
+            pthread_cond_wait(&this.scanCond, &this.lock)
+            if this.len < 2 {
+                continue
+            }
+            ind = 0
+            sp int = this.stackBase
+            end = <int>this.stackEnd
+            if GC_DebugOutput {
+                noCheck(printf("============ from: %d -> %d (%d)\n"+4, sp, end, end - sp))
+            }
+            for sp < end, sp++ {
+                p int* = sp
+                v = *p
+                if v != 0 && v >= <int>this.heapMin && v <= this.heapMax {
+                    if ind == 200 {
+                        this.processPtrs(buff, ind)
+                        ind = 0
+                    }
+                    place = <ptr*>(<int>buff + ind * sizeof(ptr))
+                    *place = v
+                    ind++
+                }
+            }
+            this.processPtrs(buff, ind)
+
+            i=0; for i < this.size, i++ {
+                inde = this.get(i)
+                mp = *inde
+                if mp == null {
+                    continue
+                }
+                if mp.marked != this.iter {
+                    *inde = null
+                    this.len--
+                    tmp = <int>mp + sizeof(memgcPtr)
+                    if GC_DebugOutput {
+                        noCheck(printf("Freeing: %lu (%x) %d\n"+4, tmp, mp->status, mp->marked))
+                    }
+                    free(mp)
+
+                }
+            }
+            pthread_mutex_unlock(&this.lock)
+        }
+    }
+
+}
+
+memgcPtrs = memgcPtrWrapper{}
+
+#define! __BAH__main(args []cpstring) int
+
+mainWrapper(args []cpstring) {
+    memgcPtrs.stackEnd = stack_pointer()
+    r =__BAH__main(args)
+    this = &memgcPtrs
+
+    if GC_DebugOutput {
+        pthread_mutex_lock(&this.lock)
+        noCheck(printf("Still alive (%d)\n"+4, memgcPtrs.len))
+        pthread_mutex_unlock(&this.lock)
+    }
+    
+    exit(r)
+}
+
+initiateMemory(args []cpstring) {
+    memgcPtrs.heapMin = 0
+    memgcPtrs.heapMax = 0
+
+    sc pthread_cond_t
+    pthread_cond_init(&sc, 0)
+    memgcPtrs.scanCond = sc
+
+    mut pthread_mutex_t
+    pthread_mutex_init(&mut, 0)
+    memgcPtrs.lock = mut
+
+    mt pthread_t
+    pthread_create(&mt, null, mainWrapper, args)
+
+    memgcPtrs.scan()
+}
+
+memoryAlloc(s int) ptr {
+    this = &memgcPtrs
+    pthread_mutex_lock(&this.lock)
+    memgcPtrs.stackBase = stack_pointer()
+    p memgcPtr* = malloc(s + sizeof(memgcPtr))
+    memset(p, 0, s + sizeof(memgcPtr))
+    p.size = s
+    p.status = GC_STATUS_GOOD
+    memgcPtrs.add(p)
+    rp = <ptr>(<int>p + sizeof(memgcPtr))
+    pthread_mutex_unlock(&this.lock)
+    pthread_cond_signal(&this.scanCond)
+    return rp
+}
+
+memoryAllocSTR(s int) cpstring {
+    this = &memgcPtrs
+    pthread_mutex_lock(&this.lock)
+    memgcPtrs.stackBase = stack_pointer()
+    p memgcPtr* = malloc(s + sizeof(memgcPtr) + 4)
+    b = <char*>(<int>p + sizeof(memgcPtr) + s - 1)
+    *b = null
+    p.size = s
+    p.status = GC_STATUS_SAFE
+    memgcPtrs.add(p)
+    st = <cpstring>(<int>p + sizeof(memgcPtr))
+    l uint32* = st
+    *l = s-1
+    pthread_mutex_unlock(&this.lock)
+    pthread_cond_signal(&this.scanCond)
+    return st
+}
+
+
+
+memoryRealloc(o ptr, s int) ptr {
+    this = &memgcPtrs
+    pthread_mutex_lock(&this.lock)
+    memgcPtrs.stackBase = stack_pointer()
+    if o == null {
+        return memoryAlloc(s)
+    }
+
+    p = <memgcPtr*>(<int>o - sizeof(memgcPtr))
+    os = p.size
+    p.size = s
+    np = realloc(p, s + sizeof(memgcPtr))
+    memgcPtrs.update(np)
+    memset(<ptr>(<int>np + os + sizeof(memgcPtr)), null, s - os - 1)
+    pthread_mutex_unlock(&this.lock)
+    pthread_cond_signal(&this.scanCond)
+    return np
+} 
