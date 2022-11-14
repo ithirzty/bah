@@ -212,7 +212,7 @@ struct memgcPtrWrapper {
                     this.len--
                     tmp = <int>mp + sizeof(memgcPtr)
                     if GC_DebugOutput {
-                        noCheck(printf("Freeing: %lu (%x) %d\n"+4, tmp, mp->status, mp->marked))
+                        noCheck(printf("Freeing: %lu (%x) %d (%d left)\n"+4, tmp, mp->status, mp->marked, this->len))
                     }
                     free(mp)
 
@@ -255,9 +255,10 @@ initiateMemory(args []cpstring) {
     memgcPtrs.lock = mut
 
     mt pthread_t
-    pthread_create(&mt, null, mainWrapper, args)
+    pthread_create(&mt, null, memgcPtrs.scan, &memgcPtrs)
 
-    memgcPtrs.scan()
+    mainWrapper(args)
+
 }
 
 memoryAlloc(s int) ptr {
@@ -282,7 +283,7 @@ memoryAllocSTR(s int) cpstring {
     p memgcPtr* = malloc(s + sizeof(memgcPtr) + 4)
     b = <char*>(<int>p + sizeof(memgcPtr) + s - 1)
     *b = null
-    p.size = s
+    p.size = s + 4
     p.status = GC_STATUS_SAFE
     memgcPtrs.add(p)
     st = <cpstring>(<int>p + sizeof(memgcPtr))
@@ -311,5 +312,5 @@ memoryRealloc(o ptr, s int) ptr {
     memset(<ptr>(<int>np + os + sizeof(memgcPtr)), null, s - os - 1)
     pthread_mutex_unlock(&this.lock)
     pthread_cond_signal(&this.scanCond)
-    return np
+    return <ptr>(<int>np + sizeof(memgcPtr))
 } 
