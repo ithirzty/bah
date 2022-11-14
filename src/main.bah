@@ -25,7 +25,7 @@
     BAH_CC = "gcc"
 }
 //////////////////////BUILD SPECIFIC THINGS//////////////////////
-const BAH_VERSION = "v1.3 (build 145)"
+const BAH_VERSION = "v1.3 (build 146)"
 
 debug = false
 verboseRuntime = false
@@ -216,6 +216,7 @@ main(args []cpstring) int {
             args->elemSize = sizeof(char*);
             args->length = argc;
             initiateMemory((__BAH_ARR_TYPE_cpstring)args);
+            __BAH_init();
             long int r =  __BAH__main((__BAH_ARR_TYPE_cpstring)args);
             free(args->data);
             free(args);

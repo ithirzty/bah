@@ -21,31 +21,27 @@
 
 #define! __builtin_frame_address(n int) int
 #define! stack_pointer() int
-
-const GC_STATUS_SAFE = 0x0beef
-const GC_STATUS_GOOD = 0x01bad
-
-const GC_DebugOutput = false
+#define! getBSSend() int
+#define! getBSSbeg() int
 
 struct memgcPtr {
     size: uint
-    ind: uint
-    g1: int
-    marked: int
-    g2: int
-    status: int = GC_STATUS_GOOD
+    marked: bool = false
+    noScan: bool = false
+    left: memgcPtr*
+    right: memgcPtr*
+    parent: memgcPtr*
 }
 
 #define! memcpy(dest ptr, src ptr, s int)
 
+#define removeNotMarked(p memgcPtr*)
+
 struct memgcPtrWrapper {
-    ptrs: memgcPtr**
     len: uint = 0
-    size: uint = 0
+    base: memgcPtr
     lock: pthread_mutex_t
     scanCond: pthread_cond_t
-
-    iter: int
 
     heapMax: int
     heapMin: int
@@ -53,115 +49,126 @@ struct memgcPtrWrapper {
     stackBase: ptr
     stackEnd: ptr
 
-
-    get(i uint) memgcPtr** {
-        return <memgcPtr**>(<int>this.ptrs + i * sizeof(memgcPtr*))
-    }
+    bssBase: ptr
+    bssEnd: ptr
 
     add(p memgcPtr*) {
+        p.marked = true
         this.len++
-        p.marked = this.iter
-        if this.len >= this.size {
-            offset = this.size * sizeof(memgcPtr*)
-            nl = (this.len + 50) * sizeof(memgcPtr*)
-            this.ptrs = realloc(this.ptrs, nl)
-            memset(<int>this.ptrs + offset, 0, nl - offset - 1)
-            this.size = this.len + 50
+        rp int = <int>p + sizeof(memgcPtr)
+
+        if rp > this.heapMax {
+            this.heapMax = rp
         }
 
-        i=this.size-1; for i >= 0, i-- {
-            ind = this.get(i)
-            if *ind == null {
-                *ind = p
-                p.ind = i
-                break
+        e = &this.base
+        for e != null {
+            if p > e {
+                if e.right == null {
+                    p.parent = e
+                    e.right = p
+                    break
+                }
+                e = e.right
+            }
+            if p < e {
+                if e.left == null {
+                    p.parent = e
+                    e.left = p
+                    break
+                }
+                e = e.left
             }
         }
-
-        rp = <int>p + sizeof(memgcPtr)
-        if GC_DebugOutput {
-            noCheck(printf("Alloc: %lu (%x)\n"+4, rp, p->status))
-        }
-
-        if this.len == 1 {
-            this.heapMin = rp
-            this.heapMax = rp
-            return
-        }
-
-        if rp > this.heapMax {
-            this.heapMax = rp
-        }
         
-        if rp < this.heapMin {
-            this.heapMin = rp
-        }
     }
 
-    update(p memgcPtr*) {
-        ind = this.get(p.ind)
-        *ind = p
-        p.marked = this.iter
-
-        rp = <int>p + sizeof(memgcPtr)
-        if rp > this.heapMax {
-            this.heapMax = rp
+    update(op memgcPtr*, p memgcPtr*) {
+        if op == p {
+            return
+        }
+        p.marked = true
+        if p.parent.right == p {
+            p.parent.right = null
+        } else if p.parent.left == p {
+            p.parent.left = null
         }
 
-        if rp < this.heapMin {
-            this.heapMin = rp
+        if p.left != null {
+            this.add(p.left)
+            p.left = null
         }
+        if p.right != null {
+            this.add(p.right)
+            p.right = null
+        }
+
+        this.len--
+        this.add(p)
     }
 
     remove(p memgcPtr*) {
-        ind = this.get(p.ind)
-        *ind = null
         this.len--
+        if p.parent.left == p {
+            p.parent.left = null
+        } else if p.parent.right == p {
+            p.parent.right = null
+        }
+        if p.left != null {
+            this.len--
+            this.add(p.left)
+        }
+        if p.right != null {
+            this.len--
+            this.add(p.right)
+        }
     }
 
     exists(p memgcPtr*) bool {
-        i=0; for i < this.size, i++ {
-            ind = this.get(i)
-            if *ind == p {
-                return true
+        e = &this.base
+        for e != null {
+            if p > e {
+                if e.right == p {
+                    return true
+                }
+                e = e.right
+            }
+            if p < e {
+                if e.left == p {
+                    return true
+                }
+                e = e.left
             }
         }
         return false
     }
 
     scanHeap(p memgcPtr*) {
-        if p.ind < 0 || p.ind >= this.size || p.g1 != 0 || p.g2 != 0  {
+        if this.exists(p) == false {
             return
         }
-        if p.status == GC_STATUS_SAFE {
+        if p.noScan {
             tmp ptr = <int>p + sizeof(memgcPtr)
-            if GC_DebugOutput {
-                noCheck(printf("Marked (%d): %lu (%x)\n"+4, this->iter, tmp, p->status))
-            }
-            p.marked = this.iter
+            p.marked = true
             return
         }
         
-        if p.status == GC_STATUS_GOOD {
-            tmp ptr = <int>p + sizeof(memgcPtr)
-            if GC_DebugOutput {
-                noCheck(printf("Marked (%d): %lu (%x)\n"+4, this->iter, tmp, p->status))
-            }
-            p.marked = this.iter
-            to ptr = <int>p + p.size + sizeof(memgcPtr)
-            sp char* = <int>p + sizeof(memgcPtr)
-            for <int>sp < <int>to, sp++ {
-                pl int* = sp
-                v = *pl
-                if v != 0 && v >= <int>this.heapMin && v <= this.heapMax {
-                    this.scanHeap(<memgcPtr*>(<int>v - sizeof(memgcPtr)))
-                }
+        tmp ptr = <int>p + sizeof(memgcPtr)
+        p.marked = true
+        to ptr = <int>p + p.size + sizeof(memgcPtr)
+        sp char* = <int>p + sizeof(memgcPtr)
+        for <int>sp < <int>to, sp++ {
+            pl int* = sp
+            v = *pl
+            if v != 0 && v >= <int>this.heapMin && v <= this.heapMax {
+                this.scanHeap(<memgcPtr*>(<int>v - sizeof(memgcPtr)))
             }
         }
 
     }
 
     processPtrs(ptrs ptr*, l int) {
+        //scan heap (from pointers ptrs[])
         i=0; for i < l, i++ {
             pl = <memgcPtr**>(<int>ptrs + i * sizeof(ptr))
             pi = *pl
@@ -171,21 +178,33 @@ struct memgcPtrWrapper {
 
     }
 
+    scanBSS() {
+        to ptr = this.bssEnd
+        sp char* = this.bssBase
+        for <int>sp < <int>to, sp++ {
+            pl int* = sp
+            v = *pl
+            if v != 0 && v >= <int>this.heapMin && v <= this.heapMax {
+                this.scanHeap(<memgcPtr*>(<int>v - sizeof(memgcPtr)))
+            }
+        }
+    }
+
     scan() {
+        this.bssBase = getBSSbeg() - 8
+        this.bssEnd = getBSSend() + sizeof(memgcPtr)
         buff = malloc(200 * sizeof(ptr))
-        this.iter=1; for 1==1, this.iter++ {
-            usleep(1000)
+        for 1==1 {
+            usleep(10000)
             pthread_mutex_lock(&this.lock)
             pthread_cond_wait(&this.scanCond, &this.lock)
-            if this.len < 2 {
-                continue
-            }
+            //scan BSS
+            this.scanBSS()
+
             ind = 0
             sp int = this.stackBase
             end = <int>this.stackEnd
-            if GC_DebugOutput {
-                noCheck(printf("============ from: %d -> %d (%d)\n"+4, sp, end, end - sp))
-            }
+            //scan stack
             for sp < end, sp++ {
                 p int* = sp
                 v = *p
@@ -201,50 +220,49 @@ struct memgcPtrWrapper {
             }
             this.processPtrs(buff, ind)
 
-            i=0; for i < this.size, i++ {
-                inde = this.get(i)
-                mp = *inde
-                if mp == null {
-                    continue
-                }
-                if mp.marked != this.iter {
-                    *inde = null
-                    this.len--
-                    tmp = <int>mp + sizeof(memgcPtr)
-                    if GC_DebugOutput {
-                        noCheck(printf("Freeing: %lu (%x) %d (%d left)\n"+4, tmp, mp->status, mp->marked, this->len))
-                    }
-                    free(mp)
-
-                }
-            }
+            this.base.marked = true
+            removeNotMarked(&this.base)
             pthread_mutex_unlock(&this.lock)
         }
     }
 
 }
 
+
 memgcPtrs = memgcPtrWrapper{}
+
+removeNotMarked(p memgcPtr*) {
+    if p.left != null {
+        removeNotMarked(p.left)
+    }
+    if p.right != null {
+        removeNotMarked(p.right)
+    }
+    if p.marked == false {
+        memgcPtrs.remove(p)
+        tmp = <int>p + sizeof(memgcPtr)
+        free(p)
+    } else {
+        p.marked = false
+    }
+}
+
 
 #define! __BAH__main(args []cpstring) int
 
 mainWrapper(args []cpstring) {
     memgcPtrs.stackEnd = stack_pointer()
     r =__BAH__main(args)
-    this = &memgcPtrs
-
-    if GC_DebugOutput {
-        pthread_mutex_lock(&this.lock)
-        noCheck(printf("Still alive (%d)\n"+4, memgcPtrs.len))
-        pthread_mutex_unlock(&this.lock)
-    }
-    
+    this = &memgcPtrs    
     exit(r)
 }
 
+#define! __BAH_init()
+
+
 initiateMemory(args []cpstring) {
-    memgcPtrs.heapMin = 0
-    memgcPtrs.heapMax = 0
+    memgcPtrs.heapMax = memgcPtrs.heapMin
+    noCheck(setvbuf(stdout, NULL, _IONBF, 0))
 
     sc pthread_cond_t
     pthread_cond_init(&sc, 0)
@@ -253,6 +271,13 @@ initiateMemory(args []cpstring) {
     mut pthread_mutex_t
     pthread_mutex_init(&mut, 0)
     memgcPtrs.lock = mut
+
+    __BAH_init()
+    min = malloc(1)
+    if memgcPtrs.heapMin == 0 {
+        memgcPtrs.heapMin = min
+    }
+    free(min)
 
     mt pthread_t
     pthread_create(&mt, null, memgcPtrs.scan, &memgcPtrs)
@@ -268,7 +293,7 @@ memoryAlloc(s int) ptr {
     p memgcPtr* = malloc(s + sizeof(memgcPtr))
     memset(p, 0, s + sizeof(memgcPtr))
     p.size = s
-    p.status = GC_STATUS_GOOD
+    p.noScan = false
     memgcPtrs.add(p)
     rp = <ptr>(<int>p + sizeof(memgcPtr))
     pthread_mutex_unlock(&this.lock)
@@ -281,10 +306,11 @@ memoryAllocSTR(s int) cpstring {
     pthread_mutex_lock(&this.lock)
     memgcPtrs.stackBase = stack_pointer()
     p memgcPtr* = malloc(s + sizeof(memgcPtr) + 4)
+    memset(p, 0, sizeof(memgcPtr))
     b = <char*>(<int>p + sizeof(memgcPtr) + s - 1)
     *b = null
     p.size = s + 4
-    p.status = GC_STATUS_SAFE
+    p.noScan = true
     memgcPtrs.add(p)
     st = <cpstring>(<int>p + sizeof(memgcPtr))
     l uint32* = st
@@ -301,14 +327,17 @@ memoryRealloc(o ptr, s int) ptr {
     pthread_mutex_lock(&this.lock)
     memgcPtrs.stackBase = stack_pointer()
     if o == null {
+        pthread_mutex_unlock(&this.lock)
         return memoryAlloc(s)
     }
-
     p = <memgcPtr*>(<int>o - sizeof(memgcPtr))
+    memgcPtrs.remove(p)
     os = p.size
     p.size = s
-    np = realloc(p, s + sizeof(memgcPtr))
-    memgcPtrs.update(np)
+    np memgcPtr* = realloc(p, s + sizeof(memgcPtr))
+    np.left = null
+    np.right = null
+    memgcPtrs.add(np)
     memset(<ptr>(<int>np + os + sizeof(memgcPtr)), null, s - os - 1)
     pthread_mutex_unlock(&this.lock)
     pthread_cond_signal(&this.scanCond)
