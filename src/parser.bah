@@ -372,6 +372,11 @@ parseImport(l []Tok, elems Elems*) {
     fileName.trimLeft(1)
     fileName.trimRight(1)
 
+    if noImport {
+        includeFile(fileName.str(), elems)
+        return
+    }
+
     //include guard
     if fileName.str() in compilerState.includes {
         return
@@ -876,7 +881,7 @@ parsePointers(l []Tok, elems Elems*) []Tok {
 parseSerialize(e Tok*, elems Elems*) cpstring {
 
 
-    v = searchVar(e.cont, elems)
+    v = searchVar(e.cont, e, elems)
     if v == null {
         throwErr(&e, "Must be a var, not {TOKEN}.")
     }
@@ -1166,6 +1171,10 @@ parseArrayDecl(v variable*, l []Tok, i int, max int, elems Elems*) cpstring {
     return code
 }
 
+// parseVar(l []Tok, elems Elems*) {
+
+// }
+
 //Parses var declaration and usage.
 parseVar(l []Tok, elems Elems*) {
     ft = l[0]
@@ -1187,12 +1196,12 @@ parseVar(l []Tok, elems Elems*) {
     currentType = ""
     // needsDefine = false
     ft = l[0]
-    v = searchVar(ft.cont, elems)
+    v = searchVirtVarByToken(&ft, elems)
     exists = true
     ogName cpstring
     if v == null {
-        if ft.bahRef != null {
-            v = ft.bahRef
+        if ft.getRefVar() != null {
+            v = ft.getRefVar()
         } else {
             exists = false
             v = new variable
@@ -1214,9 +1223,7 @@ parseVar(l []Tok, elems Elems*) {
 
     if len(l) == 1 {
         t = l[0]
-        c = string(t.cont)
-        c.trimLeft(2)
-        v = searchVar(c.str(), elems)
+        v = searchVirtVarByToken(&t, elems)
         if v == null {
             throwErr(&t, "Cannot increase/decrease not declared variable {TOKEN}.")
         }
@@ -1354,7 +1361,7 @@ parseVar(l []Tok, elems Elems*) {
                         v.canBeNull = true
                     }
                 } else if t.type == TOKEN_TYPE_VAR && t.isOper == false {
-                    tv = searchVar(t.cont, elems)
+                    tv = searchVirtVarByToken(&t, elems)
                     if tv != null {
                         if exists == true && tv.canBeNull == false {
                             if canChangeNullState(v, elems) {
@@ -1424,7 +1431,7 @@ parseVar(l []Tok, elems Elems*) {
             if t.cont != "" && strHasPrefix(t.cont, "{") == false {
                 code = code + t.cont
                 if t.isOper == false && RCPavailable() == true {
-                    iv = searchVar(t.cont, elems)
+                    iv = searchVirtVarByToken(&t, elems)
                     if iv != null && iv.isConst == false {
                         toVar = true
                         isPointedVar = strHasPrefix(t.cont, "&")
@@ -1506,14 +1513,14 @@ parseVar(l []Tok, elems Elems*) {
                         tmpV.name = genCompilerVar()
                         tmpV.type = v.type
                         dv = decrVar(tmpV, elems)
-                        code = cType.str()+" "+tmpV.name+" = "+v.name+"; "+v.name+" = *("+cType.str()+"*)RCP_incrIL(&"+code+");"+dv.toStr()
+                        code = cType.str()+" "+tmpV.name+" = "+l[0].cont+"; "+l[0].cont+" = *("+cType.str()+"*)RCP_incrIL(&"+code+");"+dv.toStr()
                     }
                 } else {
                     tmpV = new variable
                     tmpV.name = genCompilerVar()
                     tmpV.type = v.type
                     dv = decrVar(tmpV, elems)
-                    code = cType.str()+" "+tmpV.name+" = "+v.name+"; "+v.name+" = "+code+";"+dv.toStr()
+                    code = cType.str()+" "+tmpV.name+" = "+l[0].cont+"; "+l[0].cont+" = "+code+";"+dv.toStr()
                 }
             } else {
                 s = searchStruct(v.type, elems)
@@ -1525,15 +1532,15 @@ parseVar(l []Tok, elems Elems*) {
                         vn.replace("*", "")
                         preCode = "RCP_scanStack("+vn.str()+", sizeof("+v.name+"), 1); "
                     }
-                    code = v.name + " = " + code
+                    code = l[0].cont + " = " + code
                 } else {
-                    code = v.name + " = " + code
+                    code = l[0].cont + " = " + code
                 }
             }
         } else {
             strTrim(&code)
             if strHasPrefix(code, "{") == false {
-                code = v.name + " = " + code
+                code = l[0].cont + " = " + code
             }
         }
         if v.isArray == true {
@@ -1558,7 +1565,7 @@ parseVar(l []Tok, elems Elems*) {
         }
         vct cpstring
         if vts.hasPrefix("function(") {
-            vct = getCfunctionType(&vts, v.name, elems)
+            vct = getCfunctionType(&vts, l[0].cont, elems)
         } else {
             vct = setCType(v, elems)
         }
@@ -1568,13 +1575,13 @@ parseVar(l []Tok, elems Elems*) {
             if isRCPpointerType(v.type) && RCPavailable() == true && toVar == true  && isPointedVar == false {
                 cType = getCType(v.type, elems)
                 if isGlobal() {
-                    INIT += rope(v.name + " = *("+cType.str()+"*)RCP_incrIL(&"+code+");\n")
+                    INIT += rope(l[0].cont + " = *("+cType.str()+"*)RCP_incrIL(&"+code+");\n")
                 } else {
                     code = vct+" = *("+cType.str()+"*)RCP_incrIL(&"+code+")"
                 }
             } else {
                 if isGlobal() {
-                    INIT += rope(v.name + " = " + code+";\n")
+                    INIT += rope(l[0].cont + " = " + code+";\n")
                 } else {
                     code = vct + " = " + code
                 }
@@ -2291,9 +2298,9 @@ parseReturn(l []Tok, elems Elems*) {
         tt = getTypeFromToken(&rvt, true, elems)
         rv = rvt.cont
         if rvt.type == TOKEN_TYPE_VAR && rvt.isOper == false {
-            tmpV = searchVar(rvt.cont, compilerState.currFnElems)
+            tmpV = searchVirtVarByToken(&rvt, compilerState.currFnElems)
             if tmpV == null {
-                tmpV = searchVar(rvt.cont, elems)
+                tmpV = searchVirtVarByToken(&rvt, elems)
             }
             if tmpV != null {
                 if isUnsafe == false && string(compilerState.currentDir).hasPrefix(BAH_DIR) == false && currentFn.returns.type[len(currentFn.returns.type)-1] != '!' {
@@ -3111,7 +3118,21 @@ prePross(line []Tok, ltp lineType, elems Elems*) []Tok {
             pt = Tok{}
         }
         //parse struct values
-        if t.cont == "." && i > 0 {
+        if t.cont[0] == '&' && t.type == TOKEN_TYPE_VAR && isValue(fl, i) && t.processedPtr == false {
+            t.processedPtr = true
+            if t.getRefVar() == null {
+                let v = searchVar(t.cont, &t, elems) then {
+                    v.type += "*"
+                    t.setRefVar(v)
+                }
+                if t.bahType == "" {
+                    t.bahType = getTypeFromToken(&t, true, elems)
+                }
+                t.bahType += "*"
+            }
+            fl[i] = t
+            i -= 1
+        } else if t.cont == "." && i > 0 {
             i = valueStruct(fl, i, ltp, elems) - 1
         } else if t.cont == "(" && pt.cont != "function" {
             i = valueFunc(null, null, fl, i, ltp, elems) - 1
@@ -3125,8 +3146,9 @@ prePross(line []Tok, ltp lineType, elems Elems*) []Tok {
             ptc.trimLeft(1)
             ptc.trimRight(1)
             if t.type == TOKEN_TYPE_VAR {
-                v = searchVar(t.cont, elems)
-                t.bahRef = v
+                let v = searchVirtVarByToken(&t, elems) then {
+                    t.setRefVar(v)
+                }
             }
             t.bahType = ptc.str()
             cType = getCType(ptc.str(), elems)
@@ -3139,6 +3161,12 @@ prePross(line []Tok, ltp lineType, elems Elems*) []Tok {
                 if ppt.type == TOKEN_TYPE_VAR {
                     posTok = i-2
                     deleteRange(fl, i-1, i)
+                    if ppt.getRefVar() == null {
+                        let v = searchVirtVarByToken(&ppt, elems) then {
+                            ppt.setRefVar(v)
+                        }
+                    }
+
                     ppt.cont = t.cont + t.cont + ppt.cont
                     ppt.isValue = true
                     ppt.isOper = true
@@ -3417,7 +3445,7 @@ parseLet(line []Tok, elems Elems*) {
     tmpVar = ""
 
     //asign variable
-    v = searchVar(varTok.cont, elems)
+    v = searchVirtVarByToken(&varTok, elems)
     code = ""
     if v == null {
         v = new variable {
@@ -3494,7 +3522,7 @@ parseLine(line []Tok, elems Elems*) {
         ft = line[0]
         st = line[1]
         if st.cont == "=" {
-            v = searchVar(ft.cont, elems)
+            v = searchVirtVarByToken(&ft, elems)
             currSetVar = v
         }
     }

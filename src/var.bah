@@ -39,99 +39,11 @@ removeVarUnar(s string*) {
 //Searches a var by relatively complex token content.
 //Returns a pointer to a new instance of the variable.
 //Will also search for struct member, array element and functions.
-searchVar(name cpstring, elems Elems*) variable* {
+searchVar(name cpstring, t Tok*, elems Elems*) variable* {
     ogName = name
     n = string(name)
-    removeVarUnar(&n)
-
-    //may be an array element
-    if n.charAt(n.length-1) == ']' {
-        i=n.length; for i > 0, i-- {
-            c = n.charAt(i)
-            if c == '[' {
-                break
-            }
-        }
-        tamm = n.length - i
-        n.trimRight(tamm)
-        isArr = n.hasSuffix("->data") == 1
-        if isArr == true {
-            n.trimRight(6)
-        }
-        name = n.str()
-        v = searchVar(name, elems)
-        
-        vt = string(v.type)
-        if isArr == true {
-            vt.trimLeft(2)
-        } else if vt.hasPrefix("tuple:") {
-            i=vt.length-1; for i >= 0, i-- {
-                if vt.charAt(i) == ':' {
-                    break
-                }
-            }
-            vt.trimLeft(i)
-        } else {
-            vt.set("char") //buffer
-        }
-        vtstr = vt.str()
-
-        nv = new variable
-        *nv = *v
-        nv.type = vtstr
-        nv.name = ogName
-        nv.isArray = isArr
-        return nv
-    }
-    
-    name = n.content
-
-    //may be a struct's member
-    if hasStructSep(&n) && n.charAt(n.length-1) != ')' {
-        rn = splitStructSepBefore(&n)
-        name = rn.content
-        if n.charAt(rn.length) == '.' {
-            n.trimLeft(1 + rn.length)
-        } else {
-            n.trimLeft(2 + rn.length)
-        }
-        membs = n.content
-        v = searchVar(name, elems)
-        if v == null {
-            return null
-        }
-        s = searchStruct(v.type, elems)
-        if s == null {
-            return null   
-        }
-        memb = searchStructMemb(membs, s, elems)
-        if memb == null {
-            return null
-        }
-        nv = new variable
-        nv.from = memb.from
-        nv.name = memb.name
-        nv.type = memb.type
-        nv.declScope = v.declScope
-        nv.name = ogName
-
-        r = nv.type
-        if ogName[0] == '&' {
-            r += "*"
-        }
-        nbUnaries = getVarUnaryLevel(ogName)
-        if nbUnaries > 0 {
-            pointerLevel = getTypeUnaryLevel(r)
-            if pointerLevel < nbUnaries {
-                throwErr(null, "Cannot use '*' on '"+name+"' because it is not pointer.")
-            }
-            r = r[:len(r)-nbUnaries]
-        }
-        nv.type = r
-        nv.name = ogName
-
-        return nv
-    }
+    removeVarUnar(&n)    
+    name = n.str()
 
     //may be a variable
     i=len(elems.vars)-1; for i != -1, i-- {
@@ -140,15 +52,16 @@ searchVar(name cpstring, elems Elems*) variable* {
             nv = new variable
             *nv = *v
             r = nv.type
-            if ogName[0] == '&' {
-                r += "*"
-            }
+            // if ogName[0] == '&' {
+            //     t.processedPtr = true
+            //     r += "*"
+            // }
 
             nbUnaries = getVarUnaryLevel(ogName)
             if nbUnaries > 0 {
                 pointerLevel = getTypeUnaryLevel(r)
                 if pointerLevel < nbUnaries {
-                    throwErr(null, "Cannot use '*' on '"+name+"' because it is not pointer.")
+                    throwErr(t, "Cannot use '*' on {TOKEN} because it is not pointer.")
                 }
                 r = r[:len(r)-nbUnaries]
             }
@@ -179,16 +92,14 @@ searchVar(name cpstring, elems Elems*) variable* {
         }
     }
 
-
-
     return null
 
 }
 
 //The fastest yet less flexible way of searching for a variable given a token.
 searchVarByToken(t Tok*, elems Elems*) variable* {
-    if t.bahRef != null {
-        return t.bahRef
+    if t.getRefVar() != null {
+        return t.getRefVar()
     }
     cont = string(t.cont)
     removeVarUnar(&cont)
@@ -200,13 +111,14 @@ searchVarByToken(t Tok*, elems Elems*) variable* {
 //This is used when fuctions such as getTypeFromToken() has been called on a token that has not been modified since,
 //because such functions create that .bahRef shortcut.
 searchVirtVarByToken(t Tok*, elems Elems*) variable* {
+    if t.getRefVar() != null {
+        return t.getRefVar()
+    }
     if t.isOper == true {
         return null
     }
-    if t.bahRef != null {
-        return t.bahRef
-    }
-    return searchVar(t.cont, elems)
+    // println("Could not find ("+compilerState.currentFile+":"+intToStr(t.line)+"): "+t.cont)
+    return searchVar(t.cont, t, elems)
 }
 
 //Throws an error if a variable cannot be found because it has reached its end of life.

@@ -4,7 +4,7 @@
 #include "./lexer.bah"
 #include "./struct.bah"
 
-#define searchVar(n cpstring, elems Elems*) variable*
+#define searchVar(name cpstring, t Tok*, elems Elems*) variable*
 #define isMissingVar(t Tok*, elems Elems*)
 
 intTypes = []cpstring{
@@ -111,6 +111,8 @@ getCType(t cpstring, elems Elems*) string {
         tp.replace("bool", "char")
     } else if ctp.str() == "char" {
         //do nothing for now
+    } else if ctp.hasPrefix("function(") {
+        return string("void*")
     } else {
         
         ctpstr = ctp.str()
@@ -189,7 +191,7 @@ getTypeFromToken(t Tok*, strict bool, elems Elems*) cpstring {
         return r
     }
     if t.type == TOKEN_TYPE_VAR {
-        v = searchVar(t.cont, elems)
+        v = searchVar(t.cont, t, elems)
         if v == null {
             if strict == true {
                 isMissingVar(t, elems)

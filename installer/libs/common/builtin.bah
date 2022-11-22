@@ -15,6 +15,9 @@
 #define __BAH_panic(e cpstring, l cpstring)
 #define __Bah_safe_string(s cpstring) cpstring
 #define cpstringSubsitute(s cpstring, i int, l int) cpstring
+#define __Bah_getVal_boundsChecked(arr []ptr, ind uint32) ptr
+#define __Bah_check_arr_bounds(arr []ptr, ind uint32) bool
+#define __Bah_realocate_arr(arr []ptr, nLength uint32)
 
 const null = <ptr>0
 
@@ -92,7 +95,6 @@ print(s cpstring) {
 	#import "stdopti.bahstrp"
 }
 
-
 #include "memory.bah"
 
 buffToStr(b char*) cpstring {
@@ -102,27 +104,6 @@ buffToStr(b char*) cpstring {
 	ln uint32* = s
 	*ln = l
 	return s
-}
-
-
-__Bah_realocate_arr(arr []ptr, nLength uint32) {
-	if nLength < noCheck(arr->length) {
-		return
-	}
-	if nLength >= noCheck(arr->realLength) {
-		if noCheck(arr->realLength) != 0 {
-			noCheck(arr->realLength *= 2)
-		} else {
-			noCheck(arr->realLength = 50)
-		}
-		newPtr = memoryRealloc(noCheck(arr->data), <int>noCheck(arr->realLength) * <int>noCheck(arr->elemSize))
-		noCheck(arr->data = newPtr)
-		#rcp {
-			RCP_incr(newPtr)
-		}
-	}
-	noCheck(arr->length = arr->length + 1)
-	return
 }
 
 argsToArr(a char**, l int) []cpstring {
@@ -390,6 +371,38 @@ __Bah_safe_string(s cpstring) cpstring {
 	return "\""+s+"\""
 }
 
+__Bah_getVal_boundsChecked(arr []ptr, ind uint32) ptr {
+	if ind >= len(arr) {
+		panic("builtin: array out of bounds violation.")
+	}
+	return arr
+}
+
+__Bah_realocate_arr(arr []ptr, nLength uint32) {
+	if nLength < noCheck(arr->length) {
+		return
+	}
+
+	if nLength != len(arr) {
+		panic("builtin: array append out of bounds violation. Can only append index=length.")
+	}
+
+	if nLength >= noCheck(arr->realLength) {
+		if noCheck(arr->realLength) != 0 {
+			noCheck(arr->realLength *= 2)
+		} else {
+			noCheck(arr->realLength = 50)
+		}
+		newPtr = memoryRealloc(noCheck(arr->data), <int>noCheck(arr->realLength) * <int>noCheck(arr->elemSize))
+		noCheck(arr->data = newPtr)
+		#rcp {
+			RCP_incr(newPtr)
+		}
+	}
+	noCheck(arr->length = arr->length + 1)
+	return
+}
+
 
 //Used for getting a character by its index inside a cpstring.
 //Used cpstring[i] instead.
@@ -401,6 +414,9 @@ cpstringCharAt(s cpstring, i int) char {
 //Used by the compiler for operations like cpstring[start:end].
 cpstringSubsitute(s cpstring, i int, l int) cpstring {
 	size = l - i
+	if i < 0 || size < 0 || size > len(s) {
+		panic("builtin: cpstring substitution out of bounds violation.")
+	}
 	ns = memoryAllocSTR(size+1)
 	memcpy(ns, noCheck(s+i+cpstringLenSize), size)
 	return ns
@@ -409,6 +425,9 @@ cpstringSubsitute(s cpstring, i int, l int) cpstring {
 //Used by the compiler for operations like array[start:end].
 arraySubstitute(arr []ptr, i int, l int) ptr {
 	length = l - i
+	if i < 0 || length < 0 || length > len(arr) {
+		panic("builtin: cpstring substitution out of bounds violation.")
+	}
 	offset int = i * <int>noCheck(arr->elemSize)
 	na = []ptr
 	noCheck(na->elemSize = arr->elemSize)

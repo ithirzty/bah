@@ -1,6 +1,6 @@
 #include "./globals.bah"
 
-#define searchVar(n cpstring, elems Elems*) variable*
+#define searchVar(name cpstring, t Tok*, elems Elems*) variable*
 
 //This is stupid: are we in the global scope or inside a function.
 isGlobal() bool {
@@ -18,30 +18,6 @@ searchFunc(name cpstring, elems Elems*, inclCurr bool) func* {
         return fn
     }
     n = string(name)
-    if hasStructSep(&n) {
-        fnName = splitStructSepAfter(n)
-        if n.charAt(n.length-1-fnName.length) == '.' {
-            n.trimRight(fnName.length + 1)
-        } else {
-            n.trimRight(fnName.length + 2)
-        }
-        name = n.str()
-        v = searchVar(name, elems)
-        if v == null {
-            return null
-        }
-        s = searchStruct(v.type, elems)
-        if s == null {
-            return null
-        }
-        memb = searchStructMemb(fnName.str(), s, elems)
-        if memb == null {
-            return null
-        }
-        name = fnName.content
-        name = memb.from+"__"+name
-
-    }
     
     fns = elems.fns
     i=0; for i < len(fns) {
@@ -60,7 +36,7 @@ searchFunc(name cpstring, elems Elems*, inclCurr bool) func* {
         }
     }
 
-    v = searchVar(ogName, elems)
+    v = searchVar(ogName, null, elems)
     if v == null {
         return null
     }
@@ -79,9 +55,24 @@ searchFunc(name cpstring, elems Elems*, inclCurr bool) func* {
 //This may be a faster yet let predictable way of searching for a function given a token.
 //See searchVirtVarByToken() for more explaination.
 searchFuncByToken(t Tok*, elems Elems*) func* {
-    if t.bahRef != null {
-        return t.bahRef
+    if t.getRefFn() != null {
+        return t.getRefFn()
     }
     fnName = splitStringBefore(string(t.cont), "(")
     return searchFunc(fnName, elems, true)
+}
+
+searchVirtFuncByToken(t Tok*, elems Elems*) func* {
+    if t.getRefFn() != null {
+        return t.getRefFn()
+    }
+
+    let v = <variable*>t.getRefVar() then {
+        if string(v.type).hasPrefix("function(") {
+            fn = parseFnType(string(v.type))
+            fn.name = v.name
+            return fn
+        }
+    }
+    return searchFunc(t.cont, elems, true)
 }

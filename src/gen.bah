@@ -6,18 +6,19 @@
 genArrRealloc(v variable*, preVal cpstring, val cpstring, elems Elems*) cpstring {
 
     vn = string(v.name)
-    nstr = splitStringBefore(vn, "->data[")
 
-    vn.trimLeft(len(nstr) + 7)
-    vn.trimRight(1)
-    nLengthStr = vn.str()
+    nLengthTok Tok* = v.arrIndex
+    root Tok* = v.arrRoot
+    nLengthDecl = ""
+    nLength = nLengthTok.cont
+    if nLengthTok.isFunc || nLengthTok.isOper {
+        nLength = genCompilerVar()
+        nLengthDecl = "unsigned int "+nLength+" = "+nLengthTok.cont+";"
+    }
 
-    nLength = genCompilerVar()
-
-    return "
-    unsigned int "+nLength+" = "+nLengthStr+";
-    __Bah_realocate_arr("+nstr+", "+nLength+");
-    "+preVal+nstr+"->data["+nLength+"] = "+val
+    return nLengthDecl+"
+    __Bah_realocate_arr("+root.cont+", "+nLength+");
+    "+preVal+root.cont+"->data["+nLength+"] = "+val
 }
 
 //This is used to generate concatenation of n cpstrings.

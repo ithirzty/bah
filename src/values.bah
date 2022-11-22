@@ -18,7 +18,7 @@ valueFunc(fn func*, parent variable*, l []Tok, i int, ltp lineType, elems Elems*
             if pt.type == TOKEN_TYPE_VAR {
                 delete(l, tokPos)
                 errPos = pt.pos
-                fn = searchFunc(pt.cont, elems, true)
+                fn = searchVirtFuncByToken(&pt, elems)
                 if fn == null {
                     j=0; for j < len(generics), j++ {
                         if generics[j].baseFn.name == pt.cont {
@@ -31,6 +31,16 @@ valueFunc(fn func*, parent variable*, l []Tok, i int, ltp lineType, elems Elems*
                     if j == len(generics) {
                         throwErr(&pt, "Unknown func {TOKEN}.")
                     }
+                } else if pt.isOper {
+                    fnt = string(getTypeFromToken(&pt, true, elems))
+                    tmpV = new variable {
+                        name: genCompilerVar()
+                        type: fnt.str()
+                    }
+                    OUTPUT += rope(getCfunctionType(&fnt, tmpV.name, elems)+" = "+pt.cont+";\n")
+                    pt.cont = tmpV.name
+                    fn.name = tmpV.name
+                    pt.setRefVar(tmpV)
                 }
             } else {
                 tokPos++
@@ -227,7 +237,7 @@ valueFunc(fn func*, parent variable*, l []Tok, i int, ltp lineType, elems Elems*
             tmpT = memory[j]
             tp += tmpT.cont
         }
-        tmpV = searchVar(tp, elems)
+        tmpV = searchVar(tp, &memory[0], elems)
         if tmpV != null {
             cType = getCType(tmpV.type, elems)
             fnt.cont += cType.str()+")"
@@ -242,7 +252,7 @@ valueFunc(fn func*, parent variable*, l []Tok, i int, ltp lineType, elems Elems*
         fnt.type = TOKEN_TYPE_FUNC
         fnt.isFunc = true
         fnt.bahType = "int"
-        fnt.bahRef = fn
+        fnt.setRefFn(fn)
         l[tokPos] = fnt
         return tokPos
     }
@@ -258,7 +268,7 @@ valueFunc(fn func*, parent variable*, l []Tok, i int, ltp lineType, elems Elems*
         if isRCPpointerType(parent.type) {
             amp = ""
         }
-        fnt.cont += amp + parent.name
+        fnt.cont += amp + l[tokPos-1].cont
         argIndex++
         if len(fn.args) > argIndex {
             fnt.cont += ","
@@ -384,7 +394,7 @@ valueFunc(fn func*, parent variable*, l []Tok, i int, ltp lineType, elems Elems*
     }
 
     //Shortcut reference to find the function by token faster.
-    fnt.bahRef = fn
+    fnt.setRefFn(fn)
 
     //Some basic string conversions.
     if fn.name == "strlen" && ltt != "cpstring" {
@@ -450,10 +460,10 @@ valueStruct(l []Tok, i int, ltp lineType, elems Elems*) int {
         if ntt.cont == "(" {
             parent variable*
             if t.type == TOKEN_TYPE_VAR {
-                if t.bahRef != null {
-                    parent = t.bahRef
+                if t.getRefVar() != null {
+                    parent = t.getRefVar()
                 } else {
-                    parent = searchVar(t.cont, elems)
+                    parent = searchVirtVarByToken(&t, elems)
                 }
             } else {
                 tmpV = genCompilerVar()
@@ -466,6 +476,8 @@ valueStruct(l []Tok, i int, ltp lineType, elems Elems*) int {
                     name: tmpV
                     type: tt
                 }
+                l[i-1].type = TOKEN_TYPE_VAR
+                l[i-1].cont = tmpV
                 if RCPavailable() {
                     elems.vars[len(elems.vars)] = parent
                 }
@@ -523,10 +535,11 @@ valueStruct(l []Tok, i int, ltp lineType, elems Elems*) int {
 
     t.ogCont += "."+nt.cont
     t.bahType = m.type + ast
-    t.bahRef = new variable {
+    r = new variable {
         name: t.cont
         type: t.bahType
     }
+    t.setRefVar(r)
 
     l[tokPos] = t
     return tokPos
@@ -636,14 +649,24 @@ valueArr(l []Tok, i int, ltp lineType, elems Elems*) int {
             ptt.trimLeft(2)
             t.bahType = ptt.str()
             t.cont = pt.cont+"->data["+index.cont+"]"
-
-            if tokPos+1 < len(l) && l[tokPos+1].cont == "." {
-                tmpV = new variable {
-                    name: t.cont
-                    type: t.bahType
-                }
-                t.bahRef = tmpV
+            if t.cont[0] == '&' {
+                t.bahType += "*"
+                t.processedPtr = true
             }
+
+            indT = new Tok
+            *indT = index
+            rootT = new Tok
+            *rootT = pt
+
+            tmpV = new variable {
+                name: pt.ogCont
+                type: t.bahType
+                isArray: true
+                arrIndex: indT
+                arrRoot: rootT
+            }
+            t.setRefVar(tmpV)
 
         } else {
             t.bahType = ptt.str()
@@ -652,6 +675,12 @@ valueArr(l []Tok, i int, ltp lineType, elems Elems*) int {
             }
             t.isFunc = true
             t.cont = "arraySubstitute("+pt.cont+", "+from+", "+to+")"
+            r = new variable {
+                name: pt.ogCont+"[:]"
+                type: ptt.str()
+                isArray: true
+            }
+            t.setRefVar(r)
         }
 
     } else if ptt.hasPrefix("buffer:") { //is a buffer
@@ -663,6 +692,11 @@ valueArr(l []Tok, i int, ltp lineType, elems Elems*) int {
             }
             checkBounds(&index, elems)
             t.cont = pt.cont+"["+index.cont+"]"
+            r = new variable {
+                name: pt.ogCont+"["+index.ogCont+"]"
+                type: "char"
+            }
+            t.setRefVar(r)
         } else {
             t.bahType = "cpstring"
             if to == "" {
@@ -670,6 +704,11 @@ valueArr(l []Tok, i int, ltp lineType, elems Elems*) int {
             }
             t.isFunc = true
             t.cont = "cpstringSubsitute("+pt.cont+", "+from+", "+to+")"
+            r = new variable {
+                name: pt.ogCont+"[:]"
+                type: "cpstring"
+            }
+            t.setRefVar(r)
         }
     } else if ptt.hasPrefix("map:") { //is a map
         if split == true {
@@ -734,12 +773,21 @@ valueArr(l []Tok, i int, ltp lineType, elems Elems*) int {
             }
             checkBounds(&index, elems)
             t.cont = pt.cont+"["+index.cont+"+4]"
+            r = new variable {
+                name: pt.ogCont+"["+index.ogCont+"]"
+                type: "char"
+            }
+            t.setRefVar(r)
         } else {
             if to == "" {
                 to = "strlen("+pt.cont+")"
             }
             t.cont = "cpstringSubsitute("+pt.cont+", "+from+", "+to+")"
-
+            r = new variable {
+                name: pt.ogCont+"[:]"
+                type: "cpstring"
+            }
+            t.setRefVar(r)
         }
     } else if ptt.hasPrefix("[") && ptt.hasSuffix("]") { // is a tuple
         t.isOper = true
@@ -766,10 +814,11 @@ valueArr(l []Tok, i int, ltp lineType, elems Elems*) int {
         }
 
         t.cont = "*("+getCType(parts[ind], elems).str()+"*)((char*)"+pt.cont+"+"+offsets+")"
-        t.bahRef = new variable {
+        r = new variable {
             name: t.cont
             type: parts[ind]
         }
+        t.setRefVar(r)
         t.bahType = parts[ind]
     } else {
         throwErr(&pt, "Cannot use {TOKEN} ("+ptt.str()+") as an indexable value.\nIndexable values are [array, buffer, cpstring, tuple, map].")
@@ -895,13 +944,13 @@ valueBool(l []Tok, i int, ltp lineType, elems Elems*) int {
             pt.isExpensive = true
         } else {
             if isUnsafe == false && pt.type == TOKEN_TYPE_VAR && pt.isOper == false && isRCPpointerType(ptt) {
-                ptV = searchVar(pt.cont, elems)
+                ptV = searchVirtVarByToken(&pt, elems)
                 if ptV != null {
                     ntIsNull = false
                     if nt.cont == "null" {
                         ntIsNull = true
                     } else if nt.type == TOKEN_TYPE_VAR && nt.isOper == false {
-                        nv = searchVar(nt.cont, elems)
+                        nv = searchVirtVarByToken(&nt, elems)
                         if nv != null {
                             ntIsNull = nv.canBeNull
                         }
@@ -960,6 +1009,10 @@ valueOper(l []Tok, i int, elems Elems*) int {
     if nt.cont == t.cont {
         pt.isOper = true
         pt.cont = t.cont + t.cont + pt.cont
+        if pt.type == TOKEN_TYPE_VAR && pt.getRefVar() == null {
+            v = searchVar(pt.cont, &pt, elems)
+            pt.setRefVar(v)
+        }
         l[tokPos] = pt
         return tokPos
     }

@@ -1,11 +1,11 @@
-#include "iostream.bah"
-#include "string.bah"
-#include "flags.bah"
-#include "exec.bah"
-#include "time.bah"
-#include "rope.bah"
-#include "json.bah"
-#include "path.bah"
+#import "iostream.bah"
+#import "string.bah"
+#import "flags.bah"
+#import "exec.bah"
+#import "time.bah"
+#import "rope.bah"
+#import "json.bah"
+#import "path.bah"
 
 ///////////////////////OS SPECIFIC THINGS////////////////////////
 #linux {
@@ -25,7 +25,7 @@
     BAH_CC = "gcc"
 }
 //////////////////////BUILD SPECIFIC THINGS//////////////////////
-const BAH_VERSION = "v1.3 (build 149)"
+const BAH_VERSION = "v1.4 (build 150)"
 
 debug = false
 verboseRuntime = false
@@ -36,6 +36,7 @@ noticeEnabled = true
 nativeMemenabled = false
 lightGCenabled = false
 isFixMeEnabled = false
+noImport = false
 
 execName = "bah"
 isSubObject = false
@@ -95,6 +96,7 @@ main(args []cpstring) int {
     flags.addBool("unsafe", "Compile without safety checking. This will make for faster executable but if your program crashes, it will show less informations.")
     flags.addBool("nobuiltin", "Does not include the builtin library (be really carefull, your program WILL break).")
     flags.addBool("optimize", "Includes optimized functions")
+    flags.addBool("noImports", "Redirects all #import to #include. Usefull for cross-compilation. This is enabled by -c.")
 
     //memory management
     flags.addBool("rcp", "Enables RCP (reference counter) instead of the garbage collector. Warning: if you are using self-reference, this will lead to memory leaks!")
@@ -112,6 +114,7 @@ main(args []cpstring) int {
     lightGCenabled = flags.isSet("lightGC") == 1
     nativeMemenabled = flags.isSet("nativeMem") == 1
     isFixMeEnabled = flags.isSet("fixMe") == 1
+    noImport = flags.isSet("noImports") == 1 || flags.isSet("c") == 1
 
     if flags.isSet("target") == 1 {
         BAH_OS = flags.get("target")

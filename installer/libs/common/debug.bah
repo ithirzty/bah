@@ -39,10 +39,7 @@ __parse_debug_cmd(syms []reflectElement) {
             i=1; for i < len(args), i++ {
                 a = args[i]
                 sym = __debug_get_sym(syms, a)
-                if sym.type == "cpstring" {
-                    p ptr* = sym.value
-                    sym.value = *p
-                }
+                sym.type += "*"
                 println(toJson(sym))
             }
         } else if strHasPrefix(cmd, "set ") {

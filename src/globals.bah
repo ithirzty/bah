@@ -16,6 +16,8 @@ struct variable {
     declScope: ptr
     isGlobal: bool = false
     declRope: rope*
+    arrIndex: ptr // Tok*
+    arrRoot: ptr // Tok*
     //safety
     canBeNull: bool = false
     iterScope: ptr = null

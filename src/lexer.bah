@@ -33,12 +33,40 @@ struct Tok {
     isOper: bool = false
     isEqual: bool = false
     pass: bool = false
+    bahRefType: char
+    bahRef: ptr
+    processedStr: bool = false
+    processedPtr: bool = false
+
     //optimizations
     isNotExpsvOper: bool = false
-    bahRef: ptr
     parent: variable*
     isExpensive: bool
-    processedStr: bool = false
+
+    getRefVar() ptr {
+        if this.bahRefType != 'v' {
+            return null
+        }
+        return this.bahRef
+    }
+    
+    getRefFn() ptr {
+        if this.bahRefType != 'f' {
+            return null
+        }
+        return this.bahRef
+    }
+
+    setRefVar(v ptr) {
+        this.bahRef = v
+        this.bahRefType = 'v'
+    }
+
+    setRefFn(f ptr) {
+        this.bahRef = f
+        this.bahRefType = 'f'
+    }
+
 }
 
 
