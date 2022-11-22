@@ -573,8 +573,6 @@ urlDecode(s cpstring) cpstring {
     }
 }
 
-#define __Bah_http_handle_client(s ptr, cli int)
-
 //A type difinning http server erros.
 #define http_serverError int
 
@@ -601,9 +599,19 @@ http_broken_pipe(signo int) {
 //A wrapper for a http web server.
 struct http_server {
     port: int
-    running: int = 1
+    running: bool
     socket: http_socket
     error: http_serverError = HTTP_SERVER_NO_ERROR
+
+    cliChan: chan:int
+    nbThreads: uint = 50
+
+    setNbThreads(nb uint) {
+        if this.running {
+            panic("http: cannot change number of http.server worker threads while running.")
+        }
+        this.nbThreads = nb
+    }
 
     linux_interface: cpstring = ""
 
@@ -619,14 +627,34 @@ struct http_server {
             println("cannot stop http_server, not running")
             return
         }
-        this.running = 0
+        this.running = false
         this.socket.close()
     }
 
-
+    threadWorker() {
+        for this.running {
+            connfd = <- this.cliChan
+            this.handle(connfd)
+            #linux {
+                close(connfd)
+            }
+            #darwin {
+                close(connfd)
+            }
+            #windows {
+                closeSocket(connfd)
+            }
+        }
+    }
 
     //To start the server.
     listenAndServe() {
+        if this.cliChan == null {
+            this.cliChan = chan int
+        }
+        if this.nbThreads == 0 {
+            this.nbThreads = 50
+        }
         this.error = HTTP_SERVER_NO_ERROR
         this.socket = http_socket{}
 
@@ -667,70 +695,31 @@ struct http_server {
             sigaction(noCheck(SIGPIPE), &sa, 0)        
         }
 
+        this.running = true
 
 
+        i=0; for i < this.nbThreads, i++ {
+            async this.threadWorker()
+        }
 
         if this.done != null {
             async this.done()
         }
 
-        for this.running == 1 {
+        for this.running {
             cli = this.socket.accept()
 
             if cli <= 0 {
                 continue
             }
 
-
-            #windows {
-                async __Bah_http_handle_client(this, cli)
-            }
-
-            #linux {
-                async __Bah_http_handle_client(this, cli)
-                // childpid = fork()
-                // if childpid < 0 {
-                //     println("http: failed to fork client handler")
-                //     close(cli)
-                //     continue
-                // }
-
-                // if childpid == 0 {
-                //     this.handle(cli)
-                //     close(cli)
-                //     exit(0)
-                // }
-                // close(cli)
-
-            }
-
-
+            cli -> this.cliChan
         }
 
         this.stop()
 
     }
 
-}
-
-#windows {
-    //A wrapper around the http_server handle.
-    //This is an internal function.
-    __Bah_http_handle_client(sp ptr, cli int) {
-        s http_server* = sp
-        s.handle(cli)
-        closesocket(cli)
-    }
-}
-
-#linux {
-    //A wrapper around the http_server handle.
-    //This is an internal function.
-    __Bah_http_handle_client(sp ptr, cli int) {
-        s http_server* = sp
-        s.handle(cli)
-        close(cli)
-    }
 }
 
 //To send a cpstring through the specified socket.

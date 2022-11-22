@@ -355,6 +355,22 @@ valueFunc(fn func*, parent variable*, l []Tok, i int, ltp lineType, elems Elems*
         }
 
     }
+
+    if isTupleType(fn.returns.type) {
+        if ltp == LINE_TYPE_ASYNC {
+            fnt.cont += ", null"
+        } else {
+            name = genCompilerVar()
+            r = rope("void* "+name+" = alloca("+getTupleSize(fn.returns.type, elems)+");\n")
+            if ltp == LINE_TYPE_ELSE || ltp == LINE_TYPE_IF {
+                begIfHandle.append(r)
+            } else {
+                OUTPUT += r
+            }
+            fnt.cont += ","+name
+        }
+    }
+
     fnt.cont += ")"
 
     if argIndex != len(fn.args) {
@@ -725,26 +741,39 @@ valueArr(l []Tok, i int, ltp lineType, elems Elems*) int {
             t.cont = "cpstringSubsitute("+pt.cont+", "+from+", "+to+")"
 
         }
-    } else if ptt.hasPrefix("tuple:") { // is a tuple
+    } else if ptt.hasPrefix("[") && ptt.hasSuffix("]") { // is a tuple
         t.isOper = true
         v = searchVar(pt.cont, elems)
         if v == null {
             throwErr(&pt, "Unkown var {TOKEN}.")
         }
-        parts = splitString(ptt, ":")
+        ptt.trimLeft(1)
+        ptt.trimRight(1)
+        parts = splitString(ptt, ",")
         index = memory[0]
-        if index.type == TOKEN_TYPE_INT {
+        ind = 0
+        if index.type == TOKEN_TYPE_INT && isStaticToken(&index, elems) {
             ind = strToInt(index.cont)
-            if ind >= strToInt(parts[1].str()) {
-                throwErr(&index, "Cannot access index {TOKEN} of tupple "+pt.cont+" of length "+parts[1].str()+".")
+            if ind >= len(parts) {
+                throwErr(&index, "Cannot access index {TOKEN} of tupple "+pt.cont+" of length "+intToStr(len(parts))+".")
             }
         } else {
-            if compTypes(getTypeFromToken(&index, true, elems), "int") == false {
-                throwErr(&index, "Cannot use {TOKEN} as tuple index (int).")
-            }
+            throwErr(&index, "Tuple cannot be indexed at runtime. Use a static value instead of {TOKEN}.")
         }
-        t.cont = pt.cont+"["+index.cont+"]"
-        t.bahType = parts[2].str()
+        
+        name = genCompilerVar()
+
+        offsets = "0"
+        j=0; for j < ind, j++ {
+            offsets += "+ sizeof("+getCType(parts[j].str(), elems).str()+")"
+        }
+
+        t.cont = "*("+getCType(parts[ind].str(), elems).str()+"*)((char*)"+pt.cont+"+"+offsets+")"
+        t.bahRef = new variable {
+            name: t.cont
+            type: parts[ind].str()
+        }
+        t.bahType = parts[ind].str()
     } else {
         throwErr(&pt, "Cannot use {TOKEN} ("+ptt.str()+") as array.")
     }
@@ -1173,14 +1202,16 @@ valueTuple(l []Tok, i int, elems Elems*) int {
 
     memory = prePross(memory, <lineType>-1, elems)
     ft = memory[0]
-    tupT = getTypeFromToken(&ft, true, elems)
+    tupT = ""
+    size = ""
+    types = []cpstring
 
     j=0; for j < len(memory), j += 2 {
         t = memory[j]
         tt = getTypeFromToken(&t, true, elems)
-        if compTypes(tupT, tt) == false {
-            throwErr(&t, "Cannot use {TOKEN} ("+tt+") as "+tupT+" in tuple declaration.")
-        }
+        tupT += tt
+        types[len(types)] = tt
+        size += "sizeof("+getCType(tt, elems).str()+")"
         vals[len(vals)] = t.cont
         nt = memory[j+1]
         if nt.cont == "]" {
@@ -1188,17 +1219,21 @@ valueTuple(l []Tok, i int, elems Elems*) int {
         } else if nt.cont != "," {
             throwErr(&nt, "Expected separator between values in tuple declaration, got {TOKEN}.")
         }
+        tupT += ","
+        size += "+"
     }
 
-    type = "tuple:"+intToStr(len(vals))+":"+tupT
+    type = "["+tupT+"]"
 
     deleteRange(l, tokPos+1, j+1)
 
-    v = registerRCPvar(type, "alloca(sizeof("+getCType(tupT, elems).str()+") * "+intToStr(len(vals))+")", elems)
-    
-    r = ""
+    v = registerRCPvar(type, "alloca("+size+")", elems)
+    offsetVar = genCompilerVar()
+
+    r = "long int "+offsetVar+" = 0;\n"
     i=0; for i < len(vals), i++ {
-        r += v+"["+intToStr(i)+"] = "+vals[i]+";"
+        ct = getCType(types[i], elems).str()
+        r += "*("+ct+"*)((char*)"+v+" + "+offsetVar+") = "+vals[i]+";\n"+offsetVar+"+=sizeof("+ct+");\n"
     }
     
     if isGlobal() {
@@ -1207,11 +1242,9 @@ valueTuple(l []Tok, i int, elems Elems*) int {
         OUTPUT += rope(r)
     }
 
-    l[tokPos] = Tok {
-        type: TOKEN_TYPE_VAR
-        bahType: type
-        cont: v
-    }
+    l[tokPos].type = TOKEN_TYPE_VAR
+    l[tokPos].bahType = type
+    l[tokPos].cont = v
 
     return tokPos
 }

@@ -66,9 +66,9 @@ getCType(t cpstring, elems Elems*) string {
     ctp = tp
     ctp.replace("*", "")
 
-    if tp.hasPrefix("tuple:") {
-        parts = splitString(tp, ":")
-        tp.set(getCType(parts[2].str(), elems).str()+"*")
+    if tp.hasPrefix("[") && tp.hasSuffix("]") {
+        parts = splitString(tp, ",")
+        tp.set("void*")
     } else if tp.hasPrefix("chan:") == 1 {
         tp.set("struct channel *")
     } else if tp.hasPrefix("map:") == 1 {
@@ -287,4 +287,18 @@ getVarUnaryLevel(s cpstring) uint {
         }
     }
     return 0
+}
+
+//Returns a C expression calculating a tuple's size from a tuple type.
+getTupleSize(t cpstring, elems Elems*) cpstring {
+    parts = splitString(string(t[1:len(t)-1]), ",")
+    r = "0"
+    i=0; for i < len(parts), i++ {
+        r += "+sizeof("+getCType(parts[i].str(), elems).str()+")"
+    }
+    return r
+}
+
+isTupleType(t cpstring) bool {
+    return len(t) > 1 && t[0] == '[' && t[len(t)-1] == ']'
 }

@@ -1191,10 +1191,14 @@ parseVar(l []Tok, elems Elems*) {
     exists = true
     ogName cpstring
     if v == null {
-        exists = false
-        v = new variable
-        v.name = ft.cont
-        v.type = ""
+        if ft.bahRef != null {
+            v = ft.bahRef
+        } else {
+            exists = false
+            v = new variable
+            v.name = ft.cont
+            v.type = ""
+        }
     } else {
         ogName = v.name
     }
@@ -1409,19 +1413,13 @@ parseVar(l []Tok, elems Elems*) {
                 }
             }
 
-            // if RAIIenabled == true && t.type == TOKEN_TYPE_VAR && isRCPtype(tp, elems) {
-            //     ov = searchVar(removeCast(t.cont), elems)
-            //     if ov != null {
-            //         k=0; for k < len(elems.vars), k++ {
-            //             if elems.vars[k].name == ov.name {
-            //                 elems.deletedVars[len(elems.deletedVars)] = elems.vars[k]
-            //                 delete(elems.vars, k)
-            //                 break
-            //             }
-            //         }
-            //     }
-            // }
-
+            if t.type == TOKEN_TYPE_VAR && tp[0] == '[' && tp[len(tp)-1] == ']' && t.ogCont[0] != '[' {
+                size = getTupleSize(tp, elems)
+                tmpV = genCompilerVar()
+                code = "memoryAlloc("+size+")"
+                NEXT_LINE += "memcpy("+v.name+", "+t.cont+", "+size+");\n"
+                break
+            }
 
             if t.cont != "" && strHasPrefix(t.cont, "{") == false {
                 code = code + t.cont
@@ -1785,6 +1783,11 @@ parseFnHeader(prev cpstring, l []Tok, i int*, fn func*, elems Elems*) cpstring {
         rts.replace(" ", "")
         returns.type = rts.content
     }
+
+    if len(returns.type) > 1 && returns.type[0] == '[' && returns.type[len(returns.type)-1] == ']' {
+        code = code[:len(code)-1] + ", void* __BAH_TUPLE_RET_PTR)"
+    }
+
     *i = j
     returns.name = fn.name
     fn.returns = returns
@@ -2383,11 +2386,14 @@ parseReturn(l []Tok, elems Elems*) {
         stt = string(tt)
         if stt.hasPrefix("buffer:") {
             rvar = "buffToStr("+rvar+")"
-        } else if stt.hasPrefix("tuple:") {
-            parts = splitString(stt, ":")
+        } else if stt.hasPrefix("[") && stt.hasSuffix("]") {
             v = genCompilerVar()
-            OUTPUT += rope(""+getCType(tt,elems).str()+" "+v+" = memoryAlloc("+parts[1].str()+" * sizeof("+getCType(parts[2].str(), elems).str()+"));
-            memcpy("+v+", "+rv+", sizeof("+getCType(parts[2].str(), elems).str()+") * "+parts[1].str()+");")
+            size = getTupleSize(stt.str(), elems)
+            OUTPUT += rope("if(__BAH_TUPLE_RET_PTR != null) {
+                memcpy(__BAH_TUPLE_RET_PTR, "+rv+", "+size+");
+                return __BAH_TUPLE_RET_PTR;
+            }\n"+getCType(tt,elems).str()+" "+v+" = memoryAlloc("+size+");
+            memcpy("+v+", "+rv+", "+size+");")
             rvar = v
         }
         if RCPavailable() {
