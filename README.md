@@ -72,16 +72,52 @@ If the repository is updated, this script will pull the main branch and install 
 
 ## Usage
 Files containing bah code have the `.bah` extenstion.
-- To compile your program, use `bah myFile.bah`.
-- To translate your program as C code, use `bah myFile.bah -c`.
-- To set an output name to your program, use the `bah myFile.bah -o myCompiledProgram`.
-- To get the current installed version, use `bah -v`.
-- To compile as a static library, use `bah myFile.bah -l`.
-- To compile your program as a dynamically linked program, use `bah myFile.bah -d`.
-- To compile your program using the reference counter instead of the garbage collector, use `bah myFile.bah -rcp`. **Still in progress, may leak in certain cases.**
-- To compile your program using the FASTER reference counter instead of the garbage collector, use `bah myFile.bah -fastrcp`. **This reference counter will not check for memory leaks.**
-- To compile your program using builtin debugging tools, use `bah myFile.bah -verboseRuntime`. **This will outputs a lot of data.**
-
+- To compile your program, use `bah <file> <flags>` (example: `bah main.bah`).
+```
+Usage of bah:
+    -o (string)
+        Name of the file to output.
+    -c (bool)
+        Translate bah file to C instead of compiling it.
+    -v (bool)
+        Show version of the compiler.
+    -l (bool)
+        Compile as a library.
+    -object (bool)
+        Compile as an object.
+    -n (bool)
+        Disables notices while keeping warnings enabled.
+    -d (bool)
+        Compile as a dynamic executable. (useful if you are using a library that is only available shared but might reduce portability).
+    -target (string)
+        Select the target OS for cross compilling (linux, windows, darwin), default: linux.
+    -bahDir (string)
+        If your Bah directory is not the default one (/opt/bah/).
+    -CC (string)
+        To change the C compiler used, default: gcc.
+    -unsafe (bool)
+        Compile without safety checking. This will make for faster executable but if your program crashes, it will show less informations.
+    -nobuiltin (bool)
+        Does not include the builtin library (be really carefull, your program WILL break).
+    -optimize (bool)
+        Includes optimized functions
+    -rcp (bool)
+        Enables RCP (reference counter) instead of the garbage collector. Warning: if you are using self-reference, this will lead to memory leaks!
+    -fastrcp (bool)
+        Enables RCP without leak detection. It is recommended to test you programs with the -rcp flag to test for leak detection before using this flag.
+    -lightGC (bool)
+        Enables the really light weight with no dependecy garbage collector. This one is not as complex as the default one, it is though not as robust.
+    -nativeMem (bool)
+        Disable any memory management. WARNING: this will cause insane memory leaks.
+    -fixMe (bool)
+        Enables runtime debugging engine, useful for segfaults... Note that your program will be slower and use more memory, this is only a debug option.
+    -debug (bool)
+        Enables verbose json output.
+    -verboseRuntime (bool)
+        Enables verbose runtime, a debug mode of the compiled program. (obsolete)
+    -verboseCC (bool)
+        Enables verbose C compiler output, USE IN LAST RESORT.
+```
 ## Learning
 Hello world:
 
@@ -92,7 +128,7 @@ Hello world:
 <center>
 <img src="./extra/repl.png">
 <p>
-<a href="https://github.com/ithirzty/bah-repl">Bah REPL</a>: a simple way of learning Bah lang.
+<a href="https://github.com/ithirzty/bah-repl">Bah REPL</a>, a simple way of learning Bah lang.
 </p>
 </center>
 
@@ -100,8 +136,9 @@ Hello world:
 
 
 ## Why?
-Bah is a really fast language that is low level enough for most cases while being really simple.
-As well as being easy to learn, you can create 
+Bah is a really fast language with as little bloat as possible. Its simplicity lets you choose your level of abstraction (C like low level <-> Go like high level).
+
+It has been used to create:
 - website
     - [bah-lang website](https://bah-lang.xyz)
 - compilers
@@ -109,30 +146,28 @@ As well as being easy to learn, you can create
 - interpreters
     - [Bah REPL](https://github.com/ithirzty/bah-repl)
     - [Brainfuck interpreter](https://github.com/ithirzty/bah-brainfuck)
-- web apps
-    - [bah-lang doc](https://github.com/ithirzty/bah-website)
 - libraries
-    - [BahDB](https://github.com/ithirzty/bahdb), a relational database written in Bah.
     - [Javel](https://github.com/ithirzty/javel), a HTTP server framework written in Bah.
     - [BPM](https://github.com/ithirzty/bpm), the Bah Package Manager.
     - [vbah](https://github.com/ithirzty/vbah), a graphics library.
+    - [BahDB](https://github.com/ithirzty/bahdb), a relational database written in Bah.
     - [bah-bmp](https://github.com/ithirzty/bah-bmp), an image edition library.
-    - [bah-cjson](https://github.com/ithirzty/bah-cjson), a chuncked json library.
 - and many more.
 > You did something awesome in bah? Add it to the list!
 
 
 ### Awesome features
 Bah also supports awesome features like:
-- **reflection** (approach similar to Go, enabling easy JSON marshalling),
-- **reference counting** (-rcp or -fastrcp flags),
+- **reflection** (approach similar to Go, enabling one line (to and from) JSON conversion),
+- **reference counting** (-rcp flag),
 - **async calls** (execute function call in a new thread),
-- **channels** (thread safe pipes to send data),
-- **runtime evaluation** (for evaluating code at runtime `eval.bah`),
-- **embedded debugger** (for setting breakpoints),
-- **compile-time safety features** (reducing segfaults),
+- **channels, maps, arrays** (useful builtin data structures),
+- **runtime evaluation** (for 'evaluating' function calls at runtime `eval.bah`),
+- **embedded debugger** (for setting breakpoints... ...GDB also works),
+- **compile-time safety features** (null value checker, static loop iterator...),
 - **fixMe** (cry for help when a segfault occurs),
-- **capture** (capture 'maybe values' for returning exceptions).
+- **let** (let var = 'maybe values' else handle exception),
+- **tuple** (light-weight wrapper for multiple values with different types, useful for returning multiple values).
 
 This enables you to do things that would be impossible in C
 such as scanning JSON content to a variable (event structs and arrays), and marshalling vars to JSON.
@@ -156,4 +191,4 @@ More generally, if `#import` fail, use `#include` that cannot fail.<br>
 Note that using import reduce compilation time because of its use of the cache.
 
 ## How does it work?
-Information on how a Bah compiler should operate can be found [here](how.md)
+Information on how a Bah compiler should operate can be found [here (outdated)](how.md).
