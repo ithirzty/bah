@@ -270,3 +270,20 @@ getStaticValue(t Tok*, elems Elems*) cpstring {
     }
     return ""
 }
+
+//Use for checking bounds at runtime
+checkBounds(t Tok*, elems Elems*) {
+    ind = 0
+    if t.type == TOKEN_TYPE_INT {
+        ind = strToInt(t.cont)
+    } else if t.type == TOKEN_TYPE_VAR && t.isFunc == false && t.isOper == false {
+        let v = searchVirtVarByToken(t, elems) then {
+            if v.isConst {
+                ind = strToInt(v.constVal)
+            }
+        }
+    }
+    if ind < 0 {
+        throwErr(t, "Cannot use index {TOKEN} ("+intToStr(ind)+" < 0).")
+    }
+}

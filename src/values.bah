@@ -127,7 +127,7 @@ valueFunc(fn func*, parent variable*, l []Tok, i int, ltp lineType, elems Elems*
         fnt.bahType = "ptr"
         j=0; for j < len(memory), j++ {
             t = memory[j]
-            fnt.cont = fnt.cont + t.cont
+            fnt.cont += " " + t.cont
         }
         l[tokPos] = fnt
         return tokPos
@@ -632,6 +632,7 @@ valueArr(l []Tok, i int, ltp lineType, elems Elems*) int {
             if compTypes(getTypeFromToken(&index, true, elems), "int") == false {
                 throwErr(&index, "Cannot use {TOKEN} as array index (int).")
             }
+            checkBounds(&index, elems)
             ptt.trimLeft(2)
             t.bahType = ptt.str()
             t.cont = pt.cont+"->data["+index.cont+"]"
@@ -660,6 +661,7 @@ valueArr(l []Tok, i int, ltp lineType, elems Elems*) int {
             if compTypes(getTypeFromToken(&index, true, elems), "int") == false {
                 throwErr(&index, "Cannot use {TOKEN} as buffer index (int).")
             }
+            checkBounds(&index, elems)
             t.cont = pt.cont+"["+index.cont+"]"
         } else {
             t.bahType = "cpstring"
@@ -730,6 +732,7 @@ valueArr(l []Tok, i int, ltp lineType, elems Elems*) int {
             if compTypes(getTypeFromToken(&index, true, elems), "int") == false {
                 throwErr(&index, "Cannot use {TOKEN} as cpstring index (int).")
             }
+            checkBounds(&index, elems)
             t.cont = pt.cont+"["+index.cont+"+4]"
         } else {
             if to == "" {

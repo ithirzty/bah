@@ -1353,7 +1353,7 @@ parseVar(l []Tok, elems Elems*) {
                     } else {
                         v.canBeNull = true
                     }
-                } else if t.type == TOKEN_TYPE_VAR {
+                } else if t.type == TOKEN_TYPE_VAR && t.isOper == false {
                     tv = searchVar(t.cont, elems)
                     if tv != null {
                         if exists == true && tv.canBeNull == false {
