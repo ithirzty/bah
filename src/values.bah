@@ -357,18 +357,15 @@ valueFunc(fn func*, parent variable*, l []Tok, i int, ltp lineType, elems Elems*
     }
 
     if isTupleType(fn.returns.type) {
-        if ltp == LINE_TYPE_ASYNC {
-            fnt.cont += ", null"
-        } else {
-            name = genCompilerVar()
-            r = rope("void* "+name+" = alloca("+getTupleSize(fn.returns.type, elems)+");\n")
-            if ltp == LINE_TYPE_ELSE || ltp == LINE_TYPE_IF {
-                begIfHandle.append(r)
-            } else {
-                OUTPUT += r
-            }
-            fnt.cont += ","+name
+        coma = ""
+        if len(fn.args) > 0 {
+            coma = ","
         }
+        alloc = "alloca"
+        if ltp == LINE_TYPE_ASYNC {
+            alloc = "memoryAlloc"
+        }
+        fnt.cont += coma+alloc+"("+getTupleSize(fn.returns.type, elems)+")"
     }
 
     fnt.cont += ")"
@@ -743,22 +740,21 @@ valueArr(l []Tok, i int, ltp lineType, elems Elems*) int {
         }
     } else if ptt.hasPrefix("[") && ptt.hasSuffix("]") { // is a tuple
         t.isOper = true
-        v = searchVar(pt.cont, elems)
-        if v == null {
-            throwErr(&pt, "Unkown var {TOKEN}.")
-        }
         ptt.trimLeft(1)
         ptt.trimRight(1)
         parts = splitString(ptt, ",")
         index = memory[0]
         ind = 0
-        if index.type == TOKEN_TYPE_INT && isStaticToken(&index, elems) {
-            ind = strToInt(index.cont)
-            if ind >= len(parts) {
-                throwErr(&index, "Cannot access index {TOKEN} of tupple "+pt.cont+" of length "+intToStr(len(parts))+".")
+        if compTypes(getTypeFromToken(&index, true, elems), "int") {
+            if isStaticToken(&index, elems) == false {
+                throwErr(&index, "Tuple cannot be indexed at runtime. Use a static value instead of {TOKEN}.")
+            }
+            ind = strToInt(getStaticValue(&index, elems))
+            if ind >= len(parts) || ind < 0 {
+                throwErr(&index, "Cannot access index {TOKEN} ("+intToStr(ind)+") of tuple "+pt.ogCont+" (["+ptt.str()+"]) of length "+intToStr(len(parts))+".")
             }
         } else {
-            throwErr(&index, "Tuple cannot be indexed at runtime. Use a static value instead of {TOKEN}.")
+            throwErr(&index, "Tuple cannot get index {TOKEN} of a tuple. Wanted int, got "+getTypeFromToken(&index, true, elems)+".")
         }
         
         name = genCompilerVar()
@@ -775,7 +771,7 @@ valueArr(l []Tok, i int, ltp lineType, elems Elems*) int {
         }
         t.bahType = parts[ind].str()
     } else {
-        throwErr(&pt, "Cannot use {TOKEN} ("+ptt.str()+") as array.")
+        throwErr(&pt, "Cannot use {TOKEN} ("+ptt.str()+") as an indexable value.\nIndexable values are [array, buffer, cpstring, tuple, map].")
     }
 
     t.isValue = true    
@@ -1199,6 +1195,7 @@ valueTuple(l []Tok, i int, elems Elems*) int {
     }
 
     memory = l[tokPos+1:i]
+    deleteRange(l, tokPos+1, i-1)
 
     memory = prePross(memory, <lineType>-1, elems)
     ft = memory[0]
@@ -1225,15 +1222,13 @@ valueTuple(l []Tok, i int, elems Elems*) int {
 
     type = "["+tupT+"]"
 
-    deleteRange(l, tokPos+1, j+1)
-
     v = registerRCPvar(type, "alloca("+size+")", elems)
     offsetVar = genCompilerVar()
 
     r = "long int "+offsetVar+" = 0;\n"
-    i=0; for i < len(vals), i++ {
-        ct = getCType(types[i], elems).str()
-        r += "*("+ct+"*)((char*)"+v+" + "+offsetVar+") = "+vals[i]+";\n"+offsetVar+"+=sizeof("+ct+");\n"
+    k=0; for k < len(vals), k++ {
+        ct = getCType(types[k], elems).str()
+        r += "*("+ct+"*)((char*)"+v+" + "+offsetVar+") = "+vals[k]+";\n"+offsetVar+"+=sizeof("+ct+");\n"
     }
     
     if isGlobal() {

@@ -299,6 +299,30 @@ getTupleSize(t cpstring, elems Elems*) cpstring {
     return r
 }
 
+//Returns true if the Bah type passed is a tuple.
 isTupleType(t cpstring) bool {
     return len(t) > 1 && t[0] == '[' && t[len(t)-1] == ']'
+}
+
+//Used for getting the C type from a function.
+getCfunctionType(cfrt string*, elemName cpstring, elems Elems*) cpstring {
+    tmpfn = parseFnType(*cfrt)
+    tmpfnArgsCType = ""
+    j=0; for j < len(tmpfn.args), j++ {
+        arg = tmpfn.args[j]
+        tmpfnArgsCType += getCType(arg.type, elems).str()
+        if j + 1 < len(tmpfn.args) {
+            tmpfnArgsCType += ","
+        }
+    }
+
+    if isTupleType(tmpfn.returns.type) {
+        coma = ""
+        if len(tmpfn.args) > 0 {
+            coma = ","
+        }
+        tmpfnArgsCType += coma+"void*"
+    }
+
+    return getCType(tmpfn.returns.type, elems).str() + " (*"+elemName+")("+tmpfnArgsCType+")"
 }

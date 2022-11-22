@@ -240,14 +240,11 @@ isStaticToken(t Tok*, elems Elems*) bool {
         return false
     }
 
-    if t.type == TOKEN_TYPE_FUNC {
+    if t.type == TOKEN_TYPE_FUNC || t.isFunc || t.isOper {
         return false
     }
 
     if t.type == TOKEN_TYPE_VAR {
-        if t.isOper == true {
-            return false
-        }
         v = searchVirtVarByToken(t, elems)
         if v != null {
             return v.isConst
@@ -255,4 +252,21 @@ isStaticToken(t Tok*, elems Elems*) bool {
     }
 
     return true
+}
+
+//Returns the static value of a token.
+//This works with string litterals/numbers and const values.
+getStaticValue(t Tok*, elems Elems*) cpstring {
+    if t.type == TOKEN_TYPE_INT || t.type == TOKEN_TYPE_FLOAT || t.type == TOKEN_TYPE_STR || t.type == TOKEN_TYPE_BOOL || t.type == TOKEN_TYPE_CHAR {
+        return t.cont
+    }
+    if t.type == TOKEN_TYPE_VAR {
+        let v = searchVirtVarByToken(t, elems) then {
+            if v.isConst {
+                return v.constVal
+            }
+        }
+
+    }
+    return ""
 }

@@ -1418,7 +1418,7 @@ parseVar(l []Tok, elems Elems*) {
                 tmpV = genCompilerVar()
                 code = "memoryAlloc("+size+")"
                 NEXT_LINE += "memcpy("+v.name+", "+t.cont+", "+size+");\n"
-                break
+                i++;continue
             }
 
             if t.cont != "" && strHasPrefix(t.cont, "{") == false {
@@ -1558,21 +1558,7 @@ parseVar(l []Tok, elems Elems*) {
         }
         vct cpstring
         if vts.hasPrefix("function(") {
-            tmpfn = parseFnType(vts)
-            tmpfnRetCType = getCType(tmpfn.returns.type, elems)
-
-            tmpfnArgsCType = ""
-            j=0; for j < len(tmpfn.args) {
-                arg = tmpfn.args[j]
-                ct = getCType(arg.type, elems)
-                tmpfnArgsCType = tmpfnArgsCType + ct.str()
-                j = j + 1
-                if j < len(tmpfn.args) {
-                    tmpfnArgsCType = tmpfnArgsCType + ","
-                }
-            }
-
-            vct = tmpfnRetCType.str() + " (*"+v.name+")("+tmpfnArgsCType+")"
+            vct = getCfunctionType(&vts, v.name, elems)
         } else {
             vct = setCType(v, elems)
         }
@@ -1645,25 +1631,6 @@ parseVar(l []Tok, elems Elems*) {
         // }
     }
 
-}
-
-//Used for getting the C type from a function.
-getCfunctionType(cfrt string*, elemName cpstring, elems Elems*) cpstring {
-
-    tmpfn = parseFnType(*cfrt)
-    tmpfnRetCType = getCType(tmpfn.returns.type, elems)
-    tmpfnArgsCType = ""
-    j=0; for j < len(tmpfn.args) {
-        arg = tmpfn.args[j]
-        ct = getCType(arg.type, elems)
-        tmpfnArgsCType = tmpfnArgsCType + ct.str()
-        j = j + 1
-        if j < len(tmpfn.args) {
-            tmpfnArgsCType = tmpfnArgsCType + ","
-        }
-    }
-
-    return tmpfnRetCType.str() + " (*"+elemName+")("+tmpfnArgsCType+")"
 }
 
 //Parses function definition header in function declaration.
@@ -1785,7 +1752,11 @@ parseFnHeader(prev cpstring, l []Tok, i int*, fn func*, elems Elems*) cpstring {
     }
 
     if len(returns.type) > 1 && returns.type[0] == '[' && returns.type[len(returns.type)-1] == ']' {
-        code = code[:len(code)-1] + ", void* __BAH_TUPLE_RET_PTR)"
+        coma = ""
+        if len(arguments) > 0 {
+            coma = ", "
+        }
+        code = code[:len(code)-1] + coma+"void* __BAH_TUPLE_RET_PTR)"
     }
 
     *i = j
@@ -1867,19 +1838,7 @@ parseStruct(l []Tok, elems Elems*) {
                 cemt = string(em.type)
                 membDeclStr cpstring
                 if cemt.hasPrefix("function(") == 1 {
-                    tmpfn = parseFnType(cemt)
-                    tmpfnRetCType = getCType(tmpfn.returns.type, elems)
-                    tmpfnArgsCType = ""
-                    j=0; for j < len(tmpfn.args) {
-                        arg = tmpfn.args[j]
-                        ct = getCType(arg.type, elems)
-                        tmpfnArgsCType = tmpfnArgsCType + ct.str()
-                        j = j + 1
-                        if j < len(tmpfn.args) {
-                            tmpfnArgsCType = tmpfnArgsCType + ","
-                        }
-                    }
-                    membDeclStr = tmpfnRetCType.str() + " (*"+em.name+")("+tmpfnArgsCType+")"
+                    membDeclStr = getCfunctionType(&cemt, em.name, elems)
                 } else {
                     if isRCPpointerType(em.type) {
                         s.hasRCPmemb = true
@@ -2122,19 +2081,7 @@ parseStruct(l []Tok, elems Elems*) {
         membDeclStr cpstring
         cmt = string(memb.type)
         if cmt.hasPrefix("function(") == 1 {
-            tmpfn = parseFnType(cmt)
-            tmpfnRetCType = getCType(tmpfn.returns.type, elems)
-            tmpfnArgsCType = ""
-            j=0; for j < len(tmpfn.args) {
-                arg = tmpfn.args[j]
-                ct = getCType(arg.type, elems)
-                tmpfnArgsCType = tmpfnArgsCType + ct.str()
-                j = j + 1
-                if j < len(tmpfn.args) {
-                    tmpfnArgsCType = tmpfnArgsCType + ","
-                }
-            }
-            membDeclStr = tmpfnRetCType.str() + " (*"+memb.name+")("+tmpfnArgsCType+")"
+            membDeclStr = getCfunctionType(&cmt, memb.name, elems)
         } else {
             membDecl = getCType(memb.type, elems)
             membDecl.append(" " + memb.name)
@@ -2326,9 +2273,8 @@ parseConst(l []Tok, elems Elems*) {
 
 //Parses return.
 parseReturn(l []Tok, elems Elems*) {
-
     if len(l) > 2 {
-        throwErr(&l[0], "Invalid usage of {TOKEN}, must be 'return <returnValue>'")
+        throwErr(&l[2], "Invalid usage of return, must be 'return <returnValue>'. {TOKEN} not expected.")
     }
     if currentFn == null {
         throwErr(&l[0], "Cannot return a value outside of a function.")
@@ -2387,14 +2333,9 @@ parseReturn(l []Tok, elems Elems*) {
         if stt.hasPrefix("buffer:") {
             rvar = "buffToStr("+rvar+")"
         } else if stt.hasPrefix("[") && stt.hasSuffix("]") {
-            v = genCompilerVar()
             size = getTupleSize(stt.str(), elems)
-            OUTPUT += rope("if(__BAH_TUPLE_RET_PTR != null) {
-                memcpy(__BAH_TUPLE_RET_PTR, "+rv+", "+size+");
-                return __BAH_TUPLE_RET_PTR;
-            }\n"+getCType(tt,elems).str()+" "+v+" = memoryAlloc("+size+");
-            memcpy("+v+", "+rv+", "+size+");")
-            rvar = v
+            OUTPUT += rope("memcpy(__BAH_TUPLE_RET_PTR, "+rv+", "+size+");\n")
+            rvar = "__BAH_TUPLE_RET_PTR"
         }
         if RCPavailable() {
             excl = []variable*
