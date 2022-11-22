@@ -740,9 +740,7 @@ valueArr(l []Tok, i int, ltp lineType, elems Elems*) int {
         }
     } else if ptt.hasPrefix("[") && ptt.hasSuffix("]") { // is a tuple
         t.isOper = true
-        ptt.trimLeft(1)
-        ptt.trimRight(1)
-        parts = splitString(ptt, ",")
+        parts = getTypesFromTuple(ptt.str())
         index = memory[0]
         ind = 0
         if compTypes(getTypeFromToken(&index, true, elems), "int") {
@@ -751,7 +749,7 @@ valueArr(l []Tok, i int, ltp lineType, elems Elems*) int {
             }
             ind = strToInt(getStaticValue(&index, elems))
             if ind >= len(parts) || ind < 0 {
-                throwErr(&index, "Cannot access index {TOKEN} ("+intToStr(ind)+") of tuple "+pt.ogCont+" (["+ptt.str()+"]) of length "+intToStr(len(parts))+".")
+                throwErr(&index, "Cannot access index {TOKEN} ("+intToStr(ind)+") of tuple "+pt.ogCont+" ("+ptt.str()+") of length "+intToStr(len(parts))+".")
             }
         } else {
             throwErr(&index, "Tuple cannot get index {TOKEN} of a tuple. Wanted int, got "+getTypeFromToken(&index, true, elems)+".")
@@ -761,15 +759,15 @@ valueArr(l []Tok, i int, ltp lineType, elems Elems*) int {
 
         offsets = "0"
         j=0; for j < ind, j++ {
-            offsets += "+ sizeof("+getCType(parts[j].str(), elems).str()+")"
+            offsets += "+ sizeof("+getCType(parts[j], elems).str()+")"
         }
 
-        t.cont = "*("+getCType(parts[ind].str(), elems).str()+"*)((char*)"+pt.cont+"+"+offsets+")"
+        t.cont = "*("+getCType(parts[ind], elems).str()+"*)((char*)"+pt.cont+"+"+offsets+")"
         t.bahRef = new variable {
             name: t.cont
-            type: parts[ind].str()
+            type: parts[ind]
         }
-        t.bahType = parts[ind].str()
+        t.bahType = parts[ind]
     } else {
         throwErr(&pt, "Cannot use {TOKEN} ("+ptt.str()+") as an indexable value.\nIndexable values are [array, buffer, cpstring, tuple, map].")
     }
@@ -1186,7 +1184,7 @@ valueTuple(l []Tok, i int, elems Elems*) int {
     i++; for i < len(l), i++ {
         if l[i].cont == "[" || l[i].cont == "(" {
             nbEncl++
-        } else if l[1].cont == "]" || l[i].cont == ")" {
+        } else if l[i].cont == "]" || l[i].cont == ")" {
             nbEncl--
             if nbEncl == 0 {
                 break
@@ -1194,8 +1192,8 @@ valueTuple(l []Tok, i int, elems Elems*) int {
         }
     }
 
-    memory = l[tokPos+1:i]
-    deleteRange(l, tokPos+1, i-1)
+    memory = l[tokPos+1:i+1]
+    deleteRange(l, tokPos+1, i)
 
     memory = prePross(memory, <lineType>-1, elems)
     ft = memory[0]
@@ -1240,6 +1238,7 @@ valueTuple(l []Tok, i int, elems Elems*) int {
     l[tokPos].type = TOKEN_TYPE_VAR
     l[tokPos].bahType = type
     l[tokPos].cont = v
+    l[tokPos].isValue = true
 
     return tokPos
 }

@@ -289,12 +289,39 @@ getVarUnaryLevel(s cpstring) uint {
     return 0
 }
 
+//Returns all sub-types of a tuple type.
+getTypesFromTuple(t cpstring) []cpstring {
+    r = []cpstring
+
+    curr = strBuilder{}
+    nbBracks = 0
+    i=1; for i < len(t)-1, i++ {
+        if t[i] == '[' {
+            nbBracks++
+        } else if t[i] == ']' {
+            nbBracks--
+        }
+
+        if nbBracks == 0 && t[i] == ',' {
+            r[len(r)] = curr.str()
+            curr = strBuilder{}
+            continue
+        }
+
+        curr.append(t[i])
+    }
+
+    r[len(r)] = curr.str()
+
+    return r
+}
+
 //Returns a C expression calculating a tuple's size from a tuple type.
 getTupleSize(t cpstring, elems Elems*) cpstring {
-    parts = splitString(string(t[1:len(t)-1]), ",")
+    parts = getTypesFromTuple(t)
     r = "0"
     i=0; for i < len(parts), i++ {
-        r += "+sizeof("+getCType(parts[i].str(), elems).str()+")"
+        r += "+sizeof("+getCType(parts[i], elems).str()+")"
     }
     return r
 }
