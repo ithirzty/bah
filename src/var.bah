@@ -45,6 +45,7 @@ searchVar(name cpstring, t Tok*, elems Elems*) variable* {
     removeVarUnar(&n)    
     name = n.str()
 
+
     //may be a variable
     i=len(elems.vars)-1; for i != -1, i-- {
         v = elems.vars[i]
@@ -52,11 +53,6 @@ searchVar(name cpstring, t Tok*, elems Elems*) variable* {
             nv = new variable
             *nv = *v
             r = nv.type
-            // if ogName[0] == '&' {
-            //     t.processedPtr = true
-            //     r += "*"
-            // }
-
             nbUnaries = getVarUnaryLevel(ogName)
             if nbUnaries > 0 {
                 pointerLevel = getTypeUnaryLevel(r)
@@ -67,6 +63,9 @@ searchVar(name cpstring, t Tok*, elems Elems*) variable* {
             }
             nv.type = r
             nv.name = ogName
+            if t != null {
+                t.setRefVar(v)
+            }
             return nv
         }
     }
@@ -88,6 +87,9 @@ searchVar(name cpstring, t Tok*, elems Elems*) variable* {
             }
             fn.used = true
             nv.type = nv.type + ")" + fn.returns.type
+            if t != null {
+                t.setRefVar(nv)
+            }
             return nv
         }
     }

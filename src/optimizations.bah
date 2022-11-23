@@ -46,7 +46,7 @@ byteToOctal(b byte) cpstring {
     }
     escp = "\\0"
     if i == 3 {
-        escp = escp[:1]
+        escp = "\\"
     }
     return escp + r
 }

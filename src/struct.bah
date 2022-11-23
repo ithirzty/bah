@@ -166,7 +166,8 @@ searchStructMethod(name cpstring, s cStruct*, elems Elems*) func* {
 
 //Legacy function that used to declare a struct's methods on inline struct declaration.
 //Now declares members default values, initializa array/map/channel members and call ._init if present.
-declareStructMethods(v variable*, s cStruct*, elems Elems*) cpstring {
+//Will not declare default values for every member which index is present in excl.
+declareStructMethods(v variable*, excl []int, s cStruct*, elems Elems*) cpstring {
     code = ""
     members = s.members
     typec = string(v.type)
@@ -177,6 +178,14 @@ declareStructMethods(v variable*, s cStruct*, elems Elems*) cpstring {
         amp = ""
     }
     i=0; for i < len(members), i++ {
+        j=0; for j < len(excl), j++ {
+            if excl[j] == i {
+                break
+            }
+        }
+        if j != len(excl) {
+            continue
+        }
         m = members[i]
         cmpt = string(m.type)
         if m.def != "" {

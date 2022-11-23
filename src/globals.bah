@@ -154,3 +154,5 @@ prevIfChecks = []varCheck
 prevIfShortcut = "" //fixes code emitted before a line being between '}' and 'else'
 
 begIfHandle = rope("")
+
+funcCache = map func* //caches function searches

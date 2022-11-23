@@ -38,23 +38,18 @@ debugLine(line []Tok) {
 //Duplicates elems (scope).
 //Generally used for making an inner/child scope.
 dupElems(elems Elems*) Elems* {
-    nElems = new Elems
-    nElems.parent = elems
+    nElems = new Elems {
+        parent: elems
+        structs: elems.structs
+        types: elems.types
+        fns: elems.fns
+    }
 
     //vars
     allocateArray(nElems.vars, len(elems.vars))
     j=0; for j < len(elems.vars), j++ {
         nElems.vars[j] = elems.vars[j]
     }
-
-    //structs
-    nElems.structs = elems.structs
-
-    //types
-    nElems.types = elems.types
-
-    //fns
-    nElems.fns = elems.fns
 
     return nElems
 }
@@ -510,16 +505,8 @@ parseStructValues(s cStruct*, isHeap bool, memory []Tok, elems Elems*) variable*
         tmpV.type = s.name
     }
     rst = getCType(tmpV.type, elems)
-    r rope*
-
-    //allocate memory
-    if isHeap {
-        structType = string(rst.str())
-        structType.trimRight(1)
-        r = rope(rst.str()+" "+rvn+" = memoryAlloc(sizeof("+structType.str()+"));\n"+declareStructMethods(tmpV, s, elems))
-    } else {
-        r = rope(rst.str()+" "+rvn+" = {};\n"+declareStructMethods(tmpV, s, elems))
-    }
+    r = rope("")
+    excl = []int
     j=0;k=0; for k < len(memory) {
         t = memory[k]
         //declaration 'member: value'
@@ -540,6 +527,7 @@ parseStructValues(s cStruct*, isHeap bool, memory []Tok, elems Elems*) variable*
                         j = j + 1
                         continue
                     }
+                    excl[len(excl)] = j
                     if vl.cont == "{" {
                         vs = searchStruct(m.type, elems)
                         if vs == null {
@@ -596,6 +584,7 @@ parseStructValues(s cStruct*, isHeap bool, memory []Tok, elems Elems*) variable*
             throwErr(&t, "Too many members {TOKEN}.")
         }
         m = s.members[j]
+        excl[len(excl)] = j
         j++
 
         if t.cont == "{" {
@@ -646,6 +635,15 @@ parseStructValues(s cStruct*, isHeap bool, memory []Tok, elems Elems*) variable*
             }
         }
         k++
+    }
+
+    //allocate memory
+    if isHeap {
+        structType = string(rst.str())
+        structType.trimRight(1)
+        r = rope(rst.str()+" "+rvn+" = memoryAlloc(sizeof("+structType.str()+"));\n"+declareStructMethods(tmpV, excl, s, elems)) + r
+    } else {
+        r = rope(rst.str()+" "+rvn+" = {};\n"+declareStructMethods(tmpV, excl, s, elems)) + r
     }
 
     //outputs C code
@@ -699,7 +697,7 @@ parseStructType(line []Tok, ltp lineType, elems Elems*) []Tok {
                         structType = getCType(s.name, elems)
                         elems.vars[len(elems.vars)] = tmpV
 
-                        r = rope(cType.str()+" "+t.cont+" = memoryAlloc(sizeof("+structType.str()+"));\n"+declareStructMethods(tmpV, s, elems))
+                        r = rope(cType.str()+" "+t.cont+" = memoryAlloc(sizeof("+structType.str()+"));\n"+declareStructMethods(tmpV, null, s, elems))
 
                         if isGlobal() {
                             INIT += r
@@ -839,31 +837,27 @@ parseArrayType(line []Tok, elems Elems*, guard bool) []Tok {
 parsePointers(l []Tok, elems Elems*) []Tok {
     i=0; for i < len(l), i++ {
         t = l[i]
-        if t.cont == "&" || t.cont == "*" {
-            if i > 0 {
-                if l[i-1].type == TOKEN_TYPE_VAR || l[i-1].isValue == true {
-                    if t.cont == "*" {
-                        if i+1 < len(l) {
-                            if l[i+1].cont != "(" && l[i+1].type != TOKEN_TYPE_CAST && l[i+1].isValue != true {
-                                l[i-1].cont += t.cont
-                                delete(l, i)
-                                i--
-                            }
-                        } else {
+        if t.type == TOKEN_TYPE_SYNTAX && (t.cont[0] == '&' || t.cont[0] == '*') {
+            if i > 0 && l[i-1].isValue == true {
+                if t.cont[0] == '*' {
+                    if i+1 < len(l) {
+                        if l[i+1].cont != "(" && l[i+1].type != TOKEN_TYPE_CAST && l[i+1].isValue == false {
                             l[i-1].cont += t.cont
                             delete(l, i)
                             i--
                         }
+                    } else {
+                        l[i-1].cont += t.cont
+                        delete(l, i)
+                        i--
                     }
-                    continue
                 }
+                continue
             }
 
             if i+1 < len(l) {
-                if i > 0 {
-                    if l[i-1].cont == ")" || l[i-1].isValue == true {
-                        continue
-                    }
+                if i > 0 && l[i-1].cont == ")" || l[i-1].isValue == true {
+                    continue
                 }
                 if l[i+1].type == TOKEN_TYPE_VAR {
                     l[i+1].cont = t.cont + l[i+1].cont
@@ -1563,7 +1557,7 @@ parseVar(l []Tok, elems Elems*) {
         if len(v.type) == 0 {
             throwErr(&ft, "Cannot declare {TOKEN} without a type.")
         }
-        vct cpstring
+        vct = ""
         if vts.hasPrefix("function(") {
             vct = getCfunctionType(&vts, l[0].cont, elems)
         } else {
@@ -2388,13 +2382,7 @@ parseIf(l []Tok, fromElse bool, elems Elems*) {
     if t.cont != "{" {
         throwErr(&t, "Expected '{' not {TOKEN} after condtition in if statement.")
     }
-    tokens = []Tok
-    max = len(l) - 1
-    i=3;for i < max {
-        t = l[i]
-        tokens[len(tokens)] = t
-        i++
-    }
+    tokens = l[3:len(l)-1]
 
     begIfHandle = rope("")
     OUTPUT += begIfHandle
@@ -3050,7 +3038,7 @@ parseChan(l []Tok, elems Elems*) []Tok {
 
 //Used for reducing lines to ireducible tokens (parsing values and such).
 prePross(line []Tok, ltp lineType, elems Elems*) []Tok {
-    fl = []Tok
+    fl = <[]Tok>null
     i = 0
     sepI = 0
     nbPar = 0
@@ -3058,18 +3046,24 @@ prePross(line []Tok, ltp lineType, elems Elems*) []Tok {
     if ltp != <lineType>-1 {
         for i < len(line), i++ {
             t = line[i]
-            if t.cont == "(" {
-                isFunc = true
-                nbPar = nbPar + 1
-            } else if t.cont == ")" {
-                nbPar = nbPar - 1
-            } else if nbPar == 0 && t.cont == "{" {
-                if line[i+1].line != t.line {
-                    break
+            if t.type == TOKEN_TYPE_ENCL {
+                if t.cont[0] == '(' {
+                    isFunc = true
+                    nbPar = nbPar + 1
+                } else if t.cont[0] == ')' {
+                    nbPar = nbPar - 1
+                } else if nbPar == 0 && t.cont[0] == '{' {
+                    if line[i+1].line != t.line {
+                        break
+                    }
                 }
             }
         }
-        fl = line[:i]
+        if i != len(line) {
+            fl = line[:i]
+        } else {
+            fl = line
+        }
         sepI = i
     } else {
         fl = line
@@ -3092,11 +3086,7 @@ prePross(line []Tok, ltp lineType, elems Elems*) []Tok {
                 }
                 rv.canBeReg = false
             }
-        }
-    }
-
-    i=0; for i < len(fl), i++ {
-        if fl[i].type == TOKEN_TYPE_STR && fl[i].processedStr == false {
+        } else if fl[i].type == TOKEN_TYPE_STR && fl[i].processedStr == false {
             fl[i].cont = strLitteralToBahStr(fl[i].cont)
             fl[i].processedStr = true
         }

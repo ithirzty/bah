@@ -214,8 +214,8 @@ delete(a ptr, i int) {
     if i >= length || i < 0 {
         return
     }
-	if length == 1 {
-		noCheck(arr->length = 0)
+	if i == length-1 {
+		noCheck(arr->length = arr->length - 1)
 		return
 	}
     elemSize int = noCheck(arr->elemSize)
@@ -237,7 +237,6 @@ deleteRange(a ptr, from int, to int) {
         delete(a, from)
         return
     }
-
     arr = <[]ptr>a
     length = len(arr)
 

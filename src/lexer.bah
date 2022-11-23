@@ -73,8 +73,8 @@ struct Tok {
 enclavers = []char{'(', ')', '{', '}', '[', ']'}
 syntaxes = []char{'!', '=', '|', <char>38, '%', '+', '-', '*', '/', ',', '<', '>', ':', <char>59, '^'}
                                     //&                                                    //;
-keywords = []cpstring{"if", "else", "for", "struct", "const", "return", "extend", "new", "break", "continue", "default", "switch", "case", "while", "typedef", "function", "async", "in", "chan", "map", "buffer", "let", "then"}
-                    //  x      x      x        x        x         x         x       x       x          x          -          -        -       -         -           x         x       x     x       x       x          x         x
+keywords = []cpstring{"if", "else", "for", "return", "new", "break", "continue", "struct", "const", "extend", "function", "async", "in", "chan", "map", "buffer", "let", "then", "default", "switch", "case", "while", "typedef"}
+                    //  x      x      x        x       x       x          x          x        x                    x         x       x      x      x       x         x      x        -          -        -       -          -
                     // x: done
                     //  : not done
                     // -: not planned
@@ -247,9 +247,32 @@ lexer(s cpstring, codeLength uint) []Tok {
         } else if c == '.' { //token is a separator
             memory[0] = c
             tokens[len(tokens)] = makeToken(i, lineNb, memory, TOKEN_TYPE_SEP)
-        } else if c in enclavers { //token is enclaver
+        } else if isAlphaNumeric(c) || c == '_' { //token is a var / keyword
             memory[0] = c
-            tokens[len(tokens)] = makeToken(i, lineNb, memory, TOKEN_TYPE_ENCL)
+            pos = i
+            i++
+            //get full token
+            for i < codeLength, i++ {
+                c = s[i]
+                if isAlphaNumeric(c) == false {
+                    if c != '_' {
+                        if c == '>' {
+                            lc = memory[len(memory)-1]
+                            if lc == '-' {
+                                i--
+                                break
+                            }
+                        }
+                        break
+                    }
+                }
+
+                memory[len(memory)] = c
+            }
+            i--
+            currentType = TOKEN_TYPE_VAR
+            
+            tokens[len(tokens)] = makeToken(pos, lineNb, memory, currentType)
         } else if c in syntaxes { //token is a syntax element
             
 
@@ -310,32 +333,9 @@ lexer(s cpstring, codeLength uint) []Tok {
             }
             i--
             tokens[len(tokens)] = makeToken(pos, lineNb, memory, TOKEN_TYPE_SYNTAX)
-        } else if isAlphaNumeric(c) || c == '_' { //token is a var / keyword
+        } else if c in enclavers { //token is enclaver
             memory[0] = c
-            pos = i
-            i++
-            //get full token
-            for i < codeLength, i++ {
-                c = s[i]
-                if isAlphaNumeric(c) == false {
-                    if c != '_' {
-                        if c == '>' {
-                            lc = memory[len(memory)-1]
-                            if lc == '-' {
-                                i--
-                                break
-                            }
-                        }
-                        break
-                    }
-                }
-
-                memory[len(memory)] = c
-            }
-            i--
-            currentType = TOKEN_TYPE_VAR
-            
-            tokens[len(tokens)] = makeToken(pos, lineNb, memory, currentType)
+            tokens[len(tokens)] = makeToken(i, lineNb, memory, TOKEN_TYPE_ENCL)
         }
 
     }

@@ -20,7 +20,8 @@
 #define! GC_FREE(a ptr)
 #define! GC_REGISTER_FINALIZER_IGNORE_SELF(obj ptr, proc ptr, data ptr, ofn ptr, ocd ptr)
 #define! GC_malloc_atomic(s int) ptr
-
+#define! GC_malloc_ignore_off_page(s int) ptr
+#define! __builtin_prefetch(p ptr)
 
 //Used for allocating memory (malloc in c). You must specify the size of the block to allocate.
 //Will return a pointer to the allocated block. The memory is garbage collected.
@@ -38,7 +39,6 @@ destroy(a ptr) {
 //Clear will remove the content of an array.
 clear(a ptr) {
     noCheck(array(void*) * arr = a)
-    memset(noCheck(arr->data), null, noCheck(arr->realLength * arr->elemSize))
     noCheck(arr->length = 0)
 }
 
@@ -64,12 +64,11 @@ memoryOnEnd(obj ptr, fn ptr) {
 //A faster version is available with -optimize.
 //This is called when calling memcpy().
 __BAH_memcpy(dest cpstring, source cpstring, l int) {
-    lm = l % sizeof(int)
-    if lm != 0 {
-        for lm != 0, lm-- {
-            i = l - lm
-            noCheck(dest[i] = source[i])
-        }
+    lm int32 = l % sizeof(int)
+    i int32
+    for lm != 0, lm-- {
+        i = l - lm
+        noCheck(dest[i] = source[i])
     }
     destI int* = <ptr>(<int>dest - sizeof(int))
     sourceI int* = <ptr>(<int>source - sizeof(int))
@@ -82,10 +81,9 @@ __BAH_memcpy(dest cpstring, source cpstring, l int) {
 //The content of the memory block should not contain any pointer.
 //It will not be checked for memory collection.
 memoryAllocSTR(s int) cpstring {
-    r cpstring = memoryAlloc(s + cpstringLenSize)
+    r cpstring = GC_MALLOC(s + cpstringLenSize)
     ln uint32* = r
     *ln = (s-1)
     noCheck(r[s-1] = 0)
-    // memset(r, 0, s)
     return r
 }

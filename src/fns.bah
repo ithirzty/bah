@@ -17,8 +17,8 @@ searchFunc(name cpstring, elems Elems*, inclCurr bool) func* {
         fn.name = "noCheck"
         return fn
     }
+
     n = string(name)
-    
     fns = elems.fns
     i=0; for i < len(fns) {
         fn = fns[i]
@@ -63,8 +63,8 @@ searchFuncByToken(t Tok*, elems Elems*) func* {
 }
 
 searchVirtFuncByToken(t Tok*, elems Elems*) func* {
-    if t.getRefFn() != null {
-        return t.getRefFn()
+    let fn = <func*>t.getRefFn() then {
+        return fn
     }
 
     let v = <variable*>t.getRefVar() then {
@@ -74,5 +74,11 @@ searchVirtFuncByToken(t Tok*, elems Elems*) func* {
             return fn
         }
     }
-    return searchFunc(t.cont, elems, true)
+    let fn = funcCache[t.cont] then {
+        return fn
+    }
+
+    fn = searchFunc(t.cont, elems, true)
+    funcCache[t.cont] = fn
+    return fn
 }

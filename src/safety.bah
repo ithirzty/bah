@@ -83,6 +83,19 @@ checkCanBeNull(t Tok*, tt cpstring, elems Elems*) {
     }
 }
 
+//Checks if a value can be null inside a certain scope and returns the value.
+getCanBeNull(t Tok*, tt cpstring, elems Elems*) bool {
+    if isUnsafe == false && string(compilerState.currentDir).hasPrefix(BAH_DIR) == false && isRCPpointerType(tt) && t.cont[0] != '&' && t.cont[0] != '*' {
+        sv = searchVarByToken(t, elems)
+        if sv != null {
+            if sv.canBeNull == true && checkedNotNull(sv.name, elems) == false {
+                return true
+            }
+        }
+    }
+    return false
+}
+
 //When this function is called on a scope, it tells its parent scope that the value checked in the current line's condition (elems.branchChecks)
 //can no longer be null because this branch also terminates its parent scope on end.
 //Examples:

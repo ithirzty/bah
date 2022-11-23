@@ -25,7 +25,7 @@
     BAH_CC = "gcc"
 }
 //////////////////////BUILD SPECIFIC THINGS//////////////////////
-const BAH_VERSION = "v1.4 (build 150)"
+const BAH_VERSION = "v1.4 (build 151)"
 
 debug = false
 verboseRuntime = false
@@ -62,7 +62,7 @@ memErrHandle() cpstring {
 //Entry point of the program.
 main(args []cpstring) int {
     onMemoryError = memErrHandle
-    
+
     execName = args[0] //for calling a sub-process for compiling imports
 
     //If the executable is not called from the path, get its absolute path for calling it when compiling objects with '#import'.

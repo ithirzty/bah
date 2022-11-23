@@ -50,90 +50,81 @@ getCType(t cpstring, elems Elems*) string {
         return string("void")
     }
 
-    tp = string(t)
-    tp.replace(" ", "")
-    if tp.hasPrefix("[]") {
-        tp.trimLeft(2)
-        tpstr = tp.str()
-        tp = getCType(tpstr, elems)
-        t = tp.str()
-        r = "array("+t+")*"
+    if len(t) > 2 && t[0] == '[' && t[1] == ']' {
+        r = "array("+getCType(t[2:], elems).str()+")*"
         return string(r)
     }
-    tp.replace("!", "*")
-    
 
-    ctp = tp
-    ctp.replace("*", "")
-
-    if tp.hasPrefix("[") && tp.hasSuffix("]") {
-        parts = splitString(tp, ",")
-        tp.set("void*")
-    } else if tp.hasPrefix("chan:") == 1 {
-        tp.set("struct channel *")
-    } else if tp.hasPrefix("map:") == 1 {
-        tp.set("struct mapWrapper *")
-    } else if tp.hasPrefix("buffer:") == 1 {
-        tp.set("char*")
-    } else if ctp.str() == "int" {
-        tp.replace("int", "long int")
-    } else if ctp.str() == "int32" {
-        tp.replace("int32", "int")
-    } else if ctp.str() == "uint32" {
-        tp.replace("uint32", "unsigned int")
-    } else if ctp.str() == "uint" {
-        tp.replace("uint", "unsigned long int")
-    } else if ctp.str() == "float32" {
-        tp.replace("float32", "float")
-    } else if ctp.str() == "ufloat32" {
-        tp.replace("ufloat32", "unsigned float")
-    } else if ctp.str() == "ufloat" {
-        tp.replace("ufloat", "unsigned double")
-    } else if ctp.str() == "float" {
-        tp.replace("float", "double")
-    } else if ctp.str() == "long" {
-        tp.replace("long", "long long")
-    } else if ctp.str() == "ulong" {
-        tp.replace("ulong", "unsigned long long")
-    } else if ctp.str() == "cpstring" {
-        tp.replace("cpstring", "char *")
+    i=0; for i < len(t), i++ {
+        if t[len(t)-i-1] != '*' {
+            break
+        }
     }
-    //  else if ctp.str() == "str" {
-    //     tp.replace("str", "char *")
-    // }
-     else if ctp.str() == "ptr" {
-        tp.replace("ptr", "void *")
-    } else if ctp.str() == "ushort" {
-        tp.replace("ushort", "unsigned short")
-    } else if ctp.str() == "byte" {
-        tp.replace("byte", "unsigned char")
-    } else if ctp.str() == "bool" {
-        tp.replace("bool", "char")
-    } else if ctp.str() == "char" {
-        //do nothing for now
-    } else if ctp.hasPrefix("function(") {
+
+    unars = ""
+    if i > 0 {
+        unars = t[len(t)-i:]
+        t = t[:len(t)-i]
+    }
+    tp = string(t)
+
+    if t[0] == '[' && t[len(t)-1] == ']' {
+        t = "void*"
+    } else if tp.hasPrefix("chan:") == 1 {
+        unars = ""
+        t ="struct channel *"
+    } else if tp.hasPrefix("map:") == 1 {
+        unars = ""
+        t = "struct mapWrapper *"
+    } else if tp.hasPrefix("buffer:") == 1 {
+        unars = ""
+        t = "char*"
+    } else if t == "int" {
+        t = "long int"
+    } else if t == "int32" {
+        t = "int"
+    } else if t == "uint32" {
+        t = "unsigned int"
+    } else if t == "uint" {
+        t = "unsigned long int"
+    } else if t == "float32" {
+        t = "float"
+    } else if t == "float" {
+        t = "double"
+    } else if t == "long" {
+        t = "long long"
+    } else if t == "ulong" {
+        t = "unsigned long long"
+    } else if t == "cpstring" {
+        t = "char*"
+    } else if t == "ptr" {
+        t = "void *"
+    } else if t == "ushort" {
+        t = "unsigned short"
+    } else if t == "byte" {
+        t = "unsigned char"
+    } else if t == "bool" || t == "char" {
+        t = "char"
+    } else if tp.hasPrefix("function(") {
         return string("void*")
     } else {
-        
-        ctpstr = ctp.str()
-        s = searchStruct(ctpstr, elems)
+        s = searchStruct(t, elems)
         if s != null {
-            tp.prepend("struct ")
+            t = "struct " + t
         } else {
             i=0; for i < len(elems.types) {
                 ct = elems.types[i]
-                if ctp.compare(ct) {
+                if t == ct {
+                    tp.append(unars)
                     return tp
                 }
                 i = i + 1
             }
             return string("")
         }
-
     }
 
-    return tp
-
+    return string(t+unars)
 }
 
 //Transforms a maybe type to a pointer type.
@@ -144,17 +135,6 @@ maybeToPtr(a cpstring) cpstring {
     a = a[:len(a)-1] + "*"
     return a
 }
-
-//Obsolete.
-// compTypeEquiv(a cpstring, b cpstring, first bool) bool {
-//     if first == false {
-//         return false
-//     }
-//     if compTypeEquiv(b, a, false) {
-//         return true
-//     }
-//     return a == b
-// }
 
 //Compare two types a and b.
 //Returns true if a and b are compatible.

@@ -109,24 +109,27 @@ valueFunc(fn func*, parent variable*, l []Tok, i int, ltp lineType, elems Elems*
     fnt.type = TOKEN_TYPE_FUNC
 
     //pre-processing arguments
+    memory = <[]Tok>null
     nbEncls = 1
-    // memory = []Tok
     i = tokPos+1
-    fnt.ogCont = fn.name+"("
+    fnt.ogCont = fn.name
     start = i
     for i < len(l), i++ {
         t = l[i]
-        fnt.ogCont += t.ogCont
-        if t.cont == "(" || t.cont == "{" || t.cont == "[" {
-            nbEncls++
-        } else if t.cont == ")" || t.cont == "}" || t.cont == "]" {
-            nbEncls--
-            if nbEncls == 0 {
-                break
+        if t.type == TOKEN_TYPE_ENCL {
+            if t.cont[0] == '(' || t.cont[0] == '{' || t.cont[0] == '[' {
+                nbEncls++
+            } else if t.cont[0] == ')' || t.cont[0] == '}' || t.cont[0] == ']' {
+                nbEncls--
+                if nbEncls == 0 {
+                    break
+                }
             }
         }
     }
-    memory = l[start:i]
+    if start < i {
+        memory = l[start:i]
+    }
     deleteRange(l, tokPos+1, i)
 
     //noCheck (for c lang in bah)
@@ -289,7 +292,7 @@ valueFunc(fn func*, parent variable*, l []Tok, i int, ltp lineType, elems Elems*
         tt = getTypeFromToken(&t, true, elems)
         ltt = tt
 
-        if (fn.isImported == true || isInside(BAH_DIR, fn.file)) && t.type == TOKEN_TYPE_VAR {
+        if isFixMeEnabled && (fn.isImported == true || isInside(BAH_DIR, fn.file)) && t.type == TOKEN_TYPE_VAR {
             fixMeTestVar(&t, ltp, elems)
         }
 
@@ -486,12 +489,13 @@ valueStruct(l []Tok, i int, ltp lineType, elems Elems*) int {
             if fn == null {
                 throwErr(&nt, "Unknown method {TOKEN} in struct "+s.name+".")
             }
-            if t.type == TOKEN_TYPE_VAR {
+            if t.type == TOKEN_TYPE_VAR && t.isFunc == false && t.isOper == false {
                 if fn.isImported == true || fn.isMut == true {
-                    rp = searchVarByToken(&t, elems)
-                    rp.lastSet = elems
-                    if rp.isArg == true {
-                        currentFn.isMut = true
+                    let rp = searchVarByToken(&t, elems) then {
+                        rp.lastSet = elems
+                        if rp.isArg == true {
+                            currentFn.isMut = true
+                        }
                     }
                 }
             }
@@ -725,6 +729,7 @@ valueArr(l []Tok, i int, ltp lineType, elems Elems*) int {
                 name: genCompilerVar()
                 type: ptt.str()
             }
+            t.setRefVar(tmpV)
             elems.vars[len(elems.vars)] = tmpV
             if isGlobal() {
                 INIT += rope(elemType.str() + " " + tmpV.name+";\n")
@@ -749,11 +754,13 @@ valueArr(l []Tok, i int, ltp lineType, elems Elems*) int {
                 res = rope(elemType.str() + "* "+tmpV+"="+pt.cont+"->get("+pt.cont+", "+index.cont+");\n")
                 t.cont = "("+elemType.str()+")(*"+tmpV+")"
             }
+            tmpVr = new variable{
+                name: tmpV
+                type: ptt.str()
+            }
+            t.setRefVar(tmpVr)
             if RCPavailable() {
-                elems.vars[len(elems.vars)] = new variable{
-                    name: tmpV
-                    type: ptt.str()
-                }
+                elems.vars[len(elems.vars)] = tmpVr
             }
             if isGlobal() {
                 INIT += res

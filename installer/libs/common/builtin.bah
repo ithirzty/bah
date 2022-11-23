@@ -19,6 +19,8 @@
 #define __Bah_check_arr_bounds(arr []ptr, ind uint32) bool
 #define __Bah_realocate_arr(arr []ptr, nLength uint32)
 
+
+
 const null = <ptr>0
 
 const true = <bool>1
@@ -30,6 +32,7 @@ const cpstringLenSize = 4
 #define! strcmp(a cpstring, b cpstring) int
 #define! strlen(a cpstring) int
 #define! sizeof(p ptr) uint32
+#define len(a ptr) uint
 
 cStr(s cpstring) char* {
 	if <ptr>s == null {
@@ -38,12 +41,18 @@ cStr(s cpstring) char* {
 	return <char*>(<int>s + cpstringLenSize)
 }
 
+__bah_strlenSTR(s ptr) uint32 {
+	if s == null {
+		return 0
+	}
+	i uint32* = s
+	return *i
+}
+
 //Compare two cpstrings.
 //This function is used by the compiler.
 __bah_strcmp(a cpstring, b cpstring) int {
-    ai int = a
-	bi int = b
-	if ai * bi == 0 {
+	if <ptr>a == null || <ptr>b == null {
 		return 1
 	}
     return strcmp(a, b)
@@ -58,14 +67,6 @@ Cstrlen(s char*) int {
 		return 0
 	}
 	return noCheck(strlen(s))
-}
-
-__bah_strlenSTR(s ptr) uint32 {
-	if s == null {
-		return 0
-	}
-	i uint32* = s
-	return *i
 }
 
 const strlen = __bah_strlenSTR
