@@ -23,6 +23,7 @@ sudo ./linux_compile_install.sh
 
 ### Windows
 **Please make sure that you have [mingw gcc](https://sourceforge.net/projects/mingw/) installed.**
+> When installing Mingw, make sure to install **MingW base (gcc)** and **MingW pthreads/winpthreads**.
 ```bat
 git clone https://github.com/ithirzty/bah
 cd ./bah

@@ -2,17 +2,17 @@
 
     void __BAH_init();
     #define noCheck(v) v
-    #define array(type)	    struct{	    type *data;     unsigned long int length;     unsigned long int realLength;     unsigned long int elemSize;     }
+    #define array(type)	    struct{	    type *data;     unsigned long long int length;     unsigned long long int realLength;     unsigned long long int elemSize;     }
     typedef array(char*)* __BAH_ARR_TYPE_cpstring;
-    long int __BAH__main(__BAH_ARR_TYPE_cpstring);
+    long long int __BAH__main(__BAH_ARR_TYPE_cpstring);
     
             #include <gc.h>
             #include <string.h>
-            __BAH_ARR_TYPE_cpstring argsToArr(char** a,long int l);
+            __BAH_ARR_TYPE_cpstring argsToArr(char** a,long long int l);
             int main(int argc, char ** argv) {
             GC_INIT();
             __BAH_init();
-            long int r =  __BAH__main(argsToArr(argv, argc));
+            long long int r =  __BAH__main(argsToArr(argv, argc));
             return r;
             };
             #define main(v) __BAH__main(v)
@@ -20,7 +20,7 @@
 #include <string.h>
 void __BAH_panic(char* e,char* l);
 char* __Bah_safe_string(char* s);
-char* cpstringSubsitute(char* s,long int i,long int l);
+char* cpstringSubsitute(char* s,long long int i,long long int l);
 typedef array(void *)* __BAH_ARR_TYPE_ptr;
 void * __Bah_getVal_boundsChecked(__BAH_ARR_TYPE_ptr arr,unsigned int ind);
 char __Bah_check_arr_bounds(__BAH_ARR_TYPE_ptr arr,unsigned int ind);
@@ -37,7 +37,7 @@ void __Bah_realocate_arr(__BAH_ARR_TYPE_ptr arr,unsigned int nLength);
 
 #line 29 "/opt/bah/builtin.bah"
 #define cpstringLenSize 4
-unsigned long int len(void * a);
+unsigned long long int len(void * a);
 
 #line 37 "/opt/bah/builtin.bah"
 char* cStr(char* s){
@@ -50,7 +50,7 @@ return null;
 }
 
 #line 41 "/opt/bah/builtin.bah"
-return (char*)((long int)s+cpstringLenSize);
+return (char*)((long long int)s+cpstringLenSize);
 };
 
 #line 44 "/opt/bah/builtin.bah"
@@ -71,7 +71,7 @@ return *i;
 };
 
 #line 54 "/opt/bah/builtin.bah"
-long int __bah_strcmp(char* a,char* b){
+long long int __bah_strcmp(char* a,char* b){
 
 #line 55 "/opt/bah/builtin.bah"
 if (((void *)a==null)||((void *)b==null)) {
@@ -88,7 +88,7 @@ return strcmp(cStr(a),cStr(b));
 #define strcmp __bah_strcmp
 
 #line 65 "/opt/bah/builtin.bah"
-long int Cstrlen(char* s){
+long long int Cstrlen(char* s){
 
 #line 66 "/opt/bah/builtin.bah"
 if ((s==null)) {
@@ -108,7 +108,7 @@ return  strlen ( s );
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
-unsigned long int len(void * a);
+unsigned long long int len(void * a);
 
 #line 86 "/opt/bah/builtin.bah"
 void print(char* s){
@@ -116,7 +116,7 @@ void print(char* s){
 #line 87 "/opt/bah/builtin.bah"
 write((void *)1,cStr(s),strlen(s));
 };
-void __BAH_memcpy(char* dest,char* source,long int l);
+void __BAH_memcpy(char* dest,char* source,long long int l);
 
 #line 92 "/opt/bah/builtin.bah"
 #define memcpy __BAH_memcpy
@@ -138,7 +138,7 @@ void __BAH_memcpy(char* dest,char* source,long int l);
 #define SIZE_OF_FLOAT 8
 
 #line 29 "/opt/bah/memory.bah"
-unsigned long int len(void * a){
+unsigned long long int len(void * a){
 
 #line 30 "/opt/bah/memory.bah"
 if ((a==null)) {
@@ -156,7 +156,7 @@ return  arr -> length;
 #include <gc.h>
 
 #line 30 "/opt/bah/gc.bah"
-void * memoryAlloc(long int s){
+void * memoryAlloc(long long int s){
 
 #line 31 "/opt/bah/gc.bah"
 return GC_MALLOC(s);
@@ -180,7 +180,7 @@ void clear(void * a){
 };
 
 #line 47 "/opt/bah/gc.bah"
-void * memoryRealloc(void * p,long int s){
+void * memoryRealloc(void * p,long long int s){
 
 #line 48 "/opt/bah/gc.bah"
 return GC_REALLOC(p,s);
@@ -204,10 +204,10 @@ GC_REGISTER_FINALIZER_IGNORE_SELF(obj,fn,null,null,null);
 };
 
 #line 66 "/opt/bah/gc.bah"
-void __BAH_memcpy(char* dest,char* source,long int l){
+void __BAH_memcpy(char* dest,char* source,long long int l){
 
 #line 67 "/opt/bah/gc.bah"
-int lm = l%sizeof(long int);
+int lm = l%sizeof(long long int);
 
 #line 68 "/opt/bah/gc.bah"
 int i;
@@ -223,13 +223,13 @@ i = l-lm;
 };
 
 #line 73 "/opt/bah/gc.bah"
-long int* destI = (void *)((long int)dest-sizeof(long int));
+long long int* destI = (void *)((long long int)dest-sizeof(long long int));
 
 #line 74 "/opt/bah/gc.bah"
-long int* sourceI = (void *)((long int)source-sizeof(long int));
+long long int* sourceI = (void *)((long long int)source-sizeof(long long int));
 
 #line 75 "/opt/bah/gc.bah"
-i = l/sizeof(long int);
+i = l/sizeof(long long int);
 
 #line 75 "/opt/bah/gc.bah"
 for (; (i!=0); --i) {
@@ -240,7 +240,7 @@ for (; (i!=0); --i) {
 };
 
 #line 83 "/opt/bah/gc.bah"
-char* memoryAllocSTR(long int s){
+char* memoryAllocSTR(long long int s){
 
 #line 84 "/opt/bah/gc.bah"
 char* r = GC_MALLOC(s+cpstringLenSize);
@@ -268,16 +268,16 @@ void append(void * a,void * b){
  array ( void* ) * arrB = b;
 
 #line 48 "/opt/bah/memory.bah"
-long int lenA = 0;
+long long int lenA = 0;
 
 #line 49 "/opt/bah/memory.bah"
-long int lenB = 0;
+long long int lenB = 0;
 
 #line 50 "/opt/bah/memory.bah"
-long int realSizeA = 0;
+long long int realSizeA = 0;
 
 #line 51 "/opt/bah/memory.bah"
-long int realSizeB = 0;
+long long int realSizeB = 0;
 
 #line 52 "/opt/bah/memory.bah"
  lenA = len ( arrA );
@@ -337,10 +337,10 @@ void copy(void * a,void * b){
  array ( void* ) * arrB = b;
 
 #line 80 "/opt/bah/memory.bah"
-long int lenB = 0;
+long long int lenB = 0;
 
 #line 81 "/opt/bah/memory.bah"
-long int realSizeB = 0;
+long long int realSizeB = 0;
 
 #line 82 "/opt/bah/memory.bah"
  lenB = len ( arrB );
@@ -374,7 +374,7 @@ long int realSizeB = 0;
 #define MAP_ANONYMOUS 32
 
 #line 126 "/opt/bah/memory.bah"
-void * sharedMemory(long int size){
+void * sharedMemory(long long int size){
 
 #line 127 "/opt/bah/memory.bah"
 if ((size==0)) {
@@ -391,7 +391,7 @@ return r;
 };
 
 #line 159 "/opt/bah/memory.bah"
-void allocateArray(void * arr,long int nbElems){
+void allocateArray(void * arr,long long int nbElems){
 
 #line 160 "/opt/bah/memory.bah"
  array ( void* ) * a = arr;
@@ -409,7 +409,7 @@ typedef array(char)* __BAH_ARR_TYPE_char;
 __BAH_ARR_TYPE_char ser(void * a);
 
 #line 181 "/opt/bah/memory.bah"
-__BAH_ARR_TYPE_char __serialize(void * a,long int s){
+__BAH_ARR_TYPE_char __serialize(void * a,long long int s){
 
 #line 182 "/opt/bah/memory.bah"
 char* r = memoryAlloc(s+9);
@@ -421,7 +421,7 @@ memcpy(cStr(r),&s,8);
 memcpy( r + 8,a,s);
 
 #line 185 "/opt/bah/memory.bah"
-long int l = s+1;
+long long int l = s+1;
 
 #line 186 "/opt/bah/memory.bah"
 array(char)* arr = memoryAlloc(sizeof(array(char)));
@@ -443,7 +443,7 @@ return arr;
 };
 
 #line 195 "/opt/bah/memory.bah"
-long int serlen(__BAH_ARR_TYPE_char data){
+long long int serlen(__BAH_ARR_TYPE_char data){
 
 #line 196 "/opt/bah/memory.bah"
 array(char)* sarr = memoryAlloc(sizeof(array(char)));
@@ -469,7 +469,7 @@ return  *sarr -> data;
 void * unser(__BAH_ARR_TYPE_char data){
 
 #line 203 "/opt/bah/memory.bah"
-long int sptr = serlen(data);
+long long int sptr = serlen(data);
 
 #line 204 "/opt/bah/memory.bah"
 void * r = memoryAlloc(sptr);
@@ -482,13 +482,13 @@ return r;
 };
 
 #line 211 "/opt/bah/memory.bah"
-void delete(void * a,long int i){
+void delete(void * a,long long int i){
 
 #line 212 "/opt/bah/memory.bah"
 array(void *)* arr = (array(void *)*)a;
 
 #line 213 "/opt/bah/memory.bah"
-unsigned long int length = len(arr);
+unsigned long long int length = len(arr);
 
 #line 214 "/opt/bah/memory.bah"
 if ((i>=length)||(i<0)) {
@@ -508,7 +508,7 @@ return;
 }
 
 #line 221 "/opt/bah/memory.bah"
-long int elemSize =  arr -> elemSize;
+long long int elemSize =  arr -> elemSize;
 
 #line 222 "/opt/bah/memory.bah"
 char* data =  arr -> data;
@@ -523,13 +523,13 @@ void * destOffset = elemSize*i;
 void * offset = elemSize*i;
 
 #line 226 "/opt/bah/memory.bah"
-char* src = (long int)data+(long int)offset;
+char* src = (long long int)data+(long long int)offset;
 
 #line 227 "/opt/bah/memory.bah"
-char* dest = (long int)data+(long int)destOffset;
+char* dest = (long long int)data+(long long int)destOffset;
 
 #line 228 "/opt/bah/memory.bah"
-unsigned long int rightNB = length-(i-1);
+unsigned long long int rightNB = length-(i-1);
 
 #line 229 "/opt/bah/memory.bah"
 memmove(dest,src,rightNB*elemSize);
@@ -539,7 +539,7 @@ memmove(dest,src,rightNB*elemSize);
 };
 
 #line 235 "/opt/bah/memory.bah"
-void deleteRange(void * a,long int from,long int to){
+void deleteRange(void * a,long long int from,long long int to){
 
 #line 236 "/opt/bah/memory.bah"
 if ((from==to)) {
@@ -555,25 +555,25 @@ return;
 array(void *)* arr = (array(void *)*)a;
 
 #line 241 "/opt/bah/memory.bah"
-unsigned long int length = len(arr);
+unsigned long long int length = len(arr);
 
 #line 243 "/opt/bah/memory.bah"
-long int elemSize =  arr -> elemSize;
+long long int elemSize =  arr -> elemSize;
 
 #line 244 "/opt/bah/memory.bah"
 char* data =  arr -> data;
 
 #line 245 "/opt/bah/memory.bah"
-long int size = elemSize*(to-from);
+long long int size = elemSize*(to-from);
 
 #line 246 "/opt/bah/memory.bah"
-void * dest = (long int)data+elemSize*from;
+void * dest = (long long int)data+elemSize*from;
 
 #line 247 "/opt/bah/memory.bah"
-void * src = (long int)dest+size+elemSize;
+void * src = (long long int)dest+size+elemSize;
 
 #line 248 "/opt/bah/memory.bah"
-unsigned long int rightNB = length-to;
+unsigned long long int rightNB = length-to;
 
 #line 249 "/opt/bah/memory.bah"
 memmove(dest,src,rightNB*elemSize);
@@ -586,7 +586,7 @@ memmove(dest,src,rightNB*elemSize);
 char* arrToStr(__BAH_ARR_TYPE_char arr){
 
 #line 256 "/opt/bah/memory.bah"
-unsigned long int strLen = len(arr);
+unsigned long long int strLen = len(arr);
 
 #line 257 "/opt/bah/memory.bah"
 if ((len(arr)>0)&&(arr->data[len(arr)-1]==null)) {
@@ -615,7 +615,7 @@ return str;
 __BAH_ARR_TYPE_char strToArr(char* str){
 
 #line 269 "/opt/bah/memory.bah"
-unsigned long int strLen = strlen(str);
+unsigned long long int strLen = strlen(str);
 
 #line 270 "/opt/bah/memory.bah"
 array(char)* arr = memoryAlloc(sizeof(array(char)));
@@ -635,10 +635,10 @@ memcpy( arr -> data,cStr(str),strLen);
 #line 275 "/opt/bah/memory.bah"
 return arr;
 };
-char* cpstringSubsitute(char* s,long int i,long int l);
+char* cpstringSubsitute(char* s,long long int i,long long int l);
 
 #line 283 "/opt/bah/memory.bah"
-void strTrimLeft(char** s,long int i){
+void strTrimLeft(char** s,long long int i){
 
 #line 284 "/opt/bah/memory.bah"
 char* rs = *s;
@@ -648,7 +648,7 @@ char* rs = *s;
 };
 
 #line 289 "/opt/bah/memory.bah"
-void strTrimRight(char** s,long int i){
+void strTrimRight(char** s,long long int i){
 
 #line 290 "/opt/bah/memory.bah"
 char* rs = *s;
@@ -667,7 +667,7 @@ char* rs = *s;
 char* buffToStr(char* b){
 
 #line 102 "/opt/bah/builtin.bah"
-long int l = Cstrlen((void *)b);
+long long int l = Cstrlen((void *)b);
 
 #line 103 "/opt/bah/builtin.bah"
 char* s = memoryAllocSTR(l+1);
@@ -686,7 +686,7 @@ return s;
 };
 
 #line 110 "/opt/bah/builtin.bah"
-__BAH_ARR_TYPE_cpstring argsToArr(char** a,long int l){
+__BAH_ARR_TYPE_cpstring argsToArr(char** a,long long int l){
 
 #line 111 "/opt/bah/builtin.bah"
 array(char*)* r = memoryAlloc(sizeof(array(char*)));
@@ -698,13 +698,13 @@ r->elemSize = sizeof(char*);
 allocateArray(r,l);
 
 #line 113 "/opt/bah/builtin.bah"
-register long int i = 0;
+register long long int i = 0;
 
 #line 113 "/opt/bah/builtin.bah"
 for (; (i<l); ++i) {
 
 #line 114 "/opt/bah/builtin.bah"
-char** sp = (char**)((long int)a+i*sizeof(char*));
+char** sp = (char**)((long long int)a+i*sizeof(char*));
 
 #line 115 "/opt/bah/builtin.bah"
 char* s = *sp;
@@ -730,7 +730,7 @@ return null;
 }
 
 #line 125 "/opt/bah/builtin.bah"
-long int l = Cstrlen((void *)s);
+long long int l = Cstrlen((void *)s);
 
 #line 126 "/opt/bah/builtin.bah"
 char* nstr = memoryAllocSTR(l+1);
@@ -761,13 +761,13 @@ unsigned int tot = 0;
 int offset = 0;
 
 #line 140 "/opt/bah/builtin.bah"
-register long int i = 0;
+register long long int i = 0;
 
 #line 140 "/opt/bah/builtin.bah"
 for (; (i<l); ++i) {
 
 #line 141 "/opt/bah/builtin.bah"
-unsigned long int sl = strlen((char*) b [ i ]);
+unsigned long long int sl = strlen((char*) b [ i ]);
 
 #line 142 "/opt/bah/builtin.bah"
 tot = tot+sl;
@@ -786,10 +786,10 @@ i = 0;
 for (; (i<l); ++i) {
 
 #line 151 "/opt/bah/builtin.bah"
-memcpy((void *)((long int)r+offset+cpstringLenSize), b [ i ] + cpstringLenSize, lens [ i ]);
+memcpy((void *)((long long int)r+offset+cpstringLenSize), b [ i ] + cpstringLenSize, lens [ i ]);
 
 #line 152 "/opt/bah/builtin.bah"
-offset = offset+((long int) lens [ i ]);
+offset = offset+((long long int) lens [ i ]);
 };
 
 #line 155 "/opt/bah/builtin.bah"
@@ -806,10 +806,10 @@ return r;
 char* concatCPSTRING(char* a,char* b){
 
 #line 172 "/opt/bah/builtin.bah"
-unsigned long int lenA = strlen(a);
+unsigned long long int lenA = strlen(a);
 
 #line 173 "/opt/bah/builtin.bah"
-unsigned long int lenB = strlen(b);
+unsigned long long int lenB = strlen(b);
 
 #line 174 "/opt/bah/builtin.bah"
 char* r = memoryAlloc(lenA+lenB+1);
@@ -828,7 +828,7 @@ return r;
 char* __STR(char* a){
 
 #line 183 "/opt/bah/builtin.bah"
-unsigned long int lenA = strlen(a);
+unsigned long long int lenA = strlen(a);
 
 #line 184 "/opt/bah/builtin.bah"
 char* r = memoryAllocSTR(lenA+1);
@@ -990,7 +990,7 @@ return m;
 
 #line 2 "/opt/bah/queue.bah"
 struct queueNode {
-long int key;
+long long int key;
 void * data;
 struct queueNode* next;
 struct queueNode* prev;
@@ -998,7 +998,7 @@ struct queueNode* prev;
 
 #line 16 "/opt/bah/queue.bah"
 struct queue {
-long int length;
+long long int length;
 struct queueNode* head;
 struct queueNode* end;
 };
@@ -1034,7 +1034,7 @@ this->end->next = node;
 this->end = node;
 }
 };
-void queue__delete(struct queue* this,long int key){
+void queue__delete(struct queue* this,long long int key){
 
 #line 42 "/opt/bah/queue.bah"
 if ((this->length==0)) {
@@ -1083,10 +1083,10 @@ previous->next = current->next;
 #line 59 "/opt/bah/queue.bah"
 this->length = this->length-1;
 };
-void * queue__get(struct queue* this,long int key){
+void * queue__get(struct queue* this,long long int key){
 
 #line 64 "/opt/bah/queue.bah"
-long int z = 0;
+long long int z = 0;
 
 #line 65 "/opt/bah/queue.bah"
 void * zp = (void *)z;
@@ -1121,7 +1121,7 @@ void * data = ptr->data;
 #line 79 "/opt/bah/queue.bah"
 return data;
 };
-void queue__set(struct queue* this,long int key,void * data){
+void queue__set(struct queue* this,long long int key,void * data){
 
 #line 84 "/opt/bah/queue.bah"
 queue__delete(this,key);
@@ -1187,10 +1187,10 @@ struct channel {
 pthread_mutex_t m_mut;
 pthread_cond_t w_cond;
 pthread_cond_t r_cond;
-long int w_waitting;
-long int r_waitting;
+long long int w_waitting;
+long long int r_waitting;
 struct queue* queue;
-long int cap;
+long long int cap;
 };
 void channel__send(struct channel* this,void * data){
 
@@ -1227,7 +1227,7 @@ pthread_cond_signal(&this->r_cond);
 #line 36 "/opt/bah/channel.bah"
 pthread_mutex_unlock(&this->m_mut);
 };
-void channel__sendAny(struct channel* this,void * data,long int len){
+void channel__sendAny(struct channel* this,void * data,long long int len){
 
 #line 40 "/opt/bah/channel.bah"
 pthread_mutex_lock(&this->m_mut);
@@ -1313,10 +1313,10 @@ pthread_cond_destroy(&this->w_cond);
 #line 83 "/opt/bah/channel.bah"
 pthread_cond_destroy(&this->r_cond);
 };
-long int channel__len(struct channel* this){
+long long int channel__len(struct channel* this){
 
 #line 89 "/opt/bah/channel.bah"
-long int l = this->queue->length;
+long long int l = this->queue->length;
 
 #line 90 "/opt/bah/channel.bah"
 return l;
@@ -1348,7 +1348,7 @@ return c;
 };
 
 #line 108 "/opt/bah/channel.bah"
-void setChanCap(void * c,long int cap){
+void setChanCap(void * c,long long int cap){
 
 #line 109 "/opt/bah/channel.bah"
 struct channel* cp = c;
@@ -1397,7 +1397,7 @@ unsigned int ____BAH_COMPILER_VAR_8_aoptabahabuiltinbbah = len(__Bah_fnNames);
     __Bah_realocate_arr(__Bah_fnNames, ____BAH_COMPILER_VAR_8_aoptabahabuiltinbbah);
     __Bah_fnNames->data[____BAH_COMPILER_VAR_8_aoptabahabuiltinbbah] = fnn;
 };
-long int backtrace(void * arr,long int l);
+long long int backtrace(void * arr,long long int l);
 
 #line 245 "/opt/bah/builtin.bah"
 char* fastExec(char* s){
@@ -1415,7 +1415,7 @@ char* response = memoryAllocSTR(1);
 void * res = (void *)response;
 
 #line 251 "/opt/bah/builtin.bah"
-long int i = 0;
+long long int i = 0;
 
 #line 251 "/opt/bah/builtin.bah"
 for (; (res!=null); ++i) {
@@ -1443,7 +1443,7 @@ unsigned int* ln = response;
 *ln = (i)*1023+Cstrlen((void *)buff);
 
 #line 260 "/opt/bah/builtin.bah"
-memcpy((void *)((long int)response+cpstringLenSize+i*1023),buff,1024);
+memcpy((void *)((long long int)response+cpstringLenSize+i*1023),buff,1024);
 };
 
 #line 263 "/opt/bah/builtin.bah"
@@ -1479,16 +1479,16 @@ arr->elemSize = sizeof(void *);
 allocateArray(arr,10);
 
 #line 279 "/opt/bah/builtin.bah"
-long int size = backtrace( arr -> data,10);
+long long int size = backtrace( arr -> data,10);
 
 #line 281 "/opt/bah/builtin.bah"
 print("\013\0\0\0""Backtrace:\n");
 
 #line 283 "/opt/bah/builtin.bah"
-long int min = -1;
+long long int min = -1;
 
 #line 284 "/opt/bah/builtin.bah"
-long int max = -1;
+long long int max = -1;
 
 #line 286 "/opt/bah/builtin.bah"
 char ____BAH_COMPILER_VAR_12_aoptabahabuiltinbbah[4096];char* selfPath = ____BAH_COMPILER_VAR_12_aoptabahabuiltinbbah;
@@ -1500,13 +1500,13 @@ memset(selfPath,0,4096);
 readlink(cStr("\016\0\0\0""/proc/self/exe"),(char*)selfPath,4096);
 
 #line 290 "/opt/bah/builtin.bah"
-register long int i = 1;
+register long long int i = 1;
 
 #line 290 "/opt/bah/builtin.bah"
 for (; (i<size); ++i) {
 
 #line 291 "/opt/bah/builtin.bah"
-long int p = arr->data[i];
+long long int p = arr->data[i];
 
 #line 293 "/opt/bah/builtin.bah"
 char ____BAH_COMPILER_VAR_13_aoptabahabuiltinbbah[2048];char* buff = ____BAH_COMPILER_VAR_13_aoptabahabuiltinbbah;
@@ -1527,7 +1527,7 @@ char* name = "\0\0\0\0""";
 char* path = "\0\0\0\0""";
 
 #line 300 "/opt/bah/builtin.bah"
-register long int j = 0;
+register long long int j = 0;
 
 #line 300 "/opt/bah/builtin.bah"
 for (; (j<strlen(s)); ++j) {
@@ -1578,7 +1578,7 @@ cleanShutDown();
 char* (*onMemoryError)();
 
 #line 329 "/opt/bah/builtin.bah"
-void __Bah_segfault_handle(long int sig){
+void __Bah_segfault_handle(long long int sig){
 
 #line 330 "/opt/bah/builtin.bah"
 char* res = "\0\0\0\0""";
@@ -1720,7 +1720,7 @@ else {
 }
 
 #line 397 "/opt/bah/builtin.bah"
-void * newPtr = memoryRealloc( arr -> data,(long int) arr -> realLength*(long int) arr -> elemSize);
+void * newPtr = memoryRealloc( arr -> data,(long long int) arr -> realLength*(long long int) arr -> elemSize);
 
 #line 398 "/opt/bah/builtin.bah"
  arr -> data = newPtr;
@@ -1734,7 +1734,7 @@ return;
 };
 
 #line 410 "/opt/bah/builtin.bah"
-char cpstringCharAt(char* s,long int i){
+char cpstringCharAt(char* s,long long int i){
 
 #line 411 "/opt/bah/builtin.bah"
 char c = s[i+4];
@@ -1744,10 +1744,10 @@ return c;
 };
 
 #line 416 "/opt/bah/builtin.bah"
-char* cpstringSubsitute(char* s,long int i,long int l){
+char* cpstringSubsitute(char* s,long long int i,long long int l){
 
 #line 417 "/opt/bah/builtin.bah"
-long int size = l-i;
+long long int size = l-i;
 
 #line 418 "/opt/bah/builtin.bah"
 if (__builtin_expect((i<0)||(size<0)||(size>strlen(s)), 0)) {
@@ -1767,10 +1767,10 @@ return ns;
 };
 
 #line 427 "/opt/bah/builtin.bah"
-void * arraySubstitute(__BAH_ARR_TYPE_ptr arr,long int i,long int l){
+void * arraySubstitute(__BAH_ARR_TYPE_ptr arr,long long int i,long long int l){
 
 #line 428 "/opt/bah/builtin.bah"
-long int length = l-i;
+long long int length = l-i;
 
 #line 429 "/opt/bah/builtin.bah"
 if (__builtin_expect((i<0)||(length<0)||(length>len(arr)), 0)) {
@@ -1780,7 +1780,7 @@ __BAH_panic("\067\0\0\0""builtin: cpstring substitution out of bounds violation.
 }
 
 #line 432 "/opt/bah/builtin.bah"
-long int offset = i*(long int) arr -> elemSize;
+long long int offset = i*(long long int) arr -> elemSize;
 
 #line 433 "/opt/bah/builtin.bah"
 array(void *)* na = memoryAlloc(sizeof(array(void *)));
@@ -1795,7 +1795,7 @@ na->elemSize = sizeof(void *);
  na -> length = length;
 
 #line 437 "/opt/bah/builtin.bah"
-long int allocLength = length;
+long long int allocLength = length;
 
 #line 438 "/opt/bah/builtin.bah"
 if ((length>50)) {
@@ -1812,10 +1812,10 @@ allocLength = 50;
 }
 
 #line 443 "/opt/bah/builtin.bah"
-long int size = allocLength*(long int) arr -> elemSize;
+long long int size = allocLength*(long long int) arr -> elemSize;
 
 #line 444 "/opt/bah/builtin.bah"
-long int realSize = length*(long int) arr -> elemSize;
+long long int realSize = length*(long long int) arr -> elemSize;
 
 #line 445 "/opt/bah/builtin.bah"
 void * data = memoryAlloc(size);
@@ -1834,19 +1834,19 @@ return na;
 };
 
 #line 2 "/opt/bah/map.bah"
-long int __Bah_map_hash(char* s,long int l){
+long long int __Bah_map_hash(char* s,long long int l){
 
 #line 3 "/opt/bah/map.bah"
-long int hash = 5381;
+long long int hash = 5381;
 
 #line 5 "/opt/bah/map.bah"
-register long int i = 0;
+register long long int i = 0;
 
 #line 5 "/opt/bah/map.bah"
 for (; (i<strlen(s)); ++i) {
 
 #line 6 "/opt/bah/map.bah"
-hash = ((long int)hash<<5+0)+hash+(long int)s[i+4];
+hash = ((long long int)hash<<5+0)+hash+(long long int)s[i+4];
 };
 
 #line 9 "/opt/bah/map.bah"
@@ -1933,10 +1933,10 @@ return;
 }
 
 #line 67 "/opt/bah/map.bah"
-long int lr = 0;
+long long int lr = 0;
 
 #line 67 "/opt/bah/map.bah"
-long int rr = 0;
+long long int rr = 0;
 
 #line 70 "/opt/bah/map.bah"
 if ((this->left!=null)) {
@@ -2100,15 +2100,15 @@ void mapWrapperSetAlgo(void * p,unsigned int nb);
 
 #line 163 "/opt/bah/map.bah"
 struct mapWrapper {
-long int length;
+long long int length;
 unsigned int algo;
 struct mapNode* nodes;
 struct mapSearchRes msr;
 array(struct mapElem*)* elems;
 char changingAlgo;
-unsigned long int nbMisses;
-unsigned long int nbTotal;
-unsigned long int nbDelete;
+unsigned long long int nbMisses;
+unsigned long long int nbTotal;
+unsigned long long int nbDelete;
 void (*set)(struct mapWrapper*,char*,void *);
 void * (*get)(struct mapWrapper*,char*);
 void (*delete)(struct mapWrapper*,char*);
@@ -2129,13 +2129,13 @@ else if ((this->nbDelete>=this->length*2)||(this->length<500)) {
 mapWrapperSetAlgo(this,2);
 }
 };
-void mapWrapper__grow(struct mapWrapper* this,long int nb){
+void mapWrapper__grow(struct mapWrapper* this,long long int nb){
 
 #line 196 "/opt/bah/map.bah"
-unsigned long int l = len(this->elems);
+unsigned long long int l = len(this->elems);
 
 #line 197 "/opt/bah/map.bah"
-unsigned long int i = l;
+unsigned long long int i = l;
 
 #line 197 "/opt/bah/map.bah"
 for (; (i<l+nb); ++i) {
@@ -2163,13 +2163,13 @@ continue;
 }
 
 #line 207 "/opt/bah/map.bah"
-long int ind = __Bah_map_hash(e->key,len(this->elems));
+long long int ind = __Bah_map_hash(e->key,len(this->elems));
 
 #line 208 "/opt/bah/map.bah"
 if ((ind!=i)) {
 
 #line 209 "/opt/bah/map.bah"
-register long int j = ind;
+register long long int j = ind;
 
 #line 209 "/opt/bah/map.bah"
 for (; (j<len(this->elems)); ++j) {
@@ -2217,16 +2217,16 @@ ____BAH_COMPILER_VAR_24_aoptabahamapbbah->val = e;
 struct mapElem* elem = ____BAH_COMPILER_VAR_24_aoptabahamapbbah;
 
 #line 232 "/opt/bah/map.bah"
-long int ind = __Bah_map_hash(k,len(this->elems));
+long long int ind = __Bah_map_hash(k,len(this->elems));
 
 #line 233 "/opt/bah/map.bah"
-register long int i = 0;
+register long long int i = 0;
 
 #line 233 "/opt/bah/map.bah"
 for (; (i<len(this->elems)); ++i) {
 
 #line 234 "/opt/bah/map.bah"
-long int j = (i+ind)%len(this->elems);
+long long int j = (i+ind)%len(this->elems);
 
 #line 235 "/opt/bah/map.bah"
 struct mapElem* ce = this->elems->data[j];
@@ -2275,16 +2275,16 @@ mapWrapper__algoChecks(this);
 void mapWrapper__delete2(struct mapWrapper* this,char* k){
 
 #line 254 "/opt/bah/map.bah"
-long int ind = __Bah_map_hash(k,len(this->elems));
+long long int ind = __Bah_map_hash(k,len(this->elems));
 
 #line 255 "/opt/bah/map.bah"
-register long int i = 0;
+register long long int i = 0;
 
 #line 255 "/opt/bah/map.bah"
 for (; (i<len(this->elems)); ++i) {
 
 #line 256 "/opt/bah/map.bah"
-long int j = (i+ind)%len(this->elems);
+long long int j = (i+ind)%len(this->elems);
 
 #line 257 "/opt/bah/map.bah"
 struct mapElem* e = this->elems->data[j];
@@ -2318,16 +2318,16 @@ mapWrapper__algoChecks(this);
 void * mapWrapper__get2(struct mapWrapper* this,char* k){
 
 #line 272 "/opt/bah/map.bah"
-long int ind = __Bah_map_hash(k,len(this->elems));
+long long int ind = __Bah_map_hash(k,len(this->elems));
 
 #line 273 "/opt/bah/map.bah"
-register long int i = 0;
+register long long int i = 0;
 
 #line 273 "/opt/bah/map.bah"
 for (; (i<len(this->elems)); ++i) {
 
 #line 274 "/opt/bah/map.bah"
-long int j = (i+ind)%len(this->elems);
+long long int j = (i+ind)%len(this->elems);
 
 #line 275 "/opt/bah/map.bah"
 struct mapElem* e = this->elems->data[j];
@@ -2516,7 +2516,7 @@ mapWrapper__algoChecks(this);
 }
 }
 };
-void mapWrapper__setAny(struct mapWrapper* this,char* k,void * e,long int s){
+void mapWrapper__setAny(struct mapWrapper* this,char* k,void * e,long long int s){
 
 #line 373 "/opt/bah/map.bah"
 void * p = memoryAlloc(s);
@@ -2563,7 +2563,7 @@ this->algo = 1;
 this->length = 0;
 
 #line 392 "/opt/bah/map.bah"
-register long int i = 0;
+register long long int i = 0;
 
 #line 392 "/opt/bah/map.bah"
 for (; (i<len(this->elems)); ++i) {
@@ -2767,7 +2767,7 @@ return this->buff;
 char* __Bah_iostream_stdinputBuffer;
 
 #line 12 "/opt/bah/iostream.bah"
-long int __Bah_iostream_stdinputBufferLength;
+long long int __Bah_iostream_stdinputBufferLength;
 
 #line 15 "/opt/bah/iostream.bah"
 char* stdinput(){
@@ -2776,7 +2776,7 @@ char* stdinput(){
 char* response = "\0\0\0\0""";
 
 #line 17 "/opt/bah/iostream.bah"
-register long int nDataLength = 0;
+register long long int nDataLength = 0;
 
 #line 18 "/opt/bah/iostream.bah"
 if ((__Bah_iostream_stdinputBufferLength>0)) {
@@ -2829,7 +2829,7 @@ char** ____BAH_COMPILER_VAR_33_aoptabahaiostreambbah = alloca(2 * sizeof(char*))
 if ((nDataLength<1024)) {
 
 #line 34 "/opt/bah/iostream.bah"
-long int trimAmm = 1024-nDataLength;
+long long int trimAmm = 1024-nDataLength;
 
 #line 35 "/opt/bah/iostream.bah"
 strTrimRight(&response,trimAmm);
@@ -2856,7 +2856,7 @@ strTrimRight(&response,1);
 }
 
 #line 47 "/opt/bah/iostream.bah"
-register long int i = 0;
+register long long int i = 0;
 
 #line 47 "/opt/bah/iostream.bah"
 for (; (i<nDataLength); ++i) {
@@ -2897,7 +2897,7 @@ struct fileStream {
 FILE* handle;
 char* name;
 };
-long int fileStream__isValid(struct fileStream* this){
+long long int fileStream__isValid(struct fileStream* this){
 
 #line 82 "/opt/bah/iostream.bah"
 if ((this->handle==null)) {
@@ -2932,7 +2932,7 @@ fclose(this->handle);
 #line 101 "/opt/bah/iostream.bah"
 this->handle = null;
 };
-long int fileStream__getPos(struct fileStream* this){
+long long int fileStream__getPos(struct fileStream* this){
 
 #line 106 "/opt/bah/iostream.bah"
 if ((fileStream__isValid(this)==0)) {
@@ -2944,7 +2944,7 @@ return 0;
 #line 109 "/opt/bah/iostream.bah"
 return ftell(this->handle);
 };
-void fileStream__setPos(struct fileStream* this,long int i){
+void fileStream__setPos(struct fileStream* this,long long int i){
 
 #line 114 "/opt/bah/iostream.bah"
 if ((fileStream__isValid(this)==0)) {
@@ -2956,7 +2956,7 @@ return;
 #line 117 "/opt/bah/iostream.bah"
 fseek(this->handle,i,0);
 };
-long int fileStream__getSize(struct fileStream* this){
+long long int fileStream__getSize(struct fileStream* this){
 
 #line 122 "/opt/bah/iostream.bah"
 if ((fileStream__isValid(this)==0)) {
@@ -2966,13 +2966,13 @@ return -1;
 }
 
 #line 125 "/opt/bah/iostream.bah"
-long int oldPos = fileStream__getPos(this);
+long long int oldPos = fileStream__getPos(this);
 
 #line 126 "/opt/bah/iostream.bah"
 fseek(this->handle,0,2);
 
 #line 127 "/opt/bah/iostream.bah"
-long int size = ftell(this->handle);
+long long int size = ftell(this->handle);
 
 #line 128 "/opt/bah/iostream.bah"
 fileStream__setPos(this,oldPos);
@@ -3006,7 +3006,7 @@ fileStream__open(this,path,"\01\0\0\0""w");
 #line 151 "/opt/bah/iostream.bah"
 fileStream__close(this);
 };
-long int fileStream__writeFile(struct fileStream* this,char* content){
+long long int fileStream__writeFile(struct fileStream* this,char* content){
 
 #line 156 "/opt/bah/iostream.bah"
 if ((fileStream__isValid(this)==0)) {
@@ -3021,12 +3021,12 @@ fwrite(cStr(content),strlen(content),1,this->handle);
 #line 162 "/opt/bah/iostream.bah"
 return 1;
 };
-void fileStream__writePtr(struct fileStream* this,void * a,long int s){
+void fileStream__writePtr(struct fileStream* this,void * a,long long int s){
 
 #line 169 "/opt/bah/iostream.bah"
 fwrite(a,s,1,this->handle);
 };
-long int fileStream__readPtr(struct fileStream* this,void * a,long int s){
+long long int fileStream__readPtr(struct fileStream* this,void * a,long long int s){
 
 #line 176 "/opt/bah/iostream.bah"
 return fread(a,s,1,this->handle);
@@ -3041,7 +3041,7 @@ return "\07\0\0\0""invalid";
 }
 
 #line 185 "/opt/bah/iostream.bah"
-long int sz = fileStream__getSize(this);
+long long int sz = fileStream__getSize(this);
 
 #line 186 "/opt/bah/iostream.bah"
 char* r = memoryAllocSTR(sz+1);
@@ -3091,8 +3091,8 @@ fileStream__close(this);
 
 #line 234 "/opt/bah/iostream.bah"
 struct fileMap {
-long int handle;
-long int size;
+long long int handle;
+long long int size;
 void * p;
 };
 __BAH_ARR_TYPE_char fileMap__open(struct fileMap* this,char* fileName){
@@ -3128,7 +3128,7 @@ arr->elemSize = sizeof(char);
 #line 251 "/opt/bah/iostream.bah"
 return arr;
 };
-long int fileMap__isValid(struct fileMap* this){
+long long int fileMap__isValid(struct fileMap* this){
 
 #line 284 "/opt/bah/iostream.bah"
 if ((this->handle<0)) {
@@ -3177,7 +3177,7 @@ struct dirent* file = readdir(d);
 while ((file!=null)) {
 
 #line 325 "/opt/bah/iostream.bah"
-unsigned long int lf = len(files);
+unsigned long long int lf = len(files);
 
 #line 326 "/opt/bah/iostream.bah"
 char* name = cStrToBah(file->d_name);
@@ -3203,10 +3203,10 @@ return files;
 };
 
 #line 339 "/opt/bah/iostream.bah"
-long int fileExists(char* path){
+long long int fileExists(char* path){
 
 #line 340 "/opt/bah/iostream.bah"
-long int is = access(cStr(path),0);
+long long int is = access(cStr(path),0);
 
 #line 341 "/opt/bah/iostream.bah"
 if ((is==0)) {
@@ -3233,7 +3233,7 @@ return false;
 }
 
 #line 352 "/opt/bah/iostream.bah"
-if (s.st_mode&(long int) S_IFDIR) {
+if (s.st_mode&(long long int) S_IFDIR) {
 
 #line 353 "/opt/bah/iostream.bah"
 return true;
@@ -3258,7 +3258,7 @@ return false;
 };
 
 #line 369 "/opt/bah/iostream.bah"
-long int getLastModified(char* name){
+long long int getLastModified(char* name){
 
 #line 370 "/opt/bah/iostream.bah"
 struct stat attr;
@@ -3274,7 +3274,7 @@ return attr.st_ctime;
 #include <stdlib.h>
 
 #line 16 "/opt/bah/string.bah"
-void strCatOffset(char* dest,long int destLen,char* src,long int srcLen){
+void strCatOffset(char* dest,long long int destLen,char* src,long long int srcLen){
 
 #line 17 "/opt/bah/string.bah"
 memcpy( dest + destLen + cpstringLenSize,cStr(src),srcLen);
@@ -3345,16 +3345,16 @@ return (c==(char)32)||(c==(char)9)||(c==(char)10)||(c==(char)11)||(c==(char)13);
 char* strReplace(char* s,char* what,char* by){
 
 #line 62 "/opt/bah/string.bah"
-unsigned long int l = strlen(s);
+unsigned long long int l = strlen(s);
 
 #line 63 "/opt/bah/string.bah"
-unsigned long int wl = strlen(what);
+unsigned long long int wl = strlen(what);
 
 #line 64 "/opt/bah/string.bah"
-unsigned long int bl = strlen(by);
+unsigned long long int bl = strlen(by);
 
 #line 65 "/opt/bah/string.bah"
-long int ind = 0;
+long long int ind = 0;
 
 #line 66 "/opt/bah/string.bah"
 struct strBuilder ____BAH_COMPILER_VAR_40_aoptabahastringbbah = {};
@@ -3362,7 +3362,7 @@ strBuilder___init(&____BAH_COMPILER_VAR_40_aoptabahastringbbah);
 struct strBuilder r = ____BAH_COMPILER_VAR_40_aoptabahastringbbah;
 
 #line 67 "/opt/bah/string.bah"
-register long int i = 0;
+register long long int i = 0;
 
 #line 67 "/opt/bah/string.bah"
 for (; (i<l); ++i) {
@@ -3383,7 +3383,7 @@ if ((ind==wl)) {
 ind = 0;
 
 #line 73 "/opt/bah/string.bah"
-register long int j = 0;
+register long long int j = 0;
 
 #line 73 "/opt/bah/string.bah"
 for (; (j<bl); ++j) {
@@ -3398,7 +3398,7 @@ strBuilder__append(&r,by[j+4]);
 else {
 
 #line 78 "/opt/bah/string.bah"
-register long int j = 0;
+register long long int j = 0;
 
 #line 78 "/opt/bah/string.bah"
 for (; (j<ind); ++j) {
@@ -3416,7 +3416,7 @@ strBuilder__append(&r,c);
 };
 
 #line 85 "/opt/bah/string.bah"
-register long int j = 0;
+register long long int j = 0;
 
 #line 85 "/opt/bah/string.bah"
 for (; (j<ind); ++j) {
@@ -3433,7 +3433,7 @@ return strBuilder__str(&r);
 struct string {
 char* content;
 char editable;
-long int length;
+long long int length;
 };
 void string__set(struct string* this,char* s){
 
@@ -3470,7 +3470,7 @@ string__makeEditable(this);
 }
 
 #line 122 "/opt/bah/string.bah"
-unsigned long int sl = strlen(s);
+unsigned long long int sl = strlen(s);
 
 #line 123 "/opt/bah/string.bah"
 char* nc = memoryAllocSTR(sl+this->length+1);
@@ -3493,10 +3493,10 @@ void string__prepend(struct string* this,char* s){
 this->editable = true;
 
 #line 133 "/opt/bah/string.bah"
-unsigned long int sl = strlen(s);
+unsigned long long int sl = strlen(s);
 
 #line 134 "/opt/bah/string.bah"
-long int nl = this->length+sl;
+long long int nl = this->length+sl;
 
 #line 135 "/opt/bah/string.bah"
 char* tmpS = this->content;
@@ -3523,15 +3523,15 @@ strCatOffset(this->content,sl,tmpS,this->length);
 #line 143 "/opt/bah/string.bah"
 this->length = nl;
 };
-char string__charAt(struct string* this,long int i){
+char string__charAt(struct string* this,long long int i){
 
 #line 148 "/opt/bah/string.bah"
 return this->content[i+4];
 };
-long int string__compare(struct string* this,char* s){
+long long int string__compare(struct string* this,char* s){
 
 #line 153 "/opt/bah/string.bah"
-return ((long int) strcmp ( this -> content , s )==0);
+return ((long long int) strcmp ( this -> content , s )==0);
 };
 char* string__str(struct string* this){
 
@@ -3543,13 +3543,13 @@ void string__replace(struct string* this,char* nd,char* rl){
 #line 163 "/opt/bah/string.bah"
 string__set(this,strReplace(this->content,nd,rl));
 };
-long int string__countChar(struct string* this,char need){
+long long int string__countChar(struct string* this,char need){
 
 #line 168 "/opt/bah/string.bah"
-long int c = 0;
+long long int c = 0;
 
 #line 169 "/opt/bah/string.bah"
-register long int i = 0;
+register long long int i = 0;
 
 #line 169 "/opt/bah/string.bah"
 for (; (i<this->length); ++i) {
@@ -3565,7 +3565,7 @@ if ((string__charAt(this,i)==need)) {
 #line 174 "/opt/bah/string.bah"
 return c;
 };
-long int string__count(struct string* this,char* need){
+long long int string__count(struct string* this,char* need){
 
 #line 179 "/opt/bah/string.bah"
 if ((strlen(need)==1)) {
@@ -3575,10 +3575,10 @@ return string__countChar(this,need[0+4]);
 }
 
 #line 182 "/opt/bah/string.bah"
-register long int i = 0;
+register long long int i = 0;
 
 #line 183 "/opt/bah/string.bah"
-long int count = 0;
+long long int count = 0;
 
 #line 184 "/opt/bah/string.bah"
 struct string ____BAH_COMPILER_VAR_41_aoptabahastringbbah = {};
@@ -3588,7 +3588,7 @@ struct string needle = ____BAH_COMPILER_VAR_41_aoptabahastringbbah;
 string__set(&needle,need);
 
 #line 186 "/opt/bah/string.bah"
-long int countIndex = 0;
+long long int countIndex = 0;
 
 #line 187 "/opt/bah/string.bah"
 while ((i<this->length)) {
@@ -3630,13 +3630,13 @@ i = i+1;
 #line 201 "/opt/bah/string.bah"
 return count;
 };
-long int string__hasPrefix(struct string* this,char* need){
+long long int string__hasPrefix(struct string* this,char* need){
 
 #line 206 "/opt/bah/string.bah"
-register long int i = 0;
+register long long int i = 0;
 
 #line 207 "/opt/bah/string.bah"
-unsigned long int nl = strlen(need);
+unsigned long long int nl = strlen(need);
 
 #line 208 "/opt/bah/string.bah"
 if ((this->length<nl)) {
@@ -3668,10 +3668,10 @@ i = i+1;
 #line 219 "/opt/bah/string.bah"
 return 1;
 };
-long int string__hasSuffix(struct string* this,char* need){
+long long int string__hasSuffix(struct string* this,char* need){
 
 #line 224 "/opt/bah/string.bah"
-unsigned long int nl = strlen(need);
+unsigned long long int nl = strlen(need);
 
 #line 225 "/opt/bah/string.bah"
 if ((this->length<nl)) {
@@ -3681,10 +3681,10 @@ return 0;
 }
 
 #line 228 "/opt/bah/string.bah"
-register long int i = this->length-nl;
+register long long int i = this->length-nl;
 
 #line 229 "/opt/bah/string.bah"
-long int needleIndex = 0;
+long long int needleIndex = 0;
 
 #line 230 "/opt/bah/string.bah"
 while ((i<this->length)) {
@@ -3732,7 +3732,7 @@ return;
 }
 
 #line 253 "/opt/bah/string.bah"
-register long int i = 0;
+register long long int i = 0;
 
 #line 253 "/opt/bah/string.bah"
 for (; (i<this->length); ++i) {
@@ -3764,7 +3764,7 @@ this->content = tmpS;
 this->editable = true;
 }
 };
-void string__trimLeft(struct string* this,long int s){
+void string__trimLeft(struct string* this,long long int s){
 
 #line 269 "/opt/bah/string.bah"
 if ((s>this->length)) {
@@ -3782,7 +3782,7 @@ this->editable = true;
 #line 274 "/opt/bah/string.bah"
 this->length = this->length-s;
 };
-void string__trimRight(struct string* this,long int s){
+void string__trimRight(struct string* this,long long int s){
 
 #line 279 "/opt/bah/string.bah"
 if ((s>this->length)) {
@@ -3879,7 +3879,7 @@ return a;
 };
 
 #line 328 "/opt/bah/string.bah"
-char* intToStr(long int i){
+char* intToStr(long long int i){
 
 #line 329 "/opt/bah/string.bah"
 if ((i==0)) {
@@ -3892,7 +3892,7 @@ return "\01\0\0\0""0";
 char ____BAH_COMPILER_VAR_44_aoptabahastringbbah[66];char* s = ____BAH_COMPILER_VAR_44_aoptabahastringbbah;
 
 #line 334 "/opt/bah/string.bah"
-long int ind = -1;
+long long int ind = -1;
 
 #line 336 "/opt/bah/string.bah"
 char subZero = (i<0);
@@ -3908,7 +3908,7 @@ i = 0-i;
 for (; (i!=0); i = i/10) {
 
 #line 343 "/opt/bah/string.bah"
-long int conv = i%10;
+long long int conv = i%10;
 
 #line 344 "/opt/bah/string.bah"
 conv = conv+48;
@@ -3931,7 +3931,7 @@ s[ind+1] = 45;
 }
 
 #line 353 "/opt/bah/string.bah"
-long int ls = ind+1;
+long long int ls = ind+1;
 
 #line 354 "/opt/bah/string.bah"
 i = 0;
@@ -3940,7 +3940,7 @@ i = 0;
 for (; (i<ls/2); ++i) {
 
 #line 355 "/opt/bah/string.bah"
-long int ii = ls-i-1;
+long long int ii = ls-i-1;
 
 #line 356 "/opt/bah/string.bah"
 char osi = s[i];
@@ -3960,7 +3960,7 @@ return buffToStr((char*)s);
 };
 
 #line 368 "/opt/bah/string.bah"
-struct string intToString(long int i){
+struct string intToString(long long int i){
 
 #line 369 "/opt/bah/string.bah"
 struct string r = string(intToStr(i));
@@ -3983,19 +3983,19 @@ return buffToStr((char*)buff);
 };
 
 #line 381 "/opt/bah/string.bah"
-long int strToInt(char* s){
+long long int strToInt(char* s){
 
 #line 382 "/opt/bah/string.bah"
-register long int l = strlen(s)-1;
+register long long int l = strlen(s)-1;
 
 #line 383 "/opt/bah/string.bah"
-long int offset = 1;
+long long int offset = 1;
 
 #line 384 "/opt/bah/string.bah"
-long int r = 0;
+long long int r = 0;
 
 #line 385 "/opt/bah/string.bah"
-long int end = 0;
+long long int end = 0;
 
 #line 386 "/opt/bah/string.bah"
 if ((s[0+4]==45)) {
@@ -4015,7 +4015,7 @@ continue;
 }
 
 #line 393 "/opt/bah/string.bah"
-r = r+(((long int)s[l+4]-48)*offset);
+r = r+(((long long int)s[l+4]-48)*offset);
 
 #line 394 "/opt/bah/string.bah"
 offset = offset*10;
@@ -4040,10 +4040,10 @@ return strtod(cStr(s),null);
 };
 
 #line 410 "/opt/bah/string.bah"
-long int stringToInt(struct string s){
+long long int stringToInt(struct string s){
 
 #line 411 "/opt/bah/string.bah"
-long int i = atol(cStr(s.content));
+long long int i = atol(cStr(s.content));
 
 #line 412 "/opt/bah/string.bah"
 return i;
@@ -4054,10 +4054,10 @@ typedef array(struct string)* __BAH_ARR_TYPE_string;
 __BAH_ARR_TYPE_string splitString(struct string s,char* sep){
 
 #line 417 "/opt/bah/string.bah"
-long int sepInd = 0;
+long long int sepInd = 0;
 
 #line 418 "/opt/bah/string.bah"
-long int start = 0;
+long long int start = 0;
 
 #line 419 "/opt/bah/string.bah"
 array(struct string)* r = memoryAlloc(sizeof(array(struct string)));
@@ -4066,7 +4066,7 @@ r->length = 0;
 r->elemSize = sizeof(struct string);
 
 #line 421 "/opt/bah/string.bah"
-register long int i = 0;
+register long long int i = 0;
 
 #line 421 "/opt/bah/string.bah"
 for (; (i<s.length); ++i) {
@@ -4087,7 +4087,7 @@ if ((sepInd==strlen(sep))) {
 sepInd = 0;
 
 #line 427 "/opt/bah/string.bah"
-long int end = i-strlen(sep)+1;
+long long int end = i-strlen(sep)+1;
 
 #line 428 "/opt/bah/string.bah"
 if ((start!=end)) {
@@ -4112,7 +4112,7 @@ sepInd = 0;
 };
 
 #line 438 "/opt/bah/string.bah"
-long int end = i-strlen(sep)+1;
+long long int end = i-strlen(sep)+1;
 
 #line 439 "/opt/bah/string.bah"
 if ((start<end)) {
@@ -4131,13 +4131,13 @@ return r;
 struct string joinString(__BAH_ARR_TYPE_string a,char* sep){
 
 #line 448 "/opt/bah/string.bah"
-register long int i = 0;
+register long long int i = 0;
 
 #line 449 "/opt/bah/string.bah"
 struct string s = string("\0\0\0\0""");
 
 #line 450 "/opt/bah/string.bah"
-unsigned long int max = len(a)-1;
+unsigned long long int max = len(a)-1;
 
 #line 451 "/opt/bah/string.bah"
 while ((i<len(a))) {
@@ -4190,13 +4190,13 @@ return "\0\0\0\0""";
 }
 
 #line 473 "/opt/bah/string.bah"
-long int sepIndex = 0;
+long long int sepIndex = 0;
 
 #line 474 "/opt/bah/string.bah"
-long int foundIndex = 0;
+long long int foundIndex = 0;
 
 #line 475 "/opt/bah/string.bah"
-register long int i = 0;
+register long long int i = 0;
 
 #line 475 "/opt/bah/string.bah"
 while ((i<s.length)) {
@@ -4224,7 +4224,7 @@ sepIndex = sepIndex+1;
 if ((sepIndex==sep.length)) {
 
 #line 484 "/opt/bah/string.bah"
-long int max = s.length-foundIndex-1;
+long long int max = s.length-foundIndex-1;
 
 #line 485 "/opt/bah/string.bah"
 string__trimRight(&s,max);
@@ -4262,7 +4262,7 @@ ns->length = 0;
 ns->elemSize = sizeof(char);
 
 #line 503 "/opt/bah/string.bah"
-register long int i = 0;
+register long long int i = 0;
 
 #line 503 "/opt/bah/string.bah"
 while ((i<s.length)) {
@@ -4294,13 +4294,13 @@ return string(arrToStr(ns));
 char strHasPrefix(char* s,char* need){
 
 #line 517 "/opt/bah/string.bah"
-register long int i = 0;
+register long long int i = 0;
 
 #line 518 "/opt/bah/string.bah"
-unsigned long int nl = strlen(need);
+unsigned long long int nl = strlen(need);
 
 #line 519 "/opt/bah/string.bah"
-unsigned long int sl = strlen(s);
+unsigned long long int sl = strlen(s);
 
 #line 520 "/opt/bah/string.bah"
 if ((sl<nl)) {
@@ -4331,10 +4331,10 @@ return true;
 char strHasSuffix(char* s,char* need){
 
 #line 535 "/opt/bah/string.bah"
-unsigned long int sl = strlen(s);
+unsigned long long int sl = strlen(s);
 
 #line 536 "/opt/bah/string.bah"
-unsigned long int nl = strlen(need);
+unsigned long long int nl = strlen(need);
 
 #line 537 "/opt/bah/string.bah"
 if ((nl>sl)) {
@@ -4344,7 +4344,7 @@ return false;
 }
 
 #line 540 "/opt/bah/string.bah"
-unsigned long int i = sl-nl;
+unsigned long long int i = sl-nl;
 
 #line 540 "/opt/bah/string.bah"
 while ((i<sl)) {
@@ -4368,10 +4368,10 @@ return true;
 void strTrim(char** s){
 
 #line 552 "/opt/bah/string.bah"
-unsigned long int l = strlen(*s);
+unsigned long long int l = strlen(*s);
 
 #line 553 "/opt/bah/string.bah"
-register long int i = 0;
+register long long int i = 0;
 
 #line 553 "/opt/bah/string.bah"
 while ((i<l)) {
@@ -4395,22 +4395,22 @@ i = i+1;
 };
 
 #line 565 "/opt/bah/string.bah"
-long int strCount(char* src,char* needle){
+long long int strCount(char* src,char* needle){
 
 #line 566 "/opt/bah/string.bah"
-register long int i = 0;
+register long long int i = 0;
 
 #line 567 "/opt/bah/string.bah"
-long int count = 0;
+long long int count = 0;
 
 #line 568 "/opt/bah/string.bah"
-long int countIndex = 0;
+long long int countIndex = 0;
 
 #line 569 "/opt/bah/string.bah"
-unsigned long int sl = strlen(src);
+unsigned long long int sl = strlen(src);
 
 #line 570 "/opt/bah/string.bah"
-unsigned long int nl = strlen(needle);
+unsigned long long int nl = strlen(needle);
 
 #line 571 "/opt/bah/string.bah"
 while ((i<sl)) {
@@ -4470,10 +4470,10 @@ struct flag {
 char* name;
 char* help;
 char* content;
-long int cont_int;
+long long int cont_int;
 double cont_float;
-long int isSet;
-long int type;
+long long int isSet;
+long long int type;
 };
 
 #line 22 "/opt/bah/flags.bah"
@@ -4497,7 +4497,7 @@ f->help = help;
 f->type = FLAG_TYPE_CPSTRING;
 
 #line 32 "/opt/bah/flags.bah"
-unsigned long int lf = len(this->flags);
+unsigned long long int lf = len(this->flags);
 
 #line 33 "/opt/bah/flags.bah"
 
@@ -4520,7 +4520,7 @@ f->help = help;
 f->type = FLAG_TYPE_BOOL;
 
 #line 43 "/opt/bah/flags.bah"
-unsigned long int lf = len(this->flags);
+unsigned long long int lf = len(this->flags);
 
 #line 44 "/opt/bah/flags.bah"
 
@@ -4543,7 +4543,7 @@ f->help = help;
 f->type = FLAG_TYPE_INT;
 
 #line 53 "/opt/bah/flags.bah"
-unsigned long int lf = len(this->flags);
+unsigned long long int lf = len(this->flags);
 
 #line 54 "/opt/bah/flags.bah"
 
@@ -4566,7 +4566,7 @@ f->help = help;
 f->type = FLAG_TYPE_FLOAT;
 
 #line 63 "/opt/bah/flags.bah"
-unsigned long int lf = len(this->flags);
+unsigned long long int lf = len(this->flags);
 
 #line 64 "/opt/bah/flags.bah"
 
@@ -4585,7 +4585,7 @@ print(this->args->data[0]);
 println("\01\0\0\0"":");
 
 #line 73 "/opt/bah/flags.bah"
-register long int i = 0;
+register long long int i = 0;
 
 #line 73 "/opt/bah/flags.bah"
 while ((i<len(this->flags))) {
@@ -4643,7 +4643,7 @@ exit(1);
 struct flag* flags__getFlag(struct flags* this,struct string name){
 
 #line 96 "/opt/bah/flags.bah"
-register long int i = 0;
+register long long int i = 0;
 
 #line 96 "/opt/bah/flags.bah"
 while ((i<len(this->flags))) {
@@ -4680,7 +4680,7 @@ struct flag* flag = flags__getFlag(this,string(name));
 #line 113 "/opt/bah/flags.bah"
 return flag->content;
 };
-long int flags__getInt(struct flags* this,char* name){
+long long int flags__getInt(struct flags* this,char* name){
 
 #line 119 "/opt/bah/flags.bah"
 struct flag* flag = flags__getFlag(this,string(name));
@@ -4710,7 +4710,7 @@ char** ____BAH_COMPILER_VAR_56_aoptabahaflagsbbah = alloca(3 * sizeof(char*));__
 #line 133 "/opt/bah/flags.bah"
 return flag->cont_float;
 };
-long int flags__isSet(struct flags* this,char* name){
+long long int flags__isSet(struct flags* this,char* name){
 
 #line 139 "/opt/bah/flags.bah"
 struct flag* flag = flags__getFlag(this,string(name));
@@ -4730,7 +4730,7 @@ char isVal = false;
 this->args = args;
 
 #line 149 "/opt/bah/flags.bah"
-register long int i = 1;
+register long long int i = 1;
 
 #line 149 "/opt/bah/flags.bah"
 while ((i<len(args))) {
@@ -4836,13 +4836,13 @@ int totalLen;
 struct rope* left;
 struct rope* right;
 };
-void rope__addStr(struct rope* this,char* s,long int* off){
+void rope__addStr(struct rope* this,char* s,long long int* off){
 
 #line 13 "/opt/bah/rope.bah"
 if ((this->left==null)&&(this->right==null)) {
 
 #line 14 "/opt/bah/rope.bah"
-long int o = *off;
+long long int o = *off;
 
 #line 15 "/opt/bah/rope.bah"
 memcpy( s + cpstringLenSize + o,cStr(this->str),strlen(this->str));
@@ -4866,7 +4866,7 @@ unsigned int rope__getLen(struct rope* this){
 if ((this->left==null)&&(this->right==null)) {
 
 #line 26 "/opt/bah/rope.bah"
-unsigned long int l = strlen(this->str);
+unsigned long long int l = strlen(this->str);
 
 #line 27 "/opt/bah/rope.bah"
 return l;
@@ -4884,7 +4884,7 @@ unsigned int tl = rope__getLen(this);
 char* s = memoryAllocSTR(tl+1);
 
 #line 36 "/opt/bah/rope.bah"
-long int off = 0;
+long long int off = 0;
 
 #line 37 "/opt/bah/rope.bah"
 rope__addStr(this,s,&off);
@@ -4923,7 +4923,7 @@ this->str = "\0\0\0\0""";
 };
 
 #line 63 "/opt/bah/rope.bah"
-long int ropeSet(struct rope* r,char* a){
+long long int ropeSet(struct rope* r,char* a){
 
 #line 64 "/opt/bah/rope.bah"
 r->str = a;
@@ -4954,7 +4954,7 @@ return r;
 struct command {
 char* command;
 char error;
-long int status;
+long long int status;
 char* input;
 FILE* handle;
 };
@@ -5004,7 +5004,7 @@ char* response = memoryAllocSTR(1);
 void * res = (void *)response;
 
 #line 42 "/opt/bah/exec.bah"
-long int i = 0;
+long long int i = 0;
 
 #line 42 "/opt/bah/exec.bah"
 for (; (res!=null); ++i) {
@@ -5026,13 +5026,13 @@ break;
 response = memoryRealloc(response,(i+1)*1023);
 
 #line 49 "/opt/bah/exec.bah"
-long int* ln = response;
+long long int* ln = response;
 
 #line 50 "/opt/bah/exec.bah"
 *ln = (i+1)*1023;
 
 #line 51 "/opt/bah/exec.bah"
-memcpy((void *)((long int)response+cpstringLenSize+i*1023),cStr(buff),1024);
+memcpy((void *)((long long int)response+cpstringLenSize+i*1023),cStr(buff),1024);
 };
 
 #line 55 "/opt/bah/exec.bah"
@@ -5077,7 +5077,7 @@ return arr;
 }
 
 #line 74 "/opt/bah/exec.bah"
-long int total = 0;
+long long int total = 0;
 
 #line 76 "/opt/bah/exec.bah"
 char ____BAH_COMPILER_VAR_69_aoptabahaexecbbah[1024];char* buff = ____BAH_COMPILER_VAR_69_aoptabahaexecbbah;
@@ -5089,7 +5089,7 @@ void * res = fgets((void *)buff,1023,this->handle);
 while ((res!=null)&&(res!=(void *)-1)) {
 
 #line 80 "/opt/bah/exec.bah"
-long int i = 0;
+long long int i = 0;
 
 #line 80 "/opt/bah/exec.bah"
 for (; (buff[i]!=null); ++i) {
@@ -5127,10 +5127,10 @@ return cmd;
 };
 
 #line 105 "/opt/bah/exec.bah"
-long int exec(char* s,__BAH_ARR_TYPE_cpstring args){
+long long int exec(char* s,__BAH_ARR_TYPE_cpstring args){
 
 #line 106 "/opt/bah/exec.bah"
-long int r;
+long long int r;
 
 #line 107 "/opt/bah/exec.bah"
 array(char*)* nArgs = memoryAlloc(sizeof(array(char*)));
@@ -5144,7 +5144,7 @@ nArgs->elemSize = sizeof(char*);
     nArgs->data[0] = s;
 
 #line 109 "/opt/bah/exec.bah"
-register long int i = 0;
+register long long int i = 0;
 
 #line 109 "/opt/bah/exec.bah"
 while ((i<len(args))) {
@@ -5182,7 +5182,7 @@ return r;
 
 #line 18 "/opt/bah/time.bah"
 struct time {
-long int timestamp;
+long long int timestamp;
 };
 void time__now(struct time* this){
 
@@ -5192,7 +5192,7 @@ this->timestamp = time(0);
 char* time__format(struct time* this,char* a){
 
 #line 30 "/opt/bah/time.bah"
-long int lt = localtime(&this->timestamp);
+long long int lt = localtime(&this->timestamp);
 
 #line 32 "/opt/bah/time.bah"
 char ____BAH_COMPILER_VAR_74_aoptabahatimebbah[1024];char* buff = ____BAH_COMPILER_VAR_74_aoptabahatimebbah;
@@ -5203,13 +5203,13 @@ strftime((void *)buff,1024,cStr(a),lt);
 #line 34 "/opt/bah/time.bah"
 return buffToStr((char*)buff);
 };
-long int time__since(struct time* this){
+long long int time__since(struct time* this){
 
 #line 39 "/opt/bah/time.bah"
-long int nt = time(0);
+long long int nt = time(0);
 
 #line 40 "/opt/bah/time.bah"
-long int r = nt-this->timestamp;
+long long int r = nt-this->timestamp;
 
 #line 41 "/opt/bah/time.bah"
 return r;
@@ -5218,7 +5218,7 @@ return r;
 #line 45 "/opt/bah/time.bah"
 
 #line 71 "/opt/bah/time.bah"
-long int getTimeUnix(){
+long long int getTimeUnix(){
 
 #line 72 "/opt/bah/time.bah"
 struct timespec ____BAH_COMPILER_VAR_75_aoptabahatimebbah = {};
@@ -5228,7 +5228,7 @@ struct timespec ts = ____BAH_COMPILER_VAR_75_aoptabahatimebbah;
 timespec_get(&ts, TIME_UTC);
 
 #line 89 "/opt/bah/time.bah"
-long int s = ts.tv_sec*1000000000+ts.tv_nsec;
+long long int s = ts.tv_sec*1000000000+ts.tv_nsec;
 
 #line 90 "/opt/bah/time.bah"
 return s;
@@ -5239,14 +5239,14 @@ return s;
 
 #line 12 "/opt/bah/reflect.bah"
 struct reflectElement {
-long int size;
+long long int size;
 char* type;
 char* name;
 char isArray;
 struct reflectElement* arrayElem;
 char isStruct;
 array(struct reflectElement)* structLayout;
-long int offset;
+long long int offset;
 void * value;
 };
 void * reflectElement__calculateOffset(struct reflectElement* this,void * origin){
@@ -5260,7 +5260,7 @@ return  base + this -> offset;
 
 #line 40 "/opt/bah/reflect.bah"
 typedef array(struct reflectElement)* __BAH_ARR_TYPE_reflectElement;
-struct reflectElement __reflect(void * v,long int s,char* t,char* n,char isArr,struct reflectElement* ae,char isStruct,__BAH_ARR_TYPE_reflectElement sl,long int offset){
+struct reflectElement __reflect(void * v,long long int s,char* t,char* n,char isArr,struct reflectElement* ae,char isStruct,__BAH_ARR_TYPE_reflectElement sl,long long int offset){
 
 #line 41 "/opt/bah/reflect.bah"
 struct reflectElement ____BAH_COMPILER_VAR_76_aoptabahareflectbbah = {};
@@ -5324,7 +5324,7 @@ struct string p1 = parts->data[0];
 struct string p2 = parts->data[1];
 
 #line 69 "/opt/bah/reflect.bah"
-register long int j = 0;
+register long long int j = 0;
 
 #line 69 "/opt/bah/reflect.bah"
 for (; (j<len(syms)); ++j) {
@@ -5336,7 +5336,7 @@ struct reflectElement s = syms->data[j];
 if ((strcmp(s.name, string__str(&p1)) == 0)) {
 
 #line 72 "/opt/bah/reflect.bah"
-register long int k = 0;
+register long long int k = 0;
 
 #line 72 "/opt/bah/reflect.bah"
 for (; (k<len(s.structLayout)); ++k) {
@@ -5365,7 +5365,7 @@ break;
 else {
 
 #line 83 "/opt/bah/reflect.bah"
-register long int j = 0;
+register long long int j = 0;
 
 #line 83 "/opt/bah/reflect.bah"
 for (; (j<len(syms)); ++j) {
@@ -5421,21 +5421,21 @@ void json_scan_inner(void * this,struct reflectElement e,char isMember);
 
 #line 19 "/opt/bah/json.bah"
 struct jsonElement {
-long int type;
+long long int type;
 char* key;
 char* content;
 array(struct jsonElement*)* children;
 char contentFinal;
-long int from;
-long int to;
+long long int from;
+long long int to;
 };
 struct jsonElement* jsonElement__get(struct jsonElement* this,char* key){
 
 #line 31 "/opt/bah/json.bah"
-unsigned long int l = len(this->children);
+unsigned long long int l = len(this->children);
 
 #line 32 "/opt/bah/json.bah"
-register long int i = 0;
+register long long int i = 0;
 
 #line 32 "/opt/bah/json.bah"
 while ((i<l)) {
@@ -5456,10 +5456,10 @@ nk->length = 0;
 nk->elemSize = sizeof(char);
 
 #line 37 "/opt/bah/json.bah"
-unsigned long int lk = strlen(elem->key);
+unsigned long long int lk = strlen(elem->key);
 
 #line 38 "/opt/bah/json.bah"
-register long int j = 1;
+register long long int j = 1;
 
 #line 38 "/opt/bah/json.bah"
 while ((j<lk-1)) {
@@ -5533,7 +5533,7 @@ struct jsonElement* this = thisp;
 if ((e.isStruct==true)) {
 
 #line 76 "/opt/bah/json.bah"
-register long int i = 0;
+register long long int i = 0;
 
 #line 76 "/opt/bah/json.bah"
 while ((i<len(e.structLayout))) {
@@ -5563,7 +5563,7 @@ i = i+1;
 else if ((strcmp(e.type, "\03\0\0\0""int") == 0)) {
 
 #line 86 "/opt/bah/json.bah"
-long int* ep = e.value;
+long long int* ep = e.value;
 
 #line 87 "/opt/bah/json.bah"
 *ep = strToInt(jsonElement__str(this));
@@ -5627,10 +5627,10 @@ struct reflectElement* ae = e.arrayElem;
 if ((strcmp(ae->type, "\03\0\0\0""int") == 0)) {
 
 #line 108 "/opt/bah/json.bah"
-array(long int)* arr = memoryAlloc(sizeof(array(long int)));
+array(long long int)* arr = memoryAlloc(sizeof(array(long long int)));
 
 arr->length = 0;
-arr->elemSize = sizeof(long int);
+arr->elemSize = sizeof(long long int);
 
 #line 109 "/opt/bah/json.bah"
 void ** arrPtr = e.value;
@@ -5650,7 +5650,7 @@ arr = *arrPtr;
 }
 
 #line 115 "/opt/bah/json.bah"
-register long int i = 0;
+register long long int i = 0;
 
 #line 115 "/opt/bah/json.bah"
 while ((i<len(this->children))) {
@@ -5695,7 +5695,7 @@ arr = *arrPtr;
 }
 
 #line 128 "/opt/bah/json.bah"
-register long int i = 0;
+register long long int i = 0;
 
 #line 128 "/opt/bah/json.bah"
 while ((i<len(this->children))) {
@@ -5740,7 +5740,7 @@ arr = *arrPtr;
 }
 
 #line 141 "/opt/bah/json.bah"
-register long int i = 0;
+register long long int i = 0;
 
 #line 141 "/opt/bah/json.bah"
 while ((i<len(this->children))) {
@@ -5785,7 +5785,7 @@ arr = *arrPtr;
 }
 
 #line 154 "/opt/bah/json.bah"
-register long int i = 0;
+register long long int i = 0;
 
 #line 154 "/opt/bah/json.bah"
 while ((i<len(this->children))) {
@@ -5797,7 +5797,7 @@ struct jsonElement* c = this->children->data[i];
 void * ne = memoryAlloc(ae->size);
 
 #line 157 "/opt/bah/json.bah"
-register long int j = 0;
+register long long int j = 0;
 
 #line 157 "/opt/bah/json.bah"
 while ((j<len(ae->structLayout))) {
@@ -5840,7 +5840,7 @@ else if (strHasPrefix(e.type,"\04\0\0\0""map:")) {
 struct mapWrapper** p = e.value;
 
 #line 172 "/opt/bah/json.bah"
-register long int i = 0;
+register long long int i = 0;
 
 #line 172 "/opt/bah/json.bah"
 for (; (i<len(this->children)); ++i) {
@@ -5858,7 +5858,7 @@ void * v = memoryAlloc(ae->size);
 ae->value = &v;
 
 #line 177 "/opt/bah/json.bah"
-register long int j = 0;
+register long long int j = 0;
 
 #line 177 "/opt/bah/json.bah"
 for (; (j<len(ae->structLayout)); ++j) {
@@ -5914,13 +5914,13 @@ m->set(m,string__str(&k),&v);
 char* jError;
 
 #line 200 "/opt/bah/json.bah"
-struct jsonElement* parseJson_inner(char* s,long int* ip,long int l){
+struct jsonElement* parseJson_inner(char* s,long long int* ip,long long int l){
 
 #line 201 "/opt/bah/json.bah"
 jError = "\0\0\0\0""";
 
 #line 202 "/opt/bah/json.bah"
-long int i = *ip;
+long long int i = *ip;
 
 #line 204 "/opt/bah/json.bah"
 for (; (i<l); ++i) {
@@ -6090,7 +6090,7 @@ return null;
 ++i;
 
 #line 277 "/opt/bah/json.bah"
-long int ns = i;
+long long int ns = i;
 
 #line 278 "/opt/bah/json.bah"
 for (; (i<l); ++i) {
@@ -6124,7 +6124,7 @@ break;
 if ((s[i+4]!=58)) {
 
 #line 293 "/opt/bah/json.bah"
-char** ____BAH_COMPILER_VAR_85_aoptabahajsonbbah = alloca(5 * sizeof(char*));____BAH_COMPILER_VAR_85_aoptabahajsonbbah[4] = "\01\0\0\0"")";____BAH_COMPILER_VAR_85_aoptabahajsonbbah[3] = intToStr(i);____BAH_COMPILER_VAR_85_aoptabahajsonbbah[2] = "\010\0\0\0"") (pos: ";____BAH_COMPILER_VAR_85_aoptabahajsonbbah[1] = intToStr((long int)s[i+4]);____BAH_COMPILER_VAR_85_aoptabahajsonbbah[0] = "\055\0\0\0""json: expected : between key and value (got: ";char* ____BAH_COMPILER_VAR_86_aoptabahajsonbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_85_aoptabahajsonbbah, 5);jError = ____BAH_COMPILER_VAR_86_aoptabahajsonbbah;
+char** ____BAH_COMPILER_VAR_85_aoptabahajsonbbah = alloca(5 * sizeof(char*));____BAH_COMPILER_VAR_85_aoptabahajsonbbah[4] = "\01\0\0\0"")";____BAH_COMPILER_VAR_85_aoptabahajsonbbah[3] = intToStr(i);____BAH_COMPILER_VAR_85_aoptabahajsonbbah[2] = "\010\0\0\0"") (pos: ";____BAH_COMPILER_VAR_85_aoptabahajsonbbah[1] = intToStr((long long int)s[i+4]);____BAH_COMPILER_VAR_85_aoptabahajsonbbah[0] = "\055\0\0\0""json: expected : between key and value (got: ";char* ____BAH_COMPILER_VAR_86_aoptabahajsonbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_85_aoptabahajsonbbah, 5);jError = ____BAH_COMPILER_VAR_86_aoptabahajsonbbah;
 
 #line 294 "/opt/bah/json.bah"
 return null;
@@ -6329,7 +6329,7 @@ j->to = i;
 else {
 
 #line 371 "/opt/bah/json.bah"
-long int si = i;
+long long int si = i;
 
 #line 372 "/opt/bah/json.bah"
 for (; (i<l); ++i) {
@@ -6370,10 +6370,10 @@ return j;
 struct jsonElement* parseJson(char* s){
 
 #line 393 "/opt/bah/json.bah"
-unsigned long int l = strlen(s);
+unsigned long long int l = strlen(s);
 
 #line 394 "/opt/bah/json.bah"
-long int i = 0;
+long long int i = 0;
 
 #line 395 "/opt/bah/json.bah"
 return parseJson_inner(s,&i,l);
@@ -6402,10 +6402,10 @@ strBuilder___init(&____BAH_COMPILER_VAR_94_aoptabahajsonbbah);
 struct strBuilder r = ____BAH_COMPILER_VAR_94_aoptabahajsonbbah;
 
 #line 409 "/opt/bah/json.bah"
-unsigned long int l = strlen(s);
+unsigned long long int l = strlen(s);
 
 #line 411 "/opt/bah/json.bah"
-register long int i = 0;
+register long long int i = 0;
 
 #line 411 "/opt/bah/json.bah"
 for (; (i<l); ++i) {
@@ -6475,7 +6475,7 @@ return strBuilder__str(&r);
 };
 
 #line 440 "/opt/bah/json.bah"
-char* oldToJson__inner(struct reflectElement e,char isMember,long int tabs){
+char* oldToJson__inner(struct reflectElement e,char isMember,long long int tabs){
 
 #line 441 "/opt/bah/json.bah"
 void ** v = e.value;
@@ -6515,7 +6515,7 @@ tabs = tabs+1;
 char* tabsStr = "\0\0\0\0""";
 
 #line 456 "/opt/bah/json.bah"
-register long int i = 0;
+register long long int i = 0;
 
 #line 456 "/opt/bah/json.bah"
 while ((i<tabs)) {
@@ -6590,7 +6590,7 @@ return s;
 else if ((strcmp(e.type, "\03\0\0\0""int") == 0)) {
 
 #line 480 "/opt/bah/json.bah"
-long int* ip = e.value;
+long long int* ip = e.value;
 
 #line 481 "/opt/bah/json.bah"
 return intToStr(*ip);
@@ -6670,10 +6670,10 @@ return "\04\0\0\0""null";
 if ((strcmp(ae->type, "\03\0\0\0""int") == 0)) {
 
 #line 507 "/opt/bah/json.bah"
-array(long int)* arr = memoryAlloc(sizeof(array(long int)));
+array(long long int)* arr = memoryAlloc(sizeof(array(long long int)));
 
 arr->length = 0;
-arr->elemSize = sizeof(long int);
+arr->elemSize = sizeof(long long int);
 
 #line 508 "/opt/bah/json.bah"
 void ** arrPtr = e.value;
@@ -6682,7 +6682,7 @@ void ** arrPtr = e.value;
 arr = *arrPtr;
 
 #line 510 "/opt/bah/json.bah"
-register long int i = 0;
+register long long int i = 0;
 
 #line 510 "/opt/bah/json.bah"
 while ((i<len(arr))) {
@@ -6718,7 +6718,7 @@ void ** arrPtr = e.value;
 arr = *arrPtr;
 
 #line 521 "/opt/bah/json.bah"
-register long int i = 0;
+register long long int i = 0;
 
 #line 521 "/opt/bah/json.bah"
 while ((i<len(arr))) {
@@ -6757,7 +6757,7 @@ arr = *arrPtr;
 char** ____BAH_COMPILER_VAR_117_aoptabahajsonbbah = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_117_aoptabahajsonbbah[1] = "\01\0\0\0""\n";____BAH_COMPILER_VAR_117_aoptabahajsonbbah[0] = s;char* ____BAH_COMPILER_VAR_118_aoptabahajsonbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_117_aoptabahajsonbbah, 2);s = ____BAH_COMPILER_VAR_118_aoptabahajsonbbah;
 
 #line 533 "/opt/bah/json.bah"
-register long int i = 0;
+register long long int i = 0;
 
 #line 533 "/opt/bah/json.bah"
 while ((i<len(arr))) {
@@ -6811,7 +6811,7 @@ arr = *ev;
 }
 
 #line 551 "/opt/bah/json.bah"
-register long int i = 0;
+register long long int i = 0;
 
 #line 551 "/opt/bah/json.bah"
 while ((i<len(arr))) {
@@ -6823,7 +6823,7 @@ void * arrElem = arr->data[i];
 ae->value = arrElem;
 
 #line 554 "/opt/bah/json.bah"
-register long int j = 0;
+register long long int j = 0;
 
 #line 554 "/opt/bah/json.bah"
 while ((j<len(ae->structLayout))) {
@@ -6887,7 +6887,7 @@ return oldToJson__inner(e,false,0);
 char* toJson(struct reflectElement e){
 
 #line 587 "/opt/bah/json.bah"
-unsigned long int l = strlen(e.type);
+unsigned long long int l = strlen(e.type);
 
 #line 589 "/opt/bah/json.bah"
 if (__builtin_expect((e.isArray==false)&&(e.type[l-1+4]!=42), 0)) {
@@ -6900,7 +6900,7 @@ char** ____BAH_COMPILER_VAR_133_aoptabahajsonbbah = alloca(7 * sizeof(char*));__
 if ((e.isArray==false)) {
 
 #line 594 "/opt/bah/json.bah"
-unsigned long int ol = l;
+unsigned long long int ol = l;
 
 #line 595 "/opt/bah/json.bah"
 for (; (l>=2)&&(e.type[l-1+4]==42)&&(e.type[l-2+4]==42); --l) {
@@ -6941,7 +6941,7 @@ if ((e.isStruct==true)) {
 char* s = "\01\0\0\0""{";
 
 #line 613 "/opt/bah/json.bah"
-register long int i = 0;
+register long long int i = 0;
 
 #line 613 "/opt/bah/json.bah"
 for (; (i<len(e.structLayout)); ++i) {
@@ -7013,7 +7013,7 @@ void * base = cArr(arr);
 l = len(arr);
 
 #line 640 "/opt/bah/json.bah"
-long int es =  arr -> elemSize;
+long long int es =  arr -> elemSize;
 
 #line 641 "/opt/bah/json.bah"
 struct reflectElement* ae = e.arrayElem;
@@ -7026,7 +7026,7 @@ char** ____BAH_COMPILER_VAR_147_aoptabahajsonbbah = alloca(2 * sizeof(char*));__
 }
 
 #line 645 "/opt/bah/json.bah"
-register long int i = 0;
+register long long int i = 0;
 
 #line 645 "/opt/bah/json.bah"
 for (; (i<l); ++i) {
@@ -7035,7 +7035,7 @@ for (; (i<l); ++i) {
 struct reflectElement m = *ae;
 
 #line 647 "/opt/bah/json.bah"
-m.value = (void *)((long int)base+es*i);
+m.value = (void *)((long long int)base+es*i);
 
 #line 648 "/opt/bah/json.bah"
 char** ____BAH_COMPILER_VAR_149_aoptabahajsonbbah = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_149_aoptabahajsonbbah[1] = toJson(m);____BAH_COMPILER_VAR_149_aoptabahajsonbbah[0] = s;char* ____BAH_COMPILER_VAR_150_aoptabahajsonbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_149_aoptabahajsonbbah, 2);s = ____BAH_COMPILER_VAR_150_aoptabahajsonbbah;
@@ -7059,7 +7059,7 @@ return s;
 if ((strcmp(e.type, "\04\0\0\0""int*") == 0)||(strcmp(e.type, "\06\0\0\0""int32*") == 0)) {
 
 #line 658 "/opt/bah/json.bah"
-long int* j = e.value;
+long long int* j = e.value;
 
 #line 659 "/opt/bah/json.bah"
 return intToStr(*j);
@@ -7096,7 +7096,7 @@ return floatToStr(*f);
 if ((strcmp(e.type, "\05\0\0\0""uint*") == 0)||(strcmp(e.type, "\07\0\0\0""uint32*") == 0)) {
 
 #line 676 "/opt/bah/json.bah"
-unsigned long int* uj = e.value;
+unsigned long long int* uj = e.value;
 
 #line 677 "/opt/bah/json.bah"
 return intToStr(*uj);
@@ -7186,46 +7186,49 @@ char* BAH_OS;
 #line 14 "/home/alois/Documents/bah-bah/src/main.bah"
 char* BAH_CC;
 
-#line 28 "/home/alois/Documents/bah-bah/src/main.bah"
-#define BAH_VERSION "\020\0\0\0""v1.4 (build 151)"
-
-#line 30 "/home/alois/Documents/bah-bah/src/main.bah"
-char debug;
+#line 15 "/home/alois/Documents/bah-bah/src/main.bah"
+#define BAH_HOST_OS "\05\0\0\0""linux"
 
 #line 31 "/home/alois/Documents/bah-bah/src/main.bah"
-char verboseRuntime;
-
-#line 32 "/home/alois/Documents/bah-bah/src/main.bah"
-char isObject;
+#define BAH_VERSION "\020\0\0\0""v1.4 (build 152)"
 
 #line 33 "/home/alois/Documents/bah-bah/src/main.bah"
-char isUnsafe;
+char debug;
 
 #line 34 "/home/alois/Documents/bah-bah/src/main.bah"
-char isOptimized;
+char verboseRuntime;
 
 #line 35 "/home/alois/Documents/bah-bah/src/main.bah"
-char noticeEnabled;
+char isObject;
 
 #line 36 "/home/alois/Documents/bah-bah/src/main.bah"
-char nativeMemenabled;
+char isUnsafe;
 
 #line 37 "/home/alois/Documents/bah-bah/src/main.bah"
-char lightGCenabled;
+char isOptimized;
 
 #line 38 "/home/alois/Documents/bah-bah/src/main.bah"
-char isFixMeEnabled;
+char noticeEnabled;
 
 #line 39 "/home/alois/Documents/bah-bah/src/main.bah"
-char noImport;
+char nativeMemenabled;
+
+#line 40 "/home/alois/Documents/bah-bah/src/main.bah"
+char lightGCenabled;
 
 #line 41 "/home/alois/Documents/bah-bah/src/main.bah"
-char* execName;
+char isFixMeEnabled;
 
 #line 42 "/home/alois/Documents/bah-bah/src/main.bah"
+char noImport;
+
+#line 44 "/home/alois/Documents/bah-bah/src/main.bah"
+char* execName;
+
+#line 45 "/home/alois/Documents/bah-bah/src/main.bah"
 char isSubObject;
 
-#line 43 "/home/alois/Documents/bah-bah/src/main.bah"
+#line 46 "/home/alois/Documents/bah-bah/src/main.bah"
 char isImportedSubObject;
 
 #line 1 "/home/alois/Documents/bah-bah/src/globals.bah"
@@ -7389,25 +7392,25 @@ struct compilerStateTag compilerState;
 struct cStruct* currentCStruct;
 
 #line 129 "/home/alois/Documents/bah-bah/src/globals.bah"
-long int threadCount;
+long long int threadCount;
 
 #line 131 "/home/alois/Documents/bah-bah/src/globals.bah"
 struct func* currentFn;
 
 #line 133 "/home/alois/Documents/bah-bah/src/globals.bah"
-long int totalLines;
+long long int totalLines;
 
 #line 135 "/home/alois/Documents/bah-bah/src/globals.bah"
-long int totalSize;
+long long int totalSize;
 
 #line 137 "/home/alois/Documents/bah-bah/src/globals.bah"
-long int totalLexerTime;
+long long int totalLexerTime;
 
 #line 139 "/home/alois/Documents/bah-bah/src/globals.bah"
 char RCPenabled;
 
 #line 141 "/home/alois/Documents/bah-bah/src/globals.bah"
-long int RCPlevel;
+long long int RCPlevel;
 
 #line 143 "/home/alois/Documents/bah-bah/src/globals.bah"
 struct flags flags;
@@ -7557,7 +7560,7 @@ char ____BAH_COMPILER_VAR_160_ahomeaaloisaeocumentsabahcbahasrcalexerbbah(__BAH_
         }
         return 0;
         }
-struct Tok makeToken(long int pos,long int lineNb,__BAH_ARR_TYPE_char cont,tokenType type){
+struct Tok makeToken(long long int pos,long long int lineNb,__BAH_ARR_TYPE_char cont,tokenType type){
 
 #line 84 "/home/alois/Documents/bah-bah/src/lexer.bah"
 struct Tok ____BAH_COMPILER_VAR_159_ahomeaaloisaeocumentsabahcbahasrcalexerbbah = {};
@@ -7613,7 +7616,7 @@ return (c==45)&&isNumber(nc);
 };
 
 #line 107 "/home/alois/Documents/bah-bah/src/lexer.bah"
-void lexerErr(long int line,long int pos,char* msg){
+void lexerErr(long long int line,long long int pos,char* msg){
 
 #line 108 "/home/alois/Documents/bah-bah/src/lexer.bah"
 char* lineStr = intToStr(line);
@@ -7663,10 +7666,10 @@ char ____BAH_COMPILER_VAR_186_ahomeaaloisaeocumentsabahcbahasrcalexerbbah(__BAH_
         return 0;
         }
 typedef array(struct Tok)* __BAH_ARR_TYPE_Tok;
-__BAH_ARR_TYPE_Tok lexer(char* s,unsigned long int codeLength){
+__BAH_ARR_TYPE_Tok lexer(char* s,unsigned long long int codeLength){
 
 #line 116 "/home/alois/Documents/bah-bah/src/lexer.bah"
-long int dur = getTimeUnix();
+long long int dur = getTimeUnix();
 
 #line 117 "/home/alois/Documents/bah-bah/src/lexer.bah"
 array(struct Tok)* tokens = memoryAlloc(sizeof(array(struct Tok)));
@@ -7684,10 +7687,10 @@ memory->length = 0;
 memory->elemSize = sizeof(char);
 
 #line 123 "/home/alois/Documents/bah-bah/src/lexer.bah"
-long int lineNb = 1;
+long long int lineNb = 1;
 
 #line 125 "/home/alois/Documents/bah-bah/src/lexer.bah"
-register long int i = 0;
+register long long int i = 0;
 
 #line 125 "/home/alois/Documents/bah-bah/src/lexer.bah"
 for (; (i<codeLength); ++i) {
@@ -7748,10 +7751,10 @@ if ((c==(char)10)) {
 if ((c==34)) {
 
 #line 156 "/home/alois/Documents/bah-bah/src/lexer.bah"
-long int pos = i;
+long long int pos = i;
 
 #line 157 "/home/alois/Documents/bah-bah/src/lexer.bah"
-long int begLine = lineNb;
+long long int begLine = lineNb;
 
 #line 158 "/home/alois/Documents/bah-bah/src/lexer.bah"
 
@@ -7858,7 +7861,7 @@ else if (isNumber(c)||isMinus(c,nc)) {
     memory->data[0] = c;
 
 #line 192 "/home/alois/Documents/bah-bah/src/lexer.bah"
-long int pos = i;
+long long int pos = i;
 
 #line 193 "/home/alois/Documents/bah-bah/src/lexer.bah"
 i = i+1;
@@ -7954,7 +7957,7 @@ else if ((c==(char)39)) {
 char n = s[i+4];
 
 #line 226 "/home/alois/Documents/bah-bah/src/lexer.bah"
-char* toInt = intToStr((long int)nc);
+char* toInt = intToStr((long long int)nc);
 
 #line 227 "/home/alois/Documents/bah-bah/src/lexer.bah"
 memory = strToArr(toInt);
@@ -7982,7 +7985,7 @@ unsigned int ____BAH_COMPILER_VAR_173_ahomeaaloisaeocumentsabahcbahasrcalexerbba
 else if ((c==(char)35)) {
 
 #line 235 "/home/alois/Documents/bah-bah/src/lexer.bah"
-long int pos = i;
+long long int pos = i;
 
 #line 236 "/home/alois/Documents/bah-bah/src/lexer.bah"
 
@@ -8043,7 +8046,7 @@ else if (isAlphaNumeric(c)||(c==95)) {
     memory->data[0] = c;
 
 #line 252 "/home/alois/Documents/bah-bah/src/lexer.bah"
-long int pos = i;
+long long int pos = i;
 
 #line 253 "/home/alois/Documents/bah-bah/src/lexer.bah"
 ++i;
@@ -8107,7 +8110,7 @@ else if (____BAH_COMPILER_VAR_179_ahomeaaloisaeocumentsabahcbahasrcalexerbbah(sy
 if ((c==60)) {
 
 #line 280 "/home/alois/Documents/bah-bah/src/lexer.bah"
-long int pos = i;
+long long int pos = i;
 
 #line 281 "/home/alois/Documents/bah-bah/src/lexer.bah"
 char isCast = false;
@@ -8182,7 +8185,7 @@ clear(memory);
     memory->data[0] = c;
 
 #line 306 "/home/alois/Documents/bah-bah/src/lexer.bah"
-long int pos = i;
+long long int pos = i;
 
 #line 307 "/home/alois/Documents/bah-bah/src/lexer.bah"
 ++i;
@@ -8354,7 +8357,7 @@ strBuilder___init(&____BAH_COMPILER_VAR_188_ahomeaaloisaeocumentsabahcbahasrcalo
 struct strBuilder sb = ____BAH_COMPILER_VAR_188_ahomeaaloisaeocumentsabahcbahasrcaloggerbbah;
 
 #line 56 "/home/alois/Documents/bah-bah/src/logger.bah"
-register long int i = 0;
+register long long int i = 0;
 
 #line 56 "/home/alois/Documents/bah-bah/src/logger.bah"
 for (; (i<strlen(s)); ++i) {
@@ -8386,7 +8389,7 @@ return strBuilder__str(&sb);
 };
 
 #line 73 "/home/alois/Documents/bah-bah/src/logger.bah"
-void debugPrint(char* name,long int line,struct reflectElement e){
+void debugPrint(char* name,long long int line,struct reflectElement e){
 
 #line 74 "/home/alois/Documents/bah-bah/src/logger.bah"
 if ((debug==false)) {
@@ -8402,7 +8405,7 @@ char** ____BAH_COMPILER_VAR_191_ahomeaaloisaeocumentsabahcbahasrcaloggerbbah = a
 };
 
 #line 88 "/home/alois/Documents/bah-bah/src/logger.bah"
-void debugError(char* name,long int line,long int from,long int to,struct reflectElement e){
+void debugError(char* name,long long int line,long long int from,long long int to,struct reflectElement e){
 
 #line 89 "/home/alois/Documents/bah-bah/src/logger.bah"
 if ((debug==false)) {
@@ -8432,7 +8435,7 @@ println("\063\0\0\0""\n    {\n        \"name\": \"error_end\"\n    }\n    ]\n   
 };
 
 #line 127 "/home/alois/Documents/bah-bah/src/logger.bah"
-void debugEndScope(long int line,struct Elems* elems){
+void debugEndScope(long long int line,struct Elems* elems){
 
 #line 128 "/home/alois/Documents/bah-bah/src/logger.bah"
 if ((debug==false)) {
@@ -8442,7 +8445,7 @@ return;
 }
 
 #line 131 "/home/alois/Documents/bah-bah/src/logger.bah"
-register long int i = 0;
+register long long int i = 0;
 
 #line 131 "/home/alois/Documents/bah-bah/src/logger.bah"
 while ((i<len(elems->vars))) {
@@ -8493,7 +8496,7 @@ char* getFuncDef(struct func* fn){
 char** ____BAH_COMPILER_VAR_199_ahomeaaloisaeocumentsabahcbahasrcaerrorsbbah = alloca(4 * sizeof(char*));____BAH_COMPILER_VAR_199_ahomeaaloisaeocumentsabahcbahasrcaerrorsbbah[3] = "\01\0\0\0""(";____BAH_COMPILER_VAR_199_ahomeaaloisaeocumentsabahcbahasrcaerrorsbbah[2] = ASCII_RESET;____BAH_COMPILER_VAR_199_ahomeaaloisaeocumentsabahcbahasrcaerrorsbbah[1] = fn->name;____BAH_COMPILER_VAR_199_ahomeaaloisaeocumentsabahcbahasrcaerrorsbbah[0] = ASCII_YELLOW;char* ____BAH_COMPILER_VAR_200_ahomeaaloisaeocumentsabahcbahasrcaerrorsbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_199_ahomeaaloisaeocumentsabahcbahasrcaerrorsbbah, 4);char* def = ____BAH_COMPILER_VAR_200_ahomeaaloisaeocumentsabahcbahasrcaerrorsbbah;
 
 #line 20 "/home/alois/Documents/bah-bah/src/errors.bah"
-register long int i = 0;
+register long long int i = 0;
 
 #line 20 "/home/alois/Documents/bah-bah/src/errors.bah"
 for (; (i<len(fn->args)); ++i) {
@@ -8526,7 +8529,7 @@ char* str = "\0\0\0\0""";
 char* info = "\0\0\0\0""";
 
 #line 37 "/home/alois/Documents/bah-bah/src/errors.bah"
-long int pos = 0;
+long long int pos = 0;
 
 #line 38 "/home/alois/Documents/bah-bah/src/errors.bah"
 if ((tp!=null)) {
@@ -8593,7 +8596,7 @@ beg = beg-1;
 pos = t->pos-beg+1;
 
 #line 62 "/home/alois/Documents/bah-bah/src/errors.bah"
-long int size = fileStream__getSize(&fs);
+long long int size = fileStream__getSize(&fs);
 
 #line 64 "/home/alois/Documents/bah-bah/src/errors.bah"
 unsigned int i = beg;
@@ -8657,7 +8660,7 @@ unsigned int ____BAH_COMPILER_VAR_214_ahomeaaloisaeocumentsabahcbahasrcaerrorsbb
 char** ____BAH_COMPILER_VAR_215_ahomeaaloisaeocumentsabahcbahasrcaerrorsbbah = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_215_ahomeaaloisaeocumentsabahcbahasrcaerrorsbbah[2] = "\07\0\0\0""\e[1;37m";____BAH_COMPILER_VAR_215_ahomeaaloisaeocumentsabahcbahasrcaerrorsbbah[1] = arrToStr(errCont);____BAH_COMPILER_VAR_215_ahomeaaloisaeocumentsabahcbahasrcaerrorsbbah[0] = "\07\0\0\0""\e[1;31m";char* ____BAH_COMPILER_VAR_216_ahomeaaloisaeocumentsabahcbahasrcaerrorsbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_215_ahomeaaloisaeocumentsabahcbahasrcaerrorsbbah, 3);array(char)* errTk = strToArr(____BAH_COMPILER_VAR_216_ahomeaaloisaeocumentsabahcbahasrcaerrorsbbah);
 
 #line 85 "/home/alois/Documents/bah-bah/src/errors.bah"
-register long int ii = 0;
+register long long int ii = 0;
 
 #line 85 "/home/alois/Documents/bah-bah/src/errors.bah"
 for (; (ii<len(errTk)); ++ii) {
@@ -8746,7 +8749,7 @@ char** ____BAH_COMPILER_VAR_227_ahomeaaloisaeocumentsabahcbahasrcaerrorsbbah = a
 };
 
 #line 126 "/home/alois/Documents/bah-bah/src/errors.bah"
-void throwWarningLine(char* s,long int l){
+void throwWarningLine(char* s,long long int l){
 
 #line 127 "/home/alois/Documents/bah-bah/src/errors.bah"
 if (debug) {
@@ -8768,7 +8771,7 @@ char** ____BAH_COMPILER_VAR_231_ahomeaaloisaeocumentsabahcbahasrcaerrorsbbah = a
 };
 
 #line 137 "/home/alois/Documents/bah-bah/src/errors.bah"
-void throwNoticeLine(char* s,long int l){
+void throwNoticeLine(char* s,long long int l){
 
 #line 138 "/home/alois/Documents/bah-bah/src/errors.bah"
 if (debug) {
@@ -8803,10 +8806,10 @@ struct string getCType(char* t,struct Elems* e);
 char hasStructSep(struct string* n){
 
 #line 12 "/home/alois/Documents/bah-bah/src/struct.bah"
-long int max = n->length-1;
+long long int max = n->length-1;
 
 #line 13 "/home/alois/Documents/bah-bah/src/struct.bah"
-register long int i = 0;
+register long long int i = 0;
 
 #line 13 "/home/alois/Documents/bah-bah/src/struct.bah"
 for (; (i<max); ++i) {
@@ -8864,7 +8867,7 @@ return string("\0\0\0\0""");
 struct string splitStructSepAfter(struct string n){
 
 #line 44 "/home/alois/Documents/bah-bah/src/struct.bah"
-register long int i = n.length-1;
+register long long int i = n.length-1;
 
 #line 44 "/home/alois/Documents/bah-bah/src/struct.bah"
 while ((i>=0)) {
@@ -8918,7 +8921,7 @@ return null;
 }
 
 #line 68 "/home/alois/Documents/bah-bah/src/struct.bah"
-register long int i = 0;
+register long long int i = 0;
 
 #line 68 "/home/alois/Documents/bah-bah/src/struct.bah"
 for (; (i<strlen(name)); ++i) {
@@ -9015,7 +9018,7 @@ return memb;
 array(struct structMemb*)* members = s->members;
 
 #line 108 "/home/alois/Documents/bah-bah/src/struct.bah"
-register long int i = 0;
+register long long int i = 0;
 
 #line 108 "/home/alois/Documents/bah-bah/src/struct.bah"
 while ((i<len(members))) {
@@ -9120,7 +9123,7 @@ return fn;
 }
 
 #line 152 "/home/alois/Documents/bah-bah/src/struct.bah"
-register long int i = 0;
+register long long int i = 0;
 
 #line 152 "/home/alois/Documents/bah-bah/src/struct.bah"
 for (; (i<len(s->members)); ++i) {
@@ -9150,7 +9153,7 @@ return searchStructMethod(name,s,elems);
 };
 
 #line 170 "/home/alois/Documents/bah-bah/src/struct.bah"
-typedef array(long int)* __BAH_ARR_TYPE_int;
+typedef array(long long int)* __BAH_ARR_TYPE_int;
 char* declareStructMethods(struct variable* v,__BAH_ARR_TYPE_int excl,struct cStruct* s,struct Elems* elems){
 
 #line 171 "/home/alois/Documents/bah-bah/src/struct.bah"
@@ -9179,13 +9182,13 @@ amp = "\0\0\0\0""";
 }
 
 #line 180 "/home/alois/Documents/bah-bah/src/struct.bah"
-register long int i = 0;
+register long long int i = 0;
 
 #line 180 "/home/alois/Documents/bah-bah/src/struct.bah"
 for (; (i<len(members)); ++i) {
 
 #line 181 "/home/alois/Documents/bah-bah/src/struct.bah"
-register long int j = 0;
+register long long int j = 0;
 
 #line 181 "/home/alois/Documents/bah-bah/src/struct.bah"
 for (; (j<len(excl)); ++j) {
@@ -9275,7 +9278,7 @@ char** ____BAH_COMPILER_VAR_248_ahomeaaloisaeocumentsabahcbahasrcastructbbah = a
 if ((s->isBinding==false)) {
 
 #line 220 "/home/alois/Documents/bah-bah/src/struct.bah"
-long int found = 0;
+long long int found = 0;
 
 #line 221 "/home/alois/Documents/bah-bah/src/struct.bah"
 i = 0;
@@ -9392,7 +9395,7 @@ return string(r);
 }
 
 #line 58 "/home/alois/Documents/bah-bah/src/type.bah"
-register long int i = 0;
+register long long int i = 0;
 
 #line 58 "/home/alois/Documents/bah-bah/src/type.bah"
 for (; (i<strlen(t)); ++i) {
@@ -9462,7 +9465,7 @@ t = "\05\0\0\0""char*";
 else if ((strcmp(t, "\03\0\0\0""int") == 0)) {
 
 #line 83 "/home/alois/Documents/bah-bah/src/type.bah"
-t = "\010\0\0\0""long int";
+t = "\015\0\0\0""long long int";
 }
 
 #line 84 "/home/alois/Documents/bah-bah/src/type.bah"
@@ -9483,7 +9486,7 @@ t = "\014\0\0\0""unsigned int";
 else if ((strcmp(t, "\04\0\0\0""uint") == 0)) {
 
 #line 89 "/home/alois/Documents/bah-bah/src/type.bah"
-t = "\021\0\0\0""unsigned long int";
+t = "\026\0\0\0""unsigned long long int";
 }
 
 #line 90 "/home/alois/Documents/bah-bah/src/type.bah"
@@ -9846,7 +9849,7 @@ memory->length = 0;
 memory->elemSize = sizeof(char);
 
 #line 222 "/home/alois/Documents/bah-bah/src/type.bah"
-register long int j = 0;
+register long long int j = 0;
 
 #line 222 "/home/alois/Documents/bah-bah/src/type.bah"
 while ((j<cvt.length)) {
@@ -9953,10 +9956,10 @@ return nf;
 };
 
 #line 258 "/home/alois/Documents/bah-bah/src/type.bah"
-unsigned long int getTypeUnaryLevel(char* t){
+unsigned long long int getTypeUnaryLevel(char* t){
 
 #line 259 "/home/alois/Documents/bah-bah/src/type.bah"
-unsigned long int i = strlen(t)-1;
+unsigned long long int i = strlen(t)-1;
 
 #line 259 "/home/alois/Documents/bah-bah/src/type.bah"
 for (; (i>0); --i) {
@@ -9974,10 +9977,10 @@ return 0;
 };
 
 #line 268 "/home/alois/Documents/bah-bah/src/type.bah"
-unsigned long int getVarUnaryLevel(char* s){
+unsigned long long int getVarUnaryLevel(char* s){
 
 #line 269 "/home/alois/Documents/bah-bah/src/type.bah"
-register long int i = 0;
+register long long int i = 0;
 
 #line 269 "/home/alois/Documents/bah-bah/src/type.bah"
 for (; (i<strlen(s)); ++i) {
@@ -10009,10 +10012,10 @@ strBuilder___init(&____BAH_COMPILER_VAR_283_ahomeaaloisaeocumentsabahcbahasrcaty
 struct strBuilder curr = ____BAH_COMPILER_VAR_283_ahomeaaloisaeocumentsabahcbahasrcatypebbah;
 
 #line 282 "/home/alois/Documents/bah-bah/src/type.bah"
-long int nbBracks = 0;
+long long int nbBracks = 0;
 
 #line 283 "/home/alois/Documents/bah-bah/src/type.bah"
-register long int i = 1;
+register long long int i = 1;
 
 #line 283 "/home/alois/Documents/bah-bah/src/type.bah"
 for (; (i<strlen(t)-1); ++i) {
@@ -10071,7 +10074,7 @@ array(char*)* parts = getTypesFromTuple(t);
 char* r = "\01\0\0\0""0";
 
 #line 308 "/home/alois/Documents/bah-bah/src/type.bah"
-register long int i = 0;
+register long long int i = 0;
 
 #line 308 "/home/alois/Documents/bah-bah/src/type.bah"
 for (; (i<len(parts)); ++i) {
@@ -10103,7 +10106,7 @@ struct func* tmpfn = parseFnType(*cfrt);
 char* tmpfnArgsCType = "\0\0\0\0""";
 
 #line 323 "/home/alois/Documents/bah-bah/src/type.bah"
-register long int j = 0;
+register long long int j = 0;
 
 #line 323 "/home/alois/Documents/bah-bah/src/type.bah"
 for (; (j<len(tmpfn->args)); ++j) {
@@ -10189,7 +10192,7 @@ struct string n = string(name);
 array(struct func*)* fns = elems->fns;
 
 #line 23 "/home/alois/Documents/bah-bah/src/fns.bah"
-register long int i = 0;
+register long long int i = 0;
 
 #line 23 "/home/alois/Documents/bah-bah/src/fns.bah"
 while ((i<len(fns))) {
@@ -10348,7 +10351,7 @@ char* strLitteralToBahStr(char* s);
 struct variable* getRealVar(char* n,struct Elems* elems){
 
 #line 18 "/home/alois/Documents/bah-bah/src/var.bah"
-unsigned long int i = len(elems->vars)-1;
+unsigned long long int i = len(elems->vars)-1;
 
 #line 18 "/home/alois/Documents/bah-bah/src/var.bah"
 for (; (i!=-1); --i) {
@@ -10369,7 +10372,7 @@ return null;
 void removeVarUnar(struct string* s){
 
 #line 28 "/home/alois/Documents/bah-bah/src/var.bah"
-register long int i = 0;
+register long long int i = 0;
 
 #line 28 "/home/alois/Documents/bah-bah/src/var.bah"
 for (; (i<s->length); ++i) {
@@ -10409,7 +10412,7 @@ removeVarUnar(&n);
 name = string__str(&n);
 
 #line 50 "/home/alois/Documents/bah-bah/src/var.bah"
-unsigned long int i = len(elems->vars)-1;
+unsigned long long int i = len(elems->vars)-1;
 
 #line 50 "/home/alois/Documents/bah-bah/src/var.bah"
 for (; (i!=-1); --i) {
@@ -10435,13 +10438,13 @@ struct variable* nv = ____BAH_COMPILER_VAR_312_ahomeaaloisaeocumentsabahcbahasrc
 char* r = nv->type;
 
 #line 56 "/home/alois/Documents/bah-bah/src/var.bah"
-unsigned long int nbUnaries = getVarUnaryLevel(ogName);
+unsigned long long int nbUnaries = getVarUnaryLevel(ogName);
 
 #line 57 "/home/alois/Documents/bah-bah/src/var.bah"
 if ((nbUnaries>0)) {
 
 #line 58 "/home/alois/Documents/bah-bah/src/var.bah"
-unsigned long int pointerLevel = getTypeUnaryLevel(r);
+unsigned long long int pointerLevel = getTypeUnaryLevel(r);
 
 #line 59 "/home/alois/Documents/bah-bah/src/var.bah"
 if (__builtin_expect((pointerLevel<nbUnaries), 0)) {
@@ -10499,7 +10502,7 @@ nv->name = name;
 nv->type = "\011\0\0\0""function(";
 
 #line 80 "/home/alois/Documents/bah-bah/src/var.bah"
-register long int j = 0;
+register long long int j = 0;
 
 #line 80 "/home/alois/Documents/bah-bah/src/var.bah"
 while ((j<len(fn->args))) {
@@ -10588,7 +10591,7 @@ return searchVar(t->cont,t,elems);
 void isMissingVar(struct Tok* t,struct Elems* elems){
 
 #line 129 "/home/alois/Documents/bah-bah/src/var.bah"
-register long int i = 0;
+register long long int i = 0;
 
 #line 129 "/home/alois/Documents/bah-bah/src/var.bah"
 for (; (i<len(elems->deletedVars)); ++i) {
@@ -10603,7 +10606,7 @@ throwErr(t,"\055\0\0\0""Variable {TOKEN} has reached its end of life.");
 };
 
 #line 137 "/home/alois/Documents/bah-bah/src/var.bah"
-long int NB_COMP_VAR;
+long long int NB_COMP_VAR;
 
 #line 139 "/home/alois/Documents/bah-bah/src/var.bah"
 char* currFileHashed;
@@ -10646,7 +10649,7 @@ return false;
 }
 
 #line 159 "/home/alois/Documents/bah-bah/src/var.bah"
-register long int j = 0;
+register long long int j = 0;
 
 #line 159 "/home/alois/Documents/bah-bah/src/var.bah"
 while ((j<len(arr))) {
@@ -10676,16 +10679,16 @@ char* pathToVarName(char* p){
 array(char)* a = strToArr(p);
 
 #line 172 "/home/alois/Documents/bah-bah/src/var.bah"
-register long int i = 0;
+register long long int i = 0;
 
 #line 172 "/home/alois/Documents/bah-bah/src/var.bah"
 for (; (i<len(a)); ++i) {
 
 #line 173 "/home/alois/Documents/bah-bah/src/var.bah"
-long int c = a->data[i];
+long long int c = a->data[i];
 
 #line 174 "/home/alois/Documents/bah-bah/src/var.bah"
-c = c-(long int)97;
+c = c-(long long int)97;
 
 #line 175 "/home/alois/Documents/bah-bah/src/var.bah"
 if ((c<0)) {
@@ -10695,10 +10698,10 @@ c = 0-c;
 }
 
 #line 178 "/home/alois/Documents/bah-bah/src/var.bah"
-c = c%((long int)122-(long int)97);
+c = c%((long long int)122-(long long int)97);
 
 #line 179 "/home/alois/Documents/bah-bah/src/var.bah"
-c = c+(long int)97;
+c = c+(long long int)97;
 
 #line 180 "/home/alois/Documents/bah-bah/src/var.bah"
 
@@ -10730,7 +10733,7 @@ char* evals = "\0\0\0\0""";
 char** ____BAH_COMPILER_VAR_324_ahomeaaloisaeocumentsabahcbahasrcavarbbah = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_324_ahomeaaloisaeocumentsabahcbahasrcavarbbah[2] = "\05\0\0\0""] = {";____BAH_COMPILER_VAR_324_ahomeaaloisaeocumentsabahcbahasrcavarbbah[1] = intToStr(len(compilerState.evals));____BAH_COMPILER_VAR_324_ahomeaaloisaeocumentsabahcbahasrcavarbbah[0] = "\065\0\0\0""volatile struct __eval_binding __tmp__evals_bindings[";char* ____BAH_COMPILER_VAR_325_ahomeaaloisaeocumentsabahcbahasrcavarbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_324_ahomeaaloisaeocumentsabahcbahasrcavarbbah, 3);char* evalsTMPDecl = ____BAH_COMPILER_VAR_325_ahomeaaloisaeocumentsabahcbahasrcavarbbah;
 
 #line 195 "/home/alois/Documents/bah-bah/src/var.bah"
-register long int i = 0;
+register long long int i = 0;
 
 #line 195 "/home/alois/Documents/bah-bah/src/var.bah"
 for (; (i<len(compilerState.evals)); ++i) {
@@ -10778,7 +10781,7 @@ char** ____BAH_COMPILER_VAR_338_ahomeaaloisaeocumentsabahcbahasrcavarbbah = allo
 char* removeCast(char* s){
 
 #line 225 "/home/alois/Documents/bah-bah/src/var.bah"
-unsigned long int i = strlen(s)-1;
+unsigned long long int i = strlen(s)-1;
 
 #line 225 "/home/alois/Documents/bah-bah/src/var.bah"
 for (; (i>=0); --i) {
@@ -10941,7 +10944,7 @@ return;
 }
 
 #line 73 "/home/alois/Documents/bah-bah/src/mem.bah"
-register long int i = 0;
+register long long int i = 0;
 
 #line 73 "/home/alois/Documents/bah-bah/src/mem.bah"
 for (; (i<len(elems->vars)); ++i) {
@@ -10976,7 +10979,7 @@ return;
 }
 
 #line 90 "/home/alois/Documents/bah-bah/src/mem.bah"
-register long int i = 0;
+register long long int i = 0;
 
 #line 90 "/home/alois/Documents/bah-bah/src/mem.bah"
 for (; (i<len(elems->vars)); ++i) {
@@ -11004,7 +11007,7 @@ return;
 }
 
 #line 104 "/home/alois/Documents/bah-bah/src/mem.bah"
-register long int i = 0;
+register long long int i = 0;
 
 #line 104 "/home/alois/Documents/bah-bah/src/mem.bah"
 for (; (i<len(elems->vars)); ++i) {
@@ -11039,7 +11042,7 @@ return;
 }
 
 #line 121 "/home/alois/Documents/bah-bah/src/mem.bah"
-register long int i = 0;
+register long long int i = 0;
 
 #line 121 "/home/alois/Documents/bah-bah/src/mem.bah"
 for (; (i<len(elems->vars)); ++i) {
@@ -11116,7 +11119,7 @@ return av->name;
 char RCPselfRef(struct variable* v){
 
 #line 151 "/home/alois/Documents/bah-bah/src/mem.bah"
-register long int i = 0;
+register long long int i = 0;
 
 #line 151 "/home/alois/Documents/bah-bah/src/mem.bah"
 while ((i<len(compilerState.RCPvars))) {
@@ -11251,7 +11254,7 @@ char** ____BAH_COMPILER_VAR_371_ahomeaaloisaeocumentsabahcbahasrcaverbosesutbbah
 cont = "\0\0\0\0""";
 
 #line 42 "/home/alois/Documents/bah-bah/src/verboseOut.bah"
-register long int i = 0;
+register long long int i = 0;
 
 #line 42 "/home/alois/Documents/bah-bah/src/verboseOut.bah"
 for (; (i<len(s->members)); ++i) {
@@ -11325,7 +11328,7 @@ return verboseOutTransformVar(&v,t->cont,elems);
 };
 
 #line 78 "/home/alois/Documents/bah-bah/src/verboseOut.bah"
-void verboseOutFunc(struct func* fn,__BAH_ARR_TYPE_Tok args,long int lineNb,struct Elems* elems){
+void verboseOutFunc(struct func* fn,__BAH_ARR_TYPE_Tok args,long long int lineNb,struct Elems* elems){
 
 #line 79 "/home/alois/Documents/bah-bah/src/verboseOut.bah"
 if ((verboseOutGuard()==false)) {
@@ -11358,7 +11361,7 @@ if (strHasPrefix(fn->file,BAH_DIR)) {
 char hasPtr = false;
 
 #line 91 "/home/alois/Documents/bah-bah/src/verboseOut.bah"
-register long int i = 0;
+register long long int i = 0;
 
 #line 91 "/home/alois/Documents/bah-bah/src/verboseOut.bah"
 for (; (i<len(fn->args)); ++i) {
@@ -11392,7 +11395,7 @@ char* fnArgs = "\0\0\0\0""";
 char* fnArgsValues = "\0\0\0\0""";
 
 #line 105 "/home/alois/Documents/bah-bah/src/verboseOut.bah"
-register long int j = 0;
+register long long int j = 0;
 
 #line 105 "/home/alois/Documents/bah-bah/src/verboseOut.bah"
 for (; (j<len(fn->args)); ++j) {
@@ -11442,7 +11445,7 @@ OUTPUT = rope__add(OUTPUT, verboseOut);
 };
 
 #line 130 "/home/alois/Documents/bah-bah/src/verboseOut.bah"
-void verboseOutOper(struct Tok* pt,struct Tok* nt,long int lineNb,struct Elems* elems){
+void verboseOutOper(struct Tok* pt,struct Tok* nt,long long int lineNb,struct Elems* elems){
 
 #line 131 "/home/alois/Documents/bah-bah/src/verboseOut.bah"
 if ((verboseOutGuard()==false)) {
@@ -11484,11 +11487,11 @@ OUTPUT = rope__add(OUTPUT, verboseOut);
 #line 7 "/home/alois/Documents/bah-bah/src/cache.bah"
 struct cacheFile {
 char* file;
-long int last;
+long long int last;
 char* ver;
-long int date;
-long int mem;
-long int opti;
+long long int date;
+long long int mem;
+long long int opti;
 array(char*)* files;
 };
 
@@ -11532,16 +11535,16 @@ array(struct cacheFile**)* ____BAH_COMPILER_VAR_410_ahomeaaloisaeocumentsabahcba
 struct cacheFile*** ____BAH_COMPILER_VAR_411_ahomeaaloisaeocumentsabahcbahasrcacachebbah = 0;
 char** ____BAH_COMPILER_VAR_413_ahomeaaloisaeocumentsabahcbahasrcacachebbah = (char**)((char*)(____BAH_COMPILER_VAR_411_ahomeaaloisaeocumentsabahcbahasrcacachebbah) + offsetof(struct cacheFile, file));
 struct reflectElement ____BAH_COMPILER_VAR_414_ahomeaaloisaeocumentsabahcbahasrcacachebbah = __reflect(____BAH_COMPILER_VAR_413_ahomeaaloisaeocumentsabahcbahasrcacachebbah, sizeof(char*), "\010\0\0\0""cpstring", "\04\0\0\0""file", 0, 0, 0, 0, offsetof(struct cacheFile, file));
-long int* ____BAH_COMPILER_VAR_415_ahomeaaloisaeocumentsabahcbahasrcacachebbah = (long int*)((char*)(____BAH_COMPILER_VAR_411_ahomeaaloisaeocumentsabahcbahasrcacachebbah) + offsetof(struct cacheFile, last));
-struct reflectElement ____BAH_COMPILER_VAR_416_ahomeaaloisaeocumentsabahcbahasrcacachebbah = __reflect(____BAH_COMPILER_VAR_415_ahomeaaloisaeocumentsabahcbahasrcacachebbah, sizeof(long int), "\03\0\0\0""int", "\04\0\0\0""last", 0, 0, 0, 0, offsetof(struct cacheFile, last));
+long long int* ____BAH_COMPILER_VAR_415_ahomeaaloisaeocumentsabahcbahasrcacachebbah = (long long int*)((char*)(____BAH_COMPILER_VAR_411_ahomeaaloisaeocumentsabahcbahasrcacachebbah) + offsetof(struct cacheFile, last));
+struct reflectElement ____BAH_COMPILER_VAR_416_ahomeaaloisaeocumentsabahcbahasrcacachebbah = __reflect(____BAH_COMPILER_VAR_415_ahomeaaloisaeocumentsabahcbahasrcacachebbah, sizeof(long long int), "\03\0\0\0""int", "\04\0\0\0""last", 0, 0, 0, 0, offsetof(struct cacheFile, last));
 char** ____BAH_COMPILER_VAR_417_ahomeaaloisaeocumentsabahcbahasrcacachebbah = (char**)((char*)(____BAH_COMPILER_VAR_411_ahomeaaloisaeocumentsabahcbahasrcacachebbah) + offsetof(struct cacheFile, ver));
 struct reflectElement ____BAH_COMPILER_VAR_418_ahomeaaloisaeocumentsabahcbahasrcacachebbah = __reflect(____BAH_COMPILER_VAR_417_ahomeaaloisaeocumentsabahcbahasrcacachebbah, sizeof(char*), "\010\0\0\0""cpstring", "\03\0\0\0""ver", 0, 0, 0, 0, offsetof(struct cacheFile, ver));
-long int* ____BAH_COMPILER_VAR_419_ahomeaaloisaeocumentsabahcbahasrcacachebbah = (long int*)((char*)(____BAH_COMPILER_VAR_411_ahomeaaloisaeocumentsabahcbahasrcacachebbah) + offsetof(struct cacheFile, date));
-struct reflectElement ____BAH_COMPILER_VAR_420_ahomeaaloisaeocumentsabahcbahasrcacachebbah = __reflect(____BAH_COMPILER_VAR_419_ahomeaaloisaeocumentsabahcbahasrcacachebbah, sizeof(long int), "\03\0\0\0""int", "\04\0\0\0""date", 0, 0, 0, 0, offsetof(struct cacheFile, date));
-long int* ____BAH_COMPILER_VAR_421_ahomeaaloisaeocumentsabahcbahasrcacachebbah = (long int*)((char*)(____BAH_COMPILER_VAR_411_ahomeaaloisaeocumentsabahcbahasrcacachebbah) + offsetof(struct cacheFile, mem));
-struct reflectElement ____BAH_COMPILER_VAR_422_ahomeaaloisaeocumentsabahcbahasrcacachebbah = __reflect(____BAH_COMPILER_VAR_421_ahomeaaloisaeocumentsabahcbahasrcacachebbah, sizeof(long int), "\03\0\0\0""int", "\03\0\0\0""mem", 0, 0, 0, 0, offsetof(struct cacheFile, mem));
-long int* ____BAH_COMPILER_VAR_423_ahomeaaloisaeocumentsabahcbahasrcacachebbah = (long int*)((char*)(____BAH_COMPILER_VAR_411_ahomeaaloisaeocumentsabahcbahasrcacachebbah) + offsetof(struct cacheFile, opti));
-struct reflectElement ____BAH_COMPILER_VAR_424_ahomeaaloisaeocumentsabahcbahasrcacachebbah = __reflect(____BAH_COMPILER_VAR_423_ahomeaaloisaeocumentsabahcbahasrcacachebbah, sizeof(long int), "\03\0\0\0""int", "\04\0\0\0""opti", 0, 0, 0, 0, offsetof(struct cacheFile, opti));
+long long int* ____BAH_COMPILER_VAR_419_ahomeaaloisaeocumentsabahcbahasrcacachebbah = (long long int*)((char*)(____BAH_COMPILER_VAR_411_ahomeaaloisaeocumentsabahcbahasrcacachebbah) + offsetof(struct cacheFile, date));
+struct reflectElement ____BAH_COMPILER_VAR_420_ahomeaaloisaeocumentsabahcbahasrcacachebbah = __reflect(____BAH_COMPILER_VAR_419_ahomeaaloisaeocumentsabahcbahasrcacachebbah, sizeof(long long int), "\03\0\0\0""int", "\04\0\0\0""date", 0, 0, 0, 0, offsetof(struct cacheFile, date));
+long long int* ____BAH_COMPILER_VAR_421_ahomeaaloisaeocumentsabahcbahasrcacachebbah = (long long int*)((char*)(____BAH_COMPILER_VAR_411_ahomeaaloisaeocumentsabahcbahasrcacachebbah) + offsetof(struct cacheFile, mem));
+struct reflectElement ____BAH_COMPILER_VAR_422_ahomeaaloisaeocumentsabahcbahasrcacachebbah = __reflect(____BAH_COMPILER_VAR_421_ahomeaaloisaeocumentsabahcbahasrcacachebbah, sizeof(long long int), "\03\0\0\0""int", "\03\0\0\0""mem", 0, 0, 0, 0, offsetof(struct cacheFile, mem));
+long long int* ____BAH_COMPILER_VAR_423_ahomeaaloisaeocumentsabahcbahasrcacachebbah = (long long int*)((char*)(____BAH_COMPILER_VAR_411_ahomeaaloisaeocumentsabahcbahasrcacachebbah) + offsetof(struct cacheFile, opti));
+struct reflectElement ____BAH_COMPILER_VAR_424_ahomeaaloisaeocumentsabahcbahasrcacachebbah = __reflect(____BAH_COMPILER_VAR_423_ahomeaaloisaeocumentsabahcbahasrcacachebbah, sizeof(long long int), "\03\0\0\0""int", "\04\0\0\0""opti", 0, 0, 0, 0, offsetof(struct cacheFile, opti));
 array(char*)** ____BAH_COMPILER_VAR_425_ahomeaaloisaeocumentsabahcbahasrcacachebbah = (array(char*)**)((char*)(____BAH_COMPILER_VAR_411_ahomeaaloisaeocumentsabahcbahasrcacachebbah) + offsetof(struct cacheFile, files));
 char** ____BAH_COMPILER_VAR_426_ahomeaaloisaeocumentsabahcbahasrcacachebbah = 0;
 struct reflectElement ____BAH_COMPILER_VAR_427_ahomeaaloisaeocumentsabahcbahasrcacachebbah = __reflect(____BAH_COMPILER_VAR_426_ahomeaaloisaeocumentsabahcbahasrcacachebbah, sizeof(char*), "\010\0\0\0""cpstring", "\0\0\0\0""", 0, 0, 0, 0, 0);
@@ -11579,7 +11582,7 @@ return null;
 }
 
 #line 43 "/home/alois/Documents/bah-bah/src/cache.bah"
-register long int i = 0;
+register long long int i = 0;
 
 #line 43 "/home/alois/Documents/bah-bah/src/cache.bah"
 for (; (i<len(cache)); ++i) {
@@ -11671,16 +11674,16 @@ array(struct cacheFile**)* ____BAH_COMPILER_VAR_438_ahomeaaloisaeocumentsabahcba
 struct cacheFile*** ____BAH_COMPILER_VAR_439_ahomeaaloisaeocumentsabahcbahasrcacachebbah = 0;
 char** ____BAH_COMPILER_VAR_441_ahomeaaloisaeocumentsabahcbahasrcacachebbah = (char**)((char*)(____BAH_COMPILER_VAR_439_ahomeaaloisaeocumentsabahcbahasrcacachebbah) + offsetof(struct cacheFile, file));
 struct reflectElement ____BAH_COMPILER_VAR_442_ahomeaaloisaeocumentsabahcbahasrcacachebbah = __reflect(____BAH_COMPILER_VAR_441_ahomeaaloisaeocumentsabahcbahasrcacachebbah, sizeof(char*), "\010\0\0\0""cpstring", "\04\0\0\0""file", 0, 0, 0, 0, offsetof(struct cacheFile, file));
-long int* ____BAH_COMPILER_VAR_443_ahomeaaloisaeocumentsabahcbahasrcacachebbah = (long int*)((char*)(____BAH_COMPILER_VAR_439_ahomeaaloisaeocumentsabahcbahasrcacachebbah) + offsetof(struct cacheFile, last));
-struct reflectElement ____BAH_COMPILER_VAR_444_ahomeaaloisaeocumentsabahcbahasrcacachebbah = __reflect(____BAH_COMPILER_VAR_443_ahomeaaloisaeocumentsabahcbahasrcacachebbah, sizeof(long int), "\03\0\0\0""int", "\04\0\0\0""last", 0, 0, 0, 0, offsetof(struct cacheFile, last));
+long long int* ____BAH_COMPILER_VAR_443_ahomeaaloisaeocumentsabahcbahasrcacachebbah = (long long int*)((char*)(____BAH_COMPILER_VAR_439_ahomeaaloisaeocumentsabahcbahasrcacachebbah) + offsetof(struct cacheFile, last));
+struct reflectElement ____BAH_COMPILER_VAR_444_ahomeaaloisaeocumentsabahcbahasrcacachebbah = __reflect(____BAH_COMPILER_VAR_443_ahomeaaloisaeocumentsabahcbahasrcacachebbah, sizeof(long long int), "\03\0\0\0""int", "\04\0\0\0""last", 0, 0, 0, 0, offsetof(struct cacheFile, last));
 char** ____BAH_COMPILER_VAR_445_ahomeaaloisaeocumentsabahcbahasrcacachebbah = (char**)((char*)(____BAH_COMPILER_VAR_439_ahomeaaloisaeocumentsabahcbahasrcacachebbah) + offsetof(struct cacheFile, ver));
 struct reflectElement ____BAH_COMPILER_VAR_446_ahomeaaloisaeocumentsabahcbahasrcacachebbah = __reflect(____BAH_COMPILER_VAR_445_ahomeaaloisaeocumentsabahcbahasrcacachebbah, sizeof(char*), "\010\0\0\0""cpstring", "\03\0\0\0""ver", 0, 0, 0, 0, offsetof(struct cacheFile, ver));
-long int* ____BAH_COMPILER_VAR_447_ahomeaaloisaeocumentsabahcbahasrcacachebbah = (long int*)((char*)(____BAH_COMPILER_VAR_439_ahomeaaloisaeocumentsabahcbahasrcacachebbah) + offsetof(struct cacheFile, date));
-struct reflectElement ____BAH_COMPILER_VAR_448_ahomeaaloisaeocumentsabahcbahasrcacachebbah = __reflect(____BAH_COMPILER_VAR_447_ahomeaaloisaeocumentsabahcbahasrcacachebbah, sizeof(long int), "\03\0\0\0""int", "\04\0\0\0""date", 0, 0, 0, 0, offsetof(struct cacheFile, date));
-long int* ____BAH_COMPILER_VAR_449_ahomeaaloisaeocumentsabahcbahasrcacachebbah = (long int*)((char*)(____BAH_COMPILER_VAR_439_ahomeaaloisaeocumentsabahcbahasrcacachebbah) + offsetof(struct cacheFile, mem));
-struct reflectElement ____BAH_COMPILER_VAR_450_ahomeaaloisaeocumentsabahcbahasrcacachebbah = __reflect(____BAH_COMPILER_VAR_449_ahomeaaloisaeocumentsabahcbahasrcacachebbah, sizeof(long int), "\03\0\0\0""int", "\03\0\0\0""mem", 0, 0, 0, 0, offsetof(struct cacheFile, mem));
-long int* ____BAH_COMPILER_VAR_451_ahomeaaloisaeocumentsabahcbahasrcacachebbah = (long int*)((char*)(____BAH_COMPILER_VAR_439_ahomeaaloisaeocumentsabahcbahasrcacachebbah) + offsetof(struct cacheFile, opti));
-struct reflectElement ____BAH_COMPILER_VAR_452_ahomeaaloisaeocumentsabahcbahasrcacachebbah = __reflect(____BAH_COMPILER_VAR_451_ahomeaaloisaeocumentsabahcbahasrcacachebbah, sizeof(long int), "\03\0\0\0""int", "\04\0\0\0""opti", 0, 0, 0, 0, offsetof(struct cacheFile, opti));
+long long int* ____BAH_COMPILER_VAR_447_ahomeaaloisaeocumentsabahcbahasrcacachebbah = (long long int*)((char*)(____BAH_COMPILER_VAR_439_ahomeaaloisaeocumentsabahcbahasrcacachebbah) + offsetof(struct cacheFile, date));
+struct reflectElement ____BAH_COMPILER_VAR_448_ahomeaaloisaeocumentsabahcbahasrcacachebbah = __reflect(____BAH_COMPILER_VAR_447_ahomeaaloisaeocumentsabahcbahasrcacachebbah, sizeof(long long int), "\03\0\0\0""int", "\04\0\0\0""date", 0, 0, 0, 0, offsetof(struct cacheFile, date));
+long long int* ____BAH_COMPILER_VAR_449_ahomeaaloisaeocumentsabahcbahasrcacachebbah = (long long int*)((char*)(____BAH_COMPILER_VAR_439_ahomeaaloisaeocumentsabahcbahasrcacachebbah) + offsetof(struct cacheFile, mem));
+struct reflectElement ____BAH_COMPILER_VAR_450_ahomeaaloisaeocumentsabahcbahasrcacachebbah = __reflect(____BAH_COMPILER_VAR_449_ahomeaaloisaeocumentsabahcbahasrcacachebbah, sizeof(long long int), "\03\0\0\0""int", "\03\0\0\0""mem", 0, 0, 0, 0, offsetof(struct cacheFile, mem));
+long long int* ____BAH_COMPILER_VAR_451_ahomeaaloisaeocumentsabahcbahasrcacachebbah = (long long int*)((char*)(____BAH_COMPILER_VAR_439_ahomeaaloisaeocumentsabahcbahasrcacachebbah) + offsetof(struct cacheFile, opti));
+struct reflectElement ____BAH_COMPILER_VAR_452_ahomeaaloisaeocumentsabahcbahasrcacachebbah = __reflect(____BAH_COMPILER_VAR_451_ahomeaaloisaeocumentsabahcbahasrcacachebbah, sizeof(long long int), "\03\0\0\0""int", "\04\0\0\0""opti", 0, 0, 0, 0, offsetof(struct cacheFile, opti));
 array(char*)** ____BAH_COMPILER_VAR_453_ahomeaaloisaeocumentsabahcbahasrcacachebbah = (array(char*)**)((char*)(____BAH_COMPILER_VAR_439_ahomeaaloisaeocumentsabahcbahasrcacachebbah) + offsetof(struct cacheFile, files));
 char** ____BAH_COMPILER_VAR_454_ahomeaaloisaeocumentsabahcbahasrcacachebbah = 0;
 struct reflectElement ____BAH_COMPILER_VAR_455_ahomeaaloisaeocumentsabahcbahasrcacachebbah = __reflect(____BAH_COMPILER_VAR_454_ahomeaaloisaeocumentsabahcbahasrcacachebbah, sizeof(char*), "\010\0\0\0""cpstring", "\0\0\0\0""", 0, 0, 0, 0, 0);
@@ -11779,7 +11782,7 @@ char* buff = genCompilerVar();
 char** ____BAH_COMPILER_VAR_467_ahomeaaloisaeocumentsabahcbahasrcagenbbah = alloca(5 * sizeof(char*));____BAH_COMPILER_VAR_467_ahomeaaloisaeocumentsabahcbahasrcagenbbah[4] = "\022\0\0\0"" * sizeof(char*));";____BAH_COMPILER_VAR_467_ahomeaaloisaeocumentsabahcbahasrcagenbbah[3] = intToStr(len(strs));____BAH_COMPILER_VAR_467_ahomeaaloisaeocumentsabahcbahasrcagenbbah[2] = "\012\0\0\0"" = alloca(";____BAH_COMPILER_VAR_467_ahomeaaloisaeocumentsabahcbahasrcagenbbah[1] = buff;____BAH_COMPILER_VAR_467_ahomeaaloisaeocumentsabahcbahasrcagenbbah[0] = "\07\0\0\0""char** ";char* ____BAH_COMPILER_VAR_468_ahomeaaloisaeocumentsabahcbahasrcagenbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_467_ahomeaaloisaeocumentsabahcbahasrcagenbbah, 5);char* r = ____BAH_COMPILER_VAR_468_ahomeaaloisaeocumentsabahcbahasrcagenbbah;
 
 #line 30 "/home/alois/Documents/bah-bah/src/gen.bah"
-register long int i = 0;
+register long long int i = 0;
 
 #line 30 "/home/alois/Documents/bah-bah/src/gen.bah"
 for (; (i<len(strs)); ++i) {
@@ -11820,7 +11823,7 @@ return;
 }
 
 #line 10 "/home/alois/Documents/bah-bah/src/optimizations.bah"
-unsigned long int i = len(elems->vars)-1;
+unsigned long long int i = len(elems->vars)-1;
 
 #line 10 "/home/alois/Documents/bah-bah/src/optimizations.bah"
 for (; (i>0); --i) {
@@ -11888,7 +11891,7 @@ unsigned int n = b;
 char* r = "\0\0\0\0""";
 
 #line 43 "/home/alois/Documents/bah-bah/src/optimizations.bah"
-long int i = 0;
+long long int i = 0;
 
 #line 43 "/home/alois/Documents/bah-bah/src/optimizations.bah"
 for (; (n!=0); ++i) {
@@ -11915,7 +11918,7 @@ char** ____BAH_COMPILER_VAR_480_ahomeaaloisaeocumentsabahcbahasrcaoptimiaationsb
 };
 
 #line 55 "/home/alois/Documents/bah-bah/src/optimizations.bah"
-char* escapeIntOctal(long int n){
+char* escapeIntOctal(long long int n){
 
 #line 56 "/home/alois/Documents/bah-bah/src/optimizations.bah"
 char* s = &n;
@@ -11928,16 +11931,16 @@ return r;
 };
 
 #line 62 "/home/alois/Documents/bah-bah/src/optimizations.bah"
-unsigned long int getStrLen(char* s){
+unsigned long long int getStrLen(char* s){
 
 #line 63 "/home/alois/Documents/bah-bah/src/optimizations.bah"
-unsigned long int l = strlen(s);
+unsigned long long int l = strlen(s);
 
 #line 64 "/home/alois/Documents/bah-bah/src/optimizations.bah"
-long int n = 0;
+long long int n = 0;
 
 #line 65 "/home/alois/Documents/bah-bah/src/optimizations.bah"
-long int i = 1;
+long long int i = 1;
 
 #line 65 "/home/alois/Documents/bah-bah/src/optimizations.bah"
 for (; (i+1<l); ++i) {
@@ -11962,7 +11965,7 @@ else if ((s[i+1+4]==48)) {
 ++i;
 
 #line 72 "/home/alois/Documents/bah-bah/src/optimizations.bah"
-long int start = i;
+long long int start = i;
 
 #line 73 "/home/alois/Documents/bah-bah/src/optimizations.bah"
 for (; (i-start<2); ++i) {
@@ -11992,7 +11995,7 @@ return n;
 char* strLitteralToBahStr(char* s){
 
 #line 89 "/home/alois/Documents/bah-bah/src/optimizations.bah"
-unsigned long int l = getStrLen(s);
+unsigned long long int l = getStrLen(s);
 
 #line 90 "/home/alois/Documents/bah-bah/src/optimizations.bah"
 char** ____BAH_COMPILER_VAR_484_ahomeaaloisaeocumentsabahcbahasrcaoptimiaationsbbah = alloca(4 * sizeof(char*));____BAH_COMPILER_VAR_484_ahomeaaloisaeocumentsabahcbahasrcaoptimiaationsbbah[3] = s;____BAH_COMPILER_VAR_484_ahomeaaloisaeocumentsabahcbahasrcaoptimiaationsbbah[2] = "\01\0\0\0""\"";____BAH_COMPILER_VAR_484_ahomeaaloisaeocumentsabahcbahasrcaoptimiaationsbbah[1] = escapeIntOctal(l);____BAH_COMPILER_VAR_484_ahomeaaloisaeocumentsabahcbahasrcaoptimiaationsbbah[0] = "\01\0\0\0""\"";char* ____BAH_COMPILER_VAR_485_ahomeaaloisaeocumentsabahcbahasrcaoptimiaationsbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_484_ahomeaaloisaeocumentsabahcbahasrcaoptimiaationsbbah, 4);return ____BAH_COMPILER_VAR_485_ahomeaaloisaeocumentsabahcbahasrcaoptimiaationsbbah;
@@ -12028,7 +12031,7 @@ struct func* r = ____BAH_COMPILER_VAR_486_ahomeaaloisaeocumentsabahcbahasrcagene
 r->name = this->baseFn->name;
 
 #line 21 "/home/alois/Documents/bah-bah/src/generics.bah"
-register long int i = 0;
+register long long int i = 0;
 
 #line 21 "/home/alois/Documents/bah-bah/src/generics.bah"
 for (; (i<len(this->baseFn->args)); ++i) {
@@ -12067,7 +12070,7 @@ this->callToken = t;
 char genericFunc__isAlreadyDecl(struct genericFunc* this,char* n){
 
 #line 38 "/home/alois/Documents/bah-bah/src/generics.bah"
-register long int i = 0;
+register long long int i = 0;
 
 #line 38 "/home/alois/Documents/bah-bah/src/generics.bah"
 for (; (i<len(this->declared)); ++i) {
@@ -12102,7 +12105,7 @@ unsigned int ____BAH_COMPILER_VAR_488_ahomeaaloisaeocumentsabahcbahasrcagenerics
 struct Elems* fnElems = dupElems(elems);
 
 #line 53 "/home/alois/Documents/bah-bah/src/generics.bah"
-register long int i = 0;
+register long long int i = 0;
 
 #line 53 "/home/alois/Documents/bah-bah/src/generics.bah"
 for (; (i<len(fn->args)); ++i) {
@@ -12235,7 +12238,7 @@ void debugLine(__BAH_ARR_TYPE_Tok line){
 char* cont = "\0\0\0\0""";
 
 #line 30 "/home/alois/Documents/bah-bah/src/parser.bah"
-register long int i = 0;
+register long long int i = 0;
 
 #line 30 "/home/alois/Documents/bah-bah/src/parser.bah"
 while ((i<len(line))) {
@@ -12278,7 +12281,7 @@ struct Elems* nElems = ____BAH_COMPILER_VAR_502_ahomeaaloisaeocumentsabahcbahasr
 allocateArray(nElems->vars,len(elems->vars));
 
 #line 50 "/home/alois/Documents/bah-bah/src/parser.bah"
-register long int j = 0;
+register long long int j = 0;
 
 #line 50 "/home/alois/Documents/bah-bah/src/parser.bah"
 for (; (j<len(elems->vars)); ++j) {
@@ -12292,7 +12295,7 @@ for (; (j<len(elems->vars)); ++j) {
 #line 54 "/home/alois/Documents/bah-bah/src/parser.bah"
 return nElems;
 };
-typedef long int lineType;
+typedef long long int lineType;
 
 #line 59 "/home/alois/Documents/bah-bah/src/parser.bah"
 #define LINE_TYPE_INCLUDE (lineType)0
@@ -12358,7 +12361,7 @@ char checkedNull(char* v,struct Elems* elems){
 for (; (elems!=null); elems = elems->parent) {
 
 #line 9 "/home/alois/Documents/bah-bah/src/safety.bah"
-register long int i = 0;
+register long long int i = 0;
 
 #line 9 "/home/alois/Documents/bah-bah/src/safety.bah"
 for (; (i<len(elems->branchChecks)); ++i) {
@@ -12417,7 +12420,7 @@ char checkedNotNull(char* v,struct Elems* elems){
 for (; (elems!=null); elems = elems->parent) {
 
 #line 37 "/home/alois/Documents/bah-bah/src/safety.bah"
-register long int i = 0;
+register long long int i = 0;
 
 #line 37 "/home/alois/Documents/bah-bah/src/safety.bah"
 for (; (i<len(elems->branchChecks)); ++i) {
@@ -12572,7 +12575,7 @@ currentFn->exits = true;
 else {
 
 #line 128 "/home/alois/Documents/bah-bah/src/safety.bah"
-register long int i = 0;
+register long long int i = 0;
 
 #line 128 "/home/alois/Documents/bah-bah/src/safety.bah"
 for (; (i<len(elems->branchChecks)); ++i) {
@@ -12591,7 +12594,7 @@ continue;
 if ((bc.checkNull==true)) {
 
 #line 134 "/home/alois/Documents/bah-bah/src/safety.bah"
-register long int j = 0;
+register long long int j = 0;
 
 #line 134 "/home/alois/Documents/bah-bah/src/safety.bah"
 for (; (j<len(elems->parent->vars)); ++j) {
@@ -12641,7 +12644,7 @@ continue;
 if ((bc.checkNull==true)) {
 
 #line 151 "/home/alois/Documents/bah-bah/src/safety.bah"
-register long int j = 0;
+register long long int j = 0;
 
 #line 151 "/home/alois/Documents/bah-bah/src/safety.bah"
 for (; (j<len(currElems->parent->vars)); ++j) {
@@ -12718,7 +12721,7 @@ return;
 }
 
 #line 193 "/home/alois/Documents/bah-bah/src/safety.bah"
-register long int i = 0;
+register long long int i = 0;
 
 #line 193 "/home/alois/Documents/bah-bah/src/safety.bah"
 for (; (i<len(elems->vars)); ++i) {
@@ -12896,7 +12899,7 @@ return "\0\0\0\0""";
 void checkBounds(struct Tok* t,struct Elems* elems){
 
 #line 289 "/home/alois/Documents/bah-bah/src/safety.bah"
-long int ind = 0;
+long long int ind = 0;
 
 #line 290 "/home/alois/Documents/bah-bah/src/safety.bah"
 if ((t->type==TOKEN_TYPE_INT)) {
@@ -13096,7 +13099,7 @@ nl->length = 0;
 nl->elemSize = sizeof(struct Tok);
 
 #line 144 "/home/alois/Documents/bah-bah/src/parser.bah"
-register long int i = 0;
+register long long int i = 0;
 
 #line 145 "/home/alois/Documents/bah-bah/src/parser.bah"
 if ((guard==true)) {
@@ -13194,10 +13197,10 @@ return nl;
 char* getDirFromFile(char* f){
 
 #line 186 "/home/alois/Documents/bah-bah/src/parser.bah"
-long int l = strlen(f);
+long long int l = strlen(f);
 
 #line 187 "/home/alois/Documents/bah-bah/src/parser.bah"
-register long int i = l-1;
+register long long int i = l-1;
 
 #line 187 "/home/alois/Documents/bah-bah/src/parser.bah"
 while ((i>=0)) {
@@ -13624,7 +13627,7 @@ string__trimLeft(&fileName,1);
 string__trimRight(&fileName,1);
 
 #line 370 "/home/alois/Documents/bah-bah/src/parser.bah"
-if (noImport) {
+if (noImport||(strcmp(BAH_OS, BAH_HOST_OS) != 0)) {
 
 #line 371 "/home/alois/Documents/bah-bah/src/parser.bah"
 includeFile(string__str(&fileName),elems);
@@ -13716,7 +13719,7 @@ isSubObject = true;
 char** ____BAH_COMPILER_VAR_563_ahomeaaloisaeocumentsabahcbahasrcaparserbbah = alloca(6 * sizeof(char*));____BAH_COMPILER_VAR_563_ahomeaaloisaeocumentsabahcbahasrcaparserbbah[5] = "\02\0\0\0"".o";____BAH_COMPILER_VAR_563_ahomeaaloisaeocumentsabahcbahasrcaparserbbah[4] = intToStr(isOptimized);____BAH_COMPILER_VAR_563_ahomeaaloisaeocumentsabahcbahasrcaparserbbah[3] = intToStr(RCPlevel);____BAH_COMPILER_VAR_563_ahomeaaloisaeocumentsabahcbahasrcaparserbbah[2] = pathToVarName(fn);____BAH_COMPILER_VAR_563_ahomeaaloisaeocumentsabahcbahasrcaparserbbah[1] = "\06\0\0\0""cache/";____BAH_COMPILER_VAR_563_ahomeaaloisaeocumentsabahcbahasrcaparserbbah[0] = BAH_DIR;char* ____BAH_COMPILER_VAR_564_ahomeaaloisaeocumentsabahcbahasrcaparserbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_563_ahomeaaloisaeocumentsabahcbahasrcaparserbbah, 6);char* oName = ____BAH_COMPILER_VAR_564_ahomeaaloisaeocumentsabahcbahasrcaparserbbah;
 
 #line 419 "/home/alois/Documents/bah-bah/src/parser.bah"
-unsigned long int i = len(compilerState.cLibs);
+unsigned long long int i = len(compilerState.cLibs);
 
 #line 419 "/home/alois/Documents/bah-bah/src/parser.bah"
 for (; (i!=0); --i) {
@@ -13862,7 +13865,7 @@ memory = prePross(memory,(lineType)-1,elems);
 }
 
 #line 496 "/home/alois/Documents/bah-bah/src/parser.bah"
-long int declType = 0;
+long long int declType = 0;
 
 #line 498 "/home/alois/Documents/bah-bah/src/parser.bah"
 char* rvn = genCompilerVar();
@@ -13904,16 +13907,16 @@ struct string rst = getCType(tmpV->type,elems);
 struct rope* r = rope("\0\0\0\0""");
 
 #line 509 "/home/alois/Documents/bah-bah/src/parser.bah"
-array(long int)* excl = memoryAlloc(sizeof(array(long int)));
+array(long long int)* excl = memoryAlloc(sizeof(array(long long int)));
 
 excl->length = 0;
-excl->elemSize = sizeof(long int);
+excl->elemSize = sizeof(long long int);
 
 #line 510 "/home/alois/Documents/bah-bah/src/parser.bah"
-register long int j = 0;
+register long long int j = 0;
 
 #line 510 "/home/alois/Documents/bah-bah/src/parser.bah"
-register long int k = 0;
+register long long int k = 0;
 
 #line 510 "/home/alois/Documents/bah-bah/src/parser.bah"
 while ((k<len(memory))) {
@@ -13991,10 +13994,10 @@ char** ____BAH_COMPILER_VAR_577_ahomeaaloisaeocumentsabahcbahasrcaparserbbah = a
 k = k+3;
 
 #line 538 "/home/alois/Documents/bah-bah/src/parser.bah"
-long int start = k;
+long long int start = k;
 
 #line 539 "/home/alois/Documents/bah-bah/src/parser.bah"
-long int nbBraces = 1;
+long long int nbBraces = 1;
 
 #line 540 "/home/alois/Documents/bah-bah/src/parser.bah"
 for (; (k<len(memory)); ++k) {
@@ -14118,10 +14121,10 @@ char** ____BAH_COMPILER_VAR_587_ahomeaaloisaeocumentsabahcbahasrcaparserbbah = a
 ++k;
 
 #line 596 "/home/alois/Documents/bah-bah/src/parser.bah"
-long int start = k;
+long long int start = k;
 
 #line 597 "/home/alois/Documents/bah-bah/src/parser.bah"
-long int nbBraces = 1;
+long long int nbBraces = 1;
 
 #line 598 "/home/alois/Documents/bah-bah/src/parser.bah"
 for (; (k<len(memory)); ++k) {
@@ -14254,7 +14257,7 @@ nl->length = 0;
 nl->elemSize = sizeof(struct Tok);
 
 #line 665 "/home/alois/Documents/bah-bah/src/parser.bah"
-register long int i = 0;
+register long long int i = 0;
 
 #line 665 "/home/alois/Documents/bah-bah/src/parser.bah"
 while ((i<len(line))) {
@@ -14424,7 +14427,7 @@ memory->length = 0;
 memory->elemSize = sizeof(struct Tok);
 
 #line 729 "/home/alois/Documents/bah-bah/src/parser.bah"
-long int nbBraces = 1;
+long long int nbBraces = 1;
 
 #line 730 "/home/alois/Documents/bah-bah/src/parser.bah"
 for (; (i<len(line)); ++i) {
@@ -14525,7 +14528,7 @@ return nl;
 void parseArrayType(__BAH_ARR_TYPE_Tok line,struct Elems* elems){
 
 #line 772 "/home/alois/Documents/bah-bah/src/parser.bah"
-register long int i = 0;
+register long long int i = 0;
 
 #line 772 "/home/alois/Documents/bah-bah/src/parser.bah"
 for (; (i<len(line)); ++i) {
@@ -14537,7 +14540,7 @@ struct Tok t = line->data[i];
 if ((t.type==TOKEN_TYPE_ENCL)&&(t.cont[0+4]==91)&&(i+1<len(line))) {
 
 #line 775 "/home/alois/Documents/bah-bah/src/parser.bah"
-long int start = i;
+long long int start = i;
 
 #line 776 "/home/alois/Documents/bah-bah/src/parser.bah"
 ++i;
@@ -14552,7 +14555,7 @@ if ((t.type==TOKEN_TYPE_ENCL)&&(t.cont[0+4]==93)) {
 ++i;
 
 #line 780 "/home/alois/Documents/bah-bah/src/parser.bah"
-long int depth = 1;
+long long int depth = 1;
 
 #line 781 "/home/alois/Documents/bah-bah/src/parser.bah"
 char* bracks = "\02\0\0\0""[]";
@@ -14636,7 +14639,7 @@ else {
 __BAH_ARR_TYPE_Tok parsePointers(__BAH_ARR_TYPE_Tok l,struct Elems* elems){
 
 #line 814 "/home/alois/Documents/bah-bah/src/parser.bah"
-register long int i = 0;
+register long long int i = 0;
 
 #line 814 "/home/alois/Documents/bah-bah/src/parser.bah"
 for (; (i<len(l)); ++i) {
@@ -14692,7 +14695,7 @@ continue;
 if ((i+1<len(l))) {
 
 #line 835 "/home/alois/Documents/bah-bah/src/parser.bah"
-if ((i>0)&&(strcmp(l->data[i-1].cont, "\01\0\0\0"")") == 0)||(l->data[i-1].isValue==true)) {
+if ((i>0)&&((strcmp(l->data[i-1].cont, "\01\0\0\0"")") == 0)||(l->data[i-1].isValue==true))) {
 
 #line 836 "/home/alois/Documents/bah-bah/src/parser.bah"
 continue;
@@ -14745,7 +14748,7 @@ throwErr(&e,"\036\0\0\0""Must be a struct, not {TOKEN}.");
 struct string svt = string(v->type);
 
 #line 865 "/home/alois/Documents/bah-bah/src/parser.bah"
-register long int ptrLevel = string__count(&svt,"\01\0\0\0""*");
+register long long int ptrLevel = string__count(&svt,"\01\0\0\0""*");
 
 #line 867 "/home/alois/Documents/bah-bah/src/parser.bah"
 string__replace(&svt,"\01\0\0\0""*","\0\0\0\0""");
@@ -14780,7 +14783,7 @@ ptrLevel = ptrLevel-1;
 char** ____BAH_COMPILER_VAR_625_ahomeaaloisaeocumentsabahcbahasrcaparserbbah = alloca(7 * sizeof(char*));____BAH_COMPILER_VAR_625_ahomeaaloisaeocumentsabahcbahasrcaparserbbah[6] = "\01\0\0\0"")";____BAH_COMPILER_VAR_625_ahomeaaloisaeocumentsabahcbahasrcaparserbbah[5] = string__str(&svt);____BAH_COMPILER_VAR_625_ahomeaaloisaeocumentsabahcbahasrcaparserbbah[4] = "\016\0\0\0""sizeof(struct ";____BAH_COMPILER_VAR_625_ahomeaaloisaeocumentsabahcbahasrcaparserbbah[3] = "\02\0\0\0"", ";____BAH_COMPILER_VAR_625_ahomeaaloisaeocumentsabahcbahasrcaparserbbah[2] = e->cont;____BAH_COMPILER_VAR_625_ahomeaaloisaeocumentsabahcbahasrcaparserbbah[1] = ptrRect;____BAH_COMPILER_VAR_625_ahomeaaloisaeocumentsabahcbahasrcaparserbbah[0] = "\014\0\0\0""__serialize(";char* ____BAH_COMPILER_VAR_626_ahomeaaloisaeocumentsabahcbahasrcaparserbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_625_ahomeaaloisaeocumentsabahcbahasrcaparserbbah, 7);code = ____BAH_COMPILER_VAR_626_ahomeaaloisaeocumentsabahcbahasrcaparserbbah;
 
 #line 882 "/home/alois/Documents/bah-bah/src/parser.bah"
-register long int i = 0;
+register long long int i = 0;
 
 #line 882 "/home/alois/Documents/bah-bah/src/parser.bah"
 while ((i<len(s->members))) {
@@ -14977,7 +14980,7 @@ unsigned int ____BAH_COMPILER_VAR_644_ahomeaaloisaeocumentsabahcbahasrcaparserbb
 struct rope* dataLayout = rope("\0\0\0\0""");
 
 #line 966 "/home/alois/Documents/bah-bah/src/parser.bah"
-register long int i = 0;
+register long long int i = 0;
 
 #line 966 "/home/alois/Documents/bah-bah/src/parser.bah"
 for (; (i<len(ts->members)); ++i) {
@@ -15134,10 +15137,10 @@ return t;
 };
 
 #line 1037 "/home/alois/Documents/bah-bah/src/parser.bah"
-char* parseArrayDecl(struct variable* v,__BAH_ARR_TYPE_Tok l,long int i,long int max,struct Elems* elems){
+char* parseArrayDecl(struct variable* v,__BAH_ARR_TYPE_Tok l,long long int i,long long int max,struct Elems* elems){
 
 #line 1038 "/home/alois/Documents/bah-bah/src/parser.bah"
-long int arrayLength = 0;
+long long int arrayLength = 0;
 
 #line 1039 "/home/alois/Documents/bah-bah/src/parser.bah"
 struct string arrType = getCType(v->type,elems);
@@ -15219,10 +15222,10 @@ struct Tok t = memory->data[i];
 if ((strcmp(t.cont, "\01\0\0\0""{") == 0)) {
 
 #line 1066 "/home/alois/Documents/bah-bah/src/parser.bah"
-long int j = i-1;
+long long int j = i-1;
 
 #line 1067 "/home/alois/Documents/bah-bah/src/parser.bah"
-long int nbBraces = 0;
+long long int nbBraces = 0;
 
 #line 1068 "/home/alois/Documents/bah-bah/src/parser.bah"
 for (; (i<len(memory)); ++i) {
@@ -15339,13 +15342,13 @@ if ((strcmp(t.cont, "\01\0\0\0"",") != 0)) {
 if ((strcmp(t.cont, "\01\0\0\0""}") == 0)) {
 
 #line 1118 "/home/alois/Documents/bah-bah/src/parser.bah"
-long int allocLength = arrayLength;
+long long int allocLength = arrayLength;
 
 #line 1119 "/home/alois/Documents/bah-bah/src/parser.bah"
 if ((allocLength>50)) {
 
 #line 1120 "/home/alois/Documents/bah-bah/src/parser.bah"
-long int modAllocAmm = allocLength%50;
+long long int modAllocAmm = allocLength%50;
 
 #line 1121 "/home/alois/Documents/bah-bah/src/parser.bah"
 allocLength = allocLength+modAllocAmm;
@@ -15438,7 +15441,7 @@ l = parseStructType(l,(lineType)-1,elems);
 char isEqual = false;
 
 #line 1162 "/home/alois/Documents/bah-bah/src/parser.bah"
-long int equalIndex = 0;
+long long int equalIndex = 0;
 
 #line 1163 "/home/alois/Documents/bah-bah/src/parser.bah"
 char toVar = false;
@@ -15624,7 +15627,7 @@ unsigned int ____BAH_COMPILER_VAR_687_ahomeaaloisaeocumentsabahcbahasrcaparserbb
     nl->data[____BAH_COMPILER_VAR_687_ahomeaaloisaeocumentsabahcbahasrcaparserbbah] = operT;
 
 #line 1237 "/home/alois/Documents/bah-bah/src/parser.bah"
-register long int j = 0;
+register long long int j = 0;
 
 #line 1237 "/home/alois/Documents/bah-bah/src/parser.bah"
 for (; (j<len(tmpL)); ++j) {
@@ -15640,7 +15643,7 @@ l = nl;
 }
 
 #line 1245 "/home/alois/Documents/bah-bah/src/parser.bah"
-register long int i = 1;
+register long long int i = 1;
 
 #line 1245 "/home/alois/Documents/bah-bah/src/parser.bah"
 while ((i<len(l))) {
@@ -16581,10 +16584,10 @@ char ____BAH_COMPILER_VAR_807_ahomeaaloisaeocumentsabahcbahasrcaparserbbah(__BAH
         }
         return 0;
         }
-char* parseFnHeader(char* prev,__BAH_ARR_TYPE_Tok l,long int* i,struct func* fn,struct Elems* elems){
+char* parseFnHeader(char* prev,__BAH_ARR_TYPE_Tok l,long long int* i,struct func* fn,struct Elems* elems){
 
 #line 1616 "/home/alois/Documents/bah-bah/src/parser.bah"
-register long int j = *i;
+register long long int j = *i;
 
 #line 1617 "/home/alois/Documents/bah-bah/src/parser.bah"
 struct Tok ft = l->data[j];
@@ -16659,7 +16662,7 @@ j = j+1;
 char isComa = false;
 
 #line 1650 "/home/alois/Documents/bah-bah/src/parser.bah"
-long int nbPars = 1;
+long long int nbPars = 1;
 
 #line 1651 "/home/alois/Documents/bah-bah/src/parser.bah"
 while ((j<len(l))) {
@@ -16754,7 +16757,7 @@ string__trimLeft(&cfrt,2);
 if (string__hasSuffix(&cfrt,"\01\0\0\0""*")) {
 
 #line 1685 "/home/alois/Documents/bah-bah/src/parser.bah"
-long int nbast = string__count(&cfrt,"\01\0\0\0""*");
+long long int nbast = string__count(&cfrt,"\01\0\0\0""*");
 
 #line 1686 "/home/alois/Documents/bah-bah/src/parser.bah"
 string__trimRight(&cfrt,nbast);
@@ -16920,7 +16923,7 @@ string__trimLeft(&cfrt,2);
 if (string__hasSuffix(&cfrt,"\01\0\0\0""*")) {
 
 #line 1751 "/home/alois/Documents/bah-bah/src/parser.bah"
-long int nbast = string__count(&cfrt,"\01\0\0\0""*");
+long long int nbast = string__count(&cfrt,"\01\0\0\0""*");
 
 #line 1752 "/home/alois/Documents/bah-bah/src/parser.bah"
 string__trimRight(&cfrt,nbast);
@@ -16993,7 +16996,7 @@ throwErr(&l->data[len(l)-1],"\130\0\0\0""Cannot declare struct has such, please 
 struct Tok nameToken = l->data[1];
 
 #line 1779 "/home/alois/Documents/bah-bah/src/parser.bah"
-register long int i = 2;
+register long long int i = 2;
 
 #line 1780 "/home/alois/Documents/bah-bah/src/parser.bah"
 char doesOutput = true;
@@ -17088,7 +17091,7 @@ s->extendedFrom = extdS->name;
 array(struct structMemb*)* extdsmbs = extdS->members;
 
 #line 1813 "/home/alois/Documents/bah-bah/src/parser.bah"
-register long int j = 0;
+register long long int j = 0;
 
 #line 1813 "/home/alois/Documents/bah-bah/src/parser.bah"
 while ((j<len(extdsmbs))) {
@@ -17181,7 +17184,7 @@ struct rope* OOUT = OUTPUT;
 char* nextLine = "\0\0\0\0""";
 
 #line 1845 "/home/alois/Documents/bah-bah/src/parser.bah"
-register long int j = 0;
+register long long int j = 0;
 
 #line 1845 "/home/alois/Documents/bah-bah/src/parser.bah"
 for (; (j<len(l)); ++j) {
@@ -17204,7 +17207,7 @@ while ((i<len(l))) {
 struct Tok t = l->data[i];
 
 #line 1853 "/home/alois/Documents/bah-bah/src/parser.bah"
-long int max = i+2;
+long long int max = i+2;
 
 #line 1854 "/home/alois/Documents/bah-bah/src/parser.bah"
 if (__builtin_expect((max>=len(l)), 0)) {
@@ -17240,7 +17243,7 @@ throwErr(&t,"\042\0\0\0""Cannot use {TOKEN} as member name.");
 memb->name = t.cont;
 
 #line 1865 "/home/alois/Documents/bah-bah/src/parser.bah"
-register long int ii = 0;
+register long long int ii = 0;
 
 #line 1865 "/home/alois/Documents/bah-bah/src/parser.bah"
 while ((ii<len(members))) {
@@ -17383,7 +17386,7 @@ j = j+1;
 --i;
 
 #line 1911 "/home/alois/Documents/bah-bah/src/parser.bah"
-long int nli = 0;
+long long int nli = 0;
 
 #line 1913 "/home/alois/Documents/bah-bah/src/parser.bah"
 struct rope* code = rope(parseFnHeader(fnPrefix,nl,&nli,fn,elems));
@@ -17532,7 +17535,7 @@ tokens->length = 0;
 tokens->elemSize = sizeof(struct Tok);
 
 #line 1950 "/home/alois/Documents/bah-bah/src/parser.bah"
-long int nbBraces = 1;
+long long int nbBraces = 1;
 
 #line 1951 "/home/alois/Documents/bah-bah/src/parser.bah"
 t = l->data[i];
@@ -17545,7 +17548,7 @@ if ((strcmp(t.cont, "\01\0\0\0""{") == 0)) {
 }
 
 #line 1955 "/home/alois/Documents/bah-bah/src/parser.bah"
-long int start = i;
+long long int start = i;
 
 #line 1956 "/home/alois/Documents/bah-bah/src/parser.bah"
 tokens = (array(struct Tok)*)null;
@@ -18005,7 +18008,7 @@ struct Tok ft = l->data[1];
 struct Tok st = l->data[2];
 
 #line 2121 "/home/alois/Documents/bah-bah/src/parser.bah"
-long int i = 1;
+long long int i = 1;
 
 #line 2122 "/home/alois/Documents/bah-bah/src/parser.bah"
 char doesOutput = true;
@@ -18151,7 +18154,7 @@ void parseClib(__BAH_ARR_TYPE_Tok line){
 array(char*)* clibs = compilerState.cLibs;
 
 #line 2175 "/home/alois/Documents/bah-bah/src/parser.bah"
-register long int i = 1;
+register long long int i = 1;
 
 #line 2175 "/home/alois/Documents/bah-bah/src/parser.bah"
 while ((i<len(line))) {
@@ -18182,7 +18185,7 @@ char* ccstr = string__str(&cc);
 char found = false;
 
 #line 2187 "/home/alois/Documents/bah-bah/src/parser.bah"
-register long int j = 0;
+register long long int j = 0;
 
 #line 2187 "/home/alois/Documents/bah-bah/src/parser.bah"
 while ((j<len(clibs))) {
@@ -18507,7 +18510,7 @@ excl->length = 0;
 excl->elemSize = sizeof(struct variable*);
 
 #line 2321 "/home/alois/Documents/bah-bah/src/parser.bah"
-register long int j = 0;
+register long long int j = 0;
 
 #line 2321 "/home/alois/Documents/bah-bah/src/parser.bah"
 for (; (j<len(currentFn->args)); ++j) {
@@ -18551,7 +18554,7 @@ excl->length = 0;
 excl->elemSize = sizeof(struct variable*);
 
 #line 2334 "/home/alois/Documents/bah-bah/src/parser.bah"
-register long int j = 0;
+register long long int j = 0;
 
 #line 2334 "/home/alois/Documents/bah-bah/src/parser.bah"
 for (; (j<len(currentFn->args)); ++j) {
@@ -18644,7 +18647,7 @@ struct Elems* ifElems = dupElems(elems);
 if ((fromElse==true)) {
 
 #line 2376 "/home/alois/Documents/bah-bah/src/parser.bah"
-register long int i = 0;
+register long long int i = 0;
 
 #line 2376 "/home/alois/Documents/bah-bah/src/parser.bah"
 for (; (i<len(prevIfChecks)); ++i) {
@@ -18663,7 +18666,7 @@ bc.checkNull = (bc.checkNull==false);
 }
 
 #line 2383 "/home/alois/Documents/bah-bah/src/parser.bah"
-register long int i = 0;
+register long long int i = 0;
 
 #line 2383 "/home/alois/Documents/bah-bah/src/parser.bah"
 for (; (i<len(currChecks)); ++i) {
@@ -18762,7 +18765,7 @@ memory->length = 0;
 memory->elemSize = sizeof(struct Tok);
 
 #line 2428 "/home/alois/Documents/bah-bah/src/parser.bah"
-register long int i = 1;
+register long long int i = 1;
 
 #line 2428 "/home/alois/Documents/bah-bah/src/parser.bah"
 while ((i<len(l))) {
@@ -18800,10 +18803,10 @@ memory->length = 0;
 memory->elemSize = sizeof(struct Tok);
 
 #line 2440 "/home/alois/Documents/bah-bah/src/parser.bah"
-unsigned long int max = len(l)-1;
+unsigned long long int max = len(l)-1;
 
 #line 2441 "/home/alois/Documents/bah-bah/src/parser.bah"
-register long int i = 2;
+register long long int i = 2;
 
 #line 2441 "/home/alois/Documents/bah-bah/src/parser.bah"
 while ((i<max)) {
@@ -18894,10 +18897,10 @@ throwErr(&l->data[0],"\031\0\0\0""Invalid usage of {TOKEN}.");
 }
 
 #line 2481 "/home/alois/Documents/bah-bah/src/parser.bah"
-long int nbComas = 0;
+long long int nbComas = 0;
 
 #line 2482 "/home/alois/Documents/bah-bah/src/parser.bah"
-register long int i = 1;
+register long long int i = 1;
 
 #line 2482 "/home/alois/Documents/bah-bah/src/parser.bah"
 while ((i<len(l))) {
@@ -19032,7 +19035,7 @@ throwErr(&t,"\114\0\0\0""Expected '{' not {TOKEN} after '<condition>,<instructio
 }
 
 #line 2541 "/home/alois/Documents/bah-bah/src/parser.bah"
-unsigned long int max = len(l)-1;
+unsigned long long int max = len(l)-1;
 
 #line 2542 "/home/alois/Documents/bah-bah/src/parser.bah"
 i = i+1;
@@ -19067,7 +19070,7 @@ throwErr(&t,"\073\0\0\0""Expected '{' not {TOKEN} after condtition in for statem
 }
 
 #line 2554 "/home/alois/Documents/bah-bah/src/parser.bah"
-unsigned long int max = len(l)-1;
+unsigned long long int max = len(l)-1;
 
 #line 2555 "/home/alois/Documents/bah-bah/src/parser.bah"
 i = 3;
@@ -19269,7 +19272,7 @@ char* fnBinding = "\0\0\0\0""";
 char** ____BAH_COMPILER_VAR_961_ahomeaaloisaeocumentsabahcbahasrcaparserbbah = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_961_ahomeaaloisaeocumentsabahcbahasrcaparserbbah[1] = "\01\0\0\0""(";____BAH_COMPILER_VAR_961_ahomeaaloisaeocumentsabahcbahasrcaparserbbah[0] = fn->name;char* ____BAH_COMPILER_VAR_962_ahomeaaloisaeocumentsabahcbahasrcaparserbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_961_ahomeaaloisaeocumentsabahcbahasrcaparserbbah, 2);char* fnCall = ____BAH_COMPILER_VAR_962_ahomeaaloisaeocumentsabahcbahasrcaparserbbah;
 
 #line 2640 "/home/alois/Documents/bah-bah/src/parser.bah"
-register long int i = 0;
+register long long int i = 0;
 
 #line 2640 "/home/alois/Documents/bah-bah/src/parser.bah"
 for (; (i<len(fn->args)); ++i) {
@@ -19454,7 +19457,7 @@ return;
 if ((strcmp(ft.cont, "\010\0\0\0""#evalAll") == 0)) {
 
 #line 2730 "/home/alois/Documents/bah-bah/src/parser.bah"
-register long int i = 0;
+register long long int i = 0;
 
 #line 2730 "/home/alois/Documents/bah-bah/src/parser.bah"
 for (; (i<len(elems->fns)); ++i) {
@@ -19638,7 +19641,7 @@ nl->length = 0;
 nl->elemSize = sizeof(struct Tok);
 
 #line 2801 "/home/alois/Documents/bah-bah/src/parser.bah"
-register long int i = 2;
+register long long int i = 2;
 
 #line 2801 "/home/alois/Documents/bah-bah/src/parser.bah"
 while ((i<len(l)-1)) {
@@ -19683,7 +19686,7 @@ throwErr(&fnT,"\104\0\0\0""Cannot use keyword async on {TOKEN}. Usage: 'async <f
 char found = false;
 
 #line 2822 "/home/alois/Documents/bah-bah/src/parser.bah"
-register long int i = 0;
+register long long int i = 0;
 
 #line 2822 "/home/alois/Documents/bah-bah/src/parser.bah"
 while ((i<len(compilerState.cLibs))) {
@@ -19819,7 +19822,7 @@ char** ____BAH_COMPILER_VAR_996_ahomeaaloisaeocumentsabahcbahasrcaparserbbah = a
 void addRCPvars(__BAH_ARR_TYPE_Tok l,lineType ltp,struct Elems* elems){
 
 #line 2893 "/home/alois/Documents/bah-bah/src/parser.bah"
-register long int i = 0;
+register long long int i = 0;
 
 #line 2894 "/home/alois/Documents/bah-bah/src/parser.bah"
 if ((ltp==LINE_TYPE_VAR)) {
@@ -19865,7 +19868,7 @@ nl->length = 0;
 nl->elemSize = sizeof(struct Tok);
 
 #line 2913 "/home/alois/Documents/bah-bah/src/parser.bah"
-register long int i = 0;
+register long long int i = 0;
 
 #line 2913 "/home/alois/Documents/bah-bah/src/parser.bah"
 for (; (i<len(l)); ++i) {
@@ -20102,16 +20105,16 @@ return nl;
 };
 
 #line 7 "/home/alois/Documents/bah-bah/src/values.bah"
-long int valueFunc(struct func* fn,struct variable* parent,__BAH_ARR_TYPE_Tok l,long int i,lineType ltp,struct Elems* elems){
+long long int valueFunc(struct func* fn,struct variable* parent,__BAH_ARR_TYPE_Tok l,long long int i,lineType ltp,struct Elems* elems){
 
 #line 8 "/home/alois/Documents/bah-bah/src/values.bah"
-long int tokPos = i;
+long long int tokPos = i;
 
 #line 10 "/home/alois/Documents/bah-bah/src/values.bah"
 struct genericFunc* generic= null;
 
 #line 13 "/home/alois/Documents/bah-bah/src/values.bah"
-long int errPos = -1;
+long long int errPos = -1;
 
 #line 14 "/home/alois/Documents/bah-bah/src/values.bah"
 if ((fn==null)) {
@@ -20141,7 +20144,7 @@ fn = searchVirtFuncByToken(&pt,elems);
 if ((fn==null)) {
 
 #line 23 "/home/alois/Documents/bah-bah/src/values.bah"
-register long int j = 0;
+register long long int j = 0;
 
 #line 23 "/home/alois/Documents/bah-bah/src/values.bah"
 for (; (j<len(generics)); ++j) {
@@ -20229,7 +20232,7 @@ fnt.pos = errPos;
 if ((fn==null)) {
 
 #line 61 "/home/alois/Documents/bah-bah/src/values.bah"
-long int nbEncls = 1;
+long long int nbEncls = 1;
 
 #line 62 "/home/alois/Documents/bah-bah/src/values.bah"
 array(struct Tok)* memory = memoryAlloc(sizeof(array(struct Tok)));
@@ -20301,7 +20304,7 @@ fnt.isValue = true;
 fnt.bahType = getTypeFromToken(&ft,true,elems);
 
 #line 85 "/home/alois/Documents/bah-bah/src/values.bah"
-register long int j = 0;
+register long long int j = 0;
 
 #line 85 "/home/alois/Documents/bah-bah/src/values.bah"
 for (; (j<len(memory)); ++j) {
@@ -20362,7 +20365,7 @@ fnt.type = TOKEN_TYPE_FUNC;
 array(struct Tok)* memory = (array(struct Tok)*)null;
 
 #line 113 "/home/alois/Documents/bah-bah/src/values.bah"
-long int nbEncls = 1;
+long long int nbEncls = 1;
 
 #line 114 "/home/alois/Documents/bah-bah/src/values.bah"
 i = tokPos+1;
@@ -20371,7 +20374,7 @@ i = tokPos+1;
 fnt.ogCont = fn->name;
 
 #line 116 "/home/alois/Documents/bah-bah/src/values.bah"
-long int start = i;
+long long int start = i;
 
 #line 117 "/home/alois/Documents/bah-bah/src/values.bah"
 for (; (i<len(l)); ++i) {
@@ -20431,7 +20434,7 @@ fnt.isValue = true;
 fnt.bahType = "\03\0\0\0""ptr";
 
 #line 141 "/home/alois/Documents/bah-bah/src/values.bah"
-register long int j = 0;
+register long long int j = 0;
 
 #line 141 "/home/alois/Documents/bah-bah/src/values.bah"
 for (; (j<len(memory)); ++j) {
@@ -20499,7 +20502,7 @@ symbols->length = 0;
 symbols->elemSize = sizeof(struct variable*);
 
 #line 165 "/home/alois/Documents/bah-bah/src/values.bah"
-register long int j = 0;
+register long long int j = 0;
 
 #line 165 "/home/alois/Documents/bah-bah/src/values.bah"
 for (; (j<len(elems->vars)); ++j) {
@@ -20668,7 +20671,7 @@ else if ((strcmp(fn->name, "\06\0\0\0""sizeof") == 0)) {
 char* tp = "\0\0\0\0""";
 
 #line 241 "/home/alois/Documents/bah-bah/src/values.bah"
-register long int j = 0;
+register long long int j = 0;
 
 #line 241 "/home/alois/Documents/bah-bah/src/values.bah"
 for (; (j<len(memory)); ++j) {
@@ -20742,7 +20745,7 @@ memory = prePross(memory,ltp,elems);
 }
 
 #line 270 "/home/alois/Documents/bah-bah/src/values.bah"
-long int argIndex = 0;
+long long int argIndex = 0;
 
 #line 271 "/home/alois/Documents/bah-bah/src/values.bah"
 if ((parent!=null)) {
@@ -20772,13 +20775,13 @@ char** ____BAH_COMPILER_VAR_1080_ahomeaaloisaeocumentsabahcbahasrcavaluesbbah = 
 }
 
 #line 283 "/home/alois/Documents/bah-bah/src/values.bah"
-unsigned long int ogFntContL = strlen(fnt.cont);
+unsigned long long int ogFntContL = strlen(fnt.cont);
 
 #line 285 "/home/alois/Documents/bah-bah/src/values.bah"
 char* ltt = "\0\0\0\0""";
 
 #line 288 "/home/alois/Documents/bah-bah/src/values.bah"
-register long int j = 0;
+register long long int j = 0;
 
 #line 288 "/home/alois/Documents/bah-bah/src/values.bah"
 for (; (j<len(memory)); ++j) {
@@ -20893,7 +20896,7 @@ char* vName = genCompilerVar();
                 char** ____BAH_COMPILER_VAR_1093_ahomeaaloisaeocumentsabahcbahasrcavaluesbbah = alloca(4 * sizeof(char*));____BAH_COMPILER_VAR_1093_ahomeaaloisaeocumentsabahcbahasrcavaluesbbah[3] = "\01\0\0\0"";";____BAH_COMPILER_VAR_1093_ahomeaaloisaeocumentsabahcbahasrcavaluesbbah[2] = vName;____BAH_COMPILER_VAR_1093_ahomeaaloisaeocumentsabahcbahasrcavaluesbbah[1] = "\01\0\0\0"" ";____BAH_COMPILER_VAR_1093_ahomeaaloisaeocumentsabahcbahasrcavaluesbbah[0] = string__str(&____BAH_COMPILER_VAR_1092_ahomeaaloisaeocumentsabahcbahasrcavaluesbbah);char* ____BAH_COMPILER_VAR_1094_ahomeaaloisaeocumentsabahcbahasrcavaluesbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_1093_ahomeaaloisaeocumentsabahcbahasrcavaluesbbah, 4);char* code = ____BAH_COMPILER_VAR_1094_ahomeaaloisaeocumentsabahcbahasrcavaluesbbah;
 
 #line 339 "/home/alois/Documents/bah-bah/src/values.bah"
-char** ____BAH_COMPILER_VAR_1095_ahomeaaloisaeocumentsabahcbahasrcavaluesbbah = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1095_ahomeaaloisaeocumentsabahcbahasrcavaluesbbah[1] = code;____BAH_COMPILER_VAR_1095_ahomeaaloisaeocumentsabahcbahasrcavaluesbbah[0] = rope__toStr(begIfHandle);char* ____BAH_COMPILER_VAR_1096_ahomeaaloisaeocumentsabahcbahasrcavaluesbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_1095_ahomeaaloisaeocumentsabahcbahasrcavaluesbbah, 2);long int diff = ropeSet(begIfHandle,____BAH_COMPILER_VAR_1096_ahomeaaloisaeocumentsabahcbahasrcavaluesbbah);
+char** ____BAH_COMPILER_VAR_1095_ahomeaaloisaeocumentsabahcbahasrcavaluesbbah = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1095_ahomeaaloisaeocumentsabahcbahasrcavaluesbbah[1] = code;____BAH_COMPILER_VAR_1095_ahomeaaloisaeocumentsabahcbahasrcavaluesbbah[0] = rope__toStr(begIfHandle);char* ____BAH_COMPILER_VAR_1096_ahomeaaloisaeocumentsabahcbahasrcavaluesbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_1095_ahomeaaloisaeocumentsabahcbahasrcavaluesbbah, 2);long long int diff = ropeSet(begIfHandle,____BAH_COMPILER_VAR_1096_ahomeaaloisaeocumentsabahcbahasrcavaluesbbah);
 
 #line 340 "/home/alois/Documents/bah-bah/src/values.bah"
 OUTPUT->totalLen = OUTPUT->totalLen+diff;
@@ -21057,10 +21060,10 @@ return tokPos;
 };
 
 #line 427 "/home/alois/Documents/bah-bah/src/values.bah"
-long int valueStruct(__BAH_ARR_TYPE_Tok l,long int i,lineType ltp,struct Elems* elems){
+long long int valueStruct(__BAH_ARR_TYPE_Tok l,long long int i,lineType ltp,struct Elems* elems){
 
 #line 428 "/home/alois/Documents/bah-bah/src/values.bah"
-long int tokPos = i-1;
+long long int tokPos = i-1;
 
 #line 431 "/home/alois/Documents/bah-bah/src/values.bah"
 struct Tok t = l->data[i-1];
@@ -21331,10 +21334,10 @@ return tokPos;
 };
 
 #line 556 "/home/alois/Documents/bah-bah/src/values.bah"
-long int valueArr(__BAH_ARR_TYPE_Tok l,long int i,lineType ltp,struct Elems* elems){
+long long int valueArr(__BAH_ARR_TYPE_Tok l,long long int i,lineType ltp,struct Elems* elems){
 
 #line 557 "/home/alois/Documents/bah-bah/src/values.bah"
-long int tokPos = i-1;
+long long int tokPos = i-1;
 
 #line 559 "/home/alois/Documents/bah-bah/src/values.bah"
 struct Tok pt = l->data[tokPos];
@@ -21362,7 +21365,7 @@ t.isValue = true;
 char** ____BAH_COMPILER_VAR_1158_ahomeaaloisaeocumentsabahcbahasrcavaluesbbah = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1158_ahomeaaloisaeocumentsabahcbahasrcavaluesbbah[1] = "\01\0\0\0""[";____BAH_COMPILER_VAR_1158_ahomeaaloisaeocumentsabahcbahasrcavaluesbbah[0] = t.ogCont;char* ____BAH_COMPILER_VAR_1159_ahomeaaloisaeocumentsabahcbahasrcavaluesbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_1158_ahomeaaloisaeocumentsabahcbahasrcavaluesbbah, 2);t.ogCont = ____BAH_COMPILER_VAR_1159_ahomeaaloisaeocumentsabahcbahasrcavaluesbbah;
 
 #line 572 "/home/alois/Documents/bah-bah/src/values.bah"
-long int nbEncls = 1;
+long long int nbEncls = 1;
 
 #line 573 "/home/alois/Documents/bah-bah/src/values.bah"
 array(struct Tok)* memory = memoryAlloc(sizeof(array(struct Tok)));
@@ -21962,7 +21965,7 @@ array(char*)* parts = getTypesFromTuple(string__str(&ptt));
 struct Tok index = memory->data[0];
 
 #line 805 "/home/alois/Documents/bah-bah/src/values.bah"
-long int ind = 0;
+long long int ind = 0;
 
 #line 806 "/home/alois/Documents/bah-bah/src/values.bah"
 if (compTypes(getTypeFromToken(&index,true,elems),"\03\0\0\0""int")) {
@@ -21999,7 +22002,7 @@ char* name = genCompilerVar();
 char* offsets = "\01\0\0\0""0";
 
 #line 821 "/home/alois/Documents/bah-bah/src/values.bah"
-register long int j = 0;
+register long long int j = 0;
 
 #line 821 "/home/alois/Documents/bah-bah/src/values.bah"
 for (; (j<ind); ++j) {
@@ -22061,10 +22064,10 @@ char ____BAH_COMPILER_VAR_1247_ahomeaaloisaeocumentsabahcbahasrcavaluesbbah(__BA
         }
         return 0;
         }
-long int valueBool(__BAH_ARR_TYPE_Tok l,long int i,lineType ltp,struct Elems* elems){
+long long int valueBool(__BAH_ARR_TYPE_Tok l,long long int i,lineType ltp,struct Elems* elems){
 
 #line 845 "/home/alois/Documents/bah-bah/src/values.bah"
-long int tokPos = i-2;
+long long int tokPos = i-2;
 
 #line 848 "/home/alois/Documents/bah-bah/src/values.bah"
 struct Tok pt = l->data[tokPos];
@@ -22184,7 +22187,7 @@ char* name = genCompilerVar();
 if (string__hasSuffix(&arrT,"\01\0\0\0""*")) {
 
 #line 905 "/home/alois/Documents/bah-bah/src/values.bah"
-long int nbast = string__count(&arrT,"\01\0\0\0""*");
+long long int nbast = string__count(&arrT,"\01\0\0\0""*");
 
 #line 906 "/home/alois/Documents/bah-bah/src/values.bah"
 string__trimRight(&arrT,nbast);
@@ -22426,10 +22429,10 @@ char ____BAH_COMPILER_VAR_1282_ahomeaaloisaeocumentsabahcbahasrcavaluesbbah(__BA
         }
         return 0;
         }
-long int valueOper(__BAH_ARR_TYPE_Tok l,long int i,struct Elems* elems){
+long long int valueOper(__BAH_ARR_TYPE_Tok l,long long int i,struct Elems* elems){
 
 #line 1005 "/home/alois/Documents/bah-bah/src/values.bah"
-long int tokPos = i-2;
+long long int tokPos = i-2;
 
 #line 1007 "/home/alois/Documents/bah-bah/src/values.bah"
 struct Tok pt = l->data[tokPos];
@@ -22528,13 +22531,13 @@ struct Tok nat = l->data[tokPos-1];
 if ((strcmp(nat.cont, "\01\0\0\0""+") == 0)) {
 
 #line 1056 "/home/alois/Documents/bah-bah/src/values.bah"
-long int rangeEnds = tokPos-1;
+long long int rangeEnds = tokPos-1;
 
 #line 1057 "/home/alois/Documents/bah-bah/src/values.bah"
 i = tokPos-2;
 
 #line 1058 "/home/alois/Documents/bah-bah/src/values.bah"
-long int nb = 2;
+long long int nb = 2;
 
 #line 1059 "/home/alois/Documents/bah-bah/src/values.bah"
 for (; (i>=0); --i) {
@@ -22748,10 +22751,10 @@ return tokPos;
 };
 
 #line 1145 "/home/alois/Documents/bah-bah/src/values.bah"
-long int valueSendChan(__BAH_ARR_TYPE_Tok l,long int i,struct Elems* elems){
+long long int valueSendChan(__BAH_ARR_TYPE_Tok l,long long int i,struct Elems* elems){
 
 #line 1146 "/home/alois/Documents/bah-bah/src/values.bah"
-long int posTok = i-2;
+long long int posTok = i-2;
 
 #line 1148 "/home/alois/Documents/bah-bah/src/values.bah"
 struct Tok nt = l->data[posTok];
@@ -22817,10 +22820,10 @@ return posTok;
 };
 
 #line 1185 "/home/alois/Documents/bah-bah/src/values.bah"
-long int valueChan(__BAH_ARR_TYPE_Tok l,long int i,struct Elems* elems){
+long long int valueChan(__BAH_ARR_TYPE_Tok l,long long int i,struct Elems* elems){
 
 #line 1186 "/home/alois/Documents/bah-bah/src/values.bah"
-long int posTok = i-1;
+long long int posTok = i-1;
 
 #line 1187 "/home/alois/Documents/bah-bah/src/values.bah"
 delete(l,posTok);
@@ -22904,19 +22907,19 @@ return posTok;
 };
 
 #line 1228 "/home/alois/Documents/bah-bah/src/values.bah"
-long int valueTuple(__BAH_ARR_TYPE_Tok l,long int i,struct Elems* elems){
+long long int valueTuple(__BAH_ARR_TYPE_Tok l,long long int i,struct Elems* elems){
 
 #line 1229 "/home/alois/Documents/bah-bah/src/values.bah"
-long int tokPos = i;
+long long int tokPos = i;
 
 #line 1231 "/home/alois/Documents/bah-bah/src/values.bah"
-long int nbBracks = 0;
+long long int nbBracks = 0;
 
 #line 1232 "/home/alois/Documents/bah-bah/src/values.bah"
 if (__builtin_expect((strcmp(l->data[tokPos+1].cont, "\01\0\0\0""]") == 0), 0)) {
 
 #line 1234 "/home/alois/Documents/bah-bah/src/values.bah"
-long int offset = 1;
+long long int offset = 1;
 
 #line 1235 "/home/alois/Documents/bah-bah/src/values.bah"
 while ((strcmp(l->data[tokPos+offset+1].cont, "\01\0\0\0""[") == 0)&&(strcmp(l->data[tokPos+offset+2].cont, "\01\0\0\0""]") == 0)) {
@@ -22943,7 +22946,7 @@ vals->length = 0;
 vals->elemSize = sizeof(char*);
 
 #line 1248 "/home/alois/Documents/bah-bah/src/values.bah"
-long int nbEncl = 1;
+long long int nbEncl = 1;
 
 #line 1249 "/home/alois/Documents/bah-bah/src/values.bah"
 ++i;
@@ -22998,7 +23001,7 @@ types->length = 0;
 types->elemSize = sizeof(char*);
 
 #line 1269 "/home/alois/Documents/bah-bah/src/values.bah"
-register long int j = 0;
+register long long int j = 0;
 
 #line 1269 "/home/alois/Documents/bah-bah/src/values.bah"
 for (; (j<len(memory)); j = j+2) {
@@ -23064,7 +23067,7 @@ char* offsetVar = genCompilerVar();
 char** ____BAH_COMPILER_VAR_1330_ahomeaaloisaeocumentsabahcbahasrcavaluesbbah = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_1330_ahomeaaloisaeocumentsabahcbahasrcavaluesbbah[2] = "\06\0\0\0"" = 0;\n";____BAH_COMPILER_VAR_1330_ahomeaaloisaeocumentsabahcbahasrcavaluesbbah[1] = offsetVar;____BAH_COMPILER_VAR_1330_ahomeaaloisaeocumentsabahcbahasrcavaluesbbah[0] = "\011\0\0\0""long int ";char* ____BAH_COMPILER_VAR_1331_ahomeaaloisaeocumentsabahcbahasrcavaluesbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_1330_ahomeaaloisaeocumentsabahcbahasrcavaluesbbah, 3);char* r = ____BAH_COMPILER_VAR_1331_ahomeaaloisaeocumentsabahcbahasrcavaluesbbah;
 
 #line 1292 "/home/alois/Documents/bah-bah/src/values.bah"
-register long int k = 0;
+register long long int k = 0;
 
 #line 1292 "/home/alois/Documents/bah-bah/src/values.bah"
 for (; (k<len(vals)); ++k) {
@@ -23109,7 +23112,7 @@ return tokPos;
 };
 
 #line 1316 "/home/alois/Documents/bah-bah/src/values.bah"
-char isSmallValue(__BAH_ARR_TYPE_Tok l,long int i){
+char isSmallValue(__BAH_ARR_TYPE_Tok l,long long int i){
 
 #line 1317 "/home/alois/Documents/bah-bah/src/values.bah"
 struct Tok t = l->data[i];
@@ -23158,7 +23161,7 @@ char ____BAH_COMPILER_VAR_1337_ahomeaaloisaeocumentsabahcbahasrcavaluesbbah(__BA
         }
         return 0;
         }
-char isValue(__BAH_ARR_TYPE_Tok l,long int i){
+char isValue(__BAH_ARR_TYPE_Tok l,long long int i){
 
 #line 1336 "/home/alois/Documents/bah-bah/src/values.bah"
 struct Tok t = l->data[i];
@@ -23224,13 +23227,13 @@ __BAH_ARR_TYPE_Tok prePross(__BAH_ARR_TYPE_Tok line,lineType ltp,struct Elems* e
 array(struct Tok)* fl = (array(struct Tok)*)null;
 
 #line 3020 "/home/alois/Documents/bah-bah/src/parser.bah"
-register long int i = 0;
+register long long int i = 0;
 
 #line 3021 "/home/alois/Documents/bah-bah/src/parser.bah"
-register long int sepI = 0;
+register long long int sepI = 0;
 
 #line 3022 "/home/alois/Documents/bah-bah/src/parser.bah"
-long int nbPar = 0;
+long long int nbPar = 0;
 
 #line 3024 "/home/alois/Documents/bah-bah/src/parser.bah"
 if ((ltp!=(lineType)-1)) {
@@ -23310,7 +23313,7 @@ ____BAH_COMPILER_VAR_1338_ahomeaaloisaeocumentsabahcbahasrcaparserbbah.bahType =
 struct Tok pt = ____BAH_COMPILER_VAR_1338_ahomeaaloisaeocumentsabahcbahasrcaparserbbah;
 
 #line 3051 "/home/alois/Documents/bah-bah/src/parser.bah"
-unsigned long int l = len(fl);
+unsigned long long int l = len(fl);
 
 #line 3053 "/home/alois/Documents/bah-bah/src/parser.bah"
 i = 0;
@@ -23546,7 +23549,7 @@ struct Tok ppt = fl->data[i-2];
 if ((ppt.type==TOKEN_TYPE_VAR)) {
 
 #line 3133 "/home/alois/Documents/bah-bah/src/parser.bah"
-long int posTok = i-2;
+long long int posTok = i-2;
 
 #line 3134 "/home/alois/Documents/bah-bah/src/parser.bah"
 deleteRange(fl,i-1,i);
@@ -23753,7 +23756,7 @@ return fl;
 void parseFnDeclare(__BAH_ARR_TYPE_Tok l,struct Elems* elems){
 
 #line 3217 "/home/alois/Documents/bah-bah/src/parser.bah"
-long int i = 0;
+long long int i = 0;
 
 #line 3218 "/home/alois/Documents/bah-bah/src/parser.bah"
 struct func* ____BAH_COMPILER_VAR_1365_ahomeaaloisaeocumentsabahcbahasrcaparserbbah = memoryAlloc(sizeof(struct func));
@@ -23847,7 +23850,7 @@ ____BAH_COMPILER_VAR_1368_ahomeaaloisaeocumentsabahcbahasrcaparserbbah->args = m
 df->name = fn->name;
 
 #line 3255 "/home/alois/Documents/bah-bah/src/parser.bah"
-register long int j = 0;
+register long long int j = 0;
 
 #line 3255 "/home/alois/Documents/bah-bah/src/parser.bah"
 for (; (j<len(fn->args)); ++j) {
@@ -23910,7 +23913,7 @@ debugPrint("\012\0\0\0""fn_declare",ft.line,____BAH_COMPILER_VAR_1390_ahomeaaloi
 }
 
 #line 3264 "/home/alois/Documents/bah-bah/src/parser.bah"
-register long int j = 0;
+register long long int j = 0;
 
 #line 3264 "/home/alois/Documents/bah-bah/src/parser.bah"
 for (; (j<len(fn->args)); ++j) {
@@ -24653,10 +24656,10 @@ struct Tok ft = tokens->data[0];
 unsigned int currentLine = ft.line;
 
 #line 3592 "/home/alois/Documents/bah-bah/src/parser.bah"
-long int nbEncl = 0;
+long long int nbEncl = 0;
 
 #line 3593 "/home/alois/Documents/bah-bah/src/parser.bah"
-register long int i = 0;
+register long long int i = 0;
 
 #line 3593 "/home/alois/Documents/bah-bah/src/parser.bah"
 while ((i<len(tokens))) {
@@ -24685,7 +24688,7 @@ unsigned int ____BAH_COMPILER_VAR_1433_ahomeaaloisaeocumentsabahcbahasrcaparserb
 ++i;
 
 #line 3603 "/home/alois/Documents/bah-bah/src/parser.bah"
-long int start = i;
+long long int start = i;
 
 #line 3604 "/home/alois/Documents/bah-bah/src/parser.bah"
 for (; (i<len(tokens)); ++i) {
@@ -24851,7 +24854,7 @@ struct string tmpfnRetCType = getCType(fn->returns->type,elems);
 char* tmpfnArgsCType = "\0\0\0\0""";
 
 #line 8 "/home/alois/Documents/bah-bah/src/declarative.bah"
-register long int j = 0;
+register long long int j = 0;
 
 #line 8 "/home/alois/Documents/bah-bah/src/declarative.bah"
 while ((j<len(fn->args))) {
@@ -24913,7 +24916,7 @@ long int elemSize; \
 }\ntypedef array(char*)* __BAH_ARR_TYPE_cpstring;\nlong int __BAH__main(__BAH_ARR_TYPE_cpstring);\n");
 
 #line 46 "/home/alois/Documents/bah-bah/src/declarative.bah"
-register long int i = 0;
+register long long int i = 0;
 
 #line 46 "/home/alois/Documents/bah-bah/src/declarative.bah"
 for (; (i<len(compilerState.cIncludes)); ++i) {
@@ -24978,40 +24981,40 @@ declareFunc(fn,elems);
 };
 };
 
-#line 54 "/home/alois/Documents/bah-bah/src/main.bah"
+#line 57 "/home/alois/Documents/bah-bah/src/main.bah"
 char* memErrHandle(){
 
-#line 55 "/home/alois/Documents/bah-bah/src/main.bah"
+#line 58 "/home/alois/Documents/bah-bah/src/main.bah"
 char** ____BAH_COMPILER_VAR_1450_ahomeaaloisaeocumentsabahcbahasrcamainbbah = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1450_ahomeaaloisaeocumentsabahcbahasrcamainbbah[1] = compilerState.currentFile;____BAH_COMPILER_VAR_1450_ahomeaaloisaeocumentsabahcbahasrcamainbbah[0] = "\06\0\0\0""file: ";char* ____BAH_COMPILER_VAR_1451_ahomeaaloisaeocumentsabahcbahasrcamainbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_1450_ahomeaaloisaeocumentsabahcbahasrcamainbbah, 2);char* r = ____BAH_COMPILER_VAR_1451_ahomeaaloisaeocumentsabahcbahasrcamainbbah;
 
-#line 56 "/home/alois/Documents/bah-bah/src/main.bah"
+#line 59 "/home/alois/Documents/bah-bah/src/main.bah"
 if ((currentFn!=null)) {
 
-#line 57 "/home/alois/Documents/bah-bah/src/main.bah"
+#line 60 "/home/alois/Documents/bah-bah/src/main.bah"
 char** ____BAH_COMPILER_VAR_1452_ahomeaaloisaeocumentsabahcbahasrcamainbbah = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_1452_ahomeaaloisaeocumentsabahcbahasrcamainbbah[2] = "\02\0\0\0""()";____BAH_COMPILER_VAR_1452_ahomeaaloisaeocumentsabahcbahasrcamainbbah[1] = currentFn->name;____BAH_COMPILER_VAR_1452_ahomeaaloisaeocumentsabahcbahasrcamainbbah[0] = "\013\0\0\0""\nfunction: ";char* ____BAH_COMPILER_VAR_1453_ahomeaaloisaeocumentsabahcbahasrcamainbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_1452_ahomeaaloisaeocumentsabahcbahasrcamainbbah, 3);char** ____BAH_COMPILER_VAR_1454_ahomeaaloisaeocumentsabahcbahasrcamainbbah = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1454_ahomeaaloisaeocumentsabahcbahasrcamainbbah[1] = ____BAH_COMPILER_VAR_1453_ahomeaaloisaeocumentsabahcbahasrcamainbbah;____BAH_COMPILER_VAR_1454_ahomeaaloisaeocumentsabahcbahasrcamainbbah[0] = r;char* ____BAH_COMPILER_VAR_1455_ahomeaaloisaeocumentsabahcbahasrcamainbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_1454_ahomeaaloisaeocumentsabahcbahasrcamainbbah, 2);r = ____BAH_COMPILER_VAR_1455_ahomeaaloisaeocumentsabahcbahasrcamainbbah;
 }
 
-#line 59 "/home/alois/Documents/bah-bah/src/main.bah"
+#line 62 "/home/alois/Documents/bah-bah/src/main.bah"
 return r;
 };
 
-#line 63 "/home/alois/Documents/bah-bah/src/main.bah"
-long int main(__BAH_ARR_TYPE_cpstring args){
+#line 66 "/home/alois/Documents/bah-bah/src/main.bah"
+long long int main(__BAH_ARR_TYPE_cpstring args){
 
-#line 64 "/home/alois/Documents/bah-bah/src/main.bah"
+#line 67 "/home/alois/Documents/bah-bah/src/main.bah"
 onMemoryError = memErrHandle;
 
-#line 66 "/home/alois/Documents/bah-bah/src/main.bah"
+#line 69 "/home/alois/Documents/bah-bah/src/main.bah"
 execName = args->data[0];
 
-#line 69 "/home/alois/Documents/bah-bah/src/main.bah"
+#line 72 "/home/alois/Documents/bah-bah/src/main.bah"
 if ((execName[0+4]==46)||(execName[0+4]==47)) {
 
-#line 70 "/home/alois/Documents/bah-bah/src/main.bah"
+#line 73 "/home/alois/Documents/bah-bah/src/main.bah"
 execName = absPath(execName);
 }
 
-#line 73 "/home/alois/Documents/bah-bah/src/main.bah"
+#line 76 "/home/alois/Documents/bah-bah/src/main.bah"
 struct flags ____BAH_COMPILER_VAR_1456_ahomeaaloisaeocumentsabahcbahasrcamainbbah = {};
 ____BAH_COMPILER_VAR_1456_ahomeaaloisaeocumentsabahcbahasrcamainbbah.flags = memoryAlloc(sizeof(array(struct flag*)));
             ____BAH_COMPILER_VAR_1456_ahomeaaloisaeocumentsabahcbahasrcamainbbah.flags->length = 0;
@@ -25021,234 +25024,234 @@ ____BAH_COMPILER_VAR_1456_ahomeaaloisaeocumentsabahcbahasrcamainbbah.flags = mem
             ____BAH_COMPILER_VAR_1456_ahomeaaloisaeocumentsabahcbahasrcamainbbah.args->elemSize = sizeof(char*);
             flags = ____BAH_COMPILER_VAR_1456_ahomeaaloisaeocumentsabahcbahasrcamainbbah;
 
-#line 76 "/home/alois/Documents/bah-bah/src/main.bah"
+#line 79 "/home/alois/Documents/bah-bah/src/main.bah"
 flags__addString(&flags,"\01\0\0\0""o","\033\0\0\0""Name of the file to output.");
 
-#line 77 "/home/alois/Documents/bah-bah/src/main.bah"
+#line 80 "/home/alois/Documents/bah-bah/src/main.bah"
 flags__addBool(&flags,"\01\0\0\0""c","\060\0\0\0""Translate bah file to C instead of compiling it.");
 
-#line 78 "/home/alois/Documents/bah-bah/src/main.bah"
+#line 81 "/home/alois/Documents/bah-bah/src/main.bah"
 flags__addBool(&flags,"\01\0\0\0""v","\035\0\0\0""Show version of the compiler.");
 
-#line 79 "/home/alois/Documents/bah-bah/src/main.bah"
+#line 82 "/home/alois/Documents/bah-bah/src/main.bah"
 flags__addBool(&flags,"\01\0\0\0""l","\025\0\0\0""Compile as a library.");
 
-#line 80 "/home/alois/Documents/bah-bah/src/main.bah"
+#line 83 "/home/alois/Documents/bah-bah/src/main.bah"
 flags__addBool(&flags,"\06\0\0\0""object","\025\0\0\0""Compile as an object.");
 
-#line 81 "/home/alois/Documents/bah-bah/src/main.bah"
+#line 84 "/home/alois/Documents/bah-bah/src/main.bah"
 flags__addBool(&flags,"\01\0\0\0""n","\060\0\0\0""Disables notices while keeping warnings enabled.");
 
-#line 83 "/home/alois/Documents/bah-bah/src/main.bah"
+#line 86 "/home/alois/Documents/bah-bah/src/main.bah"
 flags__addBool(&flags,"\01\0\0\0""d","\200\0\0\0""Compile as a dynamic executable. (useful if you are using a library that is only available shared but might reduce portability).");
 
-#line 90 "/home/alois/Documents/bah-bah/src/main.bah"
+#line 93 "/home/alois/Documents/bah-bah/src/main.bah"
 char** ____BAH_COMPILER_VAR_1457_ahomeaaloisaeocumentsabahcbahasrcamainbbah = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_1457_ahomeaaloisaeocumentsabahcbahasrcamainbbah[2] = "\01\0\0\0"".";____BAH_COMPILER_VAR_1457_ahomeaaloisaeocumentsabahcbahasrcamainbbah[1] = BAH_OS;____BAH_COMPILER_VAR_1457_ahomeaaloisaeocumentsabahcbahasrcamainbbah[0] = "\115\0\0\0""Select the target OS for cross compilling (linux, windows, darwin), default: ";char* ____BAH_COMPILER_VAR_1458_ahomeaaloisaeocumentsabahcbahasrcamainbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_1457_ahomeaaloisaeocumentsabahcbahasrcamainbbah, 3);flags__addString(&flags,"\06\0\0\0""target",____BAH_COMPILER_VAR_1458_ahomeaaloisaeocumentsabahcbahasrcamainbbah);
 
-#line 91 "/home/alois/Documents/bah-bah/src/main.bah"
+#line 94 "/home/alois/Documents/bah-bah/src/main.bah"
 char** ____BAH_COMPILER_VAR_1459_ahomeaaloisaeocumentsabahcbahasrcamainbbah = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_1459_ahomeaaloisaeocumentsabahcbahasrcamainbbah[2] = "\02\0\0\0"").";____BAH_COMPILER_VAR_1459_ahomeaaloisaeocumentsabahcbahasrcamainbbah[1] = BAH_DIR;____BAH_COMPILER_VAR_1459_ahomeaaloisaeocumentsabahcbahasrcamainbbah[0] = "\056\0\0\0""If your Bah directory is not the default one (";char* ____BAH_COMPILER_VAR_1460_ahomeaaloisaeocumentsabahcbahasrcamainbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_1459_ahomeaaloisaeocumentsabahcbahasrcamainbbah, 3);flags__addString(&flags,"\06\0\0\0""bahDir",____BAH_COMPILER_VAR_1460_ahomeaaloisaeocumentsabahcbahasrcamainbbah);
 
-#line 92 "/home/alois/Documents/bah-bah/src/main.bah"
+#line 95 "/home/alois/Documents/bah-bah/src/main.bah"
 char** ____BAH_COMPILER_VAR_1461_ahomeaaloisaeocumentsabahcbahasrcamainbbah = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_1461_ahomeaaloisaeocumentsabahcbahasrcamainbbah[2] = "\01\0\0\0"".";____BAH_COMPILER_VAR_1461_ahomeaaloisaeocumentsabahcbahasrcamainbbah[1] = BAH_CC;____BAH_COMPILER_VAR_1461_ahomeaaloisaeocumentsabahcbahasrcamainbbah[0] = "\050\0\0\0""To change the C compiler used, default: ";char* ____BAH_COMPILER_VAR_1462_ahomeaaloisaeocumentsabahcbahasrcamainbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_1461_ahomeaaloisaeocumentsabahcbahasrcamainbbah, 3);flags__addString(&flags,"\02\0\0\0""CC",____BAH_COMPILER_VAR_1462_ahomeaaloisaeocumentsabahcbahasrcamainbbah);
 
-#line 96 "/home/alois/Documents/bah-bah/src/main.bah"
+#line 99 "/home/alois/Documents/bah-bah/src/main.bah"
 flags__addBool(&flags,"\06\0\0\0""unsafe","\202\0\0\0""Compile without safety checking. This will make for faster executable but if your program crashes, it will show less informations.");
 
-#line 97 "/home/alois/Documents/bah-bah/src/main.bah"
+#line 100 "/home/alois/Documents/bah-bah/src/main.bah"
 flags__addBool(&flags,"\011\0\0\0""nobuiltin","\123\0\0\0""Does not include the builtin library (be really carefull, your program WILL break).");
 
-#line 98 "/home/alois/Documents/bah-bah/src/main.bah"
+#line 101 "/home/alois/Documents/bah-bah/src/main.bah"
 flags__addBool(&flags,"\010\0\0\0""optimize","\034\0\0\0""Includes optimized functions");
 
-#line 99 "/home/alois/Documents/bah-bah/src/main.bah"
+#line 102 "/home/alois/Documents/bah-bah/src/main.bah"
 flags__addBool(&flags,"\011\0\0\0""noImports","\130\0\0\0""Redirects all #import to #include. Usefull for cross-compilation. This is enabled by -c.");
 
-#line 102 "/home/alois/Documents/bah-bah/src/main.bah"
+#line 105 "/home/alois/Documents/bah-bah/src/main.bah"
 flags__addBool(&flags,"\03\0\0\0""rcp","\213\0\0\0""Enables RCP (reference counter) instead of the garbage collector. Warning: if you are using self-reference, this will lead to memory leaks!");
 
-#line 103 "/home/alois/Documents/bah-bah/src/main.bah"
+#line 106 "/home/alois/Documents/bah-bah/src/main.bah"
 flags__addBool(&flags,"\07\0\0\0""fastrcp","\220\0\0\0""Enables RCP without leak detection. It is recommended to test you programs with the -rcp flag to test for leak detection before using this flag.");
 
-#line 104 "/home/alois/Documents/bah-bah/src/main.bah"
+#line 107 "/home/alois/Documents/bah-bah/src/main.bah"
 flags__addBool(&flags,"\07\0\0\0""lightGC","\217\0\0\0""Enables the really light weight with no dependecy garbage collector. This one is not as complex as the default one, it is though not as robust.");
 
-#line 105 "/home/alois/Documents/bah-bah/src/main.bah"
+#line 108 "/home/alois/Documents/bah-bah/src/main.bah"
 flags__addBool(&flags,"\011\0\0\0""nativeMem","\114\0\0\0""Disable any memory management. WARNING: this will cause insane memory leaks.");
 
-#line 108 "/home/alois/Documents/bah-bah/src/main.bah"
+#line 111 "/home/alois/Documents/bah-bah/src/main.bah"
 flags__addBool(&flags,"\05\0\0\0""fixMe","\221\0\0\0""Enables runtime debugging engine, useful for segfaults... Note that your program will be slower and use more memory, this is only a debug option.");
 
-#line 109 "/home/alois/Documents/bah-bah/src/main.bah"
+#line 112 "/home/alois/Documents/bah-bah/src/main.bah"
 flags__addBool(&flags,"\05\0\0\0""debug","\034\0\0\0""Enables verbose json output.");
 
-#line 110 "/home/alois/Documents/bah-bah/src/main.bah"
+#line 113 "/home/alois/Documents/bah-bah/src/main.bah"
 flags__addBool(&flags,"\016\0\0\0""verboseRuntime","\111\0\0\0""Enables verbose runtime, a debug mode of the compiled program. (obsolete)");
 
-#line 111 "/home/alois/Documents/bah-bah/src/main.bah"
+#line 114 "/home/alois/Documents/bah-bah/src/main.bah"
 flags__addBool(&flags,"\011\0\0\0""verboseCC","\066\0\0\0""Enables verbose C compiler output, USE IN LAST RESORT.");
 
-#line 112 "/home/alois/Documents/bah-bah/src/main.bah"
+#line 115 "/home/alois/Documents/bah-bah/src/main.bah"
 flags__parse(&flags,args);
 
-#line 114 "/home/alois/Documents/bah-bah/src/main.bah"
+#line 117 "/home/alois/Documents/bah-bah/src/main.bah"
 lightGCenabled = (flags__isSet(&flags,"\07\0\0\0""lightGC")==1);
 
-#line 115 "/home/alois/Documents/bah-bah/src/main.bah"
+#line 118 "/home/alois/Documents/bah-bah/src/main.bah"
 nativeMemenabled = (flags__isSet(&flags,"\011\0\0\0""nativeMem")==1);
 
-#line 116 "/home/alois/Documents/bah-bah/src/main.bah"
+#line 119 "/home/alois/Documents/bah-bah/src/main.bah"
 isFixMeEnabled = (flags__isSet(&flags,"\05\0\0\0""fixMe")==1);
 
-#line 117 "/home/alois/Documents/bah-bah/src/main.bah"
+#line 120 "/home/alois/Documents/bah-bah/src/main.bah"
 noImport = (flags__isSet(&flags,"\011\0\0\0""noImports")==1)||(flags__isSet(&flags,"\01\0\0\0""c")==1);
 
-#line 119 "/home/alois/Documents/bah-bah/src/main.bah"
+#line 122 "/home/alois/Documents/bah-bah/src/main.bah"
 if ((flags__isSet(&flags,"\06\0\0\0""target")==1)) {
 
-#line 120 "/home/alois/Documents/bah-bah/src/main.bah"
+#line 123 "/home/alois/Documents/bah-bah/src/main.bah"
 BAH_OS = flags__get(&flags,"\06\0\0\0""target");
 
-#line 121 "/home/alois/Documents/bah-bah/src/main.bah"
+#line 124 "/home/alois/Documents/bah-bah/src/main.bah"
 char** ____BAH_COMPILER_VAR_1463_ahomeaaloisaeocumentsabahcbahasrcamainbbah = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1463_ahomeaaloisaeocumentsabahcbahasrcamainbbah[1] = BAH_OS;____BAH_COMPILER_VAR_1463_ahomeaaloisaeocumentsabahcbahasrcamainbbah[0] = "\016\0\0\0""Build target: ";char* ____BAH_COMPILER_VAR_1464_ahomeaaloisaeocumentsabahcbahasrcamainbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_1463_ahomeaaloisaeocumentsabahcbahasrcamainbbah, 2);println(____BAH_COMPILER_VAR_1464_ahomeaaloisaeocumentsabahcbahasrcamainbbah);
 }
 
-#line 123 "/home/alois/Documents/bah-bah/src/main.bah"
+#line 126 "/home/alois/Documents/bah-bah/src/main.bah"
 if ((flags__isSet(&flags,"\06\0\0\0""bahDir")==1)) {
 
-#line 124 "/home/alois/Documents/bah-bah/src/main.bah"
+#line 127 "/home/alois/Documents/bah-bah/src/main.bah"
 BAH_DIR = flags__get(&flags,"\06\0\0\0""bahDir");
 
-#line 125 "/home/alois/Documents/bah-bah/src/main.bah"
+#line 128 "/home/alois/Documents/bah-bah/src/main.bah"
 if ((BAH_DIR[strlen(BAH_DIR)-1+4]!=47)) {
 
-#line 126 "/home/alois/Documents/bah-bah/src/main.bah"
+#line 129 "/home/alois/Documents/bah-bah/src/main.bah"
 char** ____BAH_COMPILER_VAR_1465_ahomeaaloisaeocumentsabahcbahasrcamainbbah = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1465_ahomeaaloisaeocumentsabahcbahasrcamainbbah[1] = "\01\0\0\0""/";____BAH_COMPILER_VAR_1465_ahomeaaloisaeocumentsabahcbahasrcamainbbah[0] = BAH_DIR;char* ____BAH_COMPILER_VAR_1466_ahomeaaloisaeocumentsabahcbahasrcamainbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_1465_ahomeaaloisaeocumentsabahcbahasrcamainbbah, 2);BAH_DIR = ____BAH_COMPILER_VAR_1466_ahomeaaloisaeocumentsabahcbahasrcamainbbah;
 }
 
-#line 128 "/home/alois/Documents/bah-bah/src/main.bah"
+#line 131 "/home/alois/Documents/bah-bah/src/main.bah"
 char** ____BAH_COMPILER_VAR_1467_ahomeaaloisaeocumentsabahcbahasrcamainbbah = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1467_ahomeaaloisaeocumentsabahcbahasrcamainbbah[1] = BAH_DIR;____BAH_COMPILER_VAR_1467_ahomeaaloisaeocumentsabahcbahasrcamainbbah[0] = "\017\0\0\0""Bah directory: ";char* ____BAH_COMPILER_VAR_1468_ahomeaaloisaeocumentsabahcbahasrcamainbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_1467_ahomeaaloisaeocumentsabahcbahasrcamainbbah, 2);println(____BAH_COMPILER_VAR_1468_ahomeaaloisaeocumentsabahcbahasrcamainbbah);
 }
 
-#line 130 "/home/alois/Documents/bah-bah/src/main.bah"
+#line 133 "/home/alois/Documents/bah-bah/src/main.bah"
 if ((flags__isSet(&flags,"\02\0\0\0""CC")==1)) {
 
-#line 131 "/home/alois/Documents/bah-bah/src/main.bah"
+#line 134 "/home/alois/Documents/bah-bah/src/main.bah"
 BAH_CC = flags__get(&flags,"\02\0\0\0""CC");
 
-#line 132 "/home/alois/Documents/bah-bah/src/main.bah"
+#line 135 "/home/alois/Documents/bah-bah/src/main.bah"
 char** ____BAH_COMPILER_VAR_1469_ahomeaaloisaeocumentsabahcbahasrcamainbbah = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1469_ahomeaaloisaeocumentsabahcbahasrcamainbbah[1] = BAH_CC;____BAH_COMPILER_VAR_1469_ahomeaaloisaeocumentsabahcbahasrcamainbbah[0] = "\014\0\0\0""C compiler: ";char* ____BAH_COMPILER_VAR_1470_ahomeaaloisaeocumentsabahcbahasrcamainbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_1469_ahomeaaloisaeocumentsabahcbahasrcamainbbah, 2);println(____BAH_COMPILER_VAR_1470_ahomeaaloisaeocumentsabahcbahasrcamainbbah);
 }
 
-#line 135 "/home/alois/Documents/bah-bah/src/main.bah"
+#line 138 "/home/alois/Documents/bah-bah/src/main.bah"
 if (__builtin_expect(flags__isSet(&flags,"\016\0\0\0""verboseRuntime"), 0)) {
 
-#line 136 "/home/alois/Documents/bah-bah/src/main.bah"
+#line 139 "/home/alois/Documents/bah-bah/src/main.bah"
 println("\034\0\0\0""-verboseRuntime is obsolete.");
 
-#line 137 "/home/alois/Documents/bah-bah/src/main.bah"
+#line 140 "/home/alois/Documents/bah-bah/src/main.bah"
 exit(1);
 }
 
-#line 140 "/home/alois/Documents/bah-bah/src/main.bah"
+#line 143 "/home/alois/Documents/bah-bah/src/main.bah"
 noticeEnabled = (flags__isSet(&flags,"\01\0\0\0""n")==0);
 
-#line 142 "/home/alois/Documents/bah-bah/src/main.bah"
+#line 145 "/home/alois/Documents/bah-bah/src/main.bah"
 RCPlevel = 0;
 
-#line 143 "/home/alois/Documents/bah-bah/src/main.bah"
+#line 146 "/home/alois/Documents/bah-bah/src/main.bah"
 if (flags__isSet(&flags,"\03\0\0\0""rcp")) {
 
-#line 144 "/home/alois/Documents/bah-bah/src/main.bah"
+#line 147 "/home/alois/Documents/bah-bah/src/main.bah"
 RCPlevel = 1;
 }
 
-#line 145 "/home/alois/Documents/bah-bah/src/main.bah"
+#line 148 "/home/alois/Documents/bah-bah/src/main.bah"
 else if (flags__isSet(&flags,"\07\0\0\0""fastrcp")) {
 
-#line 146 "/home/alois/Documents/bah-bah/src/main.bah"
+#line 149 "/home/alois/Documents/bah-bah/src/main.bah"
 RCPlevel = 2;
 }
 
-#line 149 "/home/alois/Documents/bah-bah/src/main.bah"
+#line 152 "/home/alois/Documents/bah-bah/src/main.bah"
 verboseRuntime = (flags__isSet(&flags,"\016\0\0\0""verboseRuntime")==1);
 
-#line 150 "/home/alois/Documents/bah-bah/src/main.bah"
+#line 153 "/home/alois/Documents/bah-bah/src/main.bah"
 debug = (flags__isSet(&flags,"\05\0\0\0""debug")==1);
 
-#line 151 "/home/alois/Documents/bah-bah/src/main.bah"
+#line 154 "/home/alois/Documents/bah-bah/src/main.bah"
 isObject = (flags__isSet(&flags,"\06\0\0\0""object")==1);
 
-#line 152 "/home/alois/Documents/bah-bah/src/main.bah"
+#line 155 "/home/alois/Documents/bah-bah/src/main.bah"
 isUnsafe = (flags__isSet(&flags,"\06\0\0\0""unsafe")==1);
 
-#line 153 "/home/alois/Documents/bah-bah/src/main.bah"
+#line 156 "/home/alois/Documents/bah-bah/src/main.bah"
 isOptimized = (flags__isSet(&flags,"\010\0\0\0""optimize")==1);
 
-#line 155 "/home/alois/Documents/bah-bah/src/main.bah"
+#line 158 "/home/alois/Documents/bah-bah/src/main.bah"
 if ((debug==true)) {
 
-#line 156 "/home/alois/Documents/bah-bah/src/main.bah"
+#line 159 "/home/alois/Documents/bah-bah/src/main.bah"
 debugStart();
 }
 
-#line 159 "/home/alois/Documents/bah-bah/src/main.bah"
+#line 162 "/home/alois/Documents/bah-bah/src/main.bah"
 RCPenabled = (flags__isSet(&flags,"\03\0\0\0""rcp")==1)||flags__isSet(&flags,"\07\0\0\0""fastrcp");
 
-#line 161 "/home/alois/Documents/bah-bah/src/main.bah"
+#line 164 "/home/alois/Documents/bah-bah/src/main.bah"
 if ((flags__isSet(&flags,"\01\0\0\0""v")==1)) {
 
-#line 162 "/home/alois/Documents/bah-bah/src/main.bah"
+#line 165 "/home/alois/Documents/bah-bah/src/main.bah"
 char** ____BAH_COMPILER_VAR_1471_ahomeaaloisaeocumentsabahcbahasrcamainbbah = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_1471_ahomeaaloisaeocumentsabahcbahasrcamainbbah[2] = "\026\0\0\0"".\n© Alois Laurent Boe";____BAH_COMPILER_VAR_1471_ahomeaaloisaeocumentsabahcbahasrcamainbbah[1] = BAH_VERSION;____BAH_COMPILER_VAR_1471_ahomeaaloisaeocumentsabahcbahasrcamainbbah[0] = "\026\0\0\0""Bah compiler version: ";char* ____BAH_COMPILER_VAR_1472_ahomeaaloisaeocumentsabahcbahasrcamainbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_1471_ahomeaaloisaeocumentsabahcbahasrcamainbbah, 3);println(____BAH_COMPILER_VAR_1472_ahomeaaloisaeocumentsabahcbahasrcamainbbah);
 
-#line 163 "/home/alois/Documents/bah-bah/src/main.bah"
+#line 166 "/home/alois/Documents/bah-bah/src/main.bah"
 return 0;
 }
 
-#line 166 "/home/alois/Documents/bah-bah/src/main.bah"
+#line 169 "/home/alois/Documents/bah-bah/src/main.bah"
 if (__builtin_expect((flags__isSet(&flags,"\01\0\0\0""c")==1)&&(flags__isSet(&flags,"\01\0\0\0""l")==1), 0)) {
 
-#line 167 "/home/alois/Documents/bah-bah/src/main.bah"
-__BAH_panic("\131\0\0\0""Cannot use -c (to translate to C code) and -l (to compile as a library) at the same time.","\056\0\0\0""/home/alois/Documents/bah-bah/src/main.bah:167");
-}
-
 #line 170 "/home/alois/Documents/bah-bah/src/main.bah"
-INIT = rope("\0\0\0\0""");
+__BAH_panic("\131\0\0\0""Cannot use -c (to translate to C code) and -l (to compile as a library) at the same time.","\056\0\0\0""/home/alois/Documents/bah-bah/src/main.bah:170");
+}
 
 #line 173 "/home/alois/Documents/bah-bah/src/main.bah"
-OUTPUT = rope("\065\01\0\0""\n    void __BAH_init();\n    #define noCheck(v) v\n    #define array(type)	\
+INIT = rope("\0\0\0\0""");
+
+#line 176 "/home/alois/Documents/bah-bah/src/main.bah"
+OUTPUT = rope("\111\01\0\0""\n    void __BAH_init();\n    #define noCheck(v) v\n    #define array(type)	\
     struct{	\
     type *data; \
-    unsigned long int length; \
-    unsigned long int realLength; \
-    unsigned long int elemSize; \
-    }\n    typedef array(char*)* __BAH_ARR_TYPE_cpstring;\n    long int __BAH__main(__BAH_ARR_TYPE_cpstring);\n    ");
+    unsigned long long int length; \
+    unsigned long long int realLength; \
+    unsigned long long int elemSize; \
+    }\n    typedef array(char*)* __BAH_ARR_TYPE_cpstring;\n    long long int __BAH__main(__BAH_ARR_TYPE_cpstring);\n    ");
 
-#line 187 "/home/alois/Documents/bah-bah/src/main.bah"
+#line 190 "/home/alois/Documents/bah-bah/src/main.bah"
 if ((flags__isSet(&flags,"\01\0\0\0""l")==0)) {
 
-#line 188 "/home/alois/Documents/bah-bah/src/main.bah"
+#line 191 "/home/alois/Documents/bah-bah/src/main.bah"
 if ((RCPenabled==true)) {
 
-#line 189 "/home/alois/Documents/bah-bah/src/main.bah"
-OUTPUT = rope__add(OUTPUT, rope("\316\02\0\0""\n            void RCP_init();\n            void RCP_shutdown();\n            void free(void*);\n            #include <string.h>\n            int main(int argc, char ** argv) {\n            RCP_init();\n            array(char*) * args = malloc(sizeof(array(char*)));\n            args->data = malloc(sizeof(char*)*argc);\n            memcpy(args->data, argv, sizeof(char*)*argc);\n            args->elemSize = sizeof(char*);\n            args->length = argc;\n            __BAH_init();\n            long int r =  __BAH__main((__BAH_ARR_TYPE_cpstring)args);\n            free(args->data);\n            free(args);\n            RCP_shutdown();\n            return r;\n            };\n            #define main(v) __BAH__main(v)\n            "));
+#line 192 "/home/alois/Documents/bah-bah/src/main.bah"
+OUTPUT = rope__add(OUTPUT, rope("\323\02\0\0""\n            void RCP_init();\n            void RCP_shutdown();\n            void free(void*);\n            #include <string.h>\n            int main(int argc, char ** argv) {\n            RCP_init();\n            array(char*) * args = malloc(sizeof(array(char*)));\n            args->data = malloc(sizeof(char*)*argc);\n            memcpy(args->data, argv, sizeof(char*)*argc);\n            args->elemSize = sizeof(char*);\n            args->length = argc;\n            __BAH_init();\n            long long int r =  __BAH__main((__BAH_ARR_TYPE_cpstring)args);\n            free(args->data);\n            free(args);\n            RCP_shutdown();\n            return r;\n            };\n            #define main(v) __BAH__main(v)\n            "));
 }
 
-#line 211 "/home/alois/Documents/bah-bah/src/main.bah"
+#line 214 "/home/alois/Documents/bah-bah/src/main.bah"
 else if (nativeMemenabled||lightGCenabled) {
 
-#line 212 "/home/alois/Documents/bah-bah/src/main.bah"
-OUTPUT = rope__add(OUTPUT, rope("\234\02\0\0""\n            #include <string.h>\n            void initiateMemory();\n            int main(int argc, char ** argv) {\n            array(char*) * args = malloc(sizeof(array(char*)));\n            args->data = malloc(sizeof(char*)*argc);\n            memcpy(args->data, argv, sizeof(char*)*argc);\n            args->elemSize = sizeof(char*);\n            args->length = argc;\n            initiateMemory((__BAH_ARR_TYPE_cpstring)args);\n            __BAH_init();\n            long int r =  __BAH__main((__BAH_ARR_TYPE_cpstring)args);\n            free(args->data);\n            free(args);\n            return r;\n            };\n            #define main(v) __BAH__main(v)\n            "));
+#line 215 "/home/alois/Documents/bah-bah/src/main.bah"
+OUTPUT = rope__add(OUTPUT, rope("\241\02\0\0""\n            #include <string.h>\n            void initiateMemory();\n            int main(int argc, char ** argv) {\n            array(char*) * args = malloc(sizeof(array(char*)));\n            args->data = malloc(sizeof(char*)*argc);\n            memcpy(args->data, argv, sizeof(char*)*argc);\n            args->elemSize = sizeof(char*);\n            args->length = argc;\n            initiateMemory((__BAH_ARR_TYPE_cpstring)args);\n            __BAH_init();\n            long long int r =  __BAH__main((__BAH_ARR_TYPE_cpstring)args);\n            free(args->data);\n            free(args);\n            return r;\n            };\n            #define main(v) __BAH__main(v)\n            "));
 }
 
-#line 230 "/home/alois/Documents/bah-bah/src/main.bah"
+#line 233 "/home/alois/Documents/bah-bah/src/main.bah"
 else {
 
-#line 231 "/home/alois/Documents/bah-bah/src/main.bah"
-OUTPUT = rope__add(OUTPUT, rope("\173\01\0\0""\n            #include <gc.h>\n            #include <string.h>\n            __BAH_ARR_TYPE_cpstring argsToArr(char** a,long int l);\n            int main(int argc, char ** argv) {\n            GC_INIT();\n            __BAH_init();\n            long int r =  __BAH__main(argsToArr(argv, argc));\n            return r;\n            };\n            #define main(v) __BAH__main(v)\n            "));
+#line 234 "/home/alois/Documents/bah-bah/src/main.bah"
+OUTPUT = rope__add(OUTPUT, rope("\205\01\0\0""\n            #include <gc.h>\n            #include <string.h>\n            __BAH_ARR_TYPE_cpstring argsToArr(char** a,long long int l);\n            int main(int argc, char ** argv) {\n            GC_INIT();\n            __BAH_init();\n            long long int r =  __BAH__main(argsToArr(argv, argc));\n            return r;\n            };\n            #define main(v) __BAH__main(v)\n            "));
 }
 }
 
-#line 247 "/home/alois/Documents/bah-bah/src/main.bah"
+#line 250 "/home/alois/Documents/bah-bah/src/main.bah"
 struct compilerStateTag ____BAH_COMPILER_VAR_1473_ahomeaaloisaeocumentsabahcbahasrcamainbbah = {};
 ____BAH_COMPILER_VAR_1473_ahomeaaloisaeocumentsabahcbahasrcamainbbah.includes = memoryAlloc(sizeof(array(char*)));
             ____BAH_COMPILER_VAR_1473_ahomeaaloisaeocumentsabahcbahasrcamainbbah.includes->length = 0;
@@ -25271,57 +25274,57 @@ ____BAH_COMPILER_VAR_1473_ahomeaaloisaeocumentsabahcbahasrcamainbbah.arrTypesDec
             ____BAH_COMPILER_VAR_1473_ahomeaaloisaeocumentsabahcbahasrcamainbbah.evals->elemSize = sizeof(char*);
             compilerState = ____BAH_COMPILER_VAR_1473_ahomeaaloisaeocumentsabahcbahasrcamainbbah;
 
-#line 248 "/home/alois/Documents/bah-bah/src/main.bah"
+#line 251 "/home/alois/Documents/bah-bah/src/main.bah"
 
     __Bah_realocate_arr(compilerState.arrTypesDecl, 0);
     compilerState.arrTypesDecl->data[0] = "\027\0\0\0""__BAH_ARR_TYPE_cpstring";
 
-#line 251 "/home/alois/Documents/bah-bah/src/main.bah"
+#line 254 "/home/alois/Documents/bah-bah/src/main.bah"
 char* fileName = absPath(args->data[1]);
 
-#line 252 "/home/alois/Documents/bah-bah/src/main.bah"
+#line 255 "/home/alois/Documents/bah-bah/src/main.bah"
 compilerState.currentFile = fileName;
 
-#line 253 "/home/alois/Documents/bah-bah/src/main.bah"
+#line 256 "/home/alois/Documents/bah-bah/src/main.bah"
 struct fileStream ____BAH_COMPILER_VAR_1474_ahomeaaloisaeocumentsabahcbahasrcamainbbah = {};
 struct fileStream fs = ____BAH_COMPILER_VAR_1474_ahomeaaloisaeocumentsabahcbahasrcamainbbah;
 
-#line 254 "/home/alois/Documents/bah-bah/src/main.bah"
+#line 257 "/home/alois/Documents/bah-bah/src/main.bah"
 fileStream__open(&fs,fileName,"\01\0\0\0""r");
 
-#line 255 "/home/alois/Documents/bah-bah/src/main.bah"
+#line 258 "/home/alois/Documents/bah-bah/src/main.bah"
 char* f = fileStream__readContent(&fs);
 
-#line 256 "/home/alois/Documents/bah-bah/src/main.bah"
+#line 259 "/home/alois/Documents/bah-bah/src/main.bah"
 if (__builtin_expect((fileStream__isValid(&fs)==0)||(fileStream__getSize(&fs)==0), 0)) {
 
-#line 257 "/home/alois/Documents/bah-bah/src/main.bah"
+#line 260 "/home/alois/Documents/bah-bah/src/main.bah"
 char** ____BAH_COMPILER_VAR_1475_ahomeaaloisaeocumentsabahcbahasrcamainbbah = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_1475_ahomeaaloisaeocumentsabahcbahasrcamainbbah[2] = "\02\0\0\0""'.";____BAH_COMPILER_VAR_1475_ahomeaaloisaeocumentsabahcbahasrcamainbbah[1] = args->data[1];____BAH_COMPILER_VAR_1475_ahomeaaloisaeocumentsabahcbahasrcamainbbah[0] = "\025\0\0\0""Could not open file '";char* ____BAH_COMPILER_VAR_1476_ahomeaaloisaeocumentsabahcbahasrcamainbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_1475_ahomeaaloisaeocumentsabahcbahasrcamainbbah, 3);println(____BAH_COMPILER_VAR_1476_ahomeaaloisaeocumentsabahcbahasrcamainbbah);
 
-#line 258 "/home/alois/Documents/bah-bah/src/main.bah"
+#line 261 "/home/alois/Documents/bah-bah/src/main.bah"
 exit(1);
 }
 
-#line 260 "/home/alois/Documents/bah-bah/src/main.bah"
-long int startTime = getTimeUnix();
+#line 263 "/home/alois/Documents/bah-bah/src/main.bah"
+long long int startTime = getTimeUnix();
 
-#line 261 "/home/alois/Documents/bah-bah/src/main.bah"
+#line 264 "/home/alois/Documents/bah-bah/src/main.bah"
 array(struct Tok)* tokens = lexer(f,fileStream__getSize(&fs));
 
-#line 262 "/home/alois/Documents/bah-bah/src/main.bah"
+#line 265 "/home/alois/Documents/bah-bah/src/main.bah"
 fileStream__close(&fs);
 
-#line 265 "/home/alois/Documents/bah-bah/src/main.bah"
+#line 268 "/home/alois/Documents/bah-bah/src/main.bah"
 if (__builtin_expect((len(tokens)==0), 0)) {
 
-#line 266 "/home/alois/Documents/bah-bah/src/main.bah"
+#line 269 "/home/alois/Documents/bah-bah/src/main.bah"
 char** ____BAH_COMPILER_VAR_1477_ahomeaaloisaeocumentsabahcbahasrcamainbbah = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_1477_ahomeaaloisaeocumentsabahcbahasrcamainbbah[2] = "\021\0\0\0""' not recognized.";____BAH_COMPILER_VAR_1477_ahomeaaloisaeocumentsabahcbahasrcamainbbah[1] = fileName;____BAH_COMPILER_VAR_1477_ahomeaaloisaeocumentsabahcbahasrcamainbbah[0] = "\06\0\0\0""File '";char* ____BAH_COMPILER_VAR_1478_ahomeaaloisaeocumentsabahcbahasrcamainbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_1477_ahomeaaloisaeocumentsabahcbahasrcamainbbah, 3);println(____BAH_COMPILER_VAR_1478_ahomeaaloisaeocumentsabahcbahasrcamainbbah);
 
-#line 267 "/home/alois/Documents/bah-bah/src/main.bah"
+#line 270 "/home/alois/Documents/bah-bah/src/main.bah"
 exit(1);
 }
 
-#line 270 "/home/alois/Documents/bah-bah/src/main.bah"
+#line 273 "/home/alois/Documents/bah-bah/src/main.bah"
 struct Elems* ____BAH_COMPILER_VAR_1479_ahomeaaloisaeocumentsabahcbahasrcamainbbah = memoryAlloc(sizeof(struct Elems));
 ____BAH_COMPILER_VAR_1479_ahomeaaloisaeocumentsabahcbahasrcamainbbah->vars = memoryAlloc(sizeof(array(struct variable*)));
             ____BAH_COMPILER_VAR_1479_ahomeaaloisaeocumentsabahcbahasrcamainbbah->vars->length = 0;
@@ -25343,349 +25346,349 @@ ____BAH_COMPILER_VAR_1479_ahomeaaloisaeocumentsabahcbahasrcamainbbah->vars = mem
             ____BAH_COMPILER_VAR_1479_ahomeaaloisaeocumentsabahcbahasrcamainbbah->branchChecks->elemSize = sizeof(struct varCheck);
             struct Elems* elems = ____BAH_COMPILER_VAR_1479_ahomeaaloisaeocumentsabahcbahasrcamainbbah;
 
-#line 273 "/home/alois/Documents/bah-bah/src/main.bah"
+#line 276 "/home/alois/Documents/bah-bah/src/main.bah"
 if ((isObject==true)) {
 
-#line 274 "/home/alois/Documents/bah-bah/src/main.bah"
-OUTPUT = rope("\057\01\0\0""\n        #define noCheck(v) v\n        #define array(type)	\
+#line 277 "/home/alois/Documents/bah-bah/src/main.bah"
+OUTPUT = rope("\103\01\0\0""\n        #define noCheck(v) v\n        #define array(type)	\
         struct{	\
         type *data; \
-        long int length; \
-        long int realLength; \
-        long int elemSize; \
-        }\n        typedef array(char*)* __BAH_ARR_TYPE_cpstring;\n        long int __BAH__main(__BAH_ARR_TYPE_cpstring);\n        ");
+        long long int length; \
+        long long int realLength; \
+        long long int elemSize; \
+        }\n        typedef array(char*)* __BAH_ARR_TYPE_cpstring;\n        long long int __BAH__main(__BAH_ARR_TYPE_cpstring);\n        ");
 
-#line 286 "/home/alois/Documents/bah-bah/src/main.bah"
+#line 289 "/home/alois/Documents/bah-bah/src/main.bah"
 shouldOnlyDecl = true;
 }
 
-#line 290 "/home/alois/Documents/bah-bah/src/main.bah"
+#line 293 "/home/alois/Documents/bah-bah/src/main.bah"
 
                 struct string ____BAH_COMPILER_VAR_1480_ahomeaaloisaeocumentsabahcbahasrcamainbbah = string(fileName);
                 if ((flags__isSet(&flags,"\011\0\0\0""nobuiltin")==0)&&(string__hasSuffix(&____BAH_COMPILER_VAR_1480_ahomeaaloisaeocumentsabahcbahasrcamainbbah,"\010\0\0\0"".bahstrp")==false)) {
 
-#line 291 "/home/alois/Documents/bah-bah/src/main.bah"
+#line 294 "/home/alois/Documents/bah-bah/src/main.bah"
 if (__builtin_expect((includeFile("\013\0\0\0""builtin.bah",elems)==false), 0)) {
 
-#line 292 "/home/alois/Documents/bah-bah/src/main.bah"
-char** ____BAH_COMPILER_VAR_1481_ahomeaaloisaeocumentsabahcbahasrcamainbbah = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_1481_ahomeaaloisaeocumentsabahcbahasrcamainbbah[2] = "\01\0\0\0""'";____BAH_COMPILER_VAR_1481_ahomeaaloisaeocumentsabahcbahasrcamainbbah[1] = BAH_DIR;____BAH_COMPILER_VAR_1481_ahomeaaloisaeocumentsabahcbahasrcamainbbah[0] = "\047\0\0\0""Could not find std-libs, please check '";char* ____BAH_COMPILER_VAR_1482_ahomeaaloisaeocumentsabahcbahasrcamainbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_1481_ahomeaaloisaeocumentsabahcbahasrcamainbbah, 3);__BAH_panic(____BAH_COMPILER_VAR_1482_ahomeaaloisaeocumentsabahcbahasrcamainbbah,"\056\0\0\0""/home/alois/Documents/bah-bah/src/main.bah:292");
+#line 295 "/home/alois/Documents/bah-bah/src/main.bah"
+char** ____BAH_COMPILER_VAR_1481_ahomeaaloisaeocumentsabahcbahasrcamainbbah = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_1481_ahomeaaloisaeocumentsabahcbahasrcamainbbah[2] = "\01\0\0\0""'";____BAH_COMPILER_VAR_1481_ahomeaaloisaeocumentsabahcbahasrcamainbbah[1] = BAH_DIR;____BAH_COMPILER_VAR_1481_ahomeaaloisaeocumentsabahcbahasrcamainbbah[0] = "\047\0\0\0""Could not find std-libs, please check '";char* ____BAH_COMPILER_VAR_1482_ahomeaaloisaeocumentsabahcbahasrcamainbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_1481_ahomeaaloisaeocumentsabahcbahasrcamainbbah, 3);__BAH_panic(____BAH_COMPILER_VAR_1482_ahomeaaloisaeocumentsabahcbahasrcamainbbah,"\056\0\0\0""/home/alois/Documents/bah-bah/src/main.bah:295");
 }
 }
 
-#line 296 "/home/alois/Documents/bah-bah/src/main.bah"
+#line 299 "/home/alois/Documents/bah-bah/src/main.bah"
 if ((isFixMeEnabled==true)) {
 
-#line 297 "/home/alois/Documents/bah-bah/src/main.bah"
+#line 300 "/home/alois/Documents/bah-bah/src/main.bah"
 if (__builtin_expect((includeFile("\011\0\0\0""fixme.bah",elems)==false), 0)) {
 
-#line 298 "/home/alois/Documents/bah-bah/src/main.bah"
-char** ____BAH_COMPILER_VAR_1483_ahomeaaloisaeocumentsabahcbahasrcamainbbah = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_1483_ahomeaaloisaeocumentsabahcbahasrcamainbbah[2] = "\01\0\0\0""'";____BAH_COMPILER_VAR_1483_ahomeaaloisaeocumentsabahcbahasrcamainbbah[1] = BAH_DIR;____BAH_COMPILER_VAR_1483_ahomeaaloisaeocumentsabahcbahasrcamainbbah[0] = "\050\0\0\0""Could not find fixme.bah, please check '";char* ____BAH_COMPILER_VAR_1484_ahomeaaloisaeocumentsabahcbahasrcamainbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_1483_ahomeaaloisaeocumentsabahcbahasrcamainbbah, 3);__BAH_panic(____BAH_COMPILER_VAR_1484_ahomeaaloisaeocumentsabahcbahasrcamainbbah,"\056\0\0\0""/home/alois/Documents/bah-bah/src/main.bah:298");
+#line 301 "/home/alois/Documents/bah-bah/src/main.bah"
+char** ____BAH_COMPILER_VAR_1483_ahomeaaloisaeocumentsabahcbahasrcamainbbah = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_1483_ahomeaaloisaeocumentsabahcbahasrcamainbbah[2] = "\01\0\0\0""'";____BAH_COMPILER_VAR_1483_ahomeaaloisaeocumentsabahcbahasrcamainbbah[1] = BAH_DIR;____BAH_COMPILER_VAR_1483_ahomeaaloisaeocumentsabahcbahasrcamainbbah[0] = "\050\0\0\0""Could not find fixme.bah, please check '";char* ____BAH_COMPILER_VAR_1484_ahomeaaloisaeocumentsabahcbahasrcamainbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_1483_ahomeaaloisaeocumentsabahcbahasrcamainbbah, 3);__BAH_panic(____BAH_COMPILER_VAR_1484_ahomeaaloisaeocumentsabahcbahasrcamainbbah,"\056\0\0\0""/home/alois/Documents/bah-bah/src/main.bah:301");
 }
 }
-
-#line 302 "/home/alois/Documents/bah-bah/src/main.bah"
-shouldOnlyDecl = false;
 
 #line 305 "/home/alois/Documents/bah-bah/src/main.bah"
+shouldOnlyDecl = false;
+
+#line 308 "/home/alois/Documents/bah-bah/src/main.bah"
 if ((flags__isSet(&flags,"\01\0\0\0""l")==1)) {
 
-#line 306 "/home/alois/Documents/bah-bah/src/main.bah"
+#line 309 "/home/alois/Documents/bah-bah/src/main.bah"
 OUTPUT = rope("\0\0\0\0""");
 
-#line 307 "/home/alois/Documents/bah-bah/src/main.bah"
+#line 310 "/home/alois/Documents/bah-bah/src/main.bah"
 declareAll(elems);
 }
 
-#line 310 "/home/alois/Documents/bah-bah/src/main.bah"
+#line 313 "/home/alois/Documents/bah-bah/src/main.bah"
 compilerState.currentDir = getDirFromFile(fileName);
 
-#line 311 "/home/alois/Documents/bah-bah/src/main.bah"
+#line 314 "/home/alois/Documents/bah-bah/src/main.bah"
 parseLines(tokens,elems);
 
-#line 314 "/home/alois/Documents/bah-bah/src/main.bah"
+#line 317 "/home/alois/Documents/bah-bah/src/main.bah"
 if ((isObject==false)&&(isUnsafe==false)) {
 
-#line 315 "/home/alois/Documents/bah-bah/src/main.bah"
-long int l = 0;
-
-#line 316 "/home/alois/Documents/bah-bah/src/main.bah"
-register long int i = 0;
-
-#line 316 "/home/alois/Documents/bah-bah/src/main.bah"
-for (; (i<len(elems->fns)); ++i) {
-
-#line 317 "/home/alois/Documents/bah-bah/src/main.bah"
-struct func* fn = elems->fns->data[i];
-
 #line 318 "/home/alois/Documents/bah-bah/src/main.bah"
-if ((fn->isBinding==true)) {
+long long int l = 0;
 
 #line 319 "/home/alois/Documents/bah-bah/src/main.bah"
+register long long int i = 0;
+
+#line 319 "/home/alois/Documents/bah-bah/src/main.bah"
+for (; (i<len(elems->fns)); ++i) {
+
+#line 320 "/home/alois/Documents/bah-bah/src/main.bah"
+struct func* fn = elems->fns->data[i];
+
+#line 321 "/home/alois/Documents/bah-bah/src/main.bah"
+if ((fn->isBinding==true)) {
+
+#line 322 "/home/alois/Documents/bah-bah/src/main.bah"
 continue;
 }
 
-#line 321 "/home/alois/Documents/bah-bah/src/main.bah"
+#line 324 "/home/alois/Documents/bah-bah/src/main.bah"
 ++l;
 };
 
-#line 323 "/home/alois/Documents/bah-bah/src/main.bah"
+#line 326 "/home/alois/Documents/bah-bah/src/main.bah"
 char** ____BAH_COMPILER_VAR_1485_ahomeaaloisaeocumentsabahcbahasrcamainbbah = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_1485_ahomeaaloisaeocumentsabahcbahasrcamainbbah[2] = "\02\0\0\0""];";____BAH_COMPILER_VAR_1485_ahomeaaloisaeocumentsabahcbahasrcamainbbah[1] = intToStr(l);____BAH_COMPILER_VAR_1485_ahomeaaloisaeocumentsabahcbahasrcamainbbah[0] = "\071\0\0\0""volatile struct __Bah_fnName_mapper __tmp____Bah_fnNames[";char* ____BAH_COMPILER_VAR_1486_ahomeaaloisaeocumentsabahcbahasrcamainbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_1485_ahomeaaloisaeocumentsabahcbahasrcamainbbah, 3);OUTPUT = rope__add(OUTPUT, rope(____BAH_COMPILER_VAR_1486_ahomeaaloisaeocumentsabahcbahasrcamainbbah));
 
-#line 324 "/home/alois/Documents/bah-bah/src/main.bah"
-long int j = 0;
-
-#line 325 "/home/alois/Documents/bah-bah/src/main.bah"
-i = 0;
-
-#line 325 "/home/alois/Documents/bah-bah/src/main.bah"
-for (; (i<len(elems->fns)); ++i) {
-
-#line 326 "/home/alois/Documents/bah-bah/src/main.bah"
-struct func* fn = elems->fns->data[i];
-
 #line 327 "/home/alois/Documents/bah-bah/src/main.bah"
-if ((fn->isBinding==true)) {
+long long int j = 0;
 
 #line 328 "/home/alois/Documents/bah-bah/src/main.bah"
+i = 0;
+
+#line 328 "/home/alois/Documents/bah-bah/src/main.bah"
+for (; (i<len(elems->fns)); ++i) {
+
+#line 329 "/home/alois/Documents/bah-bah/src/main.bah"
+struct func* fn = elems->fns->data[i];
+
+#line 330 "/home/alois/Documents/bah-bah/src/main.bah"
+if ((fn->isBinding==true)) {
+
+#line 331 "/home/alois/Documents/bah-bah/src/main.bah"
 continue;
 }
 
-#line 330 "/home/alois/Documents/bah-bah/src/main.bah"
+#line 333 "/home/alois/Documents/bah-bah/src/main.bah"
 char* name = fn->name;
 
-#line 331 "/home/alois/Documents/bah-bah/src/main.bah"
+#line 334 "/home/alois/Documents/bah-bah/src/main.bah"
 char** ____BAH_COMPILER_VAR_1487_ahomeaaloisaeocumentsabahcbahasrcamainbbah = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1487_ahomeaaloisaeocumentsabahcbahasrcamainbbah[1] = "\02\0\0\0""__";____BAH_COMPILER_VAR_1487_ahomeaaloisaeocumentsabahcbahasrcamainbbah[0] = fn->from;char* ____BAH_COMPILER_VAR_1488_ahomeaaloisaeocumentsabahcbahasrcamainbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_1487_ahomeaaloisaeocumentsabahcbahasrcamainbbah, 2);if ((strcmp(fn->from, "\0\0\0\0""") != 0)&&strHasPrefix(name,____BAH_COMPILER_VAR_1488_ahomeaaloisaeocumentsabahcbahasrcamainbbah)) {
 
-#line 332 "/home/alois/Documents/bah-bah/src/main.bah"
+#line 335 "/home/alois/Documents/bah-bah/src/main.bah"
 struct string n = string(name);
 
-#line 333 "/home/alois/Documents/bah-bah/src/main.bah"
+#line 336 "/home/alois/Documents/bah-bah/src/main.bah"
 string__trimLeft(&n,strlen(fn->from)+2);
 
-#line 334 "/home/alois/Documents/bah-bah/src/main.bah"
+#line 337 "/home/alois/Documents/bah-bah/src/main.bah"
 char** ____BAH_COMPILER_VAR_1489_ahomeaaloisaeocumentsabahcbahasrcamainbbah = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_1489_ahomeaaloisaeocumentsabahcbahasrcamainbbah[2] = string__str(&n);____BAH_COMPILER_VAR_1489_ahomeaaloisaeocumentsabahcbahasrcamainbbah[1] = "\01\0\0\0"".";____BAH_COMPILER_VAR_1489_ahomeaaloisaeocumentsabahcbahasrcamainbbah[0] = fn->from;char* ____BAH_COMPILER_VAR_1490_ahomeaaloisaeocumentsabahcbahasrcamainbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_1489_ahomeaaloisaeocumentsabahcbahasrcamainbbah, 3);name = ____BAH_COMPILER_VAR_1490_ahomeaaloisaeocumentsabahcbahasrcamainbbah;
 }
 
-#line 336 "/home/alois/Documents/bah-bah/src/main.bah"
+#line 339 "/home/alois/Documents/bah-bah/src/main.bah"
 char** ____BAH_COMPILER_VAR_1491_ahomeaaloisaeocumentsabahcbahasrcamainbbah = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_1491_ahomeaaloisaeocumentsabahcbahasrcamainbbah[2] = "\01\0\0\0""\"";____BAH_COMPILER_VAR_1491_ahomeaaloisaeocumentsabahcbahasrcamainbbah[1] = name;____BAH_COMPILER_VAR_1491_ahomeaaloisaeocumentsabahcbahasrcamainbbah[0] = "\01\0\0\0""\"";char* ____BAH_COMPILER_VAR_1492_ahomeaaloisaeocumentsabahcbahasrcamainbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_1491_ahomeaaloisaeocumentsabahcbahasrcamainbbah, 3);char** ____BAH_COMPILER_VAR_1493_ahomeaaloisaeocumentsabahcbahasrcamainbbah = alloca(9 * sizeof(char*));____BAH_COMPILER_VAR_1493_ahomeaaloisaeocumentsabahcbahasrcamainbbah[8] = "\02\0\0\0"";\n";____BAH_COMPILER_VAR_1493_ahomeaaloisaeocumentsabahcbahasrcamainbbah[7] = fn->name;____BAH_COMPILER_VAR_1493_ahomeaaloisaeocumentsabahcbahasrcamainbbah[6] = "\06\0\0\0""].p = ";____BAH_COMPILER_VAR_1493_ahomeaaloisaeocumentsabahcbahasrcamainbbah[5] = intToStr(j);____BAH_COMPILER_VAR_1493_ahomeaaloisaeocumentsabahcbahasrcamainbbah[4] = "\043\0\0\0"";\n            __tmp____Bah_fnNames[";____BAH_COMPILER_VAR_1493_ahomeaaloisaeocumentsabahcbahasrcamainbbah[3] = strLitteralToBahStr(____BAH_COMPILER_VAR_1492_ahomeaaloisaeocumentsabahcbahasrcamainbbah);____BAH_COMPILER_VAR_1493_ahomeaaloisaeocumentsabahcbahasrcamainbbah[2] = "\06\0\0\0""].n = ";____BAH_COMPILER_VAR_1493_ahomeaaloisaeocumentsabahcbahasrcamainbbah[1] = intToStr(j);____BAH_COMPILER_VAR_1493_ahomeaaloisaeocumentsabahcbahasrcamainbbah[0] = "\042\0\0\0""\n            __tmp____Bah_fnNames[";char* ____BAH_COMPILER_VAR_1494_ahomeaaloisaeocumentsabahcbahasrcamainbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_1493_ahomeaaloisaeocumentsabahcbahasrcamainbbah, 9);INIT = rope__add(INIT, rope(____BAH_COMPILER_VAR_1494_ahomeaaloisaeocumentsabahcbahasrcamainbbah));
 
-#line 339 "/home/alois/Documents/bah-bah/src/main.bah"
+#line 342 "/home/alois/Documents/bah-bah/src/main.bah"
 ++j;
 };
 
-#line 341 "/home/alois/Documents/bah-bah/src/main.bah"
+#line 344 "/home/alois/Documents/bah-bah/src/main.bah"
 char** ____BAH_COMPILER_VAR_1495_ahomeaaloisaeocumentsabahcbahasrcamainbbah = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_1495_ahomeaaloisaeocumentsabahcbahasrcamainbbah[2] = "\01\0\0\0"";";____BAH_COMPILER_VAR_1495_ahomeaaloisaeocumentsabahcbahasrcamainbbah[1] = intToStr(l);____BAH_COMPILER_VAR_1495_ahomeaaloisaeocumentsabahcbahasrcamainbbah[0] = "\125\0\0\0""\n        __Bah_fnNames->data = __tmp____Bah_fnNames;\n        __Bah_fnNames->length = ";char* ____BAH_COMPILER_VAR_1496_ahomeaaloisaeocumentsabahcbahasrcamainbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_1495_ahomeaaloisaeocumentsabahcbahasrcamainbbah, 3);INIT = rope__add(INIT, rope(____BAH_COMPILER_VAR_1496_ahomeaaloisaeocumentsabahcbahasrcamainbbah));
 }
 
-#line 346 "/home/alois/Documents/bah-bah/src/main.bah"
+#line 349 "/home/alois/Documents/bah-bah/src/main.bah"
 makeInit();
 
-#line 349 "/home/alois/Documents/bah-bah/src/main.bah"
+#line 352 "/home/alois/Documents/bah-bah/src/main.bah"
 if ((debug==true)) {
 
-#line 350 "/home/alois/Documents/bah-bah/src/main.bah"
+#line 353 "/home/alois/Documents/bah-bah/src/main.bah"
 debugEnd();
 
-#line 351 "/home/alois/Documents/bah-bah/src/main.bah"
+#line 354 "/home/alois/Documents/bah-bah/src/main.bah"
 return 0;
 }
 
-#line 355 "/home/alois/Documents/bah-bah/src/main.bah"
+#line 358 "/home/alois/Documents/bah-bah/src/main.bah"
 if ((isObject==false)) {
 
-#line 356 "/home/alois/Documents/bah-bah/src/main.bah"
-long int totalTime = getTimeUnix()-startTime;
+#line 359 "/home/alois/Documents/bah-bah/src/main.bah"
+long long int totalTime = getTimeUnix()-startTime;
 
-#line 357 "/home/alois/Documents/bah-bah/src/main.bah"
+#line 360 "/home/alois/Documents/bah-bah/src/main.bah"
 char** ____BAH_COMPILER_VAR_1497_ahomeaaloisaeocumentsabahcbahasrcamainbbah = alloca(7 * sizeof(char*));____BAH_COMPILER_VAR_1497_ahomeaaloisaeocumentsabahcbahasrcamainbbah[6] = "\07\0\0\0""ms)\e[0m";____BAH_COMPILER_VAR_1497_ahomeaaloisaeocumentsabahcbahasrcamainbbah[5] = intToStr(totalLexerTime/1000000);____BAH_COMPILER_VAR_1497_ahomeaaloisaeocumentsabahcbahasrcamainbbah[4] = "\020\0\0\0""ms, lexer time: ";____BAH_COMPILER_VAR_1497_ahomeaaloisaeocumentsabahcbahasrcamainbbah[3] = intToStr(totalTime/1000000);____BAH_COMPILER_VAR_1497_ahomeaaloisaeocumentsabahcbahasrcamainbbah[2] = "\024\0\0\0"" lines, total time: ";____BAH_COMPILER_VAR_1497_ahomeaaloisaeocumentsabahcbahasrcamainbbah[1] = intToStr(totalLines);____BAH_COMPILER_VAR_1497_ahomeaaloisaeocumentsabahcbahasrcamainbbah[0] = "\011\0\0\0""Parsed. (";char* ____BAH_COMPILER_VAR_1498_ahomeaaloisaeocumentsabahcbahasrcamainbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_1497_ahomeaaloisaeocumentsabahcbahasrcamainbbah, 7);println(____BAH_COMPILER_VAR_1498_ahomeaaloisaeocumentsabahcbahasrcamainbbah);
 }
 
-#line 361 "/home/alois/Documents/bah-bah/src/main.bah"
+#line 364 "/home/alois/Documents/bah-bah/src/main.bah"
 if ((flags__isSet(&flags,"\01\0\0\0""o")==1)) {
 
-#line 362 "/home/alois/Documents/bah-bah/src/main.bah"
+#line 365 "/home/alois/Documents/bah-bah/src/main.bah"
 fileName = flags__get(&flags,"\01\0\0\0""o");
 }
 
-#line 363 "/home/alois/Documents/bah-bah/src/main.bah"
+#line 366 "/home/alois/Documents/bah-bah/src/main.bah"
 else {
 
-#line 364 "/home/alois/Documents/bah-bah/src/main.bah"
+#line 367 "/home/alois/Documents/bah-bah/src/main.bah"
 struct string outFileName = string(args->data[1]);
 
-#line 365 "/home/alois/Documents/bah-bah/src/main.bah"
+#line 368 "/home/alois/Documents/bah-bah/src/main.bah"
 string__trimRight(&outFileName,4);
 
-#line 366 "/home/alois/Documents/bah-bah/src/main.bah"
+#line 369 "/home/alois/Documents/bah-bah/src/main.bah"
 fileName = string__str(&outFileName);
 }
 
-#line 370 "/home/alois/Documents/bah-bah/src/main.bah"
+#line 373 "/home/alois/Documents/bah-bah/src/main.bah"
 char* isStatic = "\07\0\0\0""-static";
 
-#line 371 "/home/alois/Documents/bah-bah/src/main.bah"
+#line 374 "/home/alois/Documents/bah-bah/src/main.bah"
 if ((flags__isSet(&flags,"\01\0\0\0""d")==1)||(strcmp(BAH_OS, "\06\0\0\0""darwin") == 0)) {
 
-#line 372 "/home/alois/Documents/bah-bah/src/main.bah"
+#line 375 "/home/alois/Documents/bah-bah/src/main.bah"
 isStatic = "\0\0\0\0""";
 }
 
-#line 376 "/home/alois/Documents/bah-bah/src/main.bah"
+#line 379 "/home/alois/Documents/bah-bah/src/main.bah"
 if ((flags__isSet(&flags,"\01\0\0\0""c")==0)) {
 
-#line 378 "/home/alois/Documents/bah-bah/src/main.bah"
+#line 381 "/home/alois/Documents/bah-bah/src/main.bah"
 char* obj = "\0\0\0\0""";
 
-#line 379 "/home/alois/Documents/bah-bah/src/main.bah"
+#line 382 "/home/alois/Documents/bah-bah/src/main.bah"
 if ((flags__isSet(&flags,"\06\0\0\0""object")==1)) {
 
-#line 380 "/home/alois/Documents/bah-bah/src/main.bah"
+#line 383 "/home/alois/Documents/bah-bah/src/main.bah"
 char** ____BAH_COMPILER_VAR_1499_ahomeaaloisaeocumentsabahcbahasrcamainbbah = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1499_ahomeaaloisaeocumentsabahcbahasrcamainbbah[1] = "\02\0\0\0"".o";____BAH_COMPILER_VAR_1499_ahomeaaloisaeocumentsabahcbahasrcamainbbah[0] = fileName;char* ____BAH_COMPILER_VAR_1500_ahomeaaloisaeocumentsabahcbahasrcamainbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_1499_ahomeaaloisaeocumentsabahcbahasrcamainbbah, 2);fileName = ____BAH_COMPILER_VAR_1500_ahomeaaloisaeocumentsabahcbahasrcamainbbah;
 
-#line 381 "/home/alois/Documents/bah-bah/src/main.bah"
+#line 384 "/home/alois/Documents/bah-bah/src/main.bah"
 obj = "\02\0\0\0""-c";
 }
 
-#line 384 "/home/alois/Documents/bah-bah/src/main.bah"
+#line 387 "/home/alois/Documents/bah-bah/src/main.bah"
 char* randFileName = "\016\0\0\0""-x c - -x none";
 
-#line 385 "/home/alois/Documents/bah-bah/src/main.bah"
+#line 388 "/home/alois/Documents/bah-bah/src/main.bah"
 char** ____BAH_COMPILER_VAR_1501_ahomeaaloisaeocumentsabahcbahasrcamainbbah = alloca(17 * sizeof(char*));____BAH_COMPILER_VAR_1501_ahomeaaloisaeocumentsabahcbahasrcamainbbah[16] = fileName;____BAH_COMPILER_VAR_1501_ahomeaaloisaeocumentsabahcbahasrcamainbbah[15] = "\017\0\0\0"" -w -O1 -g1 -o ";____BAH_COMPILER_VAR_1501_ahomeaaloisaeocumentsabahcbahasrcamainbbah[14] = obj;____BAH_COMPILER_VAR_1501_ahomeaaloisaeocumentsabahcbahasrcamainbbah[13] = "\01\0\0\0"" ";____BAH_COMPILER_VAR_1501_ahomeaaloisaeocumentsabahcbahasrcamainbbah[12] = isStatic;____BAH_COMPILER_VAR_1501_ahomeaaloisaeocumentsabahcbahasrcamainbbah[11] = "\01\0\0\0"" ";____BAH_COMPILER_VAR_1501_ahomeaaloisaeocumentsabahcbahasrcamainbbah[10] = randFileName;____BAH_COMPILER_VAR_1501_ahomeaaloisaeocumentsabahcbahasrcamainbbah[9] = "\03\0\0\0""/\" ";____BAH_COMPILER_VAR_1501_ahomeaaloisaeocumentsabahcbahasrcamainbbah[8] = BAH_OS;____BAH_COMPILER_VAR_1501_ahomeaaloisaeocumentsabahcbahasrcamainbbah[7] = "\05\0\0\0""libs/";____BAH_COMPILER_VAR_1501_ahomeaaloisaeocumentsabahcbahasrcamainbbah[6] = BAH_DIR;____BAH_COMPILER_VAR_1501_ahomeaaloisaeocumentsabahcbahasrcamainbbah[5] = "\017\0\0\0""/include/\" -L \"";____BAH_COMPILER_VAR_1501_ahomeaaloisaeocumentsabahcbahasrcamainbbah[4] = BAH_OS;____BAH_COMPILER_VAR_1501_ahomeaaloisaeocumentsabahcbahasrcamainbbah[3] = "\05\0\0\0""libs/";____BAH_COMPILER_VAR_1501_ahomeaaloisaeocumentsabahcbahasrcamainbbah[2] = BAH_DIR;____BAH_COMPILER_VAR_1501_ahomeaaloisaeocumentsabahcbahasrcamainbbah[1] = "\05\0\0\0"" -I \"";____BAH_COMPILER_VAR_1501_ahomeaaloisaeocumentsabahcbahasrcamainbbah[0] = BAH_CC;char* ____BAH_COMPILER_VAR_1502_ahomeaaloisaeocumentsabahcbahasrcamainbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_1501_ahomeaaloisaeocumentsabahcbahasrcamainbbah, 17);char* gccArgs = ____BAH_COMPILER_VAR_1502_ahomeaaloisaeocumentsabahcbahasrcamainbbah;
 
-#line 387 "/home/alois/Documents/bah-bah/src/main.bah"
+#line 390 "/home/alois/Documents/bah-bah/src/main.bah"
 if ((flags__isSet(&flags,"\01\0\0\0""l")==1)) {
 
-#line 388 "/home/alois/Documents/bah-bah/src/main.bah"
+#line 391 "/home/alois/Documents/bah-bah/src/main.bah"
 char** ____BAH_COMPILER_VAR_1503_ahomeaaloisaeocumentsabahcbahasrcamainbbah = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1503_ahomeaaloisaeocumentsabahcbahasrcamainbbah[1] = "\03\0\0\0"" -c";____BAH_COMPILER_VAR_1503_ahomeaaloisaeocumentsabahcbahasrcamainbbah[0] = gccArgs;char* ____BAH_COMPILER_VAR_1504_ahomeaaloisaeocumentsabahcbahasrcamainbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_1503_ahomeaaloisaeocumentsabahcbahasrcamainbbah, 2);gccArgs = ____BAH_COMPILER_VAR_1504_ahomeaaloisaeocumentsabahcbahasrcamainbbah;
 }
 
-#line 392 "/home/alois/Documents/bah-bah/src/main.bah"
+#line 395 "/home/alois/Documents/bah-bah/src/main.bah"
 array(char*)* cLibs = compilerState.cLibs;
 
-#line 393 "/home/alois/Documents/bah-bah/src/main.bah"
-register long int i = 0;
-
-#line 393 "/home/alois/Documents/bah-bah/src/main.bah"
-while ((i<len(cLibs))) {
-
-#line 394 "/home/alois/Documents/bah-bah/src/main.bah"
-char* l = cLibs->data[i];
-
-#line 395 "/home/alois/Documents/bah-bah/src/main.bah"
-char** ____BAH_COMPILER_VAR_1505_ahomeaaloisaeocumentsabahcbahasrcamainbbah = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_1505_ahomeaaloisaeocumentsabahcbahasrcamainbbah[2] = l;____BAH_COMPILER_VAR_1505_ahomeaaloisaeocumentsabahcbahasrcamainbbah[1] = "\02\0\0\0"" -";____BAH_COMPILER_VAR_1505_ahomeaaloisaeocumentsabahcbahasrcamainbbah[0] = gccArgs;char* ____BAH_COMPILER_VAR_1506_ahomeaaloisaeocumentsabahcbahasrcamainbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_1505_ahomeaaloisaeocumentsabahcbahasrcamainbbah, 3);gccArgs = ____BAH_COMPILER_VAR_1506_ahomeaaloisaeocumentsabahcbahasrcamainbbah;
+#line 396 "/home/alois/Documents/bah-bah/src/main.bah"
+register long long int i = 0;
 
 #line 396 "/home/alois/Documents/bah-bah/src/main.bah"
+while ((i<len(cLibs))) {
+
+#line 397 "/home/alois/Documents/bah-bah/src/main.bah"
+char* l = cLibs->data[i];
+
+#line 398 "/home/alois/Documents/bah-bah/src/main.bah"
+char** ____BAH_COMPILER_VAR_1505_ahomeaaloisaeocumentsabahcbahasrcamainbbah = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_1505_ahomeaaloisaeocumentsabahcbahasrcamainbbah[2] = l;____BAH_COMPILER_VAR_1505_ahomeaaloisaeocumentsabahcbahasrcamainbbah[1] = "\02\0\0\0"" -";____BAH_COMPILER_VAR_1505_ahomeaaloisaeocumentsabahcbahasrcamainbbah[0] = gccArgs;char* ____BAH_COMPILER_VAR_1506_ahomeaaloisaeocumentsabahcbahasrcamainbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_1505_ahomeaaloisaeocumentsabahcbahasrcamainbbah, 3);gccArgs = ____BAH_COMPILER_VAR_1506_ahomeaaloisaeocumentsabahcbahasrcamainbbah;
+
+#line 399 "/home/alois/Documents/bah-bah/src/main.bah"
 i = i+1;
 };
 
-#line 400 "/home/alois/Documents/bah-bah/src/main.bah"
+#line 403 "/home/alois/Documents/bah-bah/src/main.bah"
 struct command cmd = command(gccArgs);
 
-#line 401 "/home/alois/Documents/bah-bah/src/main.bah"
+#line 404 "/home/alois/Documents/bah-bah/src/main.bah"
 cmd.input = rope__toStr(OUTPUT);
 
-#line 403 "/home/alois/Documents/bah-bah/src/main.bah"
+#line 406 "/home/alois/Documents/bah-bah/src/main.bah"
 if ((flags__isSet(&flags,"\011\0\0\0""verboseCC")==0)) {
 
-#line 404 "/home/alois/Documents/bah-bah/src/main.bah"
+#line 407 "/home/alois/Documents/bah-bah/src/main.bah"
 cmd.error = false;
 }
 
-#line 407 "/home/alois/Documents/bah-bah/src/main.bah"
+#line 410 "/home/alois/Documents/bah-bah/src/main.bah"
 if ((flags__isSet(&flags,"\011\0\0\0""verboseCC")==1)) {
 
-#line 408 "/home/alois/Documents/bah-bah/src/main.bah"
+#line 411 "/home/alois/Documents/bah-bah/src/main.bah"
 println(command__run(&cmd));
 }
 
-#line 409 "/home/alois/Documents/bah-bah/src/main.bah"
+#line 412 "/home/alois/Documents/bah-bah/src/main.bah"
 else {
 
-#line 410 "/home/alois/Documents/bah-bah/src/main.bah"
+#line 413 "/home/alois/Documents/bah-bah/src/main.bah"
 command__run(&cmd);
 }
 
-#line 413 "/home/alois/Documents/bah-bah/src/main.bah"
+#line 416 "/home/alois/Documents/bah-bah/src/main.bah"
 if ((cmd.status!=0)) {
 
-#line 414 "/home/alois/Documents/bah-bah/src/main.bah"
+#line 417 "/home/alois/Documents/bah-bah/src/main.bah"
 println("\050\0\0\0""\e[1;31m[CC-ERROR]\e[0m\nCould not compile.");
 
-#line 415 "/home/alois/Documents/bah-bah/src/main.bah"
+#line 418 "/home/alois/Documents/bah-bah/src/main.bah"
 return 1;
 }
 
-#line 418 "/home/alois/Documents/bah-bah/src/main.bah"
+#line 421 "/home/alois/Documents/bah-bah/src/main.bah"
 if ((flags__isSet(&flags,"\01\0\0\0""l")==1)) {
 
-#line 419 "/home/alois/Documents/bah-bah/src/main.bah"
+#line 422 "/home/alois/Documents/bah-bah/src/main.bah"
 char** ____BAH_COMPILER_VAR_1507_ahomeaaloisaeocumentsabahcbahasrcamainbbah = alloca(4 * sizeof(char*));____BAH_COMPILER_VAR_1507_ahomeaaloisaeocumentsabahcbahasrcamainbbah[3] = fileName;____BAH_COMPILER_VAR_1507_ahomeaaloisaeocumentsabahcbahasrcamainbbah[2] = "\03\0\0\0"".a ";____BAH_COMPILER_VAR_1507_ahomeaaloisaeocumentsabahcbahasrcamainbbah[1] = fileName;____BAH_COMPILER_VAR_1507_ahomeaaloisaeocumentsabahcbahasrcamainbbah[0] = "\07\0\0\0""ar rcs ";char* ____BAH_COMPILER_VAR_1508_ahomeaaloisaeocumentsabahcbahasrcamainbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_1507_ahomeaaloisaeocumentsabahcbahasrcamainbbah, 4);cmd = command(____BAH_COMPILER_VAR_1508_ahomeaaloisaeocumentsabahcbahasrcamainbbah);
 
-#line 420 "/home/alois/Documents/bah-bah/src/main.bah"
+#line 423 "/home/alois/Documents/bah-bah/src/main.bah"
 command__run(&cmd);
 }
 }
 
-#line 423 "/home/alois/Documents/bah-bah/src/main.bah"
+#line 426 "/home/alois/Documents/bah-bah/src/main.bah"
 else {
 
-#line 425 "/home/alois/Documents/bah-bah/src/main.bah"
+#line 428 "/home/alois/Documents/bah-bah/src/main.bah"
 if ((flags__isSet(&flags,"\01\0\0\0""o")==0)) {
 
-#line 426 "/home/alois/Documents/bah-bah/src/main.bah"
+#line 429 "/home/alois/Documents/bah-bah/src/main.bah"
 char** ____BAH_COMPILER_VAR_1509_ahomeaaloisaeocumentsabahcbahasrcamainbbah = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1509_ahomeaaloisaeocumentsabahcbahasrcamainbbah[1] = "\02\0\0\0"".c";____BAH_COMPILER_VAR_1509_ahomeaaloisaeocumentsabahcbahasrcamainbbah[0] = fileName;char* ____BAH_COMPILER_VAR_1510_ahomeaaloisaeocumentsabahcbahasrcamainbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_1509_ahomeaaloisaeocumentsabahcbahasrcamainbbah, 2);fileName = ____BAH_COMPILER_VAR_1510_ahomeaaloisaeocumentsabahcbahasrcamainbbah;
 }
 
-#line 429 "/home/alois/Documents/bah-bah/src/main.bah"
+#line 432 "/home/alois/Documents/bah-bah/src/main.bah"
 char** ____BAH_COMPILER_VAR_1511_ahomeaaloisaeocumentsabahcbahasrcamainbbah = alloca(14 * sizeof(char*));____BAH_COMPILER_VAR_1511_ahomeaaloisaeocumentsabahcbahasrcamainbbah[13] = "\010\0\0\0"" -O1 -w ";____BAH_COMPILER_VAR_1511_ahomeaaloisaeocumentsabahcbahasrcamainbbah[12] = isStatic;____BAH_COMPILER_VAR_1511_ahomeaaloisaeocumentsabahcbahasrcamainbbah[11] = "\01\0\0\0"" ";____BAH_COMPILER_VAR_1511_ahomeaaloisaeocumentsabahcbahasrcamainbbah[10] = fileName;____BAH_COMPILER_VAR_1511_ahomeaaloisaeocumentsabahcbahasrcamainbbah[9] = "\03\0\0\0""/\" ";____BAH_COMPILER_VAR_1511_ahomeaaloisaeocumentsabahcbahasrcamainbbah[8] = BAH_OS;____BAH_COMPILER_VAR_1511_ahomeaaloisaeocumentsabahcbahasrcamainbbah[7] = "\05\0\0\0""libs/";____BAH_COMPILER_VAR_1511_ahomeaaloisaeocumentsabahcbahasrcamainbbah[6] = BAH_DIR;____BAH_COMPILER_VAR_1511_ahomeaaloisaeocumentsabahcbahasrcamainbbah[5] = "\017\0\0\0""/include/\" -L \"";____BAH_COMPILER_VAR_1511_ahomeaaloisaeocumentsabahcbahasrcamainbbah[4] = BAH_OS;____BAH_COMPILER_VAR_1511_ahomeaaloisaeocumentsabahcbahasrcamainbbah[3] = "\05\0\0\0""libs/";____BAH_COMPILER_VAR_1511_ahomeaaloisaeocumentsabahcbahasrcamainbbah[2] = BAH_DIR;____BAH_COMPILER_VAR_1511_ahomeaaloisaeocumentsabahcbahasrcamainbbah[1] = "\05\0\0\0"" -I \"";____BAH_COMPILER_VAR_1511_ahomeaaloisaeocumentsabahcbahasrcamainbbah[0] = BAH_CC;char* ____BAH_COMPILER_VAR_1512_ahomeaaloisaeocumentsabahcbahasrcamainbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_1511_ahomeaaloisaeocumentsabahcbahasrcamainbbah, 14);char* gccArgs = ____BAH_COMPILER_VAR_1512_ahomeaaloisaeocumentsabahcbahasrcamainbbah;
 
-#line 430 "/home/alois/Documents/bah-bah/src/main.bah"
+#line 433 "/home/alois/Documents/bah-bah/src/main.bah"
 array(char*)* cLibs = compilerState.cLibs;
 
-#line 431 "/home/alois/Documents/bah-bah/src/main.bah"
-register long int i = 0;
-
-#line 431 "/home/alois/Documents/bah-bah/src/main.bah"
-while ((i<len(cLibs))) {
-
-#line 432 "/home/alois/Documents/bah-bah/src/main.bah"
-char* l = cLibs->data[i];
-
-#line 433 "/home/alois/Documents/bah-bah/src/main.bah"
-char** ____BAH_COMPILER_VAR_1513_ahomeaaloisaeocumentsabahcbahasrcamainbbah = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_1513_ahomeaaloisaeocumentsabahcbahasrcamainbbah[2] = l;____BAH_COMPILER_VAR_1513_ahomeaaloisaeocumentsabahcbahasrcamainbbah[1] = "\02\0\0\0"" -";____BAH_COMPILER_VAR_1513_ahomeaaloisaeocumentsabahcbahasrcamainbbah[0] = gccArgs;char* ____BAH_COMPILER_VAR_1514_ahomeaaloisaeocumentsabahcbahasrcamainbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_1513_ahomeaaloisaeocumentsabahcbahasrcamainbbah, 3);gccArgs = ____BAH_COMPILER_VAR_1514_ahomeaaloisaeocumentsabahcbahasrcamainbbah;
+#line 434 "/home/alois/Documents/bah-bah/src/main.bah"
+register long long int i = 0;
 
 #line 434 "/home/alois/Documents/bah-bah/src/main.bah"
+while ((i<len(cLibs))) {
+
+#line 435 "/home/alois/Documents/bah-bah/src/main.bah"
+char* l = cLibs->data[i];
+
+#line 436 "/home/alois/Documents/bah-bah/src/main.bah"
+char** ____BAH_COMPILER_VAR_1513_ahomeaaloisaeocumentsabahcbahasrcamainbbah = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_1513_ahomeaaloisaeocumentsabahcbahasrcamainbbah[2] = l;____BAH_COMPILER_VAR_1513_ahomeaaloisaeocumentsabahcbahasrcamainbbah[1] = "\02\0\0\0"" -";____BAH_COMPILER_VAR_1513_ahomeaaloisaeocumentsabahcbahasrcamainbbah[0] = gccArgs;char* ____BAH_COMPILER_VAR_1514_ahomeaaloisaeocumentsabahcbahasrcamainbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_1513_ahomeaaloisaeocumentsabahcbahasrcamainbbah, 3);gccArgs = ____BAH_COMPILER_VAR_1514_ahomeaaloisaeocumentsabahcbahasrcamainbbah;
+
+#line 437 "/home/alois/Documents/bah-bah/src/main.bah"
 i = i+1;
 };
 
-#line 438 "/home/alois/Documents/bah-bah/src/main.bah"
+#line 441 "/home/alois/Documents/bah-bah/src/main.bah"
 char** ____BAH_COMPILER_VAR_1515_ahomeaaloisaeocumentsabahcbahasrcamainbbah = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_1515_ahomeaaloisaeocumentsabahcbahasrcamainbbah[2] = "\02\0\0\0""'\n";____BAH_COMPILER_VAR_1515_ahomeaaloisaeocumentsabahcbahasrcamainbbah[1] = gccArgs;____BAH_COMPILER_VAR_1515_ahomeaaloisaeocumentsabahcbahasrcamainbbah[0] = "\021\0\0\0""//COMPILE WITH: '";char* ____BAH_COMPILER_VAR_1516_ahomeaaloisaeocumentsabahcbahasrcamainbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_1515_ahomeaaloisaeocumentsabahcbahasrcamainbbah, 3);OUTPUT = rope__add(rope(____BAH_COMPILER_VAR_1516_ahomeaaloisaeocumentsabahcbahasrcamainbbah), OUTPUT);
 
-#line 439 "/home/alois/Documents/bah-bah/src/main.bah"
+#line 442 "/home/alois/Documents/bah-bah/src/main.bah"
 struct fileStream ____BAH_COMPILER_VAR_1517_ahomeaaloisaeocumentsabahcbahasrcamainbbah = {};
 fs = ____BAH_COMPILER_VAR_1517_ahomeaaloisaeocumentsabahcbahasrcamainbbah;
 
-#line 440 "/home/alois/Documents/bah-bah/src/main.bah"
+#line 443 "/home/alois/Documents/bah-bah/src/main.bah"
 fileStream__open(&fs,fileName,"\01\0\0\0""w");
 
-#line 441 "/home/alois/Documents/bah-bah/src/main.bah"
+#line 444 "/home/alois/Documents/bah-bah/src/main.bah"
 fileStream__writeFile(&fs,rope__toStr(OUTPUT));
 
-#line 442 "/home/alois/Documents/bah-bah/src/main.bah"
+#line 445 "/home/alois/Documents/bah-bah/src/main.bah"
 fileStream__close(&fs);
 }
 
-#line 446 "/home/alois/Documents/bah-bah/src/main.bah"
+#line 449 "/home/alois/Documents/bah-bah/src/main.bah"
 if ((isObject==false)) {
 
-#line 447 "/home/alois/Documents/bah-bah/src/main.bah"
-long int totalTime = getTimeUnix()-startTime;
+#line 450 "/home/alois/Documents/bah-bah/src/main.bah"
+long long int totalTime = getTimeUnix()-startTime;
 
-#line 448 "/home/alois/Documents/bah-bah/src/main.bah"
+#line 451 "/home/alois/Documents/bah-bah/src/main.bah"
 char** ____BAH_COMPILER_VAR_1518_ahomeaaloisaeocumentsabahcbahasrcamainbbah = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_1518_ahomeaaloisaeocumentsabahcbahasrcamainbbah[2] = "\07\0\0\0""ms)\e[0m";____BAH_COMPILER_VAR_1518_ahomeaaloisaeocumentsabahcbahasrcamainbbah[1] = intToStr(totalTime/1000000);____BAH_COMPILER_VAR_1518_ahomeaaloisaeocumentsabahcbahasrcamainbbah[0] = "\032\0\0\0""\e[1;32mDone. (compiled in ";char* ____BAH_COMPILER_VAR_1519_ahomeaaloisaeocumentsabahcbahasrcamainbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_1518_ahomeaaloisaeocumentsabahcbahasrcamainbbah, 3);println(____BAH_COMPILER_VAR_1519_ahomeaaloisaeocumentsabahcbahasrcamainbbah);
 }
 
-#line 450 "/home/alois/Documents/bah-bah/src/main.bah"
+#line 453 "/home/alois/Documents/bah-bah/src/main.bah"
 return 0;
 };
 volatile struct __Bah_fnName_mapper __tmp____Bah_fnNames[366];
