@@ -166,6 +166,9 @@ setCType(v variable*, elems Elems*) cpstring {
 //Returns the Bah type of a token.
 //Throws an error if strict = true and the token is not a value.
 getTypeFromToken(t Tok*, strict bool, elems Elems*) cpstring {
+    if t == null {
+        panic("WTF")
+    }
     if t.bahType != "" {
         r = t.bahType
         return r

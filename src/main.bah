@@ -12,17 +12,20 @@
     BAH_DIR = "/opt/bah/"
     BAH_OS = "linux"
     BAH_CC = "gcc"
+    const BAH_HOST_OS = "linux"
 }
 #darwin {
     BAH_DIR = "/opt/bah/"
     BAH_OS = "darwin"
     BAH_CC = "clang"
+    const BAH_HOST_OS = "darwin"
 }
 
 #windows {
     BAH_DIR = "C:/Bah/"
     BAH_OS = "windows"
     BAH_CC = "gcc"
+    const BAH_HOST_OS = "windows"
 }
 //////////////////////BUILD SPECIFIC THINGS//////////////////////
 const BAH_VERSION = "v1.4 (build 151)"

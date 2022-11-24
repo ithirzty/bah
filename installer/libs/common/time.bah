@@ -84,7 +84,7 @@ getTimeUnix() int {
         ts.tv_nsec = noCheck(mtsp->tv_nsec)
     }
     #windows {
-        s = clock_gettime(noCheck(CLOCK_REALTIME), &ts)
+        s = clock_gettime(null, &ts)
     }
     s = ts.tv_sec * 1000000000 + ts.tv_nsec
     return s

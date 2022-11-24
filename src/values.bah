@@ -197,11 +197,13 @@ valueFunc(fn func*, parent variable*, l []Tok, i int, ltp lineType, elems Elems*
         "+tmpV.name+"->elemSize = sizeof(struct reflectElement);
         "+decls+"
         ")
-        memory[0] = Tok{
-            type: TOKEN_TYPE_VAR
-            cont: tmpV.name
-            line: fnt.line
-            isValue: true
+        memory = []Tok{
+            Tok{
+                type: TOKEN_TYPE_VAR
+                cont: tmpV.name
+                line: fnt.line
+                isValue: true
+            }
         }
     } else if fn.name == "breakPoint" {
         memory = []Tok{
