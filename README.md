@@ -10,6 +10,7 @@
 
 To install bah on your machine, get the terminal warmed up 🔥 , stretch your fingers up 🏋‍♂ and paste this 😎:
 ### Linux
+> Note that if you have pacman/apt installed on your system, gcc and such will be automatically installed.
 ```sh
 git clone https://github.com/ithirzty/bah
 cd ./bah
@@ -23,7 +24,16 @@ sudo ./linux_compile_install.sh
 
 ### Windows
 **Please make sure that you have [mingw gcc](https://sourceforge.net/projects/mingw/) installed.**
-> When installing Mingw, make sure to install **MingW base (gcc)** and **MingW pthreads/winpthreads**.
+
+#### For the newbies, **READ CAREFULLY**. More help [HERE](https://bah-lang.xyz/get-started-windows)
+1. Install [MinGW](https://sourceforge.net/projects/mingw/).
+2. In the MinGW installation manager, select:
+   - MinGW Base System: MinGW base,
+   - MinGW libraries: mingw32-pthreads-w32 (or pthread equivalent).
+3. Click on the 'installation' menu and selct 'apply changes'.
+4. Clone this repository (download it).
+5. Open an administrator shell (cmd.exe).
+6. Execute `windows_install.bah` as administrator.
 ```bat
 git clone https://github.com/ithirzty/bah
 cd ./bah
