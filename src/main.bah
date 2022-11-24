@@ -28,7 +28,7 @@
     const BAH_HOST_OS = "windows"
 }
 //////////////////////BUILD SPECIFIC THINGS//////////////////////
-const BAH_VERSION = "v1.4 (build 151)"
+const BAH_VERSION = "v1.4 (build 152)"
 
 debug = false
 verboseRuntime = false
@@ -179,12 +179,12 @@ main(args []cpstring) int {
     #define array(type)	\
     struct{	\
     type *data; \
-    unsigned long int length; \
-    unsigned long int realLength; \
-    unsigned long int elemSize; \
+    unsigned long long int length; \
+    unsigned long long int realLength; \
+    unsigned long long int elemSize; \
     }
     typedef array(char*)* __BAH_ARR_TYPE_cpstring;
-    long int __BAH__main(__BAH_ARR_TYPE_cpstring);
+    long long int __BAH__main(__BAH_ARR_TYPE_cpstring);
     ")
 
     if flags.isSet("l") == 0 {
@@ -202,7 +202,7 @@ main(args []cpstring) int {
             args->elemSize = sizeof(char*);
             args->length = argc;
             __BAH_init();
-            long int r =  __BAH__main((__BAH_ARR_TYPE_cpstring)args);
+            long long int r =  __BAH__main((__BAH_ARR_TYPE_cpstring)args);
             free(args->data);
             free(args);
             RCP_shutdown();
@@ -223,7 +223,7 @@ main(args []cpstring) int {
             args->length = argc;
             initiateMemory((__BAH_ARR_TYPE_cpstring)args);
             __BAH_init();
-            long int r =  __BAH__main((__BAH_ARR_TYPE_cpstring)args);
+            long long int r =  __BAH__main((__BAH_ARR_TYPE_cpstring)args);
             free(args->data);
             free(args);
             return r;
@@ -234,11 +234,11 @@ main(args []cpstring) int {
             OUTPUT += rope("
             #include <gc.h>
             #include <string.h>
-            __BAH_ARR_TYPE_cpstring argsToArr(char** a,long int l);
+            __BAH_ARR_TYPE_cpstring argsToArr(char** a,long long int l);
             int main(int argc, char ** argv) {
             GC_INIT();
             __BAH_init();
-            long int r =  __BAH__main(argsToArr(argv, argc));
+            long long int r =  __BAH__main(argsToArr(argv, argc));
             return r;
             };
             #define main(v) __BAH__main(v)
@@ -279,12 +279,12 @@ main(args []cpstring) int {
         #define array(type)	\
         struct{	\
         type *data; \
-        long int length; \
-        long int realLength; \
-        long int elemSize; \
+        long long int length; \
+        long long int realLength; \
+        long long int elemSize; \
         }
         typedef array(char*)* __BAH_ARR_TYPE_cpstring;
-        long int __BAH__main(__BAH_ARR_TYPE_cpstring);
+        long long int __BAH__main(__BAH_ARR_TYPE_cpstring);
         ")
         shouldOnlyDecl = true
     }

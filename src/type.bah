@@ -80,13 +80,13 @@ getCType(t cpstring, elems Elems*) string {
         unars = ""
         t = "char*"
     } else if t == "int" {
-        t = "long int"
+        t = "long long int"
     } else if t == "int32" {
         t = "int"
     } else if t == "uint32" {
         t = "unsigned int"
     } else if t == "uint" {
-        t = "unsigned long int"
+        t = "unsigned long long int"
     } else if t == "float32" {
         t = "float"
     } else if t == "float" {
