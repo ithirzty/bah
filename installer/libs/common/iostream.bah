@@ -2,9 +2,7 @@
 #include "<stdio.h>"
 #include "<dirent.h>"
 
-
 #include "cBinds.bah"
-// #include "string.bah"
 
 #define! FILE ptr
 
@@ -89,6 +87,13 @@ struct fileStream {
     //The differents modes can be found [here](https://koor.fr/C/cstdio/fopen.wp).
     open(path cpstring, mode cpstring) {
         this.name = path
+        #windows {
+            if mode == "r" {
+                mode = "rb"
+            } else if mode == "r+" {
+                mode = "rb+"
+            }
+        }
         this.handle = fopen(path, mode)
     }
 

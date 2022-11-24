@@ -2682,333 +2682,347 @@ return this->buff;
 #include <stdio.h>
 #include <dirent.h>
 
-#line 11 "/opt/bah/iostream.bah"
+#line 9 "/opt/bah/iostream.bah"
 char* __Bah_iostream_stdinputBuffer;
 
-#line 12 "/opt/bah/iostream.bah"
+#line 10 "/opt/bah/iostream.bah"
 long long int __Bah_iostream_stdinputBufferLength;
 
-#line 15 "/opt/bah/iostream.bah"
+#line 13 "/opt/bah/iostream.bah"
 char* stdinput(){
 
-#line 16 "/opt/bah/iostream.bah"
+#line 14 "/opt/bah/iostream.bah"
 char* response = "\0\0\0\0""";
 
-#line 17 "/opt/bah/iostream.bah"
+#line 15 "/opt/bah/iostream.bah"
 register long long int nDataLength = 0;
 
-#line 18 "/opt/bah/iostream.bah"
+#line 16 "/opt/bah/iostream.bah"
 if ((__Bah_iostream_stdinputBufferLength>0)) {
 
-#line 19 "/opt/bah/iostream.bah"
+#line 17 "/opt/bah/iostream.bah"
 response = __Bah_iostream_stdinputBuffer;
 
-#line 20 "/opt/bah/iostream.bah"
+#line 18 "/opt/bah/iostream.bah"
 nDataLength = __Bah_iostream_stdinputBufferLength;
 }
 
-#line 21 "/opt/bah/iostream.bah"
+#line 19 "/opt/bah/iostream.bah"
 else {
 
-#line 22 "/opt/bah/iostream.bah"
+#line 20 "/opt/bah/iostream.bah"
 char ____BAH_COMPILER_VAR_26_aoptabahaiostreambbah[1025];char* buff = ____BAH_COMPILER_VAR_26_aoptabahaiostreambbah;
 
-#line 23 "/opt/bah/iostream.bah"
+#line 21 "/opt/bah/iostream.bah"
 nDataLength = read((void *)0,(void *)buff,1024);
 
-#line 24 "/opt/bah/iostream.bah"
+#line 22 "/opt/bah/iostream.bah"
 if ((nDataLength<1024)) {
 
-#line 25 "/opt/bah/iostream.bah"
+#line 23 "/opt/bah/iostream.bah"
 char* tmp = memoryAllocSTR(nDataLength+1);
 
-#line 26 "/opt/bah/iostream.bah"
+#line 24 "/opt/bah/iostream.bah"
 memcpy(cStr(tmp),buff,nDataLength);
 
-#line 27 "/opt/bah/iostream.bah"
+#line 25 "/opt/bah/iostream.bah"
 char** ____BAH_COMPILER_VAR_27_aoptabahaiostreambbah = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_27_aoptabahaiostreambbah[1] = tmp;____BAH_COMPILER_VAR_27_aoptabahaiostreambbah[0] = response;char* ____BAH_COMPILER_VAR_28_aoptabahaiostreambbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_27_aoptabahaiostreambbah, 2);response = ____BAH_COMPILER_VAR_28_aoptabahaiostreambbah;
 }
 
-#line 28 "/opt/bah/iostream.bah"
+#line 26 "/opt/bah/iostream.bah"
 else {
 
-#line 29 "/opt/bah/iostream.bah"
+#line 27 "/opt/bah/iostream.bah"
 while ((nDataLength>0)) {
 
-#line 30 "/opt/bah/iostream.bah"
+#line 28 "/opt/bah/iostream.bah"
 char* tmp = memoryAllocSTR(nDataLength+1);
 
-#line 31 "/opt/bah/iostream.bah"
+#line 29 "/opt/bah/iostream.bah"
 memcpy(cStr(tmp),buff,nDataLength);
 
-#line 32 "/opt/bah/iostream.bah"
+#line 30 "/opt/bah/iostream.bah"
 char** ____BAH_COMPILER_VAR_29_aoptabahaiostreambbah = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_29_aoptabahaiostreambbah[1] = tmp;____BAH_COMPILER_VAR_29_aoptabahaiostreambbah[0] = response;char* ____BAH_COMPILER_VAR_30_aoptabahaiostreambbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_29_aoptabahaiostreambbah, 2);response = ____BAH_COMPILER_VAR_30_aoptabahaiostreambbah;
 
-#line 33 "/opt/bah/iostream.bah"
+#line 31 "/opt/bah/iostream.bah"
 if ((nDataLength<1024)) {
 
-#line 34 "/opt/bah/iostream.bah"
+#line 32 "/opt/bah/iostream.bah"
 long long int trimAmm = 1024-nDataLength;
 
-#line 35 "/opt/bah/iostream.bah"
+#line 33 "/opt/bah/iostream.bah"
 strTrimRight(&response,trimAmm);
 
-#line 36 "/opt/bah/iostream.bah"
+#line 34 "/opt/bah/iostream.bah"
 break;
 }
 
-#line 37 "/opt/bah/iostream.bah"
+#line 35 "/opt/bah/iostream.bah"
 else {
 
-#line 38 "/opt/bah/iostream.bah"
+#line 36 "/opt/bah/iostream.bah"
 nDataLength = read((void *)0,(void *)buff,1024);
 }
 };
 }
 }
 
-#line 43 "/opt/bah/iostream.bah"
+#line 41 "/opt/bah/iostream.bah"
 if ((response[nDataLength-1+4]==(char)10)) {
 
-#line 44 "/opt/bah/iostream.bah"
+#line 42 "/opt/bah/iostream.bah"
 strTrimRight(&response,1);
 }
 
-#line 47 "/opt/bah/iostream.bah"
+#line 45 "/opt/bah/iostream.bah"
 register long long int i = 0;
 
-#line 47 "/opt/bah/iostream.bah"
+#line 45 "/opt/bah/iostream.bah"
 for (; (i<nDataLength); ++i) {
 
-#line 48 "/opt/bah/iostream.bah"
+#line 46 "/opt/bah/iostream.bah"
 if ((response[i+4]==(char)10)) {
 
-#line 49 "/opt/bah/iostream.bah"
+#line 47 "/opt/bah/iostream.bah"
 __Bah_iostream_stdinputBuffer = cpstringSubsitute(response, i+1, strlen(response));
 
-#line 50 "/opt/bah/iostream.bah"
+#line 48 "/opt/bah/iostream.bah"
 __Bah_iostream_stdinputBufferLength = nDataLength-i;
 
-#line 51 "/opt/bah/iostream.bah"
+#line 49 "/opt/bah/iostream.bah"
 return cpstringSubsitute(response, 0, i);
 }
 };
 
-#line 55 "/opt/bah/iostream.bah"
+#line 53 "/opt/bah/iostream.bah"
 __Bah_iostream_stdinputBuffer = "\0\0\0\0""";
 
-#line 56 "/opt/bah/iostream.bah"
+#line 54 "/opt/bah/iostream.bah"
 __Bah_iostream_stdinputBufferLength = 0;
 
-#line 58 "/opt/bah/iostream.bah"
+#line 56 "/opt/bah/iostream.bah"
 return response;
 };
 
-#line 62 "/opt/bah/iostream.bah"
+#line 60 "/opt/bah/iostream.bah"
 void println(char* s){
 
-#line 63 "/opt/bah/iostream.bah"
+#line 61 "/opt/bah/iostream.bah"
 char** ____BAH_COMPILER_VAR_31_aoptabahaiostreambbah = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_31_aoptabahaiostreambbah[1] = "\01\0\0\0""\n";____BAH_COMPILER_VAR_31_aoptabahaiostreambbah[0] = s;char* ____BAH_COMPILER_VAR_32_aoptabahaiostreambbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_31_aoptabahaiostreambbah, 2);write((void *)1,cStr(____BAH_COMPILER_VAR_32_aoptabahaiostreambbah),strlen(s)+1);
 };
 
-#line 76 "/opt/bah/iostream.bah"
+#line 74 "/opt/bah/iostream.bah"
 struct fileStream {
 FILE* handle;
 char* name;
 };
 long long int fileStream__isValid(struct fileStream* this){
 
-#line 82 "/opt/bah/iostream.bah"
+#line 80 "/opt/bah/iostream.bah"
 if ((this->handle==null)) {
 
-#line 83 "/opt/bah/iostream.bah"
+#line 81 "/opt/bah/iostream.bah"
 return 0;
 }
 
-#line 85 "/opt/bah/iostream.bah"
+#line 83 "/opt/bah/iostream.bah"
 return 1;
 };
 void fileStream__open(struct fileStream* this,char* path,char* mode){
 
-#line 91 "/opt/bah/iostream.bah"
+#line 89 "/opt/bah/iostream.bah"
 this->name = path;
 
+#line 91 "/opt/bah/iostream.bah"
+if ((strcmp(mode, "\01\0\0\0""r") == 0)) {
+
 #line 92 "/opt/bah/iostream.bah"
+mode = "\02\0\0\0""rb";
+}
+
+#line 93 "/opt/bah/iostream.bah"
+else if ((strcmp(mode, "\02\0\0\0""r+") == 0)) {
+
+#line 94 "/opt/bah/iostream.bah"
+mode = "\03\0\0\0""rb+";
+}
+
+#line 97 "/opt/bah/iostream.bah"
 this->handle = fopen(cStr(path),cStr(mode));
 };
 void fileStream__close(struct fileStream* this){
 
-#line 97 "/opt/bah/iostream.bah"
+#line 102 "/opt/bah/iostream.bah"
 if ((fileStream__isValid(this)==0)) {
 
-#line 98 "/opt/bah/iostream.bah"
+#line 103 "/opt/bah/iostream.bah"
 return;
 }
 
-#line 100 "/opt/bah/iostream.bah"
+#line 105 "/opt/bah/iostream.bah"
 fclose(this->handle);
 
-#line 101 "/opt/bah/iostream.bah"
+#line 106 "/opt/bah/iostream.bah"
 this->handle = null;
 };
 long long int fileStream__getPos(struct fileStream* this){
 
-#line 106 "/opt/bah/iostream.bah"
+#line 111 "/opt/bah/iostream.bah"
 if ((fileStream__isValid(this)==0)) {
 
-#line 107 "/opt/bah/iostream.bah"
+#line 112 "/opt/bah/iostream.bah"
 return 0;
 }
 
-#line 109 "/opt/bah/iostream.bah"
+#line 114 "/opt/bah/iostream.bah"
 return ftell(this->handle);
 };
 void fileStream__setPos(struct fileStream* this,long long int i){
 
-#line 114 "/opt/bah/iostream.bah"
+#line 119 "/opt/bah/iostream.bah"
 if ((fileStream__isValid(this)==0)) {
 
-#line 115 "/opt/bah/iostream.bah"
+#line 120 "/opt/bah/iostream.bah"
 return;
 }
 
-#line 117 "/opt/bah/iostream.bah"
+#line 122 "/opt/bah/iostream.bah"
 fseek(this->handle,i,0);
 };
 long long int fileStream__getSize(struct fileStream* this){
 
-#line 122 "/opt/bah/iostream.bah"
+#line 127 "/opt/bah/iostream.bah"
 if ((fileStream__isValid(this)==0)) {
 
-#line 123 "/opt/bah/iostream.bah"
+#line 128 "/opt/bah/iostream.bah"
 return -1;
 }
 
-#line 125 "/opt/bah/iostream.bah"
+#line 130 "/opt/bah/iostream.bah"
 long long int oldPos = fileStream__getPos(this);
 
-#line 126 "/opt/bah/iostream.bah"
+#line 131 "/opt/bah/iostream.bah"
 fseek(this->handle,0,2);
 
-#line 127 "/opt/bah/iostream.bah"
+#line 132 "/opt/bah/iostream.bah"
 long long int size = ftell(this->handle);
 
-#line 128 "/opt/bah/iostream.bah"
+#line 133 "/opt/bah/iostream.bah"
 fileStream__setPos(this,oldPos);
 
-#line 129 "/opt/bah/iostream.bah"
+#line 134 "/opt/bah/iostream.bah"
 return size;
 };
 void fileStream__rewind(struct fileStream* this){
 
-#line 134 "/opt/bah/iostream.bah"
+#line 139 "/opt/bah/iostream.bah"
 rewind(this->handle);
 };
 char fileStream__getChar(struct fileStream* this){
 
-#line 139 "/opt/bah/iostream.bah"
+#line 144 "/opt/bah/iostream.bah"
 char c = getc(this->handle);
 
-#line 140 "/opt/bah/iostream.bah"
+#line 145 "/opt/bah/iostream.bah"
 return c;
 };
 void fileStream__setChar(struct fileStream* this,char c){
 
-#line 145 "/opt/bah/iostream.bah"
+#line 150 "/opt/bah/iostream.bah"
 fputc(c,this->handle);
 };
 void fileStream__createFile(struct fileStream* this,char* path){
 
-#line 150 "/opt/bah/iostream.bah"
+#line 155 "/opt/bah/iostream.bah"
 fileStream__open(this,path,"\01\0\0\0""w");
 
-#line 151 "/opt/bah/iostream.bah"
+#line 156 "/opt/bah/iostream.bah"
 fileStream__close(this);
 };
 long long int fileStream__writeFile(struct fileStream* this,char* content){
 
-#line 156 "/opt/bah/iostream.bah"
+#line 161 "/opt/bah/iostream.bah"
 if ((fileStream__isValid(this)==0)) {
 
-#line 157 "/opt/bah/iostream.bah"
+#line 162 "/opt/bah/iostream.bah"
 return -1;
 }
 
-#line 160 "/opt/bah/iostream.bah"
+#line 165 "/opt/bah/iostream.bah"
 fwrite(cStr(content),strlen(content),1,this->handle);
 
-#line 162 "/opt/bah/iostream.bah"
+#line 167 "/opt/bah/iostream.bah"
 return 1;
 };
 void fileStream__writePtr(struct fileStream* this,void * a,long long int s){
 
-#line 169 "/opt/bah/iostream.bah"
+#line 174 "/opt/bah/iostream.bah"
 fwrite(a,s,1,this->handle);
 };
 long long int fileStream__readPtr(struct fileStream* this,void * a,long long int s){
 
-#line 176 "/opt/bah/iostream.bah"
+#line 181 "/opt/bah/iostream.bah"
 return fread(a,s,1,this->handle);
 };
 char* fileStream__readContent(struct fileStream* this){
 
-#line 181 "/opt/bah/iostream.bah"
+#line 186 "/opt/bah/iostream.bah"
 if ((fileStream__isValid(this)==0)) {
 
-#line 182 "/opt/bah/iostream.bah"
+#line 187 "/opt/bah/iostream.bah"
 return "\07\0\0\0""invalid";
 }
 
-#line 185 "/opt/bah/iostream.bah"
+#line 190 "/opt/bah/iostream.bah"
 long long int sz = fileStream__getSize(this);
 
-#line 186 "/opt/bah/iostream.bah"
+#line 191 "/opt/bah/iostream.bah"
 char* r = memoryAllocSTR(sz+1);
 
-#line 187 "/opt/bah/iostream.bah"
+#line 192 "/opt/bah/iostream.bah"
 fread(cStr(r),1,sz,this->handle);
 
-#line 188 "/opt/bah/iostream.bah"
+#line 193 "/opt/bah/iostream.bah"
 return r;
 };
 __BAH_ARR_TYPE_char fileStream__readBytes(struct fileStream* this){
 
-#line 193 "/opt/bah/iostream.bah"
+#line 198 "/opt/bah/iostream.bah"
 array(char)* r = memoryAlloc(sizeof(array(char)));
 
 r->length = 0;
 r->elemSize = sizeof(char);
 
-#line 194 "/opt/bah/iostream.bah"
+#line 199 "/opt/bah/iostream.bah"
 allocateArray(r,fileStream__getSize(this));
 
-#line 196 "/opt/bah/iostream.bah"
+#line 201 "/opt/bah/iostream.bah"
 fileStream__readPtr(this, r -> data,len(r));
 
-#line 198 "/opt/bah/iostream.bah"
+#line 203 "/opt/bah/iostream.bah"
 return r;
 };
 void fileStream__writeBytes(struct fileStream* this,__BAH_ARR_TYPE_char d){
 
-#line 203 "/opt/bah/iostream.bah"
+#line 208 "/opt/bah/iostream.bah"
 fileStream__writePtr(this, d -> data,len(d));
 };
 void fileStream___end(struct fileStream* this){
 
-#line 207 "/opt/bah/iostream.bah"
+#line 212 "/opt/bah/iostream.bah"
 if (fileStream__isValid(this)) {
 
-#line 208 "/opt/bah/iostream.bah"
+#line 213 "/opt/bah/iostream.bah"
 char** ____BAH_COMPILER_VAR_33_aoptabahaiostreambbah = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_33_aoptabahaiostreambbah[2] = "\02\0\0\0""'.";____BAH_COMPILER_VAR_33_aoptabahaiostreambbah[1] = this->name;____BAH_COMPILER_VAR_33_aoptabahaiostreambbah[0] = "\047\0\0\0""iostream: warning, auto-closing file: '";char* ____BAH_COMPILER_VAR_34_aoptabahaiostreambbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_33_aoptabahaiostreambbah, 3);println(____BAH_COMPILER_VAR_34_aoptabahaiostreambbah);
 
-#line 209 "/opt/bah/iostream.bah"
+#line 214 "/opt/bah/iostream.bah"
 fileStream__close(this);
 }
 };
 
-#line 215 "/opt/bah/iostream.bah"
+#line 220 "/opt/bah/iostream.bah"
 
-#line 234 "/opt/bah/iostream.bah"
+#line 239 "/opt/bah/iostream.bah"
 struct fileMap {
 long long int handle;
 long long int size;
@@ -3016,176 +3030,176 @@ void * p;
 };
 __BAH_ARR_TYPE_char fileMap__open(struct fileMap* this,char* fileName){
 
-#line 266 "/opt/bah/iostream.bah"
+#line 271 "/opt/bah/iostream.bah"
 struct fileStream ____BAH_COMPILER_VAR_35_aoptabahaiostreambbah = {};
 struct fileStream fs = ____BAH_COMPILER_VAR_35_aoptabahaiostreambbah;
 
-#line 267 "/opt/bah/iostream.bah"
+#line 272 "/opt/bah/iostream.bah"
 fileStream__open(&fs,fileName,"\02\0\0\0""r+");
 
-#line 268 "/opt/bah/iostream.bah"
+#line 273 "/opt/bah/iostream.bah"
 long long int iv = fileStream__isValid(&fs);
 
-#line 269 "/opt/bah/iostream.bah"
+#line 274 "/opt/bah/iostream.bah"
 if ((iv==1)) {
 
-#line 270 "/opt/bah/iostream.bah"
+#line 275 "/opt/bah/iostream.bah"
 this->handle = 0;
 }
 
-#line 271 "/opt/bah/iostream.bah"
+#line 276 "/opt/bah/iostream.bah"
 else {
 
-#line 272 "/opt/bah/iostream.bah"
+#line 277 "/opt/bah/iostream.bah"
 this->handle = -1;
 }
 
-#line 274 "/opt/bah/iostream.bah"
+#line 279 "/opt/bah/iostream.bah"
 char* file = fileStream__readContent(&fs);
 
-#line 275 "/opt/bah/iostream.bah"
+#line 280 "/opt/bah/iostream.bah"
 fileStream__close(&fs);
 
-#line 277 "/opt/bah/iostream.bah"
+#line 282 "/opt/bah/iostream.bah"
 return strToArr(file);
 };
 long long int fileMap__isValid(struct fileMap* this){
 
-#line 284 "/opt/bah/iostream.bah"
+#line 289 "/opt/bah/iostream.bah"
 if ((this->handle<0)) {
 
-#line 285 "/opt/bah/iostream.bah"
+#line 290 "/opt/bah/iostream.bah"
 return 0;
 }
 
-#line 287 "/opt/bah/iostream.bah"
+#line 292 "/opt/bah/iostream.bah"
 return 1;
 };
 void fileMap__close(struct fileMap* this){
 };
 
-#line 311 "/opt/bah/iostream.bah"
+#line 316 "/opt/bah/iostream.bah"
 
-#line 320 "/opt/bah/iostream.bah"
+#line 325 "/opt/bah/iostream.bah"
 __BAH_ARR_TYPE_cpstring listFiles(char* dir){
 
-#line 321 "/opt/bah/iostream.bah"
+#line 326 "/opt/bah/iostream.bah"
 array(char*)* files = memoryAlloc(sizeof(array(char*)));
 
 files->length = 0;
 files->elemSize = sizeof(char*);
 
-#line 322 "/opt/bah/iostream.bah"
+#line 327 "/opt/bah/iostream.bah"
 DIR* d = opendir(cStr(dir));
 
-#line 323 "/opt/bah/iostream.bah"
+#line 328 "/opt/bah/iostream.bah"
 struct dirent* file = readdir(d);
 
-#line 324 "/opt/bah/iostream.bah"
+#line 329 "/opt/bah/iostream.bah"
 while ((file!=null)) {
 
-#line 325 "/opt/bah/iostream.bah"
+#line 330 "/opt/bah/iostream.bah"
 unsigned long long int lf = len(files);
 
-#line 326 "/opt/bah/iostream.bah"
+#line 331 "/opt/bah/iostream.bah"
 char* name = cStrToBah(file->d_name);
 
-#line 327 "/opt/bah/iostream.bah"
+#line 332 "/opt/bah/iostream.bah"
 if ((strcmp(name, "\01\0\0\0"".") != 0)&&(strcmp(name, "\02\0\0\0""..") != 0)) {
 
-#line 328 "/opt/bah/iostream.bah"
+#line 333 "/opt/bah/iostream.bah"
 
     __Bah_realocate_arr(files, lf);
     files->data[lf] = name;
 }
 
-#line 330 "/opt/bah/iostream.bah"
+#line 335 "/opt/bah/iostream.bah"
 file = readdir(d);
 };
 
-#line 332 "/opt/bah/iostream.bah"
+#line 337 "/opt/bah/iostream.bah"
 closedir(d);
 
-#line 333 "/opt/bah/iostream.bah"
+#line 338 "/opt/bah/iostream.bah"
 return files;
 };
 
-#line 339 "/opt/bah/iostream.bah"
+#line 344 "/opt/bah/iostream.bah"
 long long int fileExists(char* path){
 
-#line 340 "/opt/bah/iostream.bah"
+#line 345 "/opt/bah/iostream.bah"
 long long int is = access(cStr(path),0);
 
-#line 341 "/opt/bah/iostream.bah"
+#line 346 "/opt/bah/iostream.bah"
 if ((is==0)) {
 
-#line 342 "/opt/bah/iostream.bah"
+#line 347 "/opt/bah/iostream.bah"
 return 1;
 }
 
-#line 344 "/opt/bah/iostream.bah"
+#line 349 "/opt/bah/iostream.bah"
 return 0;
 };
 
-#line 347 "/opt/bah/iostream.bah"
+#line 352 "/opt/bah/iostream.bah"
 char isFolder(char* path){
 
-#line 348 "/opt/bah/iostream.bah"
+#line 353 "/opt/bah/iostream.bah"
 struct stat s;
 
-#line 349 "/opt/bah/iostream.bah"
+#line 354 "/opt/bah/iostream.bah"
 if ((stat(cStr(path),&s)!=0)) {
-
-#line 350 "/opt/bah/iostream.bah"
-return false;
-}
-
-#line 352 "/opt/bah/iostream.bah"
-if (s.st_mode&(long long int) S_IFDIR) {
-
-#line 353 "/opt/bah/iostream.bah"
-return true;
-}
 
 #line 355 "/opt/bah/iostream.bah"
 return false;
-};
+}
 
-#line 361 "/opt/bah/iostream.bah"
-char removeFile(char* name){
+#line 357 "/opt/bah/iostream.bah"
+if (s.st_mode&(long long int) S_IFDIR) {
 
-#line 362 "/opt/bah/iostream.bah"
-if ((remove(cStr(name))==0)) {
-
-#line 363 "/opt/bah/iostream.bah"
+#line 358 "/opt/bah/iostream.bah"
 return true;
 }
 
-#line 365 "/opt/bah/iostream.bah"
+#line 360 "/opt/bah/iostream.bah"
 return false;
 };
 
-#line 369 "/opt/bah/iostream.bah"
-long long int getLastModified(char* name){
+#line 366 "/opt/bah/iostream.bah"
+char removeFile(char* name){
+
+#line 367 "/opt/bah/iostream.bah"
+if ((remove(cStr(name))==0)) {
+
+#line 368 "/opt/bah/iostream.bah"
+return true;
+}
 
 #line 370 "/opt/bah/iostream.bah"
+return false;
+};
+
+#line 374 "/opt/bah/iostream.bah"
+long long int getLastModified(char* name){
+
+#line 375 "/opt/bah/iostream.bah"
 struct stat attr;
 
-#line 371 "/opt/bah/iostream.bah"
+#line 376 "/opt/bah/iostream.bah"
 stat(cStr(name),&attr);
 
-#line 372 "/opt/bah/iostream.bah"
+#line 377 "/opt/bah/iostream.bah"
 return attr.st_ctime;
 };
 
-#line 381 "/opt/bah/iostream.bah"
+#line 386 "/opt/bah/iostream.bah"
 long long int __windows_mkdir(char* s,long long int m){
 
-#line 382 "/opt/bah/iostream.bah"
+#line 387 "/opt/bah/iostream.bah"
 return  mkdir ( s );
 };
 
-#line 384 "/opt/bah/iostream.bah"
+#line 389 "/opt/bah/iostream.bah"
 #define mkdir __windows_mkdir
 #include <string.h>
 #include <math.h>
@@ -7120,7 +7134,7 @@ char* BAH_CC;
 #define BAH_HOST_OS "\07\0\0\0""windows"
 
 #line 31 "/home/alois/Documents/bah-bah/src/main.bah"
-#define BAH_VERSION "\020\0\0\0""v1.4 (build 152)"
+#define BAH_VERSION "\020\0\0\0""v1.4 (build 153)"
 
 #line 33 "/home/alois/Documents/bah-bah/src/main.bah"
 char debug;
@@ -21018,7 +21032,7 @@ char** ____BAH_COMPILER_VAR_1124_ahomeaaloisaeocumentsabahcbahasrcavaluesbbah = 
 else {
 
 #line 438 "/home/alois/Documents/bah-bah/src/values.bah"
-char** ____BAH_COMPILER_VAR_1126_ahomeaaloisaeocumentsabahcbahasrcavaluesbbah = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_1126_ahomeaaloisaeocumentsabahcbahasrcavaluesbbah[2] = "\02\0\0\0"").";____BAH_COMPILER_VAR_1126_ahomeaaloisaeocumentsabahcbahasrcavaluesbbah[1] = tt;____BAH_COMPILER_VAR_1126_ahomeaaloisaeocumentsabahcbahasrcavaluesbbah[0] = "\027\0\0\0""Unkown struct {TOKEN} (";char* ____BAH_COMPILER_VAR_1127_ahomeaaloisaeocumentsabahcbahasrcavaluesbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_1126_ahomeaaloisaeocumentsabahcbahasrcavaluesbbah, 3);throwErr(&t,____BAH_COMPILER_VAR_1127_ahomeaaloisaeocumentsabahcbahasrcavaluesbbah);
+char** ____BAH_COMPILER_VAR_1126_ahomeaaloisaeocumentsabahcbahasrcavaluesbbah = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_1126_ahomeaaloisaeocumentsabahcbahasrcavaluesbbah[2] = "\02\0\0\0"").";____BAH_COMPILER_VAR_1126_ahomeaaloisaeocumentsabahcbahasrcavaluesbbah[1] = tt;____BAH_COMPILER_VAR_1126_ahomeaaloisaeocumentsabahcbahasrcavaluesbbah[0] = "\030\0\0\0""Unknown struct {TOKEN} (";char* ____BAH_COMPILER_VAR_1127_ahomeaaloisaeocumentsabahcbahasrcavaluesbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_1126_ahomeaaloisaeocumentsabahcbahasrcavaluesbbah, 3);throwErr(&t,____BAH_COMPILER_VAR_1127_ahomeaaloisaeocumentsabahcbahasrcavaluesbbah);
 }
 }
 

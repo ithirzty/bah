@@ -435,7 +435,7 @@ valueStruct(l []Tok, i int, ltp lineType, elems Elems*) int {
         if tt[len(tt)-1] == '!' {
             throwErr(&t, "Cannot use maybe value {TOKEN} ("+tt+") as structure.")
         } else {
-            throwErr(&t, "Unkown struct {TOKEN} ("+tt+").")
+            throwErr(&t, "Unknown struct {TOKEN} ("+tt+").")
         }
     }
 
