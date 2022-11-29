@@ -28,7 +28,7 @@
     const BAH_HOST_OS = "windows"
 }
 //////////////////////BUILD SPECIFIC THINGS//////////////////////
-const BAH_VERSION = "v1.4 (build 153)"
+const BAH_VERSION = "v1.4 (build 154)"
 
 debug = false
 verboseRuntime = false
@@ -291,8 +291,12 @@ main(args []cpstring) int {
 
     //includes the builtin libraries
     if flags.isSet("nobuiltin") == 0 && string(fileName).hasSuffix(".bahstrp") == false {
-        if includeFile("builtin.bah", elems) == false {
-            panic("Could not find std-libs, please check '"+BAH_DIR+"'")
+        if noImport == false {
+            importFile(string("builtin.bah"), null, elems)
+        } else {
+            if includeFile("builtin.bah", elems) == false {
+                panic("Could not find std-libs, please check '"+BAH_DIR+"'")
+            }
         }
     }
 
@@ -385,7 +389,7 @@ main(args []cpstring) int {
         }
 
         randFileName = "-x c - -x none" //reading from stdin
-        gccArgs = BAH_CC+" -I \""+BAH_DIR+"libs/"+BAH_OS+"/include/\" -L \""+BAH_DIR+"libs/"+BAH_OS+"/\" "+ randFileName+ " "+isStatic+" "+obj+" -w -O1 -g1 -o "+fileName //the compiler (C compiler) command
+        gccArgs = BAH_CC+" -I \""+BAH_DIR+"libs/"+BAH_OS+"/include/\" -L \""+BAH_DIR+"libs/"+BAH_OS+"/\" "+ randFileName+ " "+isStatic+" "+obj+" -w -O1 -fno-dce -fno-dse -fno-tree-dce -fno-tree-dse -g1 -o "+fileName //the compiler (C compiler) command
         
         if flags.isSet("l") == 1 {
             gccArgs = gccArgs + " -c"

@@ -333,7 +333,12 @@ parallelObjCompile(fn cpstring, oName cpstring, done chan:bool) {
         if isOptimized == true {
             opti = "-optimize"
         }
-        cmd = command(execName + " "+fn+" "+rcp+" "+opti+" -object "+verboseCC+" -o "+oName)
+        nbtin = ""
+        if fn == BAH_DIR+"builtin.bah" {
+            nbtin = "-nobuiltin"
+        }
+
+        cmd = command(execName + " "+fn+" "+rcp+" "+opti+" -object "+verboseCC+" "+nbtin+" -o "+oName)
         res = cmd.runBytes()
         setCurrentPath(wrkd)
         if cmd.status != 0 {
@@ -350,23 +355,7 @@ parallelObjCompile(fn cpstring, oName cpstring, done chan:bool) {
     true -> done
 }
 
-//Parses file import.
-parseImport(l []Tok, elems Elems*) {
-    compilerState.hasImports = true
-    //basic usage check
-    if len(l) != 2 {
-        throwErr(&l[0], "Invalid usage of {TOKEN}.")
-    }
-    strt = l[1]
-    if strt.type != TOKEN_TYPE_STR {
-        throwErr(&strt, "Cannot use {TOKEN} as file name (#import \"file\")")
-    }
-
-    //removes quotes from file name
-    fileName = string(strt.cont)
-    fileName.trimLeft(1)
-    fileName.trimRight(1)
-
+importFile(fileName string, strt Tok*, elems Elems*) {
     if noImport || BAH_OS != BAH_HOST_OS {
         includeFile(fileName.str(), elems)
         return
@@ -383,7 +372,10 @@ parseImport(l []Tok, elems Elems*) {
     if <ptr>fn == null {
         fn = absPath(BAH_DIR + fileName.str())
         if <ptr>fn == null {
-            throwErr(&strt, "Unknown file {TOKEN}.")
+            if strt != null {
+                throwErr(strt, "Unknown file {TOKEN}.")
+            }
+            panic("Could not find std-libs, please check '"+BAH_DIR+"'")
         }
     }
 
@@ -441,6 +433,26 @@ parseImport(l []Tok, elems Elems*) {
     compilerState.currentFile = of
     compilerState.currentDir = od
     isImportedSubObject = oiiso
+}
+
+//Parses file import.
+parseImport(l []Tok, elems Elems*) {
+    compilerState.hasImports = true
+    //basic usage check
+    if len(l) != 2 {
+        throwErr(&l[0], "Invalid usage of {TOKEN}.")
+    }
+    strt = l[1]
+    if strt.type != TOKEN_TYPE_STR {
+        throwErr(&strt, "Cannot use {TOKEN} as file name (#import \"file\")")
+    }
+
+    //removes quotes from file name
+    fileName = string(strt.cont)
+    fileName.trimLeft(1)
+    fileName.trimRight(1)
+
+    importFile(fileName, &strt, elems)
 }
 
 //Parses file include.

@@ -1,6 +1,7 @@
 #include "string.bah"
 #include "iostream.bah"
 #include "reflect.bah"
+#include "rope.bah"
 
 
 const JSON_TYPE_STRING = 0
@@ -583,18 +584,14 @@ oldToJson(e reflectElement) cpstring {
 // s cpstring = "test"
 // toJson(&s)
 // If the type is already a pointer, this step is not needed.
-toJson(e reflectElement) cpstring {
+toJsonRope(e reflectElement) rope* {
     l = len(e.type)
-
-    if e.isArray == false && e.type[l-1] != '*' {
-        panic("toJson("+e.name+") of type "+e.type+" but a pointer is required, try: toJson(&"+e.name+").")
-    }
 
     if e.isArray == false {
         ol = l
         for l >= 2 && e.type[l-1] == '*' && e.type[l-2] == '*', l-- {
             if e.value == null {
-                return "0"
+                return rope("0")
             }
             v ptr* = e.value
             e.value = *v
@@ -605,11 +602,11 @@ toJson(e reflectElement) cpstring {
     }
 
     if e.value == null {
-        return "0"
+        return rope("0")
     }
 
     if e.isStruct == true {
-        s = "{"
+        s = rope("{")
         i=0; for i < len(e.structLayout), i++ {
             m = e.structLayout[i]
             v ptr = e.value
@@ -619,21 +616,21 @@ toJson(e reflectElement) cpstring {
                 m.type += "*"
             }
             m.value = m.calculateOffset(e.value)
-            s += "\""+m.name+"\": " + toJson(m)
+            s += rope("\""+m.name+"\": ") + toJsonRope(m)
             if i+1 < len(e.structLayout) {
-                s += ", "
+                s += rope(", ")
             }
         }
-        s += "}"
+        s += rope("}")
         return s
     }
     
     if e.isArray == true {
-        s = "["
+        s = rope("[")
         arrp ptr* = e.value
         arr = <[]ptr>*arrp
         if arr == null {
-            return "[]"
+            return rope("[]")
         }
         base = cArr(arr)
         l = len(arr)
@@ -645,50 +642,57 @@ toJson(e reflectElement) cpstring {
         i=0; for i < l, i++ {
             m = *ae
             m.value = <ptr>(<int>base + es * i)
-            s += toJson(m)
+            s += toJsonRope(m)
             if i+1 < l {
-                s += ", "
+                s += rope(", ")
             }
         }
-        s += "]"
+        s += rope("]")
         return s
     }
     
     if e.type == "int*" || e.type == "int32*" {
         j int* = e.value
-        return intToStr(*j)
+        return rope(intToStr(*j))
     }
 
     if e.type == "cpstring*" {
         s cpstring* = e.value
         if s == null {
-            return "\"\""
+            return rope("\"\"")
         }
-        return "\""+jsonEscapeStr(*s)+"\""
+        return rope("\""+jsonEscapeStr(*s)+"\"")
     }
 
     if e.type == "float*" || e.type == "float32*" {
         f float* = e.value
-        return floatToStr(*f)
+        return rope(floatToStr(*f))
     }
     
     if e.type == "uint*" || e.type == "uint32*" {
         uj uint* = e.value
-        return intToStr(*uj)
+        return rope(intToStr(*uj))
     }
 
     if e.type == "char*" {
         c char* = e.value
-        return "\""+charToString(*c)+"\""
+        return rope("\""+charToString(*c)+"\"")
     }
 
     if e.type == "bool*" {
         b bool* = e.value
         if *b == true {
-            return "true"
+            return rope("true")
         }
-        return "false"
+        return rope("false")
     }
 
-    return "null"
+    return rope("null")
+}
+
+toJson(e reflectElement) cpstring {
+    if e.isArray == false && e.type[len(e.type)-1] != '*' {
+        panic("toJson("+e.name+") of type "+e.type+" but a pointer is required, try: toJson(&"+e.name+").")
+    }
+    return toJsonRope(e).toStr()
 }
