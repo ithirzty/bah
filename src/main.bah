@@ -28,7 +28,7 @@
     const BAH_HOST_OS = "windows"
 }
 //////////////////////BUILD SPECIFIC THINGS//////////////////////
-const BAH_VERSION = "v1.4 (build 154)"
+const BAH_VERSION = "v1.4 (build 155)"
 
 debug = false
 verboseRuntime = false
@@ -289,6 +289,8 @@ main(args []cpstring) int {
         shouldOnlyDecl = true
     }
 
+    readCache()
+
     //includes the builtin libraries
     if flags.isSet("nobuiltin") == 0 && string(fileName).hasSuffix(".bahstrp") == false {
         if noImport == false {
@@ -363,6 +365,11 @@ main(args []cpstring) int {
         totalTime = getTimeUnix() - startTime
         println("Parsed. ("+intToStr(totalLines)+" lines, total time: "+intToStr(totalTime / 1000000)+"ms, lexer time: "+intToStr(totalLexerTime / 1000000)+"ms)\e[0m")
     }
+    for currentCompiling > 0, currentCompiling-- {
+        ok = <- doneCompilingChan
+    }
+
+    writeCache()
 
     //setting the output name
     if flags.isSet("o") == 1 {

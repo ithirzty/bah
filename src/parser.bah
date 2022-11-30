@@ -302,8 +302,7 @@ includeFile(ccstr cpstring, elems Elems*) bool {
 }
 
 //Compiles an object from an imported file.
-parallelObjCompile(fn cpstring, oName cpstring, done chan:bool) {
-    readCache()
+parallelObjCompile(fn cpstring, oName cpstring) {
     cf = getCacheFile(fn)
     wrkd = getCurrentPath()
 
@@ -350,9 +349,8 @@ parallelObjCompile(fn cpstring, oName cpstring, done chan:bool) {
         } else {
             updateCacheFile(cf)
         }
-        writeCache() //saves cache
     }
-    true -> done
+    true -> doneCompilingChan
 }
 
 importFile(fileName string, strt Tok*, elems Elems*) {
@@ -414,15 +412,12 @@ importFile(fileName string, strt Tok*, elems Elems*) {
 
     compilerState.cLibs[0] = "w "+oName+".o" //adds object file to the linker
     
-    done = chan bool
-
     //checks for cache
-    parallelObjCompile(fn, oName, done)
+    currentCompiling++
+    async parallelObjCompile(fn, oName)
 
     //parse file
     parseLines(tokens, elems)
-
-    ok = <- done
 
     //adds its init function
     INIT += rope("__BAH_init"+pathToVarName(fn)+"();\n")
