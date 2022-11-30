@@ -28,7 +28,7 @@
     const BAH_HOST_OS = "windows"
 }
 //////////////////////BUILD SPECIFIC THINGS//////////////////////
-const BAH_VERSION = "v1.4 (build 155)"
+const BAH_VERSION = "v1.4 (build 156)"
 
 debug = false
 verboseRuntime = false
@@ -396,7 +396,13 @@ main(args []cpstring) int {
         }
 
         randFileName = "-x c - -x none" //reading from stdin
-        gccArgs = BAH_CC+" -I \""+BAH_DIR+"libs/"+BAH_OS+"/include/\" -L \""+BAH_DIR+"libs/"+BAH_OS+"/\" "+ randFileName+ " "+isStatic+" "+obj+" -w -O1 -fno-dce -fno-dse -fno-tree-dce -fno-tree-dse -g1 -o "+fileName //the compiler (C compiler) command
+
+        remOpt = ""
+        if BAH_CC == "gcc" {
+            remOpt = "-fno-dce -fno-dse -fno-tree-dce -fno-tree-dse"
+        }
+
+        gccArgs = BAH_CC+" -I \""+BAH_DIR+"libs/"+BAH_OS+"/include/\" -L \""+BAH_DIR+"libs/"+BAH_OS+"/\" "+ randFileName+ " "+isStatic+" "+obj+" -w -O1 "+remOpt+" -g1 -o "+fileName //the compiler (C compiler) command
         
         if flags.isSet("l") == 1 {
             gccArgs = gccArgs + " -c"

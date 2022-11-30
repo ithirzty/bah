@@ -12,4 +12,4 @@ xcopy /E/H/C/I/Y "./linux/libs" "C:/Bah/libs/linux"
 xcopy /E/H/C/I/Y "./darwin/libs" "C:/Bah/libs/darwin"
 
 cd ../../bin/
-xcopy /S /Q /Y /F ".\windows.exe" "C:\WINDOWS\bah.exe"
+echo F | xcopy /S/Q/Y/F/I ".\windows.exe" "C:\WINDOWS\bah.exe"
