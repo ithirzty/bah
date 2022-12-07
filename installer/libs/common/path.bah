@@ -1,4 +1,5 @@
 #include "<stdlib.h>"
+#include "iostream.bah"
 #include "string.bah"
 
 #windows {
@@ -7,6 +8,7 @@
 
 //Used for getting the absolute path of a file/directory.
 //An absolute path is a path that goes all the way to the root.
+//Will return null if path does not exist.
 absPath(path cpstring) cpstring {
     #linux {
         p = realpath(path, null)
@@ -20,6 +22,9 @@ absPath(path cpstring) cpstring {
         s = string(p)
         s.replace("\\", "/")
         p = s.str()
+        if fileExists(p) == false {
+            return null
+        }
     }
     return p
 }

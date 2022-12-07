@@ -557,13 +557,13 @@ parseStructValues(s cStruct*, isHeap bool, memory []Tok, elems Elems*) variable*
 
                         mm = memory[start:k]
 
-                        tmpV = parseStructValues(vs, isRCPpointerType(m.type), mm, elems)
+                        ntmpV = parseStructValues(vs, isRCPpointerType(m.type), mm, elems)
                         k -= 2
 
                         vl = Tok {
                             type: TOKEN_TYPE_VAR
-                            cont: tmpV.name
-                            bahType: tmpV.type
+                            cont: ntmpV.name
+                            bahType: ntmpV.type
                         }
                         
                     }
@@ -615,12 +615,12 @@ parseStructValues(s cStruct*, isHeap bool, memory []Tok, elems Elems*) variable*
 
             mm = memory[start:k]
 
-            tmpV = parseStructValues(vs, isRCPpointerType(m.type), mm, elems)
+            ntmpV = parseStructValues(vs, isRCPpointerType(m.type), mm, elems)
 
             t = Tok {
                 type: TOKEN_TYPE_VAR
-                cont: tmpV.name
-                bahType: tmpV.type
+                cont: ntmpV.name
+                bahType: ntmpV.type
             }
             
         }
@@ -1094,10 +1094,15 @@ parseArrayDecl(v variable*, l []Tok, i int, max int, elems Elems*) cpstring {
                 NEXT_LINE = ""
                 innerCode = parseArrayDecl(tmpV, memory, j, i+1, elems)
                 cType = getCType(elemType.str(), elems)
-                OUTPUT = OUTPUT + rope("
+                r = rope("
                 array("+cType.str()+") * "+tmpV.name+" = "+innerCode+";
                 "+NEXT_LINE+"
                 ")
+                if isGlobal() {
+                    INIT += r
+                } else {
+                    OUTPUT += r
+                }
                 NEXT_LINE = oldNL
                 
                 t = Tok{
