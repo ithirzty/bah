@@ -1623,7 +1623,8 @@ parseVar(l []Tok, elems Elems*) {
 }
 
 //Parses function definition header in function declaration.
-parseFnHeader(prev cpstring, l []Tok, i int*, fn func*, elems Elems*) cpstring {
+//Returns [the fn header in C, delcaration dependencies]
+parseFnHeader(prev cpstring, l []Tok, i int*, fn func*, elems Elems*) [cpstring,cpstring] {
 
     j = *i
     ft = l[j]
@@ -1788,11 +1789,11 @@ parseFnHeader(prev cpstring, l []Tok, i int*, fn func*, elems Elems*) cpstring {
             tpdf = tpdf + "typedef " + fnRetType.str() + " " + newFnRetType + ";\n"
         }
     }
-    code = tpdf + newFnRetType + " " + code
+    code = newFnRetType + " " + code
 
 
 
-    return code
+    return [code,tpdf]
 }
 
 //Parses struct type definition.
@@ -1940,8 +1941,9 @@ parseStruct(l []Tok, elems Elems*) {
 
                 nli = 0
 
-                code = rope(parseFnHeader(fnPrefix, nl, &nli, fn, elems))
-                headerDecl = code.toStr()
+                header = parseFnHeader(fnPrefix, nl, &nli, fn, elems)
+                code = rope(header[0])
+                headerDecl = header[1] + code.toStr()
                 i = i + nli
                 i = i - 2
 
@@ -2162,7 +2164,8 @@ parseDefine(l []Tok, elems Elems*) {
     if st.cont == "(" {
         
         fn = new func
-        code = parseFnHeader("", l, &i, fn, elems)
+        header = parseFnHeader("", l, &i, fn, elems)
+        code = header[1] + header[0]
         fns = elems.fns
         fn.isBinding = true
         fn.isCbinding = doesOutput == false
@@ -3254,7 +3257,8 @@ parseFnDeclare(l []Tok, elems Elems*) {
     }
 
     ft = l[0]
-    code = parseFnHeader("", l, &i, fn, elems)
+    header = parseFnHeader("", l, &i, fn, elems)
+    code = header[1] + header[0]
     fn.line = ft.line
     fn.file = compilerState.currentFile
     ogFn = searchFunc(fn.name, elems, false)
