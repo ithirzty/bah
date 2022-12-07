@@ -3612,6 +3612,15 @@ parseLine(line []Tok, elems Elems*) {
 
 }
 
+hasAnyTok(l []Tok) bool {
+    i=0; for i < len(l), i++ {
+        if l[i].type == TOKEN_TYPE_CAST && l[i].cont == "<any>" {
+            return true
+        }
+    }
+    return false
+}
+
 //Parses multiple lines (such as a file).
 parseLines(tokens []Tok, elems Elems*) {
 
@@ -3629,10 +3638,9 @@ parseLines(tokens []Tok, elems Elems*) {
             if t.cont[0] == '(' || t.cont[0] == '{' || t.cont[0] == '[' {
                 nbEncl++
                 //skip function body when importing a file
-                if shouldOnlyDecl && nbEncl == 1 && t.cont[0] == '{' && len(line) > 1 && line[0].type == TOKEN_TYPE_VAR && line[1].cont == "(" {
+                if shouldOnlyDecl && nbEncl == 1 && t.cont[0] == '{' && len(line) > 1 && line[0].type == TOKEN_TYPE_VAR && line[1].cont == "(" && hasAnyTok(line) == false {
                     line[len(line)] = t
                     i++
-                    start = i
                     for i < len(tokens), i++ {
                         t = tokens[i]
                         if t.type != TOKEN_TYPE_ENCL {

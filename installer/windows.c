@@ -7251,7 +7251,7 @@ char* BAH_CC;
 #define BAH_HOST_OS "\07\0\0\0""windows"
 
 #line 31 "/home/alois/Documents/bah-bah/src/main.bah"
-#define BAH_VERSION "\020\0\0\0""v1.4 (build 158)"
+#define BAH_VERSION "\020\0\0\0""v1.4 (build 159)"
 
 #line 33 "/home/alois/Documents/bah-bah/src/main.bah"
 char debug;
@@ -24826,168 +24826,163 @@ NEXT_LINE = "\0\0\0\0""";
 prevLine = ltp;
 };
 
+#line 3615 "/home/alois/Documents/bah-bah/src/parser.bah"
+char hasAnyTok(__BAH_ARR_TYPE_Tok l){
+
 #line 3616 "/home/alois/Documents/bah-bah/src/parser.bah"
-void parseLines(__BAH_ARR_TYPE_Tok tokens,struct Elems* elems){
+register long long int i = 0;
+
+#line 3616 "/home/alois/Documents/bah-bah/src/parser.bah"
+for (; (i<len(l)); ++i) {
+
+#line 3617 "/home/alois/Documents/bah-bah/src/parser.bah"
+if ((l->data[i].type==TOKEN_TYPE_CAST)&&(strcmp(l->data[i].cont, "\05\0\0\0""<any>") == 0)) {
 
 #line 3618 "/home/alois/Documents/bah-bah/src/parser.bah"
+return true;
+}
+};
+
+#line 3621 "/home/alois/Documents/bah-bah/src/parser.bah"
+return false;
+};
+
+#line 3625 "/home/alois/Documents/bah-bah/src/parser.bah"
+void parseLines(__BAH_ARR_TYPE_Tok tokens,struct Elems* elems){
+
+#line 3627 "/home/alois/Documents/bah-bah/src/parser.bah"
 if ((len(tokens)==0)) {
 
-#line 3619 "/home/alois/Documents/bah-bah/src/parser.bah"
+#line 3628 "/home/alois/Documents/bah-bah/src/parser.bah"
 return;
 }
 
-#line 3621 "/home/alois/Documents/bah-bah/src/parser.bah"
+#line 3630 "/home/alois/Documents/bah-bah/src/parser.bah"
 array(struct Tok)* line = memoryAlloc(sizeof(array(struct Tok)));
 
 line->length = 0;
 line->elemSize = sizeof(struct Tok);
 
-#line 3622 "/home/alois/Documents/bah-bah/src/parser.bah"
+#line 3631 "/home/alois/Documents/bah-bah/src/parser.bah"
 struct Tok ft = tokens->data[0];
 
-#line 3623 "/home/alois/Documents/bah-bah/src/parser.bah"
+#line 3632 "/home/alois/Documents/bah-bah/src/parser.bah"
 unsigned int currentLine = ft.line;
 
-#line 3624 "/home/alois/Documents/bah-bah/src/parser.bah"
+#line 3633 "/home/alois/Documents/bah-bah/src/parser.bah"
 long long int nbEncl = 0;
 
-#line 3625 "/home/alois/Documents/bah-bah/src/parser.bah"
+#line 3634 "/home/alois/Documents/bah-bah/src/parser.bah"
 register long long int i = 0;
 
-#line 3625 "/home/alois/Documents/bah-bah/src/parser.bah"
+#line 3634 "/home/alois/Documents/bah-bah/src/parser.bah"
 while ((i<len(tokens))) {
 
-#line 3626 "/home/alois/Documents/bah-bah/src/parser.bah"
+#line 3635 "/home/alois/Documents/bah-bah/src/parser.bah"
 struct Tok t = tokens->data[i];
 
-#line 3628 "/home/alois/Documents/bah-bah/src/parser.bah"
+#line 3637 "/home/alois/Documents/bah-bah/src/parser.bah"
 if ((t.type==TOKEN_TYPE_ENCL)) {
 
-#line 3629 "/home/alois/Documents/bah-bah/src/parser.bah"
+#line 3638 "/home/alois/Documents/bah-bah/src/parser.bah"
 if ((t.cont[0+4]==40)||(t.cont[0+4]==123)||(t.cont[0+4]==91)) {
 
-#line 3630 "/home/alois/Documents/bah-bah/src/parser.bah"
+#line 3639 "/home/alois/Documents/bah-bah/src/parser.bah"
 ++nbEncl;
 
-#line 3632 "/home/alois/Documents/bah-bah/src/parser.bah"
-if (shouldOnlyDecl&&(nbEncl==1)&&(t.cont[0+4]==123)&&(len(line)>1)&&(line->data[0].type==TOKEN_TYPE_VAR)&&(strcmp(line->data[1].cont, "\01\0\0\0""(") == 0)) {
+#line 3641 "/home/alois/Documents/bah-bah/src/parser.bah"
+if (shouldOnlyDecl&&(nbEncl==1)&&(t.cont[0+4]==123)&&(len(line)>1)&&(line->data[0].type==TOKEN_TYPE_VAR)&&(strcmp(line->data[1].cont, "\01\0\0\0""(") == 0)&&(hasAnyTok(line)==false)) {
 
-#line 3633 "/home/alois/Documents/bah-bah/src/parser.bah"
+#line 3642 "/home/alois/Documents/bah-bah/src/parser.bah"
 unsigned int ____BAH_COMPILER_VAR_1429_ahomeaaloisaeocumentsabahcbahasrcaparserbbah = len(line);
     __Bah_realocate_arr(line, ____BAH_COMPILER_VAR_1429_ahomeaaloisaeocumentsabahcbahasrcaparserbbah);
     line->data[____BAH_COMPILER_VAR_1429_ahomeaaloisaeocumentsabahcbahasrcaparserbbah] = t;
 
-#line 3634 "/home/alois/Documents/bah-bah/src/parser.bah"
+#line 3643 "/home/alois/Documents/bah-bah/src/parser.bah"
 ++i;
 
-#line 3635 "/home/alois/Documents/bah-bah/src/parser.bah"
-long long int start = i;
-
-#line 3636 "/home/alois/Documents/bah-bah/src/parser.bah"
+#line 3644 "/home/alois/Documents/bah-bah/src/parser.bah"
 for (; (i<len(tokens)); ++i) {
 
-#line 3637 "/home/alois/Documents/bah-bah/src/parser.bah"
+#line 3645 "/home/alois/Documents/bah-bah/src/parser.bah"
 t = tokens->data[i];
 
-#line 3638 "/home/alois/Documents/bah-bah/src/parser.bah"
+#line 3646 "/home/alois/Documents/bah-bah/src/parser.bah"
 if ((t.type!=TOKEN_TYPE_ENCL)) {
 
-#line 3639 "/home/alois/Documents/bah-bah/src/parser.bah"
+#line 3647 "/home/alois/Documents/bah-bah/src/parser.bah"
 continue;
 }
 
-#line 3641 "/home/alois/Documents/bah-bah/src/parser.bah"
+#line 3649 "/home/alois/Documents/bah-bah/src/parser.bah"
 if ((t.cont[0+4]==40)||(t.cont[0+4]==123)||(t.cont[0+4]==91)) {
 
-#line 3642 "/home/alois/Documents/bah-bah/src/parser.bah"
+#line 3650 "/home/alois/Documents/bah-bah/src/parser.bah"
 ++nbEncl;
 }
 
-#line 3643 "/home/alois/Documents/bah-bah/src/parser.bah"
+#line 3651 "/home/alois/Documents/bah-bah/src/parser.bah"
 else if ((t.cont[0+4]==41)||(t.cont[0+4]==125)||(t.cont[0+4]==93)) {
 
-#line 3644 "/home/alois/Documents/bah-bah/src/parser.bah"
+#line 3652 "/home/alois/Documents/bah-bah/src/parser.bah"
 --nbEncl;
 
-#line 3645 "/home/alois/Documents/bah-bah/src/parser.bah"
+#line 3653 "/home/alois/Documents/bah-bah/src/parser.bah"
 if ((nbEncl==0)) {
 
-#line 3646 "/home/alois/Documents/bah-bah/src/parser.bah"
+#line 3654 "/home/alois/Documents/bah-bah/src/parser.bah"
 break;
 }
 }
 };
 
-#line 3650 "/home/alois/Documents/bah-bah/src/parser.bah"
+#line 3658 "/home/alois/Documents/bah-bah/src/parser.bah"
 t = tokens->data[i];
 }
 }
 
-#line 3652 "/home/alois/Documents/bah-bah/src/parser.bah"
+#line 3660 "/home/alois/Documents/bah-bah/src/parser.bah"
 else if ((t.cont[0+4]==41)||(t.cont[0+4]==125)||(t.cont[0+4]==93)) {
 
-#line 3653 "/home/alois/Documents/bah-bah/src/parser.bah"
+#line 3661 "/home/alois/Documents/bah-bah/src/parser.bah"
 --nbEncl;
 }
 }
 
-#line 3657 "/home/alois/Documents/bah-bah/src/parser.bah"
+#line 3665 "/home/alois/Documents/bah-bah/src/parser.bah"
 if ((t.type==TOKEN_TYPE_STR)&&(t.begLine==currentLine)) {
 
-#line 3658 "/home/alois/Documents/bah-bah/src/parser.bah"
+#line 3666 "/home/alois/Documents/bah-bah/src/parser.bah"
 currentLine = t.line;
 }
 
-#line 3661 "/home/alois/Documents/bah-bah/src/parser.bah"
+#line 3669 "/home/alois/Documents/bah-bah/src/parser.bah"
 if ((nbEncl==0)) {
 
-#line 3662 "/home/alois/Documents/bah-bah/src/parser.bah"
+#line 3670 "/home/alois/Documents/bah-bah/src/parser.bah"
 if ((t.line!=currentLine)) {
 
-#line 3663 "/home/alois/Documents/bah-bah/src/parser.bah"
+#line 3671 "/home/alois/Documents/bah-bah/src/parser.bah"
 if ((t.type==TOKEN_TYPE_ENCL)) {
 
-#line 3664 "/home/alois/Documents/bah-bah/src/parser.bah"
+#line 3672 "/home/alois/Documents/bah-bah/src/parser.bah"
 unsigned int ____BAH_COMPILER_VAR_1430_ahomeaaloisaeocumentsabahcbahasrcaparserbbah = len(line);
     __Bah_realocate_arr(line, ____BAH_COMPILER_VAR_1430_ahomeaaloisaeocumentsabahcbahasrcaparserbbah);
     line->data[____BAH_COMPILER_VAR_1430_ahomeaaloisaeocumentsabahcbahasrcaparserbbah] = t;
 
-#line 3665 "/home/alois/Documents/bah-bah/src/parser.bah"
+#line 3673 "/home/alois/Documents/bah-bah/src/parser.bah"
 struct Tok pt = tokens->data[i-1];
 
-#line 3666 "/home/alois/Documents/bah-bah/src/parser.bah"
+#line 3674 "/home/alois/Documents/bah-bah/src/parser.bah"
 currentLine = pt.line;
 }
 
-#line 3667 "/home/alois/Documents/bah-bah/src/parser.bah"
+#line 3675 "/home/alois/Documents/bah-bah/src/parser.bah"
 else {
 
-#line 3668 "/home/alois/Documents/bah-bah/src/parser.bah"
-currentLine = t.line;
-}
-
-#line 3670 "/home/alois/Documents/bah-bah/src/parser.bah"
-parseLine(line,elems);
-
-#line 3671 "/home/alois/Documents/bah-bah/src/parser.bah"
-clear(line);
-
-#line 3672 "/home/alois/Documents/bah-bah/src/parser.bah"
-if ((t.type==TOKEN_TYPE_ENCL)) {
-
-#line 3673 "/home/alois/Documents/bah-bah/src/parser.bah"
-++i;
-
-#line 3674 "/home/alois/Documents/bah-bah/src/parser.bah"
-continue;
-}
-}
-
 #line 3676 "/home/alois/Documents/bah-bah/src/parser.bah"
-else if ((strcmp(t.cont, "\01\0\0\0"";") == 0)) {
-
-#line 3677 "/home/alois/Documents/bah-bah/src/parser.bah"
 currentLine = t.line;
+}
 
 #line 3678 "/home/alois/Documents/bah-bah/src/parser.bah"
 parseLine(line,elems);
@@ -24996,42 +24991,65 @@ parseLine(line,elems);
 clear(line);
 
 #line 3680 "/home/alois/Documents/bah-bah/src/parser.bah"
-++i;
+if ((t.type==TOKEN_TYPE_ENCL)) {
 
 #line 3681 "/home/alois/Documents/bah-bah/src/parser.bah"
+++i;
+
+#line 3682 "/home/alois/Documents/bah-bah/src/parser.bah"
 continue;
 }
 }
 
+#line 3684 "/home/alois/Documents/bah-bah/src/parser.bah"
+else if ((strcmp(t.cont, "\01\0\0\0"";") == 0)) {
+
 #line 3685 "/home/alois/Documents/bah-bah/src/parser.bah"
+currentLine = t.line;
+
+#line 3686 "/home/alois/Documents/bah-bah/src/parser.bah"
+parseLine(line,elems);
+
+#line 3687 "/home/alois/Documents/bah-bah/src/parser.bah"
+clear(line);
+
+#line 3688 "/home/alois/Documents/bah-bah/src/parser.bah"
+++i;
+
+#line 3689 "/home/alois/Documents/bah-bah/src/parser.bah"
+continue;
+}
+}
+
+#line 3693 "/home/alois/Documents/bah-bah/src/parser.bah"
 unsigned int ____BAH_COMPILER_VAR_1431_ahomeaaloisaeocumentsabahcbahasrcaparserbbah = len(line);
     __Bah_realocate_arr(line, ____BAH_COMPILER_VAR_1431_ahomeaaloisaeocumentsabahcbahasrcaparserbbah);
     line->data[____BAH_COMPILER_VAR_1431_ahomeaaloisaeocumentsabahcbahasrcaparserbbah] = t;
 
-#line 3686 "/home/alois/Documents/bah-bah/src/parser.bah"
+#line 3694 "/home/alois/Documents/bah-bah/src/parser.bah"
 ++i;
 };
 
-#line 3689 "/home/alois/Documents/bah-bah/src/parser.bah"
+#line 3697 "/home/alois/Documents/bah-bah/src/parser.bah"
 if ((len(line)>0)) {
 
-#line 3690 "/home/alois/Documents/bah-bah/src/parser.bah"
+#line 3698 "/home/alois/Documents/bah-bah/src/parser.bah"
 if ((nbEncl==0)) {
 
-#line 3691 "/home/alois/Documents/bah-bah/src/parser.bah"
+#line 3699 "/home/alois/Documents/bah-bah/src/parser.bah"
 parseLine(line,elems);
 
-#line 3692 "/home/alois/Documents/bah-bah/src/parser.bah"
+#line 3700 "/home/alois/Documents/bah-bah/src/parser.bah"
 clear(line);
 }
 
-#line 3693 "/home/alois/Documents/bah-bah/src/parser.bah"
+#line 3701 "/home/alois/Documents/bah-bah/src/parser.bah"
 else {
 
-#line 3694 "/home/alois/Documents/bah-bah/src/parser.bah"
+#line 3702 "/home/alois/Documents/bah-bah/src/parser.bah"
 ft = line->data[len(line)-1];
 
-#line 3695 "/home/alois/Documents/bah-bah/src/parser.bah"
+#line 3703 "/home/alois/Documents/bah-bah/src/parser.bah"
 throwErr(&ft,"\056\0\0\0""Missing closing token, line ending by {TOKEN}.");
 }
 }
@@ -25911,7 +25929,7 @@ char** ____BAH_COMPILER_VAR_1514_ahomeaaloisaeocumentsabahcbahasrcamainbbah = al
 #line 470 "/home/alois/Documents/bah-bah/src/main.bah"
 return 0;
 };
-volatile struct __Bah_fnName_mapper __tmp____Bah_fnNames[370];
+volatile struct __Bah_fnName_mapper __tmp____Bah_fnNames[371];
     
     void __attribute__((optimize("O0"))) __BAH_init() {
         __BAH_panic_chan = null;
@@ -27213,23 +27231,26 @@ prevLine = (lineType)-1;
             __tmp____Bah_fnNames[364].n = "\010\0\0\0""parseLet";
             __tmp____Bah_fnNames[364].p = parseLet;
 
-            __tmp____Bah_fnNames[365].n = "\013\0\0\0""declareFunc";
-            __tmp____Bah_fnNames[365].p = declareFunc;
+            __tmp____Bah_fnNames[365].n = "\011\0\0\0""hasAnyTok";
+            __tmp____Bah_fnNames[365].p = hasAnyTok;
 
-            __tmp____Bah_fnNames[366].n = "\012\0\0\0""declareVar";
-            __tmp____Bah_fnNames[366].p = declareVar;
+            __tmp____Bah_fnNames[366].n = "\013\0\0\0""declareFunc";
+            __tmp____Bah_fnNames[366].p = declareFunc;
 
-            __tmp____Bah_fnNames[367].n = "\012\0\0\0""declareAll";
-            __tmp____Bah_fnNames[367].p = declareAll;
+            __tmp____Bah_fnNames[367].n = "\012\0\0\0""declareVar";
+            __tmp____Bah_fnNames[367].p = declareVar;
 
-            __tmp____Bah_fnNames[368].n = "\014\0\0\0""memErrHandle";
-            __tmp____Bah_fnNames[368].p = memErrHandle;
+            __tmp____Bah_fnNames[368].n = "\012\0\0\0""declareAll";
+            __tmp____Bah_fnNames[368].p = declareAll;
 
-            __tmp____Bah_fnNames[369].n = "\04\0\0\0""main";
-            __tmp____Bah_fnNames[369].p = main;
+            __tmp____Bah_fnNames[369].n = "\014\0\0\0""memErrHandle";
+            __tmp____Bah_fnNames[369].p = memErrHandle;
+
+            __tmp____Bah_fnNames[370].n = "\04\0\0\0""main";
+            __tmp____Bah_fnNames[370].p = main;
 
         __Bah_fnNames->data = __tmp____Bah_fnNames;
-        __Bah_fnNames->length = 370;
+        __Bah_fnNames->length = 371;
         
     };
     
