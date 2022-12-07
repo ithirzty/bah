@@ -1657,6 +1657,23 @@ parseFnHeader(prev cpstring, l []Tok, i int*, fn func*, elems Elems*) cpstring {
             t = l[j]
             argType = t.cont
 
+            if t.cont[0] == '[' {
+                nbEncl = 1
+                j++
+                for j < len(l), j++ {
+                    argType += l[j].cont
+                    if l[j].cont == "[" || l[j].cont == "(" || l[j].cont == "{" {
+                        nbEncl++
+                    } else if l[j].cont == "]" || l[j].cont == ")" || l[j].cont == "}" {
+                        nbEncl--
+                        if nbEncl == 0 {
+                            break
+                        }
+                    }
+                }
+            }
+
+
             j =j + 1
             isComa = false
             nbPars = 1
@@ -1854,6 +1871,7 @@ parseStruct(l []Tok, elems Elems*) {
     OUTPUT += postDeclHandle
     OOUT = OUTPUT
     nextLine = ""
+    bottomDecl = rope("")
     j=0; for j < len(l), j++ {
         if l[j].type == TOKEN_TYPE_STR && l[j].processedStr == false {
             l[j].cont = strLitteralToBahStr(l[j].cont)
@@ -1923,6 +1941,7 @@ parseStruct(l []Tok, elems Elems*) {
                 nli = 0
 
                 code = rope(parseFnHeader(fnPrefix, nl, &nli, fn, elems))
+                headerDecl = code.toStr()
                 i = i + nli
                 i = i - 2
 
@@ -2019,7 +2038,8 @@ parseStruct(l []Tok, elems Elems*) {
                 }
 
                 if doesOutput == true {
-                    nextLine = nextLine + code.toStr()
+                    bottomDecl += rope(headerDecl+";\n")
+                    nextLine += code.toStr()
                 }
 
                 i++
@@ -2092,7 +2112,7 @@ parseStruct(l []Tok, elems Elems*) {
             i++
         }
         code = code + rope("};\n")
-        OUTPUT += code
+        OUTPUT += code + bottomDecl
         phd = postDeclHandle.toStr()
         ropeSet(postDeclHandle, "")
         OUTPUT += rope(phd)

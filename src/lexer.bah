@@ -283,13 +283,19 @@ lexer(s cpstring, codeLength uint) []Tok {
                 i++
                 for i < codeLength, i++ {
                     c = s[i]
+                    if isSpace(c) {
+                        continue
+                    }
                     if c == '>' {
                         isCast = true
                         memory[len(memory)] = c
                         break
                     }
                     if isAlphaNumeric(c) == false && c != '*' && c != ':' && c != '_' && c != '[' && c != ']' {
-                        break
+                        isFnType = (c == '(' || c == ')') && string(arrToStr(memory)).hasPrefix("<function")
+                        if isFnType == false {
+                            break
+                        }
                     }
                     memory[len(memory)] = c
                 }

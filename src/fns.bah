@@ -48,6 +48,7 @@ searchFunc(name cpstring, elems Elems*, inclCurr bool) func* {
     }
     pfn = parseFnType(cvt)
     nf.returns = pfn.returns
+    nf.isVar = true
     nf.args = pfn.args
     return nf
 }
@@ -79,6 +80,8 @@ searchVirtFuncByToken(t Tok*, elems Elems*) func* {
     }
 
     fn = searchFunc(t.cont, elems, true)
-    funcCache[t.cont] = fn
+    if fn != null && fn.isVar == false {
+        funcCache[t.cont] = fn
+    }
     return fn
 }
