@@ -1352,8 +1352,11 @@ http_request(connfd int) http_request {
         i--
     }
 
+
     r.body = new string
-    r.body.set(req[i:])
+    if i < len(req) {
+        r.body.set(req[i:])
+    } 
 
     r.request = req
 

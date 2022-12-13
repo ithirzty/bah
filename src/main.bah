@@ -28,7 +28,7 @@
     const BAH_HOST_OS = "windows"
 }
 //////////////////////BUILD SPECIFIC THINGS//////////////////////
-const BAH_VERSION = "v1.4 (build 161)"
+const BAH_VERSION = "v1.4 (build 162)"
 
 debug = false
 verboseRuntime = false
@@ -65,6 +65,7 @@ memErrHandle() cpstring {
 //Entry point of the program.
 main(args []cpstring) int {
     onMemoryError = memErrHandle
+    ogDir = getCurrentPath()
 
     execName = args[0] //for calling a sub-process for compiling imports
 
@@ -370,6 +371,7 @@ main(args []cpstring) int {
     }
 
     writeCache()
+    setCurrentPath(ogDir)
 
     //setting the output name
     if flags.isSet("o") == 1 {

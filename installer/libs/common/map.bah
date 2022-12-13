@@ -445,3 +445,9 @@ deleteMap(m ptr, k cpstring) {
     mm mapWrapper* = m
     mm.delete(k)
 }
+
+//Returns the length of a map.
+lenMap(m ptr) int {
+    mm mapWrapper* = m
+    return mm.length
+}
