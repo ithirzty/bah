@@ -1146,16 +1146,20 @@ parseArrayDecl(v variable*, l []Tok, i int, max int, elems Elems*) cpstring {
         }
     }
     strArrayLength = intToStr(arrayLength)
+    name = v.name
+    
+    if v.isArray {
+        ar Tok* = v.arrRoot
+        ai Tok* = v.arrIndex
+        name = ar.cont + "->data["+ai.cont+"]"
+    }
+
     NEXT_LINE = "
-" + v.name + "->length = " + strArrayLength + ";
-" + v.name + "->elemSize = sizeof(" + elemTypeStr + ");
+" + name + "->length = " + strArrayLength + ";
+" + name + "->elemSize = sizeof(" + elemTypeStr + ");
 " + NEXT_LINE
     return code
 }
-
-// parseVar(l []Tok, elems Elems*) {
-
-// }
 
 //Parses var declaration and usage.
 parseVar(l []Tok, elems Elems*) {
@@ -1402,12 +1406,22 @@ parseVar(l []Tok, elems Elems*) {
                 }
             }
 
-            if t.type == TOKEN_TYPE_VAR && tp[0] == '[' && tp[len(tp)-1] == ']' && t.ogCont[0] != '[' {
-                size = getTupleSize(tp, elems)
-                tmpV = genCompilerVar()
-                code = "memoryAlloc("+size+")"
-                NEXT_LINE += "memcpy("+v.name+", "+t.cont+", "+size+");\n"
-                i++;continue
+            if isTupleType(tp) {
+                if t.type == TOKEN_TYPE_VAR && t.ogCont[0] != '[' {
+                    size = getTupleSize(tp, elems)
+                    tmpV = genCompilerVar()
+                    code = "memoryAlloc("+size+")"
+                    NEXT_LINE += "memcpy("+v.name+", "+t.cont+", "+size+");\n"
+                    i++;continue
+                } else if exists && v.declScope != elems && v.canBeNull == false {
+                    code = ft.cont
+                    size = getTupleSize(tp, elems)
+                    NEXT_LINE += "if ("+v.name+"==null) {
+                        "+v.name+" = memoryAlloc("+size+");
+                    }
+                    memcpy("+v.name+", "+t.cont+", "+size+");\n"
+                    i++; continue
+                }
             }
 
             if t.cont != "" && strHasPrefix(t.cont, "{") == false {

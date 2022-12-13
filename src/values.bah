@@ -1285,7 +1285,12 @@ valueTuple(l []Tok, i int, elems Elems*) int {
 
     type = "["+tupT+"]"
 
-    v = registerRCPvar(type, "alloca("+size+")", elems)
+    allocator = "alloca"
+    if isGlobal() {
+        allocator = "memoryAlloc"
+    }
+
+    v = registerRCPvar(type, allocator+"("+size+")", elems)
     offsetVar = genCompilerVar()
 
     r = "long int "+offsetVar+" = 0;\n"
