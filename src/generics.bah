@@ -71,7 +71,10 @@ struct genericFunc {
         oCurrGen = currGen
         currGen = this
         oCurrFn = currentFn
+
         compilerState.currFnElems = fnElems
+        currentFn = fn
+        
         parseLines(this.tokens, fnElems)
         OPTI_checkFuncScopeRef(fnElems)
 

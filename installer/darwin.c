@@ -7232,7 +7232,7 @@ char* BAH_CC;
 #define BAH_HOST_OS "\06\0\0\0""darwin"
 
 #line 31 "/home/alois/Documents/bah-bah/src/main.bah"
-#define BAH_VERSION "\020\0\0\0""v1.4 (build 163)"
+#define BAH_VERSION "\020\0\0\0""v1.4 (build 164)"
 
 #line 33 "/home/alois/Documents/bah-bah/src/main.bah"
 char debug;
@@ -12236,65 +12236,68 @@ currGen = this;
 #line 73 "/home/alois/Documents/bah-bah/src/generics.bah"
 struct func* oCurrFn = currentFn;
 
-#line 74 "/home/alois/Documents/bah-bah/src/generics.bah"
+#line 75 "/home/alois/Documents/bah-bah/src/generics.bah"
 compilerState.currFnElems = fnElems;
 
-#line 75 "/home/alois/Documents/bah-bah/src/generics.bah"
-parseLines(this->tokens,fnElems);
-
 #line 76 "/home/alois/Documents/bah-bah/src/generics.bah"
-OPTI_checkFuncScopeRef(fnElems);
+currentFn = fn;
 
 #line 78 "/home/alois/Documents/bah-bah/src/generics.bah"
-compilerState.currFnElems = ocurrFnElems;
+parseLines(this->tokens,fnElems);
 
 #line 79 "/home/alois/Documents/bah-bah/src/generics.bah"
-currentFn = oCurrFn;
+OPTI_checkFuncScopeRef(fnElems);
 
-#line 80 "/home/alois/Documents/bah-bah/src/generics.bah"
-currGen = oCurrGen;
+#line 81 "/home/alois/Documents/bah-bah/src/generics.bah"
+compilerState.currFnElems = ocurrFnElems;
 
 #line 82 "/home/alois/Documents/bah-bah/src/generics.bah"
-if ((fn->returned==false)) {
+currentFn = oCurrFn;
 
 #line 83 "/home/alois/Documents/bah-bah/src/generics.bah"
+currGen = oCurrGen;
+
+#line 85 "/home/alois/Documents/bah-bah/src/generics.bah"
+if ((fn->returned==false)) {
+
+#line 86 "/home/alois/Documents/bah-bah/src/generics.bah"
 if (__builtin_expect((strlen(fn->returns->type)>0), 0)) {
 
-#line 84 "/home/alois/Documents/bah-bah/src/generics.bah"
+#line 87 "/home/alois/Documents/bah-bah/src/generics.bah"
 char** ____BAH_COMPILER_VAR_482_ahomeaaloisaeocumentsabahcbahasrcagenericsbbah = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_482_ahomeaaloisaeocumentsabahcbahasrcagenericsbbah[2] = "\022\0\0\0""' is not returned.";____BAH_COMPILER_VAR_482_ahomeaaloisaeocumentsabahcbahasrcagenericsbbah[1] = fn->name;____BAH_COMPILER_VAR_482_ahomeaaloisaeocumentsabahcbahasrcagenericsbbah[0] = "\012\0\0\0""Function '";char* ____BAH_COMPILER_VAR_483_ahomeaaloisaeocumentsabahcbahasrcagenericsbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_482_ahomeaaloisaeocumentsabahcbahasrcagenericsbbah, 3);throwErr(this->tokenName,____BAH_COMPILER_VAR_483_ahomeaaloisaeocumentsabahcbahasrcagenericsbbah);
 }
 
-#line 86 "/home/alois/Documents/bah-bah/src/generics.bah"
+#line 89 "/home/alois/Documents/bah-bah/src/generics.bah"
 endRCPscope(fnElems,fn->args);
 }
 
-#line 89 "/home/alois/Documents/bah-bah/src/generics.bah"
+#line 92 "/home/alois/Documents/bah-bah/src/generics.bah"
 struct rope* code = rope__add(OUTPUT, rope("\03\0\0\0""};\n"));
 
-#line 90 "/home/alois/Documents/bah-bah/src/generics.bah"
+#line 93 "/home/alois/Documents/bah-bah/src/generics.bah"
 OUTPUT = oldOut;
 
-#line 91 "/home/alois/Documents/bah-bah/src/generics.bah"
+#line 94 "/home/alois/Documents/bah-bah/src/generics.bah"
 rope__append(postDeclHandle,code);
 };
 
-#line 95 "/home/alois/Documents/bah-bah/src/generics.bah"
+#line 98 "/home/alois/Documents/bah-bah/src/generics.bah"
 array(struct genericFunc*)* generics;
 
-#line 99 "/home/alois/Documents/bah-bah/src/generics.bah"
+#line 102 "/home/alois/Documents/bah-bah/src/generics.bah"
 void advertiseGeneric(){
 
-#line 100 "/home/alois/Documents/bah-bah/src/generics.bah"
+#line 103 "/home/alois/Documents/bah-bah/src/generics.bah"
 if ((currGen==null)) {
 
-#line 101 "/home/alois/Documents/bah-bah/src/generics.bah"
+#line 104 "/home/alois/Documents/bah-bah/src/generics.bah"
 return;
 }
 
-#line 103 "/home/alois/Documents/bah-bah/src/generics.bah"
+#line 106 "/home/alois/Documents/bah-bah/src/generics.bah"
 struct genericFunc* gen = currGen;
 
-#line 105 "/home/alois/Documents/bah-bah/src/generics.bah"
+#line 108 "/home/alois/Documents/bah-bah/src/generics.bah"
 char** ____BAH_COMPILER_VAR_484_ahomeaaloisaeocumentsabahcbahasrcagenericsbbah = alloca(4 * sizeof(char*));____BAH_COMPILER_VAR_484_ahomeaaloisaeocumentsabahcbahasrcagenericsbbah[3] = intToStr(gen->callToken->line);____BAH_COMPILER_VAR_484_ahomeaaloisaeocumentsabahcbahasrcagenericsbbah[2] = "\01\0\0\0"":";____BAH_COMPILER_VAR_484_ahomeaaloisaeocumentsabahcbahasrcagenericsbbah[1] = compilerState.currentFile;____BAH_COMPILER_VAR_484_ahomeaaloisaeocumentsabahcbahasrcagenericsbbah[0] = "\027\0\0\0""[Generic] called here: ";char* ____BAH_COMPILER_VAR_485_ahomeaaloisaeocumentsabahcbahasrcagenericsbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_484_ahomeaaloisaeocumentsabahcbahasrcagenericsbbah, 4);println(____BAH_COMPILER_VAR_485_ahomeaaloisaeocumentsabahcbahasrcagenericsbbah);
 };
 
