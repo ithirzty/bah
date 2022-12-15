@@ -37,6 +37,7 @@ struct Tok {
     bahRef: ptr
     processedStr: bool = false
     processedPtr: bool = false
+    hasAmp: bool
 
     //optimizations
     isNotExpsvOper: bool = false

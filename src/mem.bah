@@ -47,7 +47,7 @@ decrVar(v variable*, elems Elems*) rope* {
 //Used for incrementing the counter of a variable (in -rcp mode).
 incrVar(v variable*, elems Elems*) rope* {
 
-    if strCount(v.name, "*") > 0 {
+    if string(v.name).containsChar('*') {
         return rope("")
     }
 

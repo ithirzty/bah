@@ -38,8 +38,8 @@ destroy(a ptr) {
 
 //Clear will remove the content of an array.
 clear(a ptr) {
-    noCheck(array(void*) * arr = a)
-    noCheck(arr->length = 0)
+    arr Bah_Array_Type* = a
+    arr.length = 0
 }
 
 

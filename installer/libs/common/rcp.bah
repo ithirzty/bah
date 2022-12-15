@@ -485,9 +485,8 @@ memoryRealloc(p ptr, s uint) ptr {
 
 //Clear will remove the content of an array.
 clear(a ptr) {
-    noCheck(array(void*) * arr = a)
-    memset(noCheck(arr->data), null, noCheck(arr->realLength * arr->elemSize))
-    noCheck(arr->length = 0)
+    arr Bah_Array_Type* = a
+    arr.length = 0
 }
 
 //Used for setting an end of line registerer to an allocated pointer.

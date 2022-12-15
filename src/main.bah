@@ -28,7 +28,7 @@
     const BAH_HOST_OS = "windows"
 }
 //////////////////////BUILD SPECIFIC THINGS//////////////////////
-const BAH_VERSION = "v1.4 (build 164)"
+const BAH_VERSION = "v1.4 (build 165)"
 
 debug = false
 verboseRuntime = false
@@ -177,15 +177,13 @@ main(args []cpstring) int {
     OUTPUT = rope("
     void __BAH_init();
     #define noCheck(v) v
-    #define array(type)	\
-    struct{	\
-    type *data; \
-    unsigned long long int length; \
-    unsigned long long int realLength; \
-    unsigned long long int elemSize; \
-    }
-    typedef array(char*)* __BAH_ARR_TYPE_cpstring;
-    long long int __BAH__main(__BAH_ARR_TYPE_cpstring);
+    struct Bah_Array_Type {
+    void *data;
+    unsigned long long int length;
+    unsigned long long int realLength;
+    unsigned long long int elemSize;
+    };
+    long long int __BAH__main(struct Bah_Array_Type*);
     ")
 
     if flags.isSet("l") == 0 {
@@ -197,13 +195,13 @@ main(args []cpstring) int {
             #include <string.h>
             int main(int argc, char ** argv) {
             RCP_init();
-            array(char*) * args = malloc(sizeof(array(char*)));
+            struct Bah_Array_Type* args = malloc(sizeof(struct Bah_Array_Type));
             args->data = malloc(sizeof(char*)*argc);
             memcpy(args->data, argv, sizeof(char*)*argc);
             args->elemSize = sizeof(char*);
             args->length = argc;
             __BAH_init();
-            long long int r =  __BAH__main((__BAH_ARR_TYPE_cpstring)args);
+            long long int r =  __BAH__main((struct Bah_Array_Type*)args);
             free(args->data);
             free(args);
             RCP_shutdown();
@@ -217,14 +215,14 @@ main(args []cpstring) int {
             #include <string.h>
             void initiateMemory();
             int main(int argc, char ** argv) {
-            array(char*) * args = malloc(sizeof(array(char*)));
+            struct Bah_Array_Type * args = malloc(sizeof(struct Bah_Array_Type));
             args->data = malloc(sizeof(char*)*argc);
             memcpy(args->data, argv, sizeof(char*)*argc);
             args->elemSize = sizeof(char*);
             args->length = argc;
-            initiateMemory((__BAH_ARR_TYPE_cpstring)args);
+            initiateMemory((struct Bah_Array_Type*)args);
             __BAH_init();
-            long long int r =  __BAH__main((__BAH_ARR_TYPE_cpstring)args);
+            long long int r =  __BAH__main((struct Bah_Array_Type*)args);
             free(args->data);
             free(args);
             return r;
@@ -235,7 +233,7 @@ main(args []cpstring) int {
             OUTPUT += rope("
             #include <gc.h>
             #include <string.h>
-            __BAH_ARR_TYPE_cpstring argsToArr(char** a,long long int l);
+            struct Bah_Array_Type* argsToArr(char** a,long long int l);
             int main(int argc, char ** argv) {
             GC_INIT();
             __BAH_init();
@@ -249,7 +247,6 @@ main(args []cpstring) int {
 
     //definning the []cpstring C type because it is used for the first time in the C entry point.
     compilerState = compilerStateTag{}
-    compilerState.arrTypesDecl[0] = "__BAH_ARR_TYPE_cpstring"
     
     //opening the file to compile
     fileName = absPath(args[1])
@@ -277,15 +274,13 @@ main(args []cpstring) int {
     if isObject == true {
         OUTPUT = rope("
         #define noCheck(v) v
-        #define array(type)	\
-        struct{	\
-        type *data; \
-        long long int length; \
-        long long int realLength; \
-        long long int elemSize; \
-        }
-        typedef array(char*)* __BAH_ARR_TYPE_cpstring;
-        long long int __BAH__main(__BAH_ARR_TYPE_cpstring);
+        struct Bah_Array_Type {
+        void *data;
+        unsigned long long int length;
+        unsigned long long int realLength;
+        unsigned long long int elemSize;
+        };
+        long long int __BAH__main(struct Bah_Array_Type*);
         ")
         shouldOnlyDecl = true
     }

@@ -112,7 +112,9 @@ valueFunc(fn func*, parent variable*, l []Tok, i int, ltp lineType, elems Elems*
     memory = <[]Tok>null
     nbEncls = 1
     i = tokPos+1
-    fnt.ogCont = fn.name
+    if parent == null {
+        fnt.ogCont = fn.name
+    }
     start = i
     for i < len(l), i++ {
         t = l[i]
@@ -177,7 +179,7 @@ valueFunc(fn func*, parent variable*, l []Tok, i int, ltp lineType, elems Elems*
         j=0; for j < len(symbols), j++ {
             v = symbols[j]
             vname = v.name
-            if strCount(v.type, "*") == 0 {
+            if string(v.type).containsChar('*') == false {
                 vname = "&"+v.name
             }
             tmpT = Tok{
@@ -187,11 +189,11 @@ valueFunc(fn func*, parent variable*, l []Tok, i int, ltp lineType, elems Elems*
                 isValue: true
             }
             tmpT = parseReflect(tmpT, v.type, elems, true, v.name, "0")
-            decls += tmpV.name+"->data["+intToStr(j)+"] = " + tmpT.cont + ";\n"
+            decls += "((struct reflectElement*)"+tmpV.name+"->data)["+intToStr(j)+"] = " + tmpT.cont + ";\n"
         } 
         elems.vars[len(elems.vars)] = tmpV
         OUTPUT = OUTPUT + rope("
-        array(struct reflectElement)* "+tmpV.name+" = memoryAlloc(sizeof(array(struct reflectElement)));
+        struct Bah_Array_Type* "+tmpV.name+" = memoryAlloc(sizeof(struct Bah_Array_Type));
         "+tmpV.name+"->data = memoryAlloc(sizeof(struct reflectElement) * "+intToStr(len(symbols))+");
         "+tmpV.name+"->length = "+intToStr(len(symbols))+";
         "+tmpV.name+"->elemSize = sizeof(struct reflectElement);
@@ -563,6 +565,9 @@ valueArr(l []Tok, i int, ltp lineType, elems Elems*) int {
     }
     ptt = string(getTypeFromToken(&pt, true, elems))
 
+    if pt.hasAmp {
+        pt.cont = pt.cont[1:]
+    }
     //make return token
     t = pt
     t.isValue = true
@@ -654,16 +659,17 @@ valueArr(l []Tok, i int, ltp lineType, elems Elems*) int {
             checkBounds(&index, elems)
             ptt.trimLeft(2)
             t.bahType = ptt.str()
-            t.cont = pt.cont+"->data["+index.cont+"]"
-            if t.cont[0] == '&' {
-                t.bahType += "*"
-                t.processedPtr = true
-            }
+            t.cont = "(("+getCType(ptt.str(), elems).str()+"*)"+pt.cont+"->data)["+index.cont+"]"
 
             indT = new Tok
             *indT = index
             rootT = new Tok
             *rootT = pt
+
+            if t.hasAmp {
+                t.bahType += "*"
+                t.processedPtr = true
+            }
 
             tmpV = new variable {
                 name: pt.ogCont
@@ -833,8 +839,13 @@ valueArr(l []Tok, i int, ltp lineType, elems Elems*) int {
         throwErr(&pt, "Cannot use {TOKEN} ("+ptt.str()+") as an indexable value.\nIndexable values are [array, buffer, cpstring, tuple, map].")
     }
 
+    if t.hasAmp {
+        t.cont = "&" + t.cont
+    }
+
     t.isValue = true    
     l[tokPos] = t
+
 
     return tokPos
 }
@@ -896,19 +907,17 @@ valueBool(l []Tok, i int, ltp lineType, elems Elems*) int {
         //Generate the C function that will be called to check weither a is inside the array b.
         comp = ""
         if ptt == "cpstring" {
-            comp = "arr->data[i] != 0 && strcmp(arr->data[i], el) == 0"
+            comp = "((char**)arr->data)[i] != 0 && strcmp(((char**)arr->data)[i], el) == 0"
         } else {
-            comp = "arr->data[i] == el"
+            comp = "(("+arrT.str()+"*)arr->data)[i] == el"
         }
         name = genCompilerVar()
-        if arrT.hasSuffix("*") {
-            nbast = arrT.count("*")
+        if arrT.charAt(arrT.length-1) == '*' {
+            nbast = arrT.countChar('*')
             arrT.trimRight(nbast)
         }
-        arrT.replace("[]", "_ARR_")
-        newArgType = "__BAH_ARR_TYPE_" + arrT.str()
-        csatd = compilerState.arrTypesDecl
-        fnTest = "char "+name+"("+newArgType+" arr, "+getCType(ptt, elems).str()+" el) {
+        
+        fnTest = "char "+name+"(struct Bah_Array_Type* arr, "+getCType(ptt, elems).str()+" el) {
         if (arr == 0) {
             return 0;
         };
@@ -919,10 +928,6 @@ valueBool(l []Tok, i int, ltp lineType, elems Elems*) int {
         }
         return 0;
         }\n"
-        if newArgType in csatd == false {
-            csatd[len(csatd)] = newArgType
-            fnTest = "typedef " + getCType(ntt, elems).str() + " " + newArgType + ";\n" + fnTest
-        }
         
         //Declare the function inside the global scope.
         postDeclHandle.append(rope(fnTest))

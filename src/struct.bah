@@ -26,11 +26,11 @@ hasStructSep(n string*) bool {
 //a.b.c -> a
 splitStructSepBefore(n string*) string {
     
-    if n.count(".") {
+    if n.containsChar('.') {
         res = string(splitStringBefore(*n, "."))
         return res
     }
-    if n.count("->") {
+    if n.contains("->") {
         res = string(splitStringBefore(*n, "->"))
         return res
     }
@@ -173,7 +173,7 @@ declareStructMethods(v variable*, excl []int, s cStruct*, elems Elems*) cpstring
     typec = string(v.type)
     sep = "."
     amp = "&"
-    if typec.count("*") {
+    if typec.containsChar('*') {
         sep = "->"
         amp = ""
     }
@@ -199,7 +199,7 @@ declareStructMethods(v variable*, excl []int, s cStruct*, elems Elems*) cpstring
             cmptstr = cmpt.str()
             elemCType = getCType(cmptstr, elems)
             elemCTypeStr = elemCType.str()
-            code = code + v.name + sep + m.name + " = memoryAlloc(sizeof(array("+elemCTypeStr+")));
+            code = code + v.name + sep + m.name + " = memoryAlloc(sizeof(struct Bah_Array_Type));
             "+v.name+sep+m.name+"->length = 0;
             "+v.name+sep+m.name+"->elemSize = sizeof("+elemCTypeStr+");
             "

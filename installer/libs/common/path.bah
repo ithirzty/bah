@@ -32,9 +32,9 @@ absPath(path cpstring) cpstring {
 //To get the working path.
 //The working path is the path to the directory that is defined as **./**.
 getCurrentPath() cpstring {
-    cwd char* = memoryAlloc(4096)
+    cwd = buffer 4096
     getcwd(<ptr>cwd, 4096)
-    return cStrToBah(cwd)
+    return cStrToBah(<ptr>cwd)
 }
 
 //Returns true if the subPath is inside the basePath.

@@ -18,7 +18,7 @@ genArrRealloc(v variable*, preVal cpstring, val cpstring, elems Elems*) cpstring
 
     return nLengthDecl+"
     __Bah_realocate_arr("+root.cont+", "+nLength+");
-    "+preVal+root.cont+"->data["+nLength+"] = "+val
+    "+preVal+"(("+getCType(v.type, elems).str()+"*)"+root.cont+"->data)["+nLength+"] = "+val
 }
 
 //This is used to generate concatenation of n cpstrings.

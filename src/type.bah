@@ -51,8 +51,7 @@ getCType(t cpstring, elems Elems*) string {
     }
 
     if len(t) > 2 && t[0] == '[' && t[1] == ']' {
-        r = "array("+getCType(t[2:], elems).str()+")*"
-        return string(r)
+        return string("struct Bah_Array_Type*")
     }
 
     i=0; for i < len(t), i++ {
@@ -166,9 +165,6 @@ setCType(v variable*, elems Elems*) cpstring {
 //Returns the Bah type of a token.
 //Throws an error if strict = true and the token is not a value.
 getTypeFromToken(t Tok*, strict bool, elems Elems*) cpstring {
-    if t == null {
-        panic("WTF")
-    }
     if t.bahType != "" {
         r = t.bahType
         return r
@@ -219,20 +215,19 @@ parseFnType(cvt string) func* {
     nf = new func
     cvt.trimLeft(9)
     memory = []char
-    j=0; for j < cvt.length {
+    j=0; for j < cvt.length, j++ {
         c = cvt.charAt(j)
         if c == ')' {
             break
         }
         arg = new variable
         arg.name = "arg_"+intToStr(len(nf.args))
-        for j < cvt.length {
+        for j < cvt.length, j++ {
             c = cvt.charAt(j)
             if c == ',' || c == ')' {
                 break
             }
             memory[len(memory)] = c
-            j = j + 1
         }
         arg.type = arrToStr(memory)
         clear(memory)
@@ -240,13 +235,11 @@ parseFnType(cvt string) func* {
         if c == ')' {
             break
         }
-        j = j + 1
     }
-    j = j + 1
-    for j < cvt.length {
+    j++
+    for j < cvt.length, j++ {
         c = cvt.charAt(j)
         memory[len(memory)] = c
-        j = j + 1
     }
     nf.returns = new variable
     nf.returns.name = "_return"

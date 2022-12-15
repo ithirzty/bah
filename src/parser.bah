@@ -320,7 +320,6 @@ parallelObjCompile(fn cpstring, oName cpstring) {
 
     //file not found in cache, need to compile it
     if cf == null || isValidCacheFile(scf) == false {
-        setCurrentPath(compilerState.currentDir)
         verboseCC = ""
         if flags.isSet("verboseCC") == 1 {
             verboseCC = "-verboseCC"
@@ -337,6 +336,7 @@ parallelObjCompile(fn cpstring, oName cpstring) {
             nbtin = "-nobuiltin"
         }
 
+        setCurrentPath(compilerState.currentDir)
         cmd = command(execName + " "+fn+" "+rcp+" "+opti+" -object "+verboseCC+" "+nbtin+" -o "+oName)
         res = cmd.runBytes()
         setCurrentPath(wrkd)
@@ -843,6 +843,9 @@ parsePointers(l []Tok, elems Elems*) []Tok {
                     continue
                 }
                 if l[i+1].type == TOKEN_TYPE_VAR {
+                    if t.cont[0] == '&' {
+                        l[i+1].hasAmp = true
+                    }
                     l[i+1].cont = t.cont + l[i+1].cont
                     delete(l, i)
                     i--
@@ -869,7 +872,7 @@ parseSerialize(e Tok*, elems Elems*) cpstring {
     }
 
     svt = string(v.type)
-    ptrLevel = svt.count("*")
+    ptrLevel = svt.countChar('*')
     
     svt.replace("*", "")
 
@@ -981,7 +984,7 @@ parseReflect(t Tok, tt cpstring, elems Elems*, parsedPointer bool, ogName cpstri
             tmpT = Tok{}
             tmpT.type = TOKEN_TYPE_VAR
             sep = "->"
-            if strCount(tt, "*") == 0 {
+            if string(tt).containsChar('*') == false {
                 sep = "."
             }
             mCtype = getCType(m.type, elems)
@@ -989,11 +992,11 @@ parseReflect(t Tok, tt cpstring, elems Elems*, parsedPointer bool, ogName cpstri
             offsetTT.replace("*", "")
             tmpT.cont = "("+mCtype.str()+"*)((char*)("+t.cont+") + offsetof(struct "+offsetTT.str()+", "+m.name+"))"
             rt = parseReflect(tmpT, m.type, elems, true, m.name, "offsetof(struct "+offsetTT.str()+", "+m.name+")")
-            dataLayout = dataLayout + rope(structLayout+"->data["+intToStr(i)+"] = "+rt.cont+";\n")
+            dataLayout = dataLayout + rope("((struct reflectElement*)"+structLayout+"->data)["+intToStr(i)+"] = "+rt.cont+";\n")
         }
 
         OUTPUT = OUTPUT + rope("
-        array(struct reflectElement) * "+structLayout+" = memoryAlloc(sizeof(array(struct reflectElement)));
+        struct Bah_Array_Type * "+structLayout+" = memoryAlloc(sizeof(struct Bah_Array_Type));
         "+structLayout+"->elemSize = sizeof(struct reflectElement);
         "+structLayout+"->length = "+intToStr(len(ts.members))+";
         "+structLayout+"->data = memoryAlloc("+structLayout+"->length * "+structLayout+"->elemSize);
@@ -1001,7 +1004,7 @@ parseReflect(t Tok, tt cpstring, elems Elems*, parsedPointer bool, ogName cpstri
     }
 
     amp = ""
-    if strCount(tt, "*") == 0 && tt != "cpstring" && tt != "ptr" && parsedPointer == false {
+    if string(tt).containsChar('*') == false && tt != "cpstring" && tt != "ptr" && parsedPointer == false {
         amp = "&"
     }
 
@@ -1043,11 +1046,8 @@ parseReflect(t Tok, tt cpstring, elems Elems*, parsedPointer bool, ogName cpstri
 //Parses array declarations such as: 'a = []type'.
 parseArrayDecl(v variable*, l []Tok, i int, max int, elems Elems*) cpstring {
     arrayLength = 0
-    arrType = getCType(v.type, elems)
-    arrType.trimRight(1)
-    code = "memoryAlloc(sizeof("+arrType.str()+"))"
-    arrType.trimLeft(6)
-    arrType.trimRight(1)
+    arrType = getCType(v.type[2:], elems)
+    code = "memoryAlloc(sizeof(struct Bah_Array_Type))"
     elemTypeStr = arrType.str()
 
     if i + 1 != max {
@@ -1093,9 +1093,8 @@ parseArrayDecl(v variable*, l []Tok, i int, max int, elems Elems*) cpstring {
                 oldNL = NEXT_LINE
                 NEXT_LINE = ""
                 innerCode = parseArrayDecl(tmpV, memory, j, i+1, elems)
-                cType = getCType(elemType.str(), elems)
                 r = rope("
-                array("+cType.str()+") * "+tmpV.name+" = "+innerCode+";
+                struct Bah_Array_Type * "+tmpV.name+" = "+innerCode+";
                 "+NEXT_LINE+"
                 ")
                 if isGlobal() {
@@ -1121,7 +1120,7 @@ parseArrayDecl(v variable*, l []Tok, i int, max int, elems Elems*) cpstring {
             strArrayLength = intToStr(arrayLength)
             arrayLength =arrayLength + 1
 
-            NEXT_LINE = NEXT_LINE + v.name + "->data[" + strArrayLength + "] = " + t.cont + ";\n"
+            NEXT_LINE = NEXT_LINE + "(("+elemTypeStr+"*)" + v.name + "->data)[" + strArrayLength + "] = " + t.cont + ";\n"
             i++
             t = memory[i]
 
@@ -1151,7 +1150,7 @@ parseArrayDecl(v variable*, l []Tok, i int, max int, elems Elems*) cpstring {
     if v.isArray {
         ar Tok* = v.arrRoot
         ai Tok* = v.arrIndex
-        name = ar.cont + "->data["+ai.cont+"]"
+        name = "(("+elemTypeStr+"*)" +ar.cont + "->data)["+ai.cont+"]"
     }
 
     NEXT_LINE = "
@@ -1432,12 +1431,12 @@ parseVar(l []Tok, elems Elems*) {
                         toVar = true
                         isPointedVar = strHasPrefix(t.cont, "&")
                         s = searchStruct(iv.type, elems)
-                        if s != null && strCount(iv.type, "*") == 0 && s.isBinding == false {
-                            if strCount(iv.name, "*") == 0 {
+                        if s != null && string(iv.type).containsChar('*') == 0 && s.isBinding == false {
+                            if string(iv.name).containsChar('*') == false {
                                 code = code + "; RCP_scanStack(&"+iv.name+", sizeof("+iv.name+"), 0)"
                             } else {
                                 ivn = string(iv.name)
-                                if ivn.count("*") > 0 {
+                                if ivn.containsChar('*') {
                                     ivn.replace("*", "")
                                     code += "; RCP_scanStack("+ivn.str()+", sizeof("+iv.name+"), 0)"
                                 } else {
@@ -1521,7 +1520,7 @@ parseVar(l []Tok, elems Elems*) {
             } else {
                 s = searchStruct(v.type, elems)
                 if s != null && RCPavailable() == true && RCPselfRef(v) == false && s.isBinding == false {
-                    if strCount(v.name, "*") == 0 {
+                    if string(v.name).containsChar('*') == false {
                         preCode = "RCP_scanStack(&"+v.name+", sizeof("+v.name+"), 1); "
                     } else {
                         vn = string(v.name)
@@ -1723,20 +1722,6 @@ parseFnHeader(prev cpstring, l []Tok, i int*, fn func*, elems Elems*) [cpstring,
 
             cfrt = string(argType)
             newArgType = argCType.str()
-            if cfrt.hasPrefix("[]") == 1 {
-                cfrt.trimLeft(2)
-                if cfrt.hasSuffix("*") {
-                    nbast = cfrt.count("*")
-                    cfrt.trimRight(nbast)
-                }
-                cfrt.replace("[]", "_ARR_")
-                newArgType = "__BAH_ARR_TYPE_" + cfrt.str()
-                csatd = compilerState.arrTypesDecl
-                if newArgType in csatd == false {
-                    csatd[len(csatd)] = newArgType
-                    tpdf = tpdf + "typedef " + argCType.str() + " " + newArgType + ";\n"
-                }
-            }
             if cfrt.hasPrefix("function(") == 1 {
                 code = code + getCfunctionType(&cfrt, argName, elems)
             } else {
@@ -1787,26 +1772,7 @@ parseFnHeader(prev cpstring, l []Tok, i int*, fn func*, elems Elems*) [cpstring,
 
     fnRetType = getCType(returns.type, elems)
     newFnRetType = fnRetType.str()
-
-    cfrt = string(returns.type)
-    if cfrt.hasPrefix("[]") == 1 {
-        cfrt.trimLeft(2)
-        if cfrt.hasSuffix("*") {
-            nbast = cfrt.count("*")
-            cfrt.trimRight(nbast)
-        }
-        cfrt.replace("[]", "_ARR_")
-        newFnRetType = "__BAH_ARR_TYPE_" + cfrt.str()
-        csatd = compilerState.arrTypesDecl
-        if newFnRetType in csatd == false {
-            csatd[len(csatd)] = newFnRetType
-            tpdf = tpdf + "typedef " + fnRetType.str() + " " + newFnRetType + ";\n"
-        }
-    }
     code = newFnRetType + " " + code
-
-
-
     return [code,tpdf]
 }
 
@@ -2693,7 +2659,7 @@ makeEvalFunc(fn func*, elems Elems*) {
         if isRCPpointerType(a.type) == false {
             cType.append("*")
         }
-        fnBinding += cType.str() + " " + v + " = fnArgs->data[" + intToStr(i) + "];"
+        fnBinding += cType.str() + " " + v + " = (("+cType.str()+"*)fnArgs->data)[" + intToStr(i) + "];"
         if i != 0 {
             fnCall += ", "
         }
@@ -2714,7 +2680,7 @@ makeEvalFunc(fn func*, elems Elems*) {
         }
     }
 
-    OUTPUT += rope("void* __attribute__((optimize(\"O0\"))) "+efn.name+"(array(void*)* fnArgs) {
+    OUTPUT += rope("void* __attribute__((optimize(\"O0\"))) "+efn.name+"(struct Bah_Array_Type* fnArgs) {
         if (fnArgs->length != "+intToStr(len(fn.args))+") {
             __BAH_panic((char*)\"eval: calling function "+fn.name+"() with the wrong number of arguments.\", \"BAH_COMPILER_INTERNAL\");
         }
@@ -3135,7 +3101,7 @@ prePross(line []Tok, ltp lineType, elems Elems*) []Tok {
             pt = Tok{}
         }
         //parse struct values
-        if t.cont[0] == '&' && t.type == TOKEN_TYPE_VAR && isValue(fl, i) && t.processedPtr == false {
+        if t.hasAmp && isValue(fl, i) && t.processedPtr == false {
             t.processedPtr = true
             if t.getRefVar() == null {
                 let v = searchVar(t.cont, &t, elems) then {

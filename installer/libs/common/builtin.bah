@@ -5,6 +5,12 @@
     #include "<mach/mach.h>"
 }
 
+struct! Bah_Array_Type {
+	data: ptr
+	length: uint
+	realLength: uint
+	elemSize: uint
+}
 
 #rcp {
 	#define RCP_decr(p ptr)
@@ -190,8 +196,8 @@ __STR(a cpstring) cpstring {
 
 //Converts a bah array to a C array.
 cArr(arr ptr) ptr {
-	noCheck(array(void*)*a = arr)
-	return noCheck(a->data)
+	a Bah_Array_Type* = arr
+	return a.data
 }
 
 //Checks if a cpstring is null.

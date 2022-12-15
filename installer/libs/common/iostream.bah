@@ -76,11 +76,8 @@ struct fileStream {
     name: cpstring
 
     //Checks if the current opened file is valid or not.
-    isValid() int {
-        if this.handle == null {
-            return 0
-        }
-        return 1
+    isValid() bool {
+        return this.handle != null
     }
 
     //Opens a file by its name.
@@ -99,7 +96,7 @@ struct fileStream {
 
     //Closes an opennend connection to a file.
     close() {
-        if this.isValid() == 0 {
+        if this.isValid() == false {
             return
         }
         fclose(this.handle)
@@ -108,7 +105,7 @@ struct fileStream {
 
     //Returns the position of the file reader.
     getPos() int {
-        if this.isValid() == 0 {
+        if this.isValid() == false {
             return 0
         }
         return ftell(this.handle)
@@ -116,7 +113,7 @@ struct fileStream {
 
     //Set the position of the file reader.
     setPos(i int) {
-        if this.isValid() == 0 {
+        if this.isValid() == false {
             return
         }
         fseek(this.handle, i, 0)
@@ -124,7 +121,7 @@ struct fileStream {
 
     //Returns the size of a file in bytes.
     getSize() int {
-        if this.isValid() == 0 {
+        if this.isValid() == false {
             return -1
         }
         oldPos = this.getPos()
@@ -158,7 +155,7 @@ struct fileStream {
 
     //Writes the opened file with the specified content.
     writeFile(content cpstring) int {
-        if this.isValid() == 0 {
+        if this.isValid() == false {
             return -1
         }
 
@@ -183,7 +180,7 @@ struct fileStream {
 
     //Returns the content of the opened file.
     readContent() cpstring {
-        if this.isValid() == 0 {
+        if this.isValid() == false {
             return "invalid"
         }
 
@@ -197,15 +194,13 @@ struct fileStream {
     readBytes() []char {
         r = []char
         allocateArray(r, this.getSize())
-
-        this.readPtr(noCheck(r->data), len(r))
-
+        this.readPtr(cArr(r), len(r))
         return r
     }
 
     //Write an array of bytes (char) to a file.
     writeBytes(d []char) {
-        this.writePtr(noCheck(d->data), len(d))
+        this.writePtr(cArr(d), len(d))
     }
 
     _end() {
@@ -276,20 +271,17 @@ struct fileMap {
             } else {
                 this.handle = -1
             }
-            file = fs.readContent()
+            file = fs.readBytes()
             fs.close()
             //file cpstring = mmap(0, sb.st_size, noCheck(PROT_READ | PROT_WRITE), noCheck(MAP_SHARED), this.handle, 0)
-            return strToArr(file)
+            return file
         }
 
     }
 
     //Check if file is valid or not.
-    isValid() int {
-        if this.handle < 0 {
-            return 0
-        }
-        return 1
+    isValid() bool {
+        return this.handle >= 0
     }
 
     //To close a file after you are done working on it.
@@ -323,8 +315,11 @@ struct! dirent {
 
 //Returns a list of all files found inside the specified directory.
 listFiles(dir cpstring) []cpstring {
-    files = []cpstring
     d = opendir(dir)
+    if d == null {
+        return null
+    }
+    files = []cpstring
     file = readdir(d)
     for file != null {
         lf = len(files)
@@ -341,12 +336,9 @@ listFiles(dir cpstring) []cpstring {
 #define! access(fn cpstring, m int) int
 
 //Checks if a file exists.
-fileExists(path cpstring) int {
-    is = access(path, 0)
-    if is == 0 {
-        return 1
-    }
-    return 0
+fileExists(path cpstring) bool {
+    buf stat
+    return stat(path, &buf) == 0
 }
 
 isFolder(path cpstring) bool {

@@ -37,9 +37,8 @@
 // }
 
 clear(a ptr) {
-    arr = <[]ptr>a
-    memset(noCheck(arr->data), null, noCheck(arr->length * arr->elemSize))
-    noCheck(arr->length = 0)
+    arr Bah_Array_Type* = a
+    arr.length = 0
 }
 
 cleanShutDown() {

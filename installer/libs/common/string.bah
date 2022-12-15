@@ -175,30 +175,49 @@ struct string {
     }
 
     //Used to count the number of substring(s).
-    count(need cpstring) int {
-        if len(need) == 1 {
-            return this.countChar(need[0])
-        }
-        i = 0
+    count(needle cpstring) int {
         count = 0
-        needle = string{}
-        needle.set(need)
         countIndex = 0
-        for i < this.length {
-            c = this.charAt(i)
-            sc = needle.charAt(countIndex)
+        nl = len(needle)
+        i=0; for i < this.length, i++ {
+            c = this.content[i]
+            sc = needle[countIndex]
             if c == sc {
-                countIndex = countIndex + 1
+                countIndex++
+                if countIndex == nl {
+                    count++
+                    countIndex = 0
+                }
             } else {
                 countIndex = 0
             }
-            if countIndex == needle.length {
-                count = count + 1
-                countIndex = 0
-            }
-            i = i + 1
         }
         return count
+    }
+
+    contains(needle cpstring) bool {
+        ind = 0
+        nl = len(needle)
+        i=0; for i < this.length, i++ {
+            if this.content[i] == needle[ind] {
+                ind++
+                if ind == nl {
+                    return true
+                }
+            } else {
+                ind = 0
+            }
+        }
+        return false
+    }
+
+    containsChar(needle char) bool {
+        i=0; for i < this.length, i++ {
+            if needle == this.content[i] {
+                return true
+            }
+        }
+        return false
     }
 
     //Used to know if the string as a specified prefix, returns 1 if true.
@@ -563,24 +582,22 @@ strTrim(s cpstring*) {
 
 //This is used to count the number of substrings inside a cpstring.
 strCount(src cpstring, needle cpstring) int {
-    i = 0
     count = 0
     countIndex = 0
     sl = len(src)
     nl = len(needle)
-    for i < sl {
-        c = cpstringCharAt(src, i)
-        sc = cpstringCharAt(needle, countIndex)
+    i=0; for i < sl, i++ {
+        c = src[i]
+        sc = needle[countIndex]
         if c == sc {
-            countIndex = countIndex + 1
+            countIndex++
+            if countIndex == nl {
+                count++
+                countIndex = 0
+            }
         } else {
             countIndex = 0
         }
-        if countIndex == nl {
-            count = count + 1
-            countIndex = 0
-        }
-        i = i + 1
     }
     return count
 }

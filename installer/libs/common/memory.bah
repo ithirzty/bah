@@ -30,8 +30,8 @@ len(a ptr) uint {
     if a == null {
         return 0
     }
-    noCheck(array(void*)*arr = a)
-    return noCheck(arr->length)
+    arr Bah_Array_Type* = a
+    return arr.length
 }
 
 #define! memmove(dest ptr, src ptr, size int)
@@ -43,47 +43,47 @@ len(a ptr) uint {
 //Append will add the array b to the array a.
 //Note: doesn't work with []char.
 append(a ptr, b ptr) {
-    noCheck(array(void*) * arrA = a)
-    noCheck(array(void*) * arrB = b)
+    arrA Bah_Array_Type* = a
+    arrB Bah_Array_Type* = b
     lenA = 0
     lenB = 0
     realSizeA = 0
     realSizeB = 0
-    noCheck(lenA = len(arrA))
-    noCheck(lenB = len(arrB))
+    lenA = arrA.length
+    lenB = arrB.length
 
     if lenB == 0 {
         return
     }
 
     if lenA == 0 {
-        noCheck(arrA->data = arrB->data)
-        noCheck(arrA->length = arrB->length)
+        arrA.data = arrB.data
+        arrA.length = arrB.length
         return
     }
 
-    noCheck(realSizeA = lenA * arrA->elemSize)
-    noCheck(realSizeB = lenB * arrB->elemSize)
+    realSizeA = lenA * arrA.elemSize
+    realSizeB = lenB * arrB.elemSize
 
 
     buff = memoryAlloc(realSizeA + realSizeB+32)
-    noCheck(memcpy(buff, arrA->data, realSizeA))
-    noCheck(memcpy(buff+lenA, arrB->data, realSizeB))
-    noCheck(arrA->length = lenA + lenB)
-    noCheck(arrA->data = buff)
+    memcpy(buff, arrA.data, realSizeA)
+    memcpy(<ptr>(<int>buff+lenA), arrB.data, realSizeB)
+    arrA.length = lenA + lenB
+    arrA.data = buff
 }
 
 //Copy the content of array b to array a.
 copy(a ptr, b ptr) {
-    noCheck(array(void*) * arrA = a)
-    noCheck(array(void*) * arrB = b)
+    arrA Bah_Array_Type* = a
+    arrB Bah_Array_Type* = b
     lenB = 0
     realSizeB = 0
-    noCheck(lenB = len(arrB))
-    noCheck(realSizeB = lenB * arrB->elemSize)
-    noCheck(arrA->data = memoryAlloc(realSizeB))
-    noCheck(memcpy(arrA->data, arrB->data, realSizeB))
-    noCheck(arrA->length = arrB->length)
+    lenB = arrB.length
+    realSizeB = lenB * arrB.elemSize
+    arrA.data = memoryAlloc(realSizeB)
+    memcpy(arrA.data, arrB.data, realSizeB)
+    arrA.length = arrB.length
 }
 
 #windows {
@@ -157,10 +157,10 @@ sharedMemory(size int) ptr {
 //Used for pre-allocating a number of element to an array.
 //The content of the array is not initialized, it may contain garbage.
 allocateArray(arr ptr, nbElems int) {
-    noCheck(array(void*) * a = arr)
-    noCheck(a->length = nbElems)
-    noCheck(a->realLength = nbElems)
-    noCheck(a->data = memoryAlloc(nbElems * a->elemSize))
+    a Bah_Array_Type* = arr
+    a.length = nbElems
+    a.realLength = nbElems
+    a.data = memoryAlloc(nbElems * a.elemSize)
 }
 
 
@@ -174,52 +174,20 @@ allocateArray(arr ptr, nbElems int) {
 
 #define! memcpy(det ptr, src ptr, s int)
 
-#define ser(a ptr) []char
-
-//Internal function used to serialize a pointer.
-//This function is unsafe and deprecated.
-__serialize(a ptr, s int) []char {
-    r cpstring = memoryAlloc(s + 9)
-    memcpy(r, &s, 8)
-    memcpy(noCheck(r+8), a, s)
-    l = s+1
-    arr = []char
-    noCheck(arr->length = s+8)
-    noCheck(arr->elemSize = 1)
-    noCheck(arr->data = r)
-    return arr
-}
-
-//Function used to get the size of the serialized pointer.
-//This function is unsafe and deprecated.
-serlen(data []char) int {
-    sarr = []char{data[0], data[1], data[2], data[3], data[4], data[5], data[6], data[7]}
-    return noCheck(*sarr->data)
-}
-
-//Function used to unserialize the content of a struct.
-//This function is unsafe and deprecated.
-unser(data []char) ptr {
-    sptr = serlen(data)
-    r = memoryAlloc(sptr)
-    memcpy(r, noCheck(data->data + 8), sptr)
-    return r
-}
-
 //Used for deleting an element from an array by its index.
 //This will keep the order of the elements.
 delete(a ptr, i int) {
-    arr = <[]ptr>a
-    length = len(arr)
+    arr Bah_Array_Type* = a
+    length = len(<[]ptr>a)
     if i >= length || i < 0 {
         return
     }
 	if i == length-1 {
-		noCheck(arr->length = arr->length - 1)
+		arr.length--
 		return
 	}
-    elemSize int = noCheck(arr->elemSize)
-    data char* = noCheck(arr->data)
+    elemSize int = arr.elemSize
+    data char* = arr.data
     destOffset ptr = elemSize * i
     i++
     offset ptr = elemSize * i
@@ -227,7 +195,7 @@ delete(a ptr, i int) {
     dest char* = <int>data + <int>destOffset
     rightNB = length - (i-1)
     memmove(dest, src, rightNB * elemSize)
-    noCheck(arr->length = length - 1)
+    arr.length = length - 1
 }
 
 //Like delete() but for a range.
@@ -237,17 +205,17 @@ deleteRange(a ptr, from int, to int) {
         delete(a, from)
         return
     }
-    arr = <[]ptr>a
-    length = len(arr)
+    arr Bah_Array_Type* = a
+    length = len(<[]ptr>a)
 
-    elemSize int = noCheck(arr->elemSize)
-    data char* = noCheck(arr->data)
+    elemSize int = arr.elemSize
+    data char* = arr.data
     size = elemSize * (to - from)
     dest ptr = <int>data + elemSize * from
     src ptr = <int>dest + size + elemSize
     rightNB = length - to
     memmove(dest, src, rightNB * elemSize)
-    noCheck(arr->length = length - (to - from + 1))
+    arr.length = length - (to - from + 1)
 }
 
 
@@ -257,8 +225,9 @@ arrToStr(arr []char) cpstring {
     if len(arr) > 0 && arr[len(arr)-1] == null {
         strLen--
     }
+    a Bah_Array_Type* = arr
     str cpstring = memoryAllocSTR(strLen+1)
-    memcpy(str, noCheck(arr->data), strLen)
+    memcpy(str, a.data, strLen)
     ln uint32* = str
     *ln = strLen
     return str
@@ -268,9 +237,10 @@ arrToStr(arr []char) cpstring {
 strToArr(str cpstring) []char {
     strLen = len(str)
     arr = []char
-    noCheck(arr->data = memoryAlloc(strLen+1))
-    memcpy(noCheck(arr->data), str, strLen)
-    noCheck(arr->length = strLen)
+    a Bah_Array_Type* = arr
+    a.data = memoryAlloc(strLen+1)
+    memcpy(a.data, str, strLen)
+    a.length = strLen
     
     return arr
 }
