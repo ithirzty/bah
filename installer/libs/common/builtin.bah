@@ -391,7 +391,13 @@ __Bah_realocate_arr(arr []ptr, nLength uint32) {
 	}
 
 	if nLength != len(arr) {
-		panic("builtin: array append out of bounds violation. Can only append index=length.")
+		indexStr = buffer 65
+		lengthStr = buffer 65
+
+		noCheck(sprintf(indexStr, "%d"+4, nLength))
+		noCheck(sprintf(lengthStr, "%d"+4, arr->length))
+
+		panic("builtin: array append out of bounds violation, index = "+cStrToBah(<char*>indexStr)+" and len = "+cStrToBah(<char*>lengthStr)+". Can only append index=length.")
 	}
 
 	if nLength >= noCheck(arr->realLength) {

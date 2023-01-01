@@ -191,6 +191,7 @@ struct response_buffer {
 struct http_socket {
     sockfd: int = -1
     timeout: int = 0
+    sizeLimit: uint = 0
 
     //To check if a socket is opened.
     isOpened() bool {
@@ -394,6 +395,9 @@ struct http_socket {
 
         for 1 == 1 {
             nDataLength = recv(this.sockfd,<char*>buff,1024,0)
+            if this.sizeLimit != 0 && rep.len >= this.sizeLimit {
+                break
+            }
             if nDataLength <= 0 {
                 break
             }
@@ -1107,6 +1111,7 @@ struct http_request extend http_transport {
     request: cpstring
     form: []string
     timeout: int = 0
+    sizeLimit: uint = 0
     
     //Sends the response.
     //Dont forget to calling after writting to it.
@@ -1119,6 +1124,7 @@ struct http_request extend http_transport {
             socketWasOpenned = false
             this.socket.open()
             this.socket.timeout = this.timeout
+            this.socket.sizeLimit = this.sizeLimit
             if this.url != null {
                 if strlen(this.path) == 0 {
                     this.path = this.url.path.str()

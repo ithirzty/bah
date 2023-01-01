@@ -104,13 +104,13 @@ command(s cpstring) command {
 //Note that this will take the current proccess.
 exec(s cpstring, args []cpstring) int {
     r int
-    nArgs = []cpstring
-    nArgs[0] = s
+    nArgs = []char*
+    nArgs[0] = cStr(s)
     i=0;for i < len(args) {
-        nArgs[i+1] = args[i]
+        nArgs[i+1] = cStr(args[i])
         i = i + 1
     }
-    nArgs[i+2] = <cpstring>0
-    noCheck(r = execvp(s, nArgs->data))
+    nArgs[len(nArgs)] = null
+    r = execvp(s, cArr(nArgs))
     return r
 }

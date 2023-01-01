@@ -909,7 +909,7 @@ valueBool(l []Tok, i int, ltp lineType, elems Elems*) int {
         if ptt == "cpstring" {
             comp = "((char**)arr->data)[i] != 0 && strcmp(((char**)arr->data)[i], el) == 0"
         } else {
-            comp = "(("+arrT.str()+"*)arr->data)[i] == el"
+            comp = "(("+getCType(arrT.str(), elems).str()+"*)arr->data)[i] == el"
         }
         name = genCompilerVar()
         if arrT.charAt(arrT.length-1) == '*' {

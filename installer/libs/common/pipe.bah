@@ -2,6 +2,7 @@
 
 #define! pipe(fd ptr)
 #define! fcntl(fd ptr, m int, f int) int
+#define! dup2(fd int, fd2 int)
 
 //A wrapper for unix pipes.
 //Note: this library will only work on unix systems.
@@ -56,7 +57,7 @@ struct pipe {
         success = false
         
         for 1==1 {
-            s = read(rp, buff, 1024)
+            s = read(rp, <ptr>buff, 1024)
             if s == -1 {
                 if success == true {
                     break

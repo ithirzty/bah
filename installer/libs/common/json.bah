@@ -32,7 +32,11 @@ struct jsonElement {
         l = len(this.children)
         i=0; for i < l {
             elem = this.children[i]
-            fc = cpstringCharAt(elem.key,0)
+            if len(elem.key) == 0 {
+                i++
+                continue
+            }
+            fc = elem.key[0]
             if fc == <char>34 {
                 nk = []char
                 lk = len(elem.key)
@@ -406,6 +410,9 @@ json_isPrintable(c uint32) bool {
 
 //Used for escaping strings for json marshalling.
 jsonEscapeStr(s cpstring) cpstring {
+    if s == null {
+        return ""
+    }
     r = strBuilder{}
     l = len(s)
 
@@ -611,7 +618,11 @@ toJsonRope(e reflectElement) rope* {
             m = e.structLayout[i]
             v ptr = e.value
             if m.isArray == true {
-                m.arrayElem.type += "*"
+                nae = new reflectElement
+                naep = m.arrayElem
+                *nae = *naep
+                nae.type += "*"
+                m.arrayElem = nae
             } else if m.type[len(m.type)-1] != '*' {
                 m.type += "*"
             }
@@ -635,12 +646,14 @@ toJsonRope(e reflectElement) rope* {
         base = cArr(arr)
         l = len(arr)
         es int = noCheck(arr->elemSize)
-        ae = e.arrayElem
+        aep = e.arrayElem
+        ae = *aep
+
         if ae.type[len(ae.type)-1] != '*' && ae.isArray == false {
             ae.type += "*"
         }
         i=0; for i < l, i++ {
-            m = *ae
+            m = ae
             m.value = <ptr>(<int>base + es * i)
             s += toJsonRope(m)
             if i+1 < l {
