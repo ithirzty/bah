@@ -77,6 +77,9 @@ struct jsonElement {
 //Internal function.
 json_scan_inner(thisp ptr, e reflectElement, isMember bool) {
     this jsonElement* = thisp
+    if this == null {
+        return
+    }
     if e.isStruct == true {
             i=0; for i < len(e.structLayout) {
                 m = e.structLayout[i]
@@ -365,10 +368,11 @@ parseJson_inner(s cpstring, ip int*, l int) jsonElement* {
         i++
         for i < l, i++ {
             if isNumber(s[i]) == false {
-                break
-            }
-            if s[i] == '.' {
-                j.type = JSON_TYPE_FLOAT
+                if s[i] == '.' {
+                    j.type = JSON_TYPE_FLOAT
+                } else {
+                    break
+                }
             }
         }
         j.to = i

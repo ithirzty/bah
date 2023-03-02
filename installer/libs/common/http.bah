@@ -894,6 +894,7 @@ makeRespFromBody(response response_buffer) http_response* {
         return null
     }
 
+
     resp = new http_response
     resp.file = []char
     resp.body = new string
@@ -951,7 +952,14 @@ makeRespFromBody(response response_buffer) http_response* {
                 headerName = str[start:i]
                 i++
                 break
+            } else if c == <char>13 || c == <char>10 {
+                i = start
+                break
             }
+        }
+
+        if i == start {
+            break
         }
 
         for i < len(arr), i++ {
@@ -977,6 +985,7 @@ makeRespFromBody(response response_buffer) http_response* {
 
         //If "\r\n", end of headers, beggining of body
         if arr[i] == <char>13 {
+            // println("found")
             if i+1 < len(arr) {
                 if arr[i+1] == <char>10 {
                     i+= 2
@@ -1175,6 +1184,7 @@ struct http_request extend http_transport {
         }
 
         resp response_buffer
+
         if isTLS == true {
             resp = makeRawHttpsRequest(host, message, this.timeout)
         } else {

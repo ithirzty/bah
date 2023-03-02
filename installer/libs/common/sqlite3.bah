@@ -23,7 +23,7 @@ dbResponse_scan_inner(e reflectElement, val cpstring) {
         ep int* = e.value
         *ep = strToInt(val)
     } else if type == "cpstring" {
-        ep cpstring* = cStrToBah(e.value)
+        ep cpstring* = e.value
         if <ptr>val == null {
             *ep = null
         } else {
