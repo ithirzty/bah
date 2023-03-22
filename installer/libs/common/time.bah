@@ -30,7 +30,9 @@ struct time {
         lt int = localtime(&this.timestamp)
 
         buff = buffer 1024
-        strftime(<ptr>buff, 1024, a, lt)
+        
+        l = strftime(<ptr>buff, 1024, a, lt)
+        buff[l] = null
         return buffToStr(<char*>buff)
     } 
 

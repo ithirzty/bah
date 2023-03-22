@@ -25,5 +25,5 @@
 #define! getcwd(cwd cpstring, s int)
 #define! time(t int) int
 #define! localtime(t int*) int
-#define! strftime(buff cpstring, len int, format cpstring, t int)
+#define! strftime(buff cpstring, len int, format cpstring, t int) int
 #define! sleep(t int)

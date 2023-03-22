@@ -63,6 +63,7 @@ struct jsonElement {
     str() cpstring {
         if this.contentFinal == false {
             this.content = this.content[this.from : this.to]
+            this.contentFinal = true
         }
         return this.content
     }
@@ -146,6 +147,7 @@ json_scan_inner(thisp ptr, e reflectElement, isMember bool) {
                 } else {
                     arr = *arrPtr
                 }
+
                 i=0; for i < len(this.children) {
                     c = this.children[i]
                     arr[i] = c.str()
@@ -340,7 +342,6 @@ parseJson_inner(s cpstring, ip int*, l int) jsonElement* {
                 break
             }
             if s[i] == <char>92 {
-                j.contentFinal = true
                 if len(mem) == 0 {
                     mem = strToArr(s[j.from:i])
                     if s[i+1] == 'r' {
@@ -359,6 +360,7 @@ parseJson_inner(s cpstring, ip int*, l int) jsonElement* {
             }
         }
         if len(mem) != 0 {
+            j.contentFinal = true
             j.content = arrToStr(mem)
         }
         j.to = i

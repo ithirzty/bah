@@ -520,7 +520,7 @@ __HTTP_urlSafeChars = []char{
 //Encoded strings can be used as url parameter without being interpreted as path.
 urlEncode(s cpstring) cpstring {
     r = []char
-    tmps = buffer 4
+    tmps = buffer 10
 
     i=0; for i < len(s), i++ {
         c = s[i]
@@ -1221,7 +1221,9 @@ struct http_request extend http_transport {
         if contentType == "application/x-www-form-urlencoded" {
             body = this.body
             tmpBdy = *body
-            tmpBdy.trimRight(2)
+            if tmpBdy.length > 2 && tmpBdy.charAt(tmpBdy.length-1) == <char>10 && tmpBdy.charAt(tmpBdy.length-2) == <char>13 {
+                tmpBdy.trimRight(2)
+            }
             this.form = splitString(tmpBdy, "&")
         }
 

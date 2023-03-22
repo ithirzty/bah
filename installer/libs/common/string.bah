@@ -276,9 +276,7 @@ struct string {
         }
         if i > 0 {
             this.length = this.length - i
-            tmpS cpstring = memoryAllocSTR(this.length+1)
-            memcpy(tmpS, noCheck(this->content+i), this.length+1)
-            this.content = tmpS
+            this.content = this.content[i:]
             this.editable = true
         }
     }

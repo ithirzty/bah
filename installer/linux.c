@@ -3818,700 +3818,694 @@ if ((i>0)) {
 this->length = this->length-i;
 
 #line 279 "/opt/bah/string.bah"
-char* tmpS = memoryAllocSTR(this->length+1);
+this->content = cpstringSubsitute(this->content, i, strlen(this->content));
 
 #line 280 "/opt/bah/string.bah"
-memcpy(cStr(tmpS), this -> content + i,this->length+1);
-
-#line 281 "/opt/bah/string.bah"
-this->content = tmpS;
-
-#line 282 "/opt/bah/string.bah"
 this->editable = true;
 }
 };
 void string__trimLeft(struct string* this,long long int s){
 
-#line 288 "/opt/bah/string.bah"
+#line 286 "/opt/bah/string.bah"
 if ((s>this->length)) {
 
-#line 289 "/opt/bah/string.bah"
+#line 287 "/opt/bah/string.bah"
 return;
 }
 
-#line 291 "/opt/bah/string.bah"
+#line 289 "/opt/bah/string.bah"
 this->content = cpstringSubsitute(this->content, s, this->length);
 
-#line 292 "/opt/bah/string.bah"
+#line 290 "/opt/bah/string.bah"
 this->editable = true;
 
-#line 293 "/opt/bah/string.bah"
+#line 291 "/opt/bah/string.bah"
 this->length = this->length-s;
 };
 void string__trimRight(struct string* this,long long int s){
 
-#line 298 "/opt/bah/string.bah"
+#line 296 "/opt/bah/string.bah"
 if ((s>this->length)) {
 
-#line 299 "/opt/bah/string.bah"
+#line 297 "/opt/bah/string.bah"
 return;
 }
 
-#line 301 "/opt/bah/string.bah"
+#line 299 "/opt/bah/string.bah"
 this->content = cpstringSubsitute(this->content, 0, this->length-s);
 
-#line 302 "/opt/bah/string.bah"
+#line 300 "/opt/bah/string.bah"
 this->editable = true;
 
-#line 303 "/opt/bah/string.bah"
+#line 301 "/opt/bah/string.bah"
 this->length = this->length-s;
 };
 struct string string__add(struct string* this,struct string s2){
 
-#line 309 "/opt/bah/string.bah"
+#line 307 "/opt/bah/string.bah"
 struct string ____BAH_COMPILER_VAR_45_aoptabahastringbbah = {};
 struct string r = ____BAH_COMPILER_VAR_45_aoptabahastringbbah;
 
-#line 310 "/opt/bah/string.bah"
+#line 308 "/opt/bah/string.bah"
 r.length = this->length+s2.length;
 
-#line 311 "/opt/bah/string.bah"
+#line 309 "/opt/bah/string.bah"
 r.content = memoryAllocSTR(r.length+1);
 
-#line 312 "/opt/bah/string.bah"
+#line 310 "/opt/bah/string.bah"
 strncpy(cStr(r.content),cStr(this->content),this->length);
 
-#line 313 "/opt/bah/string.bah"
+#line 311 "/opt/bah/string.bah"
 strCatOffset(r.content,this->length,s2.content,s2.length);
 
-#line 314 "/opt/bah/string.bah"
+#line 312 "/opt/bah/string.bah"
 return r;
 };
 struct Bah_Array_Type* string__asArr(struct string* this){
 
-#line 319 "/opt/bah/string.bah"
+#line 317 "/opt/bah/string.bah"
 if ((this->editable==false)) {
 
-#line 320 "/opt/bah/string.bah"
+#line 318 "/opt/bah/string.bah"
 string__makeEditable(this);
 }
 
-#line 322 "/opt/bah/string.bah"
+#line 320 "/opt/bah/string.bah"
 struct Bah_Array_Type* arr = memoryAlloc(sizeof(struct Bah_Array_Type));
 
 arr->length = 0;
 arr->elemSize = sizeof(char);
 
-#line 323 "/opt/bah/string.bah"
+#line 321 "/opt/bah/string.bah"
  arr -> data = this -> content + cpstringLenSize;
 
-#line 324 "/opt/bah/string.bah"
+#line 322 "/opt/bah/string.bah"
  arr -> length = this -> length;
 
-#line 325 "/opt/bah/string.bah"
+#line 323 "/opt/bah/string.bah"
  arr -> realLength = this -> length;
 
-#line 326 "/opt/bah/string.bah"
+#line 324 "/opt/bah/string.bah"
 return arr;
 };
 void string__resetLength(struct string* this){
 
-#line 330 "/opt/bah/string.bah"
+#line 328 "/opt/bah/string.bah"
 if ((this->editable==false)||((void *)this->content==null)) {
 
-#line 331 "/opt/bah/string.bah"
+#line 329 "/opt/bah/string.bah"
 return;
 }
 
-#line 333 "/opt/bah/string.bah"
+#line 331 "/opt/bah/string.bah"
 unsigned int* ln = this->content;
 
-#line 334 "/opt/bah/string.bah"
+#line 332 "/opt/bah/string.bah"
 *ln = this->length;
 };
 
-#line 340 "/opt/bah/string.bah"
+#line 338 "/opt/bah/string.bah"
 struct string string(char* s){
 
-#line 341 "/opt/bah/string.bah"
+#line 339 "/opt/bah/string.bah"
 struct string ____BAH_COMPILER_VAR_46_aoptabahastringbbah = {};
 struct string a = ____BAH_COMPILER_VAR_46_aoptabahastringbbah;
 
-#line 342 "/opt/bah/string.bah"
+#line 340 "/opt/bah/string.bah"
 string__set(&a,s);
 
-#line 343 "/opt/bah/string.bah"
+#line 341 "/opt/bah/string.bah"
 return a;
 };
 
-#line 347 "/opt/bah/string.bah"
+#line 345 "/opt/bah/string.bah"
 char* intToStr(long long int i){
 
-#line 348 "/opt/bah/string.bah"
+#line 346 "/opt/bah/string.bah"
 if ((i==0)) {
 
-#line 349 "/opt/bah/string.bah"
+#line 347 "/opt/bah/string.bah"
 return "\01\0\0\0""0";
 }
 
-#line 352 "/opt/bah/string.bah"
+#line 350 "/opt/bah/string.bah"
 char ____BAH_COMPILER_VAR_47_aoptabahastringbbah[66];char* s = ____BAH_COMPILER_VAR_47_aoptabahastringbbah;
 
-#line 353 "/opt/bah/string.bah"
+#line 351 "/opt/bah/string.bah"
 long long int ind = -1;
 
-#line 355 "/opt/bah/string.bah"
+#line 353 "/opt/bah/string.bah"
 char subZero = (i<0);
 
-#line 357 "/opt/bah/string.bah"
+#line 355 "/opt/bah/string.bah"
 if ((subZero==true)) {
 
-#line 358 "/opt/bah/string.bah"
+#line 356 "/opt/bah/string.bah"
 i = 0-i;
 }
 
-#line 361 "/opt/bah/string.bah"
+#line 359 "/opt/bah/string.bah"
 for (; (i!=0); i = i/10) {
 
-#line 362 "/opt/bah/string.bah"
+#line 360 "/opt/bah/string.bah"
 long long int conv = i%10;
 
-#line 363 "/opt/bah/string.bah"
+#line 361 "/opt/bah/string.bah"
 conv = conv+48;
 
-#line 364 "/opt/bah/string.bah"
+#line 362 "/opt/bah/string.bah"
 s[ind+1] = (char)conv;
 
-#line 365 "/opt/bah/string.bah"
+#line 363 "/opt/bah/string.bah"
 ++ind;
 };
 
-#line 368 "/opt/bah/string.bah"
+#line 366 "/opt/bah/string.bah"
 if ((subZero==true)) {
 
-#line 369 "/opt/bah/string.bah"
+#line 367 "/opt/bah/string.bah"
 s[ind+1] = 45;
 
-#line 370 "/opt/bah/string.bah"
+#line 368 "/opt/bah/string.bah"
 ++ind;
 }
 
-#line 372 "/opt/bah/string.bah"
+#line 370 "/opt/bah/string.bah"
 long long int ls = ind+1;
 
-#line 373 "/opt/bah/string.bah"
+#line 371 "/opt/bah/string.bah"
 i = 0;
 
-#line 373 "/opt/bah/string.bah"
+#line 371 "/opt/bah/string.bah"
 for (; (i<ls/2); ++i) {
 
-#line 374 "/opt/bah/string.bah"
+#line 372 "/opt/bah/string.bah"
 long long int ii = ls-i-1;
 
-#line 375 "/opt/bah/string.bah"
+#line 373 "/opt/bah/string.bah"
 char osi = s[i];
 
-#line 376 "/opt/bah/string.bah"
+#line 374 "/opt/bah/string.bah"
 s[i] = s[ii];
 
-#line 377 "/opt/bah/string.bah"
+#line 375 "/opt/bah/string.bah"
 s[ii] = osi;
 };
 
-#line 380 "/opt/bah/string.bah"
+#line 378 "/opt/bah/string.bah"
 s[ind+1] = (char)0;
 
-#line 382 "/opt/bah/string.bah"
+#line 380 "/opt/bah/string.bah"
 return buffToStr((char*)s);
 };
 
-#line 387 "/opt/bah/string.bah"
+#line 385 "/opt/bah/string.bah"
 struct string intToString(long long int i){
 
-#line 388 "/opt/bah/string.bah"
+#line 386 "/opt/bah/string.bah"
 struct string r = string(intToStr(i));
 
-#line 389 "/opt/bah/string.bah"
+#line 387 "/opt/bah/string.bah"
 return r;
 };
 
-#line 393 "/opt/bah/string.bah"
+#line 391 "/opt/bah/string.bah"
 char* floatToStr(double f){
 
-#line 394 "/opt/bah/string.bah"
+#line 392 "/opt/bah/string.bah"
 char ____BAH_COMPILER_VAR_48_aoptabahastringbbah[50];char* buff = ____BAH_COMPILER_VAR_48_aoptabahastringbbah;
 
-#line 395 "/opt/bah/string.bah"
+#line 393 "/opt/bah/string.bah"
 sprintf((void *)buff,cStr("\03\0\0\0""%lf"),f);
 
-#line 396 "/opt/bah/string.bah"
+#line 394 "/opt/bah/string.bah"
 return buffToStr((char*)buff);
 };
 
-#line 400 "/opt/bah/string.bah"
+#line 398 "/opt/bah/string.bah"
 long long int strToInt(char* s){
 
-#line 401 "/opt/bah/string.bah"
+#line 399 "/opt/bah/string.bah"
 register long long int l = strlen(s)-1;
 
-#line 402 "/opt/bah/string.bah"
+#line 400 "/opt/bah/string.bah"
 long long int offset = 1;
 
-#line 403 "/opt/bah/string.bah"
+#line 401 "/opt/bah/string.bah"
 long long int r = 0;
 
-#line 404 "/opt/bah/string.bah"
+#line 402 "/opt/bah/string.bah"
 long long int end = 0;
 
-#line 405 "/opt/bah/string.bah"
+#line 403 "/opt/bah/string.bah"
 if ((s[0+4]==45)) {
 
-#line 406 "/opt/bah/string.bah"
+#line 404 "/opt/bah/string.bah"
 end = 1;
 }
 
-#line 408 "/opt/bah/string.bah"
+#line 406 "/opt/bah/string.bah"
 for (; (l>=end); --l) {
 
-#line 409 "/opt/bah/string.bah"
+#line 407 "/opt/bah/string.bah"
 if ((s[l+4]<48)||(s[l+4]>57)) {
 
-#line 410 "/opt/bah/string.bah"
+#line 408 "/opt/bah/string.bah"
 continue;
 }
 
-#line 412 "/opt/bah/string.bah"
+#line 410 "/opt/bah/string.bah"
 r = r+(((long long int)s[l+4]-48)*offset);
 
-#line 413 "/opt/bah/string.bah"
+#line 411 "/opt/bah/string.bah"
 offset = offset*10;
 };
 
-#line 415 "/opt/bah/string.bah"
+#line 413 "/opt/bah/string.bah"
 if ((end==1)) {
 
-#line 416 "/opt/bah/string.bah"
+#line 414 "/opt/bah/string.bah"
 r = 0-r;
 }
 
-#line 418 "/opt/bah/string.bah"
+#line 416 "/opt/bah/string.bah"
 return r;
 };
 
-#line 422 "/opt/bah/string.bah"
+#line 420 "/opt/bah/string.bah"
 double strToFloat(char* s){
 
-#line 423 "/opt/bah/string.bah"
+#line 421 "/opt/bah/string.bah"
 return strtod(cStr(s),null);
 };
 
-#line 429 "/opt/bah/string.bah"
+#line 427 "/opt/bah/string.bah"
 long long int stringToInt(struct string s){
 
-#line 430 "/opt/bah/string.bah"
+#line 428 "/opt/bah/string.bah"
 long long int i = atol(cStr(s.content));
 
-#line 431 "/opt/bah/string.bah"
+#line 429 "/opt/bah/string.bah"
 return i;
 };
 
-#line 435 "/opt/bah/string.bah"
+#line 433 "/opt/bah/string.bah"
 struct Bah_Array_Type* splitString(struct string s,char* sep){
 
-#line 436 "/opt/bah/string.bah"
+#line 434 "/opt/bah/string.bah"
 long long int sepInd = 0;
 
-#line 437 "/opt/bah/string.bah"
+#line 435 "/opt/bah/string.bah"
 long long int start = 0;
 
-#line 438 "/opt/bah/string.bah"
+#line 436 "/opt/bah/string.bah"
 struct Bah_Array_Type* r = memoryAlloc(sizeof(struct Bah_Array_Type));
 
 r->length = 0;
 r->elemSize = sizeof(struct string);
 
-#line 440 "/opt/bah/string.bah"
+#line 438 "/opt/bah/string.bah"
 register long long int i = 0;
 
-#line 440 "/opt/bah/string.bah"
+#line 438 "/opt/bah/string.bah"
 for (; (i<s.length); ++i) {
 
-#line 441 "/opt/bah/string.bah"
+#line 439 "/opt/bah/string.bah"
 char c = string__charAt(&s,i);
 
-#line 442 "/opt/bah/string.bah"
+#line 440 "/opt/bah/string.bah"
 if ((c==sep[sepInd+4])) {
 
-#line 443 "/opt/bah/string.bah"
+#line 441 "/opt/bah/string.bah"
 ++sepInd;
 
-#line 444 "/opt/bah/string.bah"
+#line 442 "/opt/bah/string.bah"
 if ((sepInd==strlen(sep))) {
 
-#line 445 "/opt/bah/string.bah"
+#line 443 "/opt/bah/string.bah"
 sepInd = 0;
 
-#line 446 "/opt/bah/string.bah"
+#line 444 "/opt/bah/string.bah"
 long long int end = i-strlen(sep)+1;
 
-#line 447 "/opt/bah/string.bah"
+#line 445 "/opt/bah/string.bah"
 if ((start!=end)) {
 
-#line 448 "/opt/bah/string.bah"
+#line 446 "/opt/bah/string.bah"
 unsigned int ____BAH_COMPILER_VAR_49_aoptabahastringbbah = len(r);
     __Bah_realocate_arr(r, ____BAH_COMPILER_VAR_49_aoptabahastringbbah);
     ((struct string*)r->data)[____BAH_COMPILER_VAR_49_aoptabahastringbbah] = string(cpstringSubsitute(s.content, start, end));
 }
 
-#line 450 "/opt/bah/string.bah"
+#line 448 "/opt/bah/string.bah"
 start = i+1;
 }
 }
 
-#line 452 "/opt/bah/string.bah"
+#line 450 "/opt/bah/string.bah"
 else {
 
-#line 453 "/opt/bah/string.bah"
+#line 451 "/opt/bah/string.bah"
 sepInd = 0;
 }
 };
 
-#line 457 "/opt/bah/string.bah"
+#line 455 "/opt/bah/string.bah"
 long long int end = i-strlen(sep)+1;
 
-#line 458 "/opt/bah/string.bah"
+#line 456 "/opt/bah/string.bah"
 if ((start<end)) {
 
-#line 459 "/opt/bah/string.bah"
+#line 457 "/opt/bah/string.bah"
 unsigned int ____BAH_COMPILER_VAR_50_aoptabahastringbbah = len(r);
     __Bah_realocate_arr(r, ____BAH_COMPILER_VAR_50_aoptabahastringbbah);
     ((struct string*)r->data)[____BAH_COMPILER_VAR_50_aoptabahastringbbah] = string(cpstringSubsitute(s.content, start, end));
 }
 
-#line 462 "/opt/bah/string.bah"
+#line 460 "/opt/bah/string.bah"
 return r;
 };
 
-#line 466 "/opt/bah/string.bah"
+#line 464 "/opt/bah/string.bah"
 struct string joinString(struct Bah_Array_Type* a,char* sep){
 
-#line 467 "/opt/bah/string.bah"
+#line 465 "/opt/bah/string.bah"
 register long long int i = 0;
 
-#line 468 "/opt/bah/string.bah"
+#line 466 "/opt/bah/string.bah"
 struct string s = string("\0\0\0\0""");
 
-#line 469 "/opt/bah/string.bah"
+#line 467 "/opt/bah/string.bah"
 unsigned long long int max = len(a)-1;
 
-#line 470 "/opt/bah/string.bah"
+#line 468 "/opt/bah/string.bah"
 while ((i<len(a))) {
 
-#line 471 "/opt/bah/string.bah"
+#line 469 "/opt/bah/string.bah"
 struct string e = ((struct string*)a->data)[i];
 
-#line 472 "/opt/bah/string.bah"
+#line 470 "/opt/bah/string.bah"
 if ((e.length==0)) {
 
-#line 473 "/opt/bah/string.bah"
+#line 471 "/opt/bah/string.bah"
 i = i+1;
 
-#line 474 "/opt/bah/string.bah"
+#line 472 "/opt/bah/string.bah"
 continue;
 }
 
-#line 476 "/opt/bah/string.bah"
+#line 474 "/opt/bah/string.bah"
 struct string tmpS = string(string__str(&e));
 
-#line 477 "/opt/bah/string.bah"
+#line 475 "/opt/bah/string.bah"
 if ((i!=max)) {
 
-#line 478 "/opt/bah/string.bah"
+#line 476 "/opt/bah/string.bah"
 string__append(&tmpS,sep);
 }
 
-#line 480 "/opt/bah/string.bah"
+#line 478 "/opt/bah/string.bah"
 string__append(&s,string__str(&tmpS));
 
-#line 481 "/opt/bah/string.bah"
+#line 479 "/opt/bah/string.bah"
 i = i+1;
 };
 
-#line 483 "/opt/bah/string.bah"
+#line 481 "/opt/bah/string.bah"
 return s;
 };
 
-#line 487 "/opt/bah/string.bah"
+#line 485 "/opt/bah/string.bah"
 char* splitStringBefore(struct string s,char* sp){
 
-#line 488 "/opt/bah/string.bah"
+#line 486 "/opt/bah/string.bah"
 struct string sep = string(sp);
 
-#line 489 "/opt/bah/string.bah"
+#line 487 "/opt/bah/string.bah"
 if ((sep.length>=s.length)) {
 
-#line 490 "/opt/bah/string.bah"
+#line 488 "/opt/bah/string.bah"
 return "\0\0\0\0""";
 }
 
-#line 492 "/opt/bah/string.bah"
+#line 490 "/opt/bah/string.bah"
 long long int sepIndex = 0;
 
-#line 493 "/opt/bah/string.bah"
+#line 491 "/opt/bah/string.bah"
 long long int foundIndex = 0;
 
-#line 494 "/opt/bah/string.bah"
+#line 492 "/opt/bah/string.bah"
 register long long int i = 0;
 
-#line 494 "/opt/bah/string.bah"
+#line 492 "/opt/bah/string.bah"
 while ((i<s.length)) {
 
-#line 495 "/opt/bah/string.bah"
+#line 493 "/opt/bah/string.bah"
 char c = string__charAt(&s,i);
 
-#line 496 "/opt/bah/string.bah"
+#line 494 "/opt/bah/string.bah"
 char sc = string__charAt(&sep,sepIndex);
 
-#line 497 "/opt/bah/string.bah"
+#line 495 "/opt/bah/string.bah"
 if ((c==sc)) {
 
-#line 498 "/opt/bah/string.bah"
+#line 496 "/opt/bah/string.bah"
 if ((sepIndex==0)) {
 
-#line 499 "/opt/bah/string.bah"
+#line 497 "/opt/bah/string.bah"
 foundIndex = i-1;
 }
 
-#line 501 "/opt/bah/string.bah"
+#line 499 "/opt/bah/string.bah"
 sepIndex = sepIndex+1;
 
-#line 502 "/opt/bah/string.bah"
+#line 500 "/opt/bah/string.bah"
 if ((sepIndex==sep.length)) {
 
-#line 503 "/opt/bah/string.bah"
+#line 501 "/opt/bah/string.bah"
 long long int max = s.length-foundIndex-1;
 
-#line 504 "/opt/bah/string.bah"
+#line 502 "/opt/bah/string.bah"
 string__trimRight(&s,max);
 
-#line 505 "/opt/bah/string.bah"
+#line 503 "/opt/bah/string.bah"
 return string__str(&s);
 }
 }
 
-#line 507 "/opt/bah/string.bah"
+#line 505 "/opt/bah/string.bah"
 else {
 
-#line 508 "/opt/bah/string.bah"
+#line 506 "/opt/bah/string.bah"
 foundIndex = 0;
 
-#line 509 "/opt/bah/string.bah"
+#line 507 "/opt/bah/string.bah"
 sepIndex = 0;
 }
 
-#line 512 "/opt/bah/string.bah"
+#line 510 "/opt/bah/string.bah"
 i = i+1;
 };
 
-#line 515 "/opt/bah/string.bah"
+#line 513 "/opt/bah/string.bah"
 return "\0\0\0\0""";
 };
 
-#line 520 "/opt/bah/string.bah"
+#line 518 "/opt/bah/string.bah"
 struct string toLower(struct string s){
 
-#line 521 "/opt/bah/string.bah"
+#line 519 "/opt/bah/string.bah"
 struct Bah_Array_Type* ns = memoryAlloc(sizeof(struct Bah_Array_Type));
 
 ns->length = 0;
 ns->elemSize = sizeof(char);
 
-#line 522 "/opt/bah/string.bah"
+#line 520 "/opt/bah/string.bah"
 register long long int i = 0;
 
-#line 522 "/opt/bah/string.bah"
+#line 520 "/opt/bah/string.bah"
 while ((i<s.length)) {
 
-#line 523 "/opt/bah/string.bah"
+#line 521 "/opt/bah/string.bah"
 char c = string__charAt(&s,i);
 
-#line 524 "/opt/bah/string.bah"
+#line 522 "/opt/bah/string.bah"
 if (isUpper(c)) {
 
-#line 525 "/opt/bah/string.bah"
+#line 523 "/opt/bah/string.bah"
 c = c+(char)32;
 }
 
-#line 527 "/opt/bah/string.bah"
+#line 525 "/opt/bah/string.bah"
 unsigned int ____BAH_COMPILER_VAR_51_aoptabahastringbbah = len(ns);
     __Bah_realocate_arr(ns, ____BAH_COMPILER_VAR_51_aoptabahastringbbah);
     ((char*)ns->data)[____BAH_COMPILER_VAR_51_aoptabahastringbbah] = c;
 
-#line 528 "/opt/bah/string.bah"
+#line 526 "/opt/bah/string.bah"
 i = i+1;
 };
 
-#line 530 "/opt/bah/string.bah"
+#line 528 "/opt/bah/string.bah"
 return string(arrToStr(ns));
 };
 
-#line 535 "/opt/bah/string.bah"
+#line 533 "/opt/bah/string.bah"
 char strHasPrefix(char* s,char* need){
 
-#line 536 "/opt/bah/string.bah"
+#line 534 "/opt/bah/string.bah"
 register long long int i = 0;
+
+#line 535 "/opt/bah/string.bah"
+unsigned long long int nl = strlen(need);
+
+#line 536 "/opt/bah/string.bah"
+unsigned long long int sl = strlen(s);
 
 #line 537 "/opt/bah/string.bah"
-unsigned long long int nl = strlen(need);
-
-#line 538 "/opt/bah/string.bah"
-unsigned long long int sl = strlen(s);
-
-#line 539 "/opt/bah/string.bah"
 if ((sl<nl)) {
 
-#line 540 "/opt/bah/string.bah"
+#line 538 "/opt/bah/string.bah"
 return false;
 }
 
-#line 542 "/opt/bah/string.bah"
+#line 540 "/opt/bah/string.bah"
 while ((i<nl)) {
 
-#line 543 "/opt/bah/string.bah"
+#line 541 "/opt/bah/string.bah"
 if ((cpstringCharAt(s,i)!=cpstringCharAt(need,i))) {
+
+#line 542 "/opt/bah/string.bah"
+return false;
+}
 
 #line 544 "/opt/bah/string.bah"
-return false;
-}
+i = i+1;
+};
 
 #line 546 "/opt/bah/string.bah"
-i = i+1;
-};
-
-#line 548 "/opt/bah/string.bah"
 return true;
 };
 
-#line 553 "/opt/bah/string.bah"
+#line 551 "/opt/bah/string.bah"
 char strHasSuffix(char* s,char* need){
 
-#line 554 "/opt/bah/string.bah"
+#line 552 "/opt/bah/string.bah"
 unsigned long long int sl = strlen(s);
 
-#line 555 "/opt/bah/string.bah"
+#line 553 "/opt/bah/string.bah"
 unsigned long long int nl = strlen(need);
 
-#line 556 "/opt/bah/string.bah"
+#line 554 "/opt/bah/string.bah"
 if ((nl>sl)) {
 
-#line 557 "/opt/bah/string.bah"
+#line 555 "/opt/bah/string.bah"
 return false;
 }
 
-#line 559 "/opt/bah/string.bah"
+#line 557 "/opt/bah/string.bah"
 unsigned long long int i = sl-nl;
 
-#line 559 "/opt/bah/string.bah"
+#line 557 "/opt/bah/string.bah"
 while ((i<sl)) {
 
-#line 560 "/opt/bah/string.bah"
+#line 558 "/opt/bah/string.bah"
 if ((cpstringCharAt(s,i)!=cpstringCharAt(need,i))) {
 
-#line 561 "/opt/bah/string.bah"
+#line 559 "/opt/bah/string.bah"
 return false;
 }
 
-#line 563 "/opt/bah/string.bah"
+#line 561 "/opt/bah/string.bah"
 i = i+1;
 };
 
-#line 565 "/opt/bah/string.bah"
+#line 563 "/opt/bah/string.bah"
 return true;
 };
 
-#line 570 "/opt/bah/string.bah"
+#line 568 "/opt/bah/string.bah"
 void strTrim(char** s){
 
-#line 571 "/opt/bah/string.bah"
+#line 569 "/opt/bah/string.bah"
 unsigned long long int l = strlen(*s);
 
-#line 572 "/opt/bah/string.bah"
+#line 570 "/opt/bah/string.bah"
 register long long int i = 0;
 
-#line 572 "/opt/bah/string.bah"
+#line 570 "/opt/bah/string.bah"
 while ((i<l)) {
 
-#line 573 "/opt/bah/string.bah"
+#line 571 "/opt/bah/string.bah"
 char c = cpstringCharAt(*s,i);
 
-#line 574 "/opt/bah/string.bah"
+#line 572 "/opt/bah/string.bah"
 if ((isSpace(c)==false)) {
 
-#line 575 "/opt/bah/string.bah"
+#line 573 "/opt/bah/string.bah"
 break;
 }
 
-#line 577 "/opt/bah/string.bah"
+#line 575 "/opt/bah/string.bah"
 i = i+1;
 };
 
-#line 579 "/opt/bah/string.bah"
+#line 577 "/opt/bah/string.bah"
 *s =  *s + i;
 };
 
-#line 584 "/opt/bah/string.bah"
+#line 582 "/opt/bah/string.bah"
 long long int strCount(char* src,char* needle){
 
-#line 585 "/opt/bah/string.bah"
+#line 583 "/opt/bah/string.bah"
 long long int count = 0;
 
-#line 586 "/opt/bah/string.bah"
+#line 584 "/opt/bah/string.bah"
 long long int countIndex = 0;
 
-#line 587 "/opt/bah/string.bah"
+#line 585 "/opt/bah/string.bah"
 unsigned long long int sl = strlen(src);
 
-#line 588 "/opt/bah/string.bah"
+#line 586 "/opt/bah/string.bah"
 unsigned long long int nl = strlen(needle);
 
-#line 589 "/opt/bah/string.bah"
+#line 587 "/opt/bah/string.bah"
 register long long int i = 0;
 
-#line 589 "/opt/bah/string.bah"
+#line 587 "/opt/bah/string.bah"
 for (; (i<sl); ++i) {
 
-#line 590 "/opt/bah/string.bah"
+#line 588 "/opt/bah/string.bah"
 char c = src[i+4];
 
-#line 591 "/opt/bah/string.bah"
+#line 589 "/opt/bah/string.bah"
 char sc = needle[countIndex+4];
 
-#line 592 "/opt/bah/string.bah"
+#line 590 "/opt/bah/string.bah"
 if ((c==sc)) {
 
-#line 593 "/opt/bah/string.bah"
+#line 591 "/opt/bah/string.bah"
 ++countIndex;
 
-#line 594 "/opt/bah/string.bah"
+#line 592 "/opt/bah/string.bah"
 if ((countIndex==nl)) {
 
-#line 595 "/opt/bah/string.bah"
+#line 593 "/opt/bah/string.bah"
 ++count;
 
-#line 596 "/opt/bah/string.bah"
+#line 594 "/opt/bah/string.bah"
 countIndex = 0;
 }
 }
 
-#line 598 "/opt/bah/string.bah"
+#line 596 "/opt/bah/string.bah"
 else {
 
-#line 599 "/opt/bah/string.bah"
+#line 597 "/opt/bah/string.bah"
 countIndex = 0;
 }
 };
 
-#line 602 "/opt/bah/string.bah"
+#line 600 "/opt/bah/string.bah"
 return count;
 };
 
@@ -5280,44 +5274,47 @@ long long int lt = localtime(&this->timestamp);
 #line 32 "/opt/bah/time.bah"
 char ____BAH_COMPILER_VAR_77_aoptabahatimebbah[1024];char* buff = ____BAH_COMPILER_VAR_77_aoptabahatimebbah;
 
-#line 33 "/opt/bah/time.bah"
-strftime((void *)buff,1024,cStr(a),lt);
-
 #line 34 "/opt/bah/time.bah"
+long long int l = strftime((void *)buff,1024,cStr(a),lt);
+
+#line 35 "/opt/bah/time.bah"
+buff[l] = null;
+
+#line 36 "/opt/bah/time.bah"
 return buffToStr((char*)buff);
 };
 long long int time__since(struct time* this){
 
-#line 39 "/opt/bah/time.bah"
+#line 41 "/opt/bah/time.bah"
 long long int nt = time(0);
 
-#line 40 "/opt/bah/time.bah"
+#line 42 "/opt/bah/time.bah"
 long long int r = nt-this->timestamp;
 
-#line 41 "/opt/bah/time.bah"
+#line 43 "/opt/bah/time.bah"
 return r;
 };
 
-#line 45 "/opt/bah/time.bah"
+#line 47 "/opt/bah/time.bah"
 
-#line 71 "/opt/bah/time.bah"
+#line 73 "/opt/bah/time.bah"
 long long int getTimeUnix(){
 
-#line 72 "/opt/bah/time.bah"
+#line 74 "/opt/bah/time.bah"
 struct timespec ____BAH_COMPILER_VAR_78_aoptabahatimebbah = {};
 struct timespec ts = ____BAH_COMPILER_VAR_78_aoptabahatimebbah;
 
-#line 74 "/opt/bah/time.bah"
+#line 76 "/opt/bah/time.bah"
 timespec_get(&ts, TIME_UTC);
 
-#line 89 "/opt/bah/time.bah"
+#line 91 "/opt/bah/time.bah"
 long long int s = ts.tv_sec*1000000000+ts.tv_nsec;
 
-#line 90 "/opt/bah/time.bah"
+#line 92 "/opt/bah/time.bah"
 return s;
 };
 
-#line 94 "/opt/bah/time.bah"
+#line 96 "/opt/bah/time.bah"
 #include <stddef.h>
 
 #line 12 "/opt/bah/reflect.bah"
@@ -5608,435 +5605,438 @@ if ((this->contentFinal==false)) {
 
 #line 65 "/opt/bah/json.bah"
 this->content = cpstringSubsitute(this->content, this->from, this->to);
+
+#line 66 "/opt/bah/json.bah"
+this->contentFinal = true;
 }
 
-#line 67 "/opt/bah/json.bah"
+#line 68 "/opt/bah/json.bah"
 return this->content;
 };
 void jsonElement__scan(struct jsonElement* this,struct reflectElement e){
 
-#line 73 "/opt/bah/json.bah"
+#line 74 "/opt/bah/json.bah"
 json_scan_inner(this,e,false);
 };
 
-#line 78 "/opt/bah/json.bah"
+#line 79 "/opt/bah/json.bah"
 void json_scan_inner(void * thisp,struct reflectElement e,char isMember){
 
-#line 79 "/opt/bah/json.bah"
+#line 80 "/opt/bah/json.bah"
 struct jsonElement* this = thisp;
 
-#line 80 "/opt/bah/json.bah"
+#line 81 "/opt/bah/json.bah"
 if ((this==null)) {
 
-#line 81 "/opt/bah/json.bah"
+#line 82 "/opt/bah/json.bah"
 return;
 }
 
-#line 83 "/opt/bah/json.bah"
+#line 84 "/opt/bah/json.bah"
 if ((e.isStruct==true)) {
 
-#line 84 "/opt/bah/json.bah"
+#line 85 "/opt/bah/json.bah"
 register long long int i = 0;
 
-#line 84 "/opt/bah/json.bah"
+#line 85 "/opt/bah/json.bah"
 while ((i<len(e.structLayout))) {
 
-#line 85 "/opt/bah/json.bah"
+#line 86 "/opt/bah/json.bah"
 struct reflectElement m = ((struct reflectElement*)e.structLayout->data)[i];
 
-#line 86 "/opt/bah/json.bah"
+#line 87 "/opt/bah/json.bah"
 m.value = reflectElement__calculateOffset(&m,e.value);
 
-#line 87 "/opt/bah/json.bah"
+#line 88 "/opt/bah/json.bah"
 struct jsonElement* ov = jsonElement__get(this,m.name);
 
-#line 88 "/opt/bah/json.bah"
+#line 89 "/opt/bah/json.bah"
 if ((ov!=null)) {
 
-#line 89 "/opt/bah/json.bah"
+#line 90 "/opt/bah/json.bah"
 json_scan_inner(ov,m,true);
 }
 
-#line 91 "/opt/bah/json.bah"
+#line 92 "/opt/bah/json.bah"
 i = i+1;
 };
 }
 
-#line 93 "/opt/bah/json.bah"
+#line 94 "/opt/bah/json.bah"
 else if ((strcmp(e.type, "\03\0\0\0""int") == 0)) {
 
-#line 94 "/opt/bah/json.bah"
+#line 95 "/opt/bah/json.bah"
 long long int* ep = e.value;
 
-#line 95 "/opt/bah/json.bah"
+#line 96 "/opt/bah/json.bah"
 *ep = strToInt(jsonElement__str(this));
 }
 
-#line 96 "/opt/bah/json.bah"
+#line 97 "/opt/bah/json.bah"
 else if ((strcmp(e.type, "\010\0\0\0""cpstring") == 0)) {
 
-#line 97 "/opt/bah/json.bah"
+#line 98 "/opt/bah/json.bah"
 char** ep = e.value;
 
-#line 98 "/opt/bah/json.bah"
+#line 99 "/opt/bah/json.bah"
 *ep = jsonElement__str(this);
 }
 
-#line 99 "/opt/bah/json.bah"
+#line 100 "/opt/bah/json.bah"
 else if ((strcmp(e.type, "\05\0\0\0""float") == 0)) {
 
-#line 100 "/opt/bah/json.bah"
+#line 101 "/opt/bah/json.bah"
 double* ep = e.value;
 
-#line 101 "/opt/bah/json.bah"
+#line 102 "/opt/bah/json.bah"
 *ep = strToFloat(jsonElement__str(this));
 }
 
-#line 102 "/opt/bah/json.bah"
+#line 103 "/opt/bah/json.bah"
 else if ((strcmp(e.type, "\04\0\0\0""bool") == 0)) {
 
-#line 103 "/opt/bah/json.bah"
+#line 104 "/opt/bah/json.bah"
 char* ep = e.value;
 
-#line 104 "/opt/bah/json.bah"
+#line 105 "/opt/bah/json.bah"
 if ((strcmp(jsonElement__str(this), "\01\0\0\0""1") == 0)||(strcmp(jsonElement__str(this), "\04\0\0\0""true") == 0)) {
 
-#line 105 "/opt/bah/json.bah"
+#line 106 "/opt/bah/json.bah"
 *ep = true;
 }
 
-#line 106 "/opt/bah/json.bah"
+#line 107 "/opt/bah/json.bah"
 else {
 
-#line 107 "/opt/bah/json.bah"
+#line 108 "/opt/bah/json.bah"
 *ep = false;
 }
 }
 
-#line 109 "/opt/bah/json.bah"
+#line 110 "/opt/bah/json.bah"
 else if ((e.isArray==true)) {
 
-#line 110 "/opt/bah/json.bah"
+#line 111 "/opt/bah/json.bah"
 if ((len(this->children)==0)) {
 
-#line 111 "/opt/bah/json.bah"
+#line 112 "/opt/bah/json.bah"
 return;
 }
 
-#line 114 "/opt/bah/json.bah"
+#line 115 "/opt/bah/json.bah"
 struct reflectElement* ae = e.arrayElem;
 
-#line 115 "/opt/bah/json.bah"
+#line 116 "/opt/bah/json.bah"
 if ((strcmp(ae->type, "\03\0\0\0""int") == 0)) {
 
-#line 116 "/opt/bah/json.bah"
+#line 117 "/opt/bah/json.bah"
 struct Bah_Array_Type* arr = memoryAlloc(sizeof(struct Bah_Array_Type));
 
 arr->length = 0;
 arr->elemSize = sizeof(long long int);
 
-#line 117 "/opt/bah/json.bah"
+#line 118 "/opt/bah/json.bah"
 void ** arrPtr = e.value;
 
-#line 118 "/opt/bah/json.bah"
+#line 119 "/opt/bah/json.bah"
 if ((isMember==true)) {
 
-#line 119 "/opt/bah/json.bah"
+#line 120 "/opt/bah/json.bah"
 *arrPtr = arr;
 }
 
-#line 120 "/opt/bah/json.bah"
+#line 121 "/opt/bah/json.bah"
 else {
 
-#line 121 "/opt/bah/json.bah"
+#line 122 "/opt/bah/json.bah"
 arr = *arrPtr;
 }
 
-#line 123 "/opt/bah/json.bah"
+#line 124 "/opt/bah/json.bah"
 register long long int i = 0;
 
-#line 123 "/opt/bah/json.bah"
+#line 124 "/opt/bah/json.bah"
 while ((i<len(this->children))) {
 
-#line 124 "/opt/bah/json.bah"
+#line 125 "/opt/bah/json.bah"
 struct jsonElement* c = ((struct jsonElement**)this->children->data)[i];
 
-#line 125 "/opt/bah/json.bah"
+#line 126 "/opt/bah/json.bah"
 
     __Bah_realocate_arr(arr, i);
     ((long long int*)arr->data)[i] = strToInt(jsonElement__str(c));
 
-#line 126 "/opt/bah/json.bah"
+#line 127 "/opt/bah/json.bah"
 i = i+1;
 };
 }
 
-#line 128 "/opt/bah/json.bah"
+#line 129 "/opt/bah/json.bah"
 else if ((strcmp(ae->type, "\05\0\0\0""float") == 0)) {
 
-#line 129 "/opt/bah/json.bah"
+#line 130 "/opt/bah/json.bah"
 struct Bah_Array_Type* arr = memoryAlloc(sizeof(struct Bah_Array_Type));
 
 arr->length = 0;
 arr->elemSize = sizeof(double);
 
-#line 130 "/opt/bah/json.bah"
+#line 131 "/opt/bah/json.bah"
 void ** arrPtr = e.value;
 
-#line 131 "/opt/bah/json.bah"
+#line 132 "/opt/bah/json.bah"
 if ((isMember==true)) {
 
-#line 132 "/opt/bah/json.bah"
+#line 133 "/opt/bah/json.bah"
 *arrPtr = arr;
 }
 
-#line 133 "/opt/bah/json.bah"
+#line 134 "/opt/bah/json.bah"
 else {
 
-#line 134 "/opt/bah/json.bah"
+#line 135 "/opt/bah/json.bah"
 arr = *arrPtr;
 }
 
-#line 136 "/opt/bah/json.bah"
+#line 137 "/opt/bah/json.bah"
 register long long int i = 0;
 
-#line 136 "/opt/bah/json.bah"
+#line 137 "/opt/bah/json.bah"
 while ((i<len(this->children))) {
 
-#line 137 "/opt/bah/json.bah"
+#line 138 "/opt/bah/json.bah"
 struct jsonElement* c = ((struct jsonElement**)this->children->data)[i];
 
-#line 138 "/opt/bah/json.bah"
+#line 139 "/opt/bah/json.bah"
 
     __Bah_realocate_arr(arr, i);
     ((double*)arr->data)[i] = strToFloat(jsonElement__str(c));
 
-#line 139 "/opt/bah/json.bah"
+#line 140 "/opt/bah/json.bah"
 i = i+1;
 };
 }
 
-#line 141 "/opt/bah/json.bah"
+#line 142 "/opt/bah/json.bah"
 else if ((strcmp(ae->type, "\010\0\0\0""cpstring") == 0)) {
 
-#line 142 "/opt/bah/json.bah"
+#line 143 "/opt/bah/json.bah"
 struct Bah_Array_Type* arr = memoryAlloc(sizeof(struct Bah_Array_Type));
 
 arr->length = 0;
 arr->elemSize = sizeof(char*);
 
-#line 143 "/opt/bah/json.bah"
+#line 144 "/opt/bah/json.bah"
 void ** arrPtr = e.value;
 
-#line 144 "/opt/bah/json.bah"
+#line 145 "/opt/bah/json.bah"
 if ((isMember==true)) {
 
-#line 145 "/opt/bah/json.bah"
+#line 146 "/opt/bah/json.bah"
 *arrPtr = arr;
 }
 
-#line 146 "/opt/bah/json.bah"
+#line 147 "/opt/bah/json.bah"
 else {
 
-#line 147 "/opt/bah/json.bah"
+#line 148 "/opt/bah/json.bah"
 arr = *arrPtr;
 }
 
-#line 149 "/opt/bah/json.bah"
+#line 151 "/opt/bah/json.bah"
 register long long int i = 0;
 
-#line 149 "/opt/bah/json.bah"
+#line 151 "/opt/bah/json.bah"
 while ((i<len(this->children))) {
 
-#line 150 "/opt/bah/json.bah"
+#line 152 "/opt/bah/json.bah"
 struct jsonElement* c = ((struct jsonElement**)this->children->data)[i];
 
-#line 151 "/opt/bah/json.bah"
+#line 153 "/opt/bah/json.bah"
 
     __Bah_realocate_arr(arr, i);
     ((char**)arr->data)[i] = jsonElement__str(c);
 
-#line 152 "/opt/bah/json.bah"
+#line 154 "/opt/bah/json.bah"
 i = i+1;
 };
 }
 
-#line 154 "/opt/bah/json.bah"
+#line 156 "/opt/bah/json.bah"
 else if ((ae->isStruct==true)) {
 
-#line 155 "/opt/bah/json.bah"
+#line 157 "/opt/bah/json.bah"
 struct Bah_Array_Type* arr = memoryAlloc(sizeof(struct Bah_Array_Type));
 
 arr->length = 0;
 arr->elemSize = sizeof(void *);
 
-#line 156 "/opt/bah/json.bah"
+#line 158 "/opt/bah/json.bah"
 void ** arrPtr = e.value;
 
-#line 157 "/opt/bah/json.bah"
+#line 159 "/opt/bah/json.bah"
 if ((isMember==true)) {
 
-#line 158 "/opt/bah/json.bah"
+#line 160 "/opt/bah/json.bah"
 *arrPtr = arr;
 }
 
-#line 159 "/opt/bah/json.bah"
+#line 161 "/opt/bah/json.bah"
 else {
 
-#line 160 "/opt/bah/json.bah"
+#line 162 "/opt/bah/json.bah"
 arr = *arrPtr;
 }
 
-#line 162 "/opt/bah/json.bah"
+#line 164 "/opt/bah/json.bah"
 register long long int i = 0;
 
-#line 162 "/opt/bah/json.bah"
+#line 164 "/opt/bah/json.bah"
 while ((i<len(this->children))) {
 
-#line 163 "/opt/bah/json.bah"
+#line 165 "/opt/bah/json.bah"
 struct jsonElement* c = ((struct jsonElement**)this->children->data)[i];
 
-#line 164 "/opt/bah/json.bah"
+#line 166 "/opt/bah/json.bah"
 void * ne = memoryAlloc(ae->size);
 
-#line 165 "/opt/bah/json.bah"
+#line 167 "/opt/bah/json.bah"
 register long long int j = 0;
 
-#line 165 "/opt/bah/json.bah"
+#line 167 "/opt/bah/json.bah"
 while ((j<len(ae->structLayout))) {
 
-#line 166 "/opt/bah/json.bah"
+#line 168 "/opt/bah/json.bah"
 struct reflectElement m = ((struct reflectElement*)ae->structLayout->data)[j];
 
-#line 167 "/opt/bah/json.bah"
+#line 169 "/opt/bah/json.bah"
 m.value = reflectElement__calculateOffset(&m,ne);
 
-#line 168 "/opt/bah/json.bah"
+#line 170 "/opt/bah/json.bah"
 struct jsonElement* ov = jsonElement__get(c,m.name);
 
-#line 169 "/opt/bah/json.bah"
+#line 171 "/opt/bah/json.bah"
 if ((ov!=null)) {
 
-#line 170 "/opt/bah/json.bah"
+#line 172 "/opt/bah/json.bah"
 json_scan_inner(ov,m,true);
 }
 
-#line 172 "/opt/bah/json.bah"
+#line 174 "/opt/bah/json.bah"
 j = j+1;
 };
 
-#line 174 "/opt/bah/json.bah"
+#line 176 "/opt/bah/json.bah"
 
     __Bah_realocate_arr(arr, i);
     ((void **)arr->data)[i] = ne;
 
-#line 175 "/opt/bah/json.bah"
+#line 177 "/opt/bah/json.bah"
 i = i+1;
 };
 }
 }
 
-#line 178 "/opt/bah/json.bah"
+#line 180 "/opt/bah/json.bah"
 else if (strHasPrefix(e.type,"\04\0\0\0""map:")) {
 
-#line 179 "/opt/bah/json.bah"
+#line 181 "/opt/bah/json.bah"
 struct mapWrapper** p = e.value;
 
-#line 180 "/opt/bah/json.bah"
+#line 182 "/opt/bah/json.bah"
 register long long int i = 0;
 
-#line 180 "/opt/bah/json.bah"
+#line 182 "/opt/bah/json.bah"
 for (; (i<len(this->children)); ++i) {
 
-#line 181 "/opt/bah/json.bah"
+#line 183 "/opt/bah/json.bah"
 struct jsonElement* c = ((struct jsonElement**)this->children->data)[i];
 
-#line 182 "/opt/bah/json.bah"
+#line 184 "/opt/bah/json.bah"
 struct reflectElement* ae = e.arrayElem;
 
-#line 183 "/opt/bah/json.bah"
+#line 185 "/opt/bah/json.bah"
 void * v = memoryAlloc(ae->size);
 
-#line 184 "/opt/bah/json.bah"
+#line 186 "/opt/bah/json.bah"
 ae->value = &v;
 
-#line 185 "/opt/bah/json.bah"
+#line 187 "/opt/bah/json.bah"
 register long long int j = 0;
 
-#line 185 "/opt/bah/json.bah"
+#line 187 "/opt/bah/json.bah"
 for (; (j<len(ae->structLayout)); ++j) {
 
-#line 186 "/opt/bah/json.bah"
+#line 188 "/opt/bah/json.bah"
 struct reflectElement m = ((struct reflectElement*)ae->structLayout->data)[j];
 
-#line 187 "/opt/bah/json.bah"
+#line 189 "/opt/bah/json.bah"
 m.value = reflectElement__calculateOffset(&m,&v);
 
-#line 188 "/opt/bah/json.bah"
+#line 190 "/opt/bah/json.bah"
 
     __Bah_realocate_arr(ae->structLayout, j);
     ((struct reflectElement*)ae->structLayout->data)[j] = m;
 };
 
-#line 190 "/opt/bah/json.bah"
+#line 192 "/opt/bah/json.bah"
 json_scan_inner(c,*ae,true);
 
-#line 191 "/opt/bah/json.bah"
+#line 193 "/opt/bah/json.bah"
 struct string k = string(c->key);
 
-#line 192 "/opt/bah/json.bah"
+#line 194 "/opt/bah/json.bah"
 string__trimLeft(&k,1);
 
-#line 193 "/opt/bah/json.bah"
+#line 195 "/opt/bah/json.bah"
 string__trimRight(&k,1);
 
-#line 194 "/opt/bah/json.bah"
+#line 196 "/opt/bah/json.bah"
 if (strCount(ae->type,"\01\0\0\0""*")||(strcmp(ae->type, "\03\0\0\0""ptr") == 0)||(strcmp(ae->type, "\010\0\0\0""cpstring") == 0)||strHasPrefix(ae->type,"\02\0\0\0""[]")||strHasPrefix(ae->type,"\04\0\0\0""map:")) {
 
-#line 195 "/opt/bah/json.bah"
+#line 197 "/opt/bah/json.bah"
 struct mapWrapper* m = *p;
 
-#line 196 "/opt/bah/json.bah"
+#line 198 "/opt/bah/json.bah"
 m->set(m,string__str(&k),v);
 }
 
-#line 197 "/opt/bah/json.bah"
+#line 199 "/opt/bah/json.bah"
 else {
 
-#line 198 "/opt/bah/json.bah"
+#line 200 "/opt/bah/json.bah"
 struct mapWrapper* m = *p;
 
-#line 199 "/opt/bah/json.bah"
+#line 201 "/opt/bah/json.bah"
 m->set(m,string__str(&k),&v);
 }
 };
 }
 };
 
-#line 205 "/opt/bah/json.bah"
+#line 207 "/opt/bah/json.bah"
 char* jError;
 
-#line 208 "/opt/bah/json.bah"
+#line 210 "/opt/bah/json.bah"
 struct jsonElement* parseJson_inner(char* s,long long int* ip,long long int l){
 
-#line 209 "/opt/bah/json.bah"
+#line 211 "/opt/bah/json.bah"
 jError = "\0\0\0\0""";
 
-#line 210 "/opt/bah/json.bah"
+#line 212 "/opt/bah/json.bah"
 long long int i = *ip;
 
-#line 212 "/opt/bah/json.bah"
+#line 214 "/opt/bah/json.bah"
 for (; (i<l); ++i) {
 
-#line 213 "/opt/bah/json.bah"
+#line 215 "/opt/bah/json.bah"
 if ((isSpace(s[i+4])==false)) {
 
-#line 214 "/opt/bah/json.bah"
+#line 216 "/opt/bah/json.bah"
 break;
 }
 };
 
-#line 218 "/opt/bah/json.bah"
+#line 220 "/opt/bah/json.bah"
 struct jsonElement* ____BAH_COMPILER_VAR_82_aoptabahajsonbbah = memoryAlloc(sizeof(struct jsonElement));
 ____BAH_COMPILER_VAR_82_aoptabahajsonbbah->children = memoryAlloc(sizeof(struct Bah_Array_Type));
             ____BAH_COMPILER_VAR_82_aoptabahajsonbbah->children->length = 0;
@@ -6046,1230 +6046,1230 @@ ____BAH_COMPILER_VAR_82_aoptabahajsonbbah->from = i;
 ____BAH_COMPILER_VAR_82_aoptabahajsonbbah->to = l;
 struct jsonElement* j = ____BAH_COMPILER_VAR_82_aoptabahajsonbbah;
 
-#line 224 "/opt/bah/json.bah"
+#line 226 "/opt/bah/json.bah"
 if ((s[i+4]==91)) {
 
-#line 225 "/opt/bah/json.bah"
+#line 227 "/opt/bah/json.bah"
 j->type = JSON_TYPE_ARRAY;
 
-#line 226 "/opt/bah/json.bah"
+#line 228 "/opt/bah/json.bah"
 ++i;
 
-#line 227 "/opt/bah/json.bah"
+#line 229 "/opt/bah/json.bah"
 for (; (i<l); ++i) {
 
-#line 228 "/opt/bah/json.bah"
+#line 230 "/opt/bah/json.bah"
 if ((isSpace(s[i+4])==false)) {
 
-#line 229 "/opt/bah/json.bah"
+#line 231 "/opt/bah/json.bah"
 break;
 }
 };
 
-#line 232 "/opt/bah/json.bah"
+#line 234 "/opt/bah/json.bah"
 if ((s[i+4]!=93)) {
 
-#line 233 "/opt/bah/json.bah"
+#line 235 "/opt/bah/json.bah"
 for (; (i<l); ++i) {
 
-#line 234 "/opt/bah/json.bah"
+#line 236 "/opt/bah/json.bah"
 struct jsonElement* child = parseJson_inner(s,&i,l);
 
-#line 235 "/opt/bah/json.bah"
+#line 237 "/opt/bah/json.bah"
 if ((child==null)) {
 
-#line 236 "/opt/bah/json.bah"
+#line 238 "/opt/bah/json.bah"
 return null;
 }
 
-#line 238 "/opt/bah/json.bah"
+#line 240 "/opt/bah/json.bah"
 unsigned int ____BAH_COMPILER_VAR_83_aoptabahajsonbbah = len(j->children);
     __Bah_realocate_arr(j->children, ____BAH_COMPILER_VAR_83_aoptabahajsonbbah);
     ((struct jsonElement**)j->children->data)[____BAH_COMPILER_VAR_83_aoptabahajsonbbah] = child;
 
-#line 239 "/opt/bah/json.bah"
+#line 241 "/opt/bah/json.bah"
 for (; (i<l); ++i) {
 
-#line 240 "/opt/bah/json.bah"
+#line 242 "/opt/bah/json.bah"
 if ((isSpace(s[i+4])==false)) {
 
-#line 241 "/opt/bah/json.bah"
+#line 243 "/opt/bah/json.bah"
 break;
 }
 };
 
-#line 245 "/opt/bah/json.bah"
+#line 247 "/opt/bah/json.bah"
 if ((s[i+4]!=44)) {
 
-#line 246 "/opt/bah/json.bah"
+#line 248 "/opt/bah/json.bah"
 if ((s[i+4]!=93)) {
 
-#line 247 "/opt/bah/json.bah"
+#line 249 "/opt/bah/json.bah"
 char** ____BAH_COMPILER_VAR_84_aoptabahajsonbbah = alloca(5 * sizeof(char*));____BAH_COMPILER_VAR_84_aoptabahajsonbbah[4] = "\01\0\0\0"")";____BAH_COMPILER_VAR_84_aoptabahajsonbbah[3] = intToStr(i);____BAH_COMPILER_VAR_84_aoptabahajsonbbah[2] = "\010\0\0\0"") (pos: ";____BAH_COMPILER_VAR_84_aoptabahajsonbbah[1] = charToString(s[i+4]);____BAH_COMPILER_VAR_84_aoptabahajsonbbah[0] = "\045\0\0\0""json: expected array separator (got: ";char* ____BAH_COMPILER_VAR_85_aoptabahajsonbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_84_aoptabahajsonbbah, 5);jError = ____BAH_COMPILER_VAR_85_aoptabahajsonbbah;
 
-#line 248 "/opt/bah/json.bah"
+#line 250 "/opt/bah/json.bah"
 return null;
 }
 
-#line 250 "/opt/bah/json.bah"
+#line 252 "/opt/bah/json.bah"
 ++i;
 
-#line 251 "/opt/bah/json.bah"
+#line 253 "/opt/bah/json.bah"
 break;
 }
-
-#line 254 "/opt/bah/json.bah"
-for (; (i<l); ++i) {
-
-#line 255 "/opt/bah/json.bah"
-if ((isSpace(s[i+4])==false)) {
 
 #line 256 "/opt/bah/json.bah"
+for (; (i<l); ++i) {
+
+#line 257 "/opt/bah/json.bah"
+if ((isSpace(s[i+4])==false)) {
+
+#line 258 "/opt/bah/json.bah"
 break;
 }
 };
 };
 }
 
-#line 261 "/opt/bah/json.bah"
+#line 263 "/opt/bah/json.bah"
 else {
 
-#line 262 "/opt/bah/json.bah"
+#line 264 "/opt/bah/json.bah"
 ++i;
 }
 
-#line 264 "/opt/bah/json.bah"
+#line 266 "/opt/bah/json.bah"
 j->to = i;
 }
 
-#line 265 "/opt/bah/json.bah"
+#line 267 "/opt/bah/json.bah"
 else if ((s[i+4]==123)) {
 
-#line 266 "/opt/bah/json.bah"
+#line 268 "/opt/bah/json.bah"
 j->type = JSON_TYPE_MAP;
 
-#line 267 "/opt/bah/json.bah"
-++i;
-
-#line 268 "/opt/bah/json.bah"
-for (; (i<l); ++i) {
-
 #line 269 "/opt/bah/json.bah"
-if ((isSpace(s[i+4])==false)) {
+++i;
 
 #line 270 "/opt/bah/json.bah"
+for (; (i<l); ++i) {
+
+#line 271 "/opt/bah/json.bah"
+if ((isSpace(s[i+4])==false)) {
+
+#line 272 "/opt/bah/json.bah"
 break;
 }
 };
-
-#line 273 "/opt/bah/json.bah"
-if ((s[i+4]!=125)) {
-
-#line 274 "/opt/bah/json.bah"
-for (; (i<l); ++i) {
 
 #line 275 "/opt/bah/json.bah"
-for (; (i<l); ++i) {
+if ((s[i+4]!=125)) {
 
 #line 276 "/opt/bah/json.bah"
-if ((isSpace(s[i+4])==false)) {
+for (; (i<l); ++i) {
 
 #line 277 "/opt/bah/json.bah"
-break;
-}
-};
-
-#line 280 "/opt/bah/json.bah"
-if ((s[i+4]!=34)) {
-
-#line 281 "/opt/bah/json.bah"
-char** ____BAH_COMPILER_VAR_86_aoptabahajsonbbah = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_86_aoptabahajsonbbah[2] = "\01\0\0\0"")";____BAH_COMPILER_VAR_86_aoptabahajsonbbah[1] = intToStr(i);____BAH_COMPILER_VAR_86_aoptabahajsonbbah[0] = "\047\0\0\0""json: expected string as map key (pos: ";char* ____BAH_COMPILER_VAR_87_aoptabahajsonbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_86_aoptabahajsonbbah, 3);jError = ____BAH_COMPILER_VAR_87_aoptabahajsonbbah;
-
-#line 282 "/opt/bah/json.bah"
-return null;
-}
-
-#line 284 "/opt/bah/json.bah"
-++i;
-
-#line 285 "/opt/bah/json.bah"
-long long int ns = i;
-
-#line 286 "/opt/bah/json.bah"
 for (; (i<l); ++i) {
 
-#line 287 "/opt/bah/json.bah"
-if ((s[i+4]==34)&&(s[i-1+4]!=(char)92)) {
-
-#line 288 "/opt/bah/json.bah"
-break;
-}
-};
-
-#line 291 "/opt/bah/json.bah"
-char* name = cpstringSubsitute(s, ns, i);
-
-#line 292 "/opt/bah/json.bah"
-++i;
-
-#line 294 "/opt/bah/json.bah"
-for (; (i<l); ++i) {
-
-#line 295 "/opt/bah/json.bah"
+#line 278 "/opt/bah/json.bah"
 if ((isSpace(s[i+4])==false)) {
 
-#line 296 "/opt/bah/json.bah"
+#line 279 "/opt/bah/json.bah"
 break;
 }
 };
 
-#line 300 "/opt/bah/json.bah"
-if ((s[i+4]!=58)) {
+#line 282 "/opt/bah/json.bah"
+if ((s[i+4]!=34)) {
 
-#line 301 "/opt/bah/json.bah"
-char** ____BAH_COMPILER_VAR_88_aoptabahajsonbbah = alloca(5 * sizeof(char*));____BAH_COMPILER_VAR_88_aoptabahajsonbbah[4] = "\01\0\0\0"")";____BAH_COMPILER_VAR_88_aoptabahajsonbbah[3] = intToStr(i);____BAH_COMPILER_VAR_88_aoptabahajsonbbah[2] = "\010\0\0\0"") (pos: ";____BAH_COMPILER_VAR_88_aoptabahajsonbbah[1] = intToStr((long long int)s[i+4]);____BAH_COMPILER_VAR_88_aoptabahajsonbbah[0] = "\055\0\0\0""json: expected : between key and value (got: ";char* ____BAH_COMPILER_VAR_89_aoptabahajsonbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_88_aoptabahajsonbbah, 5);jError = ____BAH_COMPILER_VAR_89_aoptabahajsonbbah;
+#line 283 "/opt/bah/json.bah"
+char** ____BAH_COMPILER_VAR_86_aoptabahajsonbbah = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_86_aoptabahajsonbbah[2] = "\01\0\0\0"")";____BAH_COMPILER_VAR_86_aoptabahajsonbbah[1] = intToStr(i);____BAH_COMPILER_VAR_86_aoptabahajsonbbah[0] = "\047\0\0\0""json: expected string as map key (pos: ";char* ____BAH_COMPILER_VAR_87_aoptabahajsonbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_86_aoptabahajsonbbah, 3);jError = ____BAH_COMPILER_VAR_87_aoptabahajsonbbah;
 
-#line 302 "/opt/bah/json.bah"
+#line 284 "/opt/bah/json.bah"
 return null;
 }
 
-#line 305 "/opt/bah/json.bah"
+#line 286 "/opt/bah/json.bah"
 ++i;
 
-#line 307 "/opt/bah/json.bah"
-struct jsonElement* child = parseJson_inner(s,&i,l);
+#line 287 "/opt/bah/json.bah"
+long long int ns = i;
 
-#line 308 "/opt/bah/json.bah"
-if ((child==null)) {
+#line 288 "/opt/bah/json.bah"
+for (; (i<l); ++i) {
 
-#line 309 "/opt/bah/json.bah"
+#line 289 "/opt/bah/json.bah"
+if ((s[i+4]==34)&&(s[i-1+4]!=(char)92)) {
+
+#line 290 "/opt/bah/json.bah"
+break;
+}
+};
+
+#line 293 "/opt/bah/json.bah"
+char* name = cpstringSubsitute(s, ns, i);
+
+#line 294 "/opt/bah/json.bah"
+++i;
+
+#line 296 "/opt/bah/json.bah"
+for (; (i<l); ++i) {
+
+#line 297 "/opt/bah/json.bah"
+if ((isSpace(s[i+4])==false)) {
+
+#line 298 "/opt/bah/json.bah"
+break;
+}
+};
+
+#line 302 "/opt/bah/json.bah"
+if ((s[i+4]!=58)) {
+
+#line 303 "/opt/bah/json.bah"
+char** ____BAH_COMPILER_VAR_88_aoptabahajsonbbah = alloca(5 * sizeof(char*));____BAH_COMPILER_VAR_88_aoptabahajsonbbah[4] = "\01\0\0\0"")";____BAH_COMPILER_VAR_88_aoptabahajsonbbah[3] = intToStr(i);____BAH_COMPILER_VAR_88_aoptabahajsonbbah[2] = "\010\0\0\0"") (pos: ";____BAH_COMPILER_VAR_88_aoptabahajsonbbah[1] = intToStr((long long int)s[i+4]);____BAH_COMPILER_VAR_88_aoptabahajsonbbah[0] = "\055\0\0\0""json: expected : between key and value (got: ";char* ____BAH_COMPILER_VAR_89_aoptabahajsonbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_88_aoptabahajsonbbah, 5);jError = ____BAH_COMPILER_VAR_89_aoptabahajsonbbah;
+
+#line 304 "/opt/bah/json.bah"
 return null;
 }
 
+#line 307 "/opt/bah/json.bah"
+++i;
+
+#line 309 "/opt/bah/json.bah"
+struct jsonElement* child = parseJson_inner(s,&i,l);
+
+#line 310 "/opt/bah/json.bah"
+if ((child==null)) {
+
 #line 311 "/opt/bah/json.bah"
+return null;
+}
+
+#line 313 "/opt/bah/json.bah"
 child->key = name;
 
-#line 312 "/opt/bah/json.bah"
+#line 314 "/opt/bah/json.bah"
 unsigned int ____BAH_COMPILER_VAR_90_aoptabahajsonbbah = len(j->children);
     __Bah_realocate_arr(j->children, ____BAH_COMPILER_VAR_90_aoptabahajsonbbah);
     ((struct jsonElement**)j->children->data)[____BAH_COMPILER_VAR_90_aoptabahajsonbbah] = child;
 
-#line 314 "/opt/bah/json.bah"
+#line 316 "/opt/bah/json.bah"
 for (; (i<l); ++i) {
 
-#line 315 "/opt/bah/json.bah"
+#line 317 "/opt/bah/json.bah"
 if ((isSpace(s[i+4])==false)) {
 
-#line 316 "/opt/bah/json.bah"
+#line 318 "/opt/bah/json.bah"
 break;
 }
 };
 
-#line 320 "/opt/bah/json.bah"
+#line 322 "/opt/bah/json.bah"
 if ((s[i+4]!=44)) {
 
-#line 321 "/opt/bah/json.bah"
+#line 323 "/opt/bah/json.bah"
 if ((s[i+4]!=125)) {
 
-#line 322 "/opt/bah/json.bah"
+#line 324 "/opt/bah/json.bah"
 char** ____BAH_COMPILER_VAR_91_aoptabahajsonbbah = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_91_aoptabahajsonbbah[2] = "\01\0\0\0"")";____BAH_COMPILER_VAR_91_aoptabahajsonbbah[1] = intToStr(i);____BAH_COMPILER_VAR_91_aoptabahajsonbbah[0] = "\043\0\0\0""json: expected map separator (pos: ";char* ____BAH_COMPILER_VAR_92_aoptabahajsonbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_91_aoptabahajsonbbah, 3);jError = ____BAH_COMPILER_VAR_92_aoptabahajsonbbah;
 
-#line 323 "/opt/bah/json.bah"
+#line 325 "/opt/bah/json.bah"
 return null;
 }
 
-#line 325 "/opt/bah/json.bah"
+#line 327 "/opt/bah/json.bah"
 ++i;
 
-#line 326 "/opt/bah/json.bah"
+#line 328 "/opt/bah/json.bah"
 break;
 }
 };
 }
 
-#line 329 "/opt/bah/json.bah"
+#line 331 "/opt/bah/json.bah"
 else {
 
-#line 330 "/opt/bah/json.bah"
+#line 332 "/opt/bah/json.bah"
 ++i;
 }
 
-#line 332 "/opt/bah/json.bah"
+#line 334 "/opt/bah/json.bah"
 j->to = i;
 }
 
-#line 333 "/opt/bah/json.bah"
+#line 335 "/opt/bah/json.bah"
 else if ((s[i+4]==34)) {
 
-#line 334 "/opt/bah/json.bah"
+#line 336 "/opt/bah/json.bah"
 j->type = JSON_TYPE_STRING;
 
-#line 335 "/opt/bah/json.bah"
+#line 337 "/opt/bah/json.bah"
 ++i;
 
-#line 336 "/opt/bah/json.bah"
+#line 338 "/opt/bah/json.bah"
 j->from = i;
 
-#line 337 "/opt/bah/json.bah"
+#line 339 "/opt/bah/json.bah"
 struct Bah_Array_Type* mem = memoryAlloc(sizeof(struct Bah_Array_Type));
 
 mem->length = 0;
 mem->elemSize = sizeof(char);
 
-#line 338 "/opt/bah/json.bah"
+#line 340 "/opt/bah/json.bah"
 for (; (i<l); ++i) {
 
-#line 339 "/opt/bah/json.bah"
+#line 341 "/opt/bah/json.bah"
 if ((s[i+4]==34)) {
 
-#line 340 "/opt/bah/json.bah"
+#line 342 "/opt/bah/json.bah"
 break;
 }
 
-#line 342 "/opt/bah/json.bah"
+#line 344 "/opt/bah/json.bah"
 if ((s[i+4]==(char)92)) {
 
-#line 343 "/opt/bah/json.bah"
-j->contentFinal = true;
-
-#line 344 "/opt/bah/json.bah"
+#line 345 "/opt/bah/json.bah"
 if ((len(mem)==0)) {
 
-#line 345 "/opt/bah/json.bah"
+#line 346 "/opt/bah/json.bah"
 mem = strToArr(cpstringSubsitute(s, j->from, i));
 
-#line 346 "/opt/bah/json.bah"
+#line 347 "/opt/bah/json.bah"
 if ((s[i+1+4]==114)) {
 
-#line 347 "/opt/bah/json.bah"
+#line 348 "/opt/bah/json.bah"
 unsigned int ____BAH_COMPILER_VAR_93_aoptabahajsonbbah = len(mem);
     __Bah_realocate_arr(mem, ____BAH_COMPILER_VAR_93_aoptabahajsonbbah);
     ((char*)mem->data)[____BAH_COMPILER_VAR_93_aoptabahajsonbbah] = (char)13;
 }
 
-#line 348 "/opt/bah/json.bah"
+#line 349 "/opt/bah/json.bah"
 else if ((s[i+1+4]==110)) {
 
-#line 349 "/opt/bah/json.bah"
+#line 350 "/opt/bah/json.bah"
 unsigned int ____BAH_COMPILER_VAR_94_aoptabahajsonbbah = len(mem);
     __Bah_realocate_arr(mem, ____BAH_COMPILER_VAR_94_aoptabahajsonbbah);
     ((char*)mem->data)[____BAH_COMPILER_VAR_94_aoptabahajsonbbah] = (char)10;
 }
 
-#line 350 "/opt/bah/json.bah"
+#line 351 "/opt/bah/json.bah"
 else {
 
-#line 351 "/opt/bah/json.bah"
+#line 352 "/opt/bah/json.bah"
 unsigned int ____BAH_COMPILER_VAR_95_aoptabahajsonbbah = len(mem);
     __Bah_realocate_arr(mem, ____BAH_COMPILER_VAR_95_aoptabahajsonbbah);
     ((char*)mem->data)[____BAH_COMPILER_VAR_95_aoptabahajsonbbah] = s[i+1+4];
 }
 }
 
-#line 354 "/opt/bah/json.bah"
+#line 355 "/opt/bah/json.bah"
 ++i;
 
-#line 355 "/opt/bah/json.bah"
+#line 356 "/opt/bah/json.bah"
 continue;
 }
 
-#line 357 "/opt/bah/json.bah"
+#line 358 "/opt/bah/json.bah"
 if ((len(mem)!=0)) {
 
-#line 358 "/opt/bah/json.bah"
+#line 359 "/opt/bah/json.bah"
 unsigned int ____BAH_COMPILER_VAR_96_aoptabahajsonbbah = len(mem);
     __Bah_realocate_arr(mem, ____BAH_COMPILER_VAR_96_aoptabahajsonbbah);
     ((char*)mem->data)[____BAH_COMPILER_VAR_96_aoptabahajsonbbah] = s[i+4];
 }
 };
 
-#line 361 "/opt/bah/json.bah"
+#line 362 "/opt/bah/json.bah"
 if ((len(mem)!=0)) {
 
-#line 362 "/opt/bah/json.bah"
+#line 363 "/opt/bah/json.bah"
+j->contentFinal = true;
+
+#line 364 "/opt/bah/json.bah"
 j->content = arrToStr(mem);
 }
 
-#line 364 "/opt/bah/json.bah"
+#line 366 "/opt/bah/json.bah"
 j->to = i;
 
-#line 365 "/opt/bah/json.bah"
+#line 367 "/opt/bah/json.bah"
 ++i;
 }
 
-#line 366 "/opt/bah/json.bah"
+#line 368 "/opt/bah/json.bah"
 else if (isNumber(s[i+4])||(s[i+4]==45)) {
 
-#line 367 "/opt/bah/json.bah"
+#line 369 "/opt/bah/json.bah"
 j->type = JSON_TYPE_INT;
 
-#line 368 "/opt/bah/json.bah"
+#line 370 "/opt/bah/json.bah"
 ++i;
 
-#line 369 "/opt/bah/json.bah"
+#line 371 "/opt/bah/json.bah"
 for (; (i<l); ++i) {
 
-#line 370 "/opt/bah/json.bah"
+#line 372 "/opt/bah/json.bah"
 if ((isNumber(s[i+4])==false)) {
 
-#line 371 "/opt/bah/json.bah"
+#line 373 "/opt/bah/json.bah"
 if ((s[i+4]==46)) {
 
-#line 372 "/opt/bah/json.bah"
+#line 374 "/opt/bah/json.bah"
 j->type = JSON_TYPE_FLOAT;
 }
 
-#line 373 "/opt/bah/json.bah"
+#line 375 "/opt/bah/json.bah"
 else {
 
-#line 374 "/opt/bah/json.bah"
+#line 376 "/opt/bah/json.bah"
 break;
 }
 }
 };
 
-#line 378 "/opt/bah/json.bah"
+#line 380 "/opt/bah/json.bah"
 j->to = i;
 }
 
-#line 379 "/opt/bah/json.bah"
+#line 381 "/opt/bah/json.bah"
 else {
 
-#line 380 "/opt/bah/json.bah"
+#line 382 "/opt/bah/json.bah"
 long long int si = i;
 
-#line 381 "/opt/bah/json.bah"
+#line 383 "/opt/bah/json.bah"
 for (; (i<l); ++i) {
 
-#line 382 "/opt/bah/json.bah"
+#line 384 "/opt/bah/json.bah"
 if ((isLetter(s[i+4])==false)) {
 
-#line 383 "/opt/bah/json.bah"
+#line 385 "/opt/bah/json.bah"
 break;
 }
 };
 
-#line 386 "/opt/bah/json.bah"
+#line 388 "/opt/bah/json.bah"
 s = cpstringSubsitute(s, si, i);
 
-#line 387 "/opt/bah/json.bah"
+#line 389 "/opt/bah/json.bah"
 if ((strcmp(s, "\04\0\0\0""true") == 0)||(strcmp(s, "\05\0\0\0""false") == 0)||(strcmp(s, "\04\0\0\0""null") == 0)) {
 
-#line 388 "/opt/bah/json.bah"
+#line 390 "/opt/bah/json.bah"
 j->type = JSON_TYPE_INT;
 
-#line 389 "/opt/bah/json.bah"
+#line 391 "/opt/bah/json.bah"
 j->content = s;
 
-#line 390 "/opt/bah/json.bah"
+#line 392 "/opt/bah/json.bah"
 j->contentFinal = true;
 }
 }
 
-#line 394 "/opt/bah/json.bah"
+#line 396 "/opt/bah/json.bah"
 *ip = i;
 
-#line 395 "/opt/bah/json.bah"
+#line 397 "/opt/bah/json.bah"
 return j;
 };
 
-#line 401 "/opt/bah/json.bah"
+#line 403 "/opt/bah/json.bah"
 struct jsonElement* parseJson(char* s){
 
-#line 402 "/opt/bah/json.bah"
+#line 404 "/opt/bah/json.bah"
 unsigned long long int l = strlen(s);
 
-#line 403 "/opt/bah/json.bah"
+#line 405 "/opt/bah/json.bah"
 long long int i = 0;
 
-#line 404 "/opt/bah/json.bah"
+#line 406 "/opt/bah/json.bah"
 return parseJson_inner(s,&i,l);
 };
 
-#line 408 "/opt/bah/json.bah"
+#line 410 "/opt/bah/json.bah"
 char json_isPrintable(unsigned int c){
 
-#line 409 "/opt/bah/json.bah"
+#line 411 "/opt/bah/json.bah"
 if ((c<32)||(c>255)) {
 
-#line 410 "/opt/bah/json.bah"
+#line 412 "/opt/bah/json.bah"
 return false;
 }
 
-#line 412 "/opt/bah/json.bah"
+#line 414 "/opt/bah/json.bah"
 return (c!=127)&&(c!=129)&&(c!=141)&&(c!=143)&&(c!=144)&&(c!=157);
 };
 
-#line 416 "/opt/bah/json.bah"
+#line 418 "/opt/bah/json.bah"
 char* jsonEscapeStr(char* s){
 
-#line 417 "/opt/bah/json.bah"
+#line 419 "/opt/bah/json.bah"
 if ((strcmp(s, null) == 0)) {
 
-#line 418 "/opt/bah/json.bah"
+#line 420 "/opt/bah/json.bah"
 return "\0\0\0\0""";
 }
 
-#line 420 "/opt/bah/json.bah"
+#line 422 "/opt/bah/json.bah"
 struct strBuilder ____BAH_COMPILER_VAR_97_aoptabahajsonbbah = {};
 strBuilder___init(&____BAH_COMPILER_VAR_97_aoptabahajsonbbah);
 struct strBuilder r = ____BAH_COMPILER_VAR_97_aoptabahajsonbbah;
 
-#line 421 "/opt/bah/json.bah"
+#line 423 "/opt/bah/json.bah"
 unsigned long long int l = strlen(s);
 
-#line 423 "/opt/bah/json.bah"
+#line 425 "/opt/bah/json.bah"
 register long long int i = 0;
 
-#line 423 "/opt/bah/json.bah"
+#line 425 "/opt/bah/json.bah"
 for (; (i<l); ++i) {
 
-#line 424 "/opt/bah/json.bah"
+#line 426 "/opt/bah/json.bah"
 char c = s[i+4];
 
-#line 425 "/opt/bah/json.bah"
-if ((c==(char)34)) {
-
-#line 426 "/opt/bah/json.bah"
-strBuilder__append(&r,(char)92);
-}
-
 #line 427 "/opt/bah/json.bah"
-else if ((c==(char)10)) {
+if ((c==(char)34)) {
 
 #line 428 "/opt/bah/json.bah"
 strBuilder__append(&r,(char)92);
+}
 
 #line 429 "/opt/bah/json.bah"
-strBuilder__append(&r,110);
+else if ((c==(char)10)) {
 
 #line 430 "/opt/bah/json.bah"
-continue;
-}
-
-#line 431 "/opt/bah/json.bah"
-else if ((c==(char)13)) {
-
-#line 432 "/opt/bah/json.bah"
 strBuilder__append(&r,(char)92);
 
-#line 433 "/opt/bah/json.bah"
-strBuilder__append(&r,114);
+#line 431 "/opt/bah/json.bah"
+strBuilder__append(&r,110);
 
-#line 434 "/opt/bah/json.bah"
+#line 432 "/opt/bah/json.bah"
 continue;
 }
 
-#line 436 "/opt/bah/json.bah"
-if ((json_isPrintable((unsigned int)c)==false)) {
+#line 433 "/opt/bah/json.bah"
+else if ((c==(char)13)) {
 
-#line 437 "/opt/bah/json.bah"
-if (((unsigned char)c==(unsigned char)195)) {
+#line 434 "/opt/bah/json.bah"
+strBuilder__append(&r,(char)92);
+
+#line 435 "/opt/bah/json.bah"
+strBuilder__append(&r,114);
+
+#line 436 "/opt/bah/json.bah"
+continue;
+}
 
 #line 438 "/opt/bah/json.bah"
-strBuilder__append(&r,c);
+if ((json_isPrintable((unsigned int)c)==false)) {
 
 #line 439 "/opt/bah/json.bah"
-strBuilder__append(&r,s[i+1+4]);
+if (((unsigned char)c==(unsigned char)195)) {
 
 #line 440 "/opt/bah/json.bah"
+strBuilder__append(&r,c);
+
+#line 441 "/opt/bah/json.bah"
+strBuilder__append(&r,s[i+1+4]);
+
+#line 442 "/opt/bah/json.bah"
 ++i;
 }
 
-#line 442 "/opt/bah/json.bah"
+#line 444 "/opt/bah/json.bah"
 continue;
 }
 
-#line 444 "/opt/bah/json.bah"
+#line 446 "/opt/bah/json.bah"
 strBuilder__append(&r,c);
 };
 
-#line 447 "/opt/bah/json.bah"
+#line 449 "/opt/bah/json.bah"
 return strBuilder__str(&r);
 };
 
-#line 452 "/opt/bah/json.bah"
+#line 454 "/opt/bah/json.bah"
 char* oldToJson__inner(struct reflectElement e,char isMember,long long int tabs){
 
-#line 453 "/opt/bah/json.bah"
+#line 455 "/opt/bah/json.bah"
 void ** v = e.value;
 
-#line 454 "/opt/bah/json.bah"
+#line 456 "/opt/bah/json.bah"
 if ((e.value==null)) {
 
-#line 455 "/opt/bah/json.bah"
+#line 457 "/opt/bah/json.bah"
 if ((strcmp(e.type, "\03\0\0\0""int") == 0)||(strcmp(e.type, "\05\0\0\0""float") == 0)) {
 
-#line 456 "/opt/bah/json.bah"
+#line 458 "/opt/bah/json.bah"
 return "\01\0\0\0""0";
 }
 
-#line 458 "/opt/bah/json.bah"
+#line 460 "/opt/bah/json.bah"
 if ((strcmp(e.type, "\04\0\0\0""bool") == 0)) {
 
-#line 459 "/opt/bah/json.bah"
+#line 461 "/opt/bah/json.bah"
 return "\05\0\0\0""false";
 }
 
-#line 461 "/opt/bah/json.bah"
+#line 463 "/opt/bah/json.bah"
 if ((strcmp(e.type, "\03\0\0\0""ptr") == 0)||(strcmp(e.type, "\010\0\0\0""cpstring") == 0)||(strCount(e.type,"\01\0\0\0""*")!=0)) {
 
-#line 462 "/opt/bah/json.bah"
+#line 464 "/opt/bah/json.bah"
 return "\04\0\0\0""null";
 }
 }
 
-#line 465 "/opt/bah/json.bah"
+#line 467 "/opt/bah/json.bah"
 if ((e.isStruct==true)) {
 
-#line 466 "/opt/bah/json.bah"
+#line 468 "/opt/bah/json.bah"
 tabs = tabs+1;
 
-#line 467 "/opt/bah/json.bah"
+#line 469 "/opt/bah/json.bah"
 char* tabsStr = "\0\0\0\0""";
 
-#line 468 "/opt/bah/json.bah"
+#line 470 "/opt/bah/json.bah"
 register long long int i = 0;
 
-#line 468 "/opt/bah/json.bah"
+#line 470 "/opt/bah/json.bah"
 while ((i<tabs)) {
 
-#line 469 "/opt/bah/json.bah"
+#line 471 "/opt/bah/json.bah"
 char** ____BAH_COMPILER_VAR_98_aoptabahajsonbbah = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_98_aoptabahajsonbbah[1] = "\01\0\0\0""\t";____BAH_COMPILER_VAR_98_aoptabahajsonbbah[0] = tabsStr;char* ____BAH_COMPILER_VAR_99_aoptabahajsonbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_98_aoptabahajsonbbah, 2);tabsStr = ____BAH_COMPILER_VAR_99_aoptabahajsonbbah;
 
-#line 470 "/opt/bah/json.bah"
+#line 472 "/opt/bah/json.bah"
 i = i+1;
 };
 
-#line 472 "/opt/bah/json.bah"
+#line 474 "/opt/bah/json.bah"
 char* s = "\02\0\0\0""{\n";
 
-#line 473 "/opt/bah/json.bah"
+#line 475 "/opt/bah/json.bah"
 i = 0;
 
-#line 473 "/opt/bah/json.bah"
+#line 475 "/opt/bah/json.bah"
 while ((i<len(e.structLayout))) {
 
-#line 474 "/opt/bah/json.bah"
+#line 476 "/opt/bah/json.bah"
 struct reflectElement m = ((struct reflectElement*)e.structLayout->data)[i];
 
-#line 475 "/opt/bah/json.bah"
+#line 477 "/opt/bah/json.bah"
 i = i+1;
 
-#line 476 "/opt/bah/json.bah"
+#line 478 "/opt/bah/json.bah"
 m.value = reflectElement__calculateOffset(&m,e.value);
 
-#line 477 "/opt/bah/json.bah"
+#line 479 "/opt/bah/json.bah"
 if ((i<len(e.structLayout))) {
 
-#line 478 "/opt/bah/json.bah"
+#line 480 "/opt/bah/json.bah"
 char** ____BAH_COMPILER_VAR_100_aoptabahajsonbbah = alloca(7 * sizeof(char*));____BAH_COMPILER_VAR_100_aoptabahajsonbbah[6] = "\02\0\0\0"",\n";____BAH_COMPILER_VAR_100_aoptabahajsonbbah[5] = oldToJson__inner(m,true,tabs);____BAH_COMPILER_VAR_100_aoptabahajsonbbah[4] = "\03\0\0\0""\": ";____BAH_COMPILER_VAR_100_aoptabahajsonbbah[3] = m.name;____BAH_COMPILER_VAR_100_aoptabahajsonbbah[2] = "\01\0\0\0""\"";____BAH_COMPILER_VAR_100_aoptabahajsonbbah[1] = tabsStr;____BAH_COMPILER_VAR_100_aoptabahajsonbbah[0] = s;char* ____BAH_COMPILER_VAR_101_aoptabahajsonbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_100_aoptabahajsonbbah, 7);s = ____BAH_COMPILER_VAR_101_aoptabahajsonbbah;
 }
 
-#line 479 "/opt/bah/json.bah"
+#line 481 "/opt/bah/json.bah"
 else {
 
-#line 480 "/opt/bah/json.bah"
+#line 482 "/opt/bah/json.bah"
 char** ____BAH_COMPILER_VAR_102_aoptabahajsonbbah = alloca(7 * sizeof(char*));____BAH_COMPILER_VAR_102_aoptabahajsonbbah[6] = "\01\0\0\0""\n";____BAH_COMPILER_VAR_102_aoptabahajsonbbah[5] = oldToJson__inner(m,true,tabs);____BAH_COMPILER_VAR_102_aoptabahajsonbbah[4] = "\03\0\0\0""\": ";____BAH_COMPILER_VAR_102_aoptabahajsonbbah[3] = m.name;____BAH_COMPILER_VAR_102_aoptabahajsonbbah[2] = "\01\0\0\0""\"";____BAH_COMPILER_VAR_102_aoptabahajsonbbah[1] = tabsStr;____BAH_COMPILER_VAR_102_aoptabahajsonbbah[0] = s;char* ____BAH_COMPILER_VAR_103_aoptabahajsonbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_102_aoptabahajsonbbah, 7);s = ____BAH_COMPILER_VAR_103_aoptabahajsonbbah;
 }
 };
 
-#line 483 "/opt/bah/json.bah"
+#line 485 "/opt/bah/json.bah"
 tabs = tabs-1;
 
-#line 484 "/opt/bah/json.bah"
+#line 486 "/opt/bah/json.bah"
 tabsStr = "\0\0\0\0""";
 
-#line 485 "/opt/bah/json.bah"
+#line 487 "/opt/bah/json.bah"
 i = 0;
 
-#line 485 "/opt/bah/json.bah"
+#line 487 "/opt/bah/json.bah"
 while ((i<tabs)) {
 
-#line 486 "/opt/bah/json.bah"
+#line 488 "/opt/bah/json.bah"
 char** ____BAH_COMPILER_VAR_104_aoptabahajsonbbah = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_104_aoptabahajsonbbah[1] = "\01\0\0\0""\t";____BAH_COMPILER_VAR_104_aoptabahajsonbbah[0] = tabsStr;char* ____BAH_COMPILER_VAR_105_aoptabahajsonbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_104_aoptabahajsonbbah, 2);tabsStr = ____BAH_COMPILER_VAR_105_aoptabahajsonbbah;
 
-#line 487 "/opt/bah/json.bah"
+#line 489 "/opt/bah/json.bah"
 i = i+1;
 };
 
-#line 489 "/opt/bah/json.bah"
+#line 491 "/opt/bah/json.bah"
 char** ____BAH_COMPILER_VAR_106_aoptabahajsonbbah = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_106_aoptabahajsonbbah[2] = "\01\0\0\0""}";____BAH_COMPILER_VAR_106_aoptabahajsonbbah[1] = tabsStr;____BAH_COMPILER_VAR_106_aoptabahajsonbbah[0] = s;char* ____BAH_COMPILER_VAR_107_aoptabahajsonbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_106_aoptabahajsonbbah, 3);s = ____BAH_COMPILER_VAR_107_aoptabahajsonbbah;
 
-#line 490 "/opt/bah/json.bah"
+#line 492 "/opt/bah/json.bah"
 return s;
 }
 
-#line 491 "/opt/bah/json.bah"
+#line 493 "/opt/bah/json.bah"
 else if ((strcmp(e.type, "\03\0\0\0""int") == 0)) {
 
-#line 492 "/opt/bah/json.bah"
+#line 494 "/opt/bah/json.bah"
 long long int* ip = e.value;
 
-#line 493 "/opt/bah/json.bah"
+#line 495 "/opt/bah/json.bah"
 return intToStr(*ip);
 }
 
-#line 494 "/opt/bah/json.bah"
+#line 496 "/opt/bah/json.bah"
 else if ((strcmp(e.type, "\05\0\0\0""float") == 0)) {
 
-#line 495 "/opt/bah/json.bah"
+#line 497 "/opt/bah/json.bah"
 double* fp = e.value;
 
-#line 496 "/opt/bah/json.bah"
+#line 498 "/opt/bah/json.bah"
 return floatToStr(*fp);
 }
 
-#line 497 "/opt/bah/json.bah"
+#line 499 "/opt/bah/json.bah"
 else if ((strcmp(e.type, "\010\0\0\0""cpstring") == 0)) {
 
-#line 498 "/opt/bah/json.bah"
+#line 500 "/opt/bah/json.bah"
 if ((isMember==false)) {
 
-#line 499 "/opt/bah/json.bah"
+#line 501 "/opt/bah/json.bah"
 void * s = e.value;
 
-#line 500 "/opt/bah/json.bah"
+#line 502 "/opt/bah/json.bah"
 char** ____BAH_COMPILER_VAR_108_aoptabahajsonbbah = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_108_aoptabahajsonbbah[2] = "\01\0\0\0""\"";____BAH_COMPILER_VAR_108_aoptabahajsonbbah[1] = jsonEscapeStr(s);____BAH_COMPILER_VAR_108_aoptabahajsonbbah[0] = "\01\0\0\0""\"";char* ____BAH_COMPILER_VAR_109_aoptabahajsonbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_108_aoptabahajsonbbah, 3);return ____BAH_COMPILER_VAR_109_aoptabahajsonbbah;
 }
 
-#line 501 "/opt/bah/json.bah"
+#line 503 "/opt/bah/json.bah"
 else {
 
-#line 502 "/opt/bah/json.bah"
+#line 504 "/opt/bah/json.bah"
 char** sp = e.value;
 
-#line 503 "/opt/bah/json.bah"
+#line 505 "/opt/bah/json.bah"
 char* s = *sp;
 
-#line 504 "/opt/bah/json.bah"
+#line 506 "/opt/bah/json.bah"
 char** ____BAH_COMPILER_VAR_110_aoptabahajsonbbah = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_110_aoptabahajsonbbah[2] = "\01\0\0\0""\"";____BAH_COMPILER_VAR_110_aoptabahajsonbbah[1] = jsonEscapeStr(s);____BAH_COMPILER_VAR_110_aoptabahajsonbbah[0] = "\01\0\0\0""\"";char* ____BAH_COMPILER_VAR_111_aoptabahajsonbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_110_aoptabahajsonbbah, 3);return ____BAH_COMPILER_VAR_111_aoptabahajsonbbah;
 }
 }
 
-#line 506 "/opt/bah/json.bah"
+#line 508 "/opt/bah/json.bah"
 else if ((strcmp(e.type, "\04\0\0\0""bool") == 0)) {
 
-#line 507 "/opt/bah/json.bah"
+#line 509 "/opt/bah/json.bah"
 char* bp = e.value;
 
-#line 508 "/opt/bah/json.bah"
+#line 510 "/opt/bah/json.bah"
 if ((*bp==true)) {
 
-#line 509 "/opt/bah/json.bah"
+#line 511 "/opt/bah/json.bah"
 return "\04\0\0\0""true";
 }
 
-#line 511 "/opt/bah/json.bah"
+#line 513 "/opt/bah/json.bah"
 return "\05\0\0\0""false";
 }
 
-#line 512 "/opt/bah/json.bah"
+#line 514 "/opt/bah/json.bah"
 else if ((e.isArray==true)) {
 
-#line 513 "/opt/bah/json.bah"
+#line 515 "/opt/bah/json.bah"
 char* s = "\01\0\0\0""[";
 
-#line 514 "/opt/bah/json.bah"
+#line 516 "/opt/bah/json.bah"
 struct reflectElement* ae = e.arrayElem;
 
-#line 515 "/opt/bah/json.bah"
+#line 517 "/opt/bah/json.bah"
 if ((e.value==null)) {
 
-#line 516 "/opt/bah/json.bah"
+#line 518 "/opt/bah/json.bah"
 return "\04\0\0\0""null";
 }
 
-#line 518 "/opt/bah/json.bah"
+#line 520 "/opt/bah/json.bah"
 if ((strcmp(ae->type, "\03\0\0\0""int") == 0)) {
 
-#line 519 "/opt/bah/json.bah"
+#line 521 "/opt/bah/json.bah"
 struct Bah_Array_Type* arr = memoryAlloc(sizeof(struct Bah_Array_Type));
 
 arr->length = 0;
 arr->elemSize = sizeof(long long int);
 
-#line 520 "/opt/bah/json.bah"
+#line 522 "/opt/bah/json.bah"
 void ** arrPtr = e.value;
 
-#line 521 "/opt/bah/json.bah"
+#line 523 "/opt/bah/json.bah"
 arr = *arrPtr;
 
-#line 522 "/opt/bah/json.bah"
+#line 524 "/opt/bah/json.bah"
 register long long int i = 0;
 
-#line 522 "/opt/bah/json.bah"
+#line 524 "/opt/bah/json.bah"
 while ((i<len(arr))) {
 
-#line 523 "/opt/bah/json.bah"
+#line 525 "/opt/bah/json.bah"
 char** ____BAH_COMPILER_VAR_112_aoptabahajsonbbah = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_112_aoptabahajsonbbah[1] = intToStr(((long long int*)arr->data)[i]);____BAH_COMPILER_VAR_112_aoptabahajsonbbah[0] = s;char* ____BAH_COMPILER_VAR_113_aoptabahajsonbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_112_aoptabahajsonbbah, 2);s = ____BAH_COMPILER_VAR_113_aoptabahajsonbbah;
 
-#line 524 "/opt/bah/json.bah"
+#line 526 "/opt/bah/json.bah"
 i = i+1;
 
-#line 525 "/opt/bah/json.bah"
+#line 527 "/opt/bah/json.bah"
 if ((i<len(arr))) {
 
-#line 526 "/opt/bah/json.bah"
+#line 528 "/opt/bah/json.bah"
 char** ____BAH_COMPILER_VAR_114_aoptabahajsonbbah = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_114_aoptabahajsonbbah[1] = "\01\0\0\0"",";____BAH_COMPILER_VAR_114_aoptabahajsonbbah[0] = s;char* ____BAH_COMPILER_VAR_115_aoptabahajsonbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_114_aoptabahajsonbbah, 2);s = ____BAH_COMPILER_VAR_115_aoptabahajsonbbah;
 }
 };
 }
 
-#line 529 "/opt/bah/json.bah"
+#line 531 "/opt/bah/json.bah"
 else if ((strcmp(ae->type, "\05\0\0\0""float") == 0)) {
 
-#line 530 "/opt/bah/json.bah"
+#line 532 "/opt/bah/json.bah"
 struct Bah_Array_Type* arr = memoryAlloc(sizeof(struct Bah_Array_Type));
 
 arr->length = 0;
 arr->elemSize = sizeof(double);
 
-#line 531 "/opt/bah/json.bah"
+#line 533 "/opt/bah/json.bah"
 void ** arrPtr = e.value;
 
-#line 532 "/opt/bah/json.bah"
+#line 534 "/opt/bah/json.bah"
 arr = *arrPtr;
 
-#line 533 "/opt/bah/json.bah"
+#line 535 "/opt/bah/json.bah"
 register long long int i = 0;
 
-#line 533 "/opt/bah/json.bah"
+#line 535 "/opt/bah/json.bah"
 while ((i<len(arr))) {
 
-#line 534 "/opt/bah/json.bah"
+#line 536 "/opt/bah/json.bah"
 char** ____BAH_COMPILER_VAR_116_aoptabahajsonbbah = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_116_aoptabahajsonbbah[1] = floatToStr(((double*)arr->data)[i]);____BAH_COMPILER_VAR_116_aoptabahajsonbbah[0] = s;char* ____BAH_COMPILER_VAR_117_aoptabahajsonbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_116_aoptabahajsonbbah, 2);s = ____BAH_COMPILER_VAR_117_aoptabahajsonbbah;
 
-#line 535 "/opt/bah/json.bah"
+#line 537 "/opt/bah/json.bah"
 i = i+1;
 
-#line 536 "/opt/bah/json.bah"
+#line 538 "/opt/bah/json.bah"
 if ((i<len(arr))) {
 
-#line 537 "/opt/bah/json.bah"
+#line 539 "/opt/bah/json.bah"
 char** ____BAH_COMPILER_VAR_118_aoptabahajsonbbah = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_118_aoptabahajsonbbah[1] = "\01\0\0\0"",";____BAH_COMPILER_VAR_118_aoptabahajsonbbah[0] = s;char* ____BAH_COMPILER_VAR_119_aoptabahajsonbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_118_aoptabahajsonbbah, 2);s = ____BAH_COMPILER_VAR_119_aoptabahajsonbbah;
 }
 };
 }
 
-#line 540 "/opt/bah/json.bah"
+#line 542 "/opt/bah/json.bah"
 else if ((strcmp(ae->type, "\010\0\0\0""cpstring") == 0)) {
 
-#line 541 "/opt/bah/json.bah"
+#line 543 "/opt/bah/json.bah"
 struct Bah_Array_Type* arr = memoryAlloc(sizeof(struct Bah_Array_Type));
 
 arr->length = 0;
 arr->elemSize = sizeof(char*);
 
-#line 542 "/opt/bah/json.bah"
+#line 544 "/opt/bah/json.bah"
 void ** arrPtr = e.value;
 
-#line 543 "/opt/bah/json.bah"
+#line 545 "/opt/bah/json.bah"
 arr = *arrPtr;
 
-#line 544 "/opt/bah/json.bah"
+#line 546 "/opt/bah/json.bah"
 char** ____BAH_COMPILER_VAR_120_aoptabahajsonbbah = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_120_aoptabahajsonbbah[1] = "\01\0\0\0""\n";____BAH_COMPILER_VAR_120_aoptabahajsonbbah[0] = s;char* ____BAH_COMPILER_VAR_121_aoptabahajsonbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_120_aoptabahajsonbbah, 2);s = ____BAH_COMPILER_VAR_121_aoptabahajsonbbah;
 
-#line 545 "/opt/bah/json.bah"
+#line 547 "/opt/bah/json.bah"
 register long long int i = 0;
 
-#line 545 "/opt/bah/json.bah"
+#line 547 "/opt/bah/json.bah"
 while ((i<len(arr))) {
 
-#line 546 "/opt/bah/json.bah"
+#line 548 "/opt/bah/json.bah"
 char** ____BAH_COMPILER_VAR_122_aoptabahajsonbbah = alloca(4 * sizeof(char*));____BAH_COMPILER_VAR_122_aoptabahajsonbbah[3] = "\01\0\0\0""\"";____BAH_COMPILER_VAR_122_aoptabahajsonbbah[2] = jsonEscapeStr(((char**)arr->data)[i]);____BAH_COMPILER_VAR_122_aoptabahajsonbbah[1] = "\01\0\0\0""\"";____BAH_COMPILER_VAR_122_aoptabahajsonbbah[0] = s;char* ____BAH_COMPILER_VAR_123_aoptabahajsonbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_122_aoptabahajsonbbah, 4);s = ____BAH_COMPILER_VAR_123_aoptabahajsonbbah;
 
-#line 547 "/opt/bah/json.bah"
+#line 549 "/opt/bah/json.bah"
 i = i+1;
 
-#line 548 "/opt/bah/json.bah"
+#line 550 "/opt/bah/json.bah"
 if ((i<len(arr))) {
 
-#line 549 "/opt/bah/json.bah"
+#line 551 "/opt/bah/json.bah"
 char** ____BAH_COMPILER_VAR_124_aoptabahajsonbbah = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_124_aoptabahajsonbbah[1] = "\02\0\0\0"",\n";____BAH_COMPILER_VAR_124_aoptabahajsonbbah[0] = s;char* ____BAH_COMPILER_VAR_125_aoptabahajsonbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_124_aoptabahajsonbbah, 2);s = ____BAH_COMPILER_VAR_125_aoptabahajsonbbah;
 }
 
-#line 550 "/opt/bah/json.bah"
+#line 552 "/opt/bah/json.bah"
 else {
 
-#line 551 "/opt/bah/json.bah"
+#line 553 "/opt/bah/json.bah"
 char** ____BAH_COMPILER_VAR_126_aoptabahajsonbbah = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_126_aoptabahajsonbbah[1] = "\01\0\0\0""\n";____BAH_COMPILER_VAR_126_aoptabahajsonbbah[0] = s;char* ____BAH_COMPILER_VAR_127_aoptabahajsonbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_126_aoptabahajsonbbah, 2);s = ____BAH_COMPILER_VAR_127_aoptabahajsonbbah;
 }
 };
 }
 
-#line 554 "/opt/bah/json.bah"
+#line 556 "/opt/bah/json.bah"
 else if ((ae->isStruct==true)) {
 
-#line 555 "/opt/bah/json.bah"
+#line 557 "/opt/bah/json.bah"
 struct Bah_Array_Type* arr = memoryAlloc(sizeof(struct Bah_Array_Type));
 
 arr->length = 0;
 arr->elemSize = sizeof(void *);
 
-#line 556 "/opt/bah/json.bah"
+#line 558 "/opt/bah/json.bah"
 if ((isMember==false)) {
 
-#line 557 "/opt/bah/json.bah"
+#line 559 "/opt/bah/json.bah"
 arr = e.value;
 }
 
-#line 558 "/opt/bah/json.bah"
+#line 560 "/opt/bah/json.bah"
 else {
 
-#line 559 "/opt/bah/json.bah"
+#line 561 "/opt/bah/json.bah"
 void ** ev = e.value;
 
-#line 560 "/opt/bah/json.bah"
+#line 562 "/opt/bah/json.bah"
 arr = *ev;
 }
 
-#line 563 "/opt/bah/json.bah"
+#line 565 "/opt/bah/json.bah"
 register long long int i = 0;
 
-#line 563 "/opt/bah/json.bah"
+#line 565 "/opt/bah/json.bah"
 while ((i<len(arr))) {
 
-#line 564 "/opt/bah/json.bah"
+#line 566 "/opt/bah/json.bah"
 void * arrElem = ((void **)arr->data)[i];
 
-#line 565 "/opt/bah/json.bah"
+#line 567 "/opt/bah/json.bah"
 ae->value = arrElem;
 
-#line 566 "/opt/bah/json.bah"
+#line 568 "/opt/bah/json.bah"
 register long long int j = 0;
 
-#line 566 "/opt/bah/json.bah"
+#line 568 "/opt/bah/json.bah"
 while ((j<len(ae->structLayout))) {
 
-#line 567 "/opt/bah/json.bah"
+#line 569 "/opt/bah/json.bah"
 struct reflectElement m = ((struct reflectElement*)ae->structLayout->data)[j];
 
-#line 568 "/opt/bah/json.bah"
+#line 570 "/opt/bah/json.bah"
 m.value = reflectElement__calculateOffset(&m,ae->value);
 
-#line 569 "/opt/bah/json.bah"
+#line 571 "/opt/bah/json.bah"
 
     __Bah_realocate_arr(ae->structLayout, j);
     ((struct reflectElement*)ae->structLayout->data)[j] = m;
 
-#line 570 "/opt/bah/json.bah"
+#line 572 "/opt/bah/json.bah"
 j = j+1;
 };
 
-#line 572 "/opt/bah/json.bah"
+#line 574 "/opt/bah/json.bah"
 char** ____BAH_COMPILER_VAR_128_aoptabahajsonbbah = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_128_aoptabahajsonbbah[1] = oldToJson__inner(*ae,false,tabs);____BAH_COMPILER_VAR_128_aoptabahajsonbbah[0] = s;char* ____BAH_COMPILER_VAR_129_aoptabahajsonbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_128_aoptabahajsonbbah, 2);s = ____BAH_COMPILER_VAR_129_aoptabahajsonbbah;
 
-#line 573 "/opt/bah/json.bah"
+#line 575 "/opt/bah/json.bah"
 i = i+1;
 
-#line 574 "/opt/bah/json.bah"
+#line 576 "/opt/bah/json.bah"
 if ((i<len(arr))) {
 
-#line 575 "/opt/bah/json.bah"
+#line 577 "/opt/bah/json.bah"
 char** ____BAH_COMPILER_VAR_130_aoptabahajsonbbah = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_130_aoptabahajsonbbah[1] = "\02\0\0\0"",\n";____BAH_COMPILER_VAR_130_aoptabahajsonbbah[0] = s;char* ____BAH_COMPILER_VAR_131_aoptabahajsonbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_130_aoptabahajsonbbah, 2);s = ____BAH_COMPILER_VAR_131_aoptabahajsonbbah;
 }
 
-#line 576 "/opt/bah/json.bah"
+#line 578 "/opt/bah/json.bah"
 else {
 
-#line 577 "/opt/bah/json.bah"
+#line 579 "/opt/bah/json.bah"
 char** ____BAH_COMPILER_VAR_132_aoptabahajsonbbah = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_132_aoptabahajsonbbah[1] = "\01\0\0\0""\n";____BAH_COMPILER_VAR_132_aoptabahajsonbbah[0] = s;char* ____BAH_COMPILER_VAR_133_aoptabahajsonbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_132_aoptabahajsonbbah, 2);s = ____BAH_COMPILER_VAR_133_aoptabahajsonbbah;
 }
 };
 }
 
-#line 581 "/opt/bah/json.bah"
+#line 583 "/opt/bah/json.bah"
 char** ____BAH_COMPILER_VAR_134_aoptabahajsonbbah = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_134_aoptabahajsonbbah[1] = "\01\0\0\0""]";____BAH_COMPILER_VAR_134_aoptabahajsonbbah[0] = s;char* ____BAH_COMPILER_VAR_135_aoptabahajsonbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_134_aoptabahajsonbbah, 2);s = ____BAH_COMPILER_VAR_135_aoptabahajsonbbah;
 
-#line 582 "/opt/bah/json.bah"
+#line 584 "/opt/bah/json.bah"
 return s;
 }
 
-#line 584 "/opt/bah/json.bah"
+#line 586 "/opt/bah/json.bah"
 return "\01\0\0\0""0";
 };
 
-#line 589 "/opt/bah/json.bah"
+#line 591 "/opt/bah/json.bah"
 char* oldToJson(struct reflectElement e){
 
-#line 590 "/opt/bah/json.bah"
+#line 592 "/opt/bah/json.bah"
 return oldToJson__inner(e,false,0);
 };
 
-#line 598 "/opt/bah/json.bah"
+#line 600 "/opt/bah/json.bah"
 struct rope* toJsonRope(struct reflectElement e){
 
-#line 599 "/opt/bah/json.bah"
+#line 601 "/opt/bah/json.bah"
 unsigned long long int l = strlen(e.type);
 
-#line 601 "/opt/bah/json.bah"
+#line 603 "/opt/bah/json.bah"
 if ((e.isArray==false)) {
 
-#line 602 "/opt/bah/json.bah"
+#line 604 "/opt/bah/json.bah"
 unsigned long long int ol = l;
 
-#line 603 "/opt/bah/json.bah"
+#line 605 "/opt/bah/json.bah"
 for (; (l>=2)&&(e.type[l-1+4]==42)&&(e.type[l-2+4]==42); --l) {
 
-#line 604 "/opt/bah/json.bah"
+#line 606 "/opt/bah/json.bah"
 if ((e.value==null)) {
 
-#line 605 "/opt/bah/json.bah"
+#line 607 "/opt/bah/json.bah"
 return rope("\01\0\0\0""0");
 }
 
-#line 607 "/opt/bah/json.bah"
+#line 609 "/opt/bah/json.bah"
 void ** v = e.value;
 
-#line 608 "/opt/bah/json.bah"
+#line 610 "/opt/bah/json.bah"
 e.value = *v;
 };
 
-#line 610 "/opt/bah/json.bah"
+#line 612 "/opt/bah/json.bah"
 if ((l!=ol)) {
 
-#line 611 "/opt/bah/json.bah"
+#line 613 "/opt/bah/json.bah"
 e.type = cpstringSubsitute(e.type, 0, l);
 }
 }
 
-#line 615 "/opt/bah/json.bah"
+#line 617 "/opt/bah/json.bah"
 if ((e.value==null)) {
 
-#line 616 "/opt/bah/json.bah"
+#line 618 "/opt/bah/json.bah"
 return rope("\01\0\0\0""0");
 }
 
-#line 619 "/opt/bah/json.bah"
+#line 621 "/opt/bah/json.bah"
 if ((e.isStruct==true)) {
 
-#line 620 "/opt/bah/json.bah"
+#line 622 "/opt/bah/json.bah"
 struct rope* s = rope("\01\0\0\0""{");
 
-#line 621 "/opt/bah/json.bah"
+#line 623 "/opt/bah/json.bah"
 register long long int i = 0;
 
-#line 621 "/opt/bah/json.bah"
+#line 623 "/opt/bah/json.bah"
 for (; (i<len(e.structLayout)); ++i) {
 
-#line 622 "/opt/bah/json.bah"
+#line 624 "/opt/bah/json.bah"
 struct reflectElement m = ((struct reflectElement*)e.structLayout->data)[i];
 
-#line 623 "/opt/bah/json.bah"
+#line 625 "/opt/bah/json.bah"
 void * v = e.value;
 
-#line 624 "/opt/bah/json.bah"
+#line 626 "/opt/bah/json.bah"
 if ((m.isArray==true)) {
 
-#line 625 "/opt/bah/json.bah"
+#line 627 "/opt/bah/json.bah"
 struct reflectElement* ____BAH_COMPILER_VAR_136_aoptabahajsonbbah = memoryAlloc(sizeof(struct reflectElement));
 ____BAH_COMPILER_VAR_136_aoptabahajsonbbah->structLayout = memoryAlloc(sizeof(struct Bah_Array_Type));
             ____BAH_COMPILER_VAR_136_aoptabahajsonbbah->structLayout->length = 0;
             ____BAH_COMPILER_VAR_136_aoptabahajsonbbah->structLayout->elemSize = sizeof(struct reflectElement);
             struct reflectElement* nae = ____BAH_COMPILER_VAR_136_aoptabahajsonbbah;
 
-#line 626 "/opt/bah/json.bah"
+#line 628 "/opt/bah/json.bah"
 struct reflectElement* naep = m.arrayElem;
 
-#line 627 "/opt/bah/json.bah"
+#line 629 "/opt/bah/json.bah"
 *nae = *naep;
 
-#line 628 "/opt/bah/json.bah"
+#line 630 "/opt/bah/json.bah"
 char** ____BAH_COMPILER_VAR_137_aoptabahajsonbbah = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_137_aoptabahajsonbbah[1] = "\01\0\0\0""*";____BAH_COMPILER_VAR_137_aoptabahajsonbbah[0] = nae->type;char* ____BAH_COMPILER_VAR_138_aoptabahajsonbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_137_aoptabahajsonbbah, 2);nae->type = ____BAH_COMPILER_VAR_138_aoptabahajsonbbah;
 
-#line 629 "/opt/bah/json.bah"
+#line 631 "/opt/bah/json.bah"
 m.arrayElem = nae;
 }
 
-#line 630 "/opt/bah/json.bah"
+#line 632 "/opt/bah/json.bah"
 else if ((m.type[strlen(m.type)-1+4]!=42)) {
 
-#line 631 "/opt/bah/json.bah"
+#line 633 "/opt/bah/json.bah"
 char** ____BAH_COMPILER_VAR_139_aoptabahajsonbbah = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_139_aoptabahajsonbbah[1] = "\01\0\0\0""*";____BAH_COMPILER_VAR_139_aoptabahajsonbbah[0] = m.type;char* ____BAH_COMPILER_VAR_140_aoptabahajsonbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_139_aoptabahajsonbbah, 2);m.type = ____BAH_COMPILER_VAR_140_aoptabahajsonbbah;
 }
 
-#line 633 "/opt/bah/json.bah"
+#line 635 "/opt/bah/json.bah"
 m.value = reflectElement__calculateOffset(&m,e.value);
 
-#line 634 "/opt/bah/json.bah"
+#line 636 "/opt/bah/json.bah"
 char** ____BAH_COMPILER_VAR_141_aoptabahajsonbbah = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_141_aoptabahajsonbbah[2] = "\03\0\0\0""\": ";____BAH_COMPILER_VAR_141_aoptabahajsonbbah[1] = m.name;____BAH_COMPILER_VAR_141_aoptabahajsonbbah[0] = "\01\0\0\0""\"";char* ____BAH_COMPILER_VAR_142_aoptabahajsonbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_141_aoptabahajsonbbah, 3);s = rope__add(s, (rope__add(rope(____BAH_COMPILER_VAR_142_aoptabahajsonbbah), toJsonRope(m))));
 
-#line 635 "/opt/bah/json.bah"
+#line 637 "/opt/bah/json.bah"
 if ((i+1<len(e.structLayout))) {
 
-#line 636 "/opt/bah/json.bah"
+#line 638 "/opt/bah/json.bah"
 s = rope__add(s, rope("\02\0\0\0"", "));
 }
 };
 
-#line 639 "/opt/bah/json.bah"
+#line 641 "/opt/bah/json.bah"
 s = rope__add(s, rope("\01\0\0\0""}"));
 
-#line 640 "/opt/bah/json.bah"
+#line 642 "/opt/bah/json.bah"
 return s;
 }
 
-#line 643 "/opt/bah/json.bah"
+#line 645 "/opt/bah/json.bah"
 if ((e.isArray==true)) {
 
-#line 644 "/opt/bah/json.bah"
+#line 646 "/opt/bah/json.bah"
 struct rope* s = rope("\01\0\0\0""[");
 
-#line 645 "/opt/bah/json.bah"
+#line 647 "/opt/bah/json.bah"
 void ** arrp = e.value;
 
-#line 646 "/opt/bah/json.bah"
+#line 648 "/opt/bah/json.bah"
 struct Bah_Array_Type* arr = (struct Bah_Array_Type*)*arrp;
 
-#line 647 "/opt/bah/json.bah"
+#line 649 "/opt/bah/json.bah"
 if ((arr==null)) {
 
-#line 648 "/opt/bah/json.bah"
+#line 650 "/opt/bah/json.bah"
 return rope("\02\0\0\0""[]");
 }
 
-#line 650 "/opt/bah/json.bah"
+#line 652 "/opt/bah/json.bah"
 void * base = cArr(arr);
 
-#line 651 "/opt/bah/json.bah"
+#line 653 "/opt/bah/json.bah"
 l = len(arr);
 
-#line 652 "/opt/bah/json.bah"
+#line 654 "/opt/bah/json.bah"
 long long int es =  arr -> elemSize;
 
-#line 653 "/opt/bah/json.bah"
+#line 655 "/opt/bah/json.bah"
 struct reflectElement* aep = e.arrayElem;
 
-#line 654 "/opt/bah/json.bah"
+#line 656 "/opt/bah/json.bah"
 struct reflectElement ae = *aep;
 
-#line 656 "/opt/bah/json.bah"
+#line 658 "/opt/bah/json.bah"
 if ((ae.type[strlen(ae.type)-1+4]!=42)&&(ae.isArray==false)) {
 
-#line 657 "/opt/bah/json.bah"
+#line 659 "/opt/bah/json.bah"
 char** ____BAH_COMPILER_VAR_143_aoptabahajsonbbah = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_143_aoptabahajsonbbah[1] = "\01\0\0\0""*";____BAH_COMPILER_VAR_143_aoptabahajsonbbah[0] = ae.type;char* ____BAH_COMPILER_VAR_144_aoptabahajsonbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_143_aoptabahajsonbbah, 2);ae.type = ____BAH_COMPILER_VAR_144_aoptabahajsonbbah;
 }
 
-#line 659 "/opt/bah/json.bah"
+#line 661 "/opt/bah/json.bah"
 register long long int i = 0;
 
-#line 659 "/opt/bah/json.bah"
+#line 661 "/opt/bah/json.bah"
 for (; (i<l); ++i) {
 
-#line 660 "/opt/bah/json.bah"
+#line 662 "/opt/bah/json.bah"
 struct reflectElement m = ae;
 
-#line 661 "/opt/bah/json.bah"
+#line 663 "/opt/bah/json.bah"
 m.value = (void *)((long long int)base+es*i);
 
-#line 662 "/opt/bah/json.bah"
+#line 664 "/opt/bah/json.bah"
 s = rope__add(s, toJsonRope(m));
 
-#line 663 "/opt/bah/json.bah"
+#line 665 "/opt/bah/json.bah"
 if ((i+1<l)) {
 
-#line 664 "/opt/bah/json.bah"
+#line 666 "/opt/bah/json.bah"
 s = rope__add(s, rope("\02\0\0\0"", "));
 }
 };
 
-#line 667 "/opt/bah/json.bah"
+#line 669 "/opt/bah/json.bah"
 s = rope__add(s, rope("\01\0\0\0""]"));
 
-#line 668 "/opt/bah/json.bah"
+#line 670 "/opt/bah/json.bah"
 return s;
 }
 
-#line 671 "/opt/bah/json.bah"
+#line 673 "/opt/bah/json.bah"
 if ((strcmp(e.type, "\04\0\0\0""int*") == 0)||(strcmp(e.type, "\06\0\0\0""int32*") == 0)) {
 
-#line 672 "/opt/bah/json.bah"
+#line 674 "/opt/bah/json.bah"
 long long int* j = e.value;
 
-#line 673 "/opt/bah/json.bah"
+#line 675 "/opt/bah/json.bah"
 return rope(intToStr(*j));
 }
 
-#line 676 "/opt/bah/json.bah"
+#line 678 "/opt/bah/json.bah"
 if ((strcmp(e.type, "\011\0\0\0""cpstring*") == 0)) {
 
-#line 677 "/opt/bah/json.bah"
+#line 679 "/opt/bah/json.bah"
 char** s = e.value;
 
-#line 678 "/opt/bah/json.bah"
+#line 680 "/opt/bah/json.bah"
 if ((s==null)) {
 
-#line 679 "/opt/bah/json.bah"
+#line 681 "/opt/bah/json.bah"
 return rope("\02\0\0\0""\"\"");
 }
 
-#line 681 "/opt/bah/json.bah"
+#line 683 "/opt/bah/json.bah"
 char** ____BAH_COMPILER_VAR_145_aoptabahajsonbbah = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_145_aoptabahajsonbbah[2] = "\01\0\0\0""\"";____BAH_COMPILER_VAR_145_aoptabahajsonbbah[1] = jsonEscapeStr(*s);____BAH_COMPILER_VAR_145_aoptabahajsonbbah[0] = "\01\0\0\0""\"";char* ____BAH_COMPILER_VAR_146_aoptabahajsonbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_145_aoptabahajsonbbah, 3);return rope(____BAH_COMPILER_VAR_146_aoptabahajsonbbah);
 }
 
-#line 684 "/opt/bah/json.bah"
+#line 686 "/opt/bah/json.bah"
 if ((strcmp(e.type, "\06\0\0\0""float*") == 0)||(strcmp(e.type, "\010\0\0\0""float32*") == 0)) {
 
-#line 685 "/opt/bah/json.bah"
+#line 687 "/opt/bah/json.bah"
 double* f = e.value;
 
-#line 686 "/opt/bah/json.bah"
+#line 688 "/opt/bah/json.bah"
 return rope(floatToStr(*f));
 }
 
-#line 689 "/opt/bah/json.bah"
+#line 691 "/opt/bah/json.bah"
 if ((strcmp(e.type, "\05\0\0\0""uint*") == 0)||(strcmp(e.type, "\07\0\0\0""uint32*") == 0)) {
 
-#line 690 "/opt/bah/json.bah"
+#line 692 "/opt/bah/json.bah"
 unsigned long long int* uj = e.value;
 
-#line 691 "/opt/bah/json.bah"
+#line 693 "/opt/bah/json.bah"
 return rope(intToStr(*uj));
 }
 
-#line 694 "/opt/bah/json.bah"
+#line 696 "/opt/bah/json.bah"
 if ((strcmp(e.type, "\05\0\0\0""char*") == 0)) {
 
-#line 695 "/opt/bah/json.bah"
+#line 697 "/opt/bah/json.bah"
 char* c = e.value;
 
-#line 696 "/opt/bah/json.bah"
+#line 698 "/opt/bah/json.bah"
 char** ____BAH_COMPILER_VAR_147_aoptabahajsonbbah = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_147_aoptabahajsonbbah[2] = "\01\0\0\0""\"";____BAH_COMPILER_VAR_147_aoptabahajsonbbah[1] = charToString(*c);____BAH_COMPILER_VAR_147_aoptabahajsonbbah[0] = "\01\0\0\0""\"";char* ____BAH_COMPILER_VAR_148_aoptabahajsonbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_147_aoptabahajsonbbah, 3);return rope(____BAH_COMPILER_VAR_148_aoptabahajsonbbah);
 }
 
-#line 699 "/opt/bah/json.bah"
+#line 701 "/opt/bah/json.bah"
 if ((strcmp(e.type, "\05\0\0\0""bool*") == 0)) {
 
-#line 700 "/opt/bah/json.bah"
+#line 702 "/opt/bah/json.bah"
 char* b = e.value;
 
-#line 701 "/opt/bah/json.bah"
+#line 703 "/opt/bah/json.bah"
 if ((*b==true)) {
 
-#line 702 "/opt/bah/json.bah"
+#line 704 "/opt/bah/json.bah"
 return rope("\04\0\0\0""true");
 }
 
-#line 704 "/opt/bah/json.bah"
+#line 706 "/opt/bah/json.bah"
 return rope("\05\0\0\0""false");
 }
 
-#line 707 "/opt/bah/json.bah"
+#line 709 "/opt/bah/json.bah"
 return rope("\04\0\0\0""null");
 };
 
-#line 710 "/opt/bah/json.bah"
+#line 712 "/opt/bah/json.bah"
 char* toJson(struct reflectElement e){
 
-#line 711 "/opt/bah/json.bah"
+#line 713 "/opt/bah/json.bah"
 if (__builtin_expect((e.isArray==false)&&(e.type[strlen(e.type)-1+4]!=42), 0)) {
 
-#line 712 "/opt/bah/json.bah"
-char** ____BAH_COMPILER_VAR_149_aoptabahajsonbbah = alloca(7 * sizeof(char*));____BAH_COMPILER_VAR_149_aoptabahajsonbbah[6] = "\02\0\0\0"").";____BAH_COMPILER_VAR_149_aoptabahajsonbbah[5] = e.name;____BAH_COMPILER_VAR_149_aoptabahajsonbbah[4] = "\051\0\0\0"" but a pointer is required, try: toJson(&";____BAH_COMPILER_VAR_149_aoptabahajsonbbah[3] = e.type;____BAH_COMPILER_VAR_149_aoptabahajsonbbah[2] = "\012\0\0\0"") of type ";____BAH_COMPILER_VAR_149_aoptabahajsonbbah[1] = e.name;____BAH_COMPILER_VAR_149_aoptabahajsonbbah[0] = "\07\0\0\0""toJson(";char* ____BAH_COMPILER_VAR_150_aoptabahajsonbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_149_aoptabahajsonbbah, 7);__BAH_panic(____BAH_COMPILER_VAR_150_aoptabahajsonbbah,"\025\0\0\0""/opt/bah/json.bah:712");
+#line 714 "/opt/bah/json.bah"
+char** ____BAH_COMPILER_VAR_149_aoptabahajsonbbah = alloca(7 * sizeof(char*));____BAH_COMPILER_VAR_149_aoptabahajsonbbah[6] = "\02\0\0\0"").";____BAH_COMPILER_VAR_149_aoptabahajsonbbah[5] = e.name;____BAH_COMPILER_VAR_149_aoptabahajsonbbah[4] = "\051\0\0\0"" but a pointer is required, try: toJson(&";____BAH_COMPILER_VAR_149_aoptabahajsonbbah[3] = e.type;____BAH_COMPILER_VAR_149_aoptabahajsonbbah[2] = "\012\0\0\0"") of type ";____BAH_COMPILER_VAR_149_aoptabahajsonbbah[1] = e.name;____BAH_COMPILER_VAR_149_aoptabahajsonbbah[0] = "\07\0\0\0""toJson(";char* ____BAH_COMPILER_VAR_150_aoptabahajsonbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_149_aoptabahajsonbbah, 7);__BAH_panic(____BAH_COMPILER_VAR_150_aoptabahajsonbbah,"\025\0\0\0""/opt/bah/json.bah:714");
 }
 
-#line 714 "/opt/bah/json.bah"
+#line 716 "/opt/bah/json.bah"
 
                 struct rope* ____BAH_COMPILER_VAR_151_aoptabahajsonbbah = toJsonRope(e);
                 return rope__toStr(____BAH_COMPILER_VAR_151_aoptabahajsonbbah);

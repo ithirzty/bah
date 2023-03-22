@@ -95,7 +95,7 @@ struct dbResponse {
                 arr = []ptr; arr = e.value
                 i=0; for i < len(this.rows) {
                     r = this.rows[i]
-                    ae.value = memoryAlloc(56)
+                    ae.value = memoryAlloc(ae.size)
                     memset(ae.value, 0, ae.size)
                     r.scan(*ae)
                     arr[i] = ae.value
