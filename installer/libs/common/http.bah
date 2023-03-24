@@ -1113,12 +1113,19 @@ makeRawHttpsRequest(host cpstring, message cpstring, timeout int) response_buffe
 
 #define! getpeername(connfd int, addr sockaddr_in*, s int*) int
 
+struct http_form_file {
+    name: cpstring
+    fileName: cpstring
+    type: cpstring
+    body: cpstring
+}
 
 //A wrapper for requests.
 //When receiving a connection, you will be able to retreive the passed headers, path... from the client.
 struct http_request extend http_transport {
     request: cpstring
     form: []string
+    files: []http_form_file
     timeout: int = 0
     sizeLimit: uint = 0
     
@@ -1213,11 +1220,7 @@ struct http_request extend http_transport {
         }
 
         contentType = this.getHeader("Content-Type")
-        if strHasPrefix(contentType, "multipart/form-data") {
-            //cannot handle multipart for now
-            return false
-        }
-
+        contentTypeS = string(contentType)
         if contentType == "application/x-www-form-urlencoded" {
             body = this.body
             tmpBdy = *body
@@ -1225,8 +1228,163 @@ struct http_request extend http_transport {
                 tmpBdy.trimRight(2)
             }
             this.form = splitString(tmpBdy, "&")
-        }
+        } else if contentTypeS.hasPrefix("multipart/form-data") {
+            if contentTypeS.countChar('=') == 0 {
+                return false
+            }
+            boundary = splitString(contentTypeS, "=")[1].str()
+            if boundary[0] == '"' {
+                boundary = boundary[1:len(boundary)-1]
+            }
+            
+            body = this.body
+            values = splitString(*body, "--"+boundary)
+            j=0; for j < len(values), j++ {
+                file = http_form_file{}
 
+                req = values[j].str()
+                i=0; for i < len(req), i++ {
+                    headerName = ""
+                    headerCont = ""
+                    //Read header name until ':'
+                    start = i
+                    for i < len(req), i++ {
+                        c = req[i]
+                        if c == ':' {
+                            headerName = req[start:i]
+                            i++
+                            break
+                        }
+                    }
+
+                    for i < len(req), i++ {
+                        if isSpace(req[i]) == false {
+                            break
+                        }
+                    }
+
+                    //Read header content until "\r\n"
+                    start = i
+                    for i < len(req), i++ {
+                        c = req[i]
+                        if c == <char>13 {
+                            if i+1 < len(req) && req[i+1] == <char>10 {
+                                headerCont = req[start:i]
+                                i += 2
+                                break
+                            }
+                        }
+                    }
+
+                    headerNameS = toLower(string(headerName))
+
+                    if headerNameS.count("content-disposition") {
+                        k=0; for k < len(headerCont), k++ {
+                            if isSpace(headerCont[k]) == false {
+                                break
+                            }
+                        }
+                        
+                        attrNameInd = [k,0]
+                        attrContInd = [0,0]; cont = ""
+                        isName = true
+                        headerCont += ";"
+                        for k < len(headerCont), k++ {
+                            if isSpace(headerCont[k]) {
+                                continue
+                            }
+
+                            if headerCont[k] == ';' {
+                                if isName == false {
+                                    if len(cont) == 0 {
+                                        cont = headerCont[attrContInd[0]:attrContInd[1]]
+                                    }
+                                    name = headerCont[attrNameInd[0]:attrNameInd[1]]
+                                    if name == "name" {
+                                        file.name = cont
+                                    } else if name == "filename" {
+                                        file.fileName = cont
+                                    }
+                                }
+                                cont = ""
+                                isName = true
+                                k++
+                                for k < len(headerCont), k++ {
+                                    if isSpace(headerCont[k]) == false {
+                                        break
+                                    }
+                                }
+                                attrNameInd[0] = k
+                                continue
+                            }
+
+                            if isName && headerCont[k] == '=' {
+                                    attrNameInd[1] = k
+                                    k++
+                                    for k < len(headerCont), k++ {
+                                        if isSpace(headerCont[k]) == false {
+                                            break
+                                        }
+                                    }
+                                    if headerCont[k] == '"' {
+                                        contb = strBuilder{}
+                                        k++
+                                        for k < len(headerCont), k++ {
+                                            if headerCont[k] == '\' {
+                                                i++
+                                                contb.append(headerCont[k])
+                                                continue
+                                            }
+                                            if headerCont[k] == '"' {
+                                                break
+                                            }
+                                            contb.append(headerCont[k])
+                                        }
+                                        cont = contb.str()
+                                    } else {
+                                        attrContInd[0] = k
+                                    }
+                                    isName = false
+                                    continue
+                            } else {
+
+                            }
+                        }
+
+                    } else if headerNameS.count("content-type") {
+                        file.type = headerCont
+                    }
+
+                    //If "\r\n", end of headers, beggining of body
+                    if req[i] == <char>13 {
+                        if i+1 < len(req) {
+                            if req[i+1] == <char>10 {
+                                i+= 2
+                                break
+                            }
+                        }
+                    }
+                    i--
+                }
+                
+                end = len(req)
+
+                if end >= 2 && req[end-1] == <char>10  && req[end-2] == <char>13 {
+                    end -= 2
+                }
+
+                formVal = req[i:end]
+
+                if len(file.fileName) != 0 {
+                    file.body = formVal
+                    this.files[len(this.files)] = file
+                } else {
+                    this.form[len(this.form)] = string(file.name+"="+urlEncode(formVal))
+                }
+
+            }
+
+        }
 
         return true
     }
@@ -1280,10 +1438,12 @@ struct http_request extend http_transport {
 
 }
 
-//Used for parsing the request
-http_request(connfd int) http_request {
+//Used for parsing the request (with limited size)
+http_requestSizeLimited(connfd int, size int) http_request {
     r = http_request{}
-    r.socket = http_socket{}
+    r.socket = http_socket{
+        sizeLimit: size
+    }
     r.socket.sockfd = connfd
     req = r.socket.receive()
     if req == null {
@@ -1379,6 +1539,11 @@ http_request(connfd int) http_request {
     r.request = req
 
     return r
+}
+
+//Used for parsing the request
+http_request(connfd int) http_request {
+return http_requestSizeLimited(connfd, 0)
 }
 
 //Used for making simple get request.
