@@ -2897,7 +2897,10 @@ parseAsync(l []Tok, elems Elems*) {
         void* tmpArgs = memoryAlloc(sizeof("+tmpArgs+"));
         memcpy(tmpArgs, &"+tmpArgs+", sizeof("+tmpArgs+"));
         pthread_t id;
-        "+tCreate+"(&id, 0, "+fnWrapper+", tmpArgs);
+        pthread_attr_t attr;
+        pthread_attr_init(&attr);
+        "+tCreate+"(&id, &attr, "+fnWrapper+", tmpArgs);
+        pthread_attr_destroy(&attr);
     }; 
     
     ")

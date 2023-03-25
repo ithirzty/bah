@@ -151,6 +151,48 @@ struct! ifreq {
     __Bah_win32_WSA_is_init = __Bah_win32_WSA_init()
 }
 
+
+//SSL - TLS (https)
+#cLib "lssl" "lcrypto"
+
+#windows {
+    #cLib "lws2_32"
+}
+
+#define! BIO int
+#define! SSL int
+#define! SSL_CTX int
+
+#define! SSL_library_init() int
+#define! TLSv1_2_client_method() int
+#define! SSL_CTX_new(m int) SSL_CTX*
+#define! BIO_new_ssl_connect(ctx SSL_CTX*) BIO*
+#define! BIO_set_conn_hostname(bio BIO*, h cpstring) int
+#define! BIO_do_connect(bio BIO*) int
+#define! BIO_do_handshake(bio BIO*) int
+#define! BIO_write(bio BIO*, cont cpstring, size int) int
+#define! BIO_should_retry(bio BIO*) int
+#define! BIO_read(bio BIO*, buff char*, size int) int
+#define! BIO_free_all(bio BIO*)
+#define! SSL_CTX_free(ctx SSL_CTX*)
+#define! SSL_CTX_set_timeout(ctx SSL_CTX*, t int) int
+#define! BIO_get_ssl(bio BIO*, ssl SSL**)
+#define! SSL_set_mode(ssl SSL*, mode int)
+#define! SSL_set_tlsext_host_name(ssl SSL*, host cpstring) int
+#define! SSL_CTX_set_cipher_list(ctx SSL_CTX*, l cpstring)
+#define! SSL_CTX_load_verify_locations(ctx SSL_CTX*, cert cpstring, key cpstring) int
+#define! SSL_CTX_set_default_verify_paths(ctx SSL_CTX*) int
+#define! SSL_CTX_use_certificate_file(ctx SSL_CTX*, cert cpstring, ft int) int
+#define! SSL_CTX_set_default_passwd_cb_userdata(ctx SSL_CTX*, pass cpstring)
+#define! SSL_CTX_use_PrivateKey_file(ctx SSL_CTX*, key cpstring, ft iny) int
+#define! SSL_CTX_check_private_key(ctx SSL_CTX*) int
+#define! OpenSSL_add_all_algorithms()
+#define! SSL_new(ctx SSL_CTX*) SSL*
+#define! SSL_set_fd(ssl SSL*, sd int)
+#define! SSL_accept(ssl SSL*)
+
+__Bah_http_is_ssl_initialized = SSL_library_init()
+
 //Represents a response buffer for easier i/o reading.
 //You can append to the buffer and read its content.
 struct response_buffer {
@@ -761,15 +803,10 @@ struct http_transport {
 
     //To set a header by name.
     setHeader(name cpstring, value cpstring) {
-        
         h = new string
         ln = toLower(string(name))
-        h.set(ln.str())
-        h.append(": ")
-        h.append(value)
-
-        lhs = len(this.headers)
-        this.headers[lhs] = h
+        h.set(ln.str()+": "+value)
+        this.headers[len(this.headers)] = h
     }
 
     //To get the value of a header by name.
@@ -1005,44 +1042,6 @@ makeRespFromBody(response response_buffer) http_response* {
     return resp
 }
 
-
-
-//making requests
-
-//SSL - TLS (https)
-
-#cLib "lssl" "lcrypto"
-
-#windows {
-    #cLib "lws2_32"
-}
-
-// #linux {
-//     #cLib "w /opt/bah/libs/libssl.a" "w /opt/bah/libs/libcrypto.a"
-// }
-
-#define! BIO int
-#define! SSL int
-#define! SSL_CTX int
-
-#define! SSL_library_init() int
-#define! TLSv1_2_client_method() int
-#define! SSL_CTX_new(m int) SSL_CTX*
-#define! BIO_new_ssl_connect(ctx SSL_CTX*) BIO*
-#define! BIO_set_conn_hostname(bio BIO*, h cpstring) int
-#define! BIO_do_connect(bio BIO*) int
-#define! BIO_do_handshake(bio BIO*) int
-#define! BIO_write(bio BIO*, cont cpstring, size int) int
-#define! BIO_should_retry(bio BIO*) int
-#define! BIO_read(bio BIO*, buff char*, size int) int
-#define! BIO_free_all(bio BIO*)
-#define! SSL_CTX_free(ctx SSL_CTX*)
-#define! SSL_CTX_set_timeout(ctx SSL_CTX*, t int) int
-#define! BIO_get_ssl(bio BIO*, ssl SSL**)
-#define! SSL_set_mode(ssl SSL*, mode int)
-#define! SSL_set_tlsext_host_name(ssl SSL*, host cpstring) int
-
-__Bah_http_is_ssl_initialized = SSL_library_init()
 
 //Used for making TLS requests.
 //*This is an internal function, you should know what you're doing if you decide to use it.*
