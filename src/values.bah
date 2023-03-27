@@ -680,7 +680,16 @@ valueArr(l []Tok, i int, ltp lineType, elems Elems*) int {
             checkBounds(&index, elems)
             ptt.trimLeft(2)
             t.bahType = ptt.str()
-            t.cont = "(("+getCType(ptt.str(), elems).str()+"*)"+pt.cont+"->data)["+index.cont+"]"
+            isFunc = ptt.hasPrefix("function(")
+            if isFunc {
+                t.cont = genCompilerVar()
+                tmpFn = parseFnType(ptt)
+                tmpFn.name = t.cont
+                t.setRefFn(tmpFn)
+                OUTPUT += rope(getCtypeFromFunc(tmpFn, elems)+" = ((void**)"+pt.cont+"->data)["+index.cont+"];\n") // Will not work in else if
+            } else {
+                t.cont = "(("+getCType(ptt.str(), elems).str()+"*)"+pt.cont+"->data)["+index.cont+"]"
+            }
 
             indT = new Tok
             *indT = index
@@ -692,14 +701,17 @@ valueArr(l []Tok, i int, ltp lineType, elems Elems*) int {
                 t.processedPtr = true
             }
 
-            tmpV = new variable {
-                name: pt.ogCont
-                type: t.bahType
-                isArray: true
-                arrIndex: indT
-                arrRoot: rootT
+            if isFunc == false {
+                tmpV = new variable {
+                    name: pt.ogCont
+                    type: t.bahType
+                    isArray: true
+                    arrIndex: indT
+                    arrRoot: rootT
+                }
+
+                t.setRefVar(tmpV)
             }
-            t.setRefVar(tmpV)
 
         } else {
             t.bahType = ptt.str()
@@ -1261,7 +1273,7 @@ valueTuple(l []Tok, i int, elems Elems*) int {
         for l[tokPos+offset+1].cont == "[" && l[tokPos+offset+2].cont == "]" {
             offset += 2
         }
-        if l[tokPos+offset+1].type == TOKEN_TYPE_VAR {
+        if l[tokPos+offset+1].type == TOKEN_TYPE_VAR || l[tokPos+offset+1].cont == "function" {
             return tokPos+1
         }
         throwErr(&l[tokPos], "Cannot declare {TOKEN} empty tuple.")

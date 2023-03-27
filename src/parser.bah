@@ -798,11 +798,38 @@ parseArrayType(line []Tok, elems Elems*) {
                 }
                 if i < len(line) {
                     t = line[i]
+                    arrElem = t.cont
                     if t.type != TOKEN_TYPE_VAR {
-                        throwErr(&t, "Cannot use {TOKEN} as array type.")
+                        if t.cont != "function" {
+                            throwErr(&t, "Cannot use {TOKEN} as array type.")
+                        }
+                        if i+2 >= len(line) || line[i+1].cont != "(" {
+                            throwErr(&line[i], "Invalid usage of {TOKEN}. Expected 'function(argtype,...)returntype'.")
+                        }
+                        fnPos = i
+                        i+=2
+                        nbEncl = 1
+                        mem = ""
+                        for i < len(line), i++ {
+                            if line[i].cont == "(" || line[i].cont == "[" {
+                                nbEncl++
+                            } else if line[i].cont == ")" || line[i].cont == "]" {
+                                nbEncl--
+                                if nbEncl == 0 {
+                                    break
+                                }
+                            }
+                            mem += line[i].cont
+                        }
+
+                        if i == len(line) {
+                            throwErr(&line[fnPos], "Type {TOKEN} does not end.")
+                        }
+
+                        arrElem += "("+mem+")"
+
                     }
                     deleteRange(line, start+1, i)
-                    arrElem = t.cont
                     t.bahType = bracks+arrElem
                     t.cont = ""
                     t.isValue = true

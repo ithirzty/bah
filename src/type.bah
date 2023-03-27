@@ -309,9 +309,8 @@ isTupleType(t cpstring) bool {
     return len(t) > 1 && t[0] == '[' && t[len(t)-1] == ']'
 }
 
-//Used for getting the C type from a function.
-getCfunctionType(cfrt string*, elemName cpstring, elems Elems*) cpstring {
-    tmpfn = parseFnType(*cfrt)
+//Used for getting the C type from a Bah function.
+getCtypeFromFunc(tmpfn func*, elems Elems*) cpstring {
     tmpfnArgsCType = ""
     j=0; for j < len(tmpfn.args), j++ {
         arg = tmpfn.args[j]
@@ -329,5 +328,12 @@ getCfunctionType(cfrt string*, elemName cpstring, elems Elems*) cpstring {
         tmpfnArgsCType += coma+"void*"
     }
 
-    return getCType(tmpfn.returns.type, elems).str() + " (*"+elemName+")("+tmpfnArgsCType+")"
+    return getCType(tmpfn.returns.type, elems).str() + " (*"+tmpfn.name+")("+tmpfnArgsCType+")"
+}
+
+//Used for getting the C type from a Bah function type.
+getCfunctionType(cfrt string*, elemName cpstring, elems Elems*) cpstring {
+    tmpfn = parseFnType(*cfrt)
+    tmpfn.name = elemName
+    return getCtypeFromFunc(tmpfn, elems)
 }
