@@ -45,7 +45,7 @@ valueFunc(fn func*, parent variable*, l []Tok, i int, ltp lineType, elems Elems*
             } else {
                 tokPos++
             }
-        } else {
+        } else if l[0].cont != "(" {
             return i
         }
     }
@@ -87,6 +87,27 @@ valueFunc(fn func*, parent variable*, l []Tok, i int, ltp lineType, elems Elems*
             fnt.cont = fnt.cont + t.cont
         }
         fnt.cont += ")"
+
+        //For dereferencing parenthesis
+        if tokPos > 0 && l[tokPos-1].cont == "*" && (tokPos == 1 || (tokPos > 1 && l[tokPos-2].isValue == false)) {
+            if isRCPpointerType(fnt.bahType) == false {
+                throwErr(&fnt, "Cannot dereference non pointer {TOKEN} ("+fnt.bahType+").")
+            }
+
+            fnt.cont = "*" + fnt.cont
+            
+            if fnt.bahType[len(fnt.bahType)-1] == '*' {
+                fnt.bahType = fnt.bahType[:len(fnt.bahType)-1]
+            } else if fnt.bahType == "cpstring" {
+                fnt.bahType = "char"
+            } else if fnt.bahType == "ptr" {
+                throwErr(&fnt, "Cannot dereference {TOKEN} of type ptr.")
+            }
+            
+            tokPos--
+            delete(l, tokPos)
+        }
+
         l[tokPos] = fnt
         return tokPos
     }
