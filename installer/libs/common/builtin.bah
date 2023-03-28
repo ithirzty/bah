@@ -270,6 +270,10 @@ fastExec(s cpstring) cpstring {
 	return response
 }
 
+#dynamic {
+	#cLib "no-pie" //For the backtrace to work in dynamically linked executables
+}
+
 //Used by the compiler when panic() is called.
 __BAH_panic(e cpstring, line cpstring) {
 	if __BAH_panic_chan != null {
@@ -296,8 +300,8 @@ __BAH_panic(e cpstring, line cpstring) {
 		i=1; for i < size, i++ {
 			p int = arr[i]
 
-			buff = buffer 2048
-			memset(buff, 0, 2048)
+			buff = buffer 4096
+			memset(buff, 0, 4096)
 			noCheck(sprintf(buff, cStr("addr2line %p -f -i -e %s"), p, selfPath))
 			s = fastExec(buffToStr(<char*>buff))
 			name = ""
