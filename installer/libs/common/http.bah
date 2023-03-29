@@ -162,6 +162,7 @@ struct! ifreq {
 #define! BIO int
 #define! SSL int
 #define! SSL_CTX int
+#define! X509 int
 
 #define! SSL_library_init() int
 #define! TLSv1_2_client_method() int
@@ -189,7 +190,16 @@ struct! ifreq {
 #define! OpenSSL_add_all_algorithms()
 #define! SSL_new(ctx SSL_CTX*) SSL*
 #define! SSL_set_fd(ssl SSL*, sd int)
-#define! SSL_accept(ssl SSL*)
+#define! SSL_accept(ssl SSL*) int
+#define! SSL_read(ssl SSL*, buff char*, s int) int
+#define! SSL_write(ssl SSL*, buff cpstring, s int) int
+#define! SSL_free(ssl SSL*)
+#define! SSL_get_peer_certificate(ssl SSL*) X509*
+#define! X509_get_subject_name(cert X509*) char*
+#define! X509_get_issuer_name(cert X509*) char*
+#define! X509_NAME_oneline(s char*, a int, b int) cpstring
+#define! X509_free(cert X509*)
+#define! TLSv1_2_server_method() int
 
 __Bah_http_is_ssl_initialized = SSL_library_init()
 
@@ -234,6 +244,7 @@ struct http_socket {
     sockfd: int = -1
     timeout: int = 0
     sizeLimit: uint = 0
+    ssl: SSL* = null
 
     //To check if a socket is opened.
     isOpened() bool {
@@ -277,6 +288,10 @@ struct http_socket {
 
     //To close a socket.
     close() bool {
+        if this.ssl != null {
+            SSL_free(this.ssl)
+        }
+
         if this.sockfd < 0 {
             return true
         }
@@ -407,6 +422,9 @@ struct http_socket {
         if this.isOpened() == false {
             return false
         }
+        if this.ssl != null {
+            return SSL_write(this.ssl, s, len(s)) > 0
+        }
         return send(this.sockfd, s, len(s), 0) > 0
     }
 
@@ -414,6 +432,9 @@ struct http_socket {
     sendBytes(bytes []char) bool {
         if this.isOpened() == false {
             return false
+        }
+        if this.ssl != null {
+            return SSL_write(this.ssl, cArr(bytes), len(bytes)) > 0
         }
         return send(this.sockfd, cArr(bytes), len(bytes), 0) > 0
     }
@@ -426,7 +447,12 @@ struct http_socket {
         #linux {
             iMode = 0
             ioctl(this.sockfd, noCheck(FIONBIO), &iMode)
-            nDataLength = recv(this.sockfd,<char*>buff,1024,0)
+            nDataLength = 0
+            if this.ssl != null {
+                nDataLength = SSL_read(this.ssl,<char*>buff,1024)
+            } else {
+                nDataLength = recv(this.sockfd,<char*>buff,1024,0)
+            }
             if nDataLength == -1 {
                 return rep
             }
@@ -436,7 +462,11 @@ struct http_socket {
         }
 
         for 1 == 1 {
-            nDataLength = recv(this.sockfd,<char*>buff,1024,0)
+            if this.ssl != null {
+                nDataLength = SSL_read(this.ssl,<char*>buff,1024)
+            } else {
+                nDataLength = recv(this.sockfd,<char*>buff,1024,0)
+            }
             if this.sizeLimit != 0 && rep.len >= this.sizeLimit {
                 break
             }
@@ -605,167 +635,8 @@ urlDecode(s cpstring) cpstring {
 }
 
 
-
-//web server
-
-#linux {
-    sigchld_handler(signo int) {
-        status int
-        pid int
-        pid = waitpid(-1, &status, 1)
-        for pid > 0 {
-            pid = waitpid(-1, &status, 1)
-        }
-    }
-}
-
-//A type difinning http server erros.
-#define http_serverError int
-
-const HTTP_SERVER_NO_ERROR = <http_serverError>0
-const HTTP_SERVER_SOCKET_ERROR = <http_serverError>1
-const HTTP_SERVER_BIND_ERROR = <http_serverError>2
-const HTTP_SERVER_LISTEN_ERROR = <http_serverError>3
-
-globalHTTPsockets = []http_socket
-
-//Internal function that is ran at exit to make sure that every sockets are closed.
-http_quit_handler(signo int) {
-    i=0; for i < len(globalHTTPsockets), i++ {
-        s = globalHTTPsockets[i]
-        s.close()
-    }
-    exit(0)
-}
-
 http_broken_pipe(signo int) {
     println("http: warning, trying to send data to a closed socket.")
-}
-
-//A wrapper for a http web server.
-struct http_server {
-    port: int
-    running: bool
-    socket: http_socket
-    error: http_serverError = HTTP_SERVER_NO_ERROR
-
-    cliChan: chan:int
-    nbThreads: uint = 50
-
-    setNbThreads(nb uint) {
-        if this.running {
-            panic("http: cannot change number of http.server worker threads while running.")
-        }
-        this.nbThreads = nb
-    }
-
-    linux_interface: cpstring = ""
-
-    //Event lisstener for when receiving connections.
-    handle: function(http_server*, int)
-    
-    //Event listener for when server started successfully.
-    done: function(http_server*)
-
-    //To stop the server.
-    stop() {
-        if this.socket.isOpened() == false {
-            println("cannot stop http_server, not running")
-            return
-        }
-        this.running = false
-        this.socket.close()
-    }
-
-    threadWorker() {
-        for this.running {
-            connfd = <- this.cliChan
-            this.handle(connfd)
-            #linux {
-                close(connfd)
-            }
-            #darwin {
-                close(connfd)
-            }
-            #windows {
-                closeSocket(connfd)
-            }
-        }
-    }
-
-    //To start the server.
-    listenAndServe() {
-        if this.cliChan == null {
-            this.cliChan = chan int
-        }
-        if this.nbThreads == 0 {
-            this.nbThreads = 50
-        }
-        this.error = HTTP_SERVER_NO_ERROR
-        this.socket = http_socket{}
-
-        this.socket.open()
-
-        if strlen(this.linux_interface) > 0 && this.socket.setInterface(this.linux_interface) == false {
-            panic("http: error setting server's linux interface")
-        } 
-
-
-        if this.socket.isOpened() == false {
-            println("http: error opening socket")
-            this.error = HTTP_SERVER_SOCKET_ERROR
-            return
-        }
-
-        if this.socket.listen(this.port) == false {
-            this.socket.close()
-            println("http: failed to start listening")
-            this.error = HTTP_SERVER_LISTEN_ERROR
-            return
-        }
-
-        globalHTTPsockets[len(globalHTTPsockets)] = this.socket
-
-        #linux {
-            sa sigaction
-            memset(<ptr>&sa, 0, 152)
-            sa.sa_handler = sigchld_handler
-            sigaction(17, &sa, 0)
-
-            memset(<ptr>&sa, 0, 152)
-            sa.sa_handler = http_quit_handler
-            sigaction(2, &sa, 0)    
-
-            memset(<ptr>&sa, 0, 152)
-            sa.sa_handler = http_broken_pipe
-            sigaction(noCheck(SIGPIPE), &sa, 0)        
-        }
-
-        this.running = true
-
-
-        i=0; for i < this.nbThreads, i++ {
-            async this.threadWorker()
-        }
-
-        if this.done != null {
-            async this.done()
-        }
-
-        for this.running {
-            cli = this.socket.accept()
-
-            if cli <= 0 {
-                continue
-            }
-
-            cli -> this.cliChan
-        }
-
-        this.stop()
-
-    }
-
 }
 
 //To send a cpstring through the specified socket.
@@ -909,10 +780,9 @@ struct http_response extend http_transport {
 
 //To build a HTTP response.
 //You will need to populate it before sending it to the client.
-http_response(connfd int) http_response {
-    resp = http_response{}
-    resp.socket = http_socket{}
-    resp.socket.sockfd = connfd
+http_response(sock http_socket*) http_response* {
+    resp = new http_response
+    resp.socket = *sock
 
     resp.setHeader("Server", "bah-http-framework")
     resp.setHeader("Connection", "close")
@@ -1438,12 +1308,12 @@ struct http_request extend http_transport {
 }
 
 //Used for parsing the request (with limited size)
-http_requestSizeLimited(connfd int, size int) http_request {
-    r = http_request{}
+http_requestSizeLimited(sock http_socket*, size int) http_request* {
+    r = new http_request
     r.socket = http_socket{
         sizeLimit: size
     }
-    r.socket.sockfd = connfd
+    r.socket = *sock
     req = r.socket.receive()
     if req == null {
         return r
@@ -1541,9 +1411,296 @@ http_requestSizeLimited(connfd int, size int) http_request {
 }
 
 //Used for parsing the request
-http_request(connfd int) http_request {
-return http_requestSizeLimited(connfd, 0)
+http_request(sock http_socket*) http_request* {
+return http_requestSizeLimited(sock, 0)
 }
+
+
+
+//web server
+
+#linux {
+    sigchld_handler(signo int) {
+        status int
+        pid int
+        pid = waitpid(-1, &status, 1)
+        for pid > 0 {
+            pid = waitpid(-1, &status, 1)
+        }
+    }
+}
+
+//A type difinning http server erros.
+#define http_serverError int
+
+const HTTP_SERVER_NO_ERROR = <http_serverError>0
+const HTTP_SERVER_SOCKET_ERROR = <http_serverError>1
+const HTTP_SERVER_BIND_ERROR = <http_serverError>2
+const HTTP_SERVER_LISTEN_ERROR = <http_serverError>3
+const HTTP_SERVER_SSL_INIT_ERROR = <http_serverError>4
+const HTTP_SERVER_SSL_LOCATION_ERROR = <http_serverError>5
+const HTTP_SERVER_SSL_CERT_ERROR = <http_serverError>6
+const HTTP_SERVER_SSL_KEY_ERROR = <http_serverError>7
+
+globalHTTPsockets = []http_socket
+
+//Internal function that is ran at exit to make sure that every sockets are closed.
+http_quit_handler(signo int) {
+    i=0; for i < len(globalHTTPsockets), i++ {
+        s = globalHTTPsockets[i]
+        s.close()
+    }
+    exit(0)
+}
+
+//A wrapper for a http web server.
+struct http_server {
+    port: int
+    portTLS: int
+    running: bool
+    socket: http_socket
+    socketTLS: http_socket
+    error: http_serverError = HTTP_SERVER_NO_ERROR
+
+    cliChan: chan:http_socket*
+    nbThreads: uint = 50
+
+    setNbThreads(nb uint) {
+        if this.running {
+            panic("http: cannot change number of http.server worker threads while running.")
+        }
+        this.nbThreads = nb
+    }
+
+    linux_interface: cpstring = ""
+
+    //Event lisstener for when receiving connections.
+    handle: function(http_server*, http_request*, http_response*)
+    
+    //Event listener for when server started successfully.
+    done: function(http_server*)
+
+    //To stop the server.
+    stop() {
+        if this.socket.isOpened() == false {
+            println("cannot stop http_server, not running")
+            return
+        }
+        this.running = false
+        this.socket.close()
+    }
+
+    threadWorker() {
+        for this.running {
+            sock = <- this.cliChan
+
+            if sock.ssl != null {
+                resp = SSL_accept(sock.ssl)
+                if SSL_accept(sock.ssl) <= 0 {
+                    sock.close()
+                    continue
+                }
+            }
+
+            req = http_request(sock)
+            resp = http_response(sock)
+            this.handle(req, resp)
+            sock.close()
+        }
+    }
+
+    //To start the server.
+    listenAndServe() {
+        if this.cliChan == null {
+            this.cliChan = chan http_socket*
+        }
+        if this.nbThreads == 0 {
+            this.nbThreads = 50
+        }
+        this.error = HTTP_SERVER_NO_ERROR
+        this.socket = http_socket{}
+
+        this.socket.open()
+
+        if strlen(this.linux_interface) > 0 && this.socket.setInterface(this.linux_interface) == false {
+            panic("http: error setting server's linux interface")
+        } 
+
+
+        if this.socket.isOpened() == false {
+            println("http: error opening socket")
+            this.error = HTTP_SERVER_SOCKET_ERROR
+            return
+        }
+
+        if this.socket.listen(this.port) == false {
+            this.socket.close()
+            println("http: failed to start listening")
+            this.error = HTTP_SERVER_LISTEN_ERROR
+            return
+        }
+
+        globalHTTPsockets[len(globalHTTPsockets)] = this.socket
+
+        #linux {
+            sa sigaction
+            memset(<ptr>&sa, 0, 152)
+            sa.sa_handler = sigchld_handler
+            sigaction(17, &sa, 0)
+
+            memset(<ptr>&sa, 0, 152)
+            sa.sa_handler = http_quit_handler
+            sigaction(2, &sa, 0)    
+
+            memset(<ptr>&sa, 0, 152)
+            sa.sa_handler = http_broken_pipe
+            sigaction(noCheck(SIGPIPE), &sa, 0)        
+        }
+
+        this.running = true
+
+
+        i=0; for i < this.nbThreads, i++ {
+            async this.threadWorker()
+        }
+
+        if this.done != null {
+            async this.done()
+        }
+
+        for this.running {
+            cli = this.socket.accept()
+
+            if cli <= 0 {
+                continue
+            }
+
+            sock = new http_socket {
+                sockfd: cli
+            }
+
+            sock -> this.cliChan
+        }
+
+        this.stop()
+
+    }
+
+    listenAndServeTLS(certFile cpstring, keyFile cpstring) {
+        this.error = HTTP_SERVER_NO_ERROR
+
+        //Initialize SSL context
+        OpenSSL_add_all_algorithms()        
+        ctx = SSL_CTX_new(TLSv1_2_server_method())
+        if ctx == null {
+            this.error = HTTP_SERVER_SSL_INIT_ERROR
+            return
+        }
+        SSL_CTX_set_cipher_list(ctx, "ALL:eNULL")
+
+        //Load SSL certs
+        if SSL_CTX_load_verify_locations(ctx, certFile, keyFile) != 1 {
+            this.error = HTTP_SERVER_SSL_LOCATION_ERROR
+            return
+        }
+        if SSL_CTX_set_default_verify_paths(ctx) != 1 {
+            this.error = HTTP_SERVER_SSL_LOCATION_ERROR
+            return
+        }
+        if SSL_CTX_use_certificate_file(ctx, certFile, noCheck(SSL_FILETYPE_PEM)) <= 0 {
+            this.error = HTTP_SERVER_SSL_CERT_ERROR
+            return
+        }
+        SSL_CTX_set_default_passwd_cb_userdata(ctx, "__BAH_TODO_pss123567890")
+        if SSL_CTX_use_PrivateKey_file(ctx, keyFile, noCheck(SSL_FILETYPE_PEM)) <= 0 || SSL_CTX_check_private_key(ctx) == 0 {
+            this.error = HTTP_SERVER_SSL_KEY_ERROR
+            return
+        }
+
+
+        if this.cliChan == null {
+            this.cliChan = chan http_socket*
+        }
+        if this.nbThreads == 0 {
+            this.nbThreads = 50
+        }
+        
+        this.socketTLS = http_socket{}
+
+        this.socketTLS.open()
+
+        if strlen(this.linux_interface) > 0 && this.socket.setInterface(this.linux_interface) == false {
+            panic("http: error setting server's linux interface")
+        } 
+
+
+        if this.socketTLS.isOpened() == false {
+            println("http: error opening socket")
+            this.error = HTTP_SERVER_SOCKET_ERROR
+            return
+        }
+
+        if this.socketTLS.listen(this.portTLS) == false {
+            this.socketTLS.close()
+            println("http: failed to start listening")
+            this.error = HTTP_SERVER_LISTEN_ERROR
+            return
+        }
+
+        globalHTTPsockets[len(globalHTTPsockets)] = this.socketTLS
+
+        #linux {
+            sa sigaction
+            memset(<ptr>&sa, 0, 152)
+            sa.sa_handler = sigchld_handler
+            sigaction(17, &sa, 0)
+
+            memset(<ptr>&sa, 0, 152)
+            sa.sa_handler = http_quit_handler
+            sigaction(2, &sa, 0)    
+
+            memset(<ptr>&sa, 0, 152)
+            sa.sa_handler = http_broken_pipe
+            sigaction(noCheck(SIGPIPE), &sa, 0)        
+        }
+
+        this.running = true
+
+
+        i=0; for i < this.nbThreads, i++ {
+            async this.threadWorker()
+        }
+
+        if this.done != null {
+            async this.done()
+        }
+
+        for this.running {
+            cli = this.socketTLS.accept()
+
+            if cli <= 0 {
+                continue
+            }
+
+            sock = new http_socket {
+                sockfd: cli
+                ssl: SSL_new(ctx)
+            }
+            SSL_set_fd(sock.ssl, sock.sockfd)
+
+            sock -> this.cliChan
+        }
+
+        SSL_CTX_free(ctx)
+        this.stop()
+
+    }
+
+}
+
+
+
+
 
 //Used for making simple get request.
 get(url cpstring) http_response {

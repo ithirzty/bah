@@ -23,11 +23,8 @@ listenersMut = mutex() //This will ensure that not two threads read/write at the
 
 //This will be called every time a client makes a request to the server.
 //where 's' is a pointer to the server structure
-//and 'connfd' is the socket file descriptor
-serv(s http_server*, connfd int) {
-    req = http_request(connfd) //this will parse the request made by the client
-    resp = http_response(connfd) //this will prepare the response that will be sent to the client
-
+//and req/resp are the request and response to the client
+serv(s http_server*, req http_request*, resp http_response*) {
     //if the requested path is /
     if req.path == "/" {
 
