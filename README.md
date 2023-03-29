@@ -158,7 +158,7 @@ It has been used to create:
     - [Bah REPL](https://github.com/ithirzty/bah-repl)
     - [Brainfuck interpreter](https://github.com/ithirzty/bah-brainfuck)
 - libraries
-    - [Javel](https://github.com/ithirzty/javel), a HTTP server framework written in Bah.
+    - ~~[Javel](https://github.com/ithirzty/javel)~~ [javel2](https://github.com/ithirzty/javel2), a HTTP server framework written in Bah.
     - [BPM](https://github.com/ithirzty/bpm), the Bah Package Manager.
     - [vbah](https://github.com/ithirzty/vbah), a graphics library.
     - [BahDB](https://github.com/ithirzty/bahdb), a relational database written in Bah.
