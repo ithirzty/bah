@@ -1399,13 +1399,21 @@ http_requestSizeLimited(sock http_socket*, size int) http_request* {
         i--
     }
 
-
     r.body = new string
     if i < len(req) {
         r.body.set(req[i:])
     } 
 
     r.request = req
+
+    //parse get parameters
+    i=0; for i < len(r.path), i++ {
+        if r.path[i] == '?' {
+            r.form = splitString(string(r.path[i+1:]), "&")
+            r.path = r.path[:i]
+            break
+        }
+    }
 
     return r
 }
