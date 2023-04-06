@@ -12,12 +12,6 @@ struct! Bah_Array_Type {
 	elemSize: uint
 }
 
-#rcp {
-	#define RCP_decr(p ptr)
-	#define RCP_incrIL(p ptr*) ptr
-	#define RCP_incr(p ptr)
-}
-
 #define __BAH_panic(e cpstring, l cpstring)
 #define __Bah_safe_string(s cpstring) cpstring
 #define cpstringSubsitute(s cpstring, i int, l int) cpstring
@@ -276,6 +270,12 @@ fastExec(s cpstring) cpstring {
 
 //Used by the compiler when panic() is called.
 __BAH_panic(e cpstring, line cpstring) {
+	#rcp {
+		noCheck(printf("panic (%s): %s\n"+4, line+4, e+4))
+		a = *(<ptr*>null)
+		return
+	}
+	
 	if __BAH_panic_chan != null {
 		e -> __BAH_panic_chan
 		return
@@ -411,10 +411,8 @@ __Bah_realocate_arr(arr []ptr, nLength uint32) {
 			noCheck(arr->realLength = 50)
 		}
 		newPtr = memoryRealloc(noCheck(arr->data), <int>noCheck(arr->realLength) * <int>noCheck(arr->elemSize))
-		noCheck(arr->data = newPtr)
-		#rcp {
-			RCP_incr(newPtr)
-		}
+		rArr Bah_Array_Type* = arr
+		rArr.data = newPtr
 	}
 	noCheck(arr->length = arr->length + 1)
 	return
@@ -495,6 +493,7 @@ struct strBuilder {
 
 	//Used for getting the resulting cpstring.
     str() cpstring {
+		l = *(<uint32*>this.buff)
         return this.buff
     }
 

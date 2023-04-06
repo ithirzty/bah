@@ -344,13 +344,13 @@ parseJson_inner(s cpstring, ip int*, l int) jsonElement* {
             if s[i] == <char>92 {
                 if len(mem) == 0 {
                     mem = strToArr(s[j.from:i])
-                    if s[i+1] == 'r' {
-                        mem[len(mem)] = <char>13
-                    } else if s[i+1] == 'n' {
-                        mem[len(mem)] = <char>10
-                    } else {
-                        mem[len(mem)] = s[i+1]
-                    }
+                }
+                if s[i+1] == 'r' {
+                    mem[len(mem)] = <char>13
+                } else if s[i+1] == 'n' {
+                    mem[len(mem)] = <char>10
+                } else {
+                    mem[len(mem)] = s[i+1]
                 }
                 i++
                 continue

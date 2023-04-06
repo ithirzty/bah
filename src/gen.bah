@@ -4,8 +4,8 @@
 //This will set the member at provided index, reallocate the array if needed,
 //and increment the length if the index is greater than all others.
 genArrRealloc(v variable*, preVal cpstring, val cpstring, elems Elems*) cpstring {
-
     vn = string(v.name)
+
 
     nLengthTok Tok* = v.arrIndex
     root Tok* = v.arrRoot
@@ -14,6 +14,19 @@ genArrRealloc(v variable*, preVal cpstring, val cpstring, elems Elems*) cpstring
     if nLengthTok.isFunc || nLengthTok.isOper {
         nLength = genCompilerVar()
         nLengthDecl = "unsigned int "+nLength+" = "+nLengthTok.cont+";"
+    }
+
+    if RCPavailable() && isRCPtype(v.type, elems) {
+        cType = getCType(v.type, elems)
+        if isRCPpointerType(v.type) == false {
+            preVal += "
+            RCP_decr(&(("+cType.str()+"*)"+root.cont+"->data)["+nLength+"], sizeof("+cType.str()+"));
+            "
+        } else {
+            preVal += "
+            RCP_decr((("+cType.str()+"*)"+root.cont+"->data)["+nLength+"], sizeof("+cType.str()[:cType.length-1]+"));
+            "
+        }
     }
 
     return nLengthDecl+"

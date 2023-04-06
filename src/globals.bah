@@ -113,7 +113,6 @@ struct compilerStateTag {
     isFor: bool = false
     arrTypesDecl: []cpstring
     haveEntryPoint: bool = false
-    RCPvars: []variable*
     evals: []cpstring
     hasImports: bool = false
     currForElems: Elems*

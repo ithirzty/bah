@@ -66,7 +66,6 @@ struct genericFunc {
 
         OUTPUT += rope(") {\n")
 
-        beginRCPscope(fnElems, fn.args)
         ocurrFnElems = compilerState.currFnElems
         oCurrGen = currGen
         currGen = this
@@ -77,6 +76,7 @@ struct genericFunc {
         
         parseLines(this.tokens, fnElems)
         OPTI_checkFuncScopeRef(fnElems)
+        RCPendScope(fnElems)
 
         compilerState.currFnElems = ocurrFnElems
         currentFn = oCurrFn
@@ -86,7 +86,6 @@ struct genericFunc {
             if len(fn.returns.type) > 0 {
                 throwErr(this.tokenName, "Function '"+fn.name+"' is not returned.")
             }
-            endRCPscope(fnElems, fn.args)
         }
 
         code = OUTPUT + rope("};\n")

@@ -147,7 +147,7 @@ struct dbResponse {
 }
 
 //Inserts new row in the response.
-fillDBresponse(data ptr, argc int, argv cpstring*, azColName cpstring*) int {
+fillDBresponse(data ptr, argc int32, argv cpstring*, azColName cpstring*) int32 {
     dbr dbResponse* = data
     row = new dbResponseRow
     i=0; for i < argc {

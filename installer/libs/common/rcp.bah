@@ -2,7 +2,7 @@
 #include "<stdlib.h>"
 #include "<unistd.h>"
 #include "<pthread.h>"
-
+#include "<malloc.h>"
 
 #cLib "lpthread"
 
@@ -17,207 +17,55 @@
 #define! pthread_mutex_unlock(lock pthread_mutex_t*)
 #define! pthread_mutex_destroy(lock pthread_mutex_t*)
 
-// #define! pthread_create(id int*, attr ptr, func ptr, args ptr)
-// #define! pthread_join(id int, ret ptr)
-
-
-#define RCP_register(p ptr, s uint)
-#define RCP_remove(p ptr)
-#define RCP_setNewPtr(o ptr, n ptr)
-
-#define! sizeof(a ptr) int
-
 //Destroy will force to free a pointer.
 destroy(a ptr) {
-    RCP_remove(a)
     free(a)
 }
 
-//The structure that contains informations on each pointer.
-struct RCP {
-    p: ptr = null
-    c: uint32 = 0
-    s: uint = 0
-    e: ptr = null
-    // str: bool
+__BAH_rcp_min = 0
+__BAH_rcp_max = 0
+
+struct __BAH_rcp_tree {
+    less: __BAH_rcp_tree*
+    more: __BAH_rcp_tree*
+    parent: __BAH_rcp_tree*
+    size: uint32
+    count: uint32
 }
 
-//Used for sorting the list of pointers.
-cmp_rcp(a ptr, b ptr) int32 {
-    ar RCP* = a
-    br RCP* = b
-    if ar.p < br.p {
-        return -1
-    } else if ar.p > br.p {
-        return 1
-    }
-    return 0
-}
+__BAH_rcp_treeBase __BAH_rcp_tree* = null
 
-#define! memcpy(dest ptr, src ptr, s int)
-#define! qsort(arr ptr, l int, s int, cmp ptr)
-#define! bsearch(key ptr, arr ptr, l int, s int, cmp ptr) ptr
-#define! sbrk(i int) ptr
-
-struct RCPstate {
-    RCPs: RCP* = null
-    len: uint = 0
-    size: uint = 0
-
-    lock: pthread_mutex_t
-
-    heapMax: ptr
-    heapMin: ptr
-
-    getSize(add uint) uint {
-        l = this.len + add
-        return l * sizeof(RCP)
-    }
-
-    grow(i uint) {
-        rs = this.getSize(i+30)
-        nr = realloc(this.RCPs, rs)
-        if nr == null {
-            return
-        }
-        this.size = rs
-        this.RCPs = nr
-        this.len = this.len + i
-    }
-
-    sort() {
-        qsort(noCheck(&this->RCPs[0]), this.len, sizeof(RCP), cmp_rcp)
-    }
-
-    rcpToIndex(r RCP*) uint {
-        i int = <int>r - <int>noCheck(&this->RCPs[0])
-        i = i / sizeof(RCP)
-
-        return i
-    }
-
-
-    add(r RCP*) {
-        pthread_mutex_lock(&this.lock)
-        rs = this.getSize(1)
-        max = this.len - 1
-        if this.size < rs {
-            this.grow(1)
-        } else {
-            this.len = this.len + 1
-        }
-
-        done = false
-        i = max; for i >= 0 {
-            ar RCP* = noCheck(&this->RCPs[i])
-            if ar.p < r.p {
-                j=max; for j > i {
-                    noCheck(this->RCPs[j+1] = this->RCPs[j])
-                    j = j - 1
-                }
-                noCheck(this->RCPs[i+1] = *r)
-                done = true
-                break
-            }
-            i = i - 1
-        }
-
-        if done == false {
-            j=max; for j >= 0 {
-                noCheck(this->RCPs[j+1] = this->RCPs[j])
-                j = j - 1
-            }
-            noCheck(this->RCPs[0] = *r)
-        }
-        pthread_mutex_unlock(&this.lock)
-    }
-
-    get(i uint) RCP* {
-        if i >= this.len {
-            return null
-        }
-        return noCheck(&this->RCPs[i])
-    }
-
-    set(i uint, r RCP*) {
-        noCheck(this->RCPs[i] = *r)
-        // this.sort()
-    }
-
-    // #define! pthread_create(id int*, attr ptr, func ptr, args ptr)
-    // #define! pthread_join(id int, ret ptr)
-
-
-    getByPtr(p ptr) RCP* {
-        if p < this.heapMin || p > this.heapMax {
-            return null
-        }
-        
-        
-        return bsearch(&p, noCheck(&this->RCPs[0]), this.len, sizeof(RCP), cmp_rcp)
-    }
-
-    resize(ns uint) {
-        nr = realloc(this.RCPs, ns)
-        if nr == null {
-            return
-        }
-        this.RCPs = nr
-        this.size = ns
-    }
-
-    remove(i uint) {
-        
-        for i < this.len {
-            noCheck(this->RCPs[i] = this->RCPs[i+1])
-            i = i + 1
-        }
-        this.len = this.len - 1
-        s = this.getSize(30)
-        if this.size - s >= this.size / 2 {
-            this.resize(s)
-        }
-    }
-
-    lockMut() {
-        pthread_mutex_lock(&this.lock)
-    }
-
-    unlockMut() {
-        pthread_mutex_unlock(&this.lock)
-    }
-
-}
-
-RCPstate RCPstate
-
-DEBUG_RCP = false
-
-RCP_init() {
-    RCPstate = RCPstate{}
-    RCPstate.heapMin = -1
-    RCPstate.heapMax = -1
-    l = RCPstate.lock
-    pthread_mutex_init(&l, 0)
-}
+__BAH_rcp_mutex pthread_mutex_t
 
 #define! exit(e int)
+#define panic(s cpstring)
+#define RCP_decrImmediate(p ptr, s int32, strict bool)
+#define RCP_incrImmediate(p ptr, s int32, strict bool)
+
+
+RCP_init() {
+    pthread_mutex_init(&__BAH_rcp_mutex, 0)
+}
+
+
+RCP_printTree(pt __BAH_rcp_tree*, count int*) {
+    noCheck(printf("Still alive: %p (%d references)\n"+4, pt+sizeof(struct __BAH_rcp_tree), pt->count))
+    *count++
+    if pt.more != null {
+        RCP_printTree(pt.more, count)
+    }
+    if pt.less != null {
+        RCP_printTree(pt.less, count)
+    }
+}
 
 RCP_shutdown() {
-    l = RCPstate.lock
-    pthread_mutex_destroy(&l)
-    if RCPstate.len > 0 {
-        // free(RCPstate.RCPs)
-        if DEBUG_RCP == true {
-            noCheck(printf("\n\n[RCP] Leak detected!\n Summary: %d leaks (including global variables that are not freed at the end of the program).\n If your program is using self-referenced object (such as ropes), recompile-it without the '-rcp' flag.\n", RCPstate.len))
-            rcpStatep = &RCPstate
-            i=0; for i < RCPstate.len, i++ {
-                r RCP* = noCheck(&rcpStatep->RCPs[i])
-                if r.p >= RCPstate.heapMin && r.p <= RCPstate.heapMax {
-                    noCheck(printf("\t%p (%d reference(s))\n", r->p, r->c))
-                }
-            }
-        }
+    pthread_mutex_destroy(&__BAH_rcp_mutex)
+    if __BAH_rcp_treeBase != null {
+        count = 0
+//         noCheck(printf("[RCP] Heap is not totally freed\n"+4))
+        RCP_printTree(__BAH_rcp_treeBase, &count)
+        noCheck(printf("Total: %ld\n"+4, count))
     }
 }
 
@@ -227,202 +75,170 @@ cleanShutDown() {
     exit(1)
 }
 
-RCP_selfRef(a ptr, b ptr) bool {
-    return a == b
+RCP_get(pt ptr) __BAH_rcp_tree* {
+    p = <__BAH_rcp_tree*>(<int>pt - sizeof(__BAH_rcp_tree))
+    e = __BAH_rcp_treeBase
+    for e != null && e != p {
+        if <int>p > <int>e {
+            e = e.more
+        } else if <int>p < <int>e {
+            e = e.less
+        }
+    }
+    return e
 }
 
-RCP_register(p ptr, s uint) {
-    if p == null {
+//Adds p to the tree, it guarentess that p.less and p.more are imutable,
+// allowing this function to add entire branches.
+RCP_add(p __BAH_rcp_tree*) {
+    if __BAH_rcp_treeBase == null {
+//         // noCheck(printf("[RCP] Setting base %p\n"+4, p))
+        __BAH_rcp_treeBase = p
+
         return
     }
-    r = RCP{}
-    r.c = 1
-    r.s = s
-    r.p = p
-    // r.str = false
-    RCPstate.add(&r)
+    e = __BAH_rcp_treeBase
+    for e != null {
+        if <int>p > <int>e {
+            if e.more == null {
+                e.more = p
+                break
+            }
+            e = e.more
+        } else if <int>p < <int>e {
+            if e.less == null {
+                e.less = p
+                break
+            }
+            e = e.less
+        }
+    }
+//     // noCheck(printf("[RCP] Setting parent (%p) %p\n"+4, p, e))
+    p.parent = e
 }
 
-RCP_registerSTR(p ptr, s uint) {
-    if p == null {
-        return
+RCP_remove(p __BAH_rcp_tree*, needFree bool) {
+    // RCP_flushOperBuffer()
+    if p.parent == null {
+        if __BAH_rcp_treeBase != p {
+//             noCheck(printf("[RCP] parent null %p != %p\n"+4, p, __BAH_rcp_treeBase))
+            panic("RCP: tree corrupted, freeing will leave dead pointer behind.")
+        }
+        __BAH_rcp_treeBase = null
+    } else {
+        if <int>p > <int>p.parent {
+            p.parent.more = null
+        } else if <int>p < <int>p.parent {
+            p.parent.less = null
+        }
     }
-    r = RCP{}
-    r.c = 1
-    r.s = s
-    r.p = p
-    // r.str = true
-    RCPstate.add(&r)
+
+    if p.less != null {
+        RCP_add(p.less)
+    }
+
+    if p.more != null {
+        RCP_add(p.more)
+    }
+
+//     noCheck(printf("[RCP] freeing %p\n"+4, p))
+    if needFree {
+        free(p)
+    }
 }
 
-RCP_setNewPtr(o ptr, n ptr) {
-    if o == null || n == null || o == n {
-        return
+RCP_register(p ptr, s int) ptr {
+    pthread_mutex_lock(&__BAH_rcp_mutex)
+    // RCP_flushOperBuffer()
+    retP = <int>p + sizeof(__BAH_rcp_tree)
+    if retP < __BAH_rcp_min || __BAH_rcp_min == 0 {
+        __BAH_rcp_min = retP
     }
-    r = RCPstate.getByPtr(o)
-    if r == null {
-        return
+    if retP > __BAH_rcp_max || __BAH_rcp_max == 0 {
+        __BAH_rcp_max = retP
     }
-    r.p = n
+    tp __BAH_rcp_tree* = p
+    tp.count = 1
+    tp.size = s
+    RCP_add(tp)
+    pthread_mutex_unlock(&__BAH_rcp_mutex)
+    return <ptr>(<int>p + sizeof(__BAH_rcp_tree))
 }
 
-RCP_remove(p ptr) {
-    if p == null {
-        return
-    }
-    r = RCPstate.getByPtr(p)
-    if r == null {
-        return
-    }
-    RCPstate.remove(RCPstate.rcpToIndex(r))
-}
-
-#define RCP_scanRegion(curr ptr*, end ptr*, decr bool)
-
-RCP_incr(p ptr) {
-    if p == null {
-        return
-    }
-    r = RCPstate.getByPtr(p)
-    if r == null {
-        return
-    }
-    r.c = r.c + 1
-    // if r.s >= sizeof(ptr) {
-    //     end ptr* = <int>r.p + r.s
-    //     RCP_scanRegion(r.p, end, false)
-    // }
-}
-
-RCP_getCount(p ptr) uint {
-    if p == null {
-        return 0
-    }
-    r = RCPstate.getByPtr(p)
-    if r == null {
-        return 0
-    }
-
-    return r.c
-
-}
-
-RCP_isAllocated(p ptr) bool {
-    if p == null {
-        return false
-    }
-    r = RCPstate.getByPtr(p)
-    if r == null {
-        return false
-    }
-    return true
-}
-
-#define RCP_decr(p ptr)
-#define RCP_incr(p ptr)
-
-RCP_scanRegion(curr ptr*, end ptr*, decr bool) {
-    from = curr
+RCP_decrScan(p ptr, s int32) {
+    curr = <ptr*>p
+    end = <ptr*>(<int>p + s)
     for <int>curr < <int>end {
         b = *curr
-        if b <= RCPstate.heapMax && b >= RCPstate.heapMin {
-            if decr == true {
-                RCP_decr(b)
-            } else {
-                RCP_incr(b)
-            }
+        if b != null && b <= __BAH_rcp_max && b >= __BAH_rcp_min{
+            RCP_decrImmediate(b, sizeof(ptr), true)
         }
         curr = noCheck(curr + 1)
     }
 }
 
-RCP_decr(p ptr) {
+RCP_decrImmediate(p ptr, s int32, strict bool) {
     if p == null {
         return
     }
-    r = RCPstate.getByPtr(p)
-    if r == null {
-        return
-    }
-    orc = r.c
-    r.c = r.c - 1
-    if r.c <= 0 {
-        if r.e != null {
-            changed = true
-            fn function(ptr) = r.e
-            fn(r.p)
+
+    pt = RCP_get(p)
+    if pt == null {
+//         noCheck(printf("[RCP] null: %p\n"+4, p))
+        if (p < __BAH_rcp_min || p > __BAH_rcp_max) {
+            RCP_decrScan(p, s)
         }
-        tmpr = *r
-        RCPstate.remove(RCPstate.rcpToIndex(r))
-        // if tmpr.str == false && tmpr.s >= sizeof(ptr) {
-        if tmpr.s >= sizeof(ptr) {
-            end ptr* = <int>tmpr.p + tmpr.s
-            RCP_scanRegion(tmpr.p, end, true)
+        return
+    }
+    pt.count--
+    
+    if pt.count == 0 {
+        RCP_decrScan(p, pt.size)
+        RCP_remove(pt, true)
+    }
+}
+
+RCP_incrScan(p ptr, s int32) {
+    curr = <ptr*>p
+    end = <ptr*>(<int>p + s)
+    for <int>curr < <int>end {
+        b = *curr
+        if b != null && b <= __BAH_rcp_max && b >= __BAH_rcp_min{
+            RCP_incrImmediate(b, sizeof(ptr), true)
         }
-        free(tmpr.p)
+        curr = noCheck(curr + 1)
     }
 }
 
-RCP_incrIL(p ptr*) ptr {
-    RCP_incr(*p)
-    return p
-}
-
-RCP_decrIL(p ptr*) ptr {
-    RCP_decr(*p)
-    return p
-}
-
-RCP_request(p ptr) RCP* {
+RCP_incrImmediate(p ptr, s int32, strict bool) {
     if p == null {
-        return null
+        return
     }
-    return RCPstate.getByPtr(p)
-}
 
-RCP_decrRCP(r RCP*) {
-    if r == null {
-        return
-    }
-    r = RCPstate.getByPtr(r.p)
-    if r == null {
-        return
-    }
-    r.c = r.c - 1
-    if r.c <= 0 {
-        if r.e != null {
-            fn function(ptr) = r.e
-            fn(r.p)
+    pt = RCP_get(p)
+    if pt == null {
+        if (p < __BAH_rcp_min || p > __BAH_rcp_max) {
+            RCP_incrScan(p, s)
         }
-        free(r.p)
-        RCPstate.remove(RCPstate.rcpToIndex(r))
+        return
     }
+    pt.count++
+//     noCheck(printf("[RCP] incr: %p (%d)\n"+4, p, pt->count))
 }
 
+// RCP_flushOperBuffer
 
-RCP_scanStack(p ptr, s uint, decr bool) {
-    if p == null {
-        return
-    }
-    end ptr* = <int>p + s
-    // noCheck(printf("scanning stack from: %d to: %d\n", p, end))
-    RCP_scanRegion(p, end, decr)
+
+RCP_decr(p ptr, s int32) {
+    pthread_mutex_lock(&__BAH_rcp_mutex)
+    RCP_decrImmediate(p, s, false)
+    pthread_mutex_unlock(&__BAH_rcp_mutex)
 }
 
-RCP_scanHeap(p ptr) {
-    if p == null {
-        return
-    }
-    r = RCPstate.getByPtr(p)
-    if r == null {
-        return
-    }
-    if r.c == 1 {
-        end ptr* = <int>p + r.s
-        // noCheck(printf("scanning heap from: %d to: %d\n", p, end))
-        RCP_scanRegion(p, end, true)
-    }
-    RCP_decrRCP(r)
+RCP_incr(p ptr, s int32) {
+    pthread_mutex_lock(&__BAH_rcp_mutex)
+    RCP_incrImmediate(p, s, false)
+    pthread_mutex_unlock(&__BAH_rcp_mutex)
 }
 
 //Used for allocating memory (malloc in c). You must specify the size of the block to allocate.
@@ -430,56 +246,54 @@ RCP_scanHeap(p ptr) {
 //**The given memory is initiated with zeros.**
 //The allocated memory cannot be shared by multiple processes. Use the sharedMemory() function instead.
 memoryAlloc(s uint) ptr {
-    r = malloc(s)
-    if r < RCPstate.heapMin || RCPstate.heapMin == -1 {
-        RCPstate.heapMin = r
-    }
-    if r > RCPstate.heapMax {
-        RCPstate.heapMax = r
-    }
-    memset(r, 0, s)
-    RCP_register(r, s)
-    return r
+    p = malloc(s + sizeof(__BAH_rcp_tree)+1)
+//     noCheck(printf("[RCP] Allocating: %p (%ld bytes)\n"+4, p, s))
+    memset(p, null, s + sizeof(__BAH_rcp_tree))
+    return RCP_register(p, s)
 }
 
 //Used for allocating memory for a cpstring.
 //The content of the memory block should not contain any pointer.
 //It will not be checked for memory collection.
 memoryAllocSTR(s uint) cpstring {
-    r = malloc(s)
-    if r < RCPstate.heapMin || RCPstate.heapMin == -1 {
-        RCPstate.heapMin = r
-    }
-    if r > RCPstate.heapMax {
-        RCPstate.heapMax = r
-    }
-    memset(r, 0, s)
-    RCP_registerSTR(r, s)
-    return r
+    p = malloc(s+cpstringLenSize+sizeof(__BAH_rcp_tree)+1)
+//     noCheck(printf("[RCP] Allocating STR: %p (%ld bytes)\n"+4, p, s))
+    memset(p, null, s + cpstringLenSize + sizeof(__BAH_rcp_tree))
+    r = <cpstring>RCP_register(p, s + cpstringLenSize)
+    ln uint32* = r
+    *ln = s-1
+    noCheck(r[s-1] = 0)
+    return <cpstring>r
 }
 
 //Will realloc memory to a specified pointer.
 //The pointer returned will be different from p.
 memoryRealloc(p ptr, s uint) ptr {
-    or = RCP_request(p)
-    if or == null || or.c == 0 {
+//     noCheck(printf("[RCP] Re-allocating: %ld bytes\n"+4, s))
+    if p == null {
         return memoryAlloc(s)
     }
-    r = malloc(s)
-    if r < RCPstate.heapMin || RCPstate.heapMin == -1 {
-        RCPstate.heapMin = r
+    tp = <__BAH_rcp_tree*>(<int>p - sizeof(__BAH_rcp_tree))
+    os = tp.size
+
+    n = memoryAlloc(s)
+    if s > os {
+        memcpy(n, p, os)
+        memset(<ptr>(<int>n + os), null, s - os)
+    } else {
+        memcpy(n, p, s)
     }
-    if r > RCPstate.heapMax {
-        RCPstate.heapMax = r
-    }
-    ns = or.s
-    if s < or.s {
-        ns = s
-    }
-    memcpy(r, p, ns)
-    RCP_decrRCP(or)
-    RCP_register(r, s)
-    return r
+    memset(p, null, os)
+
+    return n
+
+    // RCP_remove(tp, false)
+    // tp = realloc(tp, s + sizeof(__BAH_rcp_tree))
+    // memset(<ptr>(<int>tp + sizeof(__BAH_rcp_tree) + os), null, s - os)
+    // tp.more = null
+    // tp.less = null
+    // tp.parent = null
+    // return RCP_register(tp, s)
 }
 
 
@@ -491,14 +305,6 @@ clear(a ptr) {
 
 //Used for setting an end of line registerer to an allocated pointer.
 memoryOnEnd(obj ptr, fn ptr) {
-    if obj == null {
-        return
-    }
-    r = RCPstate.getByPtr(obj)
-    if r == null {
-        return
-    }
-    r.e = fn
 }
 
 //The Bah version of memcpy.

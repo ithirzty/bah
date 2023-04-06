@@ -3,7 +3,6 @@ struct queueNode {
     key: int
     data: ptr
 
-    next: queueNode*
     prev: queueNode*
 }
 
@@ -15,7 +14,6 @@ struct queueNode {
 //*Note: queue can only contain pointers.*
 struct queue {
     length: int = 0
-    head: queueNode* = null
     end: queueNode* = null
 
     //Used to insert an element at the top of the queue.
@@ -26,92 +24,81 @@ struct queue {
             prev: this.end
         }
 
-        
         this.length++
-        if this.end == null {
-            this.head = node
-            this.end = this.head
-        } else {
-            this.end.next = node
-            this.end = node
-        }
+        this.end = node
     }
 
-    //Used to delete an element mapped to the specified key.
-    delete(key int) {
-        if this.length == 0 {
-            return
-        }
-        current = this.head
-        previous queueNode*
-        for current.key != key {
-            if current.next == null {
-                return
-            }
-            previous = current
-            current = current.next
-        }
-        if current == this.head {
-            this.head = current.next
-        } else {
-            previous.next = current.next
-        }
-        this.length = this.length - 1
-    }
+    // //Used to delete an element mapped to the specified key.
+    // delete(key int) {
+    //     if this.length == 0 {
+    //         return
+    //     }
+    //     current = this.head
+    //     previous queueNode*
+    //     for current.key != key {
+    //         if current.next == null {
+    //             return
+    //         }
+    //         previous = current
+    //         current = current.next
+    //     }
+    //     if current == this.head {
+    //         this.head = current.next
+    //     } else {
+    //         previous.next = current.next
+    //     }
+    //     this.length = this.length - 1
+    // }
 
-    //To get an element by its key.
-    get(key int) ptr {
-        z = 0
-        zp = <ptr>z
-        if this.length == 0 {
-            return zp
-        }
+    // //To get an element by its key.
+    // get(key int) ptr {
+    //     z = 0
+    //     zp = <ptr>z
+    //     if this.length == 0 {
+    //         return zp
+    //     }
 
-        ptr = this.head
-        for ptr.key != key {
-            if ptr.next == null {
-                return zp
-            }
-            ptr = ptr.next
-        }
+    //     ptr = this.head
+    //     for ptr.key != key {
+    //         if ptr.next == null {
+    //             return zp
+    //         }
+    //         ptr = ptr.next
+    //     }
 
-        data = ptr.data
-        return data
-    }
+    //     data = ptr.data
+    //     return data
+    // }
 
-    //To replace an element at a specified key.
-    set(key int, data ptr) {
-        this.delete(key)
+    // //To replace an element at a specified key.
+    // set(key int, data ptr) {
+    //     this.delete(key)
 
-        node = new queueNode
-        node.key = key
-        node.data = data
-        node.next = this.head
+    //     node = new queueNode
+    //     node.key = key
+    //     node.data = data
+    //     node.next = this.head
         
-        this.length = this.length + 1
-        this.head = node
-    }
+    //     this.length = this.length + 1
+    //     this.head = node
+    // }
 
     //To get and remove the last element (at the bottom of the queue).
     //This will return the oldest element of the queue.
     //This method does not matter about the key of the element.
     pop() ptr {
-        if this.head == null {
+        if this.end == null {
             return null
         }
-        data = this.head.data
-        this.head = this.head.next
-        if this.head == null {
-            this.end = null
-        }
+        data = this.end.data
+        this.end = this.end.prev
         this.length--
-
         return data
     }
 
     //To clear (remove every element) of the queue.
     clear() {
-        this.head = <ptr>0
+        this.end = null
         this.length = 0
     }
 

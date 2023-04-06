@@ -1,5 +1,22 @@
 //These are functions used for memory management (such as -rcp).
 
+//Stupid function: weither RCP is enabled or not.
+RCPavailable() bool {
+    return RCPenabled == true
+}
+
+RCPisTokRef(t Tok*, tp cpstring, elems Elems*) bool {
+    return t.type == TOKEN_TYPE_VAR && t.isFunc == false && isRCPtype(tp, elems) && string(t.cont).hasPrefix("____BAH_COMPILER_VAR_") == false && len(t.cont) != 0
+}
+
+pointerizeVal(n cpstring) cpstring {
+    if n[0] == '*' {
+        return n[1:]
+    }
+
+    return "&"+n
+}
+
 //Returns true if the 'ce' scope is 'e' scope or one of its ancestor.
 isOutterScope(ce ptr, e Elems*) bool {
     for e != null {
@@ -11,123 +28,91 @@ isOutterScope(ce ptr, e Elems*) bool {
     return false
 }
 
-//Used for decrementing the counter of a variable (in -rcp mode).
-decrVar(v variable*, elems Elems*) rope* {
-    r = rope("")
-    //is array
-    if strHasPrefix(v.type, "[]") {
-        r += rope("RCP_decr("+v.name+");\n")
-    } else if strHasPrefix(v.type, "chan:") {
-        r += rope("RCP_decr("+v.name+");\n")
-    } else {
-        if strHasPrefix(v.type, "map:") {
-            nv = new variable
-            *nv = *v
-            v = nv
-            v.type = "mapWrapper*"
-        }
-        //var can be both a struct and a pointer
-        isPointer = isRCPpointerType(v.type)
-        //is a struct
-        s = searchStruct(v.type, elems)
-        if s != null && s.isBinding == false {
-            if isPointer == true {
-            r += rope("RCP_decr("+v.name+");\n")
-            } else {
-            r += rope("RCP_scanStack(&"+v.name+", sizeof("+v.name+"), 1);\n")
+RCPincrVarStr(n cpstring, isPtr bool) cpstring {
+    if isPtr == false {
+        return "RCP_incr("+pointerizeVal(n)+", sizeof("+n+"));\n"
+    }
+    return "RCP_incr("+n+", sizeof(*"+n+"));\n"
+}
+RCPincrVar(n cpstring, isPtr bool) {
+    OUTPUT += rope(RCPincrVarStr(n, isPtr))
+}
+
+RCPdecrVarStr(n cpstring, isPtr bool) cpstring {
+    if isPtr == false {
+        return "RCP_decr("+pointerizeVal(n)+", sizeof("+n+"));\n"
+    }
+    return "RCP_decr("+n+", sizeof(*"+n+"));\n"
+}
+
+RCPdecrVar(n cpstring, isPtr bool) {
+    OUTPUT += rope(RCPdecrVarStr(n, isPtr))
+}
+
+RCPkeepFuncRef(t Tok*, tp cpstring, elems Elems*) {
+    if isRCPtype(tp, elems) == false {
+        return
+    }
+    isVar = false
+    if t.type == TOKEN_TYPE_VAR && currSetVar != null {
+        let v = searchVirtVarByToken(t, elems) then {
+            if v.name == currSetVar.name {
+                isVar = true
             }
-        } else if isPointer == true {
-            //is a pointer
-            r = r + rope("RCP_decr("+v.name+");\n")
         }
     }
-    return r
-}
 
-//Used for incrementing the counter of a variable (in -rcp mode).
-incrVar(v variable*, elems Elems*) rope* {
-
-    if string(v.name).containsChar('*') {
-        return rope("")
+    if isVar || (t.isOper == false && (t.isFunc || string(t.cont).hasPrefix("____BAH_COMPILER_VAR_"))) {
+        tmpName = "keep_ref_"+genCompilerVar()
+        elems.vars[len(elems.vars)] = new variable {
+            name: tmpName
+            type: tp
+            declScope: elems
+        }
+        OUTPUT += rope(getCType(tp, elems).str()+" "+tmpName+" = "+t.cont+";\n")
+        if isVar && currSetVar != null {
+            RCPincrVar(currSetVar.name, isRCPpointerType(currSetVar.type))
+        }
+        t.cont = tmpName
     }
-
-    s = searchStruct(v.type, elems)
-    if s != null && isRCPpointerType(v.type) == false && s.isBinding == false {
-        return rope("RCP_scanStack(&"+v.name+", sizeof("+v.name+"), 0);")
-    }
-
-    return rope("RCP_incr("+v.name+");")
 }
 
-//Stupid function: weither RCP is enabled or not.
-RCPavailable() bool {
-    return RCPenabled == true
-}
 
-//Called when beginning a new scope, will increase all variable present in the outter scope,
-//except global variables (in -rcp mode).
-beginRCPscope(elems Elems*, excl []variable*) {
+RCPendScope(e Elems*) {
     if RCPavailable() == false {
         return
     }
-    i=0; for i < len(elems.vars), i++ {
-        v = elems.vars[i]
-        if varInArr(v, excl) {
+    i=0; for i < len(e.vars), i++ {
+        v = e.vars[i]
+        if v.declScope != e {
             continue
         }
-        if v.isGlobal == false && isRCPtype(v.type, elems) {
-            OUTPUT += incrVar(v, elems)
-        }
-    }
-}
-
-//Called when beginning a new semi-scope such as 'if' blocks or 'for' blocks (in -rcp mode).
-//This will only increment the counter of variables that were declared inside the new scope.
-beginRCPscopeLeaky(elems Elems*) {
-    if RCPavailable() == false {
-        return
-    }
-    i=0; for i < len(elems.vars), i++ {
-        v = elems.vars[i]
-        if v.isGlobal == false && v.declScope == elems && isRCPtype(v.type, elems) {
-            OUTPUT += incrVar(v, elems)
-        }
-    }
-}
-
-//This is called on the end of a scope (in -rcp mode).
-//Decrements the counter of every non global variable present in the scope that are not present in the 'excl' array.
-endRCPscope(elems Elems*, excl []variable*) {
-    if RCPavailable() == false {
-        return
-    }
-    i=0; for i < len(elems.vars), i++ {
-        v = elems.vars[i]
-        if varInArr(v, excl) {
+        if isRCPtype(v.type, e) == false {
             continue
         }
-        if v.isGlobal == false && isRCPtype(v.type, elems) {
-            OUTPUT += decrVar(v, elems)
-        }
+        if string(v.name).hasPrefix("____BAH_COMPILER_VAR_") {
+            continue
+        } 
+        RCPdecrVar(v.name, isRCPpointerType(v.type))
     }
 }
 
-//This is called on the end of a semi-scope such as 'if' blocks or 'for' blocks (in -rcp mode).
-//Decrements the counter of variables that were declared inside the ending scope only.
-endRCPscopeLeaky(elems Elems*, excl variable*, undef bool) {
-    if RCPavailable() == false {
-        return
+registerRCPtrackedVar(t cpstring, c cpstring, elems Elems*) cpstring {
+    av = new variable
+    av.type = t
+    av.declScope = elems
+    av.name = "keep_ref_"+genCompilerVar()
+    elems.vars[len(elems.vars)] = av
+    cType = getCType(av.type, elems)
+    if isGlobal() {
+        OUTPUT += rope(cType.str()+" "+av.name+";")
+        INIT += rope(av.name+" ="+c+";")
+    } else {
+        OUTPUT += rope(cType.str()+" "+av.name+" ="+c+";")
     }
-    i=0; for i < len(elems.vars), i++ {
-        v = elems.vars[i]
-        if excl != null && excl.name == v.name {
-            continue
-        }
-        if v.isGlobal == false && v.declScope == elems && isRCPtype(v.type, elems) {
-            OUTPUT += decrVar(v, elems)
-        }
-    }
+    return av.name
 }
+
 
 //Used for assinging a compilerVar to a value, registering it inside scope variables for memory management purposes.
 registerRCPvar(t cpstring, c cpstring, elems Elems*) cpstring {
@@ -144,16 +129,4 @@ registerRCPvar(t cpstring, c cpstring, elems Elems*) cpstring {
         OUTPUT += rope(cType.str()+" "+av.name+" ="+c+";")
     }
     return av.name
-}
-
-//Returns true if the variable referenced is the same as the one beeing set.
-RCPselfRef(v variable*) bool {
-    i=0; for i < len(compilerState.RCPvars) {
-        r = compilerState.RCPvars[i]
-        if r.name == v.name {
-            return true
-        }
-        i = i + 1
-    }
-    return false
 }

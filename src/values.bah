@@ -34,9 +34,13 @@ valueFunc(fn func*, parent variable*, l []Tok, i int, ltp lineType, elems Elems*
                 } else if pt.isOper {
                     fnt = string(getTypeFromToken(&pt, true, elems))
                     tmpV = new variable {
-                        name: genCompilerVar()
                         type: fnt.str()
                     }
+                    // if pt.isFunc {
+                    //     tmpV.name = "keep_ref_"+genCompilerVar()
+                    // } else {
+                        tmpV.name = genCompilerVar()
+                    // }
                     OUTPUT += rope(getCfunctionType(&fnt, tmpV.name, elems)+" = "+pt.cont+";\n")
                     pt.cont = tmpV.name
                     fn.name = tmpV.name
@@ -326,6 +330,10 @@ valueFunc(fn func*, parent variable*, l []Tok, i int, ltp lineType, elems Elems*
             tt = "reflectElement"
         }
 
+        if RCPavailable() {
+            RCPkeepFuncRef(&t, tt, elems)
+        }
+
         if generic != null && arg.type == "<any>" {
             arg.type = tt
             tts = string(tt)
@@ -346,33 +354,6 @@ valueFunc(fn func*, parent variable*, l []Tok, i int, ltp lineType, elems Elems*
 
         //Make sure that the argument passed cannot be null.
         checkCanBeNull(&t, tt, elems)
-
-        if RCPavailable() {
-            //If RCP is enabled, increase the var passed as argument only if it is the var beeing set ('a = someFunc(a)').
-            if t.type == TOKEN_TYPE_VAR && ltp == LINE_TYPE_VAR && t.isOper == false && currSetVar != null && t.cont == currSetVar.name && isRCPtype(currSetVar.type, elems) {
-                OUTPUT += incrVar(currSetVar, elems)
-            //If RCP os enabled and the value passed as argument is a function,
-            //extract it to a symbol to be able to decrease its return value at the end of the current scope.
-            } else if t.type == TOKEN_TYPE_FUNC {
-                afn = searchFuncByToken(&t, elems)
-                if afn != null && isRCPtype(afn.returns.type, elems) == true {
-                    if ltp == LINE_TYPE_ELSE {
-                        vName = genCompilerVar()
-                        code = getCType(afn.returns.type, elems).str()+" "+vName+";"
-                        diff = ropeSet(begIfHandle, begIfHandle.toStr() + code)
-                        OUTPUT.totalLen += diff
-                        t.cont = "("+vName+"="+t.cont+")"
-                        elems.vars[len(elems.vars)] = new variable {
-                            name: vName
-                            type: afn.returns.type
-                        }
-                    } else {
-                        t.cont = registerRCPvar(afn.returns.type, t.cont, elems)
-                    }
-                }
-            }
-
-        }
 
         //Adds token contents to the func token.
         fnt.cont += t.cont
@@ -494,7 +475,14 @@ valueStruct(l []Tok, i int, ltp lineType, elems Elems*) int {
                     parent = searchVirtVarByToken(&t, elems)
                 }
             } else {
-                tmpV = genCompilerVar()
+                tmpV = "keep_ref_"+genCompilerVar()
+                if RCPavailable() {
+                    elems.vars[len(elems.vars)] = new variable {
+                        name: tmpV
+                        type: tt
+                        declScope: elems
+                    }
+                }
                 cType = getCType(tt, elems)
                 OUTPUT += rope("
                 "+cType.str()+" "+tmpV+" = "+t.cont+";
@@ -506,9 +494,6 @@ valueStruct(l []Tok, i int, ltp lineType, elems Elems*) int {
                 }
                 l[i-1].type = TOKEN_TYPE_VAR
                 l[i-1].cont = tmpV
-                if RCPavailable() {
-                    elems.vars[len(elems.vars)] = parent
-                }
             }
             fn = searchStructMethod(nt.cont, s, elems)
             if fn == null {
@@ -800,9 +785,6 @@ valueArr(l []Tok, i int, ltp lineType, elems Elems*) int {
                 type: ptt.str()
             }
             t.setRefVar(tmpVr)
-            if RCPavailable() {
-                elems.vars[len(elems.vars)] = tmpVr
-            }
             if isGlobal() {
                 INIT += res
             } else {
@@ -1075,7 +1057,12 @@ valueOper(l []Tok, i int, elems Elems*) int {
     }
     if ntt == "ptr" {
         throwErr(&nt, "Cannot do operation on {TOKEN} (ptr).")
-    } 
+    }
+
+    if RCPavailable() {
+        RCPkeepFuncRef(&pt, ptt, elems)
+        RCPkeepFuncRef(&nt, ntt, elems)
+    }
 
     //parse string concatenation
     if ptt == "cpstring" {
@@ -1159,13 +1146,8 @@ valueOper(l []Tok, i int, elems Elems*) int {
             }
             methd = searchStructMemb(mName, s, elems)
             if methd != null && methd.isFn == true {
-                if RCPavailable() {
-                    pt.cont = registerRCPvar(ptt, s.name + "__" + mName + "(" +amp+pt.cont + ", " + nt.cont + ")", elems)
-                    pt.type = TOKEN_TYPE_VAR; pt.isFunc = false; pt.isOper = false
-                } else {
-                    pt.cont = s.name + "__" + mName + "(" +amp+pt.cont + ", " + nt.cont + ")"
-                    pt.isFunc = true
-                }
+                pt.cont = s.name + "__" + mName + "(" +amp+pt.cont + ", " + nt.cont + ")"
+                pt.isFunc = true
             }
         } else {
             //The two values are primitive types, then symply concatenate their contents.
@@ -1241,11 +1223,11 @@ valueChan(l []Tok, i int, elems Elems*) int {
     ct = getCType(ntt.str(), elems)
     //If the value is a pointer, simply return it.
     if isRCPpointerType(ntt.str()) {
-        tmpV = registerRCPvar(ntt.str(), "channel__receive("+nt.cont+")", elems)
+        tmpV = registerRCPtrackedVar(ntt.str(), "channel__receive("+nt.cont+")", elems)
         nt.cont = tmpV
     } else { //Else, dereference the pointer to get the value.
         if RCPavailable() {
-            tmpV = registerRCPvar(ntt.str()+"*", "("+ct.str()+"*)channel__receive("+nt.cont+")", elems)
+            tmpV = registerRCPtrackedVar(ct.str()+"*", "channel__receive("+nt.cont+")", elems)
             nt.cont = "*"+tmpV
         } else {
             nt.cont = "*("+ct.str()+"*)channel__receive("+nt.cont+")"
@@ -1328,7 +1310,7 @@ valueTuple(l []Tok, i int, elems Elems*) int {
         allocator = "memoryAlloc"
     }
 
-    v = registerRCPvar(type, allocator+"("+size+")", elems)
+    v = registerRCPtrackedVar(type, allocator+"("+size+")", elems)
     offsetVar = genCompilerVar()
 
     r = "long int "+offsetVar+" = 0;\n"

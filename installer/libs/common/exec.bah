@@ -73,12 +73,12 @@ struct command {
         
         total = 0
 
-        buff = buffer 1024
+        buff char* = memoryAlloc(1024)
 
         res ptr = fgets(<ptr>buff, 1023, this.handle)
         for res != null && res != <ptr>-1 {
-            i=0; for buff[i] != null, i++ {
-                arr[len(arr)] = buff[i]
+            i=0; for <char>noCheck(buff[i]) != null, i++ {
+                arr[len(arr)] = <char>noCheck(buff[i])
             }
             res = fgets(<ptr>buff, 1023, this.handle)
         }

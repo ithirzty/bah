@@ -303,15 +303,13 @@ struct fileMap {
     }
 }
 
-#define! DIR int
-
 struct! dirent {
     d_name: char*
 }
 
-#define! opendir(path cpstring) DIR*
-#define! closedir(d DIR*)
-#define! readdir(d DIR*) dirent*
+#define! opendir(path cpstring) ptr
+#define! closedir(d ptr)
+#define! readdir(d ptr) dirent*
 
 //Returns a list of all files found inside the specified directory.
 listFiles(dir cpstring) []cpstring {
