@@ -46,6 +46,7 @@ struct func {
     file: cpstring = ""
     line: uint32 = 1
     isVar: bool = false
+    fromVar: variable* // link to the parent vriable
     //optimizations
     used: bool = false
     code: rope* = null

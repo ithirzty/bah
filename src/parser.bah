@@ -2854,8 +2854,8 @@ parseAsync(l []Tok, elems Elems*) {
     fnNameParts = splitString(sFnT, "(")
     fnName = fnNameParts[0]
 
-    fn = searchFuncByToken(&fnT, elems)
-    
+    fn = searchVirtFuncByToken(&fnT, elems)
+
     if fn == null {
         throwErr(&fnT, "Internal compiler error.\n Error parsing async call for function '"+fnName.str()+"', arround {TOKEN}.")
     }
@@ -2879,6 +2879,13 @@ parseAsync(l []Tok, elems Elems*) {
         }
     }
 
+    // Fixes 'async struct.function()' when function is not a method but a member and need its symbol
+    // to be created is the new thread wrapper's scope
+    if fn.isVar && fn.fromVar != null {
+        threadPrep += getCType(fn.fromVar.type, elems).str() + " " + fn.fromVar.name + " = args->" + fn.args[0].name + ";"
+    }
+
+
     if RCPavailable() {
         threadClean += "RCP_decr(args, sizeof(*args));\n"
     }
@@ -2901,13 +2908,15 @@ parseAsync(l []Tok, elems Elems*) {
         }
     }
 
-    OUTPUT = OUTPUT + rope("
+    OUTPUT.totalLen += ropeSet(postDeclHandle, postDeclHandle.toStr() + "
     void "+fnWrapper+"("+tmpArgsStruct+"* args) {
         "+threadPrep+"
         "+fnName.str()+"("+unSerMembs+");
         "+threadClean+"
-    };
-    {
+    };\n")
+    
+    OUTPUT += rope(
+    "{
         "+tmpArgsStruct+" "+tmpArgs+" = {"+sFnT.str()+"};
         void* tmpArgs = memoryAlloc(sizeof("+tmpArgs+"));
         memcpy(tmpArgs, &"+tmpArgs+", sizeof("+tmpArgs+"));

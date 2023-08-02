@@ -516,7 +516,8 @@ valueStruct(l []Tok, i int, ltp lineType, elems Elems*) int {
                     }
                 }
             }
-            if fn.isVar == true {
+            if fn.isVar {
+                fn.fromVar = parent
                 fn.name = t.cont + sep + fn.name
             }
             if parent == null {
