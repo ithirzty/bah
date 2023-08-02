@@ -188,12 +188,20 @@ delete(a ptr, i int) {
 	}
     elemSize int = arr.elemSize
     data char* = arr.data
-    destOffset ptr = elemSize * i
+    destOffset = elemSize * i
     i++
-    offset ptr = elemSize * i
+    offset = elemSize * i
     src char* = <int>data + <int>offset
     dest char* = <int>data + <int>destOffset
     rightNB = length - (i-1)
+
+    #rcp {
+        if elemSize >= sizeof(ptr) {
+            RCP_decrScan(dest, elemSize)
+        }
+    }
+
+
     memmove(dest, src, rightNB * elemSize)
     arr.length = length - 1
 }
@@ -214,6 +222,13 @@ deleteRange(a ptr, from int, to int) {
     dest ptr = <int>data + elemSize * from
     src ptr = <int>dest + size + elemSize
     rightNB = length - to
+
+    #rcp {
+        if elemSize >= sizeof(ptr) {
+            RCP_decrScan(<ptr>(<int>data + elemSize * from), elemSize * (to - from + 1))
+        }
+    }
+
     memmove(dest, src, rightNB * elemSize)
     arr.length = length - (to - from + 1)
 }

@@ -284,8 +284,15 @@ getStaticValue(t Tok*, elems Elems*) cpstring {
     return ""
 }
 
-//Use for checking bounds at runtime
-checkBounds(t Tok*, elems Elems*) {
+//Use for checking bounds at runtime (and compile time)
+// vType:
+//        0 = array
+//        1 = buffer
+//        2 = cpstring
+checkBounds(arr Tok*, vType int, t Tok*, elems Elems*) {
+    if isUnsafe {
+        return
+    }
     ind = 0
     if t.type == TOKEN_TYPE_INT {
         ind = strToInt(t.cont)
@@ -295,8 +302,16 @@ checkBounds(t Tok*, elems Elems*) {
                 ind = strToInt(v.constVal)
             }
         }
+    } else {
+        name = genCompilerVar()
+        OUTPUT += rope(getCType(getTypeFromToken(t, true, elems), elems).str()+" "+name+" = "+t.cont+";")
+        t.cont = name
     }
     if ind < 0 {
         throwErr(t, "Cannot use index {TOKEN} ("+intToStr(ind)+" < 0).")
+    }
+
+    if vType == 0 {
+        arr.cont = "__Bah_getVal_boundsChecked("+arr.cont+", "+t.cont+", "+strLitteralToBahStr("\"array out of bounds violation on line "+compilerState.currentFile+":"+intToStr(t.line)+"\"")+")"
     }
 }

@@ -4,7 +4,7 @@
 #include "<pthread.h>"
 #include "<malloc.h>"
 
-#cLib "lpthread"
+#cLib "pthread"
 
 #define! malloc(s int) ptr
 #define! realloc(p ptr, s int) ptr

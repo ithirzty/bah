@@ -159,46 +159,42 @@ struct! ifreq {
     #cLib "lws2_32"
 }
 
-#define! BIO int
-#define! SSL int
-#define! SSL_CTX int
-#define! X509 int
 
 #define! SSL_library_init() int
 #define! TLSv1_2_client_method() int
-#define! SSL_CTX_new(m int) SSL_CTX*
-#define! BIO_new_ssl_connect(ctx SSL_CTX*) BIO*
-#define! BIO_set_conn_hostname(bio BIO*, h cpstring) int
-#define! BIO_do_connect(bio BIO*) int
-#define! BIO_do_handshake(bio BIO*) int
-#define! BIO_write(bio BIO*, cont cpstring, size int) int
-#define! BIO_should_retry(bio BIO*) int
-#define! BIO_read(bio BIO*, buff char*, size int) int
-#define! BIO_free_all(bio BIO*)
-#define! SSL_CTX_free(ctx SSL_CTX*)
-#define! SSL_CTX_set_timeout(ctx SSL_CTX*, t int) int
-#define! BIO_get_ssl(bio BIO*, ssl SSL**)
-#define! SSL_set_mode(ssl SSL*, mode int)
-#define! SSL_set_tlsext_host_name(ssl SSL*, host cpstring) int
-#define! SSL_CTX_set_cipher_list(ctx SSL_CTX*, l cpstring)
-#define! SSL_CTX_load_verify_locations(ctx SSL_CTX*, cert cpstring, key cpstring) int
-#define! SSL_CTX_set_default_verify_paths(ctx SSL_CTX*) int
-#define! SSL_CTX_use_certificate_file(ctx SSL_CTX*, cert cpstring, ft int) int
-#define! SSL_CTX_set_default_passwd_cb_userdata(ctx SSL_CTX*, pass cpstring)
-#define! SSL_CTX_use_PrivateKey_file(ctx SSL_CTX*, key cpstring, ft iny) int
-#define! SSL_CTX_check_private_key(ctx SSL_CTX*) int
+#define! SSL_CTX_new(m int) ptr
+#define! BIO_new_ssl_connect(ctx ptr) ptr
+#define! BIO_set_conn_hostname(bio ptr, h cpstring) int
+#define! BIO_do_connect(bio ptr) int
+#define! BIO_do_handshake(bio ptr) int
+#define! BIO_write(bio ptr, cont cpstring, size int) int
+#define! BIO_should_retry(bio ptr) int
+#define! BIO_read(bio ptr, buff char*, size int) int
+#define! BIO_free_all(bio ptr)
+#define! SSL_CTX_free(ctx ptr)
+#define! SSL_CTX_set_timeout(ctx ptr, t int) int
+#define! BIO_get_ssl(bio ptr, ssl ptr*)
+#define! SSL_set_mode(ssl ptr, mode int)
+#define! SSL_set_tlsext_host_name(ssl ptr, host cpstring) int
+#define! SSL_CTX_set_cipher_list(ctx ptr, l cpstring)
+#define! SSL_CTX_load_verify_locations(ctx ptr, cert cpstring, key cpstring) int
+#define! SSL_CTX_set_default_verify_paths(ctx ptr) int
+#define! SSL_CTX_use_certificate_file(ctx ptr, cert cpstring, ft int) int
+#define! SSL_CTX_set_default_passwd_cb_userdata(ctx ptr, pass cpstring)
+#define! SSL_CTX_use_PrivateKey_file(ctx ptr, key cpstring, ft iny) int
+#define! SSL_CTX_check_private_key(ctx ptr) int
 #define! OpenSSL_add_all_algorithms()
-#define! SSL_new(ctx SSL_CTX*) SSL*
-#define! SSL_set_fd(ssl SSL*, sd int)
-#define! SSL_accept(ssl SSL*) int
-#define! SSL_read(ssl SSL*, buff char*, s int) int
-#define! SSL_write(ssl SSL*, buff cpstring, s int) int
-#define! SSL_free(ssl SSL*)
-#define! SSL_get_peer_certificate(ssl SSL*) X509*
-#define! X509_get_subject_name(cert X509*) char*
-#define! X509_get_issuer_name(cert X509*) char*
+#define! SSL_new(ctx ptr) ptr
+#define! SSL_set_fd(ssl ptr, sd int)
+#define! SSL_accept(ssl ptr) int
+#define! SSL_read(ssl ptr, buff char*, s int) int
+#define! SSL_write(ssl ptr, buff cpstring, s int) int
+#define! SSL_free(ssl ptr)
+#define! SSL_get_peer_certificate(ssl ptr) ptr
+#define! X509_get_subject_name(cert ptr) char*
+#define! X509_get_issuer_name(cert ptr) char*
 #define! X509_NAME_oneline(s char*, a int, b int) cpstring
-#define! X509_free(cert X509*)
+#define! X509_free(cert ptr)
 #define! TLSv1_2_server_method() int
 
 __Bah_http_is_ssl_initialized = SSL_library_init()
@@ -244,7 +240,7 @@ struct http_socket {
     sockfd: int = -1
     timeout: int = 0
     sizeLimit: uint = 0
-    ssl: SSL* = null
+    ssl: ptr = null
 
     //To check if a socket is opened.
     isOpened() bool {
@@ -916,7 +912,7 @@ makeRespFromBody(response response_buffer) http_response* {
 //Used for making TLS requests.
 //*This is an internal function, you should know what you're doing if you decide to use it.*
 makeRawHttpsRequest(host cpstring, message cpstring, timeout int) response_buffer {
-    ssl SSL*
+    ssl ptr
 
     ctx = SSL_CTX_new(TLSv1_2_client_method())
     if timeout > 0 {
@@ -1215,8 +1211,6 @@ struct http_request extend http_transport {
                                     }
                                     isName = false
                                     continue
-                            } else {
-
                             }
                         }
 

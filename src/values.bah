@@ -474,6 +474,13 @@ valueStruct(l []Tok, i int, ltp lineType, elems Elems*) int {
                 } else {
                     parent = searchVirtVarByToken(&t, elems)
                 }
+
+                // if parent != null && isRCPpointerType(parent.type) == false {
+                //     nParent = new variable
+                //     *nParent = *parent
+                //     parent = nParent
+                //     parent.name = registerRCPtrackedVar(parent.type, t.cont, elems)
+                // }
             } else {
                 tmpV = "keep_ref_"+genCompilerVar()
                 if RCPavailable() {
@@ -662,7 +669,9 @@ valueArr(l []Tok, i int, ltp lineType, elems Elems*) int {
             if compTypes(getTypeFromToken(&index, true, elems), "int") == false {
                 throwErr(&index, "Cannot use {TOKEN} as array index (int).")
             }
-            checkBounds(&index, elems)
+            if (ltp == LINE_TYPE_VAR && tokPos == 0 && len(l) > tokPos+1 && l[tokPos+1].cont == "=") == false {
+                checkBounds(&pt, 0, &index, elems)
+            }
             ptt.trimLeft(2)
             t.bahType = ptt.str()
             isFunc = ptt.hasPrefix("function(")
@@ -720,7 +729,7 @@ valueArr(l []Tok, i int, ltp lineType, elems Elems*) int {
             if compTypes(getTypeFromToken(&index, true, elems), "int") == false {
                 throwErr(&index, "Cannot use {TOKEN} as buffer index (int).")
             }
-            checkBounds(&index, elems)
+            checkBounds(&pt, 1, &index, elems)
             t.cont = pt.cont+"["+index.cont+"]"
             r = new variable {
                 name: pt.ogCont+"["+index.ogCont+"]"
@@ -750,10 +759,14 @@ valueArr(l []Tok, i int, ltp lineType, elems Elems*) int {
         if compTypes(getTypeFromToken(&index, true, elems), "cpstring") == false {
             throwErr(&index, "Cannot use {TOKEN} as map index (cpstring).")
         }
+        if RCPavailable() {
+            index.cont = registerRCPtrackedVar("cpstring", index.cont, elems)
+        }
         if tokPos == 0 && ltp == LINE_TYPE_VAR { //setting map value
             tmpV = new variable {
-                name: genCompilerVar()
+                name: "keep_ref_"+genCompilerVar()
                 type: ptt.str()
+                declScope: elems
             }
             t.setRefVar(tmpV)
             elems.vars[len(elems.vars)] = tmpV
@@ -801,7 +814,7 @@ valueArr(l []Tok, i int, ltp lineType, elems Elems*) int {
             if compTypes(getTypeFromToken(&index, true, elems), "int") == false {
                 throwErr(&index, "Cannot use {TOKEN} as cpstring index (int).")
             }
-            checkBounds(&index, elems)
+            checkBounds(&pt, 2, &index, elems)
             t.cont = pt.cont+"["+index.cont+"+4]"
             r = new variable {
                 name: pt.ogCont+"["+index.ogCont+"]"
@@ -909,6 +922,12 @@ valueBool(l []Tok, i int, ltp lineType, elems Elems*) int {
     //checking if two values are the same type
     nt = l[tokPos]
     ntt = getTypeFromToken(&nt, true, elems)
+
+    if RCPavailable() {
+        RCPkeepFuncRef(&pt, ptt, elems)
+        RCPkeepFuncRef(&nt, ntt, elems)
+    }
+
     if t.cont == "in" {
         arrT = string(ntt)
         if arrT.hasPrefix("[]") == 0 {
@@ -1310,7 +1329,7 @@ valueTuple(l []Tok, i int, elems Elems*) int {
         allocator = "memoryAlloc"
     }
 
-    v = registerRCPtrackedVar(type, allocator+"("+size+")", elems)
+    v = registerRCPvar(type, allocator+"("+size+")", elems)
     offsetVar = genCompilerVar()
 
     r = "long int "+offsetVar+" = 0;\n"

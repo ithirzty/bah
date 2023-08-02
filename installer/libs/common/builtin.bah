@@ -15,7 +15,7 @@ struct! Bah_Array_Type {
 #define __BAH_panic(e cpstring, l cpstring)
 #define __Bah_safe_string(s cpstring) cpstring
 #define cpstringSubsitute(s cpstring, i int, l int) cpstring
-#define __Bah_getVal_boundsChecked(arr []ptr, ind uint32) ptr
+#define __Bah_getVal_boundsChecked(arr []ptr, ind uint32, error cpstring) []ptr
 #define __Bah_check_arr_bounds(arr []ptr, ind uint32) bool
 #define __Bah_realocate_arr(arr []ptr, nLength uint32)
 
@@ -270,12 +270,7 @@ fastExec(s cpstring) cpstring {
 
 //Used by the compiler when panic() is called.
 __BAH_panic(e cpstring, line cpstring) {
-	#rcp {
-		noCheck(printf("panic (%s): %s\n"+4, line+4, e+4))
-		a = *(<ptr*>null)
-		return
-	}
-	
+
 	if __BAH_panic_chan != null {
 		e -> __BAH_panic_chan
 		return
@@ -382,9 +377,9 @@ __Bah_safe_string(s cpstring) cpstring {
 	return "\""+s+"\""
 }
 
-__Bah_getVal_boundsChecked(arr []ptr, ind uint32) ptr {
+__Bah_getVal_boundsChecked(arr []ptr, ind uint32, error cpstring) []ptr {
 	if ind >= len(arr) {
-		panic("builtin: array out of bounds violation.")
+		panic(error)
 	}
 	return arr
 }

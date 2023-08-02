@@ -84,7 +84,10 @@ RCPendScope(e Elems*) {
     }
     i=0; for i < len(e.vars), i++ {
         v = e.vars[i]
-        if v.declScope != e {
+        if v.declScope == null {
+            continue
+        }
+        if v.declScope != e && e.isChildren(v.declScope) == false {
             continue
         }
         if isRCPtype(v.type, e) == false {
@@ -95,6 +98,17 @@ RCPendScope(e Elems*) {
         } 
         RCPdecrVar(v.name, isRCPpointerType(v.type))
     }
+}
+
+RCPendScopeRange(e Elems*, to Elems*) {
+    if RCPavailable() == false {
+        return
+    }
+    for e != to.parent {
+        RCPendScope(e)
+        e = e.parent
+    }
+
 }
 
 registerRCPtrackedVar(t cpstring, c cpstring, elems Elems*) cpstring {

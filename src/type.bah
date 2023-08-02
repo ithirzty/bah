@@ -22,6 +22,12 @@ floatTypes = []cpstring{
     "ufloat32"
 }
 
+
+//Returns true if the Bah type passed is a tuple.
+isTupleType(t cpstring) bool {
+    return len(t) > 1 && t[0] == '[' && t[len(t)-1] == ']'
+}
+
 //Does a type contain an unary.
 typeAsStar(t cpstring) bool {
     return t[len(t)-1] == '*'
@@ -32,7 +38,7 @@ isRCPpointerType(t cpstring) bool {
     if strHasPrefix(t, "function(") {
         return false
     }
-    return t == "cpstring" || t == "ptr" || typeAsStar(t) || strHasPrefix(t, "[]") || strHasPrefix(t, "chan:") || strHasPrefix(t, "map:")
+    return t == "cpstring" || t == "ptr" || typeAsStar(t) || strHasPrefix(t, "[]") || strHasPrefix(t, "chan:") || strHasPrefix(t, "map:") || isTupleType(t)
 }
 
 //Can a Bah type contain a pointer as C type.
@@ -302,11 +308,6 @@ getTupleSize(t cpstring, elems Elems*) cpstring {
         r += "+sizeof("+getCType(parts[i], elems).str()+")"
     }
     return r
-}
-
-//Returns true if the Bah type passed is a tuple.
-isTupleType(t cpstring) bool {
-    return len(t) > 1 && t[0] == '[' && t[len(t)-1] == ']'
 }
 
 //Used for getting the C type from a Bah function.

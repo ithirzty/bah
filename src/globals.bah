@@ -117,6 +117,7 @@ struct compilerStateTag {
     hasImports: bool = false
     currForElems: Elems*
     currFnElems: Elems*
+    nbElseIf: int = 0
 }
 
 shouldOnlyDecl = false

@@ -106,7 +106,7 @@ struct dbResponse {
                 i=0; for i < len(this.rows) {
                     r = this.rows[i]
                     v int
-                    r.scan(v)
+                    r.scan(&v)
                     arr[i] = v
                     i = i + 1
                 }
@@ -115,7 +115,7 @@ struct dbResponse {
                 i=0; for i < len(this.rows) {
                     r = this.rows[i]
                     v float
-                    r.scan(v)
+                    r.scan(&v)
                     arr[i] = v
                     i = i + 1
                 }
@@ -124,7 +124,7 @@ struct dbResponse {
                 i=0; for i < len(this.rows) {
                     r = this.rows[i]
                     v = ""
-                    r.scan(v)
+                    r.scan(&v)
                     arr[i] = v
                     i = i + 1
                 }
@@ -133,7 +133,7 @@ struct dbResponse {
                 i=0; for i < len(this.rows) {
                     r = this.rows[i]
                     v bool
-                    r.scan(v)
+                    r.scan(&v)
                     arr[i] = v
                     i = i + 1
                 }

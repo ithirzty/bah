@@ -1221,6 +1221,16 @@ parseVar(l []Tok, elems Elems*) {
         }
         ft = l[0]
         parsed = true
+
+        if RCPavailable() {
+            let fn = searchVirtFuncByToken(&ft, elems) then {
+                if isRCPtype(fn.returns.type, elems) {
+                    ft.cont = "RCP_decr("+ft.cont+", 0)"
+                }
+            }
+        }
+
+
         OUTPUT = OUTPUT + rope(ft.cont + ";\n")
         return
     }
@@ -1328,6 +1338,10 @@ parseVar(l []Tok, elems Elems*) {
             }
         }
         if isEqual == false {
+            if t.type != TOKEN_TYPE_KEYWORD && t.type != TOKEN_TYPE_VAR && (t.cont != ":" && t.cont != "(" && t.cont != ")") || t.isFunc || t.isOper {
+                throwWarningLine("You may have forgotten '=' between "+v.name+" and "+t.ogCont+".", t.line)
+                throwErr(&t, "Cannot use {TOKEN} as type.")
+            }
             currentType = currentType + t.cont
         } else {
 
@@ -2084,6 +2098,11 @@ parseStruct(l []Tok, elems Elems*) {
         OUTPUT = OOUT
         NEXT_LINE = nextLine
         code = rope("struct "+s.name+" {\n")
+
+        if RCPavailable() {
+            code += rope("volatile char __RCP_GUARD;\n")
+        }
+
         i=0; for i < len(allMembs) {
             m = allMembs[i]
             code = code + rope(m +";\n")
@@ -2323,14 +2342,14 @@ parseReturn(l []Tok, elems Elems*) {
             if isRCPtype(currentFn.returns.type, elems) && (rvt.isFunc == false || (rvt.isFunc && rvt.isOper))  {
                 RCPincrVar(retVal, isRCPpointerType(currentFn.returns.type))
             }
-            RCPendScope(elems)
+            RCPendScopeRange(elems, compilerState.currFnElems)
             OUTPUT += rope("return "+retVal+";\n")
 
         } else {
             OUTPUT += rope("return "+rvar+";\n")
         }
     } else {
-        RCPendScope(elems)
+        RCPendScopeRange(elems, compilerState.currFnElems)
         OUTPUT += rope("return;\n")
     }
 }
@@ -2349,6 +2368,7 @@ parseIf(l []Tok, fromElse bool, elems Elems*) {
     }
     t = l[2]
     if t.cont != "{" {
+        debugLine(l)
         throwErr(&t, "Expected '{' not {TOKEN} after condtition in if statement.")
     }
     tokens = l[3:len(l)-1]
@@ -2361,7 +2381,10 @@ parseIf(l []Tok, fromElse bool, elems Elems*) {
 
     OUTPUT += ifHeader
 
-    ifElems = dupElems(elems)
+    ifElems = elems
+    if fromElse == false {
+        ifElems = dupElems(elems)
+    }
 
     if fromElse == true {
         i=0; for i < len(prevIfChecks), i++ {
@@ -2413,7 +2436,6 @@ parseElse(l []Tok, elems Elems*) {
 
     prevReturned = prevIfExits
 
-    OUTPUT = OUTPUT + rope("else ")
     if ft.cont == "if" {
         memory = []Tok
         i=1; for i < len(l) {
@@ -2422,7 +2444,7 @@ parseElse(l []Tok, elems Elems*) {
         }
         parseIf(memory, true, elems)
         prevLine = LINE_TYPE_IF
-
+        // OUTPUT += rope("}")
     } else {
         if ft.cont != "{" {
             throwErr(&ft, "Expected 'if' or '{' not {TOKEN}.")
@@ -2433,27 +2455,28 @@ parseElse(l []Tok, elems Elems*) {
             memory[len(memory)] = l[i]
             i++
         }
-        OUTPUT = OUTPUT + rope("{\n")
-        ifElems = dupElems(elems)
         
         i=0; for i < len(prevIfChecks), i++ {
             bc = prevIfChecks[i]
             bc.checkNull = bc.checkNull == false
-            ifElems.branchChecks[i] = bc
+            elems.branchChecks[i] = bc
         }
 
         oldIB = compilerState.isBranch
         compilerState.isBranch = true
         t = l[0]
-        parseLines(memory, ifElems)
-        RCPendScope(ifElems)
-        fixMeEndScope(ifElems, &memory[len(memory)-1])
+        if len(memory) == 0 {
+            throwWarningLine("Empty else block.", t.line)
+        } else {
+            parseLines(memory, elems)
+        }
+        RCPendScope(elems)
+        fixMeEndScope(elems, &memory[len(memory)-1])
         if debug == true {
             lt = l[len(l)-1]
-            debugEndScope(lt.line, ifElems)
+            debugEndScope(lt.line, elems)
         }
         compilerState.isBranch = oldIB
-        OUTPUT = OUTPUT + rope("}\n")
         prevIfExits = false
     }
 
@@ -2654,12 +2677,19 @@ makeEvalFunc(fn func*, elems Elems*) {
         }
     }
 
+    cleanup = ""
+
+    if RCPavailable() {
+        cleanup = RCPdecrVarStr("fnArgs", true)
+    }
+
     OUTPUT += rope("void* __attribute__((optimize(\"O0\"))) "+efn.name+"(struct Bah_Array_Type* fnArgs) {
         if (fnArgs->length != "+intToStr(len(fn.args))+") {
-            __BAH_panic((char*)\"eval: calling function "+fn.name+"() with the wrong number of arguments.\", \"BAH_COMPILER_INTERNAL\");
+            __BAH_panic((char*)"+strLitteralToBahStr("\"eval: calling function "+fn.name+"() with the wrong number of arguments.\"")+", "+strLitteralToBahStr("\"BAH_COMPILER_INTERNAL\"")+");
         }
         "+fnBinding+"
         "+setReturnValue+fnCall+");
+        "+cleanup+"
         return (void*)r;
     };")
 
@@ -2841,7 +2871,7 @@ parseAsync(l []Tok, elems Elems*) {
         sMembs = sMembs + cType.str()+" "+a.name+";\n"
         unSerMembs = unSerMembs + "args->"+a.name
         if RCPavailable() && isRCPtype(a.type, elems) {
-            threadPrep  += RCPincrVarStr(a.name, isRCPpointerType(a.type))
+            threadPrep  += RCPincrVarStr("args->"+a.name, isRCPpointerType(a.type))
             threadClean += RCPdecrVarStr("args->"+a.name, isRCPpointerType(a.type))
         }
         if i+1 < len(fn.args) {
@@ -2873,10 +2903,10 @@ parseAsync(l []Tok, elems Elems*) {
 
     OUTPUT = OUTPUT + rope("
     void "+fnWrapper+"("+tmpArgsStruct+"* args) {
+        "+threadPrep+"
         "+fnName.str()+"("+unSerMembs+");
         "+threadClean+"
     };
-    "+threadPrep+"
     {
         "+tmpArgsStruct+" "+tmpArgs+" = {"+sFnT.str()+"};
         void* tmpArgs = memoryAlloc(sizeof("+tmpArgs+"));
@@ -3403,6 +3433,11 @@ parseLet(line []Tok, elems Elems*) {
     }
 
     captElems = dupElems(elems)
+    if isThen {
+        v.declScope = captElems
+    } else {
+        v.declScope = elems
+    }
 
     if isThen == true {
         code += "if ("+tmpVar+" != null) {\n"+getCType(v.type, elems).str() + " " + v.name + " = " + tmpVar+";\n"
@@ -3458,7 +3493,12 @@ parseLine(line []Tok, elems Elems*) {
             currSetVar = v
         }
     }
-
+    if (prevLine == LINE_TYPE_IF || prevLine == LINE_TYPE_ELSE) && (ltp != LINE_TYPE_ELSE) && compilerState.nbElseIf > 0 {
+        i=0; for i < compilerState.nbElseIf, i++ {
+            OUTPUT += rope("}\n")
+        }
+        compilerState.nbElseIf = 0
+    }
     
     parsed = false
     if ltp == LINE_TYPE_INCLUDE {
@@ -3487,6 +3527,13 @@ parseLine(line []Tok, elems Elems*) {
         } else if ltp == LINE_TYPE_MACRO {
             return
         } else if ltp != LINE_TYPE_FN_DECL {
+
+            if ltp == LINE_TYPE_ELSE {
+                elems = dupElems(elems)
+                OUTPUT += rope("else{\n")
+                compilerState.nbElseIf++
+            }
+
             line = prePross(line, ltp, elems)
             if len(line) == 0 {
                 return
@@ -3502,6 +3549,13 @@ parseLine(line []Tok, elems Elems*) {
                 throwErr(&line[len(line)-1], "Not expecting {TOKEN} after function call.")
             }
             parsed = true
+            if RCPavailable() {
+                let fn = searchFuncByToken(&ft, elems) then {
+                    if isRCPtype(fn.returns.type, elems) {
+                        ft.cont = "RCP_decr("+ft.cont+", 0)"
+                    }
+                }
+            }
             OUTPUT = OUTPUT + rope(ft.cont + ";\n")
         } else if ltp == LINE_TYPE_FN_DECL {
             parsed = true
@@ -3554,6 +3608,8 @@ hasAnyTok(l []Tok) bool {
 
 //Parses multiple lines (such as a file).
 parseLines(tokens []Tok, elems Elems*) {
+    oldnbELIF = compilerState.nbElseIf
+    compilerState.nbElseIf = 0
 
     if len(tokens) == 0 {
         return
@@ -3635,6 +3691,12 @@ parseLines(tokens []Tok, elems Elems*) {
         }
     }
 
+    if compilerState.nbElseIf > 0 {
+        i=0; for i < compilerState.nbElseIf, i++ {
+            OUTPUT += rope("}\n")
+        }
+    }
 
+    compilerState.nbElseIf = oldnbELIF
 }
 
