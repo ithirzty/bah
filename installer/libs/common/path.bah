@@ -11,10 +11,18 @@
 //Will return null if path does not exist.
 absPath(path cpstring) cpstring {
     #linux {
-        p = realpath(path, null)
+        rp = realpath(path, null)
+        p = cStrToBah(rp)
+        if rp != null {
+            free(rp)
+        }
     }
     #darwin {
-        p = realpath(path, null)
+        rp = realpath(path, null)
+        p = cStrToBah(rp)
+        if rp != null {
+            free(rp)
+        }
     }
     #windows {
         buff cpstring = memoryAlloc(4096)
