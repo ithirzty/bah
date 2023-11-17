@@ -780,6 +780,9 @@ http_response(sock http_socket*) http_response* {
     resp = new http_response
     resp.socket = *sock
 
+    iMode = 0
+    ioctl(resp.socket.sockfd, noCheck(FIONBIO), &iMode)
+
     resp.setHeader("Server", "bah-http-framework")
     resp.setHeader("Connection", "close")
 
