@@ -440,10 +440,10 @@ struct http_socket {
         buff = buffer 1025
         rep = response_buffer{}
 
+        nDataLength = 0
         #linux {
             iMode = 0
             ioctl(this.sockfd, noCheck(FIONBIO), &iMode)
-            nDataLength = 0
             if this.ssl != null {
                 nDataLength = SSL_read(this.ssl,<char*>buff,1024)
             } else {
@@ -1464,15 +1464,15 @@ struct http_server {
     socketTLS: http_socket
     error: http_serverError = HTTP_SERVER_NO_ERROR
 
-    cliChan: chan:http_socket*
-    nbThreads: uint = 50
+    // cliChan: chan:http_socket*
+    // nbThreads: uint = 50
 
-    setNbThreads(nb uint) {
-        if this.running {
-            panic("http: cannot change number of http.server worker threads while running.")
-        }
-        this.nbThreads = nb
-    }
+    // setNbThreads(nb uint) {
+    //     if this.running {
+    //         panic("http: cannot change number of http.server worker threads while running.")
+    //     }
+    //     this.nbThreads = nb
+    // }
 
     linux_interface: cpstring = ""
 
@@ -1492,33 +1492,23 @@ struct http_server {
         this.socket.close()
     }
 
-    threadWorker() {
-        for this.running {
-            sock = <- this.cliChan
-
-            if sock.ssl != null {
-                resp = SSL_accept(sock.ssl)
-                if SSL_accept(sock.ssl) <= 0 {
-                    sock.close()
-                    continue
-                }
+    threadWorker(sock http_socket*) {
+        if sock.ssl != null {
+            resp = SSL_accept(sock.ssl)
+            if SSL_accept(sock.ssl) <= 0 {
+                sock.close()
+                return
             }
-
-            req = http_request(sock)
-            resp = http_response(sock)
-            this.handle(req, resp)
-            sock.close()
         }
+
+        req = http_request(sock)
+        resp = http_response(sock)
+        this.handle(req, resp)
+        sock.close()
     }
 
     //To start the server.
     listenAndServe() {
-        if this.cliChan == null {
-            this.cliChan = chan http_socket*
-        }
-        if this.nbThreads == 0 {
-            this.nbThreads = 50
-        }
         this.error = HTTP_SERVER_NO_ERROR
         this.socket = http_socket{}
 
@@ -1562,9 +1552,9 @@ struct http_server {
         this.running = true
 
 
-        i=0; for i < this.nbThreads, i++ {
-            async this.threadWorker()
-        }
+        // i=0; for i < this.nbThreads, i++ {
+        //     async this.threadWorker()
+        // }
 
         if this.done != null {
             async this.done()
@@ -1581,7 +1571,7 @@ struct http_server {
                 sockfd: cli
             }
 
-            sock -> this.cliChan
+            async this.threadWorker(sock)
         }
 
         this.stop()
@@ -1619,14 +1609,6 @@ struct http_server {
             return
         }
 
-
-        if this.cliChan == null {
-            this.cliChan = chan http_socket*
-        }
-        if this.nbThreads == 0 {
-            this.nbThreads = 50
-        }
-        
         this.socketTLS = http_socket{}
 
         this.socketTLS.open()
@@ -1669,9 +1651,9 @@ struct http_server {
         this.running = true
 
 
-        i=0; for i < this.nbThreads, i++ {
-            async this.threadWorker()
-        }
+        // i=0; for i < this.nbThreads, i++ {
+        //     async this.threadWorker()
+        // }
 
         if this.done != null {
             async this.done()
@@ -1690,7 +1672,7 @@ struct http_server {
             }
             SSL_set_fd(sock.ssl, sock.sockfd)
 
-            sock -> this.cliChan
+            async this.threadWorker(sock)
         }
 
         SSL_CTX_free(ctx)
