@@ -74,6 +74,18 @@ struct varCheck {
     checkNull: bool
 }
 
+struct chainsToSwitch {
+    var: ptr
+    values: []ptr //Tokens
+    headerRopes: []rope*
+    footerRopes: []rope*
+}
+
+struct switchOptimization {
+    var: ptr
+    value: ptr // Token
+}
+
 //Every elements of the program for a specific scope
 struct Elems {
     vars: []variable*
@@ -81,12 +93,14 @@ struct Elems {
     types: []cpstring
     fns: []func*
     parent: Elems*
-    id: uint32
     //safety
     deletedVars: []variable*
     branchChecks: []varCheck
     //optimization
     currFlowEnd: bool
+    nestedElseIfNb: int
+    switchOpt: chainsToSwitch*
+    switchOptCurrLoop: cpstring
 
     isChildren(e Elems*) bool {
         if e == null {
@@ -99,6 +113,19 @@ struct Elems {
             e = e.parent
         }
         return false
+    }
+
+    resetSwitchOpt() {
+        e = this.parent
+        for e != null {
+            if e.switchOpt == this.switchOpt {
+                e.switchOpt = null
+            } else {
+                break
+            }
+            e = e.parent
+        }
+        this.switchOpt = null
     }
 
 }

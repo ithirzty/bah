@@ -338,3 +338,8 @@ getCfunctionType(cfrt string*, elemName cpstring, elems Elems*) cpstring {
     tmpfn.name = elemName
     return getCtypeFromFunc(tmpfn, elems)
 }
+
+//Used to check if a type translates to a C primitive
+isTypeCprim(t cpstring, elems Elems*) bool {
+    return isRCPpointerType(t) == false && searchStruct(t, elems) == null
+}

@@ -119,7 +119,6 @@ searchVirtVarByToken(t Tok*, elems Elems*) variable* {
     if t.isOper == true {
         return null
     }
-    // println("Could not find ("+compilerState.currentFile+":"+intToStr(t.line)+"): "+t.cont)
     return searchVar(t.cont, t, elems)
 }
 
@@ -156,12 +155,11 @@ varInArr(v variable*, arr []variable*) bool {
     if arr == null {
         return false
     }
-    j=0; for j < len(arr) {
+    j=0; for j < len(arr), j++ {
         ev = arr[j]
         if ev.name == v.name {
             return true
         }
-        j = j + 1
     }
     return false
 }

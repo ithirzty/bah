@@ -43,8 +43,8 @@ dupElems(elems Elems*) Elems* {
         structs: elems.structs
         types: elems.types
         fns: elems.fns
+        switchOptCurrLoop: elems.switchOptCurrLoop
     }
-
     //vars
     allocateArray(nElems.vars, len(elems.vars))
     j=0; for j < len(elems.vars), j++ {
@@ -56,6 +56,7 @@ dupElems(elems Elems*) Elems* {
 
 //All line types
 #define lineType int
+const LINE_TYPE_NONE         = <lineType>-1
 const LINE_TYPE_INCLUDE      = <lineType>0
 const LINE_TYPE_DEFINE       = <lineType>1
 const LINE_TYPE_CONST        = <lineType>2
@@ -2366,6 +2367,7 @@ parseIf(l []Tok, fromElse bool, elems Elems*) {
     if compTypes(tt, "bool") == false {
         throwErr(&condt, "Cannot use {TOKEN} as condition in if statement.")
     }
+
     t = l[2]
     if t.cont != "{" {
         debugLine(l)
@@ -2383,10 +2385,35 @@ parseIf(l []Tok, fromElse bool, elems Elems*) {
 
     ifElems = elems
     if fromElse == false {
+        
+        //Initialize optimazation to replace by C switch
+        if condt.switchOpt != null {
+            elems.switchOpt = new chainsToSwitch {
+                var: condt.switchOpt.var
+            }
+            elems.switchOpt.values[0] = condt.switchOpt.value
+            elems.switchOpt.headerRopes[0] = ifHeader
+        }
+        
         ifElems = dupElems(elems)
     }
 
+
     if fromElse == true {
+        if elems.switchOpt != null {
+            if condt.switchOpt == null {
+                elems.resetSwitchOpt()
+            } else {
+                if (<Tok*>condt.switchOpt.var).cont != (<Tok*>elems.switchOpt.var).cont {
+                    elems.resetSwitchOpt()
+                } else {
+                    elems.switchOpt.values[len(elems.switchOpt.values)] = condt.switchOpt.value
+                    elems.switchOpt.headerRopes[len(elems.switchOpt.headerRopes)] = ifHeader
+
+                }
+            }
+        }
+
         i=0; for i < len(prevIfChecks), i++ {
             bc = prevIfChecks[i]
             bc.checkNull = bc.checkNull == false
@@ -2401,7 +2428,14 @@ parseIf(l []Tok, fromElse bool, elems Elems*) {
 
     oldIB = compilerState.isBranch
     compilerState.isBranch = true
+
+    oifeso = ifElems.switchOpt
+    ifElems.switchOpt = null
+    
     parseLines(tokens, ifElems)
+    
+    ifElems.switchOpt = oifeso
+
     RCPendScope(ifElems)
 
 
@@ -2416,7 +2450,14 @@ parseIf(l []Tok, fromElse bool, elems Elems*) {
         debugEndScope(lt.line, ifElems)
     }
     compilerState.isBranch = oldIB
-    OUTPUT = OUTPUT + rope("}\n")
+
+    cb = rope("}\n")
+    OUTPUT = OUTPUT + cb
+
+    if elems.switchOpt != null {
+        elems.switchOpt.footerRopes[len(elems.switchOpt.footerRopes)] = cb
+    }
+
 
     prevIfShortcut = ""
 }
@@ -2424,10 +2465,8 @@ parseIf(l []Tok, fromElse bool, elems Elems*) {
 //Parses else block.
 parseElse(l []Tok, elems Elems*) {
 
-    if prevLine != LINE_TYPE_IF {
-        if prevLine != LINE_TYPE_ELSE {
-            throwErr(&l[0], "Can only use {TOKEN} after 'if' statement.")
-        }
+    if prevLine != LINE_TYPE_IF && prevLine != LINE_TYPE_ELSE {
+        throwErr(&l[0], "Can only use {TOKEN} after 'if' statement.")
     }
     if len(l) < 3 {
         throwErr(&l[0], "Incalid usage of {TOKEN}, must be 'else {<code>}'.")
@@ -2444,7 +2483,6 @@ parseElse(l []Tok, elems Elems*) {
         }
         parseIf(memory, true, elems)
         prevLine = LINE_TYPE_IF
-        // OUTPUT += rope("}")
     } else {
         if ft.cont != "{" {
             throwErr(&ft, "Expected 'if' or '{' not {TOKEN}.")
@@ -2468,7 +2506,10 @@ parseElse(l []Tok, elems Elems*) {
         if len(memory) == 0 {
             throwWarningLine("Empty else block.", t.line)
         } else {
+            oswtopt = elems.switchOpt
+            elems.switchOpt = null
             parseLines(memory, elems)
+            elems.switchOpt = oswtopt
         }
         RCPendScope(elems)
         fixMeEndScope(elems, &memory[len(memory)-1])
@@ -2579,6 +2620,7 @@ parseFor(l []Tok, elems Elems*) {
     compilerState.isBranch = true
     compilerState.isFor = true
     t = l[0]
+    ifElems.switchOptCurrLoop = genCompilerVar()
     parseLines(tokens, ifElems)
     RCPendScope(ifElems)
     fixMeEndScope(ifElems, &tokens[len(tokens)-1])
@@ -2603,7 +2645,7 @@ parseFor(l []Tok, elems Elems*) {
     compilerState.isFor = oldIF
     compilerState.isBranch = oldIB
     compilerState.currForElems = oForElems
-    OUTPUT = OUTPUT + rope("};\n")
+    OUTPUT = OUTPUT + rope("};\n"+ifElems.switchOptCurrLoop+":\n")
 
 }
 
@@ -2623,7 +2665,13 @@ parseForOp(l []Tok, elems Elems*) {
     RCPendScope(compilerState.currForElems)
     fixMeEndScope(elems, &ft)
     fixMeEndScope(compilerState.currForElems, &ft)
-    OUTPUT = OUTPUT + rope(ft.cont + ";\n")
+
+    if ft.cont == "break" {
+        OUTPUT += rope("goto "+elems.switchOptCurrLoop+";\n")
+    } else {
+        OUTPUT += rope(ft.cont + ";\n")
+    }
+
 
 }
 
@@ -3206,6 +3254,10 @@ prePross(line []Tok, ltp lineType, elems Elems*) []Tok {
                 throwErr(&t, "Cannot use {TOKEN} on "+ptt+".")
             }
             pt.cont += t.cont + nt.cont
+            
+            //Remove switchable property
+            pt.switchOpt = null
+            
             fl[i-1] = pt
             deleteRange(fl, i, i+1)
             i -= 2
@@ -3480,6 +3532,54 @@ parseLet(line []Tok, elems Elems*) {
 
 }
 
+// Checks done after parsing a line.
+afterLineCheck(line []Tok, ltp lineType, elems Elems*) {
+    
+    // At the end of a else if chain
+    if (prevLine == LINE_TYPE_IF || prevLine == LINE_TYPE_ELSE) && (ltp != LINE_TYPE_ELSE) && compilerState.nbElseIf > 0 {
+
+        // try to optimize the chain into a C switch statement
+        if elems.switchOpt != null && compilerState.nbElseIf > 3 {
+
+            //First value is odd
+            t Tok* = elems.switchOpt.values[0]
+            v Tok* = elems.switchOpt.var
+            OUTPUT.totalLen += ropeSet(elems.switchOpt.headerRopes[0], "switch("+v.cont+"){\ncase "+t.cont+":{\n")
+            
+            i=1; for i < len(elems.switchOpt.values), i++ {
+                t = <Tok*>elems.switchOpt.values[i]
+                OUTPUT.totalLen += ropeSet(elems.switchOpt.headerRopes[i*2], "case "+t.cont+": {\n")
+                OUTPUT.totalLen += ropeSet(elems.switchOpt.headerRopes[(i*2)-1], "}break;\n")
+            }
+
+            //ends on a else {} statement (no value attached to a case)
+            if len(elems.switchOpt.headerRopes) % 2 == 0 {
+                OUTPUT.totalLen += ropeSet(elems.switchOpt.headerRopes[len(elems.switchOpt.headerRopes)-1], "default: {\n")
+                i = 0; for i < len(elems.switchOpt.footerRopes)-1, i++ {
+                    OUTPUT.totalLen += ropeSet(elems.switchOpt.footerRopes[i], "")            
+                }
+                OUTPUT.totalLen += ropeSet(elems.switchOpt.footerRopes[len(elems.switchOpt.footerRopes)-1], "}break;\n")
+                OUTPUT += rope("}break;}\n")
+            } else {
+                i = 0; for i < len(elems.switchOpt.footerRopes)-1, i++ {
+                    OUTPUT.totalLen += ropeSet(elems.switchOpt.footerRopes[i], "")            
+                }
+                OUTPUT.totalLen += ropeSet(elems.switchOpt.footerRopes[len(elems.switchOpt.footerRopes)-1], "}break;\n}\n")            
+
+            }
+
+            elems.switchOpt = null
+
+        } else { // Could not optimize, close all else statements
+            i=0; for i < compilerState.nbElseIf, i++ {
+                OUTPUT += rope("}\n")
+            }
+        }
+
+        compilerState.nbElseIf = 0
+    }
+}
+
 //Parses a single line (that can contain a block such as an if statement and its code block).
 parseLine(line []Tok, elems Elems*) {
 
@@ -3502,12 +3602,8 @@ parseLine(line []Tok, elems Elems*) {
             currSetVar = v
         }
     }
-    if (prevLine == LINE_TYPE_IF || prevLine == LINE_TYPE_ELSE) && (ltp != LINE_TYPE_ELSE) && compilerState.nbElseIf > 0 {
-        i=0; for i < compilerState.nbElseIf, i++ {
-            OUTPUT += rope("}\n")
-        }
-        compilerState.nbElseIf = 0
-    }
+    
+    afterLineCheck(line, ltp, elems)
     
     parsed = false
     if ltp == LINE_TYPE_INCLUDE {
@@ -3537,9 +3633,17 @@ parseLine(line []Tok, elems Elems*) {
             return
         } else if ltp != LINE_TYPE_FN_DECL {
 
+            //Transforming 'else if {}'' into C 'else { if {} }'
+            //to be able to run code needed for if condition computation
             if ltp == LINE_TYPE_ELSE {
+                oswchopt = elems.switchOpt
                 elems = dupElems(elems)
-                OUTPUT += rope("else{\n")
+                elems.switchOpt = oswchopt
+                eh = rope("else{\n")
+                OUTPUT += eh
+                if elems.switchOpt != null {
+                    elems.switchOpt.headerRopes[len(elems.switchOpt.headerRopes)] = eh
+                }
                 compilerState.nbElseIf++
             }
 
@@ -3692,13 +3796,14 @@ parseLines(tokens []Tok, elems Elems*) {
 
     if len(line) > 0 {
         if nbEncl == 0 {
-                parseLine(line, elems)
-                clear(line)
+            parseLine(line, elems)
+            clear(line)
         } else {
             ft = line[len(line)-1]
             throwErr(&ft, "Missing closing token, line ending by {TOKEN}.")
         }
     }
+    afterLineCheck(line, LINE_TYPE_NONE, elems)
 
     if compilerState.nbElseIf > 0 {
         i=0; for i < compilerState.nbElseIf, i++ {

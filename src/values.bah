@@ -890,6 +890,10 @@ valueBool(l []Tok, i int, ltp lineType, elems Elems*) int {
 
     t = l[tokPos+1]
 
+    // In case of '(else) if a == b', do indepth checks for switch optimization.
+    //Condition checked here because deleteRange() comes after.
+    isSingleCheck = t.cont == "==" && ((ltp == LINE_TYPE_IF && len(l) == 4) || (ltp == LINE_TYPE_ELSE && len(l) == 5)) 
+
     deleteRange(l, tokPos, tokPos+1)
 
     //sets looping variable as register (optimization).
@@ -927,6 +931,39 @@ valueBool(l []Tok, i int, ltp lineType, elems Elems*) int {
     if RCPavailable() {
         RCPkeepFuncRef(&pt, ptt, elems)
         RCPkeepFuncRef(&nt, ntt, elems)
+    }
+
+    //Checking if condition allows for swhitch instead of else if.
+    //Must check if number var is equal to const.
+    if isSingleCheck && ptt != "bool" && isTypeCprim(ptt, elems) {
+        varTok Tok* = null
+        cnstTok Tok* = null
+        if pt.type == TOKEN_TYPE_VAR {
+            sv = searchVirtVarByToken(&pt, elems)
+            if sv != null {
+                varTok = &pt
+                cnstTok = &nt
+            }
+        }
+
+        if varTok == null && nt.type == TOKEN_TYPE_VAR {
+            sv = searchVirtVarByToken(&nt, elems)
+            if sv != null {
+                varTok = &nt
+                cnstTok = &pt
+            }
+        }
+
+        if varTok != null && cnstTok != null && isStaticToken(cnstTok, elems) {
+            valT = new Tok
+            *valT = *cnstTok
+            varT = new Tok
+            *varT = *varTok
+            pt.switchOpt = new switchOptimization {
+                var: varT
+                value: valT
+            }
+        }
     }
 
     if t.cont == "in" {
