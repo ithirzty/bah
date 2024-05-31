@@ -681,7 +681,7 @@ valueArr(l []Tok, i int, ltp lineType, elems Elems*) int {
                 tmpFn = parseFnType(ptt)
                 tmpFn.name = t.cont
                 t.setRefFn(tmpFn)
-                OUTPUT += rope(getCtypeFromFunc(tmpFn, elems)+" = ((void**)"+pt.cont+"->data)["+index.cont+"];\n") // Will not work in else if
+                OUTPUT += rope(getCtypeFromFunc(tmpFn, elems)+" = ((void**)"+pt.cont+"->data)["+index.cont+"];\n")
             } else {
                 t.cont = "(("+getCType(ptt.str(), elems).str()+"*)"+pt.cont+"->data)["+index.cont+"]"
             }

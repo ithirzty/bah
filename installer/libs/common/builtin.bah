@@ -19,7 +19,8 @@ struct! Bah_Array_Type {
 #define __Bah_check_arr_bounds(arr []ptr, ind uint32) bool
 #define __Bah_realocate_arr(arr []ptr, nLength uint32)
 
-
+//Temporary fix for gcc 14.1
+#cLib "Wno-error=incompatible-pointer-types" "Wno-error=int-conversion" "Wno-error=implicit-function-declaration"
 
 const null = <ptr>0
 
