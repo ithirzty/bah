@@ -61,6 +61,6 @@ __BAH_memcpy(dest cpstring, source cpstring, l int) {
 }
 
 
-const GC_pthread_create = pthread_create
-const GC_pthread_join = pthread_join
-const GC_malloc_atomic = memoryAlloc
+GC_pthread_create = pthread_create
+GC_pthread_join = pthread_join
+GC_malloc_atomic = memoryAlloc

@@ -4,17 +4,17 @@
 #define __bahEnddecl char end
 #define __bahEtextdecl char etext
 
-long int stack_pointer() {
-  void* p = NULL;
+unsigned long int stack_pointer() {
+  volatile void* p = NULL;
   return &p;
 }
 
-long int getBSSend() {
+unsigned long int getBSSend() {
   extern char end;
   return &end;
 }
 
-long int getBSSbeg() {
+unsigned long int getBSSbeg() {
   extern char etext;
   return &etext;
 }

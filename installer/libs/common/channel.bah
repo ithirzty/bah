@@ -96,9 +96,9 @@ struct channel {
 //*Do not use channel{}, this will not initiate the mutex and the queue.*
 channel() channel* {
     c = new channel
-    pthread_mutex_init(&c.m_mut, 0)
-    pthread_cond_init(&c.w_cond, 0)
-    pthread_cond_init(&c.r_cond, 0)
+    pthread_mutex_init(&c.m_mut, null)
+    pthread_cond_init(&c.w_cond, null)
+    pthread_cond_init(&c.r_cond, null)
     c.queue = new queue
 
     return c

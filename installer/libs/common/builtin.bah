@@ -1,5 +1,6 @@
 #include "<signal.h>"
 #include "<string.h>"
+#include "<stdlib.h>"
 
 #darwin {
     #include "<mach/mach.h>"
@@ -20,7 +21,7 @@ struct! Bah_Array_Type {
 #define __Bah_realocate_arr(arr []ptr, nLength uint32)
 
 //Temporary fix for gcc 14.1
-#cLib "Wno-error=incompatible-pointer-types" "Wno-error=int-conversion" "Wno-error=implicit-function-declaration"
+#cLib "Wno-error=incompatible-pointer-types" "Wno-error=int-conversion"  "Wno-error=implicit-function-declaration"
 
 const null = <ptr>0
 
@@ -78,14 +79,14 @@ const strlen = __bah_strlenSTR
 #include "<sys/stat.h>"
 #include "<fcntl.h>"
 
-#define! write(fd FILE*, t cpstring, l int)
-#define! read(fd FILE*, t cpstring, l int) int
+#define! write(fd int, t cpstring, l int)
+#define! read(fd int, t cpstring, l int) int
 
 #define len(a ptr) uint
 
 //Prints text to the terminal.
 print(s cpstring) {
-    write(<ptr>1, s, len(s))
+    write(1, s, len(s))
 }
 
 #unoptimized {
@@ -294,7 +295,7 @@ __BAH_panic(e cpstring, line cpstring) {
 		readlink("/proc/self/exe", <char*>selfPath, 4096)
 
 		i=1; for i < size, i++ {
-			p int = arr[i]
+			p int = <int>arr[i]
 
 			buff = buffer 4096
 			memset(buff, 0, 4096)

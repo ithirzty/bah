@@ -87,7 +87,7 @@ struct mutexCondition {
     //To initiate a condition.
     //You do not need to initiate the condition when creating it with mutexCondition().
     init() {
-        pthread_cond_init(&this.id, 0)
+        pthread_cond_init(&this.id, null)
     }
 
     //To wait for another thread to signal that the condition may be true.
