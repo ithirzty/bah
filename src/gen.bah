@@ -1,3 +1,5 @@
+// #include "gccjit.bah"
+
 //Functions used as helper to generate C code.
 
 //Used when setting the value of an array's member.

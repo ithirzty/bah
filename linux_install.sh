@@ -15,7 +15,7 @@ else
         echo "│Installing dependencies (pacman)│"
         echo "╰────────────────────────────────╯"
         {
-        yes | sudo pacman -Sy gcc gc openssl
+        yes | sudo pacman -Sy gcc gc openssl #libgccjit
         } &> /dev/null
         
     else

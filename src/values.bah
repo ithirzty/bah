@@ -990,10 +990,10 @@ valueBool(l []Tok, i int, ltp lineType, elems Elems*) int {
         }
         
         fnTest = "char "+name+"(struct Bah_Array_Type* arr, "+getCType(ptt, elems).str()+" el) {
-        if (arr == 0) {
+        if (__builtin_expect(arr == 0, 0)) {
             return 0;
         };
-        for(int i=arr->length-1; i!=-1;i--) {
+        for(register int i=arr->length-1; i!=-1;--i) {
             if ("+comp+") {
                 return 1;
             };

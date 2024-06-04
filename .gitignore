@@ -8,3 +8,4 @@ stc/test
 .tmp_bah/
 tests/test
 src/test*
+src/gccjit.bah

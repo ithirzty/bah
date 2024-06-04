@@ -28,7 +28,7 @@
     const BAH_HOST_OS = "windows"
 }
 //////////////////////BUILD SPECIFIC THINGS//////////////////////
-const BAH_VERSION = "v1.4 (build 174)"
+const BAH_VERSION = "v1.4 (build 175)"
 
 debug = false
 verboseRuntime = false
@@ -148,6 +148,8 @@ main(args []cpstring) int {
         RCPlevel = 1
     } else if flags.isSet("fastrcp") {
         RCPlevel = 2
+    } else if lightGCenabled {
+        RCPlevel = 3
     }
 
     verboseRuntime = flags.isSet("verboseRuntime") == 1
@@ -195,15 +197,9 @@ main(args []cpstring) int {
             #include <string.h>
             int main(int argc, char ** argv) {
             RCP_init();
-            struct Bah_Array_Type* args = malloc(sizeof(struct Bah_Array_Type));
-            args->data = malloc(sizeof(char*)*argc);
-            memcpy(args->data, argv, sizeof(char*)*argc);
-            args->elemSize = sizeof(char*);
-            args->length = argc;
+            struct Bah_Array_Type* argsToArr(char** a,long long int l);
             __BAH_init();
-            long long int r =  __BAH__main((struct Bah_Array_Type*)args);
-            free(args->data);
-            free(args);
+            long long int r =  __BAH__main(argsToArr(argv, argc));;
             RCP_shutdown();
             return r;
             };
@@ -215,16 +211,10 @@ main(args []cpstring) int {
             #include <string.h>
             void initiateMemory();
             int main(int argc, char ** argv) {
-            struct Bah_Array_Type * args = malloc(sizeof(struct Bah_Array_Type));
-            args->data = malloc(sizeof(char*)*argc);
-            memcpy(args->data, argv, sizeof(char*)*argc);
-            args->elemSize = sizeof(char*);
-            args->length = argc;
-            initiateMemory((struct Bah_Array_Type*)args);
+            initiateMemory();
+            struct Bah_Array_Type* argsToArr(char** a,long long int l);
             __BAH_init();
-            long long int r =  __BAH__main((struct Bah_Array_Type*)args);
-            free(args->data);
-            free(args);
+            long long int r =  __BAH__main(argsToArr(argv, argc));
             return r;
             };
             #define main(v) __BAH__main(v)
@@ -361,6 +351,8 @@ main(args []cpstring) int {
         totalTime = getTimeUnix() - startTime
         println("Parsed. ("+intToStr(totalLines)+" lines, total time: "+intToStr(totalTime / 1000000)+"ms, lexer time: "+intToStr(totalLexerTime / 1000000)+"ms)\e[0m")
     }
+
+    //waiting for all imports to finish compiling
     for currentCompiling > 0, currentCompiling-- {
         ok = <- doneCompilingChan
     }

@@ -312,6 +312,8 @@ parallelObjCompile(fn cpstring, oName cpstring) {
         rcp = "-rcp"
     } else if RCPlevel == 2 {
         rcp = "-fastrcp"
+    } else if lightGCenabled {
+        rcp = "-lightGC"
     }
 
     scf = cf
@@ -421,6 +423,7 @@ importFile(fileName string, strt Tok*, elems Elems*) {
     parseLines(tokens, elems)
 
     //adds its init function
+    OUTPUT += rope("void __BAH_init"+pathToVarName(fn)+"();\n")
     INIT += rope("__BAH_init"+pathToVarName(fn)+"();\n")
 
     //restore old file's parameters
@@ -2521,8 +2524,6 @@ parseElse(l []Tok, elems Elems*) {
         prevIfExits = false
     }
 
-    // if prevReturned == true && 
-
 }
 
 //Parses for block.
@@ -2823,7 +2824,11 @@ parsePreKeyword(l []Tok, elems Elems*) {
             return
         }
     } else if ft.cont == "#gc" {
-        if RCPavailable() == true {
+        if RCPavailable() == true || lightGCenabled || nativeMemenabled {
+            return
+        }
+    } else if ft.cont == "#altMem" {
+        if lightGCenabled == false && nativeMemenabled == false {
             return
         }
     } else if ft.cont == "#rcp" {
@@ -2840,6 +2845,10 @@ parsePreKeyword(l []Tok, elems Elems*) {
         }
     } else if ft.cont == "#imported" {
         if isSubObject == false || isObject == false {
+            return
+        }
+    } else if ft.cont == "#main" {
+        if isSubObject == true || isObject == true {
             return
         }
     } else if ft.cont == "#included" {
@@ -2945,17 +2954,6 @@ parseAsync(l []Tok, elems Elems*) {
     sFnT.trimLeft(fnName.length+1)
     sFnT.trimRight(1)
 
-    tCreate = ""
-    if BAH_OS == "windows" {
-        tCreate = "pthread_create"
-    } else {
-        if RCPavailable() || nativeMemenabled || lightGCenabled {
-            tCreate = "pthread_create"
-        } else {
-            tCreate = "GC_pthread_create"
-        }
-    }
-
     OUTPUT.totalLen += ropeSet(postDeclHandle, postDeclHandle.toStr() + "
     void "+fnWrapper+"("+tmpArgsStruct+"* args) {
         "+threadPrep+"
@@ -2972,7 +2970,7 @@ parseAsync(l []Tok, elems Elems*) {
         pthread_attr_t attr;
         pthread_attr_init(&attr);
         pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_DETACHED);
-        "+tCreate+"(&id, &attr, "+fnWrapper+", tmpArgs);
+        __thread_create(&id, &attr, "+fnWrapper+", tmpArgs);
         pthread_attr_destroy(&attr);
     }; 
     
