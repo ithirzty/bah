@@ -7735,10 +7735,10 @@ struct Bah_Array_Type* keywords;
 
 #line 85 "/home/alois/Téléchargements/bah/src/lexer.bah"
 char ____BAH_COMPILER_VAR_247_ahomeaaloisanijlijchargementsabahasrcalexerbbah(struct Bah_Array_Type* arr, char* el) {
-        if (arr == 0) {
+        if (__builtin_expect(arr == 0, 0)) {
             return 0;
         };
-        for(int i=arr->length-1; i!=-1;i--) {
+        for(register int i=arr->length-1; i!=-1;--i) {
             if (((char**)arr->data)[i] != 0 && strcmp(((char**)arr->data)[i], el) == 0) {
                 return 1;
             };
@@ -7806,10 +7806,10 @@ exit(1);
 
 #line 117 "/home/alois/Téléchargements/bah/src/lexer.bah"
 char ____BAH_COMPILER_VAR_264_ahomeaaloisanijlijchargementsabahasrcalexerbbah(struct Bah_Array_Type* arr, char el) {
-        if (arr == 0) {
+        if (__builtin_expect(arr == 0, 0)) {
             return 0;
         };
-        for(int i=arr->length-1; i!=-1;i--) {
+        for(register int i=arr->length-1; i!=-1;--i) {
             if (((char*)arr->data)[i] == el) {
                 return 1;
             };
@@ -7817,10 +7817,10 @@ char ____BAH_COMPILER_VAR_264_ahomeaaloisanijlijchargementsabahasrcalexerbbah(st
         return 0;
         }
 char ____BAH_COMPILER_VAR_269_ahomeaaloisanijlijchargementsabahasrcalexerbbah(struct Bah_Array_Type* arr, char el) {
-        if (arr == 0) {
+        if (__builtin_expect(arr == 0, 0)) {
             return 0;
         };
-        for(int i=arr->length-1; i!=-1;i--) {
+        for(register int i=arr->length-1; i!=-1;--i) {
             if (((char*)arr->data)[i] == el) {
                 return 1;
             };
@@ -7828,10 +7828,10 @@ char ____BAH_COMPILER_VAR_269_ahomeaaloisanijlijchargementsabahasrcalexerbbah(st
         return 0;
         }
 char ____BAH_COMPILER_VAR_271_ahomeaaloisanijlijchargementsabahasrcalexerbbah(struct Bah_Array_Type* arr, char el) {
-        if (arr == 0) {
+        if (__builtin_expect(arr == 0, 0)) {
             return 0;
         };
-        for(int i=arr->length-1; i!=-1;i--) {
+        for(register int i=arr->length-1; i!=-1;--i) {
             if (((char*)arr->data)[i] == el) {
                 return 1;
             };
@@ -9804,10 +9804,10 @@ return a;
 
 #line 146 "/home/alois/Téléchargements/bah/src/type.bah"
 char ____BAH_COMPILER_VAR_380_ahomeaaloisanijlijchargementsabahasrcatypebbah(struct Bah_Array_Type* arr, char* el) {
-        if (arr == 0) {
+        if (__builtin_expect(arr == 0, 0)) {
             return 0;
         };
-        for(int i=arr->length-1; i!=-1;i--) {
+        for(register int i=arr->length-1; i!=-1;--i) {
             if (((char**)arr->data)[i] != 0 && strcmp(((char**)arr->data)[i], el) == 0) {
                 return 1;
             };
@@ -9815,10 +9815,10 @@ char ____BAH_COMPILER_VAR_380_ahomeaaloisanijlijchargementsabahasrcatypebbah(str
         return 0;
         }
 char ____BAH_COMPILER_VAR_381_ahomeaaloisanijlijchargementsabahasrcatypebbah(struct Bah_Array_Type* arr, char* el) {
-        if (arr == 0) {
+        if (__builtin_expect(arr == 0, 0)) {
             return 0;
         };
-        for(int i=arr->length-1; i!=-1;i--) {
+        for(register int i=arr->length-1; i!=-1;--i) {
             if (((char**)arr->data)[i] != 0 && strcmp(((char**)arr->data)[i], el) == 0) {
                 return 1;
             };
@@ -9826,10 +9826,10 @@ char ____BAH_COMPILER_VAR_381_ahomeaaloisanijlijchargementsabahasrcatypebbah(str
         return 0;
         }
 char ____BAH_COMPILER_VAR_382_ahomeaaloisanijlijchargementsabahasrcatypebbah(struct Bah_Array_Type* arr, char* el) {
-        if (arr == 0) {
+        if (__builtin_expect(arr == 0, 0)) {
             return 0;
         };
-        for(int i=arr->length-1; i!=-1;i--) {
+        for(register int i=arr->length-1; i!=-1;--i) {
             if (((char**)arr->data)[i] != 0 && strcmp(((char**)arr->data)[i], el) == 0) {
                 return 1;
             };
@@ -9837,10 +9837,10 @@ char ____BAH_COMPILER_VAR_382_ahomeaaloisanijlijchargementsabahasrcatypebbah(str
         return 0;
         }
 char ____BAH_COMPILER_VAR_383_ahomeaaloisanijlijchargementsabahasrcatypebbah(struct Bah_Array_Type* arr, char* el) {
-        if (arr == 0) {
+        if (__builtin_expect(arr == 0, 0)) {
             return 0;
         };
-        for(int i=arr->length-1; i!=-1;i--) {
+        for(register int i=arr->length-1; i!=-1;--i) {
             if (((char**)arr->data)[i] != 0 && strcmp(((char**)arr->data)[i], el) == 0) {
                 return 1;
             };
@@ -11344,10 +11344,10 @@ struct Bah_Array_Type* noVOfns;
 
 #line 10 "/home/alois/Téléchargements/bah/src/verboseOut.bah"
 char ____BAH_COMPILER_VAR_516_ahomeaaloisanijlijchargementsabahasrcaverbosesutbbah(struct Bah_Array_Type* arr, char* el) {
-        if (arr == 0) {
+        if (__builtin_expect(arr == 0, 0)) {
             return 0;
         };
-        for(int i=arr->length-1; i!=-1;i--) {
+        for(register int i=arr->length-1; i!=-1;--i) {
             if (((char**)arr->data)[i] != 0 && strcmp(((char**)arr->data)[i], el) == 0) {
                 return 1;
             };
@@ -13531,10 +13531,10 @@ return f;
 
 #line 204 "/home/alois/Téléchargements/bah/src/parser.bah"
 char ____BAH_COMPILER_VAR_727_ahomeaaloisanijlijchargementsabahasrcaparserbbah(struct Bah_Array_Type* arr, char* el) {
-        if (arr == 0) {
+        if (__builtin_expect(arr == 0, 0)) {
             return 0;
         };
-        for(int i=arr->length-1; i!=-1;i--) {
+        for(register int i=arr->length-1; i!=-1;--i) {
             if (((char**)arr->data)[i] != 0 && strcmp(((char**)arr->data)[i], el) == 0) {
                 return 1;
             };
@@ -13907,10 +13907,10 @@ updateCacheFile(cf);
 
 #line 359 "/home/alois/Téléchargements/bah/src/parser.bah"
 char ____BAH_COMPILER_VAR_750_ahomeaaloisanijlijchargementsabahasrcaparserbbah(struct Bah_Array_Type* arr, char* el) {
-        if (arr == 0) {
+        if (__builtin_expect(arr == 0, 0)) {
             return 0;
         };
-        for(int i=arr->length-1; i!=-1;i--) {
+        for(register int i=arr->length-1; i!=-1;--i) {
             if (((char**)arr->data)[i] != 0 && strcmp(((char**)arr->data)[i], el) == 0) {
                 return 1;
             };
@@ -14060,7 +14060,7 @@ char* oName;
         pthread_attr_t attr;
         pthread_attr_init(&attr);
         pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_DETACHED);
-        pthread_create(&id, &attr, ____BAH_COMPILER_VAR_764_ahomeaaloisanijlijchargementsabahasrcaparserbbah, tmpArgs);
+        __thread_create(&id, &attr, ____BAH_COMPILER_VAR_764_ahomeaaloisanijlijchargementsabahasrcaparserbbah, tmpArgs);
         pthread_attr_destroy(&attr);
     }; 
     
@@ -15953,10 +15953,10 @@ return code;
 
 #line 1220 "/home/alois/Téléchargements/bah/src/parser.bah"
 char ____BAH_COMPILER_VAR_957_ahomeaaloisanijlijchargementsabahasrcaparserbbah(struct Bah_Array_Type* arr, char* el) {
-        if (arr == 0) {
+        if (__builtin_expect(arr == 0, 0)) {
             return 0;
         };
-        for(int i=arr->length-1; i!=-1;i--) {
+        for(register int i=arr->length-1; i!=-1;--i) {
             if (((char**)arr->data)[i] != 0 && strcmp(((char**)arr->data)[i], el) == 0) {
                 return 1;
             };
@@ -19774,10 +19774,10 @@ char** ____BAH_COMPILER_VAR_1312_ahomeaaloisanijlijchargementsabahasrcaparserbba
 
 #line 2680 "/home/alois/Téléchargements/bah/src/parser.bah"
 char ____BAH_COMPILER_VAR_1314_ahomeaaloisanijlijchargementsabahasrcaparserbbah(struct Bah_Array_Type* arr, char* el) {
-        if (arr == 0) {
+        if (__builtin_expect(arr == 0, 0)) {
             return 0;
         };
-        for(int i=arr->length-1; i!=-1;i--) {
+        for(register int i=arr->length-1; i!=-1;--i) {
             if (((char**)arr->data)[i] != 0 && strcmp(((char**)arr->data)[i], el) == 0) {
                 return 1;
             };
@@ -19930,10 +19930,10 @@ unsigned int ____BAH_COMPILER_VAR_1342_ahomeaaloisanijlijchargementsabahasrcapar
 
 #line 2750 "/home/alois/Téléchargements/bah/src/parser.bah"
 char ____BAH_COMPILER_VAR_1345_ahomeaaloisanijlijchargementsabahasrcaparserbbah(struct Bah_Array_Type* arr, char* el) {
-        if (arr == 0) {
+        if (__builtin_expect(arr == 0, 0)) {
             return 0;
         };
-        for(int i=arr->length-1; i!=-1;i--) {
+        for(register int i=arr->length-1; i!=-1;--i) {
             if (((char**)arr->data)[i] != 0 && strcmp(((char**)arr->data)[i], el) == 0) {
                 return 1;
             };
@@ -23243,10 +23243,10 @@ return tokPos;
 
 #line 1081 "/home/alois/Téléchargements/bah/src/values.bah"
 char ____BAH_COMPILER_VAR_1792_ahomeaaloisanijlijchargementsabahasrcavaluesbbah(struct Bah_Array_Type* arr, char* el) {
-        if (arr == 0) {
+        if (__builtin_expect(arr == 0, 0)) {
             return 0;
         };
-        for(int i=arr->length-1; i!=-1;i--) {
+        for(register int i=arr->length-1; i!=-1;--i) {
             if (((char**)arr->data)[i] != 0 && strcmp(((char**)arr->data)[i], el) == 0) {
                 return 1;
             };
@@ -23254,10 +23254,10 @@ char ____BAH_COMPILER_VAR_1792_ahomeaaloisanijlijchargementsabahasrcavaluesbbah(
         return 0;
         }
 char ____BAH_COMPILER_VAR_1794_ahomeaaloisanijlijchargementsabahasrcavaluesbbah(struct Bah_Array_Type* arr, char* el) {
-        if (arr == 0) {
+        if (__builtin_expect(arr == 0, 0)) {
             return 0;
         };
-        for(int i=arr->length-1; i!=-1;i--) {
+        for(register int i=arr->length-1; i!=-1;--i) {
             if (((char**)arr->data)[i] != 0 && strcmp(((char**)arr->data)[i], el) == 0) {
                 return 1;
             };
@@ -24030,10 +24030,10 @@ return true;
 
 #line 1417 "/home/alois/Téléchargements/bah/src/values.bah"
 char ____BAH_COMPILER_VAR_1865_ahomeaaloisanijlijchargementsabahasrcavaluesbbah(struct Bah_Array_Type* arr, char* el) {
-        if (arr == 0) {
+        if (__builtin_expect(arr == 0, 0)) {
             return 0;
         };
-        for(int i=arr->length-1; i!=-1;i--) {
+        for(register int i=arr->length-1; i!=-1;--i) {
             if (((char**)arr->data)[i] != 0 && strcmp(((char**)arr->data)[i], el) == 0) {
                 return 1;
             };
@@ -24082,10 +24082,10 @@ return true;
 
 #line 3072 "/home/alois/Téléchargements/bah/src/parser.bah"
 char ____BAH_COMPILER_VAR_1893_ahomeaaloisanijlijchargementsabahasrcaparserbbah(struct Bah_Array_Type* arr, char* el) {
-        if (arr == 0) {
+        if (__builtin_expect(arr == 0, 0)) {
             return 0;
         };
-        for(int i=arr->length-1; i!=-1;i--) {
+        for(register int i=arr->length-1; i!=-1;--i) {
             if (((char**)arr->data)[i] != 0 && strcmp(((char**)arr->data)[i], el) == 0) {
                 return 1;
             };
@@ -24093,10 +24093,10 @@ char ____BAH_COMPILER_VAR_1893_ahomeaaloisanijlijchargementsabahasrcaparserbbah(
         return 0;
         }
 char ____BAH_COMPILER_VAR_1903_ahomeaaloisanijlijchargementsabahasrcaparserbbah(struct Bah_Array_Type* arr, char* el) {
-        if (arr == 0) {
+        if (__builtin_expect(arr == 0, 0)) {
             return 0;
         };
-        for(int i=arr->length-1; i!=-1;i--) {
+        for(register int i=arr->length-1; i!=-1;--i) {
             if (((char**)arr->data)[i] != 0 && strcmp(((char**)arr->data)[i], el) == 0) {
                 return 1;
             };
