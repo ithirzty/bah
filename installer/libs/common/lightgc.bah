@@ -259,7 +259,7 @@ struct lightGC {
         
         ct = this.threads; for ct != null, ct = ct.next {
             if ct.regs != null {
-                noCheck(printf("checking regs %p\n"+4, ct->regs))
+                // noCheck(printf("checking regs %p\n"+4, ct->regs))
                 this.scanRegion(ct.regs, <uint>ct.regs + 200 - sizeof(ptr), 1)
             }
             this.scanRegion(ct.stack, <uint>ct.stack + 4096, sizeof(ptr))
