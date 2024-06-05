@@ -2,6 +2,19 @@
 #include "<string.h>"
 #include "<stdlib.h>"
 
+#include "<signal.h>"
+
+#define! sigaction(signum int, act sigaction*, oldact sigaction*)
+#define! sigqueue(pid uint, sig int, val ptr) int
+
+struct! sigaction {
+    sa_handler: function(int)
+    sa_sigaction: function(int, ptr, ptr)
+    sa_mask: ptr
+    sa_flags: int
+    sa_restorer: function() 
+}
+
 #darwin {
     #include "<mach/mach.h>"
 }

@@ -3,6 +3,7 @@
 #include "<sys/types.h>"
 #include "<unistd.h>"
 #include "<sys/syscall.h>"
+#include "<setjmp.h>"
 
 #warning "lightGC is still very experimental! May cause random crashes + slowing down"
 
@@ -27,6 +28,9 @@
 
 #define! __builtin_frame_address(n int) int
 
+#define! jmp_buf ptr
+#define! setjmp(e jmp_buf)
+
 getBSSend() uint {
     noCheck(extern char end)
     return noCheck(&end)
@@ -44,12 +48,35 @@ struct lightGCptr {
     rooted: char
 }
 
+struct lightGCthread {
+    stack: ptr
+    t: pthread_t*
+    next: lightGCthread*
+    aid: bool
+    sysid: uint
+    regs: ptr
+    regsSize: uint
+
+    clean() {
+        if this.aid {
+            free(this.t)
+        }
+        free(this.stack)
+        free(this)
+    }
+
+}
+
 _lgc_sort_lightGCptr(ap ptr, bp ptr) int {
     if <uint>(<lightGCptr*>ap).p < <uint>(<lightGCptr*>bp).p {
         return 1
     }
 
     return -1
+}
+
+_lgc_tid() uint {
+    return noCheck(syscall(__NR_gettid))
 }
 
 struct lightGC {
@@ -67,6 +94,7 @@ struct lightGC {
 
     currentPass: int
     numberPass: int
+    minHeapSize: int
 
     mainThread: int
 
@@ -75,6 +103,8 @@ struct lightGC {
     listRealLength: uint
     mut: pthread_mutex_t
     cond: pthread_cond_t
+
+    threads: lightGCthread*
 
     allocSinceCheck: int = 0
 
@@ -181,11 +211,12 @@ struct lightGC {
     scanRegion(from uint, to uint, alignement uint) {
         k = from; for k < (<uint>to), k += alignement {
             p = *(<uint*>k)
-            if p >= this.minPtr && p <= this.maxPtr {
+            if p >= this.minPtr && p <= this.maxPtr && p % sizeof(ptr) == 0 {
                 index = this.find(p)
                 if index == null {
                     continue
                 }
+
                 if index.rooted != <char>1 {
                     if index.rooted != <char>2 {
                         index.rooted = <char>1
@@ -199,83 +230,90 @@ struct lightGC {
     }
 
     check() {
-        if this.mainThread != noCheck(syscall(__NR_gettid)) {
+        if this.mainThread != _lgc_tid() {
             // noCheck(printf("other thread!!!\n"+4))
             return
         }
         stckEnd = __builtin_frame_address(0)
         this.lastStackEnd = <uint>stckEnd
-        pthread_cond_signal(&this.cond)
-    }
 
-    scanWorker() {
-        pthread_mutex_lock(&this.mut)
-        for true {
-            pthread_cond_wait(&this.cond, &this.mut)
+        // noCheck(printf("pausing world: %d (heap: %d)\n"+4, this->listLength, this->memUsed))
 
-            stckEnd = this.lastStackEnd
+        ct = this.threads; for ct != null, ct = ct.next {
+            sigqueue(ct.sysid, noCheck(SIGUSR1), noCheck((union sigval){ .sival_ptr = 0 }))
+        }
 
-            // noCheck(printf("pausing world: %d (heap: %d)\n"+4, this->listLength, this->memUsed))
+        qsort(this.list, this.listRealLength, sizeof(lightGCptr), _lgc_sort_lightGCptr)
 
+        // noCheck(printf("BSS %p, stack %p\n"+4, this->bssStart, stckEnd))
+        this.scanRegion(this.bssStart, this.bssEnd, 1)
+        this.scanRegion(stckEnd, this.stackStart, sizeof(ptr))
+
+        i=0; for i < this.listLength, i++ {
+            index = <lightGCptr*>(<uint>this.list + (i * sizeof(lightGCptr)))
+            if index.rooted == <char>2 && index.p != null {
+                this.scanRegion(index.p, <uint>index.p + index.size, sizeof(ptr))
+            }
+        }
+
+        
+        ct = this.threads; for ct != null, ct = ct.next {
+            if ct.regs != null {
+                noCheck(printf("checking regs %p\n"+4, ct->regs))
+                this.scanRegion(ct.regs, <uint>ct.regs + 200 - sizeof(ptr), 1)
+            }
+            this.scanRegion(ct.stack, <uint>ct.stack + 4096, sizeof(ptr))
+        }
+
+
+        if this.currentPass == this.numberPass {
+            n = 0
+            ol = this.listLength
+            i=0; for i < ol, i++ {
+                index = <lightGCptr*>(<uint>this.list + (i * sizeof(lightGCptr)))
+                if index.p == null {
+                    continue
+                }
+                
+                if index.rooted == <char>0 {
+                    // noCheck(printf("%p , "+4, index->p))
+                    n++
+                    free(index.p)
+                    index.p = null
+                    s = index.size
+                    if s < 0 {
+                        s = 0 - s
+                    }
+                    this.memUsed -= s
+
+                    this.listLength--
+                } else if index.rooted != <char>2 {
+                    index.rooted = <char>0
+                }
+            }
             qsort(this.list, this.listRealLength, sizeof(lightGCptr), _lgc_sort_lightGCptr)
-
-            // noCheck(printf("BSS %p, stack %p\n"+4, this->bssStart, stckEnd))
-            this.scanRegion(this.bssStart, this.bssEnd, 1)
-            this.scanRegion(stckEnd, this.stackStart, sizeof(ptr))
-
+            // noCheck(printf("frees: %d (allive: %d) \n"+4, n, this->listLength))
+            this.currentPass = 0
+            this.stopInterval = this.memUsed * 2
+        } else {
             i=0; for i < this.listLength, i++ {
                 index = <lightGCptr*>(<uint>this.list + (i * sizeof(lightGCptr)))
-                if index.rooted == <char>2 && index.p != null {
-                    this.scanRegion(index.p, <uint>index.p + index.size, sizeof(ptr))
+                if index.p == null {
+                    continue
+                }
+                if index.rooted == <char>1 {
+                    index.rooted = <char>3
                 }
             }
-
-
-            if this.currentPass == this.numberPass {
-                n = 0
-                i=0; for i < this.listLength, i++ {
-                    index = <lightGCptr*>(<uint>this.list + (i * sizeof(lightGCptr)))
-                    if index.p == null {
-                        continue
-                    }
-                    if index.rooted == <char>0 {
-                        // noCheck(printf("%p , "+4, index->p))
-                        n++
-                        free(index.p)
-                        index.p = null
-                        s = index.size
-                        if s < 0 {
-                            s = 0 - s
-                        }
-                        this.memUsed -= s
-                        this.listLength--
-                    } else if index.rooted != <char>2 {
-                        index.rooted = <char>0
-                    }
-                }
-                qsort(this.list, this.listRealLength, sizeof(lightGCptr), _lgc_sort_lightGCptr)
-                // noCheck(printf("frees: %d (allive: %d) \n"+4, n, this->listLength))
-                this.currentPass = 0
-            } else {
-                i=0; for i < this.listLength, i++ {
-                    index = <lightGCptr*>(<uint>this.list + (i * sizeof(lightGCptr)))
-                    if index.p == null {
-                        continue
-                    }
-                    if index.rooted == <char>1 {
-                        index.rooted = <char>3
-                    }
-                }
-                this.currentPass++
-            }
-
-
-            this.stopInterval = this.memUsed * 2
-            // noCheck(printf("finished cleanup %d\n"+4, this->stopInterval))
-
-            // noCheck(printf("stack %u %u = %u\n"+4, this->stackStart, stckEnd, (int)this->stackStart - (int)stckEnd))
+            this.currentPass++
+            this.stopInterval = <int>(<float>this.memUsed * 1.5)
         }
-        pthread_mutex_unlock(&this.mut)
+
+        if this.stopInterval < this.minHeapSize {
+            this.stopInterval = this.minHeapSize
+        }
+
+        // noCheck(printf("\theap size: %d MB (%d allocs, next cycle: %d B)\n"+4, this->memUsed / 1000000, this->listLength, this->stopInterval))
     }
 }
 
@@ -319,28 +357,51 @@ isAddrMarked(addr ptr) char {
     return <char>4
 }
 
+lightGC_thread_sig_handler(sig int) {
+    envJmp jmp_buf
+    setjmp(envJmp)
+
+    
+    sid = _lgc_tid()
+    ct = _lgc.threads
+    for ct != null, ct = ct.next {
+        if ct.sysid == sid {
+            ct.regs = &envJmp
+            ct.regsSize = sizeof(envJmp)
+            break
+        }
+    }
+
+    pthread_mutex_lock(&_lgc.mut)
+    pthread_mutex_unlock(&_lgc.mut)
+}
+
 lightGC_thread_wrapper(args ptr*) {
-    stck = *args
+    t lightGCthread* = *args
+    t.sysid = _lgc_tid()
     fnArgs = *(<ptr*>(<uint>args + sizeof(ptr)))
     fn function(ptr) = *(<ptr*>(<uint>args + 2 * sizeof(ptr)))
 
     fn(fnArgs)
-    // noCheck(printf("freeing stack %p\n"+4, stck))
 
     free(args)
     pthread_mutex_lock(&_lgc.mut)
-    i=0; for i < _lgc.listRealLength, i++ {
-        index = <lightGCptr*>(<uint>_lgc.list + (i * sizeof(lightGCptr)))
-        if index.p == stck {
-            // noCheck(printf("freeing thread stack\n"+4))
-            free(index.p)
-            index.p = null
-            index.rooted = <char>0
-            _lgc.memUsed -= index.size
-            _lgc.listLength--
-            break
+    
+    if t == _lgc.threads {
+        _lgc.threads = t.next
+        t.clean()
+    } else {
+        ct = _lgc.threads
+        for ct != null, ct = ct.next {
+            if ct.next == t {
+                ct.next = t.next
+                t.clean()
+                break
+            }
         }
     }
+
+    
     pthread_mutex_unlock(&_lgc.mut)
 }
 
@@ -353,13 +414,29 @@ lightGC_create_thread(id pthread_t*, attr pthread_attr_t*, func ptr, args ptr) i
     }
     
     pthread_mutex_lock(&_lgc.mut)
-    stck = _lgc.allocate(4096, true, true)
+    stck = malloc(4096)
+    
+    t = <lightGCthread*>malloc(sizeof(lightGCthread))
+    if id == null {
+        t.t = malloc(sizeof(pthread_t))
+        id = t.t
+        t.aid = true
+    } else {
+        t.aid = false
+    }
+
+    t.stack = stck
+    t.regs = 0
+    t.regsSize = 0
+
+    t.next = _lgc.threads
+    _lgc.threads = t
     pthread_mutex_unlock(&_lgc.mut)
 
     wrapArgs = <ptr*>malloc(sizeof(ptr) * 3)
     waa = (<ptr*>(<uint>wrapArgs + sizeof(ptr)))
     fna = (<ptr*>(<uint>wrapArgs + 2 * sizeof(ptr)))
-    *wrapArgs = stck
+    *wrapArgs = t
     *waa = args
     *fna = func
 
@@ -389,16 +466,24 @@ initiateMemory(args []cpstring) {
     _lgc.bssEnd = getBSSend()
 
     _lgc.stopInterval = 10000000
+    _lgc.minHeapSize =  10000000
     _lgc.currentPass = 0
     _lgc.numberPass = 2
 
+
+    _lgc.threads = null
     _lgc.mainThread = noCheck(syscall(__NR_gettid))
+
+    action sigaction
+    action.sa_flags = noCheck(SA_SIGINFO);
+    action.sa_handler = lightGC_thread_sig_handler
+    sigaction(noCheck(SIGUSR1), &action, null)
 
     pthread_mutex_init(&_lgc.mut, 0)
     pthread_cond_init(&_lgc.cond, null)
 
-    tid pthread_t
-    pthread_create(&tid, null, _lgc.scanWorker, &_lgc)
+    // tid pthread_t
+    // pthread_create(&tid, null, _lgc.scanWorker, &_lgc)
 
 
     noCheck(setvbuf(stdout, NULL, _IONBF, 0))
@@ -417,6 +502,8 @@ initiateMemory(args []cpstring) {
 memoryAlloc(s int) ptr {
     pthread_mutex_lock(&_lgc.mut)
     if _lgc.memUsed >= _lgc.stopInterval {
+        envJmp jmp_buf
+        setjmp(envJmp)
         _lgc.check()
     }
     p = _lgc.allocate(s, true, false)
@@ -428,6 +515,8 @@ memoryAlloc(s int) ptr {
 memoryAllocSTR(s int) cpstring {
     pthread_mutex_lock(&_lgc.mut)
     if _lgc.memUsed >= _lgc.stopInterval {
+        envJmp jmp_buf
+        setjmp(envJmp)
         _lgc.check()
     }
 
@@ -446,6 +535,12 @@ memoryRealloc(o ptr, s int) ptr {
         return memoryAlloc(s)
     }
     pthread_mutex_lock(&_lgc.mut)
+    if _lgc.memUsed >= _lgc.stopInterval {
+        envJmp jmp_buf
+        setjmp(envJmp)
+        _lgc.check()
+    }
+    
     oldIndex lightGCptr* = null
 
     i=_lgc.listLength-1; for i != -1, i-- {

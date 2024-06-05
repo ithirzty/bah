@@ -39,8 +39,6 @@
 //sockets
 
 #define! socklen_t uint
-#define! pid_t int
-#define! sigset_t int32
 
 #windows {
     __httpDNSmutex = mutex()
@@ -58,14 +56,6 @@ struct! hostent {
     h_length: int
     h_addr: uint*
     h_addr_list: cpstring*
-}
-
-struct! sigaction {
-    sa_handler: ptr
-    sa_sigation: ptr
-    sa_mask: sigset_t
-    sa_flags: int32
-    sa_restorer: ptr
 }
 
 struct! sockaddr_in {
@@ -1541,15 +1531,15 @@ struct http_server {
             sa sigaction
             memset(<ptr>&sa, 0, 152)
             sa.sa_handler = sigchld_handler
-            sigaction(17, &sa, 0)
+            sigaction(17, &sa, null)
 
             memset(<ptr>&sa, 0, 152)
             sa.sa_handler = http_quit_handler
-            sigaction(2, &sa, 0)    
+            sigaction(2, &sa, null)
 
             memset(<ptr>&sa, 0, 152)
             sa.sa_handler = http_broken_pipe
-            sigaction(noCheck(SIGPIPE), &sa, 0)        
+            sigaction(noCheck(SIGPIPE), &sa, null)
         }
 
         this.running = true
@@ -1640,15 +1630,15 @@ struct http_server {
             sa sigaction
             memset(<ptr>&sa, 0, 152)
             sa.sa_handler = sigchld_handler
-            sigaction(17, &sa, 0)
+            sigaction(17, &sa, null)
 
             memset(<ptr>&sa, 0, 152)
             sa.sa_handler = http_quit_handler
-            sigaction(2, &sa, 0)    
+            sigaction(2, &sa, null)    
 
             memset(<ptr>&sa, 0, 152)
             sa.sa_handler = http_broken_pipe
-            sigaction(noCheck(SIGPIPE), &sa, 0)        
+            sigaction(noCheck(SIGPIPE), &sa, null)        
         }
 
         this.running = true

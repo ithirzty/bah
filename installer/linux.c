@@ -23,8 +23,11 @@
             #include <signal.h>
 #include <string.h>
 #include <stdlib.h>
+#include <signal.h>
 
-#line 9 "/opt/bah/builtin.bah"
+#line 10 "/opt/bah/builtin.bah"
+
+#line 22 "/opt/bah/builtin.bah"
 void __BAH_panic(char* e,char* l);
 char* __Bah_safe_string(char* s);
 char* cpstringSubsitute(char* s,long long int i,long long int l);
@@ -32,82 +35,82 @@ struct Bah_Array_Type* __Bah_getVal_boundsChecked(struct Bah_Array_Type* arr,uns
 char __Bah_check_arr_bounds(struct Bah_Array_Type* arr,unsigned int ind);
 void __Bah_realocate_arr(struct Bah_Array_Type* arr,unsigned int nLength);
 
-#line 26 "/opt/bah/builtin.bah"
+#line 39 "/opt/bah/builtin.bah"
 #define null (void *)0
 
-#line 28 "/opt/bah/builtin.bah"
+#line 41 "/opt/bah/builtin.bah"
 #define true (char)1
 
-#line 29 "/opt/bah/builtin.bah"
+#line 42 "/opt/bah/builtin.bah"
 #define false (char)0
 
-#line 31 "/opt/bah/builtin.bah"
+#line 44 "/opt/bah/builtin.bah"
 #define cpstringLenSize 4
 unsigned long long int len(void * a);
 
-#line 39 "/opt/bah/builtin.bah"
+#line 52 "/opt/bah/builtin.bah"
 char* cStr(char* s){
 
-#line 40 "/opt/bah/builtin.bah"
+#line 53 "/opt/bah/builtin.bah"
 if (((void *)s==null)) {
 
-#line 41 "/opt/bah/builtin.bah"
+#line 54 "/opt/bah/builtin.bah"
 return null;
 }
 
-#line 43 "/opt/bah/builtin.bah"
+#line 56 "/opt/bah/builtin.bah"
 return (char*)((long long int)s+cpstringLenSize);
 };
 
-#line 46 "/opt/bah/builtin.bah"
+#line 59 "/opt/bah/builtin.bah"
 unsigned int __bah_strlenSTR(void * s){
 
-#line 47 "/opt/bah/builtin.bah"
+#line 60 "/opt/bah/builtin.bah"
 if ((s==null)) {
 
-#line 48 "/opt/bah/builtin.bah"
+#line 61 "/opt/bah/builtin.bah"
 return 0;
 }
 
-#line 50 "/opt/bah/builtin.bah"
+#line 63 "/opt/bah/builtin.bah"
 unsigned int* i = s;
 
-#line 51 "/opt/bah/builtin.bah"
+#line 64 "/opt/bah/builtin.bah"
 return *i;
 };
 
-#line 56 "/opt/bah/builtin.bah"
+#line 69 "/opt/bah/builtin.bah"
 long long int __bah_strcmp(char* a,char* b){
 
-#line 57 "/opt/bah/builtin.bah"
+#line 70 "/opt/bah/builtin.bah"
 if (((void *)a==null)||((void *)b==null)) {
 
-#line 58 "/opt/bah/builtin.bah"
+#line 71 "/opt/bah/builtin.bah"
 return 1;
 }
 
-#line 60 "/opt/bah/builtin.bah"
+#line 73 "/opt/bah/builtin.bah"
 return strcmp(cStr(a),cStr(b));
 };
 
-#line 63 "/opt/bah/builtin.bah"
+#line 76 "/opt/bah/builtin.bah"
 #define strcmp __bah_strcmp
 
-#line 67 "/opt/bah/builtin.bah"
+#line 80 "/opt/bah/builtin.bah"
 long long int Cstrlen(char* s){
 
-#line 68 "/opt/bah/builtin.bah"
+#line 81 "/opt/bah/builtin.bah"
 if ((s==null)) {
 
-#line 69 "/opt/bah/builtin.bah"
+#line 82 "/opt/bah/builtin.bah"
 return 0;
 }
 
-#line 71 "/opt/bah/builtin.bah"
+#line 84 "/opt/bah/builtin.bah"
 return  strlen ( s );
 };
 
-#line 74 "/opt/bah/builtin.bah"
+#line 87 "/opt/bah/builtin.bah"
 #define strlen __bah_strlenSTR
 #include <stdio.h>
 #include <unistd.h>
@@ -116,15 +119,15 @@ return  strlen ( s );
 #include <fcntl.h>
 unsigned long long int len(void * a);
 
-#line 88 "/opt/bah/builtin.bah"
+#line 101 "/opt/bah/builtin.bah"
 void print(char* s){
 
-#line 89 "/opt/bah/builtin.bah"
+#line 102 "/opt/bah/builtin.bah"
 write(1,cStr(s),strlen(s));
 };
 void __BAH_memcpy(char* dest,char* source,long long int l);
 
-#line 94 "/opt/bah/builtin.bah"
+#line 107 "/opt/bah/builtin.bah"
 #define memcpy __BAH_memcpy
 #include <sys/mman.h>
 
@@ -602,216 +605,216 @@ char* rs = *s;
 #line 281 "/opt/bah/memory.bah"
 #define __bah_memory_str memoryAllocSTR
 
-#line 103 "/opt/bah/builtin.bah"
+#line 116 "/opt/bah/builtin.bah"
 char* buffToStr(char* b){
 
-#line 104 "/opt/bah/builtin.bah"
+#line 117 "/opt/bah/builtin.bah"
 long long int l = Cstrlen((void *)b);
 
-#line 105 "/opt/bah/builtin.bah"
+#line 118 "/opt/bah/builtin.bah"
 char* s = memoryAllocSTR(l+1);
 
-#line 106 "/opt/bah/builtin.bah"
+#line 119 "/opt/bah/builtin.bah"
 memcpy(cStr(s),b,l);
 
-#line 107 "/opt/bah/builtin.bah"
+#line 120 "/opt/bah/builtin.bah"
 unsigned int* ln = s;
 
-#line 108 "/opt/bah/builtin.bah"
+#line 121 "/opt/bah/builtin.bah"
 *ln = l;
 
-#line 109 "/opt/bah/builtin.bah"
+#line 122 "/opt/bah/builtin.bah"
 return s;
 };
 
-#line 112 "/opt/bah/builtin.bah"
+#line 125 "/opt/bah/builtin.bah"
 struct Bah_Array_Type* argsToArr(char** a,long long int l){
 
-#line 113 "/opt/bah/builtin.bah"
+#line 126 "/opt/bah/builtin.bah"
 struct Bah_Array_Type* r = memoryAlloc(sizeof(struct Bah_Array_Type));
 
 r->length = 0;
 r->elemSize = sizeof(char*);
 
-#line 114 "/opt/bah/builtin.bah"
+#line 127 "/opt/bah/builtin.bah"
 allocateArray(r,l);
 
-#line 115 "/opt/bah/builtin.bah"
+#line 128 "/opt/bah/builtin.bah"
 register long long int i = 0;
 
-#line 115 "/opt/bah/builtin.bah"
+#line 128 "/opt/bah/builtin.bah"
 for (; (i<l); ++i) {
 
-#line 116 "/opt/bah/builtin.bah"
+#line 129 "/opt/bah/builtin.bah"
 char** sp = (char**)((long long int)a+i*sizeof(char*));
 
-#line 117 "/opt/bah/builtin.bah"
+#line 130 "/opt/bah/builtin.bah"
 char* s = *sp;
 
-#line 118 "/opt/bah/builtin.bah"
+#line 131 "/opt/bah/builtin.bah"
 
     __Bah_realocate_arr(r, i);
     ((char**)r->data)[i] = buffToStr(s);
 };
 ____BAH_COMPILER_VAR_2_aoptabahabuiltinbbah:
 
-#line 120 "/opt/bah/builtin.bah"
+#line 133 "/opt/bah/builtin.bah"
 return r;
 };
 
-#line 123 "/opt/bah/builtin.bah"
+#line 136 "/opt/bah/builtin.bah"
 char* cStrToBah(char* s){
 
-#line 124 "/opt/bah/builtin.bah"
+#line 137 "/opt/bah/builtin.bah"
 if ((s==null)) {
 
-#line 125 "/opt/bah/builtin.bah"
+#line 138 "/opt/bah/builtin.bah"
 return null;
 }
 
-#line 127 "/opt/bah/builtin.bah"
+#line 140 "/opt/bah/builtin.bah"
 long long int l = Cstrlen((void *)s);
 
-#line 128 "/opt/bah/builtin.bah"
+#line 141 "/opt/bah/builtin.bah"
 char* nstr = memoryAllocSTR(l+1);
 
-#line 129 "/opt/bah/builtin.bah"
+#line 142 "/opt/bah/builtin.bah"
 unsigned int* ln = nstr;
 
-#line 130 "/opt/bah/builtin.bah"
+#line 143 "/opt/bah/builtin.bah"
 *ln = l;
 
-#line 131 "/opt/bah/builtin.bah"
+#line 144 "/opt/bah/builtin.bah"
 memcpy(cStr(nstr),s,l);
 
-#line 132 "/opt/bah/builtin.bah"
+#line 145 "/opt/bah/builtin.bah"
 return nstr;
 };
 
-#line 136 "/opt/bah/builtin.bah"
+#line 149 "/opt/bah/builtin.bah"
 char* __Bah_multiple_concat(char** b,unsigned int l){
 
-#line 137 "/opt/bah/builtin.bah"
+#line 150 "/opt/bah/builtin.bah"
 unsigned int* lens = alloca(l*sizeof(unsigned int));
 
-#line 138 "/opt/bah/builtin.bah"
+#line 151 "/opt/bah/builtin.bah"
 unsigned int tot = 0;
 
-#line 139 "/opt/bah/builtin.bah"
+#line 152 "/opt/bah/builtin.bah"
 int offset = 0;
 
-#line 142 "/opt/bah/builtin.bah"
+#line 155 "/opt/bah/builtin.bah"
 register long long int i = 0;
 
-#line 142 "/opt/bah/builtin.bah"
+#line 155 "/opt/bah/builtin.bah"
 for (; (i<l); ++i) {
 
-#line 143 "/opt/bah/builtin.bah"
+#line 156 "/opt/bah/builtin.bah"
 unsigned long long int sl = strlen((char*) b [ i ]);
 
-#line 144 "/opt/bah/builtin.bah"
+#line 157 "/opt/bah/builtin.bah"
 tot = tot+sl;
 
-#line 145 "/opt/bah/builtin.bah"
+#line 158 "/opt/bah/builtin.bah"
  lens [ i ] = sl;
 };
 ____BAH_COMPILER_VAR_3_aoptabahabuiltinbbah:
 
-#line 149 "/opt/bah/builtin.bah"
+#line 162 "/opt/bah/builtin.bah"
 char* r = memoryAllocSTR(tot+1);
 
-#line 152 "/opt/bah/builtin.bah"
+#line 165 "/opt/bah/builtin.bah"
 i = 0;
 
-#line 152 "/opt/bah/builtin.bah"
+#line 165 "/opt/bah/builtin.bah"
 for (; (i<l); ++i) {
 
-#line 153 "/opt/bah/builtin.bah"
+#line 166 "/opt/bah/builtin.bah"
 memcpy((void *)((long long int)r+offset+cpstringLenSize), b [ i ] + cpstringLenSize, lens [ i ]);
 
-#line 154 "/opt/bah/builtin.bah"
+#line 167 "/opt/bah/builtin.bah"
 offset = offset+((long long int) lens [ i ]);
 };
 ____BAH_COMPILER_VAR_4_aoptabahabuiltinbbah:
 
-#line 157 "/opt/bah/builtin.bah"
+#line 170 "/opt/bah/builtin.bah"
 unsigned int* ln = r;
 
-#line 158 "/opt/bah/builtin.bah"
+#line 171 "/opt/bah/builtin.bah"
 *ln = tot;
 
-#line 160 "/opt/bah/builtin.bah"
-return r;
-};
-
 #line 173 "/opt/bah/builtin.bah"
-char* concatCPSTRING(char* a,char* b){
-
-#line 174 "/opt/bah/builtin.bah"
-unsigned long long int lenA = strlen(a);
-
-#line 175 "/opt/bah/builtin.bah"
-unsigned long long int lenB = strlen(b);
-
-#line 176 "/opt/bah/builtin.bah"
-char* r = memoryAlloc(lenA+lenB+1);
-
-#line 177 "/opt/bah/builtin.bah"
-strncpy(cStr(r),cStr(a),lenA);
-
-#line 178 "/opt/bah/builtin.bah"
-strcat(cStr(r),cStr(b));
-
-#line 179 "/opt/bah/builtin.bah"
 return r;
 };
-
-#line 184 "/opt/bah/builtin.bah"
-char* __STR(char* a){
-
-#line 185 "/opt/bah/builtin.bah"
-unsigned long long int lenA = strlen(a);
 
 #line 186 "/opt/bah/builtin.bah"
-char* r = memoryAllocSTR(lenA+1);
+char* concatCPSTRING(char* a,char* b){
 
 #line 187 "/opt/bah/builtin.bah"
-memcpy(cStr(r),cStr(a),lenA);
+unsigned long long int lenA = strlen(a);
 
 #line 188 "/opt/bah/builtin.bah"
-unsigned int* ln = r;
+unsigned long long int lenB = strlen(b);
 
 #line 189 "/opt/bah/builtin.bah"
-*ln = lenA;
+char* r = memoryAlloc(lenA+lenB+1);
 
 #line 190 "/opt/bah/builtin.bah"
+strncpy(cStr(r),cStr(a),lenA);
+
+#line 191 "/opt/bah/builtin.bah"
+strcat(cStr(r),cStr(b));
+
+#line 192 "/opt/bah/builtin.bah"
 return r;
 };
 
-#line 194 "/opt/bah/builtin.bah"
+#line 197 "/opt/bah/builtin.bah"
+char* __STR(char* a){
+
+#line 198 "/opt/bah/builtin.bah"
+unsigned long long int lenA = strlen(a);
+
+#line 199 "/opt/bah/builtin.bah"
+char* r = memoryAllocSTR(lenA+1);
+
+#line 200 "/opt/bah/builtin.bah"
+memcpy(cStr(r),cStr(a),lenA);
+
+#line 201 "/opt/bah/builtin.bah"
+unsigned int* ln = r;
+
+#line 202 "/opt/bah/builtin.bah"
+*ln = lenA;
+
+#line 203 "/opt/bah/builtin.bah"
+return r;
+};
+
+#line 207 "/opt/bah/builtin.bah"
 void * cArr(void * arr){
 
-#line 195 "/opt/bah/builtin.bah"
+#line 208 "/opt/bah/builtin.bah"
 struct Bah_Array_Type* a = arr;
 
-#line 196 "/opt/bah/builtin.bah"
+#line 209 "/opt/bah/builtin.bah"
 return a->data;
 };
 
-#line 201 "/opt/bah/builtin.bah"
+#line 214 "/opt/bah/builtin.bah"
 char __checkString(char* s,char* l){
 
-#line 203 "/opt/bah/builtin.bah"
+#line 216 "/opt/bah/builtin.bah"
 if (__builtin_expect(((void *)s==null), 0)) {
 
-#line 204 "/opt/bah/builtin.bah"
+#line 217 "/opt/bah/builtin.bah"
 char** ____BAH_COMPILER_VAR_5_aoptabahabuiltinbbah = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_5_aoptabahabuiltinbbah[2] = "\013\0\0\0"") is null \n";____BAH_COMPILER_VAR_5_aoptabahabuiltinbbah[1] = l;____BAH_COMPILER_VAR_5_aoptabahabuiltinbbah[0] = "\012\0\0\0""cpstring (";char* ____BAH_COMPILER_VAR_6_aoptabahabuiltinbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_5_aoptabahabuiltinbbah, 3);print(____BAH_COMPILER_VAR_6_aoptabahabuiltinbbah);
 
-#line 205 "/opt/bah/builtin.bah"
+#line 218 "/opt/bah/builtin.bah"
 exit(1);
 }
 
-#line 208 "/opt/bah/builtin.bah"
+#line 221 "/opt/bah/builtin.bah"
 return true;
 };
 #include <pthread.h>
@@ -1184,497 +1187,497 @@ struct channel* cp = c;
 cp->cap = cap;
 };
 
-#line 212 "/opt/bah/builtin.bah"
+#line 225 "/opt/bah/builtin.bah"
 struct channel * __BAH_panic_chan;
 
-#line 216 "/opt/bah/builtin.bah"
+#line 229 "/opt/bah/builtin.bah"
 void __Bah_common_panic(char* e){
 
-#line 217 "/opt/bah/builtin.bah"
+#line 230 "/opt/bah/builtin.bah"
 if (__builtin_expect(strlen(e), 0)) {
 
-#line 218 "/opt/bah/builtin.bah"
+#line 231 "/opt/bah/builtin.bah"
 print(e);
 
-#line 219 "/opt/bah/builtin.bah"
+#line 232 "/opt/bah/builtin.bah"
 print("\01\0\0\0""\n");
 
-#line 220 "/opt/bah/builtin.bah"
+#line 233 "/opt/bah/builtin.bah"
 cleanShutDown();
 }
 };
 
-#line 224 "/opt/bah/builtin.bah"
+#line 237 "/opt/bah/builtin.bah"
 #define panic __Bah_common_panic
 
-#line 226 "/opt/bah/builtin.bah"
+#line 239 "/opt/bah/builtin.bah"
 struct __Bah_fnName_mapper {
 void * p;
 char* n;
 };
 
-#line 231 "/opt/bah/builtin.bah"
+#line 244 "/opt/bah/builtin.bah"
 struct Bah_Array_Type* __Bah_fnNames;
 
-#line 234 "/opt/bah/builtin.bah"
+#line 247 "/opt/bah/builtin.bah"
 void __Bah_fnNames_append(struct __Bah_fnName_mapper fnn){
 
-#line 235 "/opt/bah/builtin.bah"
+#line 248 "/opt/bah/builtin.bah"
 unsigned int ____BAH_COMPILER_VAR_15_aoptabahabuiltinbbah = len(__Bah_fnNames);
     __Bah_realocate_arr(__Bah_fnNames, ____BAH_COMPILER_VAR_15_aoptabahabuiltinbbah);
     ((struct __Bah_fnName_mapper*)__Bah_fnNames->data)[____BAH_COMPILER_VAR_15_aoptabahabuiltinbbah] = fnn;
 };
 long long int backtrace(void * arr,long long int l);
 
-#line 247 "/opt/bah/builtin.bah"
+#line 260 "/opt/bah/builtin.bah"
 char* fastExec(char* s){
 
-#line 248 "/opt/bah/builtin.bah"
+#line 261 "/opt/bah/builtin.bah"
 void * hdl = popen(cStr(s),cStr("\01\0\0\0""r"));
 
-#line 250 "/opt/bah/builtin.bah"
+#line 263 "/opt/bah/builtin.bah"
 char ____BAH_COMPILER_VAR_16_aoptabahabuiltinbbah[1024];char* buff = ____BAH_COMPILER_VAR_16_aoptabahabuiltinbbah;
 
-#line 251 "/opt/bah/builtin.bah"
+#line 264 "/opt/bah/builtin.bah"
 char* response = memoryAllocSTR(1);
 
-#line 252 "/opt/bah/builtin.bah"
+#line 265 "/opt/bah/builtin.bah"
 void * res = (void *)response;
 
-#line 253 "/opt/bah/builtin.bah"
+#line 266 "/opt/bah/builtin.bah"
 long long int i = 0;
 
-#line 253 "/opt/bah/builtin.bah"
+#line 266 "/opt/bah/builtin.bah"
 for (; (res!=null); ++i) {
 
-#line 254 "/opt/bah/builtin.bah"
+#line 267 "/opt/bah/builtin.bah"
 memset(buff,0,1024);
 
-#line 255 "/opt/bah/builtin.bah"
+#line 268 "/opt/bah/builtin.bah"
 res = fgets((char*)buff,1023,hdl);
 
-#line 256 "/opt/bah/builtin.bah"
+#line 269 "/opt/bah/builtin.bah"
 if ((res==null)||(res==(void *)-1)) {
 
-#line 257 "/opt/bah/builtin.bah"
+#line 270 "/opt/bah/builtin.bah"
 goto ____BAH_COMPILER_VAR_17_aoptabahabuiltinbbah;
 }
 
-#line 259 "/opt/bah/builtin.bah"
+#line 272 "/opt/bah/builtin.bah"
 response = memoryRealloc(response,(i+1)*1023);
 
-#line 260 "/opt/bah/builtin.bah"
+#line 273 "/opt/bah/builtin.bah"
 unsigned int* ln = response;
 
-#line 261 "/opt/bah/builtin.bah"
+#line 274 "/opt/bah/builtin.bah"
 *ln = (i)*1023+Cstrlen((void *)buff);
 
-#line 262 "/opt/bah/builtin.bah"
+#line 275 "/opt/bah/builtin.bah"
 memcpy((void *)((long long int)response+cpstringLenSize+i*1023),buff,1024);
 };
 ____BAH_COMPILER_VAR_17_aoptabahabuiltinbbah:
 
-#line 265 "/opt/bah/builtin.bah"
+#line 278 "/opt/bah/builtin.bah"
 pclose(hdl);
 
-#line 266 "/opt/bah/builtin.bah"
+#line 279 "/opt/bah/builtin.bah"
 return response;
 };
 
-#line 274 "/opt/bah/builtin.bah"
+#line 287 "/opt/bah/builtin.bah"
 void __BAH_panic(char* e,char* line){
 
-#line 276 "/opt/bah/builtin.bah"
+#line 289 "/opt/bah/builtin.bah"
 if ((__BAH_panic_chan!=null)) {
 
-#line 277 "/opt/bah/builtin.bah"
+#line 290 "/opt/bah/builtin.bah"
 channel__send(__BAH_panic_chan, e);
 
-#line 278 "/opt/bah/builtin.bah"
+#line 291 "/opt/bah/builtin.bah"
 return;
 }
 
-#line 281 "/opt/bah/builtin.bah"
+#line 294 "/opt/bah/builtin.bah"
 char** ____BAH_COMPILER_VAR_18_aoptabahabuiltinbbah = alloca(5 * sizeof(char*));____BAH_COMPILER_VAR_18_aoptabahabuiltinbbah[4] = "\01\0\0\0""\n";____BAH_COMPILER_VAR_18_aoptabahabuiltinbbah[3] = e;____BAH_COMPILER_VAR_18_aoptabahabuiltinbbah[2] = "\03\0\0\0""): ";____BAH_COMPILER_VAR_18_aoptabahabuiltinbbah[1] = line;____BAH_COMPILER_VAR_18_aoptabahabuiltinbbah[0] = "\07\0\0\0""panic (";char* ____BAH_COMPILER_VAR_19_aoptabahabuiltinbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_18_aoptabahabuiltinbbah, 5);print(____BAH_COMPILER_VAR_19_aoptabahabuiltinbbah);
 
-#line 284 "/opt/bah/builtin.bah"
+#line 297 "/opt/bah/builtin.bah"
 struct Bah_Array_Type* arr = memoryAlloc(sizeof(struct Bah_Array_Type));
 
 arr->length = 0;
 arr->elemSize = sizeof(void *);
 
-#line 285 "/opt/bah/builtin.bah"
+#line 298 "/opt/bah/builtin.bah"
 allocateArray(arr,10);
 
-#line 286 "/opt/bah/builtin.bah"
+#line 299 "/opt/bah/builtin.bah"
 long long int size = backtrace( arr -> data,10);
 
-#line 288 "/opt/bah/builtin.bah"
+#line 301 "/opt/bah/builtin.bah"
 print("\013\0\0\0""Backtrace:\n");
 
-#line 290 "/opt/bah/builtin.bah"
+#line 303 "/opt/bah/builtin.bah"
 long long int min = -1;
 
-#line 291 "/opt/bah/builtin.bah"
+#line 304 "/opt/bah/builtin.bah"
 long long int max = -1;
 
-#line 293 "/opt/bah/builtin.bah"
+#line 306 "/opt/bah/builtin.bah"
 char ____BAH_COMPILER_VAR_20_aoptabahabuiltinbbah[4096];char* selfPath = ____BAH_COMPILER_VAR_20_aoptabahabuiltinbbah;
 
-#line 294 "/opt/bah/builtin.bah"
+#line 307 "/opt/bah/builtin.bah"
 memset(selfPath,0,4096);
 
-#line 295 "/opt/bah/builtin.bah"
+#line 308 "/opt/bah/builtin.bah"
 readlink(cStr("\016\0\0\0""/proc/self/exe"),(char*)selfPath,4096);
 
-#line 297 "/opt/bah/builtin.bah"
+#line 310 "/opt/bah/builtin.bah"
 register long long int i = 1;
 
-#line 297 "/opt/bah/builtin.bah"
+#line 310 "/opt/bah/builtin.bah"
 for (; (i<size); ++i) {
 
-#line 298 "/opt/bah/builtin.bah"
+#line 311 "/opt/bah/builtin.bah"
 long long int p = (long long int)((void **)arr->data)[i];
 
-#line 300 "/opt/bah/builtin.bah"
+#line 313 "/opt/bah/builtin.bah"
 char ____BAH_COMPILER_VAR_22_aoptabahabuiltinbbah[4096];char* buff = ____BAH_COMPILER_VAR_22_aoptabahabuiltinbbah;
 
-#line 301 "/opt/bah/builtin.bah"
+#line 314 "/opt/bah/builtin.bah"
 memset(buff,0,4096);
 
-#line 302 "/opt/bah/builtin.bah"
+#line 315 "/opt/bah/builtin.bah"
  sprintf ( buff , cStr ( "\030\0\0\0""addr2line %p -f -i -e %s" ) , p , selfPath );
 
-#line 303 "/opt/bah/builtin.bah"
+#line 316 "/opt/bah/builtin.bah"
 char* s = fastExec(buffToStr((char*)buff));
 
-#line 304 "/opt/bah/builtin.bah"
+#line 317 "/opt/bah/builtin.bah"
 char* name = "\0\0\0\0""";
 
-#line 305 "/opt/bah/builtin.bah"
+#line 318 "/opt/bah/builtin.bah"
 char* path = "\0\0\0\0""";
 
-#line 307 "/opt/bah/builtin.bah"
+#line 320 "/opt/bah/builtin.bah"
 register long long int j = 0;
 
-#line 307 "/opt/bah/builtin.bah"
+#line 320 "/opt/bah/builtin.bah"
 for (; (j<strlen(s)); ++j) {
 
-#line 308 "/opt/bah/builtin.bah"
+#line 321 "/opt/bah/builtin.bah"
 if ((s[j+4]==(char)10)) {
 
-#line 309 "/opt/bah/builtin.bah"
+#line 322 "/opt/bah/builtin.bah"
 name = cpstringSubsitute(s, 0, j);
 
-#line 310 "/opt/bah/builtin.bah"
+#line 323 "/opt/bah/builtin.bah"
 ++j;
 
-#line 311 "/opt/bah/builtin.bah"
+#line 324 "/opt/bah/builtin.bah"
 goto ____BAH_COMPILER_VAR_23_aoptabahabuiltinbbah;
 }
 };
 ____BAH_COMPILER_VAR_23_aoptabahabuiltinbbah:
 
-#line 315 "/opt/bah/builtin.bah"
+#line 328 "/opt/bah/builtin.bah"
 path = cpstringSubsitute(s, j, strlen(s)-1);
 
-#line 317 "/opt/bah/builtin.bah"
+#line 330 "/opt/bah/builtin.bah"
 if ((strcmp(name, "\013\0\0\0""__BAH__main") == 0)||(strcmp(name, "\04\0\0\0""main") == 0)) {
 
-#line 318 "/opt/bah/builtin.bah"
+#line 331 "/opt/bah/builtin.bah"
 name = "\04\0\0\0""main";
 
-#line 319 "/opt/bah/builtin.bah"
+#line 332 "/opt/bah/builtin.bah"
 path = "\012\0\0\0""<internal>";
 }
 
-#line 322 "/opt/bah/builtin.bah"
+#line 335 "/opt/bah/builtin.bah"
 char** ____BAH_COMPILER_VAR_24_aoptabahabuiltinbbah = alloca(5 * sizeof(char*));____BAH_COMPILER_VAR_24_aoptabahabuiltinbbah[4] = "\05\0\0\0""\033[m \n";____BAH_COMPILER_VAR_24_aoptabahabuiltinbbah[3] = path;____BAH_COMPILER_VAR_24_aoptabahabuiltinbbah[2] = "\013\0\0\0""\033[m() \033[32m";____BAH_COMPILER_VAR_24_aoptabahabuiltinbbah[1] = name;____BAH_COMPILER_VAR_24_aoptabahabuiltinbbah[0] = "\06\0\0\0""\t\033[33m";char* ____BAH_COMPILER_VAR_25_aoptabahabuiltinbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_24_aoptabahabuiltinbbah, 5);print(____BAH_COMPILER_VAR_25_aoptabahabuiltinbbah);
 
-#line 324 "/opt/bah/builtin.bah"
+#line 337 "/opt/bah/builtin.bah"
 if ((strcmp(name, "\04\0\0\0""main") == 0)) {
 
-#line 325 "/opt/bah/builtin.bah"
+#line 338 "/opt/bah/builtin.bah"
 goto ____BAH_COMPILER_VAR_21_aoptabahabuiltinbbah;
 }
 };
 ____BAH_COMPILER_VAR_21_aoptabahabuiltinbbah:
 
-#line 330 "/opt/bah/builtin.bah"
+#line 343 "/opt/bah/builtin.bah"
 cleanShutDown();
 };
 
-#line 333 "/opt/bah/builtin.bah"
+#line 346 "/opt/bah/builtin.bah"
 char* (*onMemoryError)();
 
-#line 336 "/opt/bah/builtin.bah"
+#line 349 "/opt/bah/builtin.bah"
 void __Bah_segfault_handle(long long int sig){
 
-#line 337 "/opt/bah/builtin.bah"
+#line 350 "/opt/bah/builtin.bah"
 char* res = "\0\0\0\0""";
 
-#line 338 "/opt/bah/builtin.bah"
+#line 351 "/opt/bah/builtin.bah"
 if ((onMemoryError!=null)) {
 
-#line 339 "/opt/bah/builtin.bah"
+#line 352 "/opt/bah/builtin.bah"
 res = onMemoryError();
 }
 
-#line 341 "/opt/bah/builtin.bah"
+#line 354 "/opt/bah/builtin.bah"
 char** ____BAH_COMPILER_VAR_26_aoptabahabuiltinbbah = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_26_aoptabahabuiltinbbah[1] = res;____BAH_COMPILER_VAR_26_aoptabahabuiltinbbah[0] = "\031\0\0\0""Memory error (segfault).\n";char* ____BAH_COMPILER_VAR_27_aoptabahabuiltinbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_26_aoptabahabuiltinbbah, 2);__BAH_panic(____BAH_COMPILER_VAR_27_aoptabahabuiltinbbah,"\03\0\0\0""???");
 };
 
-#line 345 "/opt/bah/builtin.bah"
+#line 358 "/opt/bah/builtin.bah"
 char __Bah_init_segfaultHandle(){
 
-#line 346 "/opt/bah/builtin.bah"
+#line 359 "/opt/bah/builtin.bah"
 signal( SIGSEGV,__Bah_segfault_handle);
 
-#line 347 "/opt/bah/builtin.bah"
+#line 360 "/opt/bah/builtin.bah"
 return true;
 };
 
-#line 350 "/opt/bah/builtin.bah"
+#line 363 "/opt/bah/builtin.bah"
 char __Bah_init_segfaultHandle_OK;
 
-#line 355 "/opt/bah/builtin.bah"
+#line 368 "/opt/bah/builtin.bah"
 char recover(char** s){
 
-#line 356 "/opt/bah/builtin.bah"
+#line 369 "/opt/bah/builtin.bah"
 __BAH_panic_chan = channel();
 
-#line 357 "/opt/bah/builtin.bah"
+#line 370 "/opt/bah/builtin.bah"
 char* keep_ref_____BAH_COMPILER_VAR_28_aoptabahabuiltinbbah =channel__receive(__BAH_panic_chan);char* err = keep_ref_____BAH_COMPILER_VAR_28_aoptabahabuiltinbbah;
 
-#line 358 "/opt/bah/builtin.bah"
+#line 371 "/opt/bah/builtin.bah"
 if ((s!=null)) {
 
-#line 359 "/opt/bah/builtin.bah"
+#line 372 "/opt/bah/builtin.bah"
 *s = err;
 }
 
-#line 361 "/opt/bah/builtin.bah"
+#line 374 "/opt/bah/builtin.bah"
 return true;
 };
 
-#line 366 "/opt/bah/builtin.bah"
+#line 379 "/opt/bah/builtin.bah"
 char* __Bah_safe_string(char* s){
 
-#line 367 "/opt/bah/builtin.bah"
+#line 380 "/opt/bah/builtin.bah"
 if (((void *)s==null)) {
 
-#line 368 "/opt/bah/builtin.bah"
+#line 381 "/opt/bah/builtin.bah"
 return "\05\0\0\0""(nil)";
 }
 
-#line 370 "/opt/bah/builtin.bah"
+#line 383 "/opt/bah/builtin.bah"
 if ((strlen(s)>50)) {
 
-#line 371 "/opt/bah/builtin.bah"
+#line 384 "/opt/bah/builtin.bah"
 struct Bah_Array_Type* a = strToArr(s);
 
-#line 372 "/opt/bah/builtin.bah"
+#line 385 "/opt/bah/builtin.bah"
 
     __Bah_realocate_arr(a, 47);
     ((char*)a->data)[47] = 46;
 
-#line 373 "/opt/bah/builtin.bah"
+#line 386 "/opt/bah/builtin.bah"
 
     __Bah_realocate_arr(a, 48);
     ((char*)a->data)[48] = 46;
 
-#line 374 "/opt/bah/builtin.bah"
+#line 387 "/opt/bah/builtin.bah"
 
     __Bah_realocate_arr(a, 49);
     ((char*)a->data)[49] = 46;
 
-#line 375 "/opt/bah/builtin.bah"
+#line 388 "/opt/bah/builtin.bah"
 
     __Bah_realocate_arr(a, 50);
     ((char*)a->data)[50] = (char)0;
 
-#line 376 "/opt/bah/builtin.bah"
+#line 389 "/opt/bah/builtin.bah"
 s = arrToStr(a);
 }
 
-#line 379 "/opt/bah/builtin.bah"
+#line 392 "/opt/bah/builtin.bah"
 char** ____BAH_COMPILER_VAR_29_aoptabahabuiltinbbah = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_29_aoptabahabuiltinbbah[2] = "\01\0\0\0""\"";____BAH_COMPILER_VAR_29_aoptabahabuiltinbbah[1] = s;____BAH_COMPILER_VAR_29_aoptabahabuiltinbbah[0] = "\01\0\0\0""\"";char* ____BAH_COMPILER_VAR_30_aoptabahabuiltinbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_29_aoptabahabuiltinbbah, 3);return ____BAH_COMPILER_VAR_30_aoptabahabuiltinbbah;
 };
 
-#line 382 "/opt/bah/builtin.bah"
+#line 395 "/opt/bah/builtin.bah"
 struct Bah_Array_Type* __Bah_getVal_boundsChecked(struct Bah_Array_Type* arr,unsigned int ind,char* error){
 
-#line 383 "/opt/bah/builtin.bah"
+#line 396 "/opt/bah/builtin.bah"
 if (__builtin_expect((ind>=len(arr)), 0)) {
 
-#line 384 "/opt/bah/builtin.bah"
-__BAH_panic(error,"\030\0\0\0""/opt/bah/builtin.bah:384");
+#line 397 "/opt/bah/builtin.bah"
+__BAH_panic(error,"\030\0\0\0""/opt/bah/builtin.bah:397");
 }
 
-#line 386 "/opt/bah/builtin.bah"
+#line 399 "/opt/bah/builtin.bah"
 return arr;
 };
 
-#line 389 "/opt/bah/builtin.bah"
+#line 402 "/opt/bah/builtin.bah"
 void __Bah_realocate_arr(struct Bah_Array_Type* arr,unsigned int nLength){
 
-#line 390 "/opt/bah/builtin.bah"
+#line 403 "/opt/bah/builtin.bah"
 if ((nLength< arr -> length)) {
 
-#line 391 "/opt/bah/builtin.bah"
-return;
-}
-
-#line 394 "/opt/bah/builtin.bah"
-if (__builtin_expect((nLength!=len(arr)), 0)) {
-
-#line 395 "/opt/bah/builtin.bah"
-char ____BAH_COMPILER_VAR_31_aoptabahabuiltinbbah[65];char* indexStr = ____BAH_COMPILER_VAR_31_aoptabahabuiltinbbah;
-
-#line 396 "/opt/bah/builtin.bah"
-char ____BAH_COMPILER_VAR_32_aoptabahabuiltinbbah[65];char* lengthStr = ____BAH_COMPILER_VAR_32_aoptabahabuiltinbbah;
-
-#line 398 "/opt/bah/builtin.bah"
- sprintf ( indexStr , "\02\0\0\0""%d" + 4 , nLength );
-
-#line 399 "/opt/bah/builtin.bah"
- sprintf ( lengthStr , "\02\0\0\0""%d" + 4 , arr -> length );
-
-#line 401 "/opt/bah/builtin.bah"
-char** ____BAH_COMPILER_VAR_33_aoptabahabuiltinbbah = alloca(5 * sizeof(char*));____BAH_COMPILER_VAR_33_aoptabahabuiltinbbah[4] = "\037\0\0\0"". Can only append index=length.";____BAH_COMPILER_VAR_33_aoptabahabuiltinbbah[3] = cStrToBah((char*)lengthStr);____BAH_COMPILER_VAR_33_aoptabahabuiltinbbah[2] = "\013\0\0\0"" and len = ";____BAH_COMPILER_VAR_33_aoptabahabuiltinbbah[1] = cStrToBah((char*)indexStr);____BAH_COMPILER_VAR_33_aoptabahabuiltinbbah[0] = "\067\0\0\0""builtin: array append out of bounds violation, index = ";char* ____BAH_COMPILER_VAR_34_aoptabahabuiltinbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_33_aoptabahabuiltinbbah, 5);__BAH_panic(____BAH_COMPILER_VAR_34_aoptabahabuiltinbbah,"\030\0\0\0""/opt/bah/builtin.bah:401");
-}
-
 #line 404 "/opt/bah/builtin.bah"
-if ((nLength>= arr -> realLength)) {
-
-#line 405 "/opt/bah/builtin.bah"
-if (( arr -> realLength!=0)) {
-
-#line 406 "/opt/bah/builtin.bah"
- arr -> realLength *= 2;
+return;
 }
 
 #line 407 "/opt/bah/builtin.bah"
-else{
+if (__builtin_expect((nLength!=len(arr)), 0)) {
 
 #line 408 "/opt/bah/builtin.bah"
+char ____BAH_COMPILER_VAR_31_aoptabahabuiltinbbah[65];char* indexStr = ____BAH_COMPILER_VAR_31_aoptabahabuiltinbbah;
+
+#line 409 "/opt/bah/builtin.bah"
+char ____BAH_COMPILER_VAR_32_aoptabahabuiltinbbah[65];char* lengthStr = ____BAH_COMPILER_VAR_32_aoptabahabuiltinbbah;
+
+#line 411 "/opt/bah/builtin.bah"
+ sprintf ( indexStr , "\02\0\0\0""%d" + 4 , nLength );
+
+#line 412 "/opt/bah/builtin.bah"
+ sprintf ( lengthStr , "\02\0\0\0""%d" + 4 , arr -> length );
+
+#line 414 "/opt/bah/builtin.bah"
+char** ____BAH_COMPILER_VAR_33_aoptabahabuiltinbbah = alloca(5 * sizeof(char*));____BAH_COMPILER_VAR_33_aoptabahabuiltinbbah[4] = "\037\0\0\0"". Can only append index=length.";____BAH_COMPILER_VAR_33_aoptabahabuiltinbbah[3] = cStrToBah((char*)lengthStr);____BAH_COMPILER_VAR_33_aoptabahabuiltinbbah[2] = "\013\0\0\0"" and len = ";____BAH_COMPILER_VAR_33_aoptabahabuiltinbbah[1] = cStrToBah((char*)indexStr);____BAH_COMPILER_VAR_33_aoptabahabuiltinbbah[0] = "\067\0\0\0""builtin: array append out of bounds violation, index = ";char* ____BAH_COMPILER_VAR_34_aoptabahabuiltinbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_33_aoptabahabuiltinbbah, 5);__BAH_panic(____BAH_COMPILER_VAR_34_aoptabahabuiltinbbah,"\030\0\0\0""/opt/bah/builtin.bah:414");
+}
+
+#line 417 "/opt/bah/builtin.bah"
+if ((nLength>= arr -> realLength)) {
+
+#line 418 "/opt/bah/builtin.bah"
+if (( arr -> realLength!=0)) {
+
+#line 419 "/opt/bah/builtin.bah"
+ arr -> realLength *= 2;
+}
+
+#line 420 "/opt/bah/builtin.bah"
+else{
+
+#line 421 "/opt/bah/builtin.bah"
  arr -> realLength = 50;
 }
 
-#line 410 "/opt/bah/builtin.bah"
+#line 423 "/opt/bah/builtin.bah"
 void * newPtr = memoryRealloc( arr -> data,(long long int) arr -> realLength*(long long int) arr -> elemSize);
 
-#line 411 "/opt/bah/builtin.bah"
+#line 424 "/opt/bah/builtin.bah"
 struct Bah_Array_Type* rArr = arr;
 
-#line 412 "/opt/bah/builtin.bah"
+#line 425 "/opt/bah/builtin.bah"
 rArr->data = newPtr;
 }
 
-#line 414 "/opt/bah/builtin.bah"
+#line 427 "/opt/bah/builtin.bah"
  arr -> length = arr -> length + 1;
 
-#line 415 "/opt/bah/builtin.bah"
+#line 428 "/opt/bah/builtin.bah"
 return;
 };
 
-#line 421 "/opt/bah/builtin.bah"
+#line 434 "/opt/bah/builtin.bah"
 char cpstringCharAt(char* s,long long int i){
 
-#line 422 "/opt/bah/builtin.bah"
+#line 435 "/opt/bah/builtin.bah"
 char c = s[i+4];
 
-#line 423 "/opt/bah/builtin.bah"
+#line 436 "/opt/bah/builtin.bah"
 return c;
 };
 
-#line 427 "/opt/bah/builtin.bah"
+#line 440 "/opt/bah/builtin.bah"
 char* cpstringSubsitute(char* s,long long int i,long long int l){
 
-#line 428 "/opt/bah/builtin.bah"
+#line 441 "/opt/bah/builtin.bah"
 long long int size = l-i;
 
-#line 429 "/opt/bah/builtin.bah"
+#line 442 "/opt/bah/builtin.bah"
 if (__builtin_expect((i<0)||(size<0)||(size>strlen(s)), 0)) {
 
-#line 430 "/opt/bah/builtin.bah"
-__BAH_panic("\067\0\0\0""builtin: cpstring substitution out of bounds violation.","\030\0\0\0""/opt/bah/builtin.bah:430");
+#line 443 "/opt/bah/builtin.bah"
+__BAH_panic("\067\0\0\0""builtin: cpstring substitution out of bounds violation.","\030\0\0\0""/opt/bah/builtin.bah:443");
 }
 
-#line 432 "/opt/bah/builtin.bah"
+#line 445 "/opt/bah/builtin.bah"
 char* ns = memoryAllocSTR(size+1);
 
-#line 433 "/opt/bah/builtin.bah"
+#line 446 "/opt/bah/builtin.bah"
 memcpy(cStr(ns), s + i + cpstringLenSize,size);
 
-#line 434 "/opt/bah/builtin.bah"
+#line 447 "/opt/bah/builtin.bah"
 return ns;
 };
 
-#line 438 "/opt/bah/builtin.bah"
+#line 451 "/opt/bah/builtin.bah"
 void * arraySubstitute(struct Bah_Array_Type* arr,long long int i,long long int l){
 
-#line 439 "/opt/bah/builtin.bah"
+#line 452 "/opt/bah/builtin.bah"
 long long int length = l-i;
 
-#line 440 "/opt/bah/builtin.bah"
+#line 453 "/opt/bah/builtin.bah"
 if (__builtin_expect((i<0)||(length<0)||(length>len(arr)), 0)) {
 
-#line 441 "/opt/bah/builtin.bah"
-__BAH_panic("\067\0\0\0""builtin: cpstring substitution out of bounds violation.","\030\0\0\0""/opt/bah/builtin.bah:441");
+#line 454 "/opt/bah/builtin.bah"
+__BAH_panic("\067\0\0\0""builtin: cpstring substitution out of bounds violation.","\030\0\0\0""/opt/bah/builtin.bah:454");
 }
 
-#line 443 "/opt/bah/builtin.bah"
+#line 456 "/opt/bah/builtin.bah"
 long long int offset = i*(long long int) arr -> elemSize;
 
-#line 444 "/opt/bah/builtin.bah"
+#line 457 "/opt/bah/builtin.bah"
 struct Bah_Array_Type* na = memoryAlloc(sizeof(struct Bah_Array_Type));
 
 na->length = 0;
 na->elemSize = sizeof(void *);
 
-#line 445 "/opt/bah/builtin.bah"
+#line 458 "/opt/bah/builtin.bah"
  na -> elemSize = arr -> elemSize;
 
-#line 446 "/opt/bah/builtin.bah"
+#line 459 "/opt/bah/builtin.bah"
  na -> length = length;
 
-#line 448 "/opt/bah/builtin.bah"
+#line 461 "/opt/bah/builtin.bah"
 long long int allocLength = length;
 
-#line 449 "/opt/bah/builtin.bah"
+#line 462 "/opt/bah/builtin.bah"
 if ((length>50)) {
 
-#line 450 "/opt/bah/builtin.bah"
+#line 463 "/opt/bah/builtin.bah"
 allocLength = allocLength+(allocLength%50);
 }
 
-#line 451 "/opt/bah/builtin.bah"
+#line 464 "/opt/bah/builtin.bah"
 else{
 
-#line 452 "/opt/bah/builtin.bah"
+#line 465 "/opt/bah/builtin.bah"
 allocLength = 50;
 }
 
-#line 454 "/opt/bah/builtin.bah"
+#line 467 "/opt/bah/builtin.bah"
 long long int size = allocLength*(long long int) arr -> elemSize;
 
-#line 455 "/opt/bah/builtin.bah"
+#line 468 "/opt/bah/builtin.bah"
 long long int realSize = length*(long long int) arr -> elemSize;
 
-#line 456 "/opt/bah/builtin.bah"
+#line 469 "/opt/bah/builtin.bah"
 void * data = memoryAlloc(size);
 
-#line 457 "/opt/bah/builtin.bah"
+#line 470 "/opt/bah/builtin.bah"
 char* oData =  arr -> data;
 
-#line 458 "/opt/bah/builtin.bah"
+#line 471 "/opt/bah/builtin.bah"
 memcpy(data, oData + offset,realSize);
 
-#line 459 "/opt/bah/builtin.bah"
+#line 472 "/opt/bah/builtin.bah"
  na -> data = data;
 
-#line 460 "/opt/bah/builtin.bah"
+#line 473 "/opt/bah/builtin.bah"
 return na;
 };
 
@@ -2597,7 +2600,7 @@ struct mapWrapper* mm = m;
 return mm->length;
 };
 
-#line 467 "/opt/bah/builtin.bah"
+#line 480 "/opt/bah/builtin.bah"
 struct strBuilder {
 char* buff;
 unsigned int length;
@@ -2607,48 +2610,48 @@ void strBuilder__append(struct strBuilder* this,char c);
 char* strBuilder__str(struct strBuilder* this);
 void strBuilder___init(struct strBuilder* this){
 
-#line 473 "/opt/bah/builtin.bah"
+#line 486 "/opt/bah/builtin.bah"
 this->buff = memoryAlloc(cpstringLenSize+51);
 
-#line 474 "/opt/bah/builtin.bah"
+#line 487 "/opt/bah/builtin.bah"
 this->length = 50;
 };
 void strBuilder__append(struct strBuilder* this,char c){
 
-#line 479 "/opt/bah/builtin.bah"
+#line 492 "/opt/bah/builtin.bah"
 unsigned int* ln = this->buff;
 
-#line 480 "/opt/bah/builtin.bah"
+#line 493 "/opt/bah/builtin.bah"
 unsigned int l = *ln;
 
-#line 481 "/opt/bah/builtin.bah"
+#line 494 "/opt/bah/builtin.bah"
 if ((l>=this->length)) {
 
-#line 482 "/opt/bah/builtin.bah"
+#line 495 "/opt/bah/builtin.bah"
 this->length = this->length*2;
 
-#line 483 "/opt/bah/builtin.bah"
+#line 496 "/opt/bah/builtin.bah"
 void * b = memoryRealloc(this->buff,this->length+cpstringLenSize+1);
 
-#line 484 "/opt/bah/builtin.bah"
+#line 497 "/opt/bah/builtin.bah"
 this->buff = b;
 
-#line 485 "/opt/bah/builtin.bah"
+#line 498 "/opt/bah/builtin.bah"
 ln = (unsigned int*)this->buff;
 }
 
-#line 487 "/opt/bah/builtin.bah"
+#line 500 "/opt/bah/builtin.bah"
  this -> buff [ cpstringLenSize + l ] = c;
 
-#line 488 "/opt/bah/builtin.bah"
+#line 501 "/opt/bah/builtin.bah"
 *ln = l+1;
 };
 char* strBuilder__str(struct strBuilder* this){
 
-#line 493 "/opt/bah/builtin.bah"
+#line 506 "/opt/bah/builtin.bah"
 unsigned int l = *((unsigned int*)this->buff);
 
-#line 494 "/opt/bah/builtin.bah"
+#line 507 "/opt/bah/builtin.bah"
 return this->buff;
 };
 #include <stdlib.h>
