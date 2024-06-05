@@ -1,4 +1,4 @@
-//COMPILE WITH: 'gcc -I "/opt/bah/libs/linux/include/" -L "/opt/bah/libs/linux/" ../installer/linux.c -static -O1 -w  -Wno-error=incompatible-pointer-types -Wno-error=int-conversion -Wno-error=implicit-function-declaration -lgc -lpthread -lm'
+//COMPILE WITH: 'gcc ./main.c -O1 -Wno-error=incompatible-pointer-types -Wno-error=int-conversion -Wno-error=implicit-function-declaration -lgc -lpthread -lm'
 
     void __BAH_init();
     #define noCheck(v) v
@@ -7372,7 +7372,7 @@ char* BAH_CC;
 #define BAH_HOST_OS "\05\0\0\0""linux"
 
 #line 31 "/home/alois/Téléchargements/bah/src/main.bah"
-#define BAH_VERSION "\020\0\0\0""v1.4 (build 176)"
+#define BAH_VERSION "\020\0\0\0""v1.4 (build 175)"
 
 #line 33 "/home/alois/Téléchargements/bah/src/main.bah"
 char debug;
@@ -26417,7 +26417,7 @@ RCPenabled = (flags__isSet(&flags,"\03\0\0\0""rcp")==1)||flags__isSet(&flags,"\0
 if ((flags__isSet(&flags,"\01\0\0\0""v")==1)) {
 
 #line 168 "/home/alois/Téléchargements/bah/src/main.bah"
-char** ____BAH_COMPILER_VAR_2069_ahomeaaloisanijlijchargementsabahasrcamainbbah = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_2069_ahomeaaloisanijlijchargementsabahasrcamainbbah[2] = "\024\0\0\0"".\nAlois Laurent Boe.";____BAH_COMPILER_VAR_2069_ahomeaaloisanijlijchargementsabahasrcamainbbah[1] = BAH_VERSION;____BAH_COMPILER_VAR_2069_ahomeaaloisanijlijchargementsabahasrcamainbbah[0] = "\026\0\0\0""Bah compiler version: ";char* ____BAH_COMPILER_VAR_2070_ahomeaaloisanijlijchargementsabahasrcamainbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_2069_ahomeaaloisanijlijchargementsabahasrcamainbbah, 3);println(____BAH_COMPILER_VAR_2070_ahomeaaloisanijlijchargementsabahasrcamainbbah);
+char** ____BAH_COMPILER_VAR_2069_ahomeaaloisanijlijchargementsabahasrcamainbbah = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_2069_ahomeaaloisanijlijchargementsabahasrcamainbbah[2] = "\026\0\0\0"".\n© Alois Laurent Boe";____BAH_COMPILER_VAR_2069_ahomeaaloisanijlijchargementsabahasrcamainbbah[1] = BAH_VERSION;____BAH_COMPILER_VAR_2069_ahomeaaloisanijlijchargementsabahasrcamainbbah[0] = "\026\0\0\0""Bah compiler version: ";char* ____BAH_COMPILER_VAR_2070_ahomeaaloisanijlijchargementsabahasrcamainbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_2069_ahomeaaloisanijlijchargementsabahasrcamainbbah, 3);println(____BAH_COMPILER_VAR_2070_ahomeaaloisanijlijchargementsabahasrcamainbbah);
 
 #line 169 "/home/alois/Téléchargements/bah/src/main.bah"
 return 0;
@@ -26944,7 +26944,7 @@ __Bah_init_segfaultHandle_OK = __Bah_init_segfaultHandle();
 __Bah_iostream_stdinputBuffer = "\0\0\0\0""";
 __Bah_iostream_stdinputBufferLength = 0;
 jError = "\0\0\0\0""";
-BAH_DIR = "\011\0\0\0""/opt/bah/";
+BAH_DIR = "\044\0\0\0""/data/data/com.termux/files/opt/bah/";
 BAH_OS = "\05\0\0\0""linux";
 BAH_CC = "\03\0\0\0""gcc";
 debug = false;

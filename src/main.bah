@@ -28,7 +28,7 @@
     const BAH_HOST_OS = "windows"
 }
 //////////////////////BUILD SPECIFIC THINGS//////////////////////
-const BAH_VERSION = "v1.4 (build 175)"
+const BAH_VERSION = "v1.4 (build 176)"
 
 debug = false
 verboseRuntime = false
@@ -165,7 +165,7 @@ main(args []cpstring) int {
     RCPenabled = flags.isSet("rcp") == 1 || flags.isSet("fastrcp")
 
     if flags.isSet("v") == 1 {
-        println("Bah compiler version: "+BAH_VERSION+".\n© Alois Laurent Boe")
+        println("Bah compiler version: "+BAH_VERSION+".\nAlois Laurent Boe.")
         return 0
     }
 

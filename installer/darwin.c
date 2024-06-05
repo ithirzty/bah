@@ -7292,7 +7292,7 @@ char* BAH_CC;
 #define BAH_HOST_OS "\06\0\0\0""darwin"
 
 #line 31 "/home/alois/Téléchargements/bah/src/main.bah"
-#define BAH_VERSION "\020\0\0\0""v1.4 (build 175)"
+#define BAH_VERSION "\020\0\0\0""v1.4 (build 176)"
 
 #line 33 "/home/alois/Téléchargements/bah/src/main.bah"
 char debug;
@@ -26334,7 +26334,7 @@ RCPenabled = (flags__isSet(&flags,"\03\0\0\0""rcp")==1)||flags__isSet(&flags,"\0
 if ((flags__isSet(&flags,"\01\0\0\0""v")==1)) {
 
 #line 168 "/home/alois/Téléchargements/bah/src/main.bah"
-char** ____BAH_COMPILER_VAR_2063_ahomeaaloisanijlijchargementsabahasrcamainbbah = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_2063_ahomeaaloisanijlijchargementsabahasrcamainbbah[2] = "\026\0\0\0"".\n© Alois Laurent Boe";____BAH_COMPILER_VAR_2063_ahomeaaloisanijlijchargementsabahasrcamainbbah[1] = BAH_VERSION;____BAH_COMPILER_VAR_2063_ahomeaaloisanijlijchargementsabahasrcamainbbah[0] = "\026\0\0\0""Bah compiler version: ";char* ____BAH_COMPILER_VAR_2064_ahomeaaloisanijlijchargementsabahasrcamainbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_2063_ahomeaaloisanijlijchargementsabahasrcamainbbah, 3);println(____BAH_COMPILER_VAR_2064_ahomeaaloisanijlijchargementsabahasrcamainbbah);
+char** ____BAH_COMPILER_VAR_2063_ahomeaaloisanijlijchargementsabahasrcamainbbah = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_2063_ahomeaaloisanijlijchargementsabahasrcamainbbah[2] = "\024\0\0\0"".\nAlois Laurent Boe.";____BAH_COMPILER_VAR_2063_ahomeaaloisanijlijchargementsabahasrcamainbbah[1] = BAH_VERSION;____BAH_COMPILER_VAR_2063_ahomeaaloisanijlijchargementsabahasrcamainbbah[0] = "\026\0\0\0""Bah compiler version: ";char* ____BAH_COMPILER_VAR_2064_ahomeaaloisanijlijchargementsabahasrcamainbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_2063_ahomeaaloisanijlijchargementsabahasrcamainbbah, 3);println(____BAH_COMPILER_VAR_2064_ahomeaaloisanijlijchargementsabahasrcamainbbah);
 
 #line 169 "/home/alois/Téléchargements/bah/src/main.bah"
 return 0;
