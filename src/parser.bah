@@ -1206,7 +1206,7 @@ parseArrayDecl(v variable*, l []Tok, i int, max int, elems Elems*) cpstring {
     if v.isArray {
         ar Tok* = v.arrRoot
         ai Tok* = v.arrIndex
-        name = "(("+elemTypeStr+"*)" +ar.cont + "->data)["+ai.cont+"]"
+        name = "(("+getCType(v.type, elems).str()+"*)" +ar.cont + "->data)["+ai.cont+"]"
     }
 
     NEXT_LINE = "
