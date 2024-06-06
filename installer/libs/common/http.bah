@@ -211,16 +211,16 @@ struct response_buffer {
     //Appends data to the buffer.
     //s is the length of read data to append.
     append(buff char*, s int) {
-        if this.data == null {
+        if len(this.data) == 0 {
             this.data = memoryAllocSTR(s+1)
         } else {
-            d cpstring = memoryRealloc(this.data, this.len + s + 1)
+            d cpstring = memoryRealloc(this.data, this.len + s + 1 + cpstringLenSize)
             ln uint32* = d
             this.data = d
             *ln = this.len + s
-            memcpy(<ptr>(<int>d + cpstringLenSize + this.len), buff, s)
-            this.len = this.len + s
         }
+        memcpy(<ptr>(<int>this.data + cpstringLenSize + this.len), buff, s)
+        this.len = this.len + s
     }
 
 }

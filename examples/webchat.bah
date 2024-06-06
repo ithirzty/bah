@@ -98,7 +98,12 @@ serv(s http_server*, req http_request*, resp http_response*) {
 
         //if we get to this point, the loop has been exitted and the client is no longer listening
         listenersMut.lock() //lock the mutex
-        delete(listeners, i) //remove the currrent listener
+        i=0; for i < len(listeners), i++ {
+            if listeners[i] == receiveChan {
+                delete(listeners, i) //remove the currrent listener
+                break
+            }
+        }
         listenersMut.unlock() //unlock the mutex
 
     }

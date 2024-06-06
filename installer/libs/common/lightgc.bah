@@ -1,11 +1,17 @@
+//This is the light weight garbage collector (-lightGC flag).
+//Work still in progress, should not leak in any sane program.
+//Could maybe sometime free referenced ptrs? (still work in progress lol).
+
 #include "nativeMem.bah"
 
+#warning "lightGC is still very experimental! May cause random crashes + slowing down"
+
+// C bindings
 #include "<sys/types.h>"
 #include "<unistd.h>"
 #include "<sys/syscall.h>"
 #include "<setjmp.h>"
-
-#warning "lightGC is still very experimental! May cause random crashes + slowing down"
+#include "<pthread.h>"
 
 #define! pthread_mutex_t int
 #define! pthread_t int
@@ -20,53 +26,58 @@
 #define! pthread_cond_destroy(cond pthread_cond_t*) int
 #define! pthread_cond_wait(cond pthread_cond_t*, mut pthread_mutex_t*) int
 #define! pthread_attr_init(attr pthread_attr_t *) int
-#define! pthread_attr_setstack(attr pthread_attr_t*, stck ptr, size int)
-#define! pthread_getthreadid_np() int
+#define! pthread_attr_setstack(attr pthread_attr_t*, stck ptr, size int) int
+#define! pthread_attr_getstack(attr pthread_attr_t*, stck ptr*, size uint*) int
+#define! pthread_attr_getstacksize(attr pthread_attr_t*, size uint*) int
+#define! pthread_getattr_np(t pthread_t, attr pthread_attr_t*) int
+#define! pthread_self() pthread_t
 
 #define! qsort(arr ptr, elementCount uint, elementSize uint, fn ptr)
-#define! bsearch(key ptr, base ptr, elementCount uint, elementSize uint, fn ptr) ptr
 
 #define! __builtin_frame_address(n int) int
 
 #define! jmp_buf ptr
 #define! setjmp(e jmp_buf)
 
+
+//Returns the end address of the BSS section.
 getBSSend() uint {
     noCheck(extern char end)
     return noCheck(&end)
 }
 
+//Returns the begining address of the BSS section.
 getBSSbeg() uint {
     noCheck(extern char etext)
     return noCheck(&etext)
 }
 
-
+//On memory allocation, a lightGCptr struct is stored retaining all the information
+//needed by the garbage collector : this is the lightGC.list array.
 struct lightGCptr {
     size: int
     p: ptr
-    rooted: char
-}
+    rooted: char // values:
+}                //         0: no used anymore
+                 //         1: referenced inside the program
+                 //         2: is a root (references other but should not be freed when not referenced)
+                 //         3: was referenced in previous world stop
 
+//Keeping track of threads.
 struct lightGCthread {
-    stack: ptr
-    t: pthread_t*
+    t: pthread_t
     next: lightGCthread*
-    aid: bool
     sysid: uint
     regs: ptr
     regsSize: uint
 
     clean() {
-        if this.aid {
-            free(this.t)
-        }
-        free(this.stack)
         free(this)
     }
 
 }
 
+//Function used for sorting the list of lightGCptr for efficient lookup/allocation.
 _lgc_sort_lightGCptr(ap ptr, bp ptr) int {
     if <uint>(<lightGCptr*>ap).p < <uint>(<lightGCptr*>bp).p {
         return 1
@@ -75,39 +86,49 @@ _lgc_sort_lightGCptr(ap ptr, bp ptr) int {
     return -1
 }
 
+//Returns the tid of the current thread.
 _lgc_tid() uint {
     return noCheck(syscall(__NR_gettid))
 }
 
+//The state of the garbage collector, becomes the global variable _lgc.
+//None of the methods here should be used if your are not tinkering with the GC.
 struct lightGC {
+
+    //BSS section (memory containing all the global variables).
     bssStart: uint
     bssEnd: uint
+    stackStart: uint //main thread's stack bottom
 
-    stackStart: uint
-    lastStackEnd: uint
+    //Collection settings
+    minHeapSize: int //No collection when the heap is smaller than this value.
+    numberPass: int  //The number of passes (world stop) befaure actually collecting.
+    //Multiple passes (marking referenced addresses) are made before collecting because this allows
+    //the collector to mark addresses that could not hae been marked in a single pass for any odd reason.
 
-    stopInterval: int
-
+    //Smallest and biggest allocated addresses, for faster lookup when scanning memory regions.
     maxPtr: uint
     minPtr: uint
-    memUsed: uint
 
-    currentPass: int
-    numberPass: int
-    minHeapSize: int
+    //Current state of the collector
+    memUsed: uint     //Current memory usage of the heap in bytes.
+    currentPass: int  //Keeping track of the current pass number to not collect on every pass.
+    stopInterval: int //Collection will start once .memUsed >= .stopInterval.
 
-    mainThread: int
+    //Current state of threading of the whole process.
+    mainThread: int         //Main thread tid.
+    threads: lightGCthread* //Linked-list of every thread.
 
-    list: lightGCptr*
-    listLength: uint
-    listRealLength: uint
+    //The C style array for keeping track of every allocation.
+    list: lightGCptr*       // The array.
+    listLength: uint        // The array's length (current number of allocations).
+    listRealLength: uint    // The physical (allocated) size of the array.
+    
+    // Synchronization stuff
     mut: pthread_mutex_t
     cond: pthread_cond_t
 
-    threads: lightGCthread*
-
-    allocSinceCheck: int = 0
-
+    // Sets .minPtr and .maxPtr.
     updateBounds(p ptr) {
         if <uint>p < this.minPtr || this.minPtr == 0 {
             this.minPtr = <uint>p
@@ -118,21 +139,23 @@ struct lightGC {
         }
     }
 
-    //will allocate and track pointer
+    //will allocate and track pointer.
+    //An untracked allocation means that the allocated ressource will not reference any address (such as strings)
+    //and can therefore skip scanning its content.
     allocate(s uint, tracked bool, rooted bool) ptr {
         p = malloc(s)
         this.memUsed += s
         this.updateBounds(p)
         
-
-        // noCheck(printf("allocating: %p (%u, elem: %d)\n"+4, p, s, this->listLength))
-
+        //Grow the .list array if needed.
         if this.listLength == this.listRealLength {
             this.listRealLength *= 2
             this.list = realloc(this.list, sizeof(lightGCptr) * this.listRealLength)
             memset(<ptr>(<uint>this.list + sizeof(lightGCptr) * (this.listRealLength / 2)), 0, (this.listRealLength / 2) * sizeof(lightGCptr))
         }
 
+        //Try to efficiently find a free space inside the part of the array
+        //which is more suceptible to be free.
         index lightGCptr*
         i = this.listLength; for i < this.listRealLength, i++ {
             index = <lightGCptr*>(<uint>this.list + (i * sizeof(lightGCptr)))
@@ -141,7 +164,7 @@ struct lightGC {
             }
         }
 
-
+        //Could not find free space, trying the whole array.
         if i == this.listRealLength {
             i = this.listLength - 1; for i != -1, i-- {
                 index = <lightGCptr*>(<uint>this.list + (i * sizeof(lightGCptr)))
@@ -152,76 +175,88 @@ struct lightGC {
         }
 
         this.listLength++
+
+        //Setting index parameters.
+        index.size = s        
+        index.p = p
         if rooted {
             index.rooted = <char>2
         } else {
             index.rooted = <char>0
         }
-        index.size = s
-        
         if tracked == false {
-            index.size = 0 - index.size
+            index.size = 0 - index.size //untracked pointers (str...) have their length inverted to be identified
         }
 
-        index.p = p
 
         return p
     }
 
+    //Binary search to find the corresponding index to an allocated address.
+    //This should be called only if the list is sorted.
     find(addr uint) lightGCptr* {
+
         min = 0
         l = this.listLength
+        i = min + l / 2 //start at the middle of the list
+        curr = l / 4    //the offset that should be added to i on the next iteration
 
-        i = min + l / 2
-        curr = l / 4
-
-        lastAdd = true
-        atomic = false
+        lastAdd = true //keeping track of the last iteration direction (torward the begining or the end?)
+        atomic = false //are we iterating the list atomicaly (one by one)
 
         for i >= min && i < l {
-            index = <lightGCptr*>(<uint>this.list + (i * sizeof(lightGCptr)))
+            index = <lightGCptr*>(<uint>this.list + (i * sizeof(lightGCptr))) //getting the index
 
+            //because of integer division, curr could be equal to 0 if it is really close
             if curr == 0 {
                 curr = 1
                 atomic = true
             }
 
+            //setting the next iteration's direction
             if <uint>index.p > addr {
                 if atomic && lastAdd == false {
-                    break
+                    break //breaking if atomic and direction is changing (trying to find index that is not there)
                 }
                 i += curr
                 lastAdd = true
             } else if <uint>index.p < addr {
                 if atomic && lastAdd == true {
-                    break
+                    break //breaking if atomic and direction is changing (trying to find index that is not there)
                 }
                 i -= curr
                 lastAdd = false
             } else {
-                return index
+                return index //found the index!
             }
 
-            curr /= 2
+            curr /= 2 //next offset should be two times smaller
         }
 
         return null
     }
 
-    scanRegion(from uint, to uint, alignement uint) {
-        k = from; for k < (<uint>to), k += alignement {
-            p = *(<uint*>k)
+    //Scans a region of memory [from -> to] incrementing by alignment.
+    scanRegion(from uint, to uint, alignment uint) {
+        k = from; for k < (<uint>to), k += alignment {
+            p = *(<uint*>k) //interpreting the current address as a memory address (unsigned integer)
+            
+            //Address is aligned on the size of a pointer and inside the range of the heap.
+            //This is a possibly an allocated address.
             if p >= this.minPtr && p <= this.maxPtr && p % sizeof(ptr) == 0 {
-                index = this.find(p)
+                index = this.find(p) //get the index from the array
+                
                 if index == null {
-                    continue
+                    continue    //could not find the address, garbage value.
                 }
 
-                if index.rooted != <char>1 {
+                if index.rooted != <char>1 { //do not scan the content if already marked (as it would be inefficient)
                     if index.rooted != <char>2 {
-                        index.rooted = <char>1
+                        index.rooted = <char>1 //mark the index if it is not a root as roots does not need to be marked
                     }
-                    if index.size > 0 {
+
+                    //Scan the content of the previously allocated memory block.
+                    if index.size > 0 { //if the pointer's content is tracked
                         this.scanRegion(index.p, <uint>index.p + index.size, sizeof(ptr))
                     }
                 }
@@ -229,26 +264,29 @@ struct lightGC {
         }
     }
 
-    check() {
+    //Stop the world (pause the program and all threads to prevent memory access).
+    //Then, scan all roots recursively.
+    stopWorld() {
         if this.mainThread != _lgc_tid() {
-            // noCheck(printf("other thread!!!\n"+4))
-            return
+            return  //only the main thread can pause the world
         }
+
+        //getting current stack pointer
         stckEnd = __builtin_frame_address(0)
-        this.lastStackEnd = <uint>stckEnd
-
-        // noCheck(printf("pausing world: %d (heap: %d)\n"+4, this->listLength, this->memUsed))
-
+        
+        //signal all threads to stop
         ct = this.threads; for ct != null, ct = ct.next {
             sigqueue(ct.sysid, noCheck(SIGUSR1), noCheck((union sigval){ .sival_ptr = 0 }))
         }
 
+        //sort the addresses list (by ptr) in inverted order (higher at the begining, null at the end)
         qsort(this.list, this.listRealLength, sizeof(lightGCptr), _lgc_sort_lightGCptr)
 
-        // noCheck(printf("BSS %p, stack %p\n"+4, this->bssStart, stckEnd))
+        //Scan roots
         this.scanRegion(this.bssStart, this.bssEnd, 1)
-        this.scanRegion(stckEnd, this.stackStart, sizeof(ptr))
+        this.scanRegion(stckEnd, this.stackStart, sizeof(ptr)) //end < begining!
 
+        //heap roots
         i=0; for i < this.listLength, i++ {
             index = <lightGCptr*>(<uint>this.list + (i * sizeof(lightGCptr)))
             if index.rooted == <char>2 && index.p != null {
@@ -256,19 +294,23 @@ struct lightGC {
             }
         }
 
-        
+        //threads stacks
         ct = this.threads; for ct != null, ct = ct.next {
             if ct.regs != null {
-                // noCheck(printf("checking regs %p\n"+4, ct->regs))
                 this.scanRegion(ct.regs, <uint>ct.regs + 200 - sizeof(ptr), 1)
             }
-            this.scanRegion(ct.stack, <uint>ct.stack + 4096, sizeof(ptr))
+            s uint = 0
+            addr ptr = 0
+            attr pthread_attr_t
+            pthread_getattr_np(ct.t, &attr)
+            pthread_attr_getstack(&attr, &addr, &s)
+            pthread_attr_destroy(&attr)
+            this.scanRegion(addr, <uint>addr + s, sizeof(ptr))
         }
 
-
+        //do collection
         if this.currentPass == this.numberPass {
-            n = 0
-            ol = this.listLength
+            ol = this.listLength // storing list length to know when to stop iterating
             i=0; for i < ol, i++ {
                 index = <lightGCptr*>(<uint>this.list + (i * sizeof(lightGCptr)))
                 if index.p == null {
@@ -276,26 +318,30 @@ struct lightGC {
                 }
                 
                 if index.rooted == <char>0 {
-                    // noCheck(printf("%p , "+4, index->p))
-                    n++
                     free(index.p)
                     index.p = null
                     s = index.size
-                    if s < 0 {
+                    if s < 0 { //
                         s = 0 - s
                     }
-                    this.memUsed -= s
+                    this.memUsed -= s //keeping track of current heap usage
 
-                    this.listLength--
+                    this.listLength-- //decreasing list's length
                 } else if index.rooted != <char>2 {
-                    index.rooted = <char>0
+                    index.rooted = <char>0 //if not a root, removing the mark in preparation for next world stop
                 }
             }
+
+            //The list not sorted anymore because there are nulls everywhere.
+            //Sorting it will allow allocation (finding free space) to be way more efficient.
             qsort(this.list, this.listRealLength, sizeof(lightGCptr), _lgc_sort_lightGCptr)
-            // noCheck(printf("frees: %d (allive: %d) \n"+4, n, this->listLength))
+
+            //setting new threshold
             this.currentPass = 0
             this.stopInterval = this.memUsed * 2
-        } else {
+
+        } else { //not collecting now
+            //all marked indexes are updated to previously marked
             i=0; for i < this.listLength, i++ {
                 index = <lightGCptr*>(<uint>this.list + (i * sizeof(lightGCptr)))
                 if index.p == null {
@@ -305,66 +351,34 @@ struct lightGC {
                     index.rooted = <char>3
                 }
             }
+
+            //setting new threshold
             this.currentPass++
             this.stopInterval = <int>(<float>this.memUsed * 1.5)
         }
 
+        //Prevent frequent stops at low memory usage.
         if this.stopInterval < this.minHeapSize {
             this.stopInterval = this.minHeapSize
         }
 
-        // noCheck(printf("\theap size: %d MB (%d allocs, next cycle: %d B)\n"+4, this->memUsed / 1000000, this->listLength, this->stopInterval))
     }
 }
 
-_lgc lightGC
+_lgc lightGC //The global variable containing the state of the collector.
+//This does not induce leaks because the array containing every allocated addresses is not inside the list itself.
 
-isAddrInStack(addr ptr) bool {
-    k = _lgc.stackStart; for k >= _lgc.lastStackEnd, k -= sizeof(ptr) {
-        if *(<ptr*>k) == <uint>addr {
-            return true
-        }
-    }
-    return false
-}
-
-isAddrInBSS(addr ptr) bool {
-    k = _lgc.bssStart; for k < _lgc.bssEnd, k++ {
-        if *(<ptr*>k) == <uint>addr {
-            return true
-        }
-    }
-    return false
-}
-
-isAddrInRange(addr ptr, from uint, len uint, alignement uint) bool {
-    to = from + len
-    k = from; for k < to, k += alignement {
-        if *(<ptr*>k) == <uint>addr {
-            return true
-        }
-    }
-    return false
-}
-
-isAddrMarked(addr ptr) char {
-    i=0; for i < _lgc.listRealLength, i++ {
-        index = <lightGCptr*>(<uint>_lgc.list + (i * sizeof(lightGCptr)))
-        if index.p == addr {
-            return index.rooted
-        }
-    }
-    return <char>4
-}
-
+//Function call in every thread (except main one) when collecting/marking.
+//This will pause execution, dump CPU registers and wait for collection/marking to end.
 lightGC_thread_sig_handler(sig int) {
+    //dump registers
     envJmp jmp_buf
     setjmp(envJmp)
-
     
-    sid = _lgc_tid()
-    ct = _lgc.threads
-    for ct != null, ct = ct.next {
+    sid = _lgc_tid() //get tid
+
+    //find the lightGCthread struct for the current thread to save the registers in
+    ct = _lgc.threads; for ct != null, ct = ct.next {
         if ct.sysid == sid {
             ct.regs = &envJmp
             ct.regsSize = sizeof(envJmp)
@@ -372,27 +386,33 @@ lightGC_thread_sig_handler(sig int) {
         }
     }
 
+    //wait for .stopWorld() to release the mutex.
     pthread_mutex_lock(&_lgc.mut)
     pthread_mutex_unlock(&_lgc.mut)
+    ct.regs = null
 }
 
+//Entry point of every threads (except the main one).
 lightGC_thread_wrapper(args ptr*) {
+    //recover arguments
     t lightGCthread* = *args
-    t.sysid = _lgc_tid()
+    t.sysid = _lgc_tid() //store tid
     fnArgs = *(<ptr*>(<uint>args + sizeof(ptr)))
     fn function(ptr) = *(<ptr*>(<uint>args + 2 * sizeof(ptr)))
 
-    fn(fnArgs)
+    fn(fnArgs) //execute the asyncly called function 
 
-    free(args)
-    pthread_mutex_lock(&_lgc.mut)
-    
+    //at this point, thread exits gracefully
+
+    free(args) //free the arguments wrapper
+
+    //remove the thread from the linked list
+    pthread_mutex_lock(&_lgc.mut)    
     if t == _lgc.threads {
         _lgc.threads = t.next
         t.clean()
     } else {
-        ct = _lgc.threads
-        for ct != null, ct = ct.next {
+        ct = _lgc.threads; for ct != null, ct = ct.next {
             if ct.next == t {
                 ct.next = t.next
                 t.clean()
@@ -400,39 +420,29 @@ lightGC_thread_wrapper(args ptr*) {
             }
         }
     }
-
-    
     pthread_mutex_unlock(&_lgc.mut)
 }
 
+//Called when trying to launch a thread.
 lightGC_create_thread(id pthread_t*, attr pthread_attr_t*, func ptr, args ptr) int32 {
-    noAttr = attr == null
-    rattr pthread_attr_t
-    if noAttr {
-        attr = &rattr
-        pthread_attr_init(attr)
-    }
-    
-    pthread_mutex_lock(&_lgc.mut)
-    stck = malloc(4096)
-    
+    //Creating new thread (linked list) element
     t = <lightGCthread*>malloc(sizeof(lightGCthread))
     if id == null {
-        t.t = malloc(sizeof(pthread_t))
-        id = t.t
-        t.aid = true
-    } else {
-        t.aid = false
+        id = &t.t
     }
 
-    t.stack = stck
+    //initializing to zero
     t.regs = 0
     t.regsSize = 0
+    t.sysid = 0
 
+    //insert linked-list element
+    pthread_mutex_lock(&_lgc.mut)
     t.next = _lgc.threads
     _lgc.threads = t
     pthread_mutex_unlock(&_lgc.mut)
 
+    //wrap function arguments
     wrapArgs = <ptr*>malloc(sizeof(ptr) * 3)
     waa = (<ptr*>(<uint>wrapArgs + sizeof(ptr)))
     fna = (<ptr*>(<uint>wrapArgs + 2 * sizeof(ptr)))
@@ -440,71 +450,70 @@ lightGC_create_thread(id pthread_t*, attr pthread_attr_t*, func ptr, args ptr) i
     *waa = args
     *fna = func
 
-    pthread_attr_setstack(attr, stck, 4096)
+    //create thread
     pthread_create(id, attr, lightGC_thread_wrapper, wrapArgs)
     
-    if noAttr {
-        pthread_attr_destroy(attr)
-    }
+    //store pthread id
+    t.t = *id
+
     return 0
 }
 
+
+//not implemented for now (can achieve same result whith channels)
 lightGC_join_thread(id pthread_t, ret ptr) {
-    // noCheck(printf("trying to thread\n"))
     exit(1)
     return
 }
 
+//Redirect threading function calls.
 const __thread_create = lightGC_create_thread
 const __thread_join = lightGC_join_thread
 
-
+//Called before main(), initializes the garbage collector.
+//_lgc variable is not initialized with zeros, every member needs to be filled.
 initiateMemory(args []cpstring) {
     _lgc.stackStart = __builtin_frame_address(1)
 
     _lgc.bssStart = getBSSbeg()
     _lgc.bssEnd = getBSSend()
 
-    _lgc.stopInterval = 10000000
+    _lgc.stopInterval = 10000000 //10 MB
     _lgc.minHeapSize =  10000000
     _lgc.currentPass = 0
-    _lgc.numberPass = 2
+    _lgc.numberPass = 2 //collect every 3 passes
 
 
     _lgc.threads = null
     _lgc.mainThread = noCheck(syscall(__NR_gettid))
 
+    //register callback for thread signaling (when stoping world)
     action sigaction
     action.sa_flags = noCheck(SA_SIGINFO);
+    memset(&action.sa_mask, 0, noCheck(sizeof(action.sa_mask)))
     action.sa_handler = lightGC_thread_sig_handler
     sigaction(noCheck(SIGUSR1), &action, null)
 
     pthread_mutex_init(&_lgc.mut, 0)
     pthread_cond_init(&_lgc.cond, null)
 
-    // tid pthread_t
-    // pthread_create(&tid, null, _lgc.scanWorker, &_lgc)
-
-
-    noCheck(setvbuf(stdout, NULL, _IONBF, 0))
-
     _lgc.listLength = 0
     _lgc.listRealLength = 4096
     s = _lgc.listRealLength * sizeof(lightGCptr)
     _lgc.list = malloc(s)
     memset(_lgc.list, 0, s)
-    // noCheck(printf("zeroed\n"+4))
-
-    // noCheck(printf("bss: %u - %u, len: %u\n"+4, _lgc.bssStart, _lgc.bssEnd, _lgc.bssEnd - _lgc.bssStart))
-    // exit(0)
 }
 
+//Ask to allocate s bytes.
+//This is thread safe.
 memoryAlloc(s int) ptr {
     pthread_mutex_lock(&_lgc.mut)
-    if _lgc.memUsed >= _lgc.stopInterval {
+    if _lgc.memUsed >= _lgc.stopInterval { //stop the world when too much memory used
+        //dump registers
         envJmp jmp_buf
         setjmp(envJmp)
-        _lgc.check()
+
+        _lgc.stopWorld()
     }
     p = _lgc.allocate(s, true, false)
     memset(p, 0, s)
@@ -512,37 +521,41 @@ memoryAlloc(s int) ptr {
     return p
 }
 
+//Ask to allocate s bytes for a cpstring of length s-1.
+//This is thread safe.
 memoryAllocSTR(s int) cpstring {
     pthread_mutex_lock(&_lgc.mut)
-    if _lgc.memUsed >= _lgc.stopInterval {
+    if _lgc.memUsed >= _lgc.stopInterval { //same as in memoryAlloc()
         envJmp jmp_buf
         setjmp(envJmp)
-        _lgc.check()
+
+        _lgc.stopWorld()
     }
 
-    p = _lgc.allocate(s + 4, false, false)
+    p = _lgc.allocate(s + cpstringLenSize, false, false) //do not track content
+    //sets cpstring length
     l uint32* = p
     *l = s-1
-    memset(<ptr>(<uint>p + 4), 0, s)
+    memset(<ptr>(<uint>p + cpstringLenSize), 0, s)
     pthread_mutex_unlock(&_lgc.mut)
     return p
 }
 
-
-
+//Ask to reallocate pointer o to be of length s.
 memoryRealloc(o ptr, s int) ptr {
-    if o == null {
+    if o == null { //realloc(null, s) = malloc(s)
         return memoryAlloc(s)
     }
+
     pthread_mutex_lock(&_lgc.mut)
-    if _lgc.memUsed >= _lgc.stopInterval {
+    if _lgc.memUsed >= _lgc.stopInterval { //same as in memoryAlloc()
         envJmp jmp_buf
         setjmp(envJmp)
-        _lgc.check()
+        _lgc.stopWorld()
     }
     
+    //try to efficiently find old o pointer inside unsorted list
     oldIndex lightGCptr* = null
-
     i=_lgc.listLength-1; for i != -1, i-- {
         index = <lightGCptr*>(<uint>_lgc.list + (i * sizeof(lightGCptr)))
         if index.p == o {
@@ -551,6 +564,7 @@ memoryRealloc(o ptr, s int) ptr {
         }
     }
 
+    //trying to find in the rest of the list
     if oldIndex == null {
         i=_lgc.listLength; for i < _lgc.listRealLength, i++ {
             index = <lightGCptr*>(<uint>_lgc.list + (i * sizeof(lightGCptr)))
@@ -563,10 +577,12 @@ memoryRealloc(o ptr, s int) ptr {
     
     oldSize = oldIndex.size
     tracked = true
+
     if oldSize < 0 {
         tracked = false
         oldSize = 0 - oldSize
     }
+
     p = realloc(o, s)
     _lgc.updateBounds(p)
     oldIndex.size = s

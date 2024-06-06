@@ -120,6 +120,10 @@ main(args []cpstring) int {
     isFixMeEnabled = flags.isSet("fixMe") == 1
     noImport = flags.isSet("noImports") == 1 || flags.isSet("c") == 1
 
+    if isFixMeEnabled {
+        noImports = true
+    }
+
     if flags.isSet("target") == 1 {
         BAH_OS = flags.get("target")
         println("Build target: "+BAH_OS)

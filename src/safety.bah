@@ -181,7 +181,7 @@ fixMeRegisterVar(v variable*, t Tok*) {
         name = "&"+name
     }
     NEXT_LINE += "
-    fixMeAddVar(\""+v.name+"\", "+name+", \""+compilerState.currentFile+":"+intToStr(t.line)+"\");
+    fixMeAddVar("+strLitteralToBahStr("\""+v.name+"\"")+", "+name+", "+strLitteralToBahStr("\""+compilerState.currentFile+":"+intToStr(t.line)+"\"")+");
     "
 }
 
@@ -203,7 +203,7 @@ fixMeEndScope(elems Elems*, t Tok*) {
                 continue
             }
             OUTPUT += rope("
-            fixMeRemVar(\""+v.name+"\", "+name+", \""+compilerState.currentFile+":"+intToStr(t.line)+"\");
+            fixMeRemVar("+strLitteralToBahStr("\""+v.name+"\"")+", "+name+", "+strLitteralToBahStr("\""+compilerState.currentFile+":"+intToStr(t.line)+"\"")+");
             ")
         }
     }
@@ -219,24 +219,14 @@ fixMeTestVar(t Tok*, ltp lineType, elems Elems*) {
     }
 
     name = t.cont
-    tt = getTypeFromToken(t, true, elems)
-    if isRCPtype(tt, elems) == false {
-        return
-    }
-    if isRCPpointerType(tt) == false {
-        if name[0] == '*' {
-            name = name[1:]
-        } else {
-            name = "&"+name
-        }
+
+    if name[0] == '*' {
+        name = name[1:]
+    } else {
+        name = "&"+name
     }
 
-    if t.type == TOKEN_TYPE_FUNC || t.isOper == true || t.isFunc == true {
-        name = registerRCPvar(tt, t.cont, elems)
-        t.cont = name
-    }
-
-    fn = "fixMeIsVarOk("+name+", \""+t.cont+"\", \""+compilerState.currentFile+":"+intToStr(t.line)+"\")"
+    fn = "fixMeIsVarOk("+name+", "+strLitteralToBahStr("\""+name+"\"")+", "+strLitteralToBahStr("\""+compilerState.currentFile+":"+intToStr(t.line)+"\"")+")"
     
     if ltp == LINE_TYPE_ELSE {
         prevIfShortcut = fn+"&&"
