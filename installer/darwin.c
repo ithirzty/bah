@@ -7295,7 +7295,7 @@ char* BAH_CC;
 #define BAH_HOST_OS "\06\0\0\0""darwin"
 
 #line 31 "/home/alois/Téléchargements/bah/src/main.bah"
-#define BAH_VERSION "\020\0\0\0""v1.4 (build 176)"
+#define BAH_VERSION "\020\0\0\0""v1.4 (build 177)"
 
 #line 33 "/home/alois/Téléchargements/bah/src/main.bah"
 char debug;
