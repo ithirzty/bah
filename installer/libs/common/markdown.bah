@@ -25,7 +25,7 @@ struct markdown {
 
     //To retreive the document as lines without transpilling it to any other language.
     //This is mainly for debugging/verbose purposes.
-    str() cpstring {
+    str() str {
         s = ""
         i=0;for i < len(this.lines) {
             mdl = this.lines[i]
@@ -39,8 +39,8 @@ struct markdown {
     }
 
     //To transpille your markdown document as a html document.
-    //This will return a cpstring containning your markdown document as html code.
-    html() cpstring {
+    //This will return a str containning your markdown document as html code.
+    html() str {
         html = "<p>"
 
         i=0;for i < len(this.lines) {
@@ -264,7 +264,7 @@ parseMarkdownInline(l string) string {
 
 //To parse a markdown document.
 //This will return a markdown structure that can be then transpilled into html.
-parseMarkdown(a cpstring) markdown {
+parseMarkdown(a str) markdown {
     md = string(a)
     lines = splitString(md, "\n")
     m = markdown{}

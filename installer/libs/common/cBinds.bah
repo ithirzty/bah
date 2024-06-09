@@ -1,29 +1,29 @@
-#define! fopen(path cpstring, mode cpstring) ptr
-#define! fgets(buff cpstring, len int, handle ptr) cpstring
-#define! fputs(s cpstring, handle ptr)
+#define! fopen(path str, mode str) ptr
+#define! fgets(buff str, len int, handle ptr) str
+#define! fputs(s str, handle ptr)
 #define! fclose(handle ptr)
 #define! fseek(handle ptr, i int, mode int)
 #define! ftell(handle ptr) int
 #define! rewind(handle ptr)
 #define! getc(handle ptr) char
-#define! puts(s cpstring)
-#define! strlen(s cpstring) int
+#define! puts(s str)
+#define! strlen(s str) int
 #define! exit(code int)
-//#define! strdup(s cpstring) cpstring
+//#define! strdup(s str) str
 //#define! free(p ptr)
 #define! sizeof(v ptr) int
 //#define! malloc(size int) ptr
-#define! strcpy(dest cpstring, source cpstring)
-#define! strcat(dest cpstring, source cpstring)
-#define! sprintf(buff cpstring, format cpstring, v ptr)
-#define! atoi(s cpstring) int
-#define! itoa(i int, s cpstring, base int) cpstring
+#define! strcpy(dest str, source str)
+#define! strcat(dest str, source str)
+#define! sprintf(buff str, format str, v ptr)
+#define! atoi(s str) int
+#define! itoa(i int, s str, base int) str
 #define! sigaction(sig int, str sigaction*, args ptr)
 #define! waitpid(m int, s int*, w int) int
 #define! fork() int
-#define! realpath(path cpstring, buff ptr) ptr
-#define! getcwd(cwd cpstring, s int)
+#define! realpath(path str, buff ptr) ptr
+#define! getcwd(cwd str, s int)
 #define! time(t int) int
 #define! localtime(t int*) int
-#define! strftime(buff cpstring, len int, format cpstring, t int) int
+#define! strftime(buff str, len int, format str, t int) int
 #define! sleep(t int)

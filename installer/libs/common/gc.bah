@@ -63,7 +63,7 @@ memoryOnEnd(obj ptr, fn ptr) {
 //This will copy l bytes from the source to the end.
 //A faster version is available with -optimize.
 //This is called when calling memcpy().
-__BAH_memcpy(dest cpstring, source cpstring, l int) {
+__BAH_memcpy(dest str, source str, l int) {
     lm int32 = l % sizeof(int)
     i int32
     for lm != 0, lm-- {
@@ -78,11 +78,11 @@ __BAH_memcpy(dest cpstring, source cpstring, l int) {
 }
 
 
-//Used for allocating memory for a cpstring.
+//Used for allocating memory for a str.
 //The content of the memory block should not contain any pointer.
 //It will not be checked for memory collection.
-memoryAllocSTR(s int) cpstring {
-    r cpstring = GC_MALLOC(s + cpstringLenSize)
+memoryAllocSTR(s int) str {
+    r str = GC_MALLOC(s + strLenSize)
     ln uint32* = r
     *ln = (s-1)
     noCheck(r[s-1] = 0)

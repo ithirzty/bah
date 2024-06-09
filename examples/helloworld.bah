@@ -10,7 +10,7 @@
 
 //'main' is the entry point of the program.
 //it takes an array of arguments (passed by the terminal) and returns an exit code.
-main(args []cpstring) int {
+main(args []str) int {
 
     println("hello world!") //prints "hello world!" + a new line
 

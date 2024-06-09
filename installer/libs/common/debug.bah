@@ -83,7 +83,7 @@ Here are all available commands:
 }
 
 //Internal function called when breakPoint() is called.
-breakPoint__inner(syms []reflectElement, line cpstring) {
+breakPoint__inner(syms []reflectElement, line str) {
     if DEBUG_ENABLED == false {
         return
     }

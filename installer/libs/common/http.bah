@@ -50,12 +50,12 @@ struct! in_addr {
 
 
 struct! hostent {
-    h_name: cpstring
-    h_aliases: cpstring
+    h_name: str
+    h_aliases: str
     h_addrtype: int
     h_length: int
     h_addr: uint*
-    h_addr_list: cpstring*
+    h_addr_list: str*
 }
 
 struct! sockaddr_in {
@@ -71,7 +71,7 @@ struct! addrinfo {
     ai_protocol: int
     ai_addrlen: int
     ai_addr: sockaddr_in*
-    ai_canonname: cpstring
+    ai_canonname: str
     ai_next: addrinfo*
 }
 
@@ -82,14 +82,14 @@ struct! timeval {
 
 #define! fd_set ptr
 
-#define! inet_ntoa(addr in_addr) cpstring
-#define! inet_addr(a cpstring) in_addr
+#define! inet_ntoa(addr in_addr) str
+#define! inet_addr(a str) in_addr
 
 #define! socket(a int, b int, c int) int
-#define! gethostbyname(h cpstring) hostent*
+#define! gethostbyname(h str) hostent*
 #define! htons(p int) uint
 #define! connect(sockfd int, ser_addr sockaddr_in*, s int) int
-#define! send(sockfd int, msg cpstring, msglen int, c int) int
+#define! send(sockfd int, msg str, msglen int, c int) int
 #define! recv(sockfd int, buff char*, bufflen int, c int) int
 #define! close(sockfd int) int
 #define! htonl(inaddrt int) char
@@ -106,7 +106,7 @@ struct! timeval {
 #define! FD_ISSET(sock int, s ptr) int
 #define! select(sock int, ws ptr, rs ptr, ex ptr, timeout timeval*) int
 #define! ioctl(sock int, f int, v int*) int
-#define! getaddrinfo(host cpstring, port cpstring, hints addrinfo*, addrs addrinfo**) int
+#define! getaddrinfo(host str, port str, hints addrinfo*, addrs addrinfo**) int
 #define! freeaddrinfo(addr addrinfo*)
 
 struct! pollfd {
@@ -119,17 +119,17 @@ struct! pollfd {
 
 
 struct! ifreq {
-    ifr_name: cpstring
+    ifr_name: str
 }
 
-#define! snprintf(s cpstring, s int, format cpstring)
+#define! snprintf(s str, s int, format str)
 
 #windows {
     #define! WSADATA ptr
     #define! MAKEWORD(a int, b int) ptr
     #define! WSAStartup(w ptr, d WSADATA*) int
     #define! closesocket(sockfd int)
-    #define! hostname_to_ip(host cpstring, ip cpstring)
+    #define! hostname_to_ip(host str, ip str)
 
     //Ran at startup to initiate networking on windows platform.
     __Bah_win32_WSA_init() bool {
@@ -154,10 +154,10 @@ struct! ifreq {
 #define! TLSv1_2_client_method() int
 #define! SSL_CTX_new(m int) ptr
 #define! BIO_new_ssl_connect(ctx ptr) ptr
-#define! BIO_set_conn_hostname(bio ptr, h cpstring) int
+#define! BIO_set_conn_hostname(bio ptr, h str) int
 #define! BIO_do_connect(bio ptr) int
 #define! BIO_do_handshake(bio ptr) int
-#define! BIO_write(bio ptr, cont cpstring, size int) int
+#define! BIO_write(bio ptr, cont str, size int) int
 #define! BIO_should_retry(bio ptr) int
 #define! BIO_read(bio ptr, buff char*, size int) int
 #define! BIO_free_all(bio ptr)
@@ -165,25 +165,25 @@ struct! ifreq {
 #define! SSL_CTX_set_timeout(ctx ptr, t int) int
 #define! BIO_get_ssl(bio ptr, ssl ptr*)
 #define! SSL_set_mode(ssl ptr, mode int)
-#define! SSL_set_tlsext_host_name(ssl ptr, host cpstring) int
-#define! SSL_CTX_set_cipher_list(ctx ptr, l cpstring)
-#define! SSL_CTX_load_verify_locations(ctx ptr, cert cpstring, key cpstring) int
+#define! SSL_set_tlsext_host_name(ssl ptr, host str) int
+#define! SSL_CTX_set_cipher_list(ctx ptr, l str)
+#define! SSL_CTX_load_verify_locations(ctx ptr, cert str, key str) int
 #define! SSL_CTX_set_default_verify_paths(ctx ptr) int
-#define! SSL_CTX_use_certificate_file(ctx ptr, cert cpstring, ft int) int
-#define! SSL_CTX_set_default_passwd_cb_userdata(ctx ptr, pass cpstring)
-#define! SSL_CTX_use_PrivateKey_file(ctx ptr, key cpstring, ft iny) int
+#define! SSL_CTX_use_certificate_file(ctx ptr, cert str, ft int) int
+#define! SSL_CTX_set_default_passwd_cb_userdata(ctx ptr, pass str)
+#define! SSL_CTX_use_PrivateKey_file(ctx ptr, key str, ft iny) int
 #define! SSL_CTX_check_private_key(ctx ptr) int
 #define! OpenSSL_add_all_algorithms()
 #define! SSL_new(ctx ptr) ptr
 #define! SSL_set_fd(ssl ptr, sd int)
 #define! SSL_accept(ssl ptr) int
 #define! SSL_read(ssl ptr, buff char*, s int) int
-#define! SSL_write(ssl ptr, buff cpstring, s int) int
+#define! SSL_write(ssl ptr, buff str, s int) int
 #define! SSL_free(ssl ptr)
 #define! SSL_get_peer_certificate(ssl ptr) ptr
 #define! X509_get_subject_name(cert ptr) char*
 #define! X509_get_issuer_name(cert ptr) char*
-#define! X509_NAME_oneline(s char*, a int, b int) cpstring
+#define! X509_NAME_oneline(s char*, a int, b int) str
 #define! X509_free(cert ptr)
 #define! TLSv1_2_server_method() int
 
@@ -192,18 +192,18 @@ __Bah_http_is_ssl_initialized = SSL_library_init()
 //Represents a response buffer for easier i/o reading.
 //You can append to the buffer and read its content.
 struct response_buffer {
-    data: cpstring
+    data: str
     len: int
 
-    //Returns the buffer as a cpstring.
-    str() cpstring {
+    //Returns the buffer as a str.
+    str() str {
         return this.data
     }
 
     //Returns the buffer as an array of char.
     arr() []char {
         a = []char
-        noCheck(a->data = this->data + cpstringLenSize)
+        noCheck(a->data = this->data + strLenSize)
         noCheck(a->length = this->len)
         return a
     }
@@ -214,12 +214,12 @@ struct response_buffer {
         if len(this.data) == 0 {
             this.data = memoryAllocSTR(s+1)
         } else {
-            d cpstring = memoryRealloc(this.data, this.len + s + 1 + cpstringLenSize)
+            d str = memoryRealloc(this.data, this.len + s + 1 + strLenSize)
             ln uint32* = d
             this.data = d
             *ln = this.len + s
         }
-        memcpy(<ptr>(<int>this.data + cpstringLenSize + this.len), buff, s)
+        memcpy(<ptr>(<int>this.data + strLenSize + this.len), buff, s)
         this.len = this.len + s
     }
 
@@ -250,7 +250,7 @@ struct http_socket {
     }
 
     //To set the linux network interface on which the socket should operate.
-    setInterface(s cpstring) bool {
+    setInterface(s str) bool {
         #linux {
             ifr ifreq
             memset(&ifr, 0, noCheck(sizeof(ifr)))
@@ -304,7 +304,7 @@ struct http_socket {
 
     //To reach a host by port.
     //Used for making requests.
-    reach(host cpstring, port int) bool {
+    reach(host str, port int) bool {
         if <ptr>host == null {
             return false
         }
@@ -356,7 +356,7 @@ struct http_socket {
             freeaddrinfo(addrs)
         }
         #windows {
-            ip cpstring = memoryAlloc(20)
+            ip str = memoryAlloc(20)
             server = sockaddr_in{}
             server.sin_family = noCheck(AF_INET)
             server.sin_port = htons(port)
@@ -404,7 +404,7 @@ struct http_socket {
     }
 
     //To send data through the socket.
-    send(s cpstring) bool {
+    send(s str) bool {
         if this.isOpened() == false {
             return false
         }
@@ -465,7 +465,7 @@ struct http_socket {
     }
 
     //To receive data through the socket.
-    receive() cpstring {
+    receive() str {
         r = this.receiveBuff()
         return r.str()
     }
@@ -494,7 +494,7 @@ struct http_url {
 
 
 //Used for parsing an URL.
-parseUrl(s cpstring) http_url* {
+parseUrl(s str) http_url* {
     u = new http_url
     
     //get protocol
@@ -576,7 +576,7 @@ __HTTP_urlSafeChars = []char{
 
 //Used for encoding a string to a safe url format.
 //Encoded strings can be used as url parameter without being interpreted as path.
-urlEncode(s cpstring) cpstring {
+urlEncode(s str) str {
     r = []char
     tmps = buffer 10
 
@@ -599,7 +599,7 @@ urlEncode(s cpstring) cpstring {
 }
 
 //Used for decoding an url encoded string.
-urlDecode(s cpstring) cpstring {
+urlDecode(s str) str {
     r = []char
 
     i=0; for i < len(s) {
@@ -625,9 +625,9 @@ http_broken_pipe(signo int) {
     println("http: warning, trying to send data to a closed socket.")
 }
 
-//To send a cpstring through the specified socket.
+//To send a str through the specified socket.
 //This is depreacted, use http_socket instead.
-http_send(connfd int, s cpstring) {
+http_send(connfd int, s str) {
     send(connfd, s, strlen(s), 0)
 }
 
@@ -655,11 +655,11 @@ struct http_transport {
     body: string*
     file: []char
     url: http_url*
-    method: cpstring = ""
-    path: cpstring = ""
+    method: str = ""
+    path: str = ""
 
     //To set a header by name.
-    setHeader(name cpstring, value cpstring) {
+    setHeader(name str, value str) {
         h = new string
         ln = toLower(string(name))
         h.set(ln.str()+": "+value)
@@ -667,7 +667,7 @@ struct http_transport {
     }
 
     //To get the value of a header by name.
-    getHeader(name cpstring) cpstring {
+    getHeader(name str) str {
         headerName = string(name)
         headerName = toLower(headerName)
         headerName.append(":")
@@ -691,7 +691,7 @@ struct http_transport {
     }
 
     //To append to the body of the response.
-    write(content cpstring) {
+    write(content str) {
         body = this.body
         body.append(content)
     }
@@ -904,7 +904,7 @@ makeRespFromBody(response response_buffer) http_response* {
 
 //Used for making TLS requests.
 //*This is an internal function, you should know what you're doing if you decide to use it.*
-makeRawHttpsRequest(host cpstring, message cpstring, timeout int) response_buffer {
+makeRawHttpsRequest(host str, message str, timeout int) response_buffer {
     ssl ptr
 
     ctx = SSL_CTX_new(TLSv1_2_client_method())
@@ -972,16 +972,16 @@ makeRawHttpsRequest(host cpstring, message cpstring, timeout int) response_buffe
 #define! getpeername(connfd int, addr sockaddr_in*, s int*) int
 
 struct http_form_file {
-    name: cpstring
-    fileName: cpstring
-    type: cpstring
-    body: cpstring
+    name: str
+    fileName: str
+    type: str
+    body: str
 }
 
 //A wrapper for requests.
 //When receiving a connection, you will be able to retreive the passed headers, path... from the client.
 struct http_request extend http_transport {
-    request: cpstring
+    request: str
     form: []string
     files: []http_form_file
     timeout: int = 0
@@ -1246,7 +1246,7 @@ struct http_request extend http_transport {
     }
 
     //Used for getting the value of a form's input.
-    getFormValue(name cpstring) cpstring {
+    getFormValue(name str) str {
         rName = string(name)
         rName = toLower(rName)
         i=0; for i < len(this.form) {
@@ -1263,7 +1263,7 @@ struct http_request extend http_transport {
     }
 
     //Used for getting the value of a cookie.
-    getCookie(name cpstring) cpstring {
+    getCookie(name str) str {
         encoded = string(this.getHeader("cookie"))
         cookies = splitString(encoded, ";")
         r = []char
@@ -1285,7 +1285,7 @@ struct http_request extend http_transport {
     }
 
     //Returns the client IP address.
-    getIP() cpstring {
+    getIP() str {
         addr sockaddr_in
         addrSize int = sizeof(sockaddr_in)
         getpeername(this.socket.sockfd, &addr, &addrSize)
@@ -1467,7 +1467,7 @@ struct http_server {
     //     this.nbThreads = nb
     // }
 
-    linux_interface: cpstring = ""
+    linux_interface: str = ""
 
     //Event lisstener for when receiving connections.
     handle: function(http_server*, http_request*, http_response*)
@@ -1571,7 +1571,7 @@ struct http_server {
 
     }
 
-    listenAndServeTLS(certFile cpstring, keyFile cpstring) {
+    listenAndServeTLS(certFile str, keyFile str) {
         this.error = HTTP_SERVER_NO_ERROR
 
         //Initialize SSL context
@@ -1680,14 +1680,14 @@ struct http_server {
 
 
 //Used for making simple get request.
-get(url cpstring) http_response {
+get(url str) http_response {
     panic("Deprecated get() call")
     r = http_response{}
     return r
 }
 
 //Used for making simple post request with variables (args) formatted as name=value.
-post(url cpstring, args []cpstring) http_response {
+post(url str, args []str) http_response {
     panic("Deprecated post() call")
     r = http_response{}
     return r

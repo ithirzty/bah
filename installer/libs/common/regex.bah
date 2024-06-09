@@ -97,7 +97,7 @@ struct regex {
 
     //An internal function to process a string.
     //This should not be used if you are not trying to extend the implementation of regexes. 
-    procesString(cps cpstring, si int) int {
+    procesString(cps str, si int) int {
         clear(this.groups)
         i=0;for i<len(this.tokens) {
             t = this.tokens[i]
@@ -288,7 +288,7 @@ struct regex {
     }
 
     //This tries to match a string to a regex. If the regex matches the string, this will return 1.
-    matchString(s cpstring) int {
+    matchString(s str) int {
         si = strlen(s)
         r int
         i=0;for i < si { 
@@ -303,8 +303,8 @@ struct regex {
         return r
     }
 
-    //This tries to match every group of the regex to a substring and returns an array of cpstring.
-    findAllSubstring(s cpstring) []cpstring {
+    //This tries to match every group of the regex to a substring and returns an array of str.
+    findAllSubstring(s str) []str {
         si = strlen(s)
         r int
         i=0;for i < si { 
@@ -312,16 +312,16 @@ struct regex {
             if r == 1 {
                 break
             } else if r == 2 {
-                a = []cpstring
+                a = []str
                 return a
             }
             i = i + 1
         }
         if r == 0 {
-            a = []cpstring
+            a = []str
             return a
         }
-        a = []cpstring
+        a = []str
         i=0;for i < len(this.groups) {
             g = []regexToken*
             g = this.groups[i]
@@ -342,7 +342,7 @@ struct regex {
 }
 
 //This is used to parse a regex expression and returns a pointer to its instance.
-compileRegex(cpexpr cpstring) regex* {
+compileRegex(cpexpr str) regex* {
     regex = new regex
     expr = string(cpexpr)
 

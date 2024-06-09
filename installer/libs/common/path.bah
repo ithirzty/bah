@@ -3,13 +3,13 @@
 #include "string.bah"
 
 #windows {
-    #define! _fullpath(buff cpstring, rel cpstring, l int) cpstring
+    #define! _fullpath(buff str, rel str, l int) str
 }
 
 //Used for getting the absolute path of a file/directory.
 //An absolute path is a path that goes all the way to the root.
 //Will return null if path does not exist.
-absPath(path cpstring) cpstring {
+absPath(path str) str {
     #linux {
         rp = realpath(path, null)
         p = cStrToBah(rp)
@@ -25,7 +25,7 @@ absPath(path cpstring) cpstring {
         }
     }
     #windows {
-        buff cpstring = memoryAlloc(4096)
+        buff str = memoryAlloc(4096)
         p = _fullpath(buff, path, 4095)
         s = string(p)
         s.replace("\\", "/")
@@ -39,7 +39,7 @@ absPath(path cpstring) cpstring {
 
 //To get the working path.
 //The working path is the path to the directory that is defined as **./**.
-getCurrentPath() cpstring {
+getCurrentPath() str {
     cwd = buffer 4096
     getcwd(<ptr>cwd, 4096)
     return cStrToBah(<ptr>cwd)
@@ -48,16 +48,16 @@ getCurrentPath() cpstring {
 //Returns true if the subPath is inside the basePath.
 //Usefull for securing connection (such as HTTP server) to make sure you do not give
 //access to your complete file system.
-isInside(basePath cpstring, subPath cpstring) bool {
+isInside(basePath str, subPath str) bool {
     abs1 = absPath(basePath)
     abs2 = absPath(subPath)
     return strHasPrefix(subPath, basePath) == true
 }
 
-#define! chdir(s cpstring)
+#define! chdir(s str)
 
 //To change the current working directory.
-setCurrentPath(s cpstring) {
+setCurrentPath(s str) {
     chdir(s)
 }
 

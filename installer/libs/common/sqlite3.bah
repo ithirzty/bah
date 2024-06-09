@@ -5,25 +5,25 @@
 
 #cLib "lsqlite3"
 
-#define! sqlite3_open(filename cpstring, ppDb sqlite3**) int
+#define! sqlite3_open(filename str, ppDb sqlite3**) int
 #define! sqlite3_close(ppDb sqlite3*)
 #define! sqlite3 int
-#define! sqlite3_exec(ppDb sqlite3*, sql cpstring, callback ptr, data ptr, err char**) int
+#define! sqlite3_exec(ppDb sqlite3*, sql str, callback ptr, data ptr, err char**) int
 
 #static {
     #warning "Lib sqlite3 is usually compilled dynamically (-d), may not link."
 }
 
 //Scans a row element to a variable.
-dbResponse_scan_inner(e reflectElement, val cpstring) {
+dbResponse_scan_inner(e reflectElement, val str) {
     typeS = string(e.type)
     typeS.replace("*", "")
     type = typeS.str()
     if type == "int" {
         ep int* = e.value
         *ep = strToInt(val)
-    } else if type == "cpstring" {
-        ep cpstring* = e.value
+    } else if type == "str" {
+        ep str* = e.value
         if <ptr>val == null {
             *ep = null
         } else {
@@ -40,8 +40,8 @@ dbResponse_scan_inner(e reflectElement, val cpstring) {
 
 //A single row of a SQL response.
 struct dbResponseRow {
-    argv: []cpstring
-    cols: []cpstring
+    argv: []str
+    cols: []str
 
     //Scans the row to a variable.
     scan(e reflectElement) {
@@ -119,8 +119,8 @@ struct dbResponse {
                     arr[i] = v
                     i = i + 1
                 }
-            }  else if ae.type == "cpstring" {
-                arr = []cpstring; arr = e.value
+            }  else if ae.type == "str" {
+                arr = []str; arr = e.value
                 i=0; for i < len(this.rows) {
                     r = this.rows[i]
                     v = ""
@@ -147,7 +147,7 @@ struct dbResponse {
 }
 
 //Inserts new row in the response.
-fillDBresponse(data ptr, argc int32, argv cpstring*, azColName cpstring*) int32 {
+fillDBresponse(data ptr, argc int32, argv str*, azColName str*) int32 {
     dbr dbResponse* = data
     row = new dbResponseRow
     i=0; for i < argc {
@@ -170,7 +170,7 @@ struct db {
     DB: sqlite3*
     
     //Opens the database.
-    open(fileName cpstring) bool {
+    open(fileName str) bool {
         return sqlite3_open(fileName, &this.DB) == 0
     }
 
@@ -180,7 +180,7 @@ struct db {
     }
 
     //Executes a sql command.
-    exec(sql cpstring) dbResponse* {
+    exec(sql str) dbResponse* {
         resp = new dbResponse
         sqlite3_exec(this.DB, sql, fillDBresponse, resp, &resp.err)
         return resp

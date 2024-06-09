@@ -28,7 +28,7 @@
     const BAH_HOST_OS = "windows"
 }
 //////////////////////BUILD SPECIFIC THINGS//////////////////////
-const BAH_VERSION = "v1.4 (build 178)"
+const BAH_VERSION = "v1.5 (build 180)"
 
 debug = false
 verboseRuntime = false
@@ -54,7 +54,7 @@ isImportedSubObject = false
 #include "./declarative.bah"
 
 //This function is called on segfaults, it provides a bit more help on what went wrong.
-memErrHandle() cpstring {
+memErrHandle() str {
     r = "file: "+compilerState.currentFile
     if currentFn != null {
         r += "\nfunction: "+currentFn.name+"()"
@@ -63,7 +63,7 @@ memErrHandle() cpstring {
 }
 
 //Entry point of the program.
-main(args []cpstring) int {
+main(args []str) int {
     onMemoryError = memErrHandle
     ogDir = getCurrentPath()
 
@@ -131,7 +131,7 @@ main(args []cpstring) int {
     if flags.isSet("bahDir") == 1 {
         BAH_DIR = flags.get("bahDir")
         if BAH_DIR[len(BAH_DIR)-1] != '/' {
-            BAH_DIR = BAH_DIR + "/"
+            BAH_DIR += "/"
         }
         println("Bah directory: "+BAH_DIR)
     }
@@ -238,9 +238,6 @@ main(args []cpstring) int {
             ")
         }
     }
-
-    //definning the []cpstring C type because it is used for the first time in the C entry point.
-    compilerState = compilerStateTag{}
     
     //opening the file to compile
     fileName = absPath(args[1])
@@ -384,7 +381,7 @@ main(args []cpstring) int {
         //if file is an object, do not link it
         obj = ""
         if flags.isSet("object") == 1 {
-            fileName = fileName + ".o"
+            fileName += ".o"
             obj = "-c"
         }
 
@@ -398,15 +395,15 @@ main(args []cpstring) int {
         gccArgs = BAH_CC+" -I \""+BAH_DIR+"libs/"+BAH_OS+"/include/\" -L \""+BAH_DIR+"libs/"+BAH_OS+"/\" "+ randFileName+ " "+isStatic+" "+obj+" -w -O1 "+remOpt+" -g1 -o "+fileName //the compiler (C compiler) command
         
         if flags.isSet("l") == 1 {
-            gccArgs = gccArgs + " -c"
+            gccArgs += " -c"
         }
 
         //adding C libraries
         cLibs = compilerState.cLibs
         i=0;for i < len(cLibs) {
             l = cLibs[i]
-            gccArgs = gccArgs + " -" + l
-            i = i + 1
+            gccArgs += " -" + l
+            i++
         }
 
         //executes the C compiler
@@ -436,15 +433,15 @@ main(args []cpstring) int {
     } else {
         //making the C file without compiling it
         if flags.isSet("o") == 0 {
-            fileName = fileName + ".c"
+            fileName += ".c"
         }
 
         gccArgs = BAH_CC+" -I \""+BAH_DIR+"libs/"+BAH_OS+"/include/\" -L \""+BAH_DIR+"libs/"+BAH_OS+"/\" "+ fileName+ " "+isStatic+" -O1 -w "
         cLibs = compilerState.cLibs
         i=0;for i < len(cLibs) {
             l = cLibs[i]
-            gccArgs = gccArgs + " -" + l
-            i = i + 1
+            gccArgs += " -" + l
+            i++
         }
 
 

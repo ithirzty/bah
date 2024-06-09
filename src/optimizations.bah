@@ -37,7 +37,7 @@ isExprExpensive(t Tok*) bool {
 }
 
 //Converts a byte to C octal notation.
-byteToOctal(b byte) cpstring {
+byteToOctal(b byte) str {
     n uint32 = b
     r = ""
     i=0; for n != 0, i++ {
@@ -52,14 +52,14 @@ byteToOctal(b byte) cpstring {
 }
 
 //Returns a 4 bytes (32 bits) int encoded in C octal notation.
-escapeIntOctal(n int) cpstring {
+escapeIntOctal(n int) str {
     s char* = &n
     r = byteToOctal(<byte>noCheck(s[0])) + byteToOctal(<byte>noCheck(s[1])) + byteToOctal(<byte>noCheck(s[2])) + byteToOctal(<byte>noCheck(s[3]))
     return r
 }
 
 //Returns the length of a string litteral.
-getStrLen(s cpstring) uint {
+getStrLen(s str) uint {
     l = len(s)
     n = 0
     i=1; for i+1 < l, i++ {
@@ -85,7 +85,7 @@ getStrLen(s cpstring) uint {
 }
 
 //Makes a Bah string litteral from a str token.
-strLitteralToBahStr(s cpstring) cpstring {
+strLitteralToBahStr(s str) str {
     l = getStrLen(s)
     return "\"" + escapeIntOctal(l) + "\"" + s
 }

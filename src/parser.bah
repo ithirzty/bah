@@ -15,10 +15,10 @@
 #include "./optimizations.bah"
 #include "./generics.bah"
 
-comparators = []cpstring{"==", "!=", ">", "<", "<=", ">=", "in"}
-compSep = []cpstring{"||", "&&"}
-signs = []cpstring{"|", "&", "%", "+", "-", "*", "/", "<<", ">>", "^"}
-equalsTokens = []cpstring{"=", "+=", "-=", "*=", "/="}
+comparators = []str{"==", "!=", ">", "<", "<=", ">=", "in"}
+compSep = []str{"||", "&&"}
+signs = []str{"|", "&", "%", "+", "-", "*", "/", "<<", ">>", "^"}
+equalsTokens = []str{"=", "+=", "-=", "*=", "/="}
 
 
 #define parseLines(ts []Tok, elems Elems*)
@@ -29,7 +29,7 @@ debugLine(line []Tok) {
     cont = ""
     i=0; for i < len(line) {
         t = line[i]
-        cont = cont + " '" + t.cont + "': "+intToStr(<int>t.type)
+        cont += " '" + t.cont + "': "+intToStr(<int>t.type)
         i++
     }
     println(cont)
@@ -150,7 +150,7 @@ parseCast(line []Tok, elems Elems*, guard bool) []Tok {
                 break
             }
             nl[i] = t
-            i = i + 1
+            i++
         }
         if i == len(line) {
             return line //found no cast in the line, returns it
@@ -183,14 +183,14 @@ parseCast(line []Tok, elems Elems*, guard bool) []Tok {
 }
 
 //Returns a directory from a file name.
-getDirFromFile(f cpstring) cpstring {
+getDirFromFile(f str) str {
     l int = len(f)
     i = l-1; for i >= 0 {
         c = f[i]
         if c == '/' {
             return f[:i+1]
         }
-        i = i - 1
+        i--
     }
 
     if i <= 0 {
@@ -201,7 +201,7 @@ getDirFromFile(f cpstring) cpstring {
 }
 
 //Includes a file.
-includeFile(ccstr cpstring, elems Elems*) bool {
+includeFile(ccstr str, elems Elems*) bool {
 
     needDisableRCP = false
 
@@ -303,7 +303,7 @@ includeFile(ccstr cpstring, elems Elems*) bool {
 }
 
 //Compiles an object from an imported file.
-parallelObjCompile(fn cpstring, oName cpstring) {
+parallelObjCompile(fn str, oName str) {
     cf = getCacheFile(fn)
     wrkd = getCurrentPath()
 
@@ -479,7 +479,7 @@ parseInclude(l []Tok, elems Elems*) {
             if sc.hasPrefix("<") == false {
                 sc.set(strt.cont)
             }
-            OUTPUT = OUTPUT + rope("#include "+sc.str()+"\n")
+            OUTPUT += rope("#include "+sc.str()+"\n")
             compilerState.cIncludes[len(compilerState.cIncludes)] = sc.str()
         }
     } else { //is a Bah file
@@ -535,7 +535,7 @@ parseStructValues(s cStruct*, isHeap bool, memory []Tok, elems Elems*) variable*
                 j=0; for j < len(s.members) {
                     m = s.members[j]
                     if m.name != t.cont {
-                        j = j + 1
+                        j++
                         continue
                     }
                     excl[len(excl)] = j
@@ -578,13 +578,13 @@ parseStructValues(s cStruct*, isHeap bool, memory []Tok, elems Elems*) variable*
                     if RCPavailable() && RCPisTokRef(&vl, vlt, elems) {
                         RCPincrVar(vl.cont, isRCPpointerType(vlt))
                     }
-                    r = r + rope(rvn+sep+m.name+" = "+vl.cont+";\n")
+                    r += rope(rvn+sep+m.name+" = "+vl.cont+";\n")
                     break
                 }
                 if j == len(s.members) {
                     throwErr(&t, "Struct '"+s.name+"' has no member called {TOKEN}.")
                 }
-                k = k + 3
+                k += 3
                 continue
             }
         }
@@ -892,7 +892,7 @@ parsePointers(l []Tok, elems Elems*) []Tok {
 }
 
 //OBSOLETE
-parseSerialize(e Tok*, elems Elems*) cpstring {
+parseSerialize(e Tok*, elems Elems*) str {
 
 
     v = searchVar(e.cont, e, elems)
@@ -910,25 +910,25 @@ parseSerialize(e Tok*, elems Elems*) cpstring {
     
     svt.replace("*", "")
 
-    code cpstring
+    code str
 
     if ptrLevel == 0 {
         code = "__serialize(&" + e.cont + ", " + "sizeof(struct "+svt.str()+")"
     } else {
         ptrRect = ""
         for ptrLevel > 1 {
-            ptrRect = ptrRect + "*"
-            ptrLevel = ptrLevel - 1
+            ptrRect += "*"
+            ptrLevel--
         }
         code = "__serialize(" + ptrRect + e.cont + ", " + "sizeof(struct "+svt.str()+")"
         //is heap allocated, meanning we should calculate real size
 
         i=0; for i < len(s.members) {
             m = s.members[i]
-            if m.type == "cpstring" {
-                code = code + "+strlen("+e.cont+"->"+m.name+")"
+            if m.type == "str" {
+                code += "+strlen("+e.cont+"->"+m.name+")"
             }
-            i = i + 1
+            i++
         }   
 
     }
@@ -938,7 +938,7 @@ parseSerialize(e Tok*, elems Elems*) cpstring {
 }
 
 //Makes a reflection structure from a variable.
-parseReflect(t Tok, tt cpstring, elems Elems*, parsedPointer bool, ogName cpstring, offset cpstring) Tok {
+parseReflect(t Tok, tt str, elems Elems*, parsedPointer bool, ogName str, offset str) Tok {
 
     if parsedPointer == false {
         tt = getTypeFromToken(&t, true, elems)
@@ -967,10 +967,10 @@ parseReflect(t Tok, tt cpstring, elems Elems*, parsedPointer bool, ogName cpstri
         if parsedPointer == true {
             cType.append("*")
         }
-        OUTPUT = OUTPUT + rope(cType.str()+" "+v+" = "+t.cont+";\n")
+        OUTPUT += rope(cType.str()+" "+v+" = "+t.cont+";\n")
         t.cont = v
         if t.type == TOKEN_TYPE_STR {
-            ogName = "[bah cpstring]"
+            ogName = "[bah str]"
         }
     }
 
@@ -986,7 +986,7 @@ parseReflect(t Tok, tt cpstring, elems Elems*, parsedPointer bool, ogName cpstri
         
         aev = genCompilerVar()
         
-        OUTPUT = OUTPUT + rope("
+        OUTPUT += rope("
         struct reflectElement "+aev+" = "+rt.cont+";
         ")
 
@@ -999,7 +999,7 @@ parseReflect(t Tok, tt cpstring, elems Elems*, parsedPointer bool, ogName cpstri
         tmpT.cont = "0"
         rt = parseReflect(tmpT, aet.str(), elems, true, "", "0")
         aev = genCompilerVar()
-        OUTPUT = OUTPUT + rope("
+        OUTPUT += rope("
         struct reflectElement "+aev+" = "+rt.cont+";
         ")
         arrElem = "&"+aev
@@ -1048,10 +1048,10 @@ parseReflect(t Tok, tt cpstring, elems Elems*, parsedPointer bool, ogName cpstri
             offsetTT.replace("*", "")
             tmpT.cont = "("+mCtype.str()+"*)((char*)("+t.cont+") + offsetof(struct "+offsetTT.str()+", "+m.name+"))"
             rt = parseReflect(tmpT, m.type, elems, true, m.name, "offsetof(struct "+offsetTT.str()+", "+m.name+")")
-            dataLayout = dataLayout + rope("((struct reflectElement*)"+structLayout+"->data)["+intToStr(i)+"] = "+rt.cont+";\n")
+            dataLayout += rope("((struct reflectElement*)"+structLayout+"->data)["+intToStr(i)+"] = "+rt.cont+";\n")
         }
 
-        OUTPUT = OUTPUT + rope("
+        OUTPUT += rope("
         struct Bah_Array_Type * "+structLayout+" = memoryAlloc(sizeof(struct Bah_Array_Type));
         "+structLayout+"->elemSize = sizeof(struct reflectElement);
         "+structLayout+"->length = "+intToStr(len(ts.members))+";
@@ -1060,7 +1060,7 @@ parseReflect(t Tok, tt cpstring, elems Elems*, parsedPointer bool, ogName cpstri
     }
 
     amp = ""
-    if string(tt).containsChar('*') == false && tt != "cpstring" && tt != "ptr" && parsedPointer == false {
+    if string(tt).containsChar('*') == false && tt != "str" && tt != "ptr" && parsedPointer == false {
         amp = "&"
     }
 
@@ -1092,7 +1092,7 @@ parseReflect(t Tok, tt cpstring, elems Elems*, parsedPointer bool, ogName cpstri
 
     elems.vars[len(elems.vars)] = rv
 
-    OUTPUT = OUTPUT + rope("struct reflectElement "+rv.name+" = __reflect("+amp+t.cont+", sizeof("+cType.str()+"), "+strLitteralToBahStr("\""+tt+"\"")+", "+strLitteralToBahStr("\""+name.str()+"\"")+", "+isArr+", "+arrElem+", "+isStruct+", "+structLayout+", "+offset+");\n")
+    OUTPUT += rope("struct reflectElement "+rv.name+" = __reflect("+amp+t.cont+", sizeof("+cType.str()+"), "+strLitteralToBahStr("\""+tt+"\"")+", "+strLitteralToBahStr("\""+name.str()+"\"")+", "+isArr+", "+arrElem+", "+isStruct+", "+structLayout+", "+offset+");\n")
                         //                                                    value                  size             type           name            isArr       arrE        isStruct      structLayout      offset
     t.cont = rv.name
 
@@ -1100,7 +1100,7 @@ parseReflect(t Tok, tt cpstring, elems Elems*, parsedPointer bool, ogName cpstri
 }
 
 //Parses array declarations such as: 'a = []type'.
-parseArrayDecl(v variable*, l []Tok, i int, max int, elems Elems*) cpstring {
+parseArrayDecl(v variable*, l []Tok, i int, max int, elems Elems*) str {
     arrayLength = 0
     arrType = getCType(v.type[2:], elems)
     code = "memoryAlloc(sizeof(struct Bah_Array_Type))"
@@ -1115,11 +1115,11 @@ parseArrayDecl(v variable*, l []Tok, i int, max int, elems Elems*) cpstring {
         elemBahType = string(v.type)
         elemBahType.trimLeft(2)
         elemBahTypeStr = elemBahType.str()
-        i = i + 1
+        i++
         memory = []Tok
         for i < max {
             memory[len(memory)] = l[i]
-            i = i + 1
+            i++
         }
         memory = prePross(memory, <lineType>-1, elems)
         i=0; for i < len(memory) {
@@ -1174,9 +1174,9 @@ parseArrayDecl(v variable*, l []Tok, i int, max int, elems Elems*) cpstring {
             }
             
             strArrayLength = intToStr(arrayLength)
-            arrayLength =arrayLength + 1
+            arrayLength++
 
-            NEXT_LINE = NEXT_LINE + "(("+elemTypeStr+"*)" + v.name + "->data)[" + strArrayLength + "] = " + t.cont + ";\n"
+            NEXT_LINE += "(("+elemTypeStr+"*)" + v.name + "->data)[" + strArrayLength + "] = " + t.cont + ";\n"
             i++
             t = memory[i]
 
@@ -1185,7 +1185,7 @@ parseArrayDecl(v variable*, l []Tok, i int, max int, elems Elems*) cpstring {
                     allocLength = arrayLength
                     if allocLength > 50 {
                         modAllocAmm = allocLength % 50
-                        allocLength = allocLength + modAllocAmm
+                        allocLength += modAllocAmm
                     } else {
                         allocLength = 50
                     }
@@ -1197,7 +1197,7 @@ parseArrayDecl(v variable*, l []Tok, i int, max int, elems Elems*) cpstring {
                     throwErr(&t, "Expected ',' got {TOKEN}.")
                 }
             }
-            i = i + 1
+            i++
         }
     }
     strArrayLength = intToStr(arrayLength)
@@ -1235,7 +1235,7 @@ parseVar(l []Tok, elems Elems*) {
         }
 
 
-        OUTPUT = OUTPUT + rope(ft.cont + ";\n")
+        OUTPUT += rope(ft.cont + ";\n")
         return
     }
     l = parseStructType(l, <lineType>-1, elems)
@@ -1249,7 +1249,7 @@ parseVar(l []Tok, elems Elems*) {
     ft = l[0]
     v = searchVirtVarByToken(&ft, elems)
     exists = true
-    ogName cpstring
+    ogName str
     if v == null {
         if ft.getRefVar() != null {
             v = ft.getRefVar()
@@ -1337,7 +1337,7 @@ parseVar(l []Tok, elems Elems*) {
                 }
                 isEqual = true
                 equalIndex = i
-                i = i + 1
+                i++
                 continue
             }
         }
@@ -1346,7 +1346,7 @@ parseVar(l []Tok, elems Elems*) {
                 throwWarningLine("You may have forgotten '=' between "+v.name+" and "+t.ogCont+".", t.line)
                 throwErr(&t, "Cannot use {TOKEN} as type.")
             }
-            currentType = currentType + t.cont
+            currentType += t.cont
         } else {
 
             if t.isEqual == true && exists == false && isGlobal() == false {
@@ -1395,7 +1395,7 @@ parseVar(l []Tok, elems Elems*) {
                 av.name = genCompilerVar()
                 elems.vars[len(elems.vars)] = av
                 cType = getCType(av.type, elems)
-                OUTPUT = OUTPUT + rope("char "+av.name+"["+nt.cont+"];")
+                OUTPUT += rope("char "+av.name+"["+nt.cont+"];")
                 code = av.name
                 if i+1 != len(l) {
                     errT = l[i+1]
@@ -1506,7 +1506,7 @@ parseVar(l []Tok, elems Elems*) {
             }
 
             if t.cont != "" && strHasPrefix(t.cont, "{") == false {
-                code = code + t.cont
+                code += t.cont
                 break
             }
 
@@ -1521,7 +1521,7 @@ parseVar(l []Tok, elems Elems*) {
             }
             // s = searchStruct(v.type, elems)
             // NEXT_LINE = declareStructMethods(v, s, elems)
-            code = code + t.cont
+            code += t.cont
         }
 
         i++
@@ -1646,7 +1646,7 @@ parseVar(l []Tok, elems Elems*) {
             v.canBeReg = true
         }
         OUTPUT += declR
-        // if v.type == "cpstring" {
+        // if v.type == "str" {
         //     makeStrlenVar(v, elems)
         // }
     }
@@ -1655,7 +1655,7 @@ parseVar(l []Tok, elems Elems*) {
 
 //Parses function definition header in function declaration.
 //Returns [the fn header in C, delcaration dependencies]
-parseFnHeader(prev cpstring, l []Tok, i int*, fn func*, elems Elems*) [cpstring,cpstring] {
+parseFnHeader(prev str, l []Tok, i int*, fn func*, elems Elems*) [str,str] {
 
     j = *i
     ft = l[j]
@@ -1670,7 +1670,7 @@ parseFnHeader(prev cpstring, l []Tok, i int*, fn func*, elems Elems*) [cpstring,
     code = fn.name + "("
 
 
-    j = j + 2
+    j += 2
     
     t = l[j]
     if t.cont != ")" {
@@ -1682,7 +1682,7 @@ parseFnHeader(prev cpstring, l []Tok, i int*, fn func*, elems Elems*) [cpstring,
             }
             argName = t.cont
 
-            j =j + 1
+            j++
             if j >= len(l) {
                 throwErr(&t, "Cannot declare argument {TOKEN} without a type.")
             }
@@ -1706,7 +1706,7 @@ parseFnHeader(prev cpstring, l []Tok, i int*, fn func*, elems Elems*) [cpstring,
             }
 
 
-            j =j + 1
+            j++
             isComa = false
             nbPars = 1
             for j < len(l) {
@@ -1714,20 +1714,20 @@ parseFnHeader(prev cpstring, l []Tok, i int*, fn func*, elems Elems*) [cpstring,
                 isComa = false
                 if t.cont != "," {
                     if t.cont == "(" {
-                        nbPars = nbPars + 1
+                        nbPars++
                     } else if t.cont == ")" {
-                        nbPars = nbPars - 1
+                        nbPars--
                     }
                     if t.cont == ")" && nbPars == 0 {
                         break
                     } else {
-                        argType = argType + t.cont
+                        argType += t.cont
                     }
                 } else {
                     isComa = true
                     break
                 }                
-                j =j + 1
+                j++
             }
 
             argument = new variable
@@ -1741,23 +1741,23 @@ parseFnHeader(prev cpstring, l []Tok, i int*, fn func*, elems Elems*) [cpstring,
             cfrt = string(argType)
             newArgType = argCType.str()
             if cfrt.hasPrefix("function(") == 1 {
-                code = code + getCfunctionType(&cfrt, argName, elems)
+                code += getCfunctionType(&cfrt, argName, elems)
             } else {
-                code = code + newArgType + " " + argName
+                code += newArgType + " " + argName
             }
             if isComa == true {
-                code = code + ","
+                code += ","
             } else {
-                code = code + ")"
+                code += ")"
                 break
             }
-            j =j + 1
+            j++
         }
     } else {
-        code = code + ")"
+        code += ")"
     }
 
-    j =j + 1
+    j++
 
     returns = new variable
     returns.type = ""
@@ -1767,7 +1767,7 @@ parseFnHeader(prev cpstring, l []Tok, i int*, fn func*, elems Elems*) [cpstring,
             break
         }
         returns.type = returns.type + t.cont
-        j =j + 1
+        j++
     }
     if len(returns.type) {
         rts = string(returns.type)
@@ -1822,7 +1822,7 @@ parseStruct(l []Tok, elems Elems*) {
     s.name = nameToken.cont
     members = s.members
     currentCStruct = s
-    allMembs = []cpstring
+    allMembs = []str
     st = l[i]
     if st.type == TOKEN_TYPE_KEYWORD {
         if st.cont == "extend" {
@@ -1841,7 +1841,7 @@ parseStruct(l []Tok, elems Elems*) {
             j=0; for j < len(extdsmbs) {
                 em = extdsmbs[j]
                 cemt = string(em.type)
-                membDeclStr cpstring
+                membDeclStr str
                 if cemt.hasPrefix("function(") == 1 {
                     membDeclStr = getCfunctionType(&cemt, em.name, elems)
                 } else {
@@ -1852,7 +1852,7 @@ parseStruct(l []Tok, elems Elems*) {
                 }
                 allMembs[len(allMembs)] = membDeclStr
                 members[len(members)] = em
-                j = j + 1
+                j++
             }
         } else {
             throwErr(&st, "Cannot use keyword {TOKEN} in struct declaration.")
@@ -1893,7 +1893,7 @@ parseStruct(l []Tok, elems Elems*) {
             if m.name == memb.name {
                 throwErr(&t, "Member {TOKEN} has already been declared.")
             }
-            ii =ii + 1
+            ii++
         }
         i++
         t = l[i]
@@ -1930,7 +1930,7 @@ parseStruct(l []Tok, elems Elems*) {
                             nl[len(nl)] = t
                         }
                     }
-                    j =j + 1
+                    j++
                 }
                 i--
 
@@ -1939,16 +1939,16 @@ parseStruct(l []Tok, elems Elems*) {
                 header = parseFnHeader(fnPrefix, nl, &nli, fn, elems)
                 code = rope(header[0])
                 headerDecl = header[1] + code.toStr()
-                i = i + nli
-                i = i - 2
+                i += nli
+                i -= 2
 
                 returns = fn.returns
                 arguments = fn.args
                 fn.from = s.name
                 if shouldOnlyDecl == true {
-                    code = code + rope(";\n")
+                    code += rope(";\n")
                 } else {
-                    code = code + rope("{\n")
+                    code += rope("{\n")
                 }
                 
                 fnElems = dupElems(elems)
@@ -2009,7 +2009,7 @@ parseStruct(l []Tok, elems Elems*) {
 
                 if shouldOnlyDecl == false {
                     if len(tokens) == 0 {
-                        code = code + rope("};\n")
+                        code += rope("};\n")
                     } else {
                         OUTPUT = rope("")
                         currentFn = fn
@@ -2027,7 +2027,7 @@ parseStruct(l []Tok, elems Elems*) {
                             }
                             fixMeEndScope(fnElems, &tokens[len(tokens)-1])
                         }
-                        code = code + OUTPUT + rope("};\n")
+                        code += OUTPUT + rope("};\n")
                     }
                 } else {
                     fn.isImported = true; mfn.isImported = true;
@@ -2056,7 +2056,7 @@ parseStruct(l []Tok, elems Elems*) {
                 i--
                 break
             }
-            mbmType = mbmType + t.cont
+            mbmType += t.cont
             i++
         }
         
@@ -2085,7 +2085,7 @@ parseStruct(l []Tok, elems Elems*) {
         }
         members[len(members)] = memb
         // registerType(&fileDeps, memb.type, elems)
-        membDeclStr cpstring
+        membDeclStr str
         cmt = string(memb.type)
         if cmt.hasPrefix("function(") == 1 {
             membDeclStr = getCfunctionType(&cmt, memb.name, elems)
@@ -2109,10 +2109,10 @@ parseStruct(l []Tok, elems Elems*) {
 
         i=0; for i < len(allMembs) {
             m = allMembs[i]
-            code = code + rope(m +";\n")
+            code += rope(m +";\n")
             i++
         }
-        code = code + rope("};\n")
+        code += rope("};\n")
         OUTPUT += code + bottomDecl
         phd = postDeclHandle.toStr()
         ropeSet(postDeclHandle, "")
@@ -2128,7 +2128,7 @@ parseStruct(l []Tok, elems Elems*) {
             mv = new debugVar
             mv.fromVar(<variable*>m)
             ds.membs[i] = mv
-            i = i + 1
+            i++
         }
 
         i=0; for i < len(s.methods), i++ {
@@ -2170,14 +2170,14 @@ parseDefine(l []Tok, elems Elems*) {
         fn.isCbinding = doesOutput == false
         fns[len(fns)] = fn
         if doesOutput == true {
-            OUTPUT = OUTPUT + rope(code+";\n")
+            OUTPUT += rope(code+";\n")
         }
 
     } else {
         tp = ""
         i++; for i < len(l), i++ {
             t = l[i]
-            tp = tp + t.cont
+            tp += t.cont
         }
         if ft.type != TOKEN_TYPE_VAR {
             throwErr(&ft, "Cannot use {TOKEN} as new type name.")
@@ -2185,7 +2185,7 @@ parseDefine(l []Tok, elems Elems*) {
         cTypeNewType = getCType(tp, elems)
         cTypeNewTypeStr = cTypeNewType.str()
         if doesOutput == true {
-            OUTPUT = OUTPUT + rope("typedef " + cTypeNewTypeStr + " " + ft.cont + ";\n")
+            OUTPUT += rope("typedef " + cTypeNewTypeStr + " " + ft.cont + ";\n")
         }
 
         if debug == true {
@@ -2224,7 +2224,7 @@ parseClib(line []Tok) {
                 found = true
                 break               
             }
-            j =j + 1
+            j++
         }
         if found == true {
             i++
@@ -2280,7 +2280,7 @@ parseConst(l []Tok, elems Elems*) {
         valt.cont = strLitteralToBahStr(valt.cont)
     }
 
-    OUTPUT = OUTPUT + rope("#define "+v.name+" "+valt.cont+"\n")
+    OUTPUT += rope("#define "+v.name+" "+valt.cont+"\n")
 
 }
 
@@ -2313,7 +2313,9 @@ parseReturn(l []Tok, elems Elems*) {
                 if isUnsafe == false && string(compilerState.currentDir).hasPrefix(BAH_DIR) == false && currentFn.returns.type[len(currentFn.returns.type)-1] != '!' {
                     if tmpV.canBeNull == true || rv == "null" {
                         currentFn.returns.canBeNull = true
-                        throwNoticeLine("Returning '"+tmpV.name+"' that can be null as pointer.\n\tUse maybe values instead.", rvt.line)
+                        if currentFn.returns.type != "ptr" {
+                            throwNoticeLine("Returning '"+tmpV.name+"' that can be null as pointer.\n\tUse maybe values instead.", rvt.line)
+                        }
                     }
                 }
             }
@@ -2455,7 +2457,7 @@ parseIf(l []Tok, fromElse bool, elems Elems*) {
     compilerState.isBranch = oldIB
 
     cb = rope("}\n")
-    OUTPUT = OUTPUT + cb
+    OUTPUT += cb
 
     if elems.switchOpt != null {
         elems.switchOpt.footerRopes[len(elems.switchOpt.footerRopes)] = cb
@@ -2543,9 +2545,9 @@ parseFor(l []Tok, elems Elems*) {
             if nbComas == 1 {
                 throwErr(&t, "Invalid line separation of for, cannot set more than 2 lines: {TOKEN}.")
             }
-            nbComas = nbComas + 1
+            nbComas++
         }
-        i = i + 1
+        i++
     }
 
     ifElems = dupElems(elems)
@@ -2594,12 +2596,12 @@ parseFor(l []Tok, elems Elems*) {
         }
 
         max = len(l) - 1
-        i=i+1;for i < max, i++ {
+        i++;for i < max, i++ {
             t = l[i]
             tokens[len(tokens)] = t
         }
 
-        OUTPUT = OUTPUT + rope("for (; "+condt.cont+"; "+instC.str()+") {\n")
+        OUTPUT += rope("for (; "+condt.cont+"; "+instC.str()+") {\n")
 
     } else {
         t = l[2]
@@ -2611,7 +2613,7 @@ parseFor(l []Tok, elems Elems*) {
             t = l[i]
             tokens[len(tokens)] = t
         }
-        OUTPUT = OUTPUT + rope("while ("+condt.cont+") {\n")
+        OUTPUT += rope("while ("+condt.cont+") {\n")
     }
     oForElems = compilerState.currForElems
     compilerState.currForElems = ifElems
@@ -2646,7 +2648,7 @@ parseFor(l []Tok, elems Elems*) {
     compilerState.isFor = oldIF
     compilerState.isBranch = oldIB
     compilerState.currForElems = oForElems
-    OUTPUT = OUTPUT + rope("};\n"+ifElems.switchOptCurrLoop+":\n")
+    OUTPUT += rope("};\n"+ifElems.switchOptCurrLoop+":\n")
 
 }
 
@@ -2876,7 +2878,7 @@ parsePreKeyword(l []Tok, elems Elems*) {
     nl = []Tok
     i=2; for i < len(l) - 1 {
         nl[i-2] = l[i]
-        i = i + 1
+        i++
     }
 
     parseLines(nl, elems)
@@ -2900,7 +2902,7 @@ parseAsync(l []Tok, elems Elems*) {
             found = true
             break
         }
-        i = i + 1
+        i++
     }
     if found == false {
         compilerState.cLibs[len(compilerState.cLibs)] = "lpthread"
@@ -2925,14 +2927,14 @@ parseAsync(l []Tok, elems Elems*) {
     i=0; for i < len(fn.args), i++ {
         a = fn.args[i]
         cType = getCType(a.type, elems)
-        sMembs = sMembs + cType.str()+" "+a.name+";\n"
-        unSerMembs = unSerMembs + "args->"+a.name
+        sMembs += cType.str()+" "+a.name+";\n"
+        unSerMembs += "args->"+a.name
         if RCPavailable() && isRCPtype(a.type, elems) {
             threadPrep  += RCPincrVarStr("args->"+a.name, isRCPpointerType(a.type))
             threadClean += RCPdecrVarStr("args->"+a.name, isRCPpointerType(a.type))
         }
         if i+1 < len(fn.args) {
-            unSerMembs = unSerMembs + ", "
+            unSerMembs += ", "
         }
     }
 
@@ -3048,11 +3050,11 @@ parseChan(l []Tok, elems Elems*) []Tok {
 
                 i++
                 if isRCPpointerType(ptt.str()) {
-                    OUTPUT = OUTPUT + rope(pt.cont+"->send("+pt.cont+", "+nt.cont+");\n")
+                    OUTPUT += rope(pt.cont+"->send("+pt.cont+", "+nt.cont+");\n")
                 } else {
                     ct = getCType(ntt, elems)
                     tmpV = genCompilerVar()
-                    OUTPUT = OUTPUT + rope("
+                    OUTPUT += rope("
                     "+ct.str()+" "+tmpV+" = "+nt.cont+";
                     "+pt.cont+"->sendAny("+pt.cont+", &"+tmpV+", sizeof("+tmpV+"));\n")
                 }
@@ -3081,9 +3083,9 @@ prePross(line []Tok, ltp lineType, elems Elems*) []Tok {
             if t.type == TOKEN_TYPE_ENCL {
                 if t.cont[0] == '(' {
                     isFunc = true
-                    nbPar = nbPar + 1
+                    nbPar++
                 } else if t.cont[0] == ')' {
-                    nbPar = nbPar - 1
+                    nbPar--
                 } else if nbPar == 0 && t.cont[0] == '{' {
                     if line[i+1].line != t.line {
                         break
@@ -3113,7 +3115,7 @@ prePross(line []Tok, ltp lineType, elems Elems*) []Tok {
             if rv != null && rv.canBeReg == true && rv.declRope != null {
                 rvdr = rv.declRope.toStr()
                 if strHasPrefix(rvdr, "register ") {
-                    strTrimLeft(&rvdr, 9)
+                    rvdr = rvdr[9:]
                     OUTPUT.totalLen += ropeSet(rv.declRope, rvdr)
                 }
                 rv.canBeReg = false
@@ -3304,13 +3306,13 @@ parseFnDeclare(l []Tok, elems Elems*) {
             throwErr(&ft, "{TOKEN} function should return 'int'.")
         }
         if len(fn.args) != 1 {
-            throwErr(&ft, "{TOKEN} function should take one []cpstring argument. Should be: 
-            'main(args []cpstring) int'")
+            throwErr(&ft, "{TOKEN} function should take one []str argument. Should be: 
+            'main(args []str) int'")
         }
         fa = fn.args[0]
-        if compTypes(fa.type, "[]cpstring") == false {
-            throwErr(&ft, "{TOKEN} function should take []cpstring as argument. Should be: 
-            'main(args []cpstring) int'")
+        if compTypes(fa.type, "[]str") == false {
+            throwErr(&ft, "{TOKEN} function should take []str as argument. Should be: 
+            'main(args []str) int'")
         }
     }
 
@@ -3332,6 +3334,7 @@ parseFnDeclare(l []Tok, elems Elems*) {
                 tokens: l[i+1:len(l)-1]
                 baseFn: fn
                 tokenName: &ft
+                file: compilerState.currentFile
             }
             return
         }
@@ -3343,14 +3346,14 @@ parseFnDeclare(l []Tok, elems Elems*) {
         }
         fn.isImported = true
         elems.fns[len(elems.fns)] = fn
-        OUTPUT = OUTPUT + rope(code+";\n")
+        OUTPUT += rope(code+";\n")
         return
     }
 
     postDeclHandle = rope("")
     OUTPUT += postDeclHandle
 
-    code = code + "{\n"
+    code += "{\n"
 
     fn.code = rope(code)
 
@@ -3363,7 +3366,7 @@ parseFnDeclare(l []Tok, elems Elems*) {
         a.declScope = elems
         a.isArg = true
         vs[len(vs)] = a
-        j =j + 1
+        j++
     }
     fnElems.vars = vs
     
@@ -3381,7 +3384,7 @@ parseFnDeclare(l []Tok, elems Elems*) {
 
     if len(tokens) == 0 {
         fn.code += rope("};\n")
-        OUTPUT = OUTPUT + fn.code
+        OUTPUT += fn.code
         return
     }
 
@@ -3667,7 +3670,7 @@ parseLine(line []Tok, elems Elems*) {
                     }
                 }
             }
-            OUTPUT = OUTPUT + rope(ft.cont + ";\n")
+            OUTPUT += rope(ft.cont + ";\n")
         } else if ltp == LINE_TYPE_FN_DECL {
             parsed = true
             parseFnDeclare(line, elems)
@@ -3700,7 +3703,7 @@ parseLine(line []Tok, elems Elems*) {
     }
 
     if len(NEXT_LINE) > 0 {
-        OUTPUT = OUTPUT + rope(NEXT_LINE)
+        OUTPUT += rope(NEXT_LINE)
         NEXT_LINE = ""
     }
     prevLine = ltp

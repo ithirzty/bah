@@ -12,8 +12,8 @@
 struct reflectElement {
     //Var infos
     size: int
-    type: cpstring
-    name: cpstring
+    type: str
+    name: str
 
     //Array infos
     isArray: bool
@@ -30,14 +30,14 @@ struct reflectElement {
     //Calculates the offset pointer from an origin pointer.
     //This is used to get a pointer to the element when it
     calculateOffset(origin ptr) ptr {
-        base cpstring = origin
+        base str = origin
         return noCheck(base + this->offset)
     }
 }
 
 
 //Internal function used for generating a reflected element.
-__reflect(v ptr, s int, t cpstring, n cpstring, isArr bool, ae reflectElement*, isStruct bool, sl []reflectElement, offset int) reflectElement {
+__reflect(v ptr, s int, t str, n str, isArr bool, ae reflectElement*, isStruct bool, sl []reflectElement, offset int) reflectElement {
     re = reflectElement{}
     re.size = s
     re.type = t
@@ -103,13 +103,13 @@ const __bah_debug_get_sym = __debug_get_sym
 //     if e.type == "int" {
 //         ip int* = e.value
 //         println(intToStr(*ip))
-//     } else if e.type == "cpstring" {
-//         //WARNING: if the str is the member of a struct, it will return a pointer to the cpstring.
-//         sp cpstring = e.value
+//     } else if e.type == "str" {
+//         //WARNING: if the str is the member of a struct, it will return a pointer to the str.
+//         sp str = e.value
 //         println(sp)
 //     }
 // }
-// main(args []cpstring) int {
+// main(args []str) int {
 //     a = 54
 //     b = "test"
 //     reflectedPrint(a)

@@ -1,5 +1,5 @@
 //Internal function for hashing map keys. 
-__Bah_map_hash(s cpstring, l int) int {
+__Bah_map_hash(s str, l int) int {
     hash = 5381
 
     i=0; for i < len(s), i++ {
@@ -15,7 +15,7 @@ __Bah_map_hash(s cpstring, l int) int {
 
 //Internal representation of an value for algorithm 2 of the mapWrapper.
 struct mapElem {
-    key: cpstring
+    key: str
     val: ptr
 }
 
@@ -29,14 +29,14 @@ struct mapSearchRes {
 
 //Represent a single node (value) of the algorithm 1 of the mapWrapper.
 struct mapNode {
-    str: cpstring
+    str: str
     strL: uint32
     left: mapNode*  = null
     right: mapNode* = null
     value: ptr = null
 
     //Used for calculating the matching score of the node, given a key.
-    calc(s cpstring, i uint32) int32 {
+    calc(s str, i uint32) int32 {
         for i < this.strL, i++ {
             if s[i] == null || this.str[i] != s[i] {
                 break
@@ -50,7 +50,7 @@ struct mapNode {
 
     //Returns the node containing the value.
     //If their is no such node, the closest one. It can then be appended the correct node.
-    getFast(s cpstring, r int32, msr mapSearchRes*) {
+    getFast(s str, r int32, msr mapSearchRes*) {
         //match 100%, return itslef
         if r == -1 {
             msr.found = true
@@ -113,7 +113,7 @@ struct mapNode {
     }
 
     //Appends a node to another.
-    append(k cpstring, e ptr, l uint32) {
+    append(k str, e ptr, l uint32) {
         ne = new mapNode {
             str: k
             strL: len(k)
@@ -175,11 +175,11 @@ struct mapWrapper {
     nbDelete: uint = 0 //number of deletes
 
     //Called for setting a value by key.
-    set: function(mapWrapper*, cpstring, ptr)
+    set: function(mapWrapper*, str, ptr)
     //Called for getting a value by key.
-    get: function(mapWrapper*, cpstring) ptr
+    get: function(mapWrapper*, str) ptr
     //Used for deleting a value by key.
-    delete: function(mapWrapper*, cpstring)
+    delete: function(mapWrapper*, str)
 
     //Performs performance checks before deciding weither an other algorithm is more optimal.
     algoChecks() {
@@ -218,7 +218,7 @@ struct mapWrapper {
     }
 
     //Set operation on algorithm 2.
-    set2(k cpstring, e ptr) {
+    set2(k str, e ptr) {
         if this.length == 0 {
             this.grow(50)
         }
@@ -250,7 +250,7 @@ struct mapWrapper {
     }
 
     //Delete operation on algoithm 2.
-    delete2(k cpstring) {
+    delete2(k str) {
         ind = __Bah_map_hash(k, len(this.elems))
         i=0; for i < len(this.elems), i++ {
             j = (i + ind) % len(this.elems)
@@ -268,7 +268,7 @@ struct mapWrapper {
     }
 
     //Get operation on algotihm 2.
-    get2(k cpstring) ptr {
+    get2(k str) ptr {
         ind = __Bah_map_hash(k, len(this.elems))
         i=0; for i < len(this.elems), i++ {
             j = (i + ind) % len(this.elems)
@@ -291,7 +291,7 @@ struct mapWrapper {
     }
 
     //Get operation on algotihm 1.
-    get1(k cpstring) ptr {
+    get1(k str) ptr {
         this.clearMsr()
         if this.nodes == null {
             return null
@@ -305,7 +305,7 @@ struct mapWrapper {
     }
 
     //Set operation on algorithm 1.
-    set1(k cpstring, e ptr) {
+    set1(k str, e ptr) {
         this.clearMsr()
         if this.nodes == null {
             this.nodes = new mapNode {
@@ -353,7 +353,7 @@ struct mapWrapper {
     }
 
     //Delete operation on algoithm 1.
-    delete1(k cpstring) {
+    delete1(k str) {
         this.clearMsr()
         this.nodes.getFast(k, this.nodes.calc(k, 0), &this.msr)
         if this.msr.found {
@@ -369,7 +369,7 @@ struct mapWrapper {
 
     //Used for setting a key to any data-type.
     //The data will be copied. 
-    setAny(k cpstring, e ptr, s int) {
+    setAny(k str, e ptr, s int) {
         p = memoryAlloc(s)
         memcpy(p, e, s)
         this.set(k, p)
@@ -441,7 +441,7 @@ mapWrapper() mapWrapper* {
 }
 
 //Used for deleting value from map by key.
-deleteMap(m ptr, k cpstring) {
+deleteMap(m ptr, k str) {
     mm mapWrapper* = m
     mm.delete(k)
 }

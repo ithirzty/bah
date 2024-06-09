@@ -5,11 +5,11 @@ RCPavailable() bool {
     return RCPenabled == true
 }
 
-RCPisTokRef(t Tok*, tp cpstring, elems Elems*) bool {
+RCPisTokRef(t Tok*, tp str, elems Elems*) bool {
     return t.type == TOKEN_TYPE_VAR && t.isFunc == false && isRCPtype(tp, elems) && string(t.cont).hasPrefix("____BAH_COMPILER_VAR_") == false && len(t.cont) != 0
 }
 
-pointerizeVal(n cpstring) cpstring {
+pointerizeVal(n str) str {
     if n[0] == '*' {
         return n[1:]
     }
@@ -28,28 +28,28 @@ isOutterScope(ce ptr, e Elems*) bool {
     return false
 }
 
-RCPincrVarStr(n cpstring, isPtr bool) cpstring {
+RCPincrVarStr(n str, isPtr bool) str {
     if isPtr == false {
         return "RCP_incr("+pointerizeVal(n)+", sizeof("+n+"));\n"
     }
     return "RCP_incr("+n+", sizeof(*"+n+"));\n"
 }
-RCPincrVar(n cpstring, isPtr bool) {
+RCPincrVar(n str, isPtr bool) {
     OUTPUT += rope(RCPincrVarStr(n, isPtr))
 }
 
-RCPdecrVarStr(n cpstring, isPtr bool) cpstring {
+RCPdecrVarStr(n str, isPtr bool) str {
     if isPtr == false {
         return "RCP_decr("+pointerizeVal(n)+", sizeof("+n+"));\n"
     }
     return "RCP_decr("+n+", sizeof(*"+n+"));\n"
 }
 
-RCPdecrVar(n cpstring, isPtr bool) {
+RCPdecrVar(n str, isPtr bool) {
     OUTPUT += rope(RCPdecrVarStr(n, isPtr))
 }
 
-RCPkeepFuncRef(t Tok*, tp cpstring, elems Elems*) {
+RCPkeepFuncRef(t Tok*, tp str, elems Elems*) {
     if isRCPtype(tp, elems) == false {
         return
     }
@@ -111,7 +111,7 @@ RCPendScopeRange(e Elems*, to Elems*) {
 
 }
 
-registerRCPtrackedVar(t cpstring, c cpstring, elems Elems*) cpstring {
+registerRCPtrackedVar(t str, c str, elems Elems*) str {
     av = new variable
     av.type = t
     av.declScope = elems
@@ -129,7 +129,7 @@ registerRCPtrackedVar(t cpstring, c cpstring, elems Elems*) cpstring {
 
 
 //Used for assinging a compilerVar to a value, registering it inside scope variables for memory management purposes.
-registerRCPvar(t cpstring, c cpstring, elems Elems*) cpstring {
+registerRCPvar(t str, c str, elems Elems*) str {
     av = new variable
     av.type = t
     av.declScope = elems

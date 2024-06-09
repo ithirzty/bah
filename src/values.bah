@@ -7,7 +7,7 @@
 valueFunc(fn func*, parent variable*, l []Tok, i int, ltp lineType, elems Elems*) int {
     tokPos = i
 
-    generic genericFunc*
+    generic genericFunc* = null
 
     //if not defined func, go find it before in the line
     errPos = -1
@@ -102,7 +102,7 @@ valueFunc(fn func*, parent variable*, l []Tok, i int, ltp lineType, elems Elems*
             
             if fnt.bahType[len(fnt.bahType)-1] == '*' {
                 fnt.bahType = fnt.bahType[:len(fnt.bahType)-1]
-            } else if fnt.bahType == "cpstring" {
+            } else if fnt.bahType == "str" {
                 fnt.bahType = "char"
             } else if fnt.bahType == "ptr" {
                 throwErr(&fnt, "Cannot dereference {TOKEN} of type ptr.")
@@ -217,7 +217,7 @@ valueFunc(fn func*, parent variable*, l []Tok, i int, ltp lineType, elems Elems*
             decls += "((struct reflectElement*)"+tmpV.name+"->data)["+intToStr(j)+"] = " + tmpT.cont + ";\n"
         } 
         elems.vars[len(elems.vars)] = tmpV
-        OUTPUT = OUTPUT + rope("
+        OUTPUT += rope("
         struct Bah_Array_Type* "+tmpV.name+" = memoryAlloc(sizeof(struct Bah_Array_Type));
         "+tmpV.name+"->data = memoryAlloc(sizeof(struct reflectElement) * "+intToStr(len(symbols))+");
         "+tmpV.name+"->length = "+intToStr(len(symbols))+";
@@ -340,6 +340,9 @@ valueFunc(fn func*, parent variable*, l []Tok, i int, ltp lineType, elems Elems*
             tts.replace("*", "_AST_")
             tts.replace(":", "_DP_")
             tts.replace("[]", "_ARR_")
+            tts.replace("[", "_LBRAC_")
+            tts.replace("]", "_RBRAC_")
+            tts.replace(",", "_COMA_")
             fn.name += "__" + tts.str()
         } else {
             if compTypes(arg.type, tt) == false {
@@ -347,8 +350,8 @@ valueFunc(fn func*, parent variable*, l []Tok, i int, ltp lineType, elems Elems*
             }
         }
 
-        //Converts cpstring to char* when a C binding is called.
-        if tt == "cpstring" && fn.isCbinding && fn.name != "strlen" {
+        //Converts str to char* when a C binding is called.
+        if tt == "str" && fn.isCbinding && fn.name != "strlen" {
             t.cont = "cStr("+t.cont+")"
         }
 
@@ -406,20 +409,20 @@ valueFunc(fn func*, parent variable*, l []Tok, i int, ltp lineType, elems Elems*
     fnt.setRefFn(fn)
 
     //Some basic string conversions.
-    if fn.name == "strlen" && ltt != "cpstring" {
+    if fn.name == "strlen" && ltt != "str" {
         fnt.cont = "C"+fnt.cont
-    } else if fn.name == "len" && ltt == "cpstring" {
+    } else if fn.name == "len" && ltt == "str" {
         fnt.cont = "str"+fnt.cont
-    } else if fn.isCbinding && fn.returns.type == "cpstring" {
+    } else if fn.isCbinding && fn.returns.type == "str" {
         fnt.cont = "cStrToBah("+fnt.cont+")"
     }
 
-    if noticeEnabled == true && ltt == "cpstring" && fn.name == "strlen" {
+    if noticeEnabled == true && ltt == "str" && fn.name == "strlen" {
         throwNoticeLine("Function strlen() can be used for char*. Use len() for better code readability.", l[tokPos].line)
     }
 
-    if isUnsafe == false && fn.name == "len" && ltt != "cpstring" && string(ltt).hasPrefix("[]") == false {
-        throwErr(&memory[0], "Cannot use len({TOKEN}) ("+ltt+") as cpstring or array.")
+    if isUnsafe == false && fn.name == "len" && ltt != "str" && string(ltt).hasPrefix("[]") == false {
+        throwErr(&memory[0], "Cannot use len({TOKEN}) ("+ltt+") as str or array.")
     }
 
     l[tokPos] = fnt
@@ -738,15 +741,15 @@ valueArr(l []Tok, i int, ltp lineType, elems Elems*) int {
             }
             t.setRefVar(r)
         } else {
-            t.bahType = "cpstring"
+            t.bahType = "str"
             if to == "" {
                 to = "strlen("+pt.cont+")"
             }
             t.isFunc = true
-            t.cont = "cpstringSubsitute("+pt.cont+", "+from+", "+to+")"
+            t.cont = "strSubstitute("+pt.cont+", "+from+", "+to+")"
             r = new variable {
                 name: pt.ogCont+"[:]"
-                type: "cpstring"
+                type: "str"
             }
             t.setRefVar(r)
         }
@@ -757,11 +760,11 @@ valueArr(l []Tok, i int, ltp lineType, elems Elems*) int {
         ptt.trimLeft(4)
         elemType = getCType(ptt.str(), elems)
         index = memory[0]
-        if compTypes(getTypeFromToken(&index, true, elems), "cpstring") == false {
-            throwErr(&index, "Cannot use {TOKEN} as map index (cpstring).")
+        if compTypes(getTypeFromToken(&index, true, elems), "str") == false {
+            throwErr(&index, "Cannot use {TOKEN} as map index (str).")
         }
         if RCPavailable() {
-            index.cont = registerRCPtrackedVar("cpstring", index.cont, elems)
+            index.cont = registerRCPtrackedVar("str", index.cont, elems)
         }
         if tokPos == 0 && ltp == LINE_TYPE_VAR { //setting map value
             tmpV = new variable {
@@ -807,13 +810,13 @@ valueArr(l []Tok, i int, ltp lineType, elems Elems*) int {
             t.bahType = ptt.str()
         }
 
-    } else if ptt.str() == "cpstring" { // is a string
+    } else if ptt.str() == "str" { // is a string
         t.isFunc = true
         if split == false {
             t.bahType = "char"
             index = memory[0]
             if compTypes(getTypeFromToken(&index, true, elems), "int") == false {
-                throwErr(&index, "Cannot use {TOKEN} as cpstring index (int).")
+                throwErr(&index, "Cannot use {TOKEN} as str index (int).")
             }
             checkBounds(&pt, 2, &index, elems)
             t.cont = pt.cont+"["+index.cont+"+4]"
@@ -826,10 +829,10 @@ valueArr(l []Tok, i int, ltp lineType, elems Elems*) int {
             if to == "" {
                 to = "strlen("+pt.cont+")"
             }
-            t.cont = "cpstringSubsitute("+pt.cont+", "+from+", "+to+")"
+            t.cont = "strSubstitute("+pt.cont+", "+from+", "+to+")"
             r = new variable {
                 name: pt.ogCont+"[:]"
-                type: "cpstring"
+                type: "str"
             }
             t.setRefVar(r)
         }
@@ -865,7 +868,7 @@ valueArr(l []Tok, i int, ltp lineType, elems Elems*) int {
         t.setRefVar(r)
         t.bahType = parts[ind]
     } else {
-        throwErr(&pt, "Cannot use {TOKEN} ("+ptt.str()+") as an indexable value.\nIndexable values are [array, buffer, cpstring, tuple, map].")
+        throwErr(&pt, "Cannot use {TOKEN} ("+ptt.str()+") as an indexable value.\nIndexable values are [array, buffer, str, tuple, map].")
     }
 
     if t.hasAmp {
@@ -978,7 +981,7 @@ valueBool(l []Tok, i int, ltp lineType, elems Elems*) int {
         
         //Generate the C function that will be called to check weither a is inside the array b.
         comp = ""
-        if ptt == "cpstring" {
+        if ptt == "str" {
             comp = "((char**)arr->data)[i] != 0 && strcmp(((char**)arr->data)[i], el) == 0"
         } else {
             comp = "(("+getCType(arrT.str(), elems).str()+"*)arr->data)[i] == el"
@@ -1012,7 +1015,7 @@ valueBool(l []Tok, i int, ltp lineType, elems Elems*) int {
         if compTypes(ptt, ntt) == false {
             throwErr(&nt, "Cannot compare {TOKEN} ("+ntt+") with type "+ptt+".")
         }
-        if ptt == "cpstring" {
+        if ptt == "str" {
             if t.cont == "==" {
                 pt.cont = "(strcmp("+pt.cont+", "+nt.cont+") == 0)"
 
@@ -1122,13 +1125,13 @@ valueOper(l []Tok, i int, elems Elems*) int {
     }
 
     //parse string concatenation
-    if ptt == "cpstring" {
-        //add first two cpstrings to the concat array
-        //strs contains all the cpstrings to concatenate in reverse order
-        strs = []cpstring{nt.cont, pt.cont}
+    if ptt == "str" {
+        //add first two strs to the concat array
+        //strs contains all the strs to concatenate in reverse order
+        strs = []str{nt.cont, pt.cont}
 
         if t.cont != "+" {
-            throwErr(&t, "Can only do concatenation on cpstring, not {TOKEN}.")
+            throwErr(&t, "Can only do concatenation on str, not {TOKEN}.")
         }
         
         //concatenate all strings at once to reduce memory allocations
@@ -1143,10 +1146,10 @@ valueOper(l []Tok, i int, elems Elems*) int {
                     currStrTk = l[i]
                     //type guard
                     tt = getTypeFromToken(&currStrTk, true, elems)
-                    if compTypes(tt, "cpstring") == false {
-                        throwErr(&currStrTk, "Cannot concatenate cpstring with {TOKEN} ("+tt+").")
+                    if compTypes(tt, "str") == false {
+                        throwErr(&currStrTk, "Cannot concatenate str with {TOKEN} ("+tt+").")
                     }
-                    //add to the array of cpstrings to allocate
+                    //add to the array of strs to allocate
                     strs[len(strs)] = currStrTk.cont
 
                     if i-1 >= 0 {
@@ -1154,7 +1157,7 @@ valueOper(l []Tok, i int, elems Elems*) int {
                         t = l[i]
                         if t.cont != "+" {
                             if t.cont in signs {
-                                throwErr(&t, "Can only do concatenation on cpstring, not {TOKEN}.")
+                                throwErr(&t, "Can only do concatenation on str, not {TOKEN}.")
                             } else {
                                 i++
                                 break
@@ -1167,7 +1170,7 @@ valueOper(l []Tok, i int, elems Elems*) int {
                 }
                 deleteRange(l, i, rangeEnds)
             } else if nat.cont in signs {
-                throwErr(&nat, "Can only do concatenation on cpstring, not {TOKEN}.")
+                throwErr(&nat, "Can only do concatenation on str, not {TOKEN}.")
             }
         }
 
@@ -1320,7 +1323,7 @@ valueTuple(l []Tok, i int, elems Elems*) int {
 
 
 
-    vals = []cpstring
+    vals = []str
 
     nbEncl = 1
     i++; for i < len(l), i++ {
@@ -1341,7 +1344,7 @@ valueTuple(l []Tok, i int, elems Elems*) int {
     ft = memory[0]
     tupT = ""
     size = ""
-    types = []cpstring
+    types = []str
 
     j=0; for j < len(memory), j += 2 {
         t = memory[j]

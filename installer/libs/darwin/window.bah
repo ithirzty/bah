@@ -407,7 +407,7 @@ struct graphicApp {
                 text = string(ptr.content)
                 for textWidth >= ptr.width {
                     text.trimLeft(1)
-                    textWidth = XTextWidth(this.currentFont, text.str(), text.length)
+                    textWidth = XTextWidth(this.currentFont, text.cpstring(), text.length)
                 }
 
                 r int
@@ -455,7 +455,7 @@ struct graphicApp {
                 if ptr == this.focusElem {
                     text.append("|")
                 }
-                this.text(ptr.x+5,ptr.y+ptr.height/2+4,text.str())
+                this.text(ptr.x+5,ptr.y+ptr.height/2+4,text.cpstring())
             }
 
             i = i + 1
@@ -508,7 +508,7 @@ struct graphicApp {
         } else {
             text.append(charToString(key))
         }
-        this.focusElem.setText(text.str())
+        this.focusElem.setText(text.cpstring())
         this.clear()
     }
 

@@ -13,6 +13,7 @@ struct genericFunc {
     baseFn: func*
     tokenName: Tok*
     callToken: Tok*
+    file: str
 
     //Used for duping the base function declaration to redeclare it with the correct types.
     dupBaseFn() func* {
@@ -34,7 +35,7 @@ struct genericFunc {
     }
 
     //If the generic has already been declared with these types, we do not need to redeclare it.
-    isAlreadyDecl(n cpstring) bool {
+    isAlreadyDecl(n str) bool {
         i=0; for i < len(this.declared), i++ {
             if this.declared[i].name == n {
                 return true
@@ -50,6 +51,14 @@ struct genericFunc {
         OUTPUT = rope(getCType(fn.returns.type, elems).str()+" __generic_"+fn.name+"(")
 
         fnElems = dupElems(elems)
+
+        i=0; for i < len(fnElems.vars), i++ {
+            if fnElems.vars[i].isGlobal == false {
+                delete(fnElems.vars, i)
+                i--
+            }
+        }
+
         i=0; for i < len(fn.args), i++ {
             arg = fn.args[i]
 
@@ -67,11 +76,13 @@ struct genericFunc {
         OUTPUT += rope(") {\n")
 
         ocurrFnElems = compilerState.currFnElems
+        ocurrFile = compilerState.currentFile
         oCurrGen = currGen
         currGen = this
         oCurrFn = currentFn
 
         compilerState.currFnElems = fnElems
+        compilerState.currentFile = this.file
         currentFn = fn
         
         parseLines(this.tokens, fnElems)
@@ -79,6 +90,7 @@ struct genericFunc {
         RCPendScope(fnElems)
 
         compilerState.currFnElems = ocurrFnElems
+        compilerState.currentFile = ocurrFile
         currentFn = oCurrFn
         currGen = oCurrGen
 

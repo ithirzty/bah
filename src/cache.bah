@@ -5,13 +5,13 @@
 
 //Represents an entry inside the cache.
 struct cacheFile {
-    file: cpstring
+    file: str
     last: int
-    ver: cpstring
+    ver: str
     date: int
     mem: int
     opti: int
-    files: []cpstring
+    files: []str
 }
 
 cache = []cacheFile*
@@ -36,7 +36,7 @@ readCache()  {
 }
 
 //Returns a cacheFile instance from an imported file name.
-getCacheFile(s cpstring) cacheFile* {
+getCacheFile(s str) cacheFile* {
     if cache == null {
         return null
     }
@@ -57,7 +57,7 @@ updateCacheFile(c cacheFile*) {
 }
 
 //Used for registering a new cacheFile instance from an imported file's name.
-makeCacheFile(f cpstring) {
+makeCacheFile(f str) {
     c = new cacheFile
     c.file = f
     c.ver = BAH_VERSION

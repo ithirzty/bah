@@ -1,9 +1,9 @@
 struct verboseOutVar {
-    markup: cpstring
-    content: cpstring
+    markup: str
+    content: str
 }
 
-noVOfns = []cpstring{
+noVOfns = []str{
     "__Bah_safe_string"
 }
 
@@ -16,15 +16,15 @@ verboseOutGuard() bool {
     return true
 }
 
-verboseOutTransformVar(v variable*, cont cpstring, elems Elems*) verboseOutVar {
+verboseOutTransformVar(v variable*, cont str, elems Elems*) verboseOutVar {
     rv = verboseOutVar{}
     ogCont = cont
-    if v.type == "cpstring" {
+    if v.type == "str" {
         cont = "__Bah_safe_string("+cont+")"
     }
     cont = ", "+cont
     ct = ""
-    if v.type == "cpstring" {
+    if v.type == "str" {
         ct = "%s"
     } else if v.type == "int" {
         ct = "%li"
@@ -43,12 +43,12 @@ verboseOutTransformVar(v variable*, cont cpstring, elems Elems*) verboseOutVar {
                 m variable* = s.members[i]
                 mv = verboseOutTransformVar(m, "("+ogCont+")"+"."+m.name, elems)
                 if i != 0 {
-                    ct = ct + ", "
+                    ct += ", "
                 }
-                ct = ct + mv.markup
-                cont = cont + mv.content
+                ct += mv.markup
+                cont += mv.content
             }
-            ct = ct + "}"
+            ct += "}"
         }
     }
 
@@ -105,13 +105,13 @@ verboseOutFunc(fn func*, args []Tok, lineNb int, elems Elems*) {
     j=0; for j < len(fn.args), j++ {
         a = fn.args[j]
         if j != 0 {
-            fnArgs = fnArgs + ", "
+            fnArgs += ", "
         }
         
         t = args[j]
         v = verboseOutTransformVar(a, t.cont, elems)
-        fnArgs = fnArgs + v.markup
-        fnArgsValues = fnArgsValues + v.content
+        fnArgs += v.markup
+        fnArgsValues += v.content
     }
     line = compilerState.currentFile + ":" + intToStr(lineNb)
     verboseOut = rope("
@@ -120,9 +120,9 @@ verboseOutFunc(fn func*, args []Tok, lineNb int, elems Elems*) {
     //
     ")
     if isGlobal() {
-        INIT = INIT + verboseOut
+        INIT += verboseOut
     } else {
-        OUTPUT = OUTPUT + verboseOut
+        OUTPUT += verboseOut
     }
 }
 
@@ -143,8 +143,8 @@ verboseOutOper(pt Tok*, nt Tok*, lineNb int, elems Elems*) {
     //
     ")
     if isGlobal() {
-        INIT = INIT + verboseOut
+        INIT += verboseOut
     } else {
-        OUTPUT = OUTPUT + verboseOut
+        OUTPUT += verboseOut
     }
 }

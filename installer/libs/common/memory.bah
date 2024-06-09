@@ -88,11 +88,11 @@ copy(a ptr, b ptr) {
 }
 
 #windows {
-    #define! CreateFileMapping(ihv ptr, sec int, rw int, mos int, bs int, fn cpstring) ptr
+    #define! CreateFileMapping(ihv ptr, sec int, rw int, mos int, bs int, fn str) ptr
     #define! MapViewOfFile(f ptr, sec int, mi1 int, mi2 int, bs int) ptr
     #define! CloseHandle(mf ptr)
 
-    #define! printf(s cpstring)
+    #define! printf(s str)
     #define! exit(code int)
 
     const PROT_READ = 2
@@ -169,7 +169,7 @@ allocateArray(arr ptr, nbElems int) {
 // #include "string.bah"
 // #include "memory.bah"
 // main() {
-//     a cpstring = memoryAlloc(30)
+//     a str = memoryAlloc(30)
 //     strcpy(a, "Hi!")
 // }
 
@@ -194,7 +194,7 @@ delete(a ptr, i int) {
     offset = elemSize * i
     src char* = <int>data + <int>offset
     dest char* = <int>data + <int>destOffset
-    rightNB = length - (i-1)
+    rightNB = length - (i)
 
     #rcp {
         if elemSize >= sizeof(ptr) {
@@ -222,7 +222,7 @@ deleteRange(a ptr, from int, to int) {
     size = elemSize * (to - from)
     dest ptr = <int>data + elemSize * from
     src ptr = <int>dest + size + elemSize
-    rightNB = length - to
+    rightNB = length - to - 1
 
     #rcp {
         if elemSize >= sizeof(ptr) {
@@ -235,22 +235,22 @@ deleteRange(a ptr, from int, to int) {
 }
 
 
-//Used to convert an array of characters to a cpstring.
-arrToStr(arr []char) cpstring {
+//Used to convert an array of characters to a str.
+arrToStr(arr []char) str {
     strLen = len(arr)
     if len(arr) > 0 && arr[len(arr)-1] == null {
         strLen--
     }
     a Bah_Array_Type* = arr
-    str cpstring = memoryAllocSTR(strLen+1)
+    str str = memoryAllocSTR(strLen+1)
     memcpy(str, a.data, strLen)
     ln uint32* = str
     *ln = strLen
     return str
 }
 
-//Used to convert a cpstring into an array of characters.
-strToArr(str cpstring) []char {
+//Used to convert a str into an array of characters.
+strToArr(str str) []char {
     strLen = len(str)
     arr = []char
     a Bah_Array_Type* = arr
@@ -263,16 +263,16 @@ strToArr(str cpstring) []char {
 
 //Removed arrAsStr() and strAsArr() because they are too dangerous
 
-#define cpstringSubsitute(s cpstring, i int, l int) cpstring
+#define strSubsitute(s str, i int, l int) str
 
-//Trims i chars at the beginning of a cpstring.
-strTrimLeft(s cpstring*, i int) {
+//Trims i chars at the beginning of a str.
+strTrimLeft(s str*, i int) {
     rs = *s
     *s = rs[i:]
 }
 
-//Trims i chars at the end of a cpstring.
-strTrimRight(s cpstring*, i int) {
+//Trims i chars at the end of a str.
+strTrimRight(s str*, i int) {
     rs = *s
     *s = rs[:len(rs)-i]
 }

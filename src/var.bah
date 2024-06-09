@@ -8,13 +8,13 @@
 #include "./fns.bah"
 
 #define RCPavailable() bool
-#define pathToVarName(s cpstring) cpstring
-#define strLitteralToBahStr(s cpstring) cpstring
+#define pathToVarName(s str) str
+#define strLitteralToBahStr(s str) str
 
 //Returns a pointer to the variable stored inside elems (scope).
 //This can be used because searchVar() create a new instance of a variable.
 //This function does not transform variable name, as such it searches variable by exact name.
-getRealVar(n cpstring, elems Elems*) variable* {
+getRealVar(n str, elems Elems*) variable* {
     i=len(elems.vars)-1; for i != -1, i-- {
         if elems.vars[i].name == n {
             return elems.vars[i]
@@ -39,7 +39,7 @@ removeVarUnar(s string*) {
 //Searches a var by relatively complex token content.
 //Returns a pointer to a new instance of the variable.
 //Will also search for struct member, array element and functions.
-searchVar(name cpstring, t Tok*, elems Elems*) variable* {
+searchVar(name str, t Tok*, elems Elems*) variable* {
     ogName = name
     n = string(name)
     removeVarUnar(&n)    
@@ -80,7 +80,7 @@ searchVar(name cpstring, t Tok*, elems Elems*) variable* {
             j=0; for j < len(fn.args) {
                 arg = fn.args[j]
                 nv.type = nv.type + arg.type
-                j = j + 1
+                j++
                 if j < len(fn.args) {
                     nv.type = nv.type + ","
                 }
@@ -140,13 +140,13 @@ currFileHash = ""
 
 
 //Generate a unique name for a temporary compiler variable.
-genCompilerVar() cpstring {
+genCompilerVar() str {
     if currFileHashed != compilerState.currentFile {
         currFileHash = pathToVarName(compilerState.currentFile)
         currFileHashed = compilerState.currentFile
     }
     name = "____BAH_COMPILER_VAR_"+intToStr(NB_COMP_VAR)+"_"+currFileHash
-    NB_COMP_VAR = NB_COMP_VAR + 1
+    NB_COMP_VAR++
     return name
 }
 
@@ -165,7 +165,7 @@ varInArr(v variable*, arr []variable*) bool {
 }
 
 //Transforms a path as valid C variable name.
-pathToVarName(p cpstring) cpstring {
+pathToVarName(p str) str {
     a = strToArr(p)
     i=0; for i < len(a), i++ {
         c int = a[i]
@@ -219,7 +219,7 @@ makeInit() {
 }
 
 //Used for removing a C cast from a variable.
-removeCast(s cpstring) cpstring {
+removeCast(s str) str {
     i = len(s)-1; for i >= 0, i-- {
         if s[i] == ')' {
             s = s[i+1:]

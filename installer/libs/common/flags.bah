@@ -1,7 +1,7 @@
 #include "iostream.bah"
 #include "string.bah"
 
-const FLAG_TYPE_CPSTRING = 0
+const FLAG_TYPE_str = 0
 const FLAG_TYPE_INT = 1
 const FLAG_TYPE_FLOAT = 2
 const FLAG_TYPE_BOOL = 3
@@ -10,9 +10,9 @@ const FLAG_TYPE_BOOL = 3
 //A flag is an argument beginning by a '-'.
 //*Note: the -h/-help flag is already defined and should be redefined.*
 struct flag {
-    name: cpstring
-    help: cpstring
-    content: cpstring
+    name: str
+    help: str
+    content: str
     cont_int: int
     cont_float: float
     isSet: int
@@ -21,21 +21,21 @@ struct flag {
 
 struct flags {
     flags: []flag*
-    args: []cpstring
+    args: []str
 
-    //To add a flag to be parsed as a cpstring.
-    addString(name cpstring, help cpstring) {
+    //To add a flag to be parsed as a str.
+    addString(name str, help str) {
         f = new flag
         f.name = name
         f.help = help
-        f.type = FLAG_TYPE_CPSTRING
+        f.type = FLAG_TYPE_str
         lf = len(this.flags)
         this.flags[lf] = f
     }
 
     //To add a flag that can either be set or not.
     //This flag cannot contain any value.
-    addBool(name cpstring, help cpstring) {
+    addBool(name str, help str) {
         f = new flag
         f.name = name
         f.help = help
@@ -45,7 +45,7 @@ struct flags {
     }
 
     //To add a flag that will be parsed as a int.
-    addInt(name cpstring, help cpstring) {
+    addInt(name str, help str) {
         f = new flag
         f.name = name
         f.help = help
@@ -55,7 +55,7 @@ struct flags {
     }
 
     //To add a flag that will be parsed as a float.
-    addFloat(name cpstring, help cpstring) {
+    addFloat(name str, help str) {
         f = new flag
         f.name = name
         f.help = help
@@ -74,7 +74,7 @@ struct flags {
             flag = this.flags[i]
             print("    -")
             print(flag.name)
-            if flag.type == FLAG_TYPE_CPSTRING {
+            if flag.type == FLAG_TYPE_str {
                 println(" (string)")
             } else if flag.type == FLAG_TYPE_BOOL {
                 println(" (bool)")
@@ -105,17 +105,17 @@ struct flags {
         return z
     }
 
-    //To get the content of a flag as a cpstring.
+    //To get the content of a flag as a str.
     //This works with all types of flags.
     //This is how you should get a string flag.
-    get(name cpstring) cpstring {
+    get(name str) str {
         flag = this.getFlag(string(name))
         return flag.content
     }
 
     //To get the content of a flag as an int.
     //The requested flag must be of type int.
-    getInt(name cpstring) int {
+    getInt(name str) int {
         flag = this.getFlag(string(name))
         if flag.type != FLAG_TYPE_INT {
             panic("Flag '" + flag.name + "' is not int.")
@@ -125,7 +125,7 @@ struct flags {
 
     //To get the content of a flag as a float.
     //The requested flag must be of type float.
-    getFloat(name cpstring) float {
+    getFloat(name str) float {
         flag = this.getFlag(string(name))
         if flag.type != FLAG_TYPE_FLOAT {
             panic("Flag '" + flag.name + "' is not float.")
@@ -135,14 +135,14 @@ struct flags {
 
     //Returns 1 if a flag has been set by the user.
     //This is how you should check for a bool flag.
-    isSet(name cpstring) int {
+    isSet(name str) int {
         flag = this.getFlag(string(name))
         return flag.isSet
     }
 
     //This will parse the flags with the specified arguments.
-    //The arguments specified should be the arguments passed in your declaration of main, of type []cpstring.
-    parse(args []cpstring) {
+    //The arguments specified should be the arguments passed in your declaration of main, of type []str.
+    parse(args []str) {
         currentFlag flag*
         isVal = false
         this.args = args
@@ -190,7 +190,7 @@ struct flags {
 //Example
 //#include "iostream.bah"
 //#include "flags.bah"
-// main(args []cpstring) {
+// main(args []str) {
 //     flags = flags{}
 //     flags.addString("name", "Your name")
 //     flags.parse(args)

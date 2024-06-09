@@ -21,13 +21,13 @@ const TOKEN_TYPE_CAST =    <tokenType>12
 
 //a token (the atomic unit for describing the inputed Bah file)
 struct Tok {
-    cont: cpstring = ""
-    ogCont: cpstring = ""
+    cont: str = ""
+    ogCont: str = ""
     type: tokenType = TOKEN_NO_TYPE
     pos: uint32 = 0
     line: uint32 = 1
     begLine: uint32 = 1
-    bahType: cpstring = "" //shortcut for getting the type of a token
+    bahType: str = "" //shortcut for getting the type of a token
     isValue: bool = false
     isFunc: bool = false
     isOper: bool = false
@@ -75,14 +75,14 @@ struct Tok {
 enclavers = []char{'(', ')', '{', '}', '[', ']'}
 syntaxes = []char{'!', '=', '|', <char>38, '%', '+', '-', '*', '/', ',', '<', '>', ':', <char>59, '^'}
                                     //&                                                    //;
-keywords = []cpstring{"if", "else", "for", "return", "new", "break", "continue", "struct", "const", "extend", "function", "async", "in", "chan", "map", "buffer", "let", "then", "default", "switch", "case", "while", "typedef"}
+keywords = []str{"if", "else", "for", "return", "new", "break", "continue", "struct", "const", "extend", "function", "async", "in", "chan", "map", "buffer", "let", "then", "default", "switch", "case", "while", "typedef"}
                     //  x      x      x        x       x       x          x          x        x         x          x         x       x      x      x       x         x      x        -          -        -       -          -
                     // x: done
                     //  : not done
                     // -: not planned
 
 //Generates a token from all of its properties.
-makeToken(pos int, lineNb int, cont cpstring, type tokenType) Tok {
+makeToken(pos int, lineNb int, cont str, type tokenType) Tok {
     t = Tok{
         cont: cont
         pos: pos
@@ -106,7 +106,7 @@ isMinus(c char, nc char) bool {
 }
 
 //We never want to have to throw this error as the file is not yet parsed, we have very little information.
-lexerErr(line int, pos int, msg cpstring) {
+lexerErr(line int, pos int, msg str) {
     lineStr = intToStr(line)
     posStr = intToStr(pos)
     println("\e[1;31m[LEXER-ERROR]\e[0m "+compilerState.currentFile+":"+lineStr+":"+posStr+"\n\e[0m\n"+msg)
@@ -114,7 +114,7 @@ lexerErr(line int, pos int, msg cpstring) {
 }
 
 //Takes a file as input, outputs an array of tokens.
-lexer(s cpstring, codeLength uint) []Tok {
+lexer(s str, codeLength uint) []Tok {
     lexerStart = getTimeUnix()
     tokens = []Tok
 
@@ -155,10 +155,10 @@ lexer(s cpstring, codeLength uint) []Tok {
             begLine = lineNb
             memory = strBuilder{}
             memory.append(c)
-            i = i + 1
+            i++
             for i < codeLength, i++ {
                 c = s[i]
-                if c == <char>92 {
+                if c == <char>92 { //back slash
                     memory.append(<char>92)
                     memory.append(s[i+1])
                     if s[i+1] == <char>10 {
@@ -188,7 +188,7 @@ lexer(s cpstring, codeLength uint) []Tok {
             tokens[len(tokens) - 1] = lt
         } else if isNumber(c) || isMinus(c, nc) { //token is a number
             pos = i
-            i = i + 1
+            i++
             currentType = TOKEN_TYPE_INT
             isHex = false
             for i < codeLength, i++ {
@@ -222,7 +222,9 @@ lexer(s cpstring, codeLength uint) []Tok {
             if s[i] != <char>39 {
                 lexerErr(lineNb, i, "Missing closing tag in char declaration.")
             }
-            tokens[len(tokens)] = makeToken(i-1, lineNb, intToStr(<int>nc), TOKEN_TYPE_CHAR)
+            t = makeToken(i-2, lineNb, intToStr(<int>nc), TOKEN_TYPE_CHAR)
+            t.ogCont = s[i-2:i+1]
+            tokens[len(tokens)] = t
         } else if c == <char>35 { //is a hash keyword
             pos = i
             i++

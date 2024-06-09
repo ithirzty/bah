@@ -2,17 +2,17 @@
 //Concatenation takes a constant time.
 //This is usefull for large strings that are built using a lot of concatenations.
 struct rope {
-    str: cpstring
+    str: str
     totalLen: int32
     left: rope*
     right: rope*
 
-    //Used to add the content of the node to a specified cpstring.
+    //Used to add the content of the node to a specified str.
     //*Note: this is an internal function.*
-    addStr(s cpstring, off int*) {
+    addStr(s str, off int*) {
         if this.left == null && this.right == null {
             o = *off
-            memcpy(noCheck(s+cpstringLenSize+o), this.str, len(this.str))
+            memcpy(noCheck(s+strLenSize+o), this.str, len(this.str))
             *off = o + len(this.str)
             return
         }
@@ -29,8 +29,8 @@ struct rope {
         return this.left.getLen() + this.right.getLen()
     }
 
-    //Used to get the rope as a cpstring.
-    toStr() cpstring {
+    //Used to get the rope as a str.
+    toStr() str {
         tl = this.getLen()
         s = memoryAllocSTR(tl + 1)
         off = 0
@@ -60,15 +60,15 @@ struct rope {
 //Used for setting the content of a rope.
 //Returns the difference of size between the new one and the old one.
 //The return value needs to be added to the parent ropes.
-ropeSet(r rope*, a cpstring) int {
+ropeSet(r rope*, a str) int {
     r.str = a
     r.left = null
     r.right = null
     return 0
 }
 
-//Used to initiate a rope with a cpstring.
-rope(a cpstring) rope* {
+//Used to initiate a rope with a str.
+rope(a str) rope* {
     r = new rope {
         str: a
     }
@@ -77,12 +77,12 @@ rope(a cpstring) rope* {
 
 
 // Example
-// main(args []cpstring) int {
+// main(args []str) int {
 //     a = rope("This is a test: ") //Initiates rope a
 //     b = rope("I'm a substring.") //Initiates rope b
 //     i=0; for i < 99999 { //Iterates from 0 to 99998 (executes the following code 99999 times)
 //         a = a + b //Concatenates b to a
 //         i = i + 1 //Increments i by 1
 //     }
-//     println(a.toStr()) //Converts a to a cpstring and prints it
+//     println(a.toStr()) //Converts a to a str and prints it
 // }

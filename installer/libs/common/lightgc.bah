@@ -114,6 +114,8 @@ struct lightGC {
     memUsed: uint     //Current memory usage of the heap in bytes.
     currentPass: int  //Keeping track of the current pass number to not collect on every pass.
     stopInterval: int //Collection will start once .memUsed >= .stopInterval.
+    shouldBlock: uint
+    collecting: bool
 
     //Current state of threading of the whole process.
     mainThread: int         //Main thread tid.
@@ -125,8 +127,8 @@ struct lightGC {
     listRealLength: uint    // The physical (allocated) size of the array.
     
     // Synchronization stuff
-    mut: pthread_mutex_t
-    cond: pthread_cond_t
+    mut: pthread_mutex_t*
+    cond: pthread_cond_t*
 
     // Sets .minPtr and .maxPtr.
     updateBounds(p ptr) {
@@ -185,7 +187,7 @@ struct lightGC {
             index.rooted = <char>0
         }
         if tracked == false {
-            index.size = 0 - index.size //untracked pointers (str...) have their length inverted to be identified
+            index.size = 0 - index.size //untracked pointers (cpstring...) have their length inverted to be identified
         }
 
 
@@ -271,8 +273,14 @@ struct lightGC {
             return  //only the main thread can pause the world
         }
 
+        if this.shouldBlock > 0 {
+            noCheck(printf("blocking %d\n"+4, this->shouldBlock))
+            return
+        }
+
         //getting current stack pointer
         stckEnd = __builtin_frame_address(0)
+        this.collecting = true
         
         //signal all threads to stop
         ct = this.threads; for ct != null, ct = ct.next {
@@ -305,7 +313,7 @@ struct lightGC {
             pthread_getattr_np(ct.t, &attr)
             pthread_attr_getstack(&attr, &addr, &s)
             pthread_attr_destroy(&attr)
-            this.scanRegion(addr, <uint>addr + s, sizeof(ptr))
+            this.scanRegion(addr, <uint>addr + s - sizeof(ptr), sizeof(ptr))
         }
 
         //do collection
@@ -362,6 +370,7 @@ struct lightGC {
             this.stopInterval = this.minHeapSize
         }
 
+        this.collecting = false
     }
 }
 
@@ -371,10 +380,14 @@ _lgc lightGC //The global variable containing the state of the collector.
 //Function call in every thread (except main one) when collecting/marking.
 //This will pause execution, dump CPU registers and wait for collection/marking to end.
 lightGC_thread_sig_handler(sig int) {
+    if _lgc.collecting == false {
+        return
+    }
+    
     //dump registers
     envJmp jmp_buf
     setjmp(envJmp)
-    
+
     sid = _lgc_tid() //get tid
 
     //find the lightGCthread struct for the current thread to save the registers in
@@ -387,8 +400,8 @@ lightGC_thread_sig_handler(sig int) {
     }
 
     //wait for .stopWorld() to release the mutex.
-    pthread_mutex_lock(&_lgc.mut)
-    pthread_mutex_unlock(&_lgc.mut)
+    pthread_mutex_lock(_lgc.mut)
+    pthread_mutex_unlock(_lgc.mut)
     ct.regs = null
 }
 
@@ -396,9 +409,14 @@ lightGC_thread_sig_handler(sig int) {
 lightGC_thread_wrapper(args ptr*) {
     //recover arguments
     t lightGCthread* = *args
-    t.sysid = _lgc_tid() //store tid
     fnArgs = *(<ptr*>(<uint>args + sizeof(ptr)))
+
+    pthread_mutex_lock(_lgc.mut)
+    t.sysid = _lgc_tid() //store tid
     fn function(ptr) = *(<ptr*>(<uint>args + 2 * sizeof(ptr)))
+    _lgc.shouldBlock--
+    pthread_mutex_unlock(_lgc.mut)
+
 
     fn(fnArgs) //execute the asyncly called function 
 
@@ -407,7 +425,7 @@ lightGC_thread_wrapper(args ptr*) {
     free(args) //free the arguments wrapper
 
     //remove the thread from the linked list
-    pthread_mutex_lock(&_lgc.mut)    
+    pthread_mutex_lock(_lgc.mut)
     if t == _lgc.threads {
         _lgc.threads = t.next
         t.clean()
@@ -420,7 +438,7 @@ lightGC_thread_wrapper(args ptr*) {
             }
         }
     }
-    pthread_mutex_unlock(&_lgc.mut)
+    pthread_mutex_unlock(_lgc.mut)
 }
 
 //Called when trying to launch a thread.
@@ -437,10 +455,11 @@ lightGC_create_thread(id pthread_t*, attr pthread_attr_t*, func ptr, args ptr) i
     t.sysid = 0
 
     //insert linked-list element
-    pthread_mutex_lock(&_lgc.mut)
+    pthread_mutex_lock(_lgc.mut)
     t.next = _lgc.threads
     _lgc.threads = t
-    pthread_mutex_unlock(&_lgc.mut)
+    _lgc.shouldBlock++
+    pthread_mutex_unlock(_lgc.mut)
 
     //wrap function arguments
     wrapArgs = <ptr*>malloc(sizeof(ptr) * 3)
@@ -483,19 +502,25 @@ initiateMemory(args []cpstring) {
     _lgc.currentPass = 0
     _lgc.numberPass = 2 //collect every 3 passes
 
+    _lgc.shouldBlock = 0
+    _lgc.collecting = false
+
 
     _lgc.threads = null
     _lgc.mainThread = noCheck(syscall(__NR_gettid))
 
     //register callback for thread signaling (when stoping world)
     action sigaction
-    action.sa_flags = noCheck(SA_SIGINFO);
+    action.sa_flags = noCheck(SA_SIGINFO | SA_RESTART);
     memset(&action.sa_mask, 0, noCheck(sizeof(action.sa_mask)))
     action.sa_handler = lightGC_thread_sig_handler
     sigaction(noCheck(SIGUSR1), &action, null)
 
-    pthread_mutex_init(&_lgc.mut, 0)
-    pthread_cond_init(&_lgc.cond, null)
+    _lgc.mut = malloc(sizeof(pthread_mutex_t))
+    _lgc.cond = malloc(sizeof(pthread_cond_t))
+
+    pthread_mutex_init(_lgc.mut, 0)
+    pthread_cond_init(_lgc.cond, null)
 
     _lgc.listLength = 0
     _lgc.listRealLength = 4096
@@ -507,7 +532,7 @@ initiateMemory(args []cpstring) {
 //Ask to allocate s bytes.
 //This is thread safe.
 memoryAlloc(s int) ptr {
-    pthread_mutex_lock(&_lgc.mut)
+    pthread_mutex_lock(_lgc.mut)
     if _lgc.memUsed >= _lgc.stopInterval { //stop the world when too much memory used
         //dump registers
         envJmp jmp_buf
@@ -517,14 +542,14 @@ memoryAlloc(s int) ptr {
     }
     p = _lgc.allocate(s, true, false)
     memset(p, 0, s)
-    pthread_mutex_unlock(&_lgc.mut)
+    pthread_mutex_unlock(_lgc.mut)
     return p
 }
 
 //Ask to allocate s bytes for a cpstring of length s-1.
 //This is thread safe.
 memoryAllocSTR(s int) cpstring {
-    pthread_mutex_lock(&_lgc.mut)
+    pthread_mutex_lock(_lgc.mut)
     if _lgc.memUsed >= _lgc.stopInterval { //same as in memoryAlloc()
         envJmp jmp_buf
         setjmp(envJmp)
@@ -532,12 +557,12 @@ memoryAllocSTR(s int) cpstring {
         _lgc.stopWorld()
     }
 
-    p = _lgc.allocate(s + cpstringLenSize, false, false) //do not track content
+    p = _lgc.allocate(s + strLenSize, false, false) //do not track content
     //sets cpstring length
     l uint32* = p
     *l = s-1
-    memset(<ptr>(<uint>p + cpstringLenSize), 0, s)
-    pthread_mutex_unlock(&_lgc.mut)
+    memset(<ptr>(<uint>p + strLenSize), 0, s)
+    pthread_mutex_unlock(_lgc.mut)
     return p
 }
 
@@ -547,7 +572,7 @@ memoryRealloc(o ptr, s int) ptr {
         return memoryAlloc(s)
     }
 
-    pthread_mutex_lock(&_lgc.mut)
+    pthread_mutex_lock(_lgc.mut)
     if _lgc.memUsed >= _lgc.stopInterval { //same as in memoryAlloc()
         envJmp jmp_buf
         setjmp(envJmp)
@@ -593,6 +618,6 @@ memoryRealloc(o ptr, s int) ptr {
     _lgc.memUsed += s - oldSize
 
     memset(<ptr>(<uint>p + oldSize), 0, s - oldSize)
-    pthread_mutex_unlock(&_lgc.mut)
+    pthread_mutex_unlock(_lgc.mut)
     return p
 }

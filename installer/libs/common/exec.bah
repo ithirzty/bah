@@ -9,19 +9,19 @@
 //If you dont want stderr, set `.error = false`.
 //The exit status code of the executed command is stored in `.status`.
 struct command {
-    command: cpstring
+    command: str
     //Weither stderr should be outputted to the terminal.
     error: bool = true
     //The status code of the program.
     status: int = 0
     //Input to feed to the program.
-    input: cpstring = null
+    input: str = null
 
     handle: FILE*
 
     //To run the command.
-    //This returns a cpstring containning the output of the command.
-    run() cpstring {
+    //This returns a str containning the output of the command.
+    run() str {
         cm = this.command
         if this.error == false {
             cm = cm + " 2>/dev/null"
@@ -37,7 +37,7 @@ struct command {
         }
         
         buff = memoryAllocSTR(1024)
-        response cpstring = memoryAllocSTR(1)
+        response str = memoryAllocSTR(1)
         res = <ptr>response
         i=0; for res != null, i++ {
             memset(buff, 0, 1024)
@@ -48,7 +48,7 @@ struct command {
             response = memoryRealloc(response, (i+1)*1023)
             ln int* = response
             *ln = (i+1)*1023
-            memcpy(<ptr>(<int>response + cpstringLenSize + i*1023), buff, 1024)
+            memcpy(<ptr>(<int>response + strLenSize + i*1023), buff, 1024)
         }
 
 
@@ -91,18 +91,18 @@ struct command {
 }
 
 //To initiate a command.
-//You must specify the command as a cpstring.
-command(s cpstring) command {
+//You must specify the command as a str.
+command(s str) command {
     cmd = command{}
     cmd.command = s
     return cmd
 }
 
-#define! execvp(cmd cpstring, args ptr) int
+#define! execvp(cmd str, args ptr) int
 
 //Exec will execute a binary/command with the specified arguments passed to it.
 //Note that this will take the current proccess.
-exec(s cpstring, args []cpstring) int {
+exec(s str, args []str) int {
     r int
     nArgs = []char*
     nArgs[0] = cStr(s)

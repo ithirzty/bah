@@ -9,3 +9,4 @@ stc/test
 tests/test
 src/test*
 src/gccjit.bah
+migrate/main

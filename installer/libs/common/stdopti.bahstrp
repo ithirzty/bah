@@ -6,7 +6,7 @@
 #define! _mm256_storeu_si256(d __m256i_u*, s __m256i_u)
 #define! _mm256_set1_epi8(a int32) __m256i_u
 
-__BAH_avx_memcpy(dest cpstring, source cpstring, l int) {
+__BAH_avx_memcpy(dest str, source str, l int) {
     lm = l % 32
     if lm != 0 {
         for lm != 0, lm-- {
@@ -24,7 +24,7 @@ __BAH_avx_memcpy(dest cpstring, source cpstring, l int) {
 const memcpy = __BAH_avx_memcpy
 
 
-__BAH_avx_memset(dest cpstring, c int32, l int) {
+__BAH_avx_memset(dest str, c int32, l int) {
     lm = l % 32
     if lm != 0 {
         for lm != 0, lm-- {

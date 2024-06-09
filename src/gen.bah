@@ -5,7 +5,7 @@
 //Used when setting the value of an array's member.
 //This will set the member at provided index, reallocate the array if needed,
 //and increment the length if the index is greater than all others.
-genArrRealloc(v variable*, preVal cpstring, val cpstring, elems Elems*) cpstring {
+genArrRealloc(v variable*, preVal str, val str, elems Elems*) str {
     vn = string(v.name)
 
 
@@ -36,9 +36,9 @@ genArrRealloc(v variable*, preVal cpstring, val cpstring, elems Elems*) cpstring
     "+preVal+"(("+getCType(v.type, elems).str()+"*)"+root.cont+"->data)["+nLength+"] = "+val
 }
 
-//This is used to generate concatenation of n cpstrings.
-//The cpstring passed as 'strs' must be in reverse order.
-genConcat(strs []cpstring, elems Elems*) cpstring {
+//This is used to generate concatenation of n strs.
+//The str passed as 'strs' must be in reverse order.
+genConcat(strs []str, elems Elems*) str {
     buff = genCompilerVar()
     r = "char** "+buff+" = alloca("+intToStr(len(strs))+" * sizeof(char*));"
 
@@ -51,7 +51,7 @@ genConcat(strs []cpstring, elems Elems*) cpstring {
     } else {
         OUTPUT += rope(r)
     }
-    rstr = registerRCPvar("cpstring", "__Bah_multiple_concat("+buff+", "+intToStr(len(strs))+")", elems) //result var
+    rstr = registerRCPvar("str", "__Bah_multiple_concat("+buff+", "+intToStr(len(strs))+")", elems) //result var
 
     return rstr
 }

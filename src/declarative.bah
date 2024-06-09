@@ -8,23 +8,23 @@ declareFunc(fn func*, elems Elems*) {
     j=0; for j < len(fn.args) {
         arg = fn.args[j]
         ct = getCType(arg.type, elems)
-        tmpfnArgsCType = tmpfnArgsCType + ct.str() + " " + arg.name
-        j = j + 1
+        tmpfnArgsCType += ct.str() + " " + arg.name
+        j++
         if j < len(fn.args) {
-            tmpfnArgsCType = tmpfnArgsCType + ", "
+            tmpfnArgsCType += ", "
         }
     }
 
-    OUTPUT = OUTPUT + rope(tmpfnRetCType.str() + " " + fn.name + "("+tmpfnArgsCType+");\n")
+    OUTPUT += rope(tmpfnRetCType.str() + " " + fn.name + "("+tmpfnArgsCType+");\n")
 }
 
 //Forward-declares a variable as C variable.
 declareVar(v variable*, elems Elems*) {
     if v.isConst == true {
-        OUTPUT = OUTPUT + rope("#define "+v.name+" "+v.constVal+"\n")
+        OUTPUT += rope("#define "+v.name+" "+v.constVal+"\n")
     } else {
         cType = getCType(v.type, elems)
-        OUTPUT = OUTPUT + rope(cType.str() + " " + v.name+";\n")
+        OUTPUT += rope(cType.str() + " " + v.name+";\n")
     }
 }
 
@@ -43,7 +43,7 @@ long int __BAH__main(struct Bah_Array_Type*);
 ")
 
     i=0; for i < len(compilerState.cIncludes), i++ {
-        OUTPUT = OUTPUT + rope("#include "+compilerState.cIncludes[i]+"\n")
+        OUTPUT += rope("#include "+compilerState.cIncludes[i]+"\n")
     }
 
     i=0; for i < len(elems.vars), i++ {

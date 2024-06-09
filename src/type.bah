@@ -4,10 +4,10 @@
 #include "./lexer.bah"
 #include "./struct.bah"
 
-#define searchVar(name cpstring, t Tok*, elems Elems*) variable*
+#define searchVar(name str, t Tok*, elems Elems*) variable*
 #define isMissingVar(t Tok*, elems Elems*)
 
-intTypes = []cpstring{
+intTypes = []str{
     "int",
     "int32",
     "uint",
@@ -15,7 +15,7 @@ intTypes = []cpstring{
     "bool"
 }
 
-floatTypes = []cpstring{
+floatTypes = []str{
     "float",
     "float32",
     "ufloat",
@@ -24,25 +24,25 @@ floatTypes = []cpstring{
 
 
 //Returns true if the Bah type passed is a tuple.
-isTupleType(t cpstring) bool {
+isTupleType(t str) bool {
     return len(t) > 1 && t[0] == '[' && t[len(t)-1] == ']'
 }
 
 //Does a type contain an unary.
-typeAsStar(t cpstring) bool {
+typeAsStar(t str) bool {
     return t[len(t)-1] == '*'
 }
 
 //Is a Bah type a pointer as C type.
-isRCPpointerType(t cpstring) bool {
+isRCPpointerType(t str) bool {
     if strHasPrefix(t, "function(") {
         return false
     }
-    return t == "cpstring" || t == "ptr" || typeAsStar(t) || strHasPrefix(t, "[]") || strHasPrefix(t, "chan:") || strHasPrefix(t, "map:") || isTupleType(t)
+    return t == "str" || t == "ptr" || typeAsStar(t) || strHasPrefix(t, "[]") || strHasPrefix(t, "chan:") || strHasPrefix(t, "map:") || isTupleType(t)
 }
 
 //Can a Bah type contain a pointer as C type.
-isRCPtype(t cpstring, elems Elems*) bool {
+isRCPtype(t str, elems Elems*) bool {
     if isRCPpointerType(t) == true {
         return true
     }
@@ -51,7 +51,7 @@ isRCPtype(t cpstring, elems Elems*) bool {
 }
 
 //Returns a Bah type translated to C.
-getCType(t cpstring, elems Elems*) string {
+getCType(t str, elems Elems*) string {
     if len(t) == 0 {
         return string("void")
     }
@@ -100,7 +100,7 @@ getCType(t cpstring, elems Elems*) string {
         t = "long long"
     } else if t == "ulong" {
         t = "unsigned long long"
-    } else if t == "cpstring" {
+    } else if t == "str" {
         t = "char*"
     } else if t == "ptr" {
         t = "void *"
@@ -123,7 +123,7 @@ getCType(t cpstring, elems Elems*) string {
                     tp.append(unars)
                     return tp
                 }
-                i = i + 1
+                i++
             }
             return string("")
         }
@@ -133,7 +133,7 @@ getCType(t cpstring, elems Elems*) string {
 }
 
 //Transforms a maybe type to a pointer type.
-maybeToPtr(a cpstring) cpstring {
+maybeToPtr(a str) str {
     if a[len(a)-1] != '!' {
         return a
     }
@@ -143,7 +143,7 @@ maybeToPtr(a cpstring) cpstring {
 
 //Compare two types a and b.
 //Returns true if a and b are compatible.
-compTypes(a cpstring, b cpstring) bool {
+compTypes(a str, b str) bool {
     a = maybeToPtr(a)
     b = maybeToPtr(b)
     if a == b || a == "ptr" || b == "ptr" {
@@ -161,16 +161,16 @@ compTypes(a cpstring, b cpstring) bool {
 }
 
 //Returns the C translation of a variable type and name.
-setCType(v variable*, elems Elems*) cpstring {
+setCType(v variable*, elems Elems*) str {
     tp = getCType(v.type, elems)
     t = tp.str()
-    t = t + " " + v.name
+    t += " " + v.name
     return t
 }
 
 //Returns the Bah type of a token.
 //Throws an error if strict = true and the token is not a value.
-getTypeFromToken(t Tok*, strict bool, elems Elems*) cpstring {
+getTypeFromToken(t Tok*, strict bool, elems Elems*) str {
     if t.bahType != "" {
         r = t.bahType
         return r
@@ -201,7 +201,7 @@ getTypeFromToken(t Tok*, strict bool, elems Elems*) cpstring {
         return "int"
     }
     if t.type == TOKEN_TYPE_STR {
-        return "cpstring"
+        return "str"
     }
     if t.type == TOKEN_TYPE_CHAR {
         return "char"
@@ -215,7 +215,7 @@ getTypeFromToken(t Tok*, strict bool, elems Elems*) cpstring {
 
 }
 
-//Parses a Bah function type such as 'function(int,cpstring)'.
+//Parses a Bah function type such as 'function(int,str)'.
 //Returns a temporary instance of a func.
 parseFnType(cvt string) func* {
     nf = new func
@@ -254,7 +254,7 @@ parseFnType(cvt string) func* {
 }
 
 //Returns the number of * at the end of a type.
-getTypeUnaryLevel(t cpstring) uint {
+getTypeUnaryLevel(t str) uint {
     i = len(t)-1; for i > 0, i-- {
         if t[i] != '*' {
             return len(t)-1 - i
@@ -264,7 +264,7 @@ getTypeUnaryLevel(t cpstring) uint {
 }
 
 //Returns the number of * at the beginning of a var.
-getVarUnaryLevel(s cpstring) uint {
+getVarUnaryLevel(s str) uint {
     i = 0; for i < len(s), i++ {
         if s[i] != '*' {
             return i
@@ -274,8 +274,8 @@ getVarUnaryLevel(s cpstring) uint {
 }
 
 //Returns all sub-types of a tuple type.
-getTypesFromTuple(t cpstring) []cpstring {
-    r = []cpstring
+getTypesFromTuple(t str) []str {
+    r = []str
 
     curr = strBuilder{}
     nbBracks = 0
@@ -301,7 +301,7 @@ getTypesFromTuple(t cpstring) []cpstring {
 }
 
 //Returns a C expression calculating a tuple's size from a tuple type.
-getTupleSize(t cpstring, elems Elems*) cpstring {
+getTupleSize(t str, elems Elems*) str {
     parts = getTypesFromTuple(t)
     r = "0"
     i=0; for i < len(parts), i++ {
@@ -311,7 +311,7 @@ getTupleSize(t cpstring, elems Elems*) cpstring {
 }
 
 //Used for getting the C type from a Bah function.
-getCtypeFromFunc(tmpfn func*, elems Elems*) cpstring {
+getCtypeFromFunc(tmpfn func*, elems Elems*) str {
     tmpfnArgsCType = ""
     j=0; for j < len(tmpfn.args), j++ {
         arg = tmpfn.args[j]
@@ -333,13 +333,13 @@ getCtypeFromFunc(tmpfn func*, elems Elems*) cpstring {
 }
 
 //Used for getting the C type from a Bah function type.
-getCfunctionType(cfrt string*, elemName cpstring, elems Elems*) cpstring {
+getCfunctionType(cfrt string*, elemName str, elems Elems*) str {
     tmpfn = parseFnType(*cfrt)
     tmpfn.name = elemName
     return getCtypeFromFunc(tmpfn, elems)
 }
 
 //Used to check if a type translates to a C primitive
-isTypeCprim(t cpstring, elems Elems*) bool {
+isTypeCprim(t str, elems Elems*) bool {
     return isRCPpointerType(t) == false && searchStruct(t, elems) == null
 }

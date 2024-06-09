@@ -10,7 +10,7 @@ const JSON_TYPE_FLOAT = 2
 const JSON_TYPE_ARRAY = 3
 const JSON_TYPE_MAP = 4
 
-#define toJson(e reflectElement) cpstring
+#define toJson(e reflectElement) str
 
 #define json_scan_inner(this ptr, e reflectElement, isMember bool)
 
@@ -19,8 +19,8 @@ const JSON_TYPE_MAP = 4
 //If the element is of type array (or map), all of its children will be contained in an array, the .children field.
 struct jsonElement {
     type: int
-    key: cpstring
-    content: cpstring
+    key: str
+    content: str
     children: []jsonElement*
 
     contentFinal: bool = false
@@ -28,7 +28,7 @@ struct jsonElement {
     to: int
 
     //If the current element is of type map, this method is used to get a children element mapped to this key.
-    get(key cpstring) jsonElement* {
+    get(key str) jsonElement* {
         l = len(this.children)
         i=0; for i < l {
             elem = this.children[i]
@@ -41,7 +41,7 @@ struct jsonElement {
                 nk = []char
                 lk = len(elem.key)
                 j=1; for j < lk - 1 {
-                    c = cpstringCharAt(elem.key, j)
+                    c = strCharAt(elem.key, j)
                     nk[j-1] = c
                     j = j + 1
                 }
@@ -59,8 +59,8 @@ struct jsonElement {
         return z
     }
 
-    //To get the current element as a cpstring no matter its type.
-    str() cpstring {
+    //To get the current element as a str no matter its type.
+    str() str {
         if this.contentFinal == false {
             this.content = this.content[this.from : this.to]
             this.contentFinal = true
@@ -94,8 +94,8 @@ json_scan_inner(thisp ptr, e reflectElement, isMember bool) {
         } else if e.type == "int" {
             ep int* = e.value
             *ep = strToInt(this.str())
-        } else if e.type == "cpstring" {
-            ep cpstring* = e.value
+        } else if e.type == "str" {
+            ep str* = e.value
             *ep = this.str()
         } else if e.type == "float" {
             ep float* = e.value
@@ -139,8 +139,8 @@ json_scan_inner(thisp ptr, e reflectElement, isMember bool) {
                     arr[i] = strToFloat(c.str())
                     i = i + 1
                 }
-            } else if ae.type == "cpstring" {
-                arr = []cpstring
+            } else if ae.type == "str" {
+                arr = []str
                 arrPtr ptr* = e.value
                 if isMember == true {
                     *arrPtr = arr
@@ -193,7 +193,7 @@ json_scan_inner(thisp ptr, e reflectElement, isMember bool) {
                 k = string(c.key)
                 k.trimLeft(1)
                 k.trimRight(1)
-                if strCount(ae.type, "*") || ae.type == "ptr" || ae.type == "cpstring" || strHasPrefix(ae.type, "[]") || strHasPrefix(ae.type, "map:") {
+                if strCount(ae.type, "*") || ae.type == "ptr" || ae.type == "str" || strHasPrefix(ae.type, "[]") || strHasPrefix(ae.type, "map:") {
                     m = *p
                     m.set(k.str(), v)
                 } else {
@@ -207,7 +207,7 @@ json_scan_inner(thisp ptr, e reflectElement, isMember bool) {
 jError = "" //Inner variable containing the last parsing error.
 
 //Internal function called by parseJson().
-parseJson_inner(s cpstring, ip int*, l int) jsonElement* {
+parseJson_inner(s str, ip int*, l int) jsonElement* {
     jError = ""
     i = *ip
 
@@ -400,7 +400,7 @@ parseJson_inner(s cpstring, ip int*, l int) jsonElement* {
 //To parse a json document.
 //This will return a pointer to the main element.
 //This new version of parseJson() uses lazy parsing.
-parseJson(s cpstring) jsonElement* {
+parseJson(s str) jsonElement* {
     l = len(s)
     i = 0
     return parseJson_inner(s, &i, l)
@@ -415,7 +415,7 @@ json_isPrintable(c uint32) bool {
 }
 
 //Used for escaping strings for json marshalling.
-jsonEscapeStr(s cpstring) cpstring {
+jsonEscapeStr(s str) str {
     if s == null {
         return ""
     }
@@ -451,7 +451,7 @@ jsonEscapeStr(s cpstring) cpstring {
 
 //Function used by oldToJson() to convert a var to json string.
 //*Note: this is an internal function*
-oldToJson__inner(e reflectElement, isMember bool, tabs int) cpstring {
+oldToJson__inner(e reflectElement, isMember bool, tabs int) str {
     v ptr* = e.value
     if e.value == null {
         if e.type == "int" || e.type == "float" {
@@ -460,7 +460,7 @@ oldToJson__inner(e reflectElement, isMember bool, tabs int) cpstring {
         if e.type == "bool" {
             return "false"
         }
-        if e.type == "ptr" || e.type == "cpstring" || strCount(e.type, "*") != 0 {
+        if e.type == "ptr" || e.type == "str" || strCount(e.type, "*") != 0 {
             return "null"
         }
     }
@@ -496,13 +496,13 @@ oldToJson__inner(e reflectElement, isMember bool, tabs int) cpstring {
     } else if e.type == "float" {
         fp float* = e.value
         return floatToStr(*fp)
-    } else if e.type == "cpstring" {
+    } else if e.type == "str" {
         if isMember == false {
             s = e.value
             return "\""+jsonEscapeStr(s)+"\""
         } else {
-            sp cpstring* = e.value
-            s cpstring = *sp
+            sp str* = e.value
+            s str = *sp
             return "\""+jsonEscapeStr(s)+"\""
         }
     } else if e.type == "bool" {
@@ -539,8 +539,8 @@ oldToJson__inner(e reflectElement, isMember bool, tabs int) cpstring {
                     s = s + ","
                 }
             }
-        } else if ae.type == "cpstring" {
-            arr = []cpstring
+        } else if ae.type == "str" {
+            arr = []str
             arrPtr ptr* = e.value
             arr = *arrPtr
             s = s + "\n"
@@ -588,13 +588,13 @@ oldToJson__inner(e reflectElement, isMember bool, tabs int) cpstring {
 
 //Old algorithm to convert a var into json.
 //This function does things the wrong way.
-oldToJson(e reflectElement) cpstring {
+oldToJson(e reflectElement) str {
     return oldToJson__inner(e, false, 0)
 }
 
 //Converting a var into json.
 //Note that you need to pass a pointer to the var that you want to convert to json:
-// s cpstring = "test"
+// s str = "test"
 // toJson(&s)
 // If the type is already a pointer, this step is not needed.
 toJsonRope(e reflectElement) rope* {
@@ -675,8 +675,8 @@ toJsonRope(e reflectElement) rope* {
         return rope(intToStr(*j))
     }
 
-    if e.type == "cpstring*" {
-        s cpstring* = e.value
+    if e.type == "str*" {
+        s str* = e.value
         if s == null {
             return rope("\"\"")
         }
@@ -709,7 +709,7 @@ toJsonRope(e reflectElement) rope* {
     return rope("null")
 }
 
-toJson(e reflectElement) cpstring {
+toJson(e reflectElement) str {
     if e.isArray == false && e.type[len(e.type)-1] != '*' {
         panic("toJson("+e.name+") of type "+e.type+" but a pointer is required, try: toJson(&"+e.name+").")
     }

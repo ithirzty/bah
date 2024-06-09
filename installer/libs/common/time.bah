@@ -25,7 +25,7 @@ struct time {
     
     //To format the timestamp using the specified format.
     //The format options can be found [here](https://koor.fr/C/ctime/strftime.wp).
-    format(a cpstring) cpstring {
+    format(a str) str {
         
         lt int = localtime(&this.timestamp)
 

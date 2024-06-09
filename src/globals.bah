@@ -7,12 +7,12 @@ postDeclHandle = rope("")
 
 //Bah variable
 struct variable {
-    name: cpstring = ""
-    type: cpstring = ""
+    name: str = ""
+    type: str = ""
     isConst: bool = false
-    constVal: cpstring = ""
+    constVal: str = ""
     isArray: bool = false
-    from: cpstring = ""
+    from: str = ""
     declScope: ptr
     isGlobal: bool = false
     declRope: rope*
@@ -30,20 +30,20 @@ struct variable {
 
 //Bah struct member
 struct structMemb extend variable {
-    def: cpstring = ""
+    def: str = ""
     isFn: bool = false
 }
 
 //Bah function
 struct func {
-    name: cpstring = ""
+    name: str = ""
     args: []variable*
     returns: variable*
     returned: bool
     isBinding: bool = false
     isCbinding: bool = false
-    from: cpstring = ""
-    file: cpstring = ""
+    from: str = ""
+    file: str = ""
     line: uint32 = 1
     isVar: bool = false
     fromVar: variable* // link to the parent vriable
@@ -59,12 +59,12 @@ struct func {
 
 //Interface between Bah struct and C struct
 struct cStruct {
-    name: cpstring = ""
+    name: str = ""
     members: []structMemb*
     methods: []func*
-    postCode: cpstring = ""
+    postCode: str = ""
     print: bool
-    extendedFrom: cpstring = ""
+    extendedFrom: str = ""
     isBinding: bool = false
     hasRCPmemb: bool = false
 }
@@ -90,7 +90,7 @@ struct switchOptimization {
 struct Elems {
     vars: []variable*
     structs: []cStruct*
-    types: []cpstring
+    types: []str
     fns: []func*
     parent: Elems*
     //safety
@@ -100,7 +100,7 @@ struct Elems {
     currFlowEnd: bool
     nestedElseIfNb: int
     switchOpt: chainsToSwitch*
-    switchOptCurrLoop: cpstring
+    switchOptCurrLoop: str
 
     isChildren(e Elems*) bool {
         if e == null {
@@ -132,16 +132,16 @@ struct Elems {
 
 //Additional info for the compiler no matter the scope
 struct compilerStateTag {
-    includes: []cpstring
-    cIncludes: []cpstring
-    cLibs: []cpstring
-    currentFile: cpstring
-    currentDir: cpstring = "./"
+    includes: []str
+    cIncludes: []str
+    cLibs: []str
+    currentFile: str
+    currentDir: str = "./"
     isBranch: bool = false
     isFor: bool = false
-    arrTypesDecl: []cpstring
+    arrTypesDecl: []str
     haveEntryPoint: bool = false
-    evals: []cpstring
+    evals: []str
     hasImports: bool = false
     currForElems: Elems*
     currFnElems: Elems*
@@ -150,7 +150,7 @@ struct compilerStateTag {
 
 shouldOnlyDecl = false
 
-compilerState compilerStateTag
+compilerState = compilerStateTag{}
 
 currentCStruct cStruct*
 

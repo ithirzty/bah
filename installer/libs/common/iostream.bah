@@ -10,7 +10,7 @@ __Bah_iostream_stdinputBuffer = ""
 __Bah_iostream_stdinputBufferLength = 0
 
 //Returns the text inputed by the user inside the terminal.
-stdinput() cpstring {
+stdinput() str {
     response = ""
     nDataLength = 0
     if __Bah_iostream_stdinputBufferLength > 0 {
@@ -57,7 +57,7 @@ stdinput() cpstring {
 }
 
 //Prints text to the terminal and adds a line return at the end.
-println(s cpstring) {
+println(s str) {
     write(<ptr>1, s+"\n", len(s)+1)
 }
 
@@ -73,7 +73,7 @@ println(s cpstring) {
 //So it is recommended to **use fileMap as much as possible**.
 struct fileStream {
     handle: FILE*
-    name: cpstring
+    name: str
 
     //Checks if the current opened file is valid or not.
     isValid() bool {
@@ -82,7 +82,7 @@ struct fileStream {
 
     //Opens a file by its name.
     //The differents modes can be found [here](https://koor.fr/C/cstdio/fopen.wp).
-    open(path cpstring, mode cpstring) {
+    open(path str, mode str) {
         this.name = path
         #windows {
             if mode == "r" {
@@ -148,13 +148,13 @@ struct fileStream {
     }
 
     //Creates a file by name.
-    createFile(path cpstring) {
+    createFile(path str) {
         this.open(path, "w")
         this.close()
     }
 
     //Writes the opened file with the specified content.
-    writeFile(content cpstring) int {
+    writeFile(content str) int {
         if this.isValid() == false {
             return -1
         }
@@ -179,13 +179,13 @@ struct fileStream {
     }
 
     //Returns the content of the opened file.
-    readContent() cpstring {
+    readContent() str {
         if this.isValid() == false {
             return "invalid"
         }
 
         sz = this.getSize()
-        r cpstring = memoryAllocSTR(sz + 1)
+        r str = memoryAllocSTR(sz + 1)
         fread(r, 1, sz, this.handle)
         return r
     }
@@ -212,16 +212,9 @@ struct fileStream {
 
 }
 
-struct! stat {
-    st_size: int
-    st_mtime: int
-    st_ctime: int
-    st_mode: int
-}
-#define! open(fn cpstring, flags int, mode int) int
+#define! open(fn str, flags int, mode int) int
 #define! close(fd int) int
 #define! fstat(fd int, fs stat*)
-#define! stat(path cpstring, s stat*) int
 #linux {
     #define! munmap(p ptr, l int)
 }
@@ -237,8 +230,8 @@ struct fileMap {
     p: ptr
 
     //To open a file inside the fileMap.
-    //It returns the content of the file as cpstring.
-    open(fileName cpstring) []char {
+    //It returns the content of the file as str.
+    open(fileName str) []char {
         #linux {
             this.handle = open(fileName, noCheck(O_RDWR), noCheck(S_IRUSR | S_IWUSR))
             sb = stat{}
@@ -273,7 +266,7 @@ struct fileMap {
             }
             file = fs.readBytes()
             fs.close()
-            //file cpstring = mmap(0, sb.st_size, noCheck(PROT_READ | PROT_WRITE), noCheck(MAP_SHARED), this.handle, 0)
+            //file str = mmap(0, sb.st_size, noCheck(PROT_READ | PROT_WRITE), noCheck(MAP_SHARED), this.handle, 0)
             return file
         }
 
@@ -307,17 +300,17 @@ struct! dirent {
     d_name: char*
 }
 
-#define! opendir(path cpstring) ptr
+#define! opendir(path str) ptr
 #define! closedir(d ptr)
 #define! readdir(d ptr) dirent*
 
 //Returns a list of all files found inside the specified directory.
-listFiles(dir cpstring) []cpstring {
+listFiles(dir str) []str {
     d = opendir(dir)
     if d == null {
         return null
     }
-    files = []cpstring
+    files = []str
     file = readdir(d)
     for file != null {
         lf = len(files)
@@ -331,15 +324,15 @@ listFiles(dir cpstring) []cpstring {
     return files
 }
 
-#define! access(fn cpstring, m int) int
+#define! access(fn str, m int) int
 
 //Checks if a file exists.
-fileExists(path cpstring) bool {
+fileExists(path str) bool {
     buf stat
     return stat(path, &buf) == 0
 }
 
-isFolder(path cpstring) bool {
+isFolder(path str) bool {
     s stat
     if stat(path, &s) != 0 {
         return false
@@ -350,10 +343,10 @@ isFolder(path cpstring) bool {
     return false
 }
 
-#define! remove(fn cpstring) int
+#define! remove(fn str) int
 
 //Removes a file. 'name' should be the file name, returns true if the file was deleted.
-removeFile(name cpstring) bool {
+removeFile(name str) bool {
     if remove(name) == 0 {
         return true
     }
@@ -361,19 +354,19 @@ removeFile(name cpstring) bool {
 }
 
 //Get the timestamp of the last modification of a file.
-getLastModified(name cpstring) int {
+getLastModified(name str) int {
     attr stat
     stat(name, &attr)
     return attr.st_ctime
 }
 
-#define! getenv(s cpstring) cpstring
-#define! mkdir(s cpstring, m int) int
-#define! rename(o cpstring, n cpstring)
+#define! getenv(s str) str
+#define! mkdir(s str, m int) int
+#define! rename(o str, n str)
 
 
 #windows {
-    __windows_mkdir(s cpstring, m int) int {
+    __windows_mkdir(s str, m int) int {
         return noCheck(mkdir(s))
     }
     const mkdir = __windows_mkdir

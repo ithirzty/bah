@@ -3,19 +3,19 @@
 
 //Represents a html element.
 struct htmlElement {
-    name: cpstring
-    attrs: []cpstring
-    html: cpstring = ""
-    text: cpstring = ""
+    name: str
+    attrs: []str
+    html: str = ""
+    text: str = ""
     children: []htmlElement*
     parent: htmlElement*
 
 
     //Used for getting the content of the specified attribute.
-    attr(name cpstring) cpstring {
+    attr(name str) str {
         i=0; for i < len(this.attrs) {
             attr = string(this.attrs[i])
-            attrName cpstring
+            attrName str
             if attr.count("=") > 0 {
                 attrName = splitStringBefore(attr, "=")
                 if attrName == name {
@@ -31,9 +31,9 @@ struct htmlElement {
     }
 
     //Used for finding a children of the element corresponding to the specified query.
-    find(q cpstring) []htmlElement* {
+    find(q str) []htmlElement* {
         elems = []htmlElement*
-        tag cpstring
+        tag str
         qs = string(q)
         oqs = qs
         if qs.count(" ") > 0 {
@@ -41,7 +41,7 @@ struct htmlElement {
         } else {
             tag = q
         }
-        fc = cpstringCharAt(tag, 0)
+        fc = strCharAt(tag, 0)
         if fc == '.' {
             qs.trimLeft(1)
         }
@@ -101,7 +101,7 @@ isValidHTMLStringChar(c char) bool {
 
 //Used for skipping white spaces inside the current char array.
 //*Note: this is an internal function.*
-skipHTMLspace(s cpstring, i int) int {
+skipHTMLspace(s str, i int) int {
     for i < len(s) {
         if isSpace(s[i]) == 0 {
             break
@@ -113,11 +113,11 @@ skipHTMLspace(s cpstring, i int) int {
 
 //Used for parsing a string. Will return an array of elements.
 //*Note: this is an internal function, if you are trying to parse a document, use parseHTML().*
-parseHTMLElements(s cpstring, parent htmlElement*) []htmlElement* {
+parseHTMLElements(s str, parent htmlElement*) []htmlElement* {
 
     elems = []htmlElement*
 
-    nonClosingTags = []cpstring{
+    nonClosingTags = []str{
         "meta", 
         "img",
         "!doctype",
@@ -134,7 +134,7 @@ parseHTMLElements(s cpstring, parent htmlElement*) []htmlElement* {
         "track",
         "wbr"
     }
-    nonParsingTags = []cpstring{
+    nonParsingTags = []str{
         "script",
         "style",
         "svg"
@@ -410,7 +410,7 @@ parseHTMLElements(s cpstring, parent htmlElement*) []htmlElement* {
 
 //Used for parsing a HTML document.
 //Will return a pointer to the document.
-parseHTML(doc cpstring) htmlElement* {
+parseHTML(doc str) htmlElement* {
     root = new htmlElement
     root.name = "document"
     root.children = parseHTMLElements(doc, root)

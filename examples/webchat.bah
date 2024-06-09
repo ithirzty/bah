@@ -13,8 +13,8 @@
 
 //This is the structure that will represent a message.
 struct message {
-    author: cpstring
-    msg: cpstring
+    author: str
+    msg: str
 }
 
 listeners = []ptr //This is the array that will contain every client that currently need to receive messages.
@@ -117,7 +117,7 @@ done(s http_server*) {
 
 //'main' is the entry point of the program.
 //it takes an array of arguments (passed by the terminal) and returns an exit code.
-main(args []cpstring) int {
+main(args []str) int {
 
     s = http_server { //initiates a new http_server structure
         port: 8080 //set its port to 8080

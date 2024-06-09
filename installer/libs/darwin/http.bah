@@ -62,7 +62,7 @@ struct http_url {
 #define! htonl(inaddrt int) uint
 #define! bind(sockfd int, ser_addr sockaddr_in*, s int) int
 #define! listen(sockfd int, s int) int
-#define! memset(str ptr, w int, s int)
+#define! memset(cpstring ptr, w int, s int)
 #define! accept(sockfd int, cliaddr sockaddr_in*, clilen int*) int
 
 //Used for parsing an URL.
@@ -292,7 +292,7 @@ struct http_request {
             i = i + 1
         }
 
-        r = valueMemory.str()
+        r = valueMemory.cpstring()
 
         return r
     }
@@ -316,7 +316,7 @@ http_request(connfd int) http_request {
         method.append(cs)
         i = i + 1
     }
-    r.method = method.str()
+    r.method = method.cpstring()
 
     //parse path (/)
     path = string("")
@@ -330,7 +330,7 @@ http_request(connfd int) http_request {
         path.append(cs)
         i = i + 1
     }
-    r.path = path.str()
+    r.path = path.cpstring()
 
     //trim rest of request (HTTP/1.1)
     for i < req.length {
@@ -421,15 +421,15 @@ struct http_response {
         headerName.append(":")
         i=0;for i < len(this.headers) {
             currentHeader = this.headers[i]
-            if currentHeader.hasPrefix(headerName.str()) {
-                header = string(currentHeader.str())
+            if currentHeader.hasPrefix(headerName.cpstring()) {
+                header = string(currentHeader.cpstring())
                 space = 0
                 c = header.charAt(headerName.length)
                 if isSpace(c) {
                     space = 1
                 }
                 header.trimLeft(headerName.length+space)
-                return header.str()
+                return header.cpstring()
             }
             i=i+1
         }
@@ -531,7 +531,7 @@ makeRawHttpsRequest(host cpstring, message cpstring) cpstring {
     }
     BIO_free_all(bio)
     SSL_CTX_free(ctx)
-    return resp.str()
+    return resp.cpstring()
 
 }
 
@@ -548,7 +548,7 @@ makeRawRequest(method cpstring, u http_url, args []cpstring) http_response {
     
     message = string(" ")
     message.prepend(method)
-    message.append(path.str())
+    message.append(path.cpstring())
     serialArgs = string("?")
     largs = len(args)
     max = largs - 1
@@ -560,7 +560,7 @@ makeRawRequest(method cpstring, u http_url, args []cpstring) http_response {
         i = i + 1
     }
     if largs > 0 {
-        message.append(serialArgs.str())
+        message.append(serialArgs.cpstring())
     }
     message.append(" HTTP/1.0\r\nHost: ")
     
@@ -568,12 +568,12 @@ makeRawRequest(method cpstring, u http_url, args []cpstring) http_response {
         host.append(":443")
     }
     
-    message.append(host.str())
+    message.append(host.cpstring())
     message.append("\r\nConnection: close\r\n\r\n")
     
 
     if proto.compare("https") {
-        resp = makeRawHttpsRequest(host.str(), message.str())
+        resp = makeRawHttpsRequest(host.cpstring(), message.cpstring())
         response.set(resp)
 
     } else {
@@ -662,17 +662,17 @@ makeRawRequest(method cpstring, u http_url, args []cpstring) http_response {
 
         line = lines[i]
         if isBody == 1 {
-            s = string(line.str())
+            s = string(line.cpstring())
             if i < max {
                 s.append("\r\n")
             }
-            body.append(s.str())
+            body.append(s.cpstring())
             i = i + 1
             continue
         }
         if i > 0 {
             pl = lines[i-1]
-            if strlen(pl.str()) == 0 {
+            if strlen(pl.cpstring()) == 0 {
                 isBody = 1
                 line.trimLeft(2)
                 continue
@@ -684,9 +684,9 @@ makeRawRequest(method cpstring, u http_url, args []cpstring) http_response {
         if headerName.length > 0 {
             headerName = toLower(headerName)
             line.trimLeft(headerName.length)
-            line.prepend(headerName.str())
+            line.prepend(headerName.cpstring())
         }
-        header.set(line.str())
+        header.set(line.cpstring())
         lrh = len(resp.headers)
         resp.headers[lrh] = header
 
@@ -713,7 +713,7 @@ makeRawRequest(method cpstring, u http_url, args []cpstring) http_response {
         }
 
     } else {
-        resp.body.set(body.str())
+        resp.body.set(body.cpstring())
     }
 
 
@@ -739,7 +739,7 @@ post(url cpstring, args []cpstring) http_response {
 isPortAvailable(port int) int {
     cmdS = intToString(port)
     cmdS.prepend("netstat -antu | grep :")
-    cmd = command(cmdS.str())
+    cmd = command(cmdS.cpstring())
     s = cmd.run()
     if strlen(s) > 0 {
         return 0

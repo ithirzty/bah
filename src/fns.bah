@@ -1,6 +1,6 @@
 #include "./globals.bah"
 
-#define searchVar(name cpstring, t Tok*, elems Elems*) variable*
+#define searchVar(name str, t Tok*, elems Elems*) variable*
 
 //This is stupid: are we in the global scope or inside a function.
 isGlobal() bool {
@@ -10,7 +10,7 @@ isGlobal() bool {
 //Searches a function by name.
 //This may return a new instance of func.
 //This will also search for variable with func type and struct methods.
-searchFunc(name cpstring, elems Elems*, inclCurr bool) func* {
+searchFunc(name str, elems Elems*, inclCurr bool) func* {
     ogName = name
     if name == "noCheck" {
         fn = new func
@@ -26,7 +26,7 @@ searchFunc(name cpstring, elems Elems*, inclCurr bool) func* {
             fn.used = true
             return fn
         }
-        i = i + 1
+        i++
     }
 
     if inclCurr == true && currentFn != null {

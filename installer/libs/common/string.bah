@@ -4,22 +4,22 @@
 
 #include "cBinds.bah"
 
-#define! strncpy(dest cpstring, src cpstring, size int)
+#define! strncpy(dest str, src str, size int)
 #define! memcpy(dest ptr, src ptr, size int)
-#define! sscanf(str cpstring, format cpstring, dest ptr)
-#define! strtol(str cpstring, endptr ptr, base int) int
-#define! strtod(str cpstring, endptr int) float
+#define! sscanf(str str, format str, dest ptr)
+#define! strtol(str str, endptr ptr, base int) int
+#define! strtod(str str, endptr int) float
 #define! memset(str ptr, w int, s int)
-#define! atol(a cpstring) int
+#define! atol(a str) int
 
-//Used for concatenating two known length cpstrings.
-strCatOffset(dest cpstring, destLen int, src cpstring, srcLen int) {
-    memcpy(noCheck(dest+destLen+cpstringLenSize), src, srcLen)
+//Used for concatenating two known length strs.
+strCatOffset(dest str, destLen int, src str, srcLen int) {
+    memcpy(noCheck(dest+destLen+strLenSize), src, srcLen)
 }
 
-//Used for converting a char into a cpstring of length 1.
-charToString(c char) cpstring {
-    s cpstring = memoryAllocSTR(2)
+//Used for converting a char into a str of length 1.
+charToString(c char) str {
+    s str = memoryAllocSTR(2)
     ln uint32* = s
     *ln = 1
     strncpy(s,<ptr>&c, 1)
@@ -58,7 +58,7 @@ isSpace(c char) bool {
 }
 
 //Replace the substring 'what' by the string 'by' inside the string 's'.
-strReplace(s cpstring, what cpstring, by cpstring) cpstring {
+strReplace(s str, what str, by str) str {
     l = len(s)
     wl = len(what)
     bl = len(by)
@@ -90,32 +90,32 @@ strReplace(s cpstring, what cpstring, by cpstring) cpstring {
 
 //A string wrapper to make string manipulation easier.
 struct string {
-    //The content of the string as a cpstring.
-    content: cpstring
+    //The content of the string as a str.
+    content: str
     //Weither the string is mutable. This should not be changed.
     editable: bool
     //The length of the string.
     length: int
 
-    //Sets the string value to the specified cpstring.
-    set(s cpstring) {
+    //Sets the string value to the specified str.
+    set(s str) {
         this.length = len(s)
         this.editable = false
         this.content = s
     }
 
     //Used internally to make a string mutable without causing conflict.
-    //This is because setting the content of a string will not copy the new cpstring to memory
+    //This is because setting the content of a string will not copy the new str to memory
     //until it is changed.
     makeEditable() {
         this.editable = true
         old = this.content
-        this.content = <cpstring>memoryAllocSTR(this.length+1)
+        this.content = <str>memoryAllocSTR(this.length+1)
         strncpy(this.content, old, this.length)
     }
 
-    //Appends the specified cpstring to the string.
-    append(s cpstring) {
+    //Appends the specified str to the string.
+    append(s str) {
         if this.editable == false {
             this.makeEditable()
         }
@@ -127,8 +127,8 @@ struct string {
         this.length += sl
     }
     
-    //Prepends the specified cpstring to the string.
-    prepend(s cpstring) {
+    //Prepends the specified str to the string.
+    prepend(s str) {
         this.editable = true
         sl = len(s)
         nl = this.length + sl
@@ -148,18 +148,18 @@ struct string {
         return this.content[i]
     }
 
-    //Used to know if the content of the string is the same as the specified cpstring, returns 1 if true.
-    compare(s cpstring) int {
+    //Used to know if the content of the string is the same as the specified str, returns 1 if true.
+    compare(s str) int {
         return <int>noCheck(strcmp(this->content, s)) == 0
     }
 
-    //Used for getting the content of the string as a cpstring.
-    str() cpstring {
+    //Used for getting the content of the string as a str.
+    str() str {
         return this.content
     }
 
     //Used to replace a substring by another.
-    replace(nd cpstring, rl cpstring) {
+    replace(nd str, rl str) {
         this.set(strReplace(this.content, nd, rl))
     }
 
@@ -175,7 +175,7 @@ struct string {
     }
 
     //Used to count the number of substring(s).
-    count(needle cpstring) int {
+    count(needle str) int {
         count = 0
         countIndex = 0
         nl = len(needle)
@@ -195,7 +195,7 @@ struct string {
         return count
     }
 
-    contains(needle cpstring) bool {
+    contains(needle str) bool {
         ind = 0
         nl = len(needle)
         i=0; for i < this.length, i++ {
@@ -221,7 +221,7 @@ struct string {
     }
 
     //Used to know if the string as a specified prefix, returns 1 if true.
-    hasPrefix(need cpstring) int {
+    hasPrefix(need str) int {
         i = 0
         nl = len(need)
         if this.length < nl {
@@ -229,7 +229,7 @@ struct string {
         }
         for i < nl {
             c = this.charAt(i)
-            sc = cpstringCharAt(need, i)
+            sc = strCharAt(need, i)
             if c != sc {
                 return 0
             }
@@ -239,7 +239,7 @@ struct string {
     }
 
     //Used to know if the string as a specified suffix, returns 1 if true.
-    hasSuffix(need cpstring) int {
+    hasSuffix(need str) int {
         nl = len(need)
         if this.length < nl {
             return 0
@@ -248,7 +248,7 @@ struct string {
         needleIndex = 0
         for i < this.length {
             c = this.charAt(i)
-            sc = cpstringCharAt(need, needleIndex)
+            sc = strCharAt(need, needleIndex)
             if c != sc {
                 return 0
             }
@@ -318,7 +318,7 @@ struct string {
             this.makeEditable()
         }
         arr = []char
-        noCheck(arr->data = this->content+cpstringLenSize)
+        noCheck(arr->data = this->content+strLenSize)
         noCheck(arr->length = this->length)
         noCheck(arr->realLength = this->length)
         return arr
@@ -334,15 +334,15 @@ struct string {
 
 }
 
-//Used to make a string wrapper from a specified cpstring.
-string(s cpstring) string {
+//Used to make a string wrapper from a specified str.
+string(s str) string {
     a = string{}
     a.set(s)
     return a
 }
 
-//Converts an int into a cpstring.
-intToStr(i int) cpstring {
+//Converts an int into a str.
+intToStr(i int) str {
     if i == 0 {
         return "0"
     }
@@ -380,22 +380,83 @@ intToStr(i int) cpstring {
     return buffToStr(<char*>s)
 }
 
+//Converts an uint into a str.
+uintToStr(i uint) str {
+    if i == 0 {
+        return "0"
+    }
+
+    s = buffer 66
+    ind = -1
+
+    for i != 0, i = i / 10 {
+        conv = i % 10
+        conv = conv + 48
+        s[ind+1] = <char>conv
+        ind++
+    }
+
+    ls = ind+1
+    i=0; for i < ls/2, i++ {
+        ii = ls-i-1
+        osi = s[i]
+        s[i] = s[ii]
+        s[ii] = osi
+    }
+
+    s[ind+1] = <char>0
+
+    return buffToStr(<char*>s)
+}
+
+//Converts an unsigned int to a hex str.
+uintToHex(i uint) str {
+    if i == 0 {
+        return "0"
+    }
+
+    s = buffer 66
+    ind = -1
+
+    for i != 0, i = i / 16 {
+        conv = i % 16
+        conv = conv + 48
+        if conv > 57 {
+            conv += 39
+        }
+        s[ind+1] = <char>conv
+        ind++
+    }
+    
+    ls = ind+1
+    i=0; for i < ls/2, i++ {
+        ii = ls-i-1
+        osi = s[i]
+        s[i] = s[ii]
+        s[ii] = osi
+    }
+
+    s[ind+1] = <char>0
+
+    return buffToStr(<char*>s)
+}
+
 //Used to convert an integer into a string.
-//*It returns a string, not a cpstring*
+//*It returns a string, not a str*
 intToString(i int) string {
     r = string(intToStr(i))
     return r
 }
 
-//Converts a float to a cpstring.
-floatToStr(f float) cpstring {
+//Converts a float to a str.
+floatToStr(f float) str {
     buff = buffer 50
     sprintf(<ptr>buff, "%lf", f)
     return buffToStr(<char*>buff)
 }
 
 //Used for converting a string to an int.
-strToInt(s cpstring) int {
+strToInt(s str) int {
     l int = len(s)-1
     offset = 1
     r = 0
@@ -417,20 +478,20 @@ strToInt(s cpstring) int {
 } 
 
 //Used for converting a string to a float
-strToFloat(s cpstring) float {
+strToFloat(s str) float {
     return strtod(s, null)
 }
 
 
 //Used to convert a string into an integer.
-//*It takes a string, not a cpstring*
+//*It takes a string, not a str*
 stringToInt(s string) int {
     i int = atol(s.content)
     return i
 }
 
 //Used for splitting a string into multiple substrings delimited by the specified delimiter.
-splitString(s string, sep cpstring) []string {
+splitString(s string, sep str) []string {
     sepInd = 0
     start = 0
     r = []string
@@ -460,8 +521,19 @@ splitString(s string, sep cpstring) []string {
     return r
 }
 
+strJoin(arr []str, sep str) str {
+    if len(arr) == 0 {
+        return ""
+    }
+    r = arr[0]
+    i=1; for i < len(arr), i++ {
+        r += sep + arr[i]
+    }
+    return r
+}
+
 //Used for joinning an array of strings with a specified separator into a string.
-joinString(a []string, sep cpstring) string {
+joinString(a []string, sep str) string {
     i = 0
     s = string("")
     max = len(a) - 1
@@ -482,7 +554,7 @@ joinString(a []string, sep cpstring) string {
 }
 
 //Used to get the content of a string before a certain delimiter.
-splitStringBefore(s string, sp cpstring) cpstring {
+splitStringBefore(s string, sp str) str {
     sep = string(sp)
     if sep.length >= s.length {
         return ""
@@ -530,7 +602,7 @@ toLower(s string) string {
 
 //Use string(s).hasPrefix(prefix) instead.
 //This function has known bugs.
-strHasPrefix(s cpstring, need cpstring) bool {
+strHasPrefix(s str, need str) bool {
     i = 0
     nl = len(need)
     sl = len(s)
@@ -538,7 +610,7 @@ strHasPrefix(s cpstring, need cpstring) bool {
         return false
     }
     for i < nl { 
-        if cpstringCharAt(s, i) != cpstringCharAt(need, i) {
+        if strCharAt(s, i) != strCharAt(need, i) {
             return false
         }
         i = i + 1
@@ -548,14 +620,14 @@ strHasPrefix(s cpstring, need cpstring) bool {
 
 //Use string(s).hasSuffix(suffix) instead.
 //This function has known bugs.
-strHasSuffix(s cpstring, need cpstring) bool {
+strHasSuffix(s str, need str) bool {
     sl = len(s)
     nl = len(need)
     if nl > sl {
         return false
     }
     i=sl-nl; for i < sl {
-        if cpstringCharAt(s, i) != cpstringCharAt(need, i) {
+        if strCharAt(s, i) != strCharAt(need, i) {
             return false
         }
         i = i + 1
@@ -563,12 +635,12 @@ strHasSuffix(s cpstring, need cpstring) bool {
     return true
 }
 
-//Used for trimming a cpstring.
-//This will remove all space chars at the begining of the cpstring. 
-strTrim(s cpstring*) {
+//Used for trimming a str.
+//This will remove all space chars at the begining of the str. 
+strTrim(s str*) {
     l = len(*s)
     i=0; for i < l {
-        c = cpstringCharAt(*s, i)
+        c = strCharAt(*s, i)
         if isSpace(c) == false {
             break
         }
@@ -578,8 +650,8 @@ strTrim(s cpstring*) {
 
 }
 
-//This is used to count the number of substrings inside a cpstring.
-strCount(src cpstring, needle cpstring) int {
+//This is used to count the number of substrings inside a str.
+strCount(src str, needle str) int {
     count = 0
     countIndex = 0
     sl = len(src)

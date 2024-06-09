@@ -38,7 +38,7 @@ __BAH_rcp_treeBase __BAH_rcp_tree* = null
 __BAH_rcp_mutex pthread_mutex_t
 
 #define! exit(e int)
-#define panic(s cpstring)
+#define panic(s str)
 #define RCP_decrImmediate(p ptr, s int32, strict bool)
 #define RCP_incrImmediate(p ptr, s int32, strict bool)
 
@@ -252,18 +252,18 @@ memoryAlloc(s uint) ptr {
     return RCP_register(p, s)
 }
 
-//Used for allocating memory for a cpstring.
+//Used for allocating memory for a str.
 //The content of the memory block should not contain any pointer.
 //It will not be checked for memory collection.
-memoryAllocSTR(s uint) cpstring {
-    p = malloc(s+cpstringLenSize+sizeof(__BAH_rcp_tree)+1)
-//     noCheck(printf("[RCP] Allocating STR: %p (%ld bytes)\n"+4, p, s))
-    memset(p, null, s + cpstringLenSize + sizeof(__BAH_rcp_tree))
-    r = <cpstring>RCP_register(p, s + cpstringLenSize)
+memoryAllocSTR(s uint) str {
+    p = malloc(s+strLenSize+sizeof(__BAH_rcp_tree)+1)
+//     noCheck(printf("[RCP] Allocating str: %p (%ld bytes)\n"+4, p, s))
+    memset(p, null, s + strLenSize + sizeof(__BAH_rcp_tree))
+    r = <str>RCP_register(p, s + strLenSize)
     ln uint32* = r
     *ln = s-1
     noCheck(r[s-1] = 0)
-    return <cpstring>r
+    return <str>r
 }
 
 //Will realloc memory to a specified pointer.
@@ -311,7 +311,7 @@ memoryOnEnd(obj ptr, fn ptr) {
 //This will copy l bytes from the source to the end.
 //A faster version is available with -optimize.
 //This is called when calling memcpy().
-__BAH_memcpy(dest cpstring, source cpstring, l int) {
+__BAH_memcpy(dest str, source str, l int) {
     lm = l % sizeof(int)
     if lm != 0 {
         for lm != 0, lm-- {

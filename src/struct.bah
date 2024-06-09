@@ -2,9 +2,9 @@
 
 #include "./globals.bah"
 
-#define searchFunc(n cpstring, e Elems*, c bool) func*
+#define searchFunc(n str, e Elems*, c bool) func*
 #define parseFnType(n string) func*
-#define getCType(t cpstring, e Elems*) string
+#define getCType(t str, e Elems*) string
 
 //Returns true if the token content 'n' contains a struct separator (such as '.').
 //Struct separator '->' is also valid because of midway C code translation.
@@ -51,15 +51,15 @@ splitStructSepAfter(n string) string {
                 break
             }
         }
-        i = i - 1
+        i--
     }
-    i = i + 1
+    i++
     n.trimLeft(i)
     return n
 }
 
 //Searches a struct by name.
-searchStruct(name cpstring, elems Elems*) cStruct* {
+searchStruct(name str, elems Elems*) cStruct* {
     if len(name) == 0 {
         return null
     }
@@ -84,7 +84,7 @@ searchStruct(name cpstring, elems Elems*) cStruct* {
 }
 
 //Searches a member by name inside a structure.
-searchStructMemb(name cpstring, s cStruct*, elems Elems*) structMemb* {
+searchStructMemb(name str, s cStruct*, elems Elems*) structMemb* {
     n = string(name)
     if hasStructSep(&n) {
         rn = splitStructSepBefore(&n)
@@ -110,7 +110,7 @@ searchStructMemb(name cpstring, s cStruct*, elems Elems*) structMemb* {
         if m.name == name {
             return m
         }
-        i = i + 1
+        i++
     }
     mthds = s.methods
     i=0; for i < len(mthds) {
@@ -123,7 +123,7 @@ searchStructMemb(name cpstring, s cStruct*, elems Elems*) structMemb* {
             sm.isFn = true
             return sm
         }
-        i = i + 1
+        i++
     }
 
     if len(s.extendedFrom) == 0 {
@@ -139,7 +139,7 @@ searchStructMemb(name cpstring, s cStruct*, elems Elems*) structMemb* {
 }
 
 //Searches a method by name inside a structure.
-searchStructMethod(name cpstring, s cStruct*, elems Elems*) func* {
+searchStructMethod(name str, s cStruct*, elems Elems*) func* {
     if s == null {
         return null
     }
@@ -167,7 +167,7 @@ searchStructMethod(name cpstring, s cStruct*, elems Elems*) func* {
 //Legacy function that used to declare a struct's methods on inline struct declaration.
 //Now declares members default values, initializa array/map/channel members and call ._init if present.
 //Will not declare default values for every member which index is present in excl.
-declareStructMethods(v variable*, excl []int, s cStruct*, elems Elems*) cpstring {
+declareStructMethods(v variable*, excl []int, s cStruct*, elems Elems*) str {
     code = ""
     members = s.members
     typec = string(v.type)
@@ -190,7 +190,7 @@ declareStructMethods(v variable*, excl []int, s cStruct*, elems Elems*) cpstring
         cmpt = string(m.type)
         if m.def != "" {
             if m.def != "false" && m.def != "0" && m.def != "null" {
-                code = code + v.name + sep + m.name + " = " + m.def + ";\n"
+                code += v.name + sep + m.name + " = " + m.def + ";\n"
             }
             continue
         }
@@ -199,7 +199,7 @@ declareStructMethods(v variable*, excl []int, s cStruct*, elems Elems*) cpstring
             cmptstr = cmpt.str()
             elemCType = getCType(cmptstr, elems)
             elemCTypeStr = elemCType.str()
-            code = code + v.name + sep + m.name + " = memoryAlloc(sizeof(struct Bah_Array_Type));
+            code += v.name + sep + m.name + " = memoryAlloc(sizeof(struct Bah_Array_Type));
             "+v.name+sep+m.name+"->length = 0;
             "+v.name+sep+m.name+"->elemSize = sizeof("+elemCTypeStr+");
             "

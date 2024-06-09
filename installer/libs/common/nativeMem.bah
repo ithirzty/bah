@@ -16,9 +16,9 @@
 
 
 #define memoryAlloc(s int) ptr
-#define memoryAllocSTR(s int) cpstring
+#define memoryAllocSTR(s int) str
 #define memoryRealloc(o ptr, s int) ptr
-#define initiateMemory(args []cpstring)
+#define initiateMemory(args []str)
 
 // memoryAlloc(s int) ptr {
 //     p = malloc(s)
@@ -45,7 +45,7 @@ cleanShutDown() {
     exit(0)
 }
 
-__BAH_memcpy(dest cpstring, source cpstring, l int) {
+__BAH_memcpy(dest str, source str, l int) {
     lm = l % sizeof(int)
     if lm != 0 {
         for lm != 0, lm-- {

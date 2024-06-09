@@ -15,7 +15,7 @@ const ASCII_GREY = "\033[2m"
 #define advertiseGeneric() //defined in generics.bah
 
 //Generates a function definition to be printed as more context for an error.
-getFuncDef(fn func*) cpstring {
+getFuncDef(fn func*) str {
     def = ASCII_YELLOW + fn.name + ASCII_RESET + "("
     i=0; for i < len(fn.args),i++ {
         def += ASCII_MAGENTA + fn.args[i].name + " " + ASCII_BLUE + fn.args[i].type + ASCII_RESET
@@ -31,7 +31,7 @@ getFuncDef(fn func*) cpstring {
 //Prints a formatted error to the terminal/adds an entry in '-debug' mode.
 //It then exits the program.
 //This function is somewhat huge for its purpose because it will find the token position inside the source file and print the whole line.
-throwErr(tp ptr, format cpstring) {
+throwErr(tp ptr, format str) {
     str = ""
     info = ""
     pos = 0
@@ -52,10 +52,10 @@ throwErr(tp ptr, format cpstring) {
         beg=t.pos; for beg > 0 {
             c = fileSrcStr[beg]
             if c == <char>10 {
-                beg =beg + 1
+                beg++
                 break
             }
-            beg =beg - 1
+            beg--
         }
 
         pos = t.pos - beg + 1
@@ -112,7 +112,7 @@ throwErr(tp ptr, format cpstring) {
 
 //Prints a warning to the terminal/adds an entry in '-debug' mode.
 //This will not terminate the program.
-throwWarning(s cpstring) {
+throwWarning(s str) {
     if debug {
         s = noASCIIescape(s)
         debugError("warning", -1, -1, -1, &s)
@@ -123,7 +123,7 @@ throwWarning(s cpstring) {
 
 //Same as 'throwWarning()' but will also show the line number of the warning.
 //This is the function called when using '#warning'.
-throwWarningLine(s cpstring, l int) {
+throwWarningLine(s str, l int) {
     if debug {
         s = noASCIIescape(s)
         debugError("warning", l, 0, 0, &s)
@@ -134,7 +134,7 @@ throwWarningLine(s cpstring, l int) {
 
 //Used for printinh a notice to the terminal/adding an entry in '-debug' mode.
 //This will not terminate the program.
-throwNoticeLine(s cpstring, l int) {
+throwNoticeLine(s str, l int) {
     if debug {
         s = noASCIIescape(s)
         debugError("notice", l, 0, 0, &s)

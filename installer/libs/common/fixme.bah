@@ -1,21 +1,21 @@
 #include "string.bah"
 
 struct fixMeVar {
-    name: cpstring
+    name: str
     addr: ptr
-    beg: cpstring
-    end: cpstring
+    beg: str
+    end: str
     alive: bool = true
 }
 
 
 #cLib "O0" "-debug"
 
-#define println(s cpstring)
+#define println(s str)
 
 fixMeCurrentVars = []fixMeVar
 
-fixMeAddVar(name cpstring, v ptr, path cpstring) {
+fixMeAddVar(name str, v ptr, path str) {
     fixMeCurrentVars[len(fixMeCurrentVars)] = fixMeVar {
         name: name
         addr: v
@@ -24,7 +24,7 @@ fixMeAddVar(name cpstring, v ptr, path cpstring) {
     }    
 }
 
-fixMeRemVar(name cpstring, p ptr, path cpstring) {
+fixMeRemVar(name str, p ptr, path str) {
     i=0; for i < len(fixMeCurrentVars), i++ {
         v = &fixMeCurrentVars[i]
         if v.addr == p {
@@ -35,7 +35,7 @@ fixMeRemVar(name cpstring, p ptr, path cpstring) {
     }
 }
 
-fixMeIsVarOk(p ptr, name cpstring, path cpstring) bool {
+fixMeIsVarOk(p ptr, name str, path str) bool {
     if p == null {
         panic("Accessing null var '"+name+"':
 \tAccess:   "+path)

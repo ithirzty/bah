@@ -4,7 +4,7 @@
 // if a == null {
 // ...current scope...
 //}
-checkedNull(v cpstring, elems Elems*) bool {
+checkedNull(v str, elems Elems*) bool {
     for elems != null, elems = elems.parent {
         i=0; for i < len(elems.branchChecks), i++ {
             bc = elems.branchChecks[i]
@@ -32,7 +32,7 @@ checkedNull(v cpstring, elems Elems*) bool {
 // if a != null {
 // ...current scope...
 //}
-checkedNotNull(v cpstring, elems Elems*) bool {
+checkedNotNull(v str, elems Elems*) bool {
     for elems != null, elems = elems.parent {
         i=0; for i < len(elems.branchChecks), i++ {
             bc = elems.branchChecks[i]
@@ -67,7 +67,7 @@ canChangeNullState(v variable*, elems Elems*) bool {
 }
 
 //Checks if a value can be null inside a certain scope.
-checkCanBeNull(t Tok*, tt cpstring, elems Elems*) {
+checkCanBeNull(t Tok*, tt str, elems Elems*) {
     if isUnsafe == false && string(compilerState.currentDir).hasPrefix(BAH_DIR) == false && isRCPpointerType(tt) && t.cont[0] != '&' && t.cont[0] != '*' {
         sv = searchVarByToken(t, elems)
         if sv != null {
@@ -84,7 +84,7 @@ checkCanBeNull(t Tok*, tt cpstring, elems Elems*) {
 }
 
 //Checks if a value can be null inside a certain scope and returns the value.
-getCanBeNull(t Tok*, tt cpstring, elems Elems*) bool {
+getCanBeNull(t Tok*, tt str, elems Elems*) bool {
     if isUnsafe == false && string(compilerState.currentDir).hasPrefix(BAH_DIR) == false && isRCPpointerType(tt) && t.cont[0] != '&' && t.cont[0] != '*' {
         sv = searchVarByToken(t, elems)
         if sv != null {
@@ -259,7 +259,7 @@ isStaticToken(t Tok*, elems Elems*) bool {
 
 //Returns the static value of a token.
 //This works with string litterals/numbers and const values.
-getStaticValue(t Tok*, elems Elems*) cpstring {
+getStaticValue(t Tok*, elems Elems*) str {
     if t.type == TOKEN_TYPE_INT || t.type == TOKEN_TYPE_FLOAT || t.type == TOKEN_TYPE_STR || t.type == TOKEN_TYPE_BOOL || t.type == TOKEN_TYPE_CHAR {
         return t.cont
     }
@@ -278,7 +278,7 @@ getStaticValue(t Tok*, elems Elems*) cpstring {
 // vType:
 //        0 = array
 //        1 = buffer
-//        2 = cpstring
+//        2 = str
 checkBounds(arr Tok*, vType int, t Tok*, elems Elems*) {
     if isUnsafe {
         return

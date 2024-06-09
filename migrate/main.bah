@@ -1,0 +1,233 @@
+#import "iostream.bah"
+#import "string.bah"
+#import "time.bah"
+#import "rope.bah"
+#import "flags.bah"
+#import "path.bah"
+
+#include "../src/lexer.bah"
+
+getDirFromFile(f str) str {
+    l int = len(f)
+    i = l-1; for i >= 0 {
+        c = f[i]
+        if c == '/' {
+            return f[:i+1]
+        }
+        i--
+    }
+
+    if i <= 0 {
+        return ""
+    }
+
+    return f
+}
+
+logChange(file str, line int, msg str) {
+    println("\033[32m"+file+":"+intToStr(line)+"\033[0m\t\t"+msg)
+}
+
+
+migrateFile(fn str) {
+
+    if fn[0] != '/' {
+        fn = compilerState.currentDir + fn
+    }
+
+    fn = absPath(fn)
+
+    if len(fn) == 0 {
+        return
+    }
+
+    if fn in compilerState.includes {
+        return
+    }
+
+    
+    compilerState.includes[len(compilerState.includes)] = fn
+    
+    ocd = compilerState.currentDir
+    compilerState.currentDir = getDirFromFile(fn)
+    ocf = compilerState.currentFile
+    compilerState.currentFile = fn
+
+    fs = fileStream{}
+    fs.open(fn, "r")
+    file = fs.readContent()
+    fs.close()
+
+    tokens = lexer(file, len(file))
+
+    lastPos = 0
+    r = rope("")
+    i=0; for i < len(tokens), i++ {
+
+        if tokens[i].cont == "#include" {
+            ifn = tokens[i+1].cont
+            migrateFile(ifn[1:len(ifn)-1])
+            i++
+            continue
+        }
+
+        //replace cpstring type to str
+        if tokens[i].cont == "cpstring" {
+            r += rope(file[lastPos:tokens[i].pos] + "str")
+            lastPos = tokens[i].pos + len(tokens[i].ogCont)
+            logChange(fn, tokens[i].line, "Type: cpstring -> str")
+        }
+
+        //replacing cpstring casts
+        if tokens[i].cont == "<cpstring>" {
+            r += rope(file[lastPos:tokens[i].pos] + "<str>")
+            lastPos = tokens[i].pos + len(tokens[i].ogCont)
+            logChange(fn, tokens[i].line, "Cast: cpstring -> str")
+        }
+
+        //replacing old 'cpstringSubsitute' call
+        if tokens[i].cont == "cpstringSubsitute" || tokens[i].cont == "arraySubstitute" {
+            r += rope(file[lastPos:tokens[i].pos])
+            args = []str
+            currArg = 0
+            ogTok = &tokens[i]
+            composedFA = false
+
+            nbPar = 1
+            i += 2; for i < len(tokens), i++ {
+                if tokens[i].cont == "()" {
+                    nbPar++
+                } else if tokens[i].cont == ")" {
+                    nbPar--
+                } else if tokens[i].cont == "," {
+                    currArg++
+                    continue
+                }
+
+                if nbPar == 0 {
+                    break
+                }
+
+                if len(args) == currArg {
+                    args[currArg] = tokens[i].ogCont
+                } else {
+                    if currArg == 0 {
+                        composedFA = true
+                    }
+                    args[currArg] += tokens[i].ogCont
+                }
+            }
+            if len(args) != 3 {
+                panic("Malformed substitution: "+ogTok.ogCont+"("+strJoin(args, ",")+")\n"+compilerState.currentFile+":"+intToStr(tokens[i].line))
+            }
+
+            if composedFA {
+                args[0] = "("+args[0]+")"
+            }
+
+            r += rope(args[0]+"["+args[1]+":"+args[2]+"]")
+            lastPos = tokens[i].pos + len(tokens[i].ogCont)
+            logChange(fn, tokens[i].line, "Fn: "+ogTok.ogCont+" -> [:]")
+        }
+
+        //replacing old 'strTrimLeft/Right' call
+        if (tokens[i].cont == "strTrimLeft" || tokens[i].cont == "strTrimRight") && tokens[i+2].cont[0] == '&' {            
+            args = []str
+            currArg = 0
+            ogTok = &tokens[i]
+            composedFA = false
+
+            nbPar = 1
+            i += 3; for i < len(tokens), i++ {
+                if tokens[i].cont == "()" {
+                    nbPar++
+                } else if tokens[i].cont == ")" {
+                    nbPar--
+                } else if tokens[i].cont == "," {
+                    currArg++
+                    continue
+                }
+
+                if nbPar == 0 {
+                    break
+                }
+
+                if len(args) == currArg {
+                    args[currArg] = tokens[i].ogCont
+                } else {
+                    if currArg == 0 {
+                        composedFA = true
+                    }
+                    args[currArg] += tokens[i].ogCont
+                }
+            }
+            if len(args) != 2 {
+                panic("Malformed trim: "+ogTok.ogCont+"("+strJoin(args, ",")+")\n"+compilerState.currentFile+":"+intToStr(tokens[i].line))
+            }
+
+            if composedFA {
+                continue
+            }
+
+            r += rope(file[lastPos:ogTok.pos] + args[0] + " = ")
+
+            if ogTok.cont == "strTrimLeft" {
+                r += rope(args[0]+"["+args[1]+":]")
+            } else {
+                r += rope(args[0]+"[:len("+args[0]+") - "+args[1]+"]")
+            }
+            lastPos = tokens[i].pos + len(tokens[i].ogCont)
+
+
+            logChange(fn, tokens[i].line, "Fn: "+ogTok.cont+" -> [:]")
+        }
+
+        //replacing a = a + b
+        if (tokens[i].cont == "+" || tokens[i].cont == "-" || tokens[i].cont == "*" || tokens[i].cont == "/") && tokens[i-1].type == TOKEN_TYPE_VAR && tokens[i-2].cont == "=" && tokens[i-3].cont == tokens[i-1].cont {
+            r += rope(file[lastPos:tokens[i-3].pos+len(tokens[i-3].ogCont)])
+
+            if (tokens[i].cont == "+" || tokens[i].cont == "-") && tokens[i+1].cont == "1" && (i+2 < len(tokens) || tokens[i+2].line != tokens[i+1].line) {
+                r += rope(tokens[i].cont+tokens[i].cont)
+                lastPos = tokens[i+1].pos+len(tokens[i+1].ogCont)
+                logChange(fn, tokens[i-3].line, "Syntax: "+tokens[i].cont+tokens[i].cont)
+            } else {
+                r += rope(" "+tokens[i].cont+"=")
+                lastPos = tokens[i].pos+len(tokens[i].ogCont)
+                logChange(fn, tokens[i-3].line, "Syntax: "+tokens[i].cont+"=")
+            }
+        }
+
+
+
+
+
+
+    }
+
+    if lastPos != 0 {
+        if lastPos != len(file) {
+            r += rope(file[lastPos:])
+        }
+        fs.open(fn, "w")
+        fs.writeFile(r.toStr())
+        fs.close()
+    }
+
+
+
+    compilerState.currentDir = ocd
+    compilerState.currentFile = ocf
+}
+
+main(args []str) int {
+
+    migrateFile(absPath(args[1]))
+
+    println("\nSummary: migrated "+intToStr(len(compilerState.includes)+1)+" files:")
+    println("\t "+absPath(args[1]))
+    i=0; for i < len(compilerState.includes), i++ {
+        println("\t "+absPath(compilerState.includes[i]))
+    }
+
+    return 0
+}
