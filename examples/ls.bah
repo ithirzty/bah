@@ -1,9 +1,4 @@
 // This program prints file's name of a directory to the terminal.
-//
-//
-//
-//
-// © Aloïs Laurent Boë - Bah examples - 2022
 
 #import "iostream.bah" //for: listFiles(), println()
 

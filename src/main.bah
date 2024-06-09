@@ -28,7 +28,7 @@
     const BAH_HOST_OS = "windows"
 }
 //////////////////////BUILD SPECIFIC THINGS//////////////////////
-const BAH_VERSION = "v1.5 (build 180)"
+const BAH_VERSION = "v1.5 (build 181)"
 
 debug = false
 verboseRuntime = false

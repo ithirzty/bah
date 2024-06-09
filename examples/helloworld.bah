@@ -1,9 +1,4 @@
 // This program prints hello world to the terminal.
-//
-//
-//
-//
-// © Aloïs Laurent Boë - Bah examples - 2022
 
 
 #import "iostream.bah" //for: println() 

@@ -2648,7 +2648,7 @@ parseFor(l []Tok, elems Elems*) {
     compilerState.isFor = oldIF
     compilerState.isBranch = oldIB
     compilerState.currForElems = oForElems
-    OUTPUT += rope("};\n"+ifElems.switchOptCurrLoop+":\n")
+    OUTPUT += rope("};\n"+ifElems.switchOptCurrLoop+": ;\n")
 
 }
 

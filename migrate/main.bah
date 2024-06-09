@@ -85,6 +85,20 @@ migrateFile(fn str) {
             logChange(fn, tokens[i].line, "Cast: cpstring -> str")
         }
 
+        //replace arrAsStr
+        if tokens[i].cont == "arrAsStr" && i+1 < len(tokens) && tokens[i+1].cont == "(" {
+            r += rope(file[lastPos:tokens[i].pos] + "arrToStr")
+            lastPos = tokens[i].pos + len(tokens[i].ogCont)
+            logChange(fn, tokens[i].line, "Fn: arrAsStr -> arrToStr")
+        }
+
+        //replace strToArr
+        if tokens[i].cont == "strAsArr" && i+1 < len(tokens) && tokens[i+1].cont == "(" {
+            r += rope(file[lastPos:tokens[i].pos] + "strToArr")
+            lastPos = tokens[i].pos + len(tokens[i].ogCont)
+            logChange(fn, tokens[i].line, "Fn: strAsArr -> strToArr")
+        }
+
         //replacing old 'cpstringSubsitute' call
         if tokens[i].cont == "cpstringSubsitute" || tokens[i].cont == "arraySubstitute" {
             r += rope(file[lastPos:tokens[i].pos])

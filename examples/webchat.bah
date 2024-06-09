@@ -1,10 +1,5 @@
 // This hosts a webserver where you can send messages,
 // and receive them in realtime (a chat).
-//
-//
-//
-// © Aloïs Laurent Boë - Bah examples - 2022
-
 
 #import "iostream.bah" //for: println(), string{}, intToStr(), arrToStr(), fileStream{}
 #import "thread.bah"   //for: mutex{}

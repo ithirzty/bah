@@ -232,7 +232,7 @@ i = l-lm;
 #line 71 "/opt/bah/gc.bah"
  dest [ i ] = source [ i ];
 };
-____BAH_COMPILER_VAR_0_aoptabahagcbbah:
+____BAH_COMPILER_VAR_0_aoptabahagcbbah: ;
 
 #line 73 "/opt/bah/gc.bah"
 long long int* destI = (void *)((long long int)dest-sizeof(long long int));
@@ -249,7 +249,7 @@ for (; (i!=0); --i) {
 #line 76 "/opt/bah/gc.bah"
  destI [ i ] = sourceI [ i ];
 };
-____BAH_COMPILER_VAR_1_aoptabahagcbbah:
+____BAH_COMPILER_VAR_1_aoptabahagcbbah: ;
 };
 
 #line 84 "/opt/bah/gc.bah"
@@ -658,7 +658,7 @@ char* s = *sp;
     __Bah_realocate_arr(r, i);
     ((char**)r->data)[i] = buffToStr(s);
 };
-____BAH_COMPILER_VAR_2_aoptabahabuiltinbbah:
+____BAH_COMPILER_VAR_2_aoptabahabuiltinbbah: ;
 
 #line 143 "/opt/bah/builtin.bah"
 return r;
@@ -720,7 +720,7 @@ tot = tot+sl;
 #line 168 "/opt/bah/builtin.bah"
  lens [ i ] = sl;
 };
-____BAH_COMPILER_VAR_3_aoptabahabuiltinbbah:
+____BAH_COMPILER_VAR_3_aoptabahabuiltinbbah: ;
 
 #line 172 "/opt/bah/builtin.bah"
 char* r = memoryAllocSTR(tot+1);
@@ -737,7 +737,7 @@ memcpy((void *)((long long int)r+offset+strLenSize), b [ i ] + strLenSize, lens 
 #line 177 "/opt/bah/builtin.bah"
 offset = offset+((long long int) lens [ i ]);
 };
-____BAH_COMPILER_VAR_4_aoptabahabuiltinbbah:
+____BAH_COMPILER_VAR_4_aoptabahabuiltinbbah: ;
 
 #line 180 "/opt/bah/builtin.bah"
 unsigned int* ln = r;
@@ -1041,7 +1041,7 @@ pthread_cond_wait(&this->w_cond,&this->m_mut);
 #line 29 "/opt/bah/channel.bah"
 --this->w_waitting;
 };
-____BAH_COMPILER_VAR_10_aoptabahachannelbbah:
+____BAH_COMPILER_VAR_10_aoptabahachannelbbah: ;
 }
 
 #line 32 "/opt/bah/channel.bah"
@@ -1077,7 +1077,7 @@ pthread_cond_wait(&this->w_cond,&this->m_mut);
 #line 45 "/opt/bah/channel.bah"
 --this->w_waitting;
 };
-____BAH_COMPILER_VAR_11_aoptabahachannelbbah:
+____BAH_COMPILER_VAR_11_aoptabahachannelbbah: ;
 }
 
 #line 48 "/opt/bah/channel.bah"
@@ -1116,7 +1116,7 @@ pthread_cond_wait(&this->r_cond,&this->m_mut);
 #line 65 "/opt/bah/channel.bah"
 --this->r_waitting;
 };
-____BAH_COMPILER_VAR_12_aoptabahachannelbbah:
+____BAH_COMPILER_VAR_12_aoptabahachannelbbah: ;
 
 #line 67 "/opt/bah/channel.bah"
 void * data = queue__pop(this->queue);
@@ -1277,7 +1277,7 @@ unsigned int* ln = response;
 #line 285 "/opt/bah/builtin.bah"
 memcpy((void *)((long long int)response+strLenSize+i*1023),buff,1024);
 };
-____BAH_COMPILER_VAR_17_aoptabahabuiltinbbah:
+____BAH_COMPILER_VAR_17_aoptabahabuiltinbbah: ;
 
 #line 288 "/opt/bah/builtin.bah"
 pclose(hdl);
@@ -1329,7 +1329,7 @@ name = strSubstitute(s, 0, j);
 goto ____BAH_COMPILER_VAR_19_aoptabahabuiltinbbah;
 }
 };
-____BAH_COMPILER_VAR_19_aoptabahabuiltinbbah:
+____BAH_COMPILER_VAR_19_aoptabahabuiltinbbah: ;
 
 #line 314 "/opt/bah/builtin.bah"
 path = strSubstitute(s, j, strlen(s)-1);
@@ -1400,7 +1400,7 @@ if ((score<*(long long int*)((char*)closest+0+ sizeof(char*)))||(*(long long int
 *(long long int*)((char*)closest+0+ sizeof(char*)) = score;
 }
 };
-____BAH_COMPILER_VAR_22_aoptabahabuiltinbbah:
+____BAH_COMPILER_VAR_22_aoptabahabuiltinbbah: ;
 
 #line 341 "/opt/bah/builtin.bah"
 print("\06\0\0\0""\t\033[33m");
@@ -1829,7 +1829,7 @@ for (; (i<strlen(s)); ++i) {
 #line 6 "/opt/bah/map.bah"
 hash = ((long long int)hash<<5+0)+hash+(long long int)s[i+4];
 };
-____BAH_COMPILER_VAR_41_aoptabahamapbbah:
+____BAH_COMPILER_VAR_41_aoptabahamapbbah: ;
 
 #line 9 "/opt/bah/map.bah"
 if ((hash<0)) {
@@ -1878,7 +1878,7 @@ if ((s[i+4]==null)||(this->str[i+4]!=s[i+4])) {
 goto ____BAH_COMPILER_VAR_42_aoptabahamapbbah;
 }
 };
-____BAH_COMPILER_VAR_42_aoptabahamapbbah:
+____BAH_COMPILER_VAR_42_aoptabahamapbbah: ;
 
 #line 45 "/opt/bah/map.bah"
 if ((i==this->strL)&&(s[i+4]==null)) {
@@ -2143,7 +2143,7 @@ for (; (i<l+nb); ++i) {
     __Bah_realocate_arr(this->elems, i);
     ((struct mapElem**)this->elems->data)[i] = null;
 };
-____BAH_COMPILER_VAR_46_aoptabahamapbbah:
+____BAH_COMPILER_VAR_46_aoptabahamapbbah: ;
 
 #line 202 "/opt/bah/map.bah"
 i = 0;
@@ -2190,10 +2190,10 @@ if ((((struct mapElem**)this->elems->data)[j]==null)) {
 goto ____BAH_COMPILER_VAR_48_aoptabahamapbbah;
 }
 };
-____BAH_COMPILER_VAR_48_aoptabahamapbbah:
+____BAH_COMPILER_VAR_48_aoptabahamapbbah: ;
 }
 };
-____BAH_COMPILER_VAR_47_aoptabahamapbbah:
+____BAH_COMPILER_VAR_47_aoptabahamapbbah: ;
 };
 void mapWrapper__set2(struct mapWrapper* this,char* k,void * e){
 
@@ -2261,7 +2261,7 @@ goto ____BAH_COMPILER_VAR_50_aoptabahamapbbah;
 }
 }
 };
-____BAH_COMPILER_VAR_50_aoptabahamapbbah:
+____BAH_COMPILER_VAR_50_aoptabahamapbbah: ;
 
 #line 245 "/opt/bah/map.bah"
 this->nbMisses = this->nbMisses+i;
@@ -2318,7 +2318,7 @@ mapWrapper__algoChecks(this);
 }
 }
 };
-____BAH_COMPILER_VAR_51_aoptabahamapbbah:
+____BAH_COMPILER_VAR_51_aoptabahamapbbah: ;
 };
 void * mapWrapper__get2(struct mapWrapper* this,char* k){
 
@@ -2350,7 +2350,7 @@ this->nbMisses = this->nbMisses+i;
 return e->val;
 }
 };
-____BAH_COMPILER_VAR_52_aoptabahamapbbah:
+____BAH_COMPILER_VAR_52_aoptabahamapbbah: ;
 
 #line 282 "/opt/bah/map.bah"
 return null;
@@ -2584,7 +2584,7 @@ if ((e!=null)) {
 this->set(this,e->key,e->val);
 }
 };
-____BAH_COMPILER_VAR_56_aoptabahamapbbah:
+____BAH_COMPILER_VAR_56_aoptabahamapbbah: ;
 
 #line 398 "/opt/bah/map.bah"
 this->elems = memoryAlloc(sizeof(struct Bah_Array_Type));
@@ -2641,7 +2641,7 @@ unsigned int ____BAH_COMPILER_VAR_59_aoptabahamapbbah = len(stack);
 #line 412 "/opt/bah/map.bah"
 current = current->left;
 };
-____BAH_COMPILER_VAR_58_aoptabahamapbbah:
+____BAH_COMPILER_VAR_58_aoptabahamapbbah: ;
 
 #line 414 "/opt/bah/map.bah"
 if ((current->value!=null)) {
@@ -2666,12 +2666,12 @@ if ((current->value!=null)) {
 this->set(this,current->str,current->value);
 }
 };
-____BAH_COMPILER_VAR_60_aoptabahamapbbah:
+____BAH_COMPILER_VAR_60_aoptabahamapbbah: ;
 
 #line 424 "/opt/bah/map.bah"
 current = current->right;
 };
-____BAH_COMPILER_VAR_57_aoptabahamapbbah:
+____BAH_COMPILER_VAR_57_aoptabahamapbbah: ;
 
 #line 426 "/opt/bah/map.bah"
 this->nodes = null;
@@ -2874,7 +2874,7 @@ else{
 nDataLength = read((void *)0,(void *)buff,1024);
 }
 };
-____BAH_COMPILER_VAR_65_aoptabahaiostreambbah:
+____BAH_COMPILER_VAR_65_aoptabahaiostreambbah: ;
 }
 }
 
@@ -2905,7 +2905,7 @@ __Bah_iostream_stdinputBufferLength = nDataLength-i;
 return strSubstitute(response, 0, i);
 }
 };
-____BAH_COMPILER_VAR_70_aoptabahaiostreambbah:
+____BAH_COMPILER_VAR_70_aoptabahaiostreambbah: ;
 
 #line 53 "/opt/bah/iostream.bah"
 __Bah_iostream_stdinputBuffer = "\0\0\0\0""";
@@ -3237,7 +3237,7 @@ if ((strcmp(name, "\01\0\0\0"".") != 0)&&(strcmp(name, "\02\0\0\0""..") != 0)) {
 #line 321 "/opt/bah/iostream.bah"
 file = readdir(d);
 };
-____BAH_COMPILER_VAR_76_aoptabahaiostreambbah:
+____BAH_COMPILER_VAR_76_aoptabahaiostreambbah: ;
 
 #line 323 "/opt/bah/iostream.bah"
 closedir(d);
@@ -3428,7 +3428,7 @@ for (; (j<bl); ++j) {
 #line 74 "/opt/bah/string.bah"
 strBuilder__append(&r,by[j+4]);
 };
-____BAH_COMPILER_VAR_79_aoptabahastringbbah:
+____BAH_COMPILER_VAR_79_aoptabahastringbbah: ;
 }
 }
 
@@ -3444,7 +3444,7 @@ for (; (j<ind); ++j) {
 #line 79 "/opt/bah/string.bah"
 strBuilder__append(&r,s[i-ind+j+4]);
 };
-____BAH_COMPILER_VAR_80_aoptabahastringbbah:
+____BAH_COMPILER_VAR_80_aoptabahastringbbah: ;
 
 #line 81 "/opt/bah/string.bah"
 ind = 0;
@@ -3453,7 +3453,7 @@ ind = 0;
 strBuilder__append(&r,c);
 }
 };
-____BAH_COMPILER_VAR_78_aoptabahastringbbah:
+____BAH_COMPILER_VAR_78_aoptabahastringbbah: ;
 
 #line 85 "/opt/bah/string.bah"
 register long long int j = 0;
@@ -3464,7 +3464,7 @@ for (; (j<ind); ++j) {
 #line 86 "/opt/bah/string.bah"
 strBuilder__append(&r,s[i-ind+j+4]);
 };
-____BAH_COMPILER_VAR_81_aoptabahastringbbah:
+____BAH_COMPILER_VAR_81_aoptabahastringbbah: ;
 
 #line 88 "/opt/bah/string.bah"
 return strBuilder__str(&r);
@@ -3622,7 +3622,7 @@ if ((string__charAt(this,i)==need)) {
 ++c;
 }
 };
-____BAH_COMPILER_VAR_82_aoptabahastringbbah:
+____BAH_COMPILER_VAR_82_aoptabahastringbbah: ;
 
 #line 174 "/opt/bah/string.bah"
 return c;
@@ -3674,7 +3674,7 @@ else{
 countIndex = 0;
 }
 };
-____BAH_COMPILER_VAR_83_aoptabahastringbbah:
+____BAH_COMPILER_VAR_83_aoptabahastringbbah: ;
 
 #line 195 "/opt/bah/string.bah"
 return count;
@@ -3714,7 +3714,7 @@ else{
 ind = 0;
 }
 };
-____BAH_COMPILER_VAR_84_aoptabahastringbbah:
+____BAH_COMPILER_VAR_84_aoptabahastringbbah: ;
 
 #line 211 "/opt/bah/string.bah"
 return false;
@@ -3734,7 +3734,7 @@ if ((needle==this->content[i+4])) {
 return true;
 }
 };
-____BAH_COMPILER_VAR_85_aoptabahastringbbah:
+____BAH_COMPILER_VAR_85_aoptabahastringbbah: ;
 
 #line 220 "/opt/bah/string.bah"
 return false;
@@ -3773,7 +3773,7 @@ return 0;
 #line 236 "/opt/bah/string.bah"
 i = i+1;
 };
-____BAH_COMPILER_VAR_86_aoptabahastringbbah:
+____BAH_COMPILER_VAR_86_aoptabahastringbbah: ;
 
 #line 238 "/opt/bah/string.bah"
 return 1;
@@ -3818,7 +3818,7 @@ needleIndex = needleIndex+1;
 #line 256 "/opt/bah/string.bah"
 i = i+1;
 };
-____BAH_COMPILER_VAR_87_aoptabahastringbbah:
+____BAH_COMPILER_VAR_87_aoptabahastringbbah: ;
 
 #line 259 "/opt/bah/string.bah"
 return 1;
@@ -3855,7 +3855,7 @@ if ((isSpace(string__charAt(this,i))==false)) {
 goto ____BAH_COMPILER_VAR_88_aoptabahastringbbah;
 }
 };
-____BAH_COMPILER_VAR_88_aoptabahastringbbah:
+____BAH_COMPILER_VAR_88_aoptabahastringbbah: ;
 
 #line 277 "/opt/bah/string.bah"
 if ((i>0)) {
@@ -4025,7 +4025,7 @@ s[ind+1] = (char)conv;
 #line 363 "/opt/bah/string.bah"
 ++ind;
 };
-____BAH_COMPILER_VAR_92_aoptabahastringbbah:
+____BAH_COMPILER_VAR_92_aoptabahastringbbah: ;
 
 #line 366 "/opt/bah/string.bah"
 if ((subZero==true)) {
@@ -4058,7 +4058,7 @@ s[i] = s[ii];
 #line 375 "/opt/bah/string.bah"
 s[ii] = osi;
 };
-____BAH_COMPILER_VAR_93_aoptabahastringbbah:
+____BAH_COMPILER_VAR_93_aoptabahastringbbah: ;
 
 #line 378 "/opt/bah/string.bah"
 s[ind+1] = (char)0;
@@ -4098,7 +4098,7 @@ s[ind+1] = (char)conv;
 #line 396 "/opt/bah/string.bah"
 ++ind;
 };
-____BAH_COMPILER_VAR_95_aoptabahastringbbah:
+____BAH_COMPILER_VAR_95_aoptabahastringbbah: ;
 
 #line 399 "/opt/bah/string.bah"
 long long int ls = ind+1;
@@ -4121,7 +4121,7 @@ s[i] = s[ii];
 #line 404 "/opt/bah/string.bah"
 s[ii] = osi;
 };
-____BAH_COMPILER_VAR_96_aoptabahastringbbah:
+____BAH_COMPILER_VAR_96_aoptabahastringbbah: ;
 
 #line 407 "/opt/bah/string.bah"
 s[ind+1] = (char)0;
@@ -4168,7 +4168,7 @@ s[ind+1] = (char)conv;
 #line 428 "/opt/bah/string.bah"
 ++ind;
 };
-____BAH_COMPILER_VAR_98_aoptabahastringbbah:
+____BAH_COMPILER_VAR_98_aoptabahastringbbah: ;
 
 #line 431 "/opt/bah/string.bah"
 long long int ls = ind+1;
@@ -4191,7 +4191,7 @@ s[i] = s[ii];
 #line 436 "/opt/bah/string.bah"
 s[ii] = osi;
 };
-____BAH_COMPILER_VAR_99_aoptabahastringbbah:
+____BAH_COMPILER_VAR_99_aoptabahastringbbah: ;
 
 #line 439 "/opt/bah/string.bah"
 s[ind+1] = (char)0;
@@ -4261,7 +4261,7 @@ r = r+(((long long int)s[l+4]-48)*offset);
 #line 472 "/opt/bah/string.bah"
 offset = offset*10;
 };
-____BAH_COMPILER_VAR_101_aoptabahastringbbah:
+____BAH_COMPILER_VAR_101_aoptabahastringbbah: ;
 
 #line 474 "/opt/bah/string.bah"
 if ((end==1)) {
@@ -4351,7 +4351,7 @@ else{
 sepInd = 0;
 }
 };
-____BAH_COMPILER_VAR_102_aoptabahastringbbah:
+____BAH_COMPILER_VAR_102_aoptabahastringbbah: ;
 
 #line 516 "/opt/bah/string.bah"
 long long int end = i-strlen(sep)+1;
@@ -4391,7 +4391,7 @@ for (; (i<len(arr)); ++i) {
 #line 530 "/opt/bah/string.bah"
 char** ____BAH_COMPILER_VAR_106_aoptabahastringbbah = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_106_aoptabahastringbbah[1] = ((char**)arr->data)[i];____BAH_COMPILER_VAR_106_aoptabahastringbbah[0] = sep;char* ____BAH_COMPILER_VAR_107_aoptabahastringbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_106_aoptabahastringbbah, 2);char** ____BAH_COMPILER_VAR_108_aoptabahastringbbah = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_108_aoptabahastringbbah[1] = ____BAH_COMPILER_VAR_107_aoptabahastringbbah;____BAH_COMPILER_VAR_108_aoptabahastringbbah[0] = r;char* ____BAH_COMPILER_VAR_109_aoptabahastringbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_108_aoptabahastringbbah, 2);r = ____BAH_COMPILER_VAR_109_aoptabahastringbbah;
 };
-____BAH_COMPILER_VAR_105_aoptabahastringbbah:
+____BAH_COMPILER_VAR_105_aoptabahastringbbah: ;
 
 #line 532 "/opt/bah/string.bah"
 return r;
@@ -4441,7 +4441,7 @@ string__append(&s,string__str(&tmpS));
 #line 551 "/opt/bah/string.bah"
 i = i+1;
 };
-____BAH_COMPILER_VAR_110_aoptabahastringbbah:
+____BAH_COMPILER_VAR_110_aoptabahastringbbah: ;
 
 #line 553 "/opt/bah/string.bah"
 return s;
@@ -4518,7 +4518,7 @@ sepIndex = 0;
 #line 582 "/opt/bah/string.bah"
 i = i+1;
 };
-____BAH_COMPILER_VAR_111_aoptabahastringbbah:
+____BAH_COMPILER_VAR_111_aoptabahastringbbah: ;
 
 #line 585 "/opt/bah/string.bah"
 return "\0\0\0\0""";
@@ -4557,7 +4557,7 @@ unsigned int ____BAH_COMPILER_VAR_113_aoptabahastringbbah = len(ns);
 #line 598 "/opt/bah/string.bah"
 i = i+1;
 };
-____BAH_COMPILER_VAR_112_aoptabahastringbbah:
+____BAH_COMPILER_VAR_112_aoptabahastringbbah: ;
 
 #line 600 "/opt/bah/string.bah"
 return string(arrToStr(ns));
@@ -4595,7 +4595,7 @@ return false;
 #line 616 "/opt/bah/string.bah"
 i = i+1;
 };
-____BAH_COMPILER_VAR_114_aoptabahastringbbah:
+____BAH_COMPILER_VAR_114_aoptabahastringbbah: ;
 
 #line 618 "/opt/bah/string.bah"
 return true;
@@ -4633,7 +4633,7 @@ return false;
 #line 633 "/opt/bah/string.bah"
 i = i+1;
 };
-____BAH_COMPILER_VAR_115_aoptabahastringbbah:
+____BAH_COMPILER_VAR_115_aoptabahastringbbah: ;
 
 #line 635 "/opt/bah/string.bah"
 return true;
@@ -4664,7 +4664,7 @@ goto ____BAH_COMPILER_VAR_116_aoptabahastringbbah;
 #line 647 "/opt/bah/string.bah"
 i = i+1;
 };
-____BAH_COMPILER_VAR_116_aoptabahastringbbah:
+____BAH_COMPILER_VAR_116_aoptabahastringbbah: ;
 
 #line 649 "/opt/bah/string.bah"
 *s =  *s + i;
@@ -4721,7 +4721,7 @@ else{
 countIndex = 0;
 }
 };
-____BAH_COMPILER_VAR_117_aoptabahastringbbah:
+____BAH_COMPILER_VAR_117_aoptabahastringbbah: ;
 
 #line 672 "/opt/bah/string.bah"
 return count;
@@ -4927,7 +4927,7 @@ println(flag->help);
 #line 88 "/opt/bah/flags.bah"
 i = i+1;
 };
-____BAH_COMPILER_VAR_122_aoptabahaflagsbbah:
+____BAH_COMPILER_VAR_122_aoptabahaflagsbbah: ;
 
 #line 90 "/opt/bah/flags.bah"
 exit(1);
@@ -4953,7 +4953,7 @@ return flag;
 #line 101 "/opt/bah/flags.bah"
 i = i+1;
 };
-____BAH_COMPILER_VAR_123_aoptabahaflagsbbah:
+____BAH_COMPILER_VAR_123_aoptabahaflagsbbah: ;
 
 #line 103 "/opt/bah/flags.bah"
 struct flag* ____BAH_COMPILER_VAR_124_aoptabahaflagsbbah = memoryAlloc(sizeof(struct flag));
@@ -5113,7 +5113,7 @@ isVal = true;
 #line 179 "/opt/bah/flags.bah"
 i = i+1;
 };
-____BAH_COMPILER_VAR_129_aoptabahaflagsbbah:
+____BAH_COMPILER_VAR_129_aoptabahaflagsbbah: ;
 
 #line 181 "/opt/bah/flags.bah"
 if ((isVal==true)) {
@@ -5339,7 +5339,7 @@ long long int* ln = response;
 #line 51 "/opt/bah/exec.bah"
 memcpy((void *)((long long int)response+strLenSize+i*1023),cStr(buff),1024);
 };
-____BAH_COMPILER_VAR_137_aoptabahaexecbbah:
+____BAH_COMPILER_VAR_137_aoptabahaexecbbah: ;
 
 #line 55 "/opt/bah/exec.bah"
 this->status = pclose(this->handle);
@@ -5405,12 +5405,12 @@ unsigned int ____BAH_COMPILER_VAR_144_aoptabahaexecbbah = len(arr);
     __Bah_realocate_arr(arr, ____BAH_COMPILER_VAR_144_aoptabahaexecbbah);
     ((char*)arr->data)[____BAH_COMPILER_VAR_144_aoptabahaexecbbah] = (char) buff [ i ];
 };
-____BAH_COMPILER_VAR_143_aoptabahaexecbbah:
+____BAH_COMPILER_VAR_143_aoptabahaexecbbah: ;
 
 #line 83 "/opt/bah/exec.bah"
 res = fgets((void *)buff,1023,this->handle);
 };
-____BAH_COMPILER_VAR_142_aoptabahaexecbbah:
+____BAH_COMPILER_VAR_142_aoptabahaexecbbah: ;
 
 #line 86 "/opt/bah/exec.bah"
 this->status = pclose(this->handle);
@@ -5465,7 +5465,7 @@ unsigned int ____BAH_COMPILER_VAR_147_aoptabahaexecbbah = i+1;
 #line 111 "/opt/bah/exec.bah"
 i = i+1;
 };
-____BAH_COMPILER_VAR_146_aoptabahaexecbbah:
+____BAH_COMPILER_VAR_146_aoptabahaexecbbah: ;
 
 #line 113 "/opt/bah/exec.bah"
 unsigned int ____BAH_COMPILER_VAR_148_aoptabahaexecbbah = len(nArgs);
@@ -5669,13 +5669,13 @@ m.value = reflectElement__calculateOffset(&m,s.value);
 return m;
 }
 };
-____BAH_COMPILER_VAR_153_aoptabahareflectbbah:
+____BAH_COMPILER_VAR_153_aoptabahareflectbbah: ;
 
 #line 79 "/opt/bah/reflect.bah"
 goto ____BAH_COMPILER_VAR_152_aoptabahareflectbbah;
 }
 };
-____BAH_COMPILER_VAR_152_aoptabahareflectbbah:
+____BAH_COMPILER_VAR_152_aoptabahareflectbbah: ;
 }
 
 #line 82 "/opt/bah/reflect.bah"
@@ -5697,7 +5697,7 @@ if ((strcmp(s.name, string__str(&a)) == 0)) {
 return s;
 }
 };
-____BAH_COMPILER_VAR_154_aoptabahareflectbbah:
+____BAH_COMPILER_VAR_154_aoptabahareflectbbah: ;
 }
 
 #line 90 "/opt/bah/reflect.bah"
@@ -5806,7 +5806,7 @@ unsigned int ____BAH_COMPILER_VAR_158_aoptabahajsonbbah = j-1;
 #line 46 "/opt/bah/json.bah"
 j = j+1;
 };
-____BAH_COMPILER_VAR_157_aoptabahajsonbbah:
+____BAH_COMPILER_VAR_157_aoptabahajsonbbah: ;
 
 #line 48 "/opt/bah/json.bah"
 if ((strcmp(arrToStr(nk), key) == 0)) {
@@ -5830,7 +5830,7 @@ return elem;
 #line 56 "/opt/bah/json.bah"
 i = i+1;
 };
-____BAH_COMPILER_VAR_156_aoptabahajsonbbah:
+____BAH_COMPILER_VAR_156_aoptabahajsonbbah: ;
 
 #line 58 "/opt/bah/json.bah"
 void * z = (void *)0;
@@ -5900,7 +5900,7 @@ json_scan_inner(ov,m,true);
 #line 92 "/opt/bah/json.bah"
 i = i+1;
 };
-____BAH_COMPILER_VAR_159_aoptabahajsonbbah:
+____BAH_COMPILER_VAR_159_aoptabahajsonbbah: ;
 }
 
 #line 94 "/opt/bah/json.bah"
@@ -6015,7 +6015,7 @@ struct jsonElement* c = ((struct jsonElement**)this->children->data)[i];
 #line 127 "/opt/bah/json.bah"
 i = i+1;
 };
-____BAH_COMPILER_VAR_160_aoptabahajsonbbah:
+____BAH_COMPILER_VAR_160_aoptabahajsonbbah: ;
 }
 
 #line 129 "/opt/bah/json.bah"
@@ -6062,7 +6062,7 @@ struct jsonElement* c = ((struct jsonElement**)this->children->data)[i];
 #line 140 "/opt/bah/json.bah"
 i = i+1;
 };
-____BAH_COMPILER_VAR_161_aoptabahajsonbbah:
+____BAH_COMPILER_VAR_161_aoptabahajsonbbah: ;
 }
 
 #line 142 "/opt/bah/json.bah"
@@ -6109,7 +6109,7 @@ struct jsonElement* c = ((struct jsonElement**)this->children->data)[i];
 #line 154 "/opt/bah/json.bah"
 i = i+1;
 };
-____BAH_COMPILER_VAR_162_aoptabahajsonbbah:
+____BAH_COMPILER_VAR_162_aoptabahajsonbbah: ;
 }
 
 #line 156 "/opt/bah/json.bah"
@@ -6176,7 +6176,7 @@ json_scan_inner(ov,m,true);
 #line 174 "/opt/bah/json.bah"
 j = j+1;
 };
-____BAH_COMPILER_VAR_164_aoptabahajsonbbah:
+____BAH_COMPILER_VAR_164_aoptabahajsonbbah: ;
 
 #line 176 "/opt/bah/json.bah"
 
@@ -6186,7 +6186,7 @@ ____BAH_COMPILER_VAR_164_aoptabahajsonbbah:
 #line 177 "/opt/bah/json.bah"
 i = i+1;
 };
-____BAH_COMPILER_VAR_163_aoptabahajsonbbah:
+____BAH_COMPILER_VAR_163_aoptabahajsonbbah: ;
 }
 }
 }
@@ -6237,7 +6237,7 @@ m.value = reflectElement__calculateOffset(&m,&v);
     __Bah_realocate_arr(ae->structLayout, j);
     ((struct reflectElement*)ae->structLayout->data)[j] = m;
 };
-____BAH_COMPILER_VAR_167_aoptabahajsonbbah:
+____BAH_COMPILER_VAR_167_aoptabahajsonbbah: ;
 
 #line 192 "/opt/bah/json.bah"
 json_scan_inner(c,*ae,true);
@@ -6272,7 +6272,7 @@ void * keep_ref_____BAH_COMPILER_VAR_169_aoptabahajsonbbah = v;
 m->set(m,string__str(&k),&v);
 }
 };
-____BAH_COMPILER_VAR_165_aoptabahajsonbbah:
+____BAH_COMPILER_VAR_165_aoptabahajsonbbah: ;
 }
 }
 }
@@ -6304,7 +6304,7 @@ if ((isSpace(s[i+4])==false)) {
 goto ____BAH_COMPILER_VAR_170_aoptabahajsonbbah;
 }
 };
-____BAH_COMPILER_VAR_170_aoptabahajsonbbah:
+____BAH_COMPILER_VAR_170_aoptabahajsonbbah: ;
 
 #line 220 "/opt/bah/json.bah"
 struct jsonElement* ____BAH_COMPILER_VAR_171_aoptabahajsonbbah = memoryAlloc(sizeof(struct jsonElement));
@@ -6335,7 +6335,7 @@ if ((isSpace(s[i+4])==false)) {
 goto ____BAH_COMPILER_VAR_172_aoptabahajsonbbah;
 }
 };
-____BAH_COMPILER_VAR_172_aoptabahajsonbbah:
+____BAH_COMPILER_VAR_172_aoptabahajsonbbah: ;
 
 #line 234 "/opt/bah/json.bah"
 if ((s[i+4]!=93)) {
@@ -6368,7 +6368,7 @@ if ((isSpace(s[i+4])==false)) {
 goto ____BAH_COMPILER_VAR_175_aoptabahajsonbbah;
 }
 };
-____BAH_COMPILER_VAR_175_aoptabahajsonbbah:
+____BAH_COMPILER_VAR_175_aoptabahajsonbbah: ;
 
 #line 247 "/opt/bah/json.bah"
 if ((s[i+4]!=44)) {
@@ -6400,9 +6400,9 @@ if ((isSpace(s[i+4])==false)) {
 goto ____BAH_COMPILER_VAR_178_aoptabahajsonbbah;
 }
 };
-____BAH_COMPILER_VAR_178_aoptabahajsonbbah:
+____BAH_COMPILER_VAR_178_aoptabahajsonbbah: ;
 };
-____BAH_COMPILER_VAR_173_aoptabahajsonbbah:
+____BAH_COMPILER_VAR_173_aoptabahajsonbbah: ;
 }
 
 #line 263 "/opt/bah/json.bah"
@@ -6436,7 +6436,7 @@ if ((isSpace(s[i+4])==false)) {
 goto ____BAH_COMPILER_VAR_179_aoptabahajsonbbah;
 }
 };
-____BAH_COMPILER_VAR_179_aoptabahajsonbbah:
+____BAH_COMPILER_VAR_179_aoptabahajsonbbah: ;
 
 #line 275 "/opt/bah/json.bah"
 if ((s[i+4]!=125)) {
@@ -6454,7 +6454,7 @@ if ((isSpace(s[i+4])==false)) {
 goto ____BAH_COMPILER_VAR_181_aoptabahajsonbbah;
 }
 };
-____BAH_COMPILER_VAR_181_aoptabahajsonbbah:
+____BAH_COMPILER_VAR_181_aoptabahajsonbbah: ;
 
 #line 282 "/opt/bah/json.bah"
 if ((s[i+4]!=34)) {
@@ -6482,7 +6482,7 @@ if ((s[i+4]==34)&&(s[i-1+4]!=(char)92)) {
 goto ____BAH_COMPILER_VAR_184_aoptabahajsonbbah;
 }
 };
-____BAH_COMPILER_VAR_184_aoptabahajsonbbah:
+____BAH_COMPILER_VAR_184_aoptabahajsonbbah: ;
 
 #line 293 "/opt/bah/json.bah"
 char* name = strSubstitute(s, ns, i);
@@ -6500,7 +6500,7 @@ if ((isSpace(s[i+4])==false)) {
 goto ____BAH_COMPILER_VAR_185_aoptabahajsonbbah;
 }
 };
-____BAH_COMPILER_VAR_185_aoptabahajsonbbah:
+____BAH_COMPILER_VAR_185_aoptabahajsonbbah: ;
 
 #line 302 "/opt/bah/json.bah"
 if ((s[i+4]!=58)) {
@@ -6543,7 +6543,7 @@ if ((isSpace(s[i+4])==false)) {
 goto ____BAH_COMPILER_VAR_189_aoptabahajsonbbah;
 }
 };
-____BAH_COMPILER_VAR_189_aoptabahajsonbbah:
+____BAH_COMPILER_VAR_189_aoptabahajsonbbah: ;
 
 #line 322 "/opt/bah/json.bah"
 if ((s[i+4]!=44)) {
@@ -6565,7 +6565,7 @@ return null;
 goto ____BAH_COMPILER_VAR_180_aoptabahajsonbbah;
 }
 };
-____BAH_COMPILER_VAR_180_aoptabahajsonbbah:
+____BAH_COMPILER_VAR_180_aoptabahajsonbbah: ;
 }
 
 #line 331 "/opt/bah/json.bah"
@@ -6663,7 +6663,7 @@ unsigned int ____BAH_COMPILER_VAR_196_aoptabahajsonbbah = len(mem);
     ((char*)mem->data)[____BAH_COMPILER_VAR_196_aoptabahajsonbbah] = s[i+4];
 }
 };
-____BAH_COMPILER_VAR_192_aoptabahajsonbbah:
+____BAH_COMPILER_VAR_192_aoptabahajsonbbah: ;
 
 #line 362 "/opt/bah/json.bah"
 if ((len(mem)!=0)) {
@@ -6713,7 +6713,7 @@ goto ____BAH_COMPILER_VAR_197_aoptabahajsonbbah;
 }
 }
 };
-____BAH_COMPILER_VAR_197_aoptabahajsonbbah:
+____BAH_COMPILER_VAR_197_aoptabahajsonbbah: ;
 
 #line 380 "/opt/bah/json.bah"
 j->to = i;
@@ -6735,7 +6735,7 @@ if ((isLetter(s[i+4])==false)) {
 goto ____BAH_COMPILER_VAR_198_aoptabahajsonbbah;
 }
 };
-____BAH_COMPILER_VAR_198_aoptabahajsonbbah:
+____BAH_COMPILER_VAR_198_aoptabahajsonbbah: ;
 
 #line 388 "/opt/bah/json.bah"
 s = strSubstitute(s, si, i);
@@ -6878,7 +6878,7 @@ continue;
 #line 446 "/opt/bah/json.bah"
 strBuilder__append(&r,c);
 };
-____BAH_COMPILER_VAR_200_aoptabahajsonbbah:
+____BAH_COMPILER_VAR_200_aoptabahajsonbbah: ;
 
 #line 449 "/opt/bah/json.bah"
 return strBuilder__str(&r);
@@ -6936,7 +6936,7 @@ char** ____BAH_COMPILER_VAR_202_aoptabahajsonbbah = alloca(2 * sizeof(char*));__
 #line 472 "/opt/bah/json.bah"
 i = i+1;
 };
-____BAH_COMPILER_VAR_201_aoptabahajsonbbah:
+____BAH_COMPILER_VAR_201_aoptabahajsonbbah: ;
 
 #line 474 "/opt/bah/json.bah"
 char* s = "\02\0\0\0""{\n";
@@ -6970,7 +6970,7 @@ else{
 char** ____BAH_COMPILER_VAR_207_aoptabahajsonbbah = alloca(7 * sizeof(char*));____BAH_COMPILER_VAR_207_aoptabahajsonbbah[6] = "\01\0\0\0""\n";____BAH_COMPILER_VAR_207_aoptabahajsonbbah[5] = oldToJson__inner(m,true,tabs);____BAH_COMPILER_VAR_207_aoptabahajsonbbah[4] = "\03\0\0\0""\": ";____BAH_COMPILER_VAR_207_aoptabahajsonbbah[3] = m.name;____BAH_COMPILER_VAR_207_aoptabahajsonbbah[2] = "\01\0\0\0""\"";____BAH_COMPILER_VAR_207_aoptabahajsonbbah[1] = tabsStr;____BAH_COMPILER_VAR_207_aoptabahajsonbbah[0] = s;char* ____BAH_COMPILER_VAR_208_aoptabahajsonbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_207_aoptabahajsonbbah, 7);s = ____BAH_COMPILER_VAR_208_aoptabahajsonbbah;
 }
 };
-____BAH_COMPILER_VAR_204_aoptabahajsonbbah:
+____BAH_COMPILER_VAR_204_aoptabahajsonbbah: ;
 
 #line 485 "/opt/bah/json.bah"
 tabs = tabs-1;
@@ -6990,7 +6990,7 @@ char** ____BAH_COMPILER_VAR_210_aoptabahajsonbbah = alloca(2 * sizeof(char*));__
 #line 489 "/opt/bah/json.bah"
 i = i+1;
 };
-____BAH_COMPILER_VAR_209_aoptabahajsonbbah:
+____BAH_COMPILER_VAR_209_aoptabahajsonbbah: ;
 
 #line 491 "/opt/bah/json.bah"
 char** ____BAH_COMPILER_VAR_212_aoptabahajsonbbah = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_212_aoptabahajsonbbah[2] = "\01\0\0\0""}";____BAH_COMPILER_VAR_212_aoptabahajsonbbah[1] = tabsStr;____BAH_COMPILER_VAR_212_aoptabahajsonbbah[0] = s;char* ____BAH_COMPILER_VAR_213_aoptabahajsonbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_212_aoptabahajsonbbah, 3);s = ____BAH_COMPILER_VAR_213_aoptabahajsonbbah;
@@ -7118,7 +7118,7 @@ if ((i<len(arr))) {
 char** ____BAH_COMPILER_VAR_221_aoptabahajsonbbah = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_221_aoptabahajsonbbah[1] = "\01\0\0\0"",";____BAH_COMPILER_VAR_221_aoptabahajsonbbah[0] = s;char* ____BAH_COMPILER_VAR_222_aoptabahajsonbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_221_aoptabahajsonbbah, 2);s = ____BAH_COMPILER_VAR_222_aoptabahajsonbbah;
 }
 };
-____BAH_COMPILER_VAR_218_aoptabahajsonbbah:
+____BAH_COMPILER_VAR_218_aoptabahajsonbbah: ;
 }
 
 #line 531 "/opt/bah/json.bah"
@@ -7156,7 +7156,7 @@ if ((i<len(arr))) {
 char** ____BAH_COMPILER_VAR_226_aoptabahajsonbbah = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_226_aoptabahajsonbbah[1] = "\01\0\0\0"",";____BAH_COMPILER_VAR_226_aoptabahajsonbbah[0] = s;char* ____BAH_COMPILER_VAR_227_aoptabahajsonbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_226_aoptabahajsonbbah, 2);s = ____BAH_COMPILER_VAR_227_aoptabahajsonbbah;
 }
 };
-____BAH_COMPILER_VAR_223_aoptabahajsonbbah:
+____BAH_COMPILER_VAR_223_aoptabahajsonbbah: ;
 }
 
 #line 542 "/opt/bah/json.bah"
@@ -7204,7 +7204,7 @@ else{
 char** ____BAH_COMPILER_VAR_235_aoptabahajsonbbah = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_235_aoptabahajsonbbah[1] = "\01\0\0\0""\n";____BAH_COMPILER_VAR_235_aoptabahajsonbbah[0] = s;char* ____BAH_COMPILER_VAR_236_aoptabahajsonbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_235_aoptabahajsonbbah, 2);s = ____BAH_COMPILER_VAR_236_aoptabahajsonbbah;
 }
 };
-____BAH_COMPILER_VAR_230_aoptabahajsonbbah:
+____BAH_COMPILER_VAR_230_aoptabahajsonbbah: ;
 }
 
 #line 556 "/opt/bah/json.bah"
@@ -7266,7 +7266,7 @@ m.value = reflectElement__calculateOffset(&m,ae->value);
 #line 572 "/opt/bah/json.bah"
 j = j+1;
 };
-____BAH_COMPILER_VAR_238_aoptabahajsonbbah:
+____BAH_COMPILER_VAR_238_aoptabahajsonbbah: ;
 
 #line 574 "/opt/bah/json.bah"
 char** ____BAH_COMPILER_VAR_239_aoptabahajsonbbah = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_239_aoptabahajsonbbah[1] = oldToJson__inner(*ae,false,tabs);____BAH_COMPILER_VAR_239_aoptabahajsonbbah[0] = s;char* ____BAH_COMPILER_VAR_240_aoptabahajsonbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_239_aoptabahajsonbbah, 2);s = ____BAH_COMPILER_VAR_240_aoptabahajsonbbah;
@@ -7288,7 +7288,7 @@ else{
 char** ____BAH_COMPILER_VAR_243_aoptabahajsonbbah = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_243_aoptabahajsonbbah[1] = "\01\0\0\0""\n";____BAH_COMPILER_VAR_243_aoptabahajsonbbah[0] = s;char* ____BAH_COMPILER_VAR_244_aoptabahajsonbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_243_aoptabahajsonbbah, 2);s = ____BAH_COMPILER_VAR_244_aoptabahajsonbbah;
 }
 };
-____BAH_COMPILER_VAR_237_aoptabahajsonbbah:
+____BAH_COMPILER_VAR_237_aoptabahajsonbbah: ;
 }
 }
 }
@@ -7345,7 +7345,7 @@ void ** v = e.value;
 #line 610 "/opt/bah/json.bah"
 e.value = *v;
 };
-____BAH_COMPILER_VAR_247_aoptabahajsonbbah:
+____BAH_COMPILER_VAR_247_aoptabahajsonbbah: ;
 
 #line 612 "/opt/bah/json.bah"
 if ((l!=ol)) {
@@ -7425,7 +7425,7 @@ if ((i+1<len(e.structLayout))) {
 s = rope__add(s, rope("\02\0\0\0"", "));
 }
 };
-____BAH_COMPILER_VAR_248_aoptabahajsonbbah:
+____BAH_COMPILER_VAR_248_aoptabahajsonbbah: ;
 
 #line 641 "/opt/bah/json.bah"
 s = rope__add(s, rope("\01\0\0\0""}"));
@@ -7497,7 +7497,7 @@ if ((i+1<l)) {
 s = rope__add(s, rope("\02\0\0\0"", "));
 }
 };
-____BAH_COMPILER_VAR_258_aoptabahajsonbbah:
+____BAH_COMPILER_VAR_258_aoptabahajsonbbah: ;
 
 #line 669 "/opt/bah/json.bah"
 s = rope__add(s, rope("\01\0\0\0""]"));
@@ -7667,7 +7667,7 @@ char* BAH_CC;
 #define BAH_HOST_OS "\05\0\0\0""linux"
 
 #line 31 "/home/alois/Téléchargements/bah/src/main.bah"
-#define BAH_VERSION "\020\0\0\0""v1.5 (build 180)"
+#define BAH_VERSION "\020\0\0\0""v1.5 (build 181)"
 
 #line 33 "/home/alois/Téléchargements/bah/src/main.bah"
 char debug;
@@ -7855,7 +7855,7 @@ return true;
 #line 113 "/home/alois/Téléchargements/bah/src/globals.bah"
 e = e->parent;
 };
-____BAH_COMPILER_VAR_267_ahomeaaloisanijlijchargementsabahasrcaglobalsbbah:
+____BAH_COMPILER_VAR_267_ahomeaaloisanijlijchargementsabahasrcaglobalsbbah: ;
 
 #line 115 "/home/alois/Téléchargements/bah/src/globals.bah"
 return false;
@@ -7885,7 +7885,7 @@ goto ____BAH_COMPILER_VAR_268_ahomeaaloisanijlijchargementsabahasrcaglobalsbbah;
 #line 126 "/home/alois/Téléchargements/bah/src/globals.bah"
 e = e->parent;
 };
-____BAH_COMPILER_VAR_268_ahomeaaloisanijlijchargementsabahasrcaglobalsbbah:
+____BAH_COMPILER_VAR_268_ahomeaaloisanijlijchargementsabahasrcaglobalsbbah: ;
 
 #line 128 "/home/alois/Téléchargements/bah/src/globals.bah"
 this->switchOpt = null;
@@ -8241,7 +8241,7 @@ if ((s[i+4]==(char)10)) {
 goto ____BAH_COMPILER_VAR_275_ahomeaaloisanijlijchargementsabahasrcalexerbbah;
 }
 };
-____BAH_COMPILER_VAR_275_ahomeaaloisanijlijchargementsabahasrcalexerbbah:
+____BAH_COMPILER_VAR_275_ahomeaaloisanijlijchargementsabahasrcalexerbbah: ;
 
 #line 141 "/home/alois/Téléchargements/bah/src/lexer.bah"
 if ((i==codeLength)) {
@@ -8339,7 +8339,7 @@ continue;
 #line 183 "/home/alois/Téléchargements/bah/src/lexer.bah"
 strBuilder__append(&memory,c);
 };
-____BAH_COMPILER_VAR_277_ahomeaaloisanijlijchargementsabahasrcalexerbbah:
+____BAH_COMPILER_VAR_277_ahomeaaloisanijlijchargementsabahasrcalexerbbah: ;
 
 #line 185 "/home/alois/Téléchargements/bah/src/lexer.bah"
 unsigned int ____BAH_COMPILER_VAR_278_ahomeaaloisanijlijchargementsabahasrcalexerbbah = len(tokens);
@@ -8436,7 +8436,7 @@ goto ____BAH_COMPILER_VAR_280_ahomeaaloisanijlijchargementsabahasrcalexerbbah;
 }
 }
 };
-____BAH_COMPILER_VAR_280_ahomeaaloisanijlijchargementsabahasrcalexerbbah:
+____BAH_COMPILER_VAR_280_ahomeaaloisanijlijchargementsabahasrcalexerbbah: ;
 
 #line 218 "/home/alois/Téléchargements/bah/src/lexer.bah"
 unsigned int ____BAH_COMPILER_VAR_281_ahomeaaloisanijlijchargementsabahasrcalexerbbah = len(tokens);
@@ -8496,7 +8496,7 @@ if ((isAlphaNumeric(c)==false)) {
 goto ____BAH_COMPILER_VAR_283_ahomeaaloisanijlijchargementsabahasrcalexerbbah;
 }
 };
-____BAH_COMPILER_VAR_283_ahomeaaloisanijlijchargementsabahasrcalexerbbah:
+____BAH_COMPILER_VAR_283_ahomeaaloisanijlijchargementsabahasrcalexerbbah: ;
 
 #line 237 "/home/alois/Téléchargements/bah/src/lexer.bah"
 unsigned int ____BAH_COMPILER_VAR_284_ahomeaaloisanijlijchargementsabahasrcalexerbbah = len(tokens);
@@ -8558,7 +8558,7 @@ goto ____BAH_COMPILER_VAR_286_ahomeaaloisanijlijchargementsabahasrcalexerbbah;
 }
 }
 };
-____BAH_COMPILER_VAR_286_ahomeaaloisanijlijchargementsabahasrcalexerbbah:
+____BAH_COMPILER_VAR_286_ahomeaaloisanijlijchargementsabahasrcalexerbbah: ;
 
 #line 259 "/home/alois/Téléchargements/bah/src/lexer.bah"
 tokenType currentType = TOKEN_TYPE_VAR;
@@ -8627,7 +8627,7 @@ goto ____BAH_COMPILER_VAR_289_ahomeaaloisanijlijchargementsabahasrcalexerbbah;
 }
 }
 };
-____BAH_COMPILER_VAR_289_ahomeaaloisanijlijchargementsabahasrcalexerbbah:
+____BAH_COMPILER_VAR_289_ahomeaaloisanijlijchargementsabahasrcalexerbbah: ;
 
 #line 283 "/home/alois/Téléchargements/bah/src/lexer.bah"
 if ((isCast==true)) {
@@ -8720,7 +8720,7 @@ goto ____BAH_COMPILER_VAR_292_ahomeaaloisanijlijchargementsabahasrcalexerbbah;
 }
 }
 };
-____BAH_COMPILER_VAR_292_ahomeaaloisanijlijchargementsabahasrcalexerbbah:
+____BAH_COMPILER_VAR_292_ahomeaaloisanijlijchargementsabahasrcalexerbbah: ;
 
 #line 318 "/home/alois/Téléchargements/bah/src/lexer.bah"
 unsigned int ____BAH_COMPILER_VAR_294_ahomeaaloisanijlijchargementsabahasrcalexerbbah = len(tokens);
@@ -8748,7 +8748,7 @@ unsigned int ____BAH_COMPILER_VAR_296_ahomeaaloisanijlijchargementsabahasrcalexe
 }
 }
 };
-____BAH_COMPILER_VAR_274_ahomeaaloisanijlijchargementsabahasrcalexerbbah:
+____BAH_COMPILER_VAR_274_ahomeaaloisanijlijchargementsabahasrcalexerbbah: ;
 
 #line 325 "/home/alois/Téléchargements/bah/src/lexer.bah"
 totalLines = totalLines+(lineNb-1);
@@ -8843,7 +8843,7 @@ if ((s[i+4]==109)) {
 goto ____BAH_COMPILER_VAR_299_ahomeaaloisanijlijchargementsabahasrcaloggerbbah;
 }
 };
-____BAH_COMPILER_VAR_299_ahomeaaloisanijlijchargementsabahasrcaloggerbbah:
+____BAH_COMPILER_VAR_299_ahomeaaloisanijlijchargementsabahasrcaloggerbbah: ;
 
 #line 63 "/home/alois/Téléchargements/bah/src/logger.bah"
 continue;
@@ -8852,7 +8852,7 @@ continue;
 #line 65 "/home/alois/Téléchargements/bah/src/logger.bah"
 strBuilder__append(&sb,s[i+4]);
 };
-____BAH_COMPILER_VAR_298_ahomeaaloisanijlijchargementsabahasrcaloggerbbah:
+____BAH_COMPILER_VAR_298_ahomeaaloisanijlijchargementsabahasrcaloggerbbah: ;
 
 #line 68 "/home/alois/Téléchargements/bah/src/logger.bah"
 return strBuilder__str(&sb);
@@ -8941,7 +8941,7 @@ debugPrint("\07\0\0\0""var_end",line,____BAH_COMPILER_VAR_313_ahomeaaloisanijlij
 #line 137 "/home/alois/Téléchargements/bah/src/logger.bah"
 ++i;
 };
-____BAH_COMPILER_VAR_310_ahomeaaloisanijlijchargementsabahasrcaloggerbbah:
+____BAH_COMPILER_VAR_310_ahomeaaloisanijlijchargementsabahasrcaloggerbbah: ;
 };
 
 #line 7 "/home/alois/Téléchargements/bah/src/errors.bah"
@@ -8985,7 +8985,7 @@ if ((i+1<len(fn->args))) {
 char** ____BAH_COMPILER_VAR_321_ahomeaaloisanijlijchargementsabahasrcaerrorsbbah = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_321_ahomeaaloisanijlijchargementsabahasrcaerrorsbbah[1] = "\02\0\0\0"", ";____BAH_COMPILER_VAR_321_ahomeaaloisanijlijchargementsabahasrcaerrorsbbah[0] = def;char* ____BAH_COMPILER_VAR_322_ahomeaaloisanijlijchargementsabahasrcaerrorsbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_321_ahomeaaloisanijlijchargementsabahasrcaerrorsbbah, 2);def = ____BAH_COMPILER_VAR_322_ahomeaaloisanijlijchargementsabahasrcaerrorsbbah;
 }
 };
-____BAH_COMPILER_VAR_316_ahomeaaloisanijlijchargementsabahasrcaerrorsbbah:
+____BAH_COMPILER_VAR_316_ahomeaaloisanijlijchargementsabahasrcaerrorsbbah: ;
 
 #line 27 "/home/alois/Téléchargements/bah/src/errors.bah"
 char** ____BAH_COMPILER_VAR_323_ahomeaaloisanijlijchargementsabahasrcaerrorsbbah = alloca(8 * sizeof(char*));____BAH_COMPILER_VAR_323_ahomeaaloisanijlijchargementsabahasrcaerrorsbbah[7] = ASCII_RESET;____BAH_COMPILER_VAR_323_ahomeaaloisanijlijchargementsabahasrcaerrorsbbah[6] = intToStr(fn->line);____BAH_COMPILER_VAR_323_ahomeaaloisanijlijchargementsabahasrcaerrorsbbah[5] = "\01\0\0\0"":";____BAH_COMPILER_VAR_323_ahomeaaloisanijlijchargementsabahasrcaerrorsbbah[4] = fn->file;____BAH_COMPILER_VAR_323_ahomeaaloisanijlijchargementsabahasrcaerrorsbbah[3] = ASCII_GREEN;____BAH_COMPILER_VAR_323_ahomeaaloisanijlijchargementsabahasrcaerrorsbbah[2] = "\01\0\0\0"" ";____BAH_COMPILER_VAR_323_ahomeaaloisanijlijchargementsabahasrcaerrorsbbah[1] = fn->returns->type;____BAH_COMPILER_VAR_323_ahomeaaloisanijlijchargementsabahasrcaerrorsbbah[0] = "\02\0\0\0"") ";char* ____BAH_COMPILER_VAR_324_ahomeaaloisanijlijchargementsabahasrcaerrorsbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_323_ahomeaaloisanijlijchargementsabahasrcaerrorsbbah, 8);char** ____BAH_COMPILER_VAR_325_ahomeaaloisanijlijchargementsabahasrcaerrorsbbah = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_325_ahomeaaloisanijlijchargementsabahasrcaerrorsbbah[1] = ____BAH_COMPILER_VAR_324_ahomeaaloisanijlijchargementsabahasrcaerrorsbbah;____BAH_COMPILER_VAR_325_ahomeaaloisanijlijchargementsabahasrcaerrorsbbah[0] = def;char* ____BAH_COMPILER_VAR_326_ahomeaaloisanijlijchargementsabahasrcaerrorsbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_325_ahomeaaloisanijlijchargementsabahasrcaerrorsbbah, 2);def = ____BAH_COMPILER_VAR_326_ahomeaaloisanijlijchargementsabahasrcaerrorsbbah;
@@ -9066,7 +9066,7 @@ goto ____BAH_COMPILER_VAR_330_ahomeaaloisanijlijchargementsabahasrcaerrorsbbah;
 #line 58 "/home/alois/Téléchargements/bah/src/errors.bah"
 --beg;
 };
-____BAH_COMPILER_VAR_330_ahomeaaloisanijlijchargementsabahasrcaerrorsbbah:
+____BAH_COMPILER_VAR_330_ahomeaaloisanijlijchargementsabahasrcaerrorsbbah: ;
 
 #line 61 "/home/alois/Téléchargements/bah/src/errors.bah"
 pos = t->pos-beg+1;
@@ -9131,7 +9131,7 @@ unsigned int ____BAH_COMPILER_VAR_333_ahomeaaloisanijlijchargementsabahasrcaerro
     __Bah_realocate_arr(errCont, ____BAH_COMPILER_VAR_333_ahomeaaloisanijlijchargementsabahasrcaerrorsbbah);
     ((char*)errCont->data)[____BAH_COMPILER_VAR_333_ahomeaaloisanijlijchargementsabahasrcaerrorsbbah] = fileSrcStr[i+4];
 };
-____BAH_COMPILER_VAR_332_ahomeaaloisanijlijchargementsabahasrcaerrorsbbah:
+____BAH_COMPILER_VAR_332_ahomeaaloisanijlijchargementsabahasrcaerrorsbbah: ;
 
 #line 84 "/home/alois/Téléchargements/bah/src/errors.bah"
 char** ____BAH_COMPILER_VAR_334_ahomeaaloisanijlijchargementsabahasrcaerrorsbbah = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_334_ahomeaaloisanijlijchargementsabahasrcaerrorsbbah[2] = "\07\0\0\0""\e[1;37m";____BAH_COMPILER_VAR_334_ahomeaaloisanijlijchargementsabahasrcaerrorsbbah[1] = arrToStr(errCont);____BAH_COMPILER_VAR_334_ahomeaaloisanijlijchargementsabahasrcaerrorsbbah[0] = "\07\0\0\0""\e[1;31m";char* ____BAH_COMPILER_VAR_335_ahomeaaloisanijlijchargementsabahasrcaerrorsbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_334_ahomeaaloisanijlijchargementsabahasrcaerrorsbbah, 3);struct Bah_Array_Type* errTk = strToArr(____BAH_COMPILER_VAR_335_ahomeaaloisanijlijchargementsabahasrcaerrorsbbah);
@@ -9147,7 +9147,7 @@ unsigned int ____BAH_COMPILER_VAR_337_ahomeaaloisanijlijchargementsabahasrcaerro
     __Bah_realocate_arr(line, ____BAH_COMPILER_VAR_337_ahomeaaloisanijlijchargementsabahasrcaerrorsbbah);
     ((char*)line->data)[____BAH_COMPILER_VAR_337_ahomeaaloisanijlijchargementsabahasrcaerrorsbbah] = ((char*)errTk->data)[ii];
 };
-____BAH_COMPILER_VAR_336_ahomeaaloisanijlijchargementsabahasrcaerrorsbbah:
+____BAH_COMPILER_VAR_336_ahomeaaloisanijlijchargementsabahasrcaerrorsbbah: ;
 
 #line 88 "/home/alois/Téléchargements/bah/src/errors.bah"
 --i;
@@ -9161,7 +9161,7 @@ unsigned int ____BAH_COMPILER_VAR_338_ahomeaaloisanijlijchargementsabahasrcaerro
     __Bah_realocate_arr(line, ____BAH_COMPILER_VAR_338_ahomeaaloisanijlijchargementsabahasrcaerrorsbbah);
     ((char*)line->data)[____BAH_COMPILER_VAR_338_ahomeaaloisanijlijchargementsabahasrcaerrorsbbah] = c;
 };
-____BAH_COMPILER_VAR_331_ahomeaaloisanijlijchargementsabahasrcaerrorsbbah:
+____BAH_COMPILER_VAR_331_ahomeaaloisanijlijchargementsabahasrcaerrorsbbah: ;
 
 #line 94 "/home/alois/Téléchargements/bah/src/errors.bah"
 fileStream__close(&fs);
@@ -9316,7 +9316,7 @@ return true;
 }
 }
 };
-____BAH_COMPILER_VAR_361_ahomeaaloisanijlijchargementsabahasrcastructbbah:
+____BAH_COMPILER_VAR_361_ahomeaaloisanijlijchargementsabahasrcastructbbah: ;
 
 #line 22 "/home/alois/Téléchargements/bah/src/struct.bah"
 return false;
@@ -9387,7 +9387,7 @@ goto ____BAH_COMPILER_VAR_362_ahomeaaloisanijlijchargementsabahasrcastructbbah;
 #line 54 "/home/alois/Téléchargements/bah/src/struct.bah"
 --i;
 };
-____BAH_COMPILER_VAR_362_ahomeaaloisanijlijchargementsabahasrcastructbbah:
+____BAH_COMPILER_VAR_362_ahomeaaloisanijlijchargementsabahasrcastructbbah: ;
 
 #line 56 "/home/alois/Téléchargements/bah/src/struct.bah"
 ++i;
@@ -9422,7 +9422,7 @@ if ((name[strlen(name)-i-1+4]!=42)) {
 goto ____BAH_COMPILER_VAR_363_ahomeaaloisanijlijchargementsabahasrcastructbbah;
 }
 };
-____BAH_COMPILER_VAR_363_ahomeaaloisanijlijchargementsabahasrcastructbbah:
+____BAH_COMPILER_VAR_363_ahomeaaloisanijlijchargementsabahasrcastructbbah: ;
 
 #line 73 "/home/alois/Téléchargements/bah/src/struct.bah"
 if ((i!=0)) {
@@ -9447,7 +9447,7 @@ if ((strcmp(s->name, name) == 0)) {
 return s;
 }
 };
-____BAH_COMPILER_VAR_364_ahomeaaloisanijlijchargementsabahasrcastructbbah:
+____BAH_COMPILER_VAR_364_ahomeaaloisanijlijchargementsabahasrcastructbbah: ;
 
 #line 83 "/home/alois/Téléchargements/bah/src/struct.bah"
 return null;
@@ -9529,7 +9529,7 @@ return m;
 #line 113 "/home/alois/Téléchargements/bah/src/struct.bah"
 ++i;
 };
-____BAH_COMPILER_VAR_367_ahomeaaloisanijlijchargementsabahasrcastructbbah:
+____BAH_COMPILER_VAR_367_ahomeaaloisanijlijchargementsabahasrcastructbbah: ;
 
 #line 115 "/home/alois/Téléchargements/bah/src/struct.bah"
 struct Bah_Array_Type* mthds = s->methods;
@@ -9574,7 +9574,7 @@ return sm;
 #line 126 "/home/alois/Téléchargements/bah/src/struct.bah"
 ++i;
 };
-____BAH_COMPILER_VAR_368_ahomeaaloisanijlijchargementsabahasrcastructbbah:
+____BAH_COMPILER_VAR_368_ahomeaaloisanijlijchargementsabahasrcastructbbah: ;
 
 #line 129 "/home/alois/Téléchargements/bah/src/struct.bah"
 if ((strlen(s->extendedFrom)==0)) {
@@ -9639,7 +9639,7 @@ fn->isVar = true;
 return fn;
 }
 };
-____BAH_COMPILER_VAR_372_ahomeaaloisanijlijchargementsabahasrcastructbbah:
+____BAH_COMPILER_VAR_372_ahomeaaloisanijlijchargementsabahasrcastructbbah: ;
 
 #line 162 "/home/alois/Téléchargements/bah/src/struct.bah"
 s = searchStruct(s->extendedFrom,elems);
@@ -9695,7 +9695,7 @@ if ((((long long int*)excl->data)[j]==i)) {
 goto ____BAH_COMPILER_VAR_374_ahomeaaloisanijlijchargementsabahasrcastructbbah;
 }
 };
-____BAH_COMPILER_VAR_374_ahomeaaloisanijlijchargementsabahasrcastructbbah:
+____BAH_COMPILER_VAR_374_ahomeaaloisanijlijchargementsabahasrcastructbbah: ;
 
 #line 186 "/home/alois/Téléchargements/bah/src/struct.bah"
 if ((j!=len(excl))) {
@@ -9769,7 +9769,7 @@ string__trimLeft(&cmpt,5);
 char** ____BAH_COMPILER_VAR_387_ahomeaaloisanijlijchargementsabahasrcastructbbah = alloca(4 * sizeof(char*));____BAH_COMPILER_VAR_387_ahomeaaloisanijlijchargementsabahasrcastructbbah[3] = "\016\0\0\0"" = channel();\n";____BAH_COMPILER_VAR_387_ahomeaaloisanijlijchargementsabahasrcastructbbah[2] = m->name;____BAH_COMPILER_VAR_387_ahomeaaloisanijlijchargementsabahasrcastructbbah[1] = sep;____BAH_COMPILER_VAR_387_ahomeaaloisanijlijchargementsabahasrcastructbbah[0] = v->name;char* ____BAH_COMPILER_VAR_388_ahomeaaloisanijlijchargementsabahasrcastructbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_387_ahomeaaloisanijlijchargementsabahasrcastructbbah, 4);char** ____BAH_COMPILER_VAR_389_ahomeaaloisanijlijchargementsabahasrcastructbbah = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_389_ahomeaaloisanijlijchargementsabahasrcastructbbah[1] = ____BAH_COMPILER_VAR_388_ahomeaaloisanijlijchargementsabahasrcastructbbah;____BAH_COMPILER_VAR_389_ahomeaaloisanijlijchargementsabahasrcastructbbah[0] = code;char* ____BAH_COMPILER_VAR_390_ahomeaaloisanijlijchargementsabahasrcastructbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_389_ahomeaaloisanijlijchargementsabahasrcastructbbah, 2);code = ____BAH_COMPILER_VAR_390_ahomeaaloisanijlijchargementsabahasrcastructbbah;
 }
 };
-____BAH_COMPILER_VAR_373_ahomeaaloisanijlijchargementsabahasrcastructbbah:
+____BAH_COMPILER_VAR_373_ahomeaaloisanijlijchargementsabahasrcastructbbah: ;
 
 #line 219 "/home/alois/Téléchargements/bah/src/struct.bah"
 if ((s->isBinding==false)) {
@@ -9819,7 +9819,7 @@ if ((found==2)) {
 goto ____BAH_COMPILER_VAR_391_ahomeaaloisanijlijchargementsabahasrcastructbbah;
 }
 };
-____BAH_COMPILER_VAR_391_ahomeaaloisanijlijchargementsabahasrcastructbbah:
+____BAH_COMPILER_VAR_391_ahomeaaloisanijlijchargementsabahasrcastructbbah: ;
 }
 
 #line 238 "/home/alois/Téléchargements/bah/src/struct.bah"
@@ -9909,7 +9909,7 @@ if ((t[strlen(t)-i-1+4]!=42)) {
 goto ____BAH_COMPILER_VAR_400_ahomeaaloisanijlijchargementsabahasrcatypebbah;
 }
 };
-____BAH_COMPILER_VAR_400_ahomeaaloisanijlijchargementsabahasrcatypebbah:
+____BAH_COMPILER_VAR_400_ahomeaaloisanijlijchargementsabahasrcatypebbah: ;
 
 #line 69 "/home/alois/Téléchargements/bah/src/type.bah"
 char* unars = "\0\0\0\0""";
@@ -10117,7 +10117,7 @@ return tp;
 #line 126 "/home/alois/Téléchargements/bah/src/type.bah"
 ++i;
 };
-____BAH_COMPILER_VAR_403_ahomeaaloisanijlijchargementsabahasrcatypebbah:
+____BAH_COMPILER_VAR_403_ahomeaaloisanijlijchargementsabahasrcatypebbah: ;
 
 #line 128 "/home/alois/Téléchargements/bah/src/type.bah"
 return string("\0\0\0\0""");
@@ -10424,7 +10424,7 @@ unsigned int ____BAH_COMPILER_VAR_422_ahomeaaloisanijlijchargementsabahasrcatype
     __Bah_realocate_arr(memory, ____BAH_COMPILER_VAR_422_ahomeaaloisanijlijchargementsabahasrcatypebbah);
     ((char*)memory->data)[____BAH_COMPILER_VAR_422_ahomeaaloisanijlijchargementsabahasrcatypebbah] = c;
 };
-____BAH_COMPILER_VAR_421_ahomeaaloisanijlijchargementsabahasrcatypebbah:
+____BAH_COMPILER_VAR_421_ahomeaaloisanijlijchargementsabahasrcatypebbah: ;
 
 #line 238 "/home/alois/Téléchargements/bah/src/type.bah"
 arg->type = arrToStr(memory);
@@ -10444,7 +10444,7 @@ if ((c==41)) {
 goto ____BAH_COMPILER_VAR_417_ahomeaaloisanijlijchargementsabahasrcatypebbah;
 }
 };
-____BAH_COMPILER_VAR_417_ahomeaaloisanijlijchargementsabahasrcatypebbah:
+____BAH_COMPILER_VAR_417_ahomeaaloisanijlijchargementsabahasrcatypebbah: ;
 
 #line 245 "/home/alois/Téléchargements/bah/src/type.bah"
 ++j;
@@ -10460,7 +10460,7 @@ unsigned int ____BAH_COMPILER_VAR_425_ahomeaaloisanijlijchargementsabahasrcatype
     __Bah_realocate_arr(memory, ____BAH_COMPILER_VAR_425_ahomeaaloisanijlijchargementsabahasrcatypebbah);
     ((char*)memory->data)[____BAH_COMPILER_VAR_425_ahomeaaloisanijlijchargementsabahasrcatypebbah] = c;
 };
-____BAH_COMPILER_VAR_424_ahomeaaloisanijlijchargementsabahasrcatypebbah:
+____BAH_COMPILER_VAR_424_ahomeaaloisanijlijchargementsabahasrcatypebbah: ;
 
 #line 250 "/home/alois/Téléchargements/bah/src/type.bah"
 struct variable* ____BAH_COMPILER_VAR_426_ahomeaaloisanijlijchargementsabahasrcatypebbah = memoryAlloc(sizeof(struct variable));
@@ -10496,7 +10496,7 @@ if ((t[i+4]!=42)) {
 return strlen(t)-1-i;
 }
 };
-____BAH_COMPILER_VAR_427_ahomeaaloisanijlijchargementsabahasrcatypebbah:
+____BAH_COMPILER_VAR_427_ahomeaaloisanijlijchargementsabahasrcatypebbah: ;
 
 #line 263 "/home/alois/Téléchargements/bah/src/type.bah"
 return 0;
@@ -10518,7 +10518,7 @@ if ((s[i+4]!=42)) {
 return i;
 }
 };
-____BAH_COMPILER_VAR_428_ahomeaaloisanijlijchargementsabahasrcatypebbah:
+____BAH_COMPILER_VAR_428_ahomeaaloisanijlijchargementsabahasrcatypebbah: ;
 
 #line 273 "/home/alois/Téléchargements/bah/src/type.bah"
 return 0;
@@ -10583,7 +10583,7 @@ continue;
 #line 295 "/home/alois/Téléchargements/bah/src/type.bah"
 strBuilder__append(&curr,t[i+4]);
 };
-____BAH_COMPILER_VAR_430_ahomeaaloisanijlijchargementsabahasrcatypebbah:
+____BAH_COMPILER_VAR_430_ahomeaaloisanijlijchargementsabahasrcatypebbah: ;
 
 #line 298 "/home/alois/Téléchargements/bah/src/type.bah"
 unsigned int ____BAH_COMPILER_VAR_433_ahomeaaloisanijlijchargementsabahasrcatypebbah = len(r);
@@ -10614,7 +10614,7 @@ for (; (i<len(parts)); ++i) {
                 struct string keep_ref_____BAH_COMPILER_VAR_435_ahomeaaloisanijlijchargementsabahasrcatypebbah = getCType(((char**)parts->data)[i],elems);
                 char** ____BAH_COMPILER_VAR_436_ahomeaaloisanijlijchargementsabahasrcatypebbah = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_436_ahomeaaloisanijlijchargementsabahasrcatypebbah[2] = "\01\0\0\0"")";____BAH_COMPILER_VAR_436_ahomeaaloisanijlijchargementsabahasrcatypebbah[1] = string__str(&keep_ref_____BAH_COMPILER_VAR_435_ahomeaaloisanijlijchargementsabahasrcatypebbah);____BAH_COMPILER_VAR_436_ahomeaaloisanijlijchargementsabahasrcatypebbah[0] = "\010\0\0\0""+sizeof(";char* ____BAH_COMPILER_VAR_437_ahomeaaloisanijlijchargementsabahasrcatypebbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_436_ahomeaaloisanijlijchargementsabahasrcatypebbah, 3);char** ____BAH_COMPILER_VAR_438_ahomeaaloisanijlijchargementsabahasrcatypebbah = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_438_ahomeaaloisanijlijchargementsabahasrcatypebbah[1] = ____BAH_COMPILER_VAR_437_ahomeaaloisanijlijchargementsabahasrcatypebbah;____BAH_COMPILER_VAR_438_ahomeaaloisanijlijchargementsabahasrcatypebbah[0] = r;char* ____BAH_COMPILER_VAR_439_ahomeaaloisanijlijchargementsabahasrcatypebbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_438_ahomeaaloisanijlijchargementsabahasrcatypebbah, 2);r = ____BAH_COMPILER_VAR_439_ahomeaaloisanijlijchargementsabahasrcatypebbah;
 };
-____BAH_COMPILER_VAR_434_ahomeaaloisanijlijchargementsabahasrcatypebbah:
+____BAH_COMPILER_VAR_434_ahomeaaloisanijlijchargementsabahasrcatypebbah: ;
 
 #line 310 "/home/alois/Téléchargements/bah/src/type.bah"
 return r;
@@ -10647,7 +10647,7 @@ if ((j+1<len(tmpfn->args))) {
 char** ____BAH_COMPILER_VAR_444_ahomeaaloisanijlijchargementsabahasrcatypebbah = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_444_ahomeaaloisanijlijchargementsabahasrcatypebbah[1] = "\01\0\0\0"",";____BAH_COMPILER_VAR_444_ahomeaaloisanijlijchargementsabahasrcatypebbah[0] = tmpfnArgsCType;char* ____BAH_COMPILER_VAR_445_ahomeaaloisanijlijchargementsabahasrcatypebbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_444_ahomeaaloisanijlijchargementsabahasrcatypebbah, 2);tmpfnArgsCType = ____BAH_COMPILER_VAR_445_ahomeaaloisanijlijchargementsabahasrcatypebbah;
 }
 };
-____BAH_COMPILER_VAR_440_ahomeaaloisanijlijchargementsabahasrcatypebbah:
+____BAH_COMPILER_VAR_440_ahomeaaloisanijlijchargementsabahasrcatypebbah: ;
 
 #line 324 "/home/alois/Téléchargements/bah/src/type.bah"
 if (isTupleType(tmpfn->returns->type)) {
@@ -10755,7 +10755,7 @@ return fn;
 #line 29 "/home/alois/Téléchargements/bah/src/fns.bah"
 ++i;
 };
-____BAH_COMPILER_VAR_454_ahomeaaloisanijlijchargementsabahasrcafnsbbah:
+____BAH_COMPILER_VAR_454_ahomeaaloisanijlijchargementsabahasrcafnsbbah: ;
 
 #line 32 "/home/alois/Téléchargements/bah/src/fns.bah"
 if ((inclCurr==true)&&(currentFn!=null)) {
@@ -10913,7 +10913,7 @@ if ((strcmp(((struct variable**)elems->vars->data)[i]->name, n) == 0)) {
 return ((struct variable**)elems->vars->data)[i];
 }
 };
-____BAH_COMPILER_VAR_462_ahomeaaloisanijlijchargementsabahasrcavarbbah:
+____BAH_COMPILER_VAR_462_ahomeaaloisanijlijchargementsabahasrcavarbbah: ;
 
 #line 23 "/home/alois/Téléchargements/bah/src/var.bah"
 return null;
@@ -10938,7 +10938,7 @@ if ((c!=38)&&(c!=42)) {
 goto ____BAH_COMPILER_VAR_463_ahomeaaloisanijlijchargementsabahasrcavarbbah;
 }
 };
-____BAH_COMPILER_VAR_463_ahomeaaloisanijlijchargementsabahasrcavarbbah:
+____BAH_COMPILER_VAR_463_ahomeaaloisanijlijchargementsabahasrcavarbbah: ;
 
 #line 34 "/home/alois/Téléchargements/bah/src/var.bah"
 if ((i!=0)) {
@@ -11027,7 +11027,7 @@ Tok__setRefVar(t,v);
 return nv;
 }
 };
-____BAH_COMPILER_VAR_465_ahomeaaloisanijlijchargementsabahasrcavarbbah:
+____BAH_COMPILER_VAR_465_ahomeaaloisanijlijchargementsabahasrcavarbbah: ;
 
 #line 74 "/home/alois/Téléchargements/bah/src/var.bah"
 i = 0;
@@ -11077,7 +11077,7 @@ if ((j<len(fn->args))) {
 char** ____BAH_COMPILER_VAR_472_ahomeaaloisanijlijchargementsabahasrcavarbbah = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_472_ahomeaaloisanijlijchargementsabahasrcavarbbah[1] = "\01\0\0\0"",";____BAH_COMPILER_VAR_472_ahomeaaloisanijlijchargementsabahasrcavarbbah[0] = nv->type;char* ____BAH_COMPILER_VAR_473_ahomeaaloisanijlijchargementsabahasrcavarbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_472_ahomeaaloisanijlijchargementsabahasrcavarbbah, 2);nv->type = ____BAH_COMPILER_VAR_473_ahomeaaloisanijlijchargementsabahasrcavarbbah;
 }
 };
-____BAH_COMPILER_VAR_469_ahomeaaloisanijlijchargementsabahasrcavarbbah:
+____BAH_COMPILER_VAR_469_ahomeaaloisanijlijchargementsabahasrcavarbbah: ;
 
 #line 88 "/home/alois/Téléchargements/bah/src/var.bah"
 fn->used = true;
@@ -11096,7 +11096,7 @@ Tok__setRefVar(t,nv);
 return nv;
 }
 };
-____BAH_COMPILER_VAR_467_ahomeaaloisanijlijchargementsabahasrcavarbbah:
+____BAH_COMPILER_VAR_467_ahomeaaloisanijlijchargementsabahasrcavarbbah: ;
 
 #line 97 "/home/alois/Téléchargements/bah/src/var.bah"
 return null;
@@ -11160,7 +11160,7 @@ if (__builtin_expect((strcmp(((struct variable**)elems->deletedVars->data)[i]->n
 throwErr(t,"\055\0\0\0""Variable {TOKEN} has reached its end of life.");
 }
 };
-____BAH_COMPILER_VAR_477_ahomeaaloisanijlijchargementsabahasrcavarbbah:
+____BAH_COMPILER_VAR_477_ahomeaaloisanijlijchargementsabahasrcavarbbah: ;
 };
 
 #line 136 "/home/alois/Téléchargements/bah/src/var.bah"
@@ -11221,7 +11221,7 @@ if ((strcmp(ev->name, v->name) == 0)) {
 return true;
 }
 };
-____BAH_COMPILER_VAR_480_ahomeaaloisanijlijchargementsabahasrcavarbbah:
+____BAH_COMPILER_VAR_480_ahomeaaloisanijlijchargementsabahasrcavarbbah: ;
 
 #line 164 "/home/alois/Téléchargements/bah/src/var.bah"
 return false;
@@ -11263,7 +11263,7 @@ c = c+(long long int)97;
     __Bah_realocate_arr(a, i);
     ((char*)a->data)[i] = (char)c;
 };
-____BAH_COMPILER_VAR_481_ahomeaaloisanijlijchargementsabahasrcavarbbah:
+____BAH_COMPILER_VAR_481_ahomeaaloisanijlijchargementsabahasrcavarbbah: ;
 
 #line 180 "/home/alois/Téléchargements/bah/src/var.bah"
 return arrToStr(a);
@@ -11314,7 +11314,7 @@ else{
 char** ____BAH_COMPILER_VAR_495_ahomeaaloisanijlijchargementsabahasrcavarbbah = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_495_ahomeaaloisanijlijchargementsabahasrcavarbbah[1] = "\02\0\0\0""};";____BAH_COMPILER_VAR_495_ahomeaaloisanijlijchargementsabahasrcavarbbah[0] = evalsTMPDecl;char* ____BAH_COMPILER_VAR_496_ahomeaaloisanijlijchargementsabahasrcavarbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_495_ahomeaaloisanijlijchargementsabahasrcavarbbah, 2);evalsTMPDecl = ____BAH_COMPILER_VAR_496_ahomeaaloisanijlijchargementsabahasrcavarbbah;
 }
 };
-____BAH_COMPILER_VAR_486_ahomeaaloisanijlijchargementsabahasrcavarbbah:
+____BAH_COMPILER_VAR_486_ahomeaaloisanijlijchargementsabahasrcavarbbah: ;
 
 #line 206 "/home/alois/Téléchargements/bah/src/var.bah"
 if ((len(compilerState.evals)!=0)) {
@@ -11353,7 +11353,7 @@ s = strSubstitute(s, i+1, strlen(s));
 goto ____BAH_COMPILER_VAR_503_ahomeaaloisanijlijchargementsabahasrcavarbbah;
 }
 };
-____BAH_COMPILER_VAR_503_ahomeaaloisanijlijchargementsabahasrcavarbbah:
+____BAH_COMPILER_VAR_503_ahomeaaloisanijlijchargementsabahasrcavarbbah: ;
 
 #line 229 "/home/alois/Téléchargements/bah/src/var.bah"
 return s;
@@ -11405,7 +11405,7 @@ return true;
 #line 26 "/home/alois/Téléchargements/bah/src/mem.bah"
 e = e->parent;
 };
-____BAH_COMPILER_VAR_507_ahomeaaloisanijlijchargementsabahasrcamembbah:
+____BAH_COMPILER_VAR_507_ahomeaaloisanijlijchargementsabahasrcamembbah: ;
 
 #line 28 "/home/alois/Téléchargements/bah/src/mem.bah"
 return false;
@@ -11570,7 +11570,7 @@ continue;
 #line 99 "/home/alois/Téléchargements/bah/src/mem.bah"
 RCPdecrVar(v->name,isRCPpointerType(v->type));
 };
-____BAH_COMPILER_VAR_525_ahomeaaloisanijlijchargementsabahasrcamembbah:
+____BAH_COMPILER_VAR_525_ahomeaaloisanijlijchargementsabahasrcamembbah: ;
 };
 
 #line 103 "/home/alois/Téléchargements/bah/src/mem.bah"
@@ -11592,7 +11592,7 @@ RCPendScope(e);
 #line 109 "/home/alois/Téléchargements/bah/src/mem.bah"
 e = e->parent;
 };
-____BAH_COMPILER_VAR_527_ahomeaaloisanijlijchargementsabahasrcamembbah:
+____BAH_COMPILER_VAR_527_ahomeaaloisanijlijchargementsabahasrcamembbah: ;
 };
 
 #line 114 "/home/alois/Téléchargements/bah/src/mem.bah"
@@ -11832,7 +11832,7 @@ char** ____BAH_COMPILER_VAR_559_ahomeaaloisanijlijchargementsabahasrcaverbosesut
 #line 49 "/home/alois/Téléchargements/bah/src/verboseOut.bah"
 char** ____BAH_COMPILER_VAR_561_ahomeaaloisanijlijchargementsabahasrcaverbosesutbbah = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_561_ahomeaaloisanijlijchargementsabahasrcaverbosesutbbah[1] = mv.content;____BAH_COMPILER_VAR_561_ahomeaaloisanijlijchargementsabahasrcaverbosesutbbah[0] = cont;char* ____BAH_COMPILER_VAR_562_ahomeaaloisanijlijchargementsabahasrcaverbosesutbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_561_ahomeaaloisanijlijchargementsabahasrcaverbosesutbbah, 2);cont = ____BAH_COMPILER_VAR_562_ahomeaaloisanijlijchargementsabahasrcaverbosesutbbah;
 };
-____BAH_COMPILER_VAR_554_ahomeaaloisanijlijchargementsabahasrcaverbosesutbbah:
+____BAH_COMPILER_VAR_554_ahomeaaloisanijlijchargementsabahasrcaverbosesutbbah: ;
 
 #line 51 "/home/alois/Téléchargements/bah/src/verboseOut.bah"
 char** ____BAH_COMPILER_VAR_563_ahomeaaloisanijlijchargementsabahasrcaverbosesutbbah = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_563_ahomeaaloisanijlijchargementsabahasrcaverbosesutbbah[1] = "\01\0\0\0""}";____BAH_COMPILER_VAR_563_ahomeaaloisanijlijchargementsabahasrcaverbosesutbbah[0] = ct;char* ____BAH_COMPILER_VAR_564_ahomeaaloisanijlijchargementsabahasrcaverbosesutbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_563_ahomeaaloisanijlijchargementsabahasrcaverbosesutbbah, 2);ct = ____BAH_COMPILER_VAR_564_ahomeaaloisanijlijchargementsabahasrcaverbosesutbbah;
@@ -11938,7 +11938,7 @@ hasPtr = true;
 goto ____BAH_COMPILER_VAR_570_ahomeaaloisanijlijchargementsabahasrcaverbosesutbbah;
 }
 };
-____BAH_COMPILER_VAR_570_ahomeaaloisanijlijchargementsabahasrcaverbosesutbbah:
+____BAH_COMPILER_VAR_570_ahomeaaloisanijlijchargementsabahasrcaverbosesutbbah: ;
 
 #line 98 "/home/alois/Téléchargements/bah/src/verboseOut.bah"
 if ((hasPtr==false)) {
@@ -11982,7 +11982,7 @@ char** ____BAH_COMPILER_VAR_574_ahomeaaloisanijlijchargementsabahasrcaverbosesut
 #line 114 "/home/alois/Téléchargements/bah/src/verboseOut.bah"
 char** ____BAH_COMPILER_VAR_576_ahomeaaloisanijlijchargementsabahasrcaverbosesutbbah = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_576_ahomeaaloisanijlijchargementsabahasrcaverbosesutbbah[1] = v.content;____BAH_COMPILER_VAR_576_ahomeaaloisanijlijchargementsabahasrcaverbosesutbbah[0] = fnArgsValues;char* ____BAH_COMPILER_VAR_577_ahomeaaloisanijlijchargementsabahasrcaverbosesutbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_576_ahomeaaloisanijlijchargementsabahasrcaverbosesutbbah, 2);fnArgsValues = ____BAH_COMPILER_VAR_577_ahomeaaloisanijlijchargementsabahasrcaverbosesutbbah;
 };
-____BAH_COMPILER_VAR_571_ahomeaaloisanijlijchargementsabahasrcaverbosesutbbah:
+____BAH_COMPILER_VAR_571_ahomeaaloisanijlijchargementsabahasrcaverbosesutbbah: ;
 
 #line 116 "/home/alois/Téléchargements/bah/src/verboseOut.bah"
 char** ____BAH_COMPILER_VAR_578_ahomeaaloisanijlijchargementsabahasrcaverbosesutbbah = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_578_ahomeaaloisanijlijchargementsabahasrcaverbosesutbbah[2] = intToStr(lineNb);____BAH_COMPILER_VAR_578_ahomeaaloisanijlijchargementsabahasrcaverbosesutbbah[1] = "\01\0\0\0"":";____BAH_COMPILER_VAR_578_ahomeaaloisanijlijchargementsabahasrcaverbosesutbbah[0] = compilerState.currentFile;char* ____BAH_COMPILER_VAR_579_ahomeaaloisanijlijchargementsabahasrcaverbosesutbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_578_ahomeaaloisanijlijchargementsabahasrcaverbosesutbbah, 3);char* line = ____BAH_COMPILER_VAR_579_ahomeaaloisanijlijchargementsabahasrcaverbosesutbbah;
@@ -12159,7 +12159,7 @@ if ((strcmp(c->file, s) == 0)&&(c->mem==RCPlevel)&&(c->opti==isOptimized)) {
 return c;
 }
 };
-____BAH_COMPILER_VAR_619_ahomeaaloisanijlijchargementsabahasrcacachebbah:
+____BAH_COMPILER_VAR_619_ahomeaaloisanijlijchargementsabahasrcacachebbah: ;
 
 #line 49 "/home/alois/Téléchargements/bah/src/cache.bah"
 return null;
@@ -12377,7 +12377,7 @@ for (; (i<len(strs)); ++i) {
 #line 46 "/home/alois/Téléchargements/bah/src/gen.bah"
 char** ____BAH_COMPILER_VAR_667_ahomeaaloisanijlijchargementsabahasrcagenbbah = alloca(6 * sizeof(char*));____BAH_COMPILER_VAR_667_ahomeaaloisanijlijchargementsabahasrcagenbbah[5] = "\01\0\0\0"";";____BAH_COMPILER_VAR_667_ahomeaaloisanijlijchargementsabahasrcagenbbah[4] = ((char**)strs->data)[i];____BAH_COMPILER_VAR_667_ahomeaaloisanijlijchargementsabahasrcagenbbah[3] = "\04\0\0\0""] = ";____BAH_COMPILER_VAR_667_ahomeaaloisanijlijchargementsabahasrcagenbbah[2] = intToStr(len(strs)-i-1);____BAH_COMPILER_VAR_667_ahomeaaloisanijlijchargementsabahasrcagenbbah[1] = "\01\0\0\0""[";____BAH_COMPILER_VAR_667_ahomeaaloisanijlijchargementsabahasrcagenbbah[0] = buff;char* ____BAH_COMPILER_VAR_668_ahomeaaloisanijlijchargementsabahasrcagenbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_667_ahomeaaloisanijlijchargementsabahasrcagenbbah, 6);char** ____BAH_COMPILER_VAR_669_ahomeaaloisanijlijchargementsabahasrcagenbbah = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_669_ahomeaaloisanijlijchargementsabahasrcagenbbah[1] = ____BAH_COMPILER_VAR_668_ahomeaaloisanijlijchargementsabahasrcagenbbah;____BAH_COMPILER_VAR_669_ahomeaaloisanijlijchargementsabahasrcagenbbah[0] = r;char* ____BAH_COMPILER_VAR_670_ahomeaaloisanijlijchargementsabahasrcagenbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_669_ahomeaaloisanijlijchargementsabahasrcagenbbah, 2);r = ____BAH_COMPILER_VAR_670_ahomeaaloisanijlijchargementsabahasrcagenbbah;
 };
-____BAH_COMPILER_VAR_666_ahomeaaloisanijlijchargementsabahasrcagenbbah:
+____BAH_COMPILER_VAR_666_ahomeaaloisanijlijchargementsabahasrcagenbbah: ;
 
 #line 49 "/home/alois/Téléchargements/bah/src/gen.bah"
 if (isGlobal()) {
@@ -12446,7 +12446,7 @@ char** ____BAH_COMPILER_VAR_675_ahomeaaloisanijlijchargementsabahasrcaoptimiaati
 }
 }
 };
-____BAH_COMPILER_VAR_673_ahomeaaloisanijlijchargementsabahasrcaoptimiaationsbbah:
+____BAH_COMPILER_VAR_673_ahomeaaloisanijlijchargementsabahasrcaoptimiaationsbbah: ;
 };
 
 #line 28 "/home/alois/Téléchargements/bah/src/optimizations.bah"
@@ -12491,7 +12491,7 @@ char** ____BAH_COMPILER_VAR_678_ahomeaaloisanijlijchargementsabahasrcaoptimiaati
 #line 45 "/home/alois/Téléchargements/bah/src/optimizations.bah"
 n = n/8;
 };
-____BAH_COMPILER_VAR_677_ahomeaaloisanijlijchargementsabahasrcaoptimiaationsbbah:
+____BAH_COMPILER_VAR_677_ahomeaaloisanijlijchargementsabahasrcaoptimiaationsbbah: ;
 
 #line 47 "/home/alois/Téléchargements/bah/src/optimizations.bah"
 char* escp = "\02\0\0\0""\\0";
@@ -12568,7 +12568,7 @@ if ((isNumber(s[i+4])==false)) {
 goto ____BAH_COMPILER_VAR_685_ahomeaaloisanijlijchargementsabahasrcaoptimiaationsbbah;
 }
 };
-____BAH_COMPILER_VAR_685_ahomeaaloisanijlijchargementsabahasrcaoptimiaationsbbah:
+____BAH_COMPILER_VAR_685_ahomeaaloisanijlijchargementsabahasrcaoptimiaationsbbah: ;
 
 #line 78 "/home/alois/Téléchargements/bah/src/optimizations.bah"
 --i;
@@ -12579,7 +12579,7 @@ ____BAH_COMPILER_VAR_685_ahomeaaloisanijlijchargementsabahasrcaoptimiaationsbbah
 ++i;
 }
 };
-____BAH_COMPILER_VAR_684_ahomeaaloisanijlijchargementsabahasrcaoptimiaationsbbah:
+____BAH_COMPILER_VAR_684_ahomeaaloisanijlijchargementsabahasrcaoptimiaationsbbah: ;
 
 #line 84 "/home/alois/Téléchargements/bah/src/optimizations.bah"
 return n;
@@ -12654,7 +12654,7 @@ struct variable* na = ____BAH_COMPILER_VAR_690_ahomeaaloisanijlijchargementsabah
     __Bah_realocate_arr(r->args, i);
     ((struct variable**)r->args->data)[i] = na;
 };
-____BAH_COMPILER_VAR_689_ahomeaaloisanijlijchargementsabahasrcagenericsbbah:
+____BAH_COMPILER_VAR_689_ahomeaaloisanijlijchargementsabahasrcagenericsbbah: ;
 
 #line 28 "/home/alois/Téléchargements/bah/src/generics.bah"
 r->returns = this->baseFn->returns;
@@ -12682,7 +12682,7 @@ if ((strcmp(((struct func**)this->declared->data)[i]->name, n) == 0)) {
 return true;
 }
 };
-____BAH_COMPILER_VAR_691_ahomeaaloisanijlijchargementsabahasrcagenericsbbah:
+____BAH_COMPILER_VAR_691_ahomeaaloisanijlijchargementsabahasrcagenericsbbah: ;
 
 #line 44 "/home/alois/Téléchargements/bah/src/generics.bah"
 return false;
@@ -12721,7 +12721,7 @@ delete(fnElems->vars,i);
 --i;
 }
 };
-____BAH_COMPILER_VAR_696_ahomeaaloisanijlijchargementsabahasrcagenericsbbah:
+____BAH_COMPILER_VAR_696_ahomeaaloisanijlijchargementsabahasrcagenericsbbah: ;
 
 #line 62 "/home/alois/Téléchargements/bah/src/generics.bah"
 i = 0;
@@ -12755,7 +12755,7 @@ if ((i+1<len(fn->args))) {
 OUTPUT = rope__add(OUTPUT, rope("\02\0\0\0"", "));
 }
 };
-____BAH_COMPILER_VAR_697_ahomeaaloisanijlijchargementsabahasrcagenericsbbah:
+____BAH_COMPILER_VAR_697_ahomeaaloisanijlijchargementsabahasrcagenericsbbah: ;
 
 #line 76 "/home/alois/Téléchargements/bah/src/generics.bah"
 OUTPUT = rope__add(OUTPUT, rope("\04\0\0\0"") {\n"));
@@ -12881,7 +12881,7 @@ char** ____BAH_COMPILER_VAR_707_ahomeaaloisanijlijchargementsabahasrcaparserbbah
 #line 33 "/home/alois/Téléchargements/bah/src/parser.bah"
 ++i;
 };
-____BAH_COMPILER_VAR_706_ahomeaaloisanijlijchargementsabahasrcaparserbbah:
+____BAH_COMPILER_VAR_706_ahomeaaloisanijlijchargementsabahasrcaparserbbah: ;
 
 #line 35 "/home/alois/Téléchargements/bah/src/parser.bah"
 println(cont);
@@ -12922,7 +12922,7 @@ for (; (j<len(elems->vars)); ++j) {
     __Bah_realocate_arr(nElems->vars, j);
     ((struct variable**)nElems->vars->data)[j] = ((struct variable**)elems->vars->data)[j];
 };
-____BAH_COMPILER_VAR_712_ahomeaaloisanijlijchargementsabahasrcaparserbbah:
+____BAH_COMPILER_VAR_712_ahomeaaloisanijlijchargementsabahasrcaparserbbah: ;
 
 #line 54 "/home/alois/Téléchargements/bah/src/parser.bah"
 return nElems;
@@ -13018,7 +13018,7 @@ if ((strcmp(bc.v->name, v) == 0)) {
 return bc.checkNull;
 }
 };
-____BAH_COMPILER_VAR_714_ahomeaaloisanijlijchargementsabahasrcasafetybbah:
+____BAH_COMPILER_VAR_714_ahomeaaloisanijlijchargementsabahasrcasafetybbah: ;
 
 #line 18 "/home/alois/Téléchargements/bah/src/safety.bah"
 i = 0;
@@ -13043,9 +13043,9 @@ if ((strcmp(bc.v->name, v) == 0)) {
 return bc.checkNull;
 }
 };
-____BAH_COMPILER_VAR_715_ahomeaaloisanijlijchargementsabahasrcasafetybbah:
+____BAH_COMPILER_VAR_715_ahomeaaloisanijlijchargementsabahasrcasafetybbah: ;
 };
-____BAH_COMPILER_VAR_713_ahomeaaloisanijlijchargementsabahasrcasafetybbah:
+____BAH_COMPILER_VAR_713_ahomeaaloisanijlijchargementsabahasrcasafetybbah: ;
 
 #line 28 "/home/alois/Téléchargements/bah/src/safety.bah"
 return false;
@@ -13080,7 +13080,7 @@ if ((strcmp(bc.v->name, v) == 0)) {
 return (bc.checkNull==false);
 }
 };
-____BAH_COMPILER_VAR_717_ahomeaaloisanijlijchargementsabahasrcasafetybbah:
+____BAH_COMPILER_VAR_717_ahomeaaloisanijlijchargementsabahasrcasafetybbah: ;
 
 #line 46 "/home/alois/Téléchargements/bah/src/safety.bah"
 i = 0;
@@ -13105,9 +13105,9 @@ if ((strcmp(bc.v->name, v) == 0)) {
 return (bc.checkNull==false);
 }
 };
-____BAH_COMPILER_VAR_718_ahomeaaloisanijlijchargementsabahasrcasafetybbah:
+____BAH_COMPILER_VAR_718_ahomeaaloisanijlijchargementsabahasrcasafetybbah: ;
 };
-____BAH_COMPILER_VAR_716_ahomeaaloisanijlijchargementsabahasrcasafetybbah:
+____BAH_COMPILER_VAR_716_ahomeaaloisanijlijchargementsabahasrcasafetybbah: ;
 
 #line 56 "/home/alois/Téléchargements/bah/src/safety.bah"
 return false;
@@ -13253,10 +13253,10 @@ pv->canBeNull = false;
 goto ____BAH_COMPILER_VAR_726_ahomeaaloisanijlijchargementsabahasrcasafetybbah;
 }
 };
-____BAH_COMPILER_VAR_726_ahomeaaloisanijlijchargementsabahasrcasafetybbah:
+____BAH_COMPILER_VAR_726_ahomeaaloisanijlijchargementsabahasrcasafetybbah: ;
 }
 };
-____BAH_COMPILER_VAR_725_ahomeaaloisanijlijchargementsabahasrcasafetybbah:
+____BAH_COMPILER_VAR_725_ahomeaaloisanijlijchargementsabahasrcasafetybbah: ;
 
 #line 143 "/home/alois/Téléchargements/bah/src/safety.bah"
 if ((prevLine==LINE_TYPE_IF)&&(prevIfExits==true)) {
@@ -13305,12 +13305,12 @@ pv->canBeNull = false;
 goto ____BAH_COMPILER_VAR_729_ahomeaaloisanijlijchargementsabahasrcasafetybbah;
 }
 };
-____BAH_COMPILER_VAR_729_ahomeaaloisanijlijchargementsabahasrcasafetybbah:
+____BAH_COMPILER_VAR_729_ahomeaaloisanijlijchargementsabahasrcasafetybbah: ;
 }
 };
-____BAH_COMPILER_VAR_728_ahomeaaloisanijlijchargementsabahasrcasafetybbah:
+____BAH_COMPILER_VAR_728_ahomeaaloisanijlijchargementsabahasrcasafetybbah: ;
 };
-____BAH_COMPILER_VAR_727_ahomeaaloisanijlijchargementsabahasrcasafetybbah:
+____BAH_COMPILER_VAR_727_ahomeaaloisanijlijchargementsabahasrcasafetybbah: ;
 }
 
 #line 162 "/home/alois/Téléchargements/bah/src/safety.bah"
@@ -13406,7 +13406,7 @@ continue;
 char** ____BAH_COMPILER_VAR_743_ahomeaaloisanijlijchargementsabahasrcasafetybbah = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_743_ahomeaaloisanijlijchargementsabahasrcasafetybbah[2] = "\01\0\0\0""\"";____BAH_COMPILER_VAR_743_ahomeaaloisanijlijchargementsabahasrcasafetybbah[1] = v->name;____BAH_COMPILER_VAR_743_ahomeaaloisanijlijchargementsabahasrcasafetybbah[0] = "\01\0\0\0""\"";char* ____BAH_COMPILER_VAR_744_ahomeaaloisanijlijchargementsabahasrcasafetybbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_743_ahomeaaloisanijlijchargementsabahasrcasafetybbah, 3);char** ____BAH_COMPILER_VAR_745_ahomeaaloisanijlijchargementsabahasrcasafetybbah = alloca(5 * sizeof(char*));____BAH_COMPILER_VAR_745_ahomeaaloisanijlijchargementsabahasrcasafetybbah[4] = "\01\0\0\0""\"";____BAH_COMPILER_VAR_745_ahomeaaloisanijlijchargementsabahasrcasafetybbah[3] = intToStr(t->line);____BAH_COMPILER_VAR_745_ahomeaaloisanijlijchargementsabahasrcasafetybbah[2] = "\01\0\0\0"":";____BAH_COMPILER_VAR_745_ahomeaaloisanijlijchargementsabahasrcasafetybbah[1] = compilerState.currentFile;____BAH_COMPILER_VAR_745_ahomeaaloisanijlijchargementsabahasrcasafetybbah[0] = "\01\0\0\0""\"";char* ____BAH_COMPILER_VAR_746_ahomeaaloisanijlijchargementsabahasrcasafetybbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_745_ahomeaaloisanijlijchargementsabahasrcasafetybbah, 5);char** ____BAH_COMPILER_VAR_747_ahomeaaloisanijlijchargementsabahasrcasafetybbah = alloca(7 * sizeof(char*));____BAH_COMPILER_VAR_747_ahomeaaloisanijlijchargementsabahasrcasafetybbah[6] = "\017\0\0\0"");\n            ";____BAH_COMPILER_VAR_747_ahomeaaloisanijlijchargementsabahasrcasafetybbah[5] = strLitteralToBahStr(____BAH_COMPILER_VAR_746_ahomeaaloisanijlijchargementsabahasrcasafetybbah);____BAH_COMPILER_VAR_747_ahomeaaloisanijlijchargementsabahasrcasafetybbah[4] = "\02\0\0\0"", ";____BAH_COMPILER_VAR_747_ahomeaaloisanijlijchargementsabahasrcasafetybbah[3] = name;____BAH_COMPILER_VAR_747_ahomeaaloisanijlijchargementsabahasrcasafetybbah[2] = "\02\0\0\0"", ";____BAH_COMPILER_VAR_747_ahomeaaloisanijlijchargementsabahasrcasafetybbah[1] = strLitteralToBahStr(____BAH_COMPILER_VAR_744_ahomeaaloisanijlijchargementsabahasrcasafetybbah);____BAH_COMPILER_VAR_747_ahomeaaloisanijlijchargementsabahasrcasafetybbah[0] = "\031\0\0\0""\n            fixMeRemVar(";char* ____BAH_COMPILER_VAR_748_ahomeaaloisanijlijchargementsabahasrcasafetybbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_747_ahomeaaloisanijlijchargementsabahasrcasafetybbah, 7);OUTPUT = rope__add(OUTPUT, rope(____BAH_COMPILER_VAR_748_ahomeaaloisanijlijchargementsabahasrcasafetybbah));
 }
 };
-____BAH_COMPILER_VAR_740_ahomeaaloisanijlijchargementsabahasrcasafetybbah:
+____BAH_COMPILER_VAR_740_ahomeaaloisanijlijchargementsabahasrcasafetybbah: ;
 };
 
 #line 216 "/home/alois/Téléchargements/bah/src/safety.bah"
@@ -13785,7 +13785,7 @@ goto ____BAH_COMPILER_VAR_765_ahomeaaloisanijlijchargementsabahasrcaparserbbah;
 #line 153 "/home/alois/Téléchargements/bah/src/parser.bah"
 ++i;
 };
-____BAH_COMPILER_VAR_765_ahomeaaloisanijlijchargementsabahasrcaparserbbah:
+____BAH_COMPILER_VAR_765_ahomeaaloisanijlijchargementsabahasrcaparserbbah: ;
 
 #line 155 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((i==len(line))) {
@@ -13849,7 +13849,7 @@ unsigned int ____BAH_COMPILER_VAR_770_ahomeaaloisanijlijchargementsabahasrcapars
     __Bah_realocate_arr(nl, ____BAH_COMPILER_VAR_770_ahomeaaloisanijlijchargementsabahasrcaparserbbah);
     ((struct Tok*)nl->data)[____BAH_COMPILER_VAR_770_ahomeaaloisanijlijchargementsabahasrcaparserbbah] = t;
 };
-____BAH_COMPILER_VAR_766_ahomeaaloisanijlijchargementsabahasrcaparserbbah:
+____BAH_COMPILER_VAR_766_ahomeaaloisanijlijchargementsabahasrcaparserbbah: ;
 
 #line 182 "/home/alois/Téléchargements/bah/src/parser.bah"
 return nl;
@@ -13880,7 +13880,7 @@ return strSubstitute(f, 0, i+1);
 #line 193 "/home/alois/Téléchargements/bah/src/parser.bah"
 --i;
 };
-____BAH_COMPILER_VAR_771_ahomeaaloisanijlijchargementsabahasrcaparserbbah:
+____BAH_COMPILER_VAR_771_ahomeaaloisanijlijchargementsabahasrcaparserbbah: ;
 
 #line 196 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((i<=0)) {
@@ -14402,7 +14402,7 @@ for (; (i!=0); --i) {
     __Bah_realocate_arr(compilerState.cLibs, i);
     ((char**)compilerState.cLibs->data)[i] = ((char**)compilerState.cLibs->data)[i-1];
 };
-____BAH_COMPILER_VAR_806_ahomeaaloisanijlijchargementsabahasrcaparserbbah:
+____BAH_COMPILER_VAR_806_ahomeaaloisanijlijchargementsabahasrcaparserbbah: ;
 
 #line 416 "/home/alois/Téléchargements/bah/src/parser.bah"
 char** ____BAH_COMPILER_VAR_807_ahomeaaloisanijlijchargementsabahasrcaparserbbah = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_807_ahomeaaloisanijlijchargementsabahasrcaparserbbah[2] = "\02\0\0\0"".o";____BAH_COMPILER_VAR_807_ahomeaaloisanijlijchargementsabahasrcaparserbbah[1] = oName;____BAH_COMPILER_VAR_807_ahomeaaloisanijlijchargementsabahasrcaparserbbah[0] = "\02\0\0\0""w ";char* ____BAH_COMPILER_VAR_808_ahomeaaloisanijlijchargementsabahasrcaparserbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_807_ahomeaaloisanijlijchargementsabahasrcaparserbbah, 3);
@@ -14756,7 +14756,7 @@ goto ____BAH_COMPILER_VAR_834_ahomeaaloisanijlijchargementsabahasrcaparserbbah;
 }
 }
 };
-____BAH_COMPILER_VAR_834_ahomeaaloisanijlijchargementsabahasrcaparserbbah:
+____BAH_COMPILER_VAR_834_ahomeaaloisanijlijchargementsabahasrcaparserbbah: ;
 
 #line 562 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Bah_Array_Type* mm = arraySubstitute(memory, start, k);
@@ -14804,7 +14804,7 @@ char** ____BAH_COMPILER_VAR_841_ahomeaaloisanijlijchargementsabahasrcaparserbbah
 #line 582 "/home/alois/Téléchargements/bah/src/parser.bah"
 goto ____BAH_COMPILER_VAR_829_ahomeaaloisanijlijchargementsabahasrcaparserbbah;
 };
-____BAH_COMPILER_VAR_829_ahomeaaloisanijlijchargementsabahasrcaparserbbah:
+____BAH_COMPILER_VAR_829_ahomeaaloisanijlijchargementsabahasrcaparserbbah: ;
 
 #line 584 "/home/alois/Téléchargements/bah/src/parser.bah"
 if (__builtin_expect((j==len(s->members)), 0)) {
@@ -14901,7 +14901,7 @@ goto ____BAH_COMPILER_VAR_852_ahomeaaloisanijlijchargementsabahasrcaparserbbah;
 }
 }
 };
-____BAH_COMPILER_VAR_852_ahomeaaloisanijlijchargementsabahasrcaparserbbah:
+____BAH_COMPILER_VAR_852_ahomeaaloisanijlijchargementsabahasrcaparserbbah: ;
 
 #line 623 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Bah_Array_Type* mm = arraySubstitute(memory, start, k);
@@ -14956,7 +14956,7 @@ throwErr(&st,"\063\0\0\0""Need ',' separator between two values, not {TOKEN}.");
 #line 649 "/home/alois/Téléchargements/bah/src/parser.bah"
 ++k;
 };
-____BAH_COMPILER_VAR_826_ahomeaaloisanijlijchargementsabahasrcaparserbbah:
+____BAH_COMPILER_VAR_826_ahomeaaloisanijlijchargementsabahasrcaparserbbah: ;
 
 #line 653 "/home/alois/Téléchargements/bah/src/parser.bah"
 if (isHeap) {
@@ -15221,7 +15221,7 @@ unsigned int ____BAH_COMPILER_VAR_878_ahomeaaloisanijlijchargementsabahasrcapars
     __Bah_realocate_arr(memory, ____BAH_COMPILER_VAR_878_ahomeaaloisanijlijchargementsabahasrcaparserbbah);
     ((struct Tok*)memory->data)[____BAH_COMPILER_VAR_878_ahomeaaloisanijlijchargementsabahasrcaparserbbah] = t;
 };
-____BAH_COMPILER_VAR_877_ahomeaaloisanijlijchargementsabahasrcaparserbbah:
+____BAH_COMPILER_VAR_877_ahomeaaloisanijlijchargementsabahasrcaparserbbah: ;
 
 #line 757 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct variable* tmpV = parseStructValues(s,isHeap,memory,elems);
@@ -15280,7 +15280,7 @@ unsigned int ____BAH_COMPILER_VAR_881_ahomeaaloisanijlijchargementsabahasrcapars
 #line 778 "/home/alois/Téléchargements/bah/src/parser.bah"
 ++i;
 };
-____BAH_COMPILER_VAR_865_ahomeaaloisanijlijchargementsabahasrcaparserbbah:
+____BAH_COMPILER_VAR_865_ahomeaaloisanijlijchargementsabahasrcaparserbbah: ;
 
 #line 781 "/home/alois/Téléchargements/bah/src/parser.bah"
 return nl;
@@ -15348,7 +15348,7 @@ else{
 goto ____BAH_COMPILER_VAR_883_ahomeaaloisanijlijchargementsabahasrcaparserbbah;
 }
 };
-____BAH_COMPILER_VAR_883_ahomeaaloisanijlijchargementsabahasrcaparserbbah:
+____BAH_COMPILER_VAR_883_ahomeaaloisanijlijchargementsabahasrcaparserbbah: ;
 
 #line 806 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((i<len(line))) {
@@ -15418,7 +15418,7 @@ goto ____BAH_COMPILER_VAR_887_ahomeaaloisanijlijchargementsabahasrcaparserbbah;
 #line 829 "/home/alois/Téléchargements/bah/src/parser.bah"
 char** ____BAH_COMPILER_VAR_888_ahomeaaloisanijlijchargementsabahasrcaparserbbah = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_888_ahomeaaloisanijlijchargementsabahasrcaparserbbah[1] = ((struct Tok*)line->data)[i].cont;____BAH_COMPILER_VAR_888_ahomeaaloisanijlijchargementsabahasrcaparserbbah[0] = mem;char* ____BAH_COMPILER_VAR_889_ahomeaaloisanijlijchargementsabahasrcaparserbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_888_ahomeaaloisanijlijchargementsabahasrcaparserbbah, 2);mem = ____BAH_COMPILER_VAR_889_ahomeaaloisanijlijchargementsabahasrcaparserbbah;
 };
-____BAH_COMPILER_VAR_887_ahomeaaloisanijlijchargementsabahasrcaparserbbah:
+____BAH_COMPILER_VAR_887_ahomeaaloisanijlijchargementsabahasrcaparserbbah: ;
 
 #line 832 "/home/alois/Téléchargements/bah/src/parser.bah"
 if (__builtin_expect((i==len(line)), 0)) {
@@ -15461,7 +15461,7 @@ else{
 }
 }
 };
-____BAH_COMPILER_VAR_882_ahomeaaloisanijlijchargementsabahasrcaparserbbah:
+____BAH_COMPILER_VAR_882_ahomeaaloisanijlijchargementsabahasrcaparserbbah: ;
 };
 
 #line 854 "/home/alois/Téléchargements/bah/src/parser.bah"
@@ -15552,7 +15552,7 @@ delete(l,i);
 }
 }
 };
-____BAH_COMPILER_VAR_896_ahomeaaloisanijlijchargementsabahasrcaparserbbah:
+____BAH_COMPILER_VAR_896_ahomeaaloisanijlijchargementsabahasrcaparserbbah: ;
 
 #line 891 "/home/alois/Téléchargements/bah/src/parser.bah"
 return l;
@@ -15617,7 +15617,7 @@ char** ____BAH_COMPILER_VAR_908_ahomeaaloisanijlijchargementsabahasrcaparserbbah
 #line 921 "/home/alois/Téléchargements/bah/src/parser.bah"
 --ptrLevel;
 };
-____BAH_COMPILER_VAR_907_ahomeaaloisanijlijchargementsabahasrcaparserbbah:
+____BAH_COMPILER_VAR_907_ahomeaaloisanijlijchargementsabahasrcaparserbbah: ;
 
 #line 923 "/home/alois/Téléchargements/bah/src/parser.bah"
 char** ____BAH_COMPILER_VAR_910_ahomeaaloisanijlijchargementsabahasrcaparserbbah = alloca(7 * sizeof(char*));____BAH_COMPILER_VAR_910_ahomeaaloisanijlijchargementsabahasrcaparserbbah[6] = "\01\0\0\0"")";____BAH_COMPILER_VAR_910_ahomeaaloisanijlijchargementsabahasrcaparserbbah[5] = string__str(&svt);____BAH_COMPILER_VAR_910_ahomeaaloisanijlijchargementsabahasrcaparserbbah[4] = "\016\0\0\0""sizeof(struct ";____BAH_COMPILER_VAR_910_ahomeaaloisanijlijchargementsabahasrcaparserbbah[3] = "\02\0\0\0"", ";____BAH_COMPILER_VAR_910_ahomeaaloisanijlijchargementsabahasrcaparserbbah[2] = e->cont;____BAH_COMPILER_VAR_910_ahomeaaloisanijlijchargementsabahasrcaparserbbah[1] = ptrRect;____BAH_COMPILER_VAR_910_ahomeaaloisanijlijchargementsabahasrcaparserbbah[0] = "\014\0\0\0""__serialize(";char* ____BAH_COMPILER_VAR_911_ahomeaaloisanijlijchargementsabahasrcaparserbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_910_ahomeaaloisanijlijchargementsabahasrcaparserbbah, 7);code = ____BAH_COMPILER_VAR_911_ahomeaaloisanijlijchargementsabahasrcaparserbbah;
@@ -15641,7 +15641,7 @@ char** ____BAH_COMPILER_VAR_913_ahomeaaloisanijlijchargementsabahasrcaparserbbah
 #line 931 "/home/alois/Téléchargements/bah/src/parser.bah"
 ++i;
 };
-____BAH_COMPILER_VAR_912_ahomeaaloisanijlijchargementsabahasrcaparserbbah:
+____BAH_COMPILER_VAR_912_ahomeaaloisanijlijchargementsabahasrcaparserbbah: ;
 }
 
 #line 937 "/home/alois/Téléchargements/bah/src/parser.bah"
@@ -15942,7 +15942,7 @@ char** ____BAH_COMPILER_VAR_951_ahomeaaloisanijlijchargementsabahasrcaparserbbah
 #line 1051 "/home/alois/Téléchargements/bah/src/parser.bah"
 char** ____BAH_COMPILER_VAR_953_ahomeaaloisanijlijchargementsabahasrcaparserbbah = alloca(7 * sizeof(char*));____BAH_COMPILER_VAR_953_ahomeaaloisanijlijchargementsabahasrcaparserbbah[6] = "\02\0\0\0"";\n";____BAH_COMPILER_VAR_953_ahomeaaloisanijlijchargementsabahasrcaparserbbah[5] = rt.cont;____BAH_COMPILER_VAR_953_ahomeaaloisanijlijchargementsabahasrcaparserbbah[4] = "\04\0\0\0""] = ";____BAH_COMPILER_VAR_953_ahomeaaloisanijlijchargementsabahasrcaparserbbah[3] = intToStr(i);____BAH_COMPILER_VAR_953_ahomeaaloisanijlijchargementsabahasrcaparserbbah[2] = "\010\0\0\0""->data)[";____BAH_COMPILER_VAR_953_ahomeaaloisanijlijchargementsabahasrcaparserbbah[1] = structLayout;____BAH_COMPILER_VAR_953_ahomeaaloisanijlijchargementsabahasrcaparserbbah[0] = "\031\0\0\0""((struct reflectElement*)";char* ____BAH_COMPILER_VAR_954_ahomeaaloisanijlijchargementsabahasrcaparserbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_953_ahomeaaloisanijlijchargementsabahasrcaparserbbah, 7);dataLayout = rope__add(dataLayout, rope(____BAH_COMPILER_VAR_954_ahomeaaloisanijlijchargementsabahasrcaparserbbah));
 };
-____BAH_COMPILER_VAR_945_ahomeaaloisanijlijchargementsabahasrcaparserbbah:
+____BAH_COMPILER_VAR_945_ahomeaaloisanijlijchargementsabahasrcaparserbbah: ;
 
 #line 1054 "/home/alois/Téléchargements/bah/src/parser.bah"
 char** ____BAH_COMPILER_VAR_955_ahomeaaloisanijlijchargementsabahasrcaparserbbah = alloca(15 * sizeof(char*));____BAH_COMPILER_VAR_955_ahomeaaloisanijlijchargementsabahasrcaparserbbah[14] = "\025\0\0\0""->elemSize);\n        ";____BAH_COMPILER_VAR_955_ahomeaaloisanijlijchargementsabahasrcaparserbbah[13] = structLayout;____BAH_COMPILER_VAR_955_ahomeaaloisanijlijchargementsabahasrcaparserbbah[12] = "\013\0\0\0""->length * ";____BAH_COMPILER_VAR_955_ahomeaaloisanijlijchargementsabahasrcaparserbbah[11] = structLayout;____BAH_COMPILER_VAR_955_ahomeaaloisanijlijchargementsabahasrcaparserbbah[10] = "\025\0\0\0""->data = memoryAlloc(";____BAH_COMPILER_VAR_955_ahomeaaloisanijlijchargementsabahasrcaparserbbah[9] = structLayout;____BAH_COMPILER_VAR_955_ahomeaaloisanijlijchargementsabahasrcaparserbbah[8] = "\012\0\0\0"";\n        ";____BAH_COMPILER_VAR_955_ahomeaaloisanijlijchargementsabahasrcaparserbbah[7] = intToStr(len(ts->members));____BAH_COMPILER_VAR_955_ahomeaaloisanijlijchargementsabahasrcaparserbbah[6] = "\013\0\0\0""->length = ";____BAH_COMPILER_VAR_955_ahomeaaloisanijlijchargementsabahasrcaparserbbah[5] = structLayout;____BAH_COMPILER_VAR_955_ahomeaaloisanijlijchargementsabahasrcaparserbbah[4] = "\064\0\0\0""->elemSize = sizeof(struct reflectElement);\n        ";____BAH_COMPILER_VAR_955_ahomeaaloisanijlijchargementsabahasrcaparserbbah[3] = structLayout;____BAH_COMPILER_VAR_955_ahomeaaloisanijlijchargementsabahasrcaparserbbah[2] = "\067\0\0\0"" = memoryAlloc(sizeof(struct Bah_Array_Type));\n        ";____BAH_COMPILER_VAR_955_ahomeaaloisanijlijchargementsabahasrcaparserbbah[1] = structLayout;____BAH_COMPILER_VAR_955_ahomeaaloisanijlijchargementsabahasrcaparserbbah[0] = "\041\0\0\0""\n        struct Bah_Array_Type * ";char* ____BAH_COMPILER_VAR_956_ahomeaaloisanijlijchargementsabahasrcaparserbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_955_ahomeaaloisanijlijchargementsabahasrcaparserbbah, 15);OUTPUT = rope__add(OUTPUT, (rope__add(rope(____BAH_COMPILER_VAR_956_ahomeaaloisanijlijchargementsabahasrcaparserbbah), dataLayout)));
@@ -16091,7 +16091,7 @@ unsigned int ____BAH_COMPILER_VAR_968_ahomeaaloisanijlijchargementsabahasrcapars
 #line 1122 "/home/alois/Téléchargements/bah/src/parser.bah"
 ++i;
 };
-____BAH_COMPILER_VAR_967_ahomeaaloisanijlijchargementsabahasrcaparserbbah:
+____BAH_COMPILER_VAR_967_ahomeaaloisanijlijchargementsabahasrcaparserbbah: ;
 
 #line 1124 "/home/alois/Téléchargements/bah/src/parser.bah"
 memory = prePross(memory,(lineType)-1,elems);
@@ -16143,7 +16143,7 @@ if ((nbBraces==0)) {
 goto ____BAH_COMPILER_VAR_970_ahomeaaloisanijlijchargementsabahasrcaparserbbah;
 }
 };
-____BAH_COMPILER_VAR_970_ahomeaaloisanijlijchargementsabahasrcaparserbbah:
+____BAH_COMPILER_VAR_970_ahomeaaloisanijlijchargementsabahasrcaparserbbah: ;
 
 #line 1142 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct variable* ____BAH_COMPILER_VAR_971_ahomeaaloisanijlijchargementsabahasrcaparserbbah = memoryAlloc(sizeof(struct variable));
@@ -16286,7 +16286,7 @@ throwErr(&t,"\031\0\0\0""Expected ',' got {TOKEN}.");
 #line 1200 "/home/alois/Téléchargements/bah/src/parser.bah"
 ++i;
 };
-____BAH_COMPILER_VAR_969_ahomeaaloisanijlijchargementsabahasrcaparserbbah:
+____BAH_COMPILER_VAR_969_ahomeaaloisanijlijchargementsabahasrcaparserbbah: ;
 }
 
 #line 1203 "/home/alois/Téléchargements/bah/src/parser.bah"
@@ -16590,7 +16590,7 @@ unsigned int ____BAH_COMPILER_VAR_1013_ahomeaaloisanijlijchargementsabahasrcapar
     __Bah_realocate_arr(nl, ____BAH_COMPILER_VAR_1013_ahomeaaloisanijlijchargementsabahasrcaparserbbah);
     ((struct Tok*)nl->data)[____BAH_COMPILER_VAR_1013_ahomeaaloisanijlijchargementsabahasrcaparserbbah] = ((struct Tok*)tmpL->data)[j];
 };
-____BAH_COMPILER_VAR_1012_ahomeaaloisanijlijchargementsabahasrcaparserbbah:
+____BAH_COMPILER_VAR_1012_ahomeaaloisanijlijchargementsabahasrcaparserbbah: ;
 
 #line 1326 "/home/alois/Téléchargements/bah/src/parser.bah"
 l = nl;
@@ -17105,7 +17105,7 @@ char** ____BAH_COMPILER_VAR_1060_ahomeaaloisanijlijchargementsabahasrcaparserbba
 #line 1527 "/home/alois/Téléchargements/bah/src/parser.bah"
 ++i;
 };
-____BAH_COMPILER_VAR_1014_ahomeaaloisanijlijchargementsabahasrcaparserbbah:
+____BAH_COMPILER_VAR_1014_ahomeaaloisanijlijchargementsabahasrcaparserbbah: ;
 
 #line 1530 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((exists==true)) {
@@ -17530,7 +17530,7 @@ goto ____BAH_COMPILER_VAR_1111_ahomeaaloisanijlijchargementsabahasrcaparserbbah;
 }
 }
 };
-____BAH_COMPILER_VAR_1111_ahomeaaloisanijlijchargementsabahasrcaparserbbah:
+____BAH_COMPILER_VAR_1111_ahomeaaloisanijlijchargementsabahasrcaparserbbah: ;
 }
 
 #line 1709 "/home/alois/Téléchargements/bah/src/parser.bah"
@@ -17598,7 +17598,7 @@ goto ____BAH_COMPILER_VAR_1114_ahomeaaloisanijlijchargementsabahasrcaparserbbah;
 #line 1730 "/home/alois/Téléchargements/bah/src/parser.bah"
 ++j;
 };
-____BAH_COMPILER_VAR_1114_ahomeaaloisanijlijchargementsabahasrcaparserbbah:
+____BAH_COMPILER_VAR_1114_ahomeaaloisanijlijchargementsabahasrcaparserbbah: ;
 
 #line 1733 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct variable* ____BAH_COMPILER_VAR_1117_ahomeaaloisanijlijchargementsabahasrcaparserbbah = memoryAlloc(sizeof(struct variable));
@@ -17663,7 +17663,7 @@ goto ____BAH_COMPILER_VAR_1108_ahomeaaloisanijlijchargementsabahasrcaparserbbah;
 #line 1754 "/home/alois/Téléchargements/bah/src/parser.bah"
 ++j;
 };
-____BAH_COMPILER_VAR_1108_ahomeaaloisanijlijchargementsabahasrcaparserbbah:
+____BAH_COMPILER_VAR_1108_ahomeaaloisanijlijchargementsabahasrcaparserbbah: ;
 }
 
 #line 1756 "/home/alois/Téléchargements/bah/src/parser.bah"
@@ -17706,7 +17706,7 @@ char** ____BAH_COMPILER_VAR_1134_ahomeaaloisanijlijchargementsabahasrcaparserbba
 #line 1770 "/home/alois/Téléchargements/bah/src/parser.bah"
 ++j;
 };
-____BAH_COMPILER_VAR_1133_ahomeaaloisanijlijchargementsabahasrcaparserbbah:
+____BAH_COMPILER_VAR_1133_ahomeaaloisanijlijchargementsabahasrcaparserbbah: ;
 
 #line 1772 "/home/alois/Téléchargements/bah/src/parser.bah"
 if (strlen(returns->type)) {
@@ -17957,7 +17957,7 @@ unsigned int ____BAH_COMPILER_VAR_1151_ahomeaaloisanijlijchargementsabahasrcapar
 #line 1855 "/home/alois/Téléchargements/bah/src/parser.bah"
 ++j;
 };
-____BAH_COMPILER_VAR_1148_ahomeaaloisanijlijchargementsabahasrcaparserbbah:
+____BAH_COMPILER_VAR_1148_ahomeaaloisanijlijchargementsabahasrcaparserbbah: ;
 }
 
 #line 1857 "/home/alois/Téléchargements/bah/src/parser.bah"
@@ -18014,7 +18014,7 @@ if ((((struct Tok*)l->data)[j].type==TOKEN_TYPE_STR)&&(((struct Tok*)l->data)[j]
 ((struct Tok*)l->data)[j].processedStr = true;
 }
 };
-____BAH_COMPILER_VAR_1154_ahomeaaloisanijlijchargementsabahasrcaparserbbah:
+____BAH_COMPILER_VAR_1154_ahomeaaloisanijlijchargementsabahasrcaparserbbah: ;
 
 #line 1877 "/home/alois/Téléchargements/bah/src/parser.bah"
 while ((i<len(l))) {
@@ -18079,7 +18079,7 @@ throwErr(&t,"\051\0\0\0""Member {TOKEN} has already been declared.");
 #line 1896 "/home/alois/Téléchargements/bah/src/parser.bah"
 ++ii;
 };
-____BAH_COMPILER_VAR_1158_ahomeaaloisanijlijchargementsabahasrcaparserbbah:
+____BAH_COMPILER_VAR_1158_ahomeaaloisanijlijchargementsabahasrcaparserbbah: ;
 
 #line 1898 "/home/alois/Téléchargements/bah/src/parser.bah"
 ++i;
@@ -18201,7 +18201,7 @@ unsigned int ____BAH_COMPILER_VAR_1170_ahomeaaloisanijlijchargementsabahasrcapar
 #line 1933 "/home/alois/Téléchargements/bah/src/parser.bah"
 ++j;
 };
-____BAH_COMPILER_VAR_1164_ahomeaaloisanijlijchargementsabahasrcaparserbbah:
+____BAH_COMPILER_VAR_1164_ahomeaaloisanijlijchargementsabahasrcaparserbbah: ;
 
 #line 1935 "/home/alois/Téléchargements/bah/src/parser.bah"
 --i;
@@ -18270,7 +18270,7 @@ unsigned int ____BAH_COMPILER_VAR_1176_ahomeaaloisanijlijchargementsabahasrcapar
     __Bah_realocate_arr(fnElems->vars, ____BAH_COMPILER_VAR_1176_ahomeaaloisanijlijchargementsabahasrcaparserbbah);
     ((struct variable**)fnElems->vars->data)[____BAH_COMPILER_VAR_1176_ahomeaaloisanijlijchargementsabahasrcaparserbbah] = a;
 };
-____BAH_COMPILER_VAR_1175_ahomeaaloisanijlijchargementsabahasrcaparserbbah:
+____BAH_COMPILER_VAR_1175_ahomeaaloisanijlijchargementsabahasrcaparserbbah: ;
 
 #line 1962 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Bah_Array_Type* fns = elems->fns;
@@ -18311,7 +18311,7 @@ debugVar__fromVar(dfa,((struct variable**)fn->args->data)[j]);
     __Bah_realocate_arr(df->args, j);
     ((struct debugVar**)df->args->data)[j] = dfa;
 };
-____BAH_COMPILER_VAR_1179_ahomeaaloisanijlijchargementsabahasrcaparserbbah:
+____BAH_COMPILER_VAR_1179_ahomeaaloisanijlijchargementsabahasrcaparserbbah: ;
 
 #line 1973 "/home/alois/Téléchargements/bah/src/parser.bah"
 df->returns = fn->returns->type;
@@ -18411,7 +18411,7 @@ goto ____BAH_COMPILER_VAR_1202_ahomeaaloisanijlijchargementsabahasrcaparserbbah;
 }
 }
 };
-____BAH_COMPILER_VAR_1202_ahomeaaloisanijlijchargementsabahasrcaparserbbah:
+____BAH_COMPILER_VAR_1202_ahomeaaloisanijlijchargementsabahasrcaparserbbah: ;
 
 #line 1997 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((shouldOnlyDecl==false)) {
@@ -18576,7 +18576,7 @@ char** ____BAH_COMPILER_VAR_1212_ahomeaaloisanijlijchargementsabahasrcaparserbba
 #line 2060 "/home/alois/Téléchargements/bah/src/parser.bah"
 ++i;
 };
-____BAH_COMPILER_VAR_1211_ahomeaaloisanijlijchargementsabahasrcaparserbbah:
+____BAH_COMPILER_VAR_1211_ahomeaaloisanijlijchargementsabahasrcaparserbbah: ;
 
 #line 2063 "/home/alois/Téléchargements/bah/src/parser.bah"
 memb->type = mbmType;
@@ -18678,7 +18678,7 @@ unsigned int ____BAH_COMPILER_VAR_1223_ahomeaaloisanijlijchargementsabahasrcapar
 #line 2098 "/home/alois/Téléchargements/bah/src/parser.bah"
 ++i;
 };
-____BAH_COMPILER_VAR_1155_ahomeaaloisanijlijchargementsabahasrcaparserbbah:
+____BAH_COMPILER_VAR_1155_ahomeaaloisanijlijchargementsabahasrcaparserbbah: ;
 
 #line 2100 "/home/alois/Téléchargements/bah/src/parser.bah"
 s->members = members;
@@ -18717,7 +18717,7 @@ char** ____BAH_COMPILER_VAR_1227_ahomeaaloisanijlijchargementsabahasrcaparserbba
 #line 2113 "/home/alois/Téléchargements/bah/src/parser.bah"
 ++i;
 };
-____BAH_COMPILER_VAR_1226_ahomeaaloisanijlijchargementsabahasrcaparserbbah:
+____BAH_COMPILER_VAR_1226_ahomeaaloisanijlijchargementsabahasrcaparserbbah: ;
 
 #line 2115 "/home/alois/Téléchargements/bah/src/parser.bah"
 code = rope__add(code, rope("\03\0\0\0""};\n"));
@@ -18775,7 +18775,7 @@ debugVar__fromVar(mv,(struct variable*)m);
 #line 2131 "/home/alois/Téléchargements/bah/src/parser.bah"
 ++i;
 };
-____BAH_COMPILER_VAR_1230_ahomeaaloisanijlijchargementsabahasrcaparserbbah:
+____BAH_COMPILER_VAR_1230_ahomeaaloisanijlijchargementsabahasrcaparserbbah: ;
 
 #line 2134 "/home/alois/Téléchargements/bah/src/parser.bah"
 i = 0;
@@ -18791,7 +18791,7 @@ struct func* me = ((struct func**)s->methods->data)[i];
     __Bah_realocate_arr(ds->methods, i);
     ((char**)ds->methods->data)[i] = me->name;
 };
-____BAH_COMPILER_VAR_1232_ahomeaaloisanijlijchargementsabahasrcaparserbbah:
+____BAH_COMPILER_VAR_1232_ahomeaaloisanijlijchargementsabahasrcaparserbbah: ;
 
 #line 2138 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct debugStruct* keep_ref_____BAH_COMPILER_VAR_1233_ahomeaaloisanijlijchargementsabahasrcaparserbbah = ds;
@@ -18937,7 +18937,7 @@ struct Tok t = ((struct Tok*)l->data)[i];
 #line 2180 "/home/alois/Téléchargements/bah/src/parser.bah"
 char** ____BAH_COMPILER_VAR_1266_ahomeaaloisanijlijchargementsabahasrcaparserbbah = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1266_ahomeaaloisanijlijchargementsabahasrcaparserbbah[1] = t.cont;____BAH_COMPILER_VAR_1266_ahomeaaloisanijlijchargementsabahasrcaparserbbah[0] = tp;char* ____BAH_COMPILER_VAR_1267_ahomeaaloisanijlijchargementsabahasrcaparserbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_1266_ahomeaaloisanijlijchargementsabahasrcaparserbbah, 2);tp = ____BAH_COMPILER_VAR_1267_ahomeaaloisanijlijchargementsabahasrcaparserbbah;
 };
-____BAH_COMPILER_VAR_1265_ahomeaaloisanijlijchargementsabahasrcaparserbbah:
+____BAH_COMPILER_VAR_1265_ahomeaaloisanijlijchargementsabahasrcaparserbbah: ;
 
 #line 2182 "/home/alois/Téléchargements/bah/src/parser.bah"
 if (__builtin_expect((ft.type!=TOKEN_TYPE_VAR), 0)) {
@@ -19060,7 +19060,7 @@ goto ____BAH_COMPILER_VAR_1282_ahomeaaloisanijlijchargementsabahasrcaparserbbah;
 #line 2227 "/home/alois/Téléchargements/bah/src/parser.bah"
 ++j;
 };
-____BAH_COMPILER_VAR_1282_ahomeaaloisanijlijchargementsabahasrcaparserbbah:
+____BAH_COMPILER_VAR_1282_ahomeaaloisanijlijchargementsabahasrcaparserbbah: ;
 
 #line 2229 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((found==true)) {
@@ -19080,7 +19080,7 @@ unsigned int ____BAH_COMPILER_VAR_1283_ahomeaaloisanijlijchargementsabahasrcapar
 #line 2235 "/home/alois/Téléchargements/bah/src/parser.bah"
 ++i;
 };
-____BAH_COMPILER_VAR_1280_ahomeaaloisanijlijchargementsabahasrcaparserbbah:
+____BAH_COMPILER_VAR_1280_ahomeaaloisanijlijchargementsabahasrcaparserbbah: ;
 };
 
 #line 2241 "/home/alois/Téléchargements/bah/src/parser.bah"
@@ -19542,7 +19542,7 @@ bc.checkNull = (bc.checkNull==false);
     __Bah_realocate_arr(ifElems->branchChecks, i);
     ((struct varCheck*)ifElems->branchChecks->data)[i] = bc;
 };
-____BAH_COMPILER_VAR_1323_ahomeaaloisanijlijchargementsabahasrcaparserbbah:
+____BAH_COMPILER_VAR_1323_ahomeaaloisanijlijchargementsabahasrcaparserbbah: ;
 }
 
 #line 2429 "/home/alois/Téléchargements/bah/src/parser.bah"
@@ -19556,7 +19556,7 @@ unsigned int ____BAH_COMPILER_VAR_1325_ahomeaaloisanijlijchargementsabahasrcapar
     __Bah_realocate_arr(ifElems->branchChecks, ____BAH_COMPILER_VAR_1325_ahomeaaloisanijlijchargementsabahasrcaparserbbah);
     ((struct varCheck*)ifElems->branchChecks->data)[____BAH_COMPILER_VAR_1325_ahomeaaloisanijlijchargementsabahasrcaparserbbah] = ((struct varCheck*)currChecks->data)[i];
 };
-____BAH_COMPILER_VAR_1324_ahomeaaloisanijlijchargementsabahasrcaparserbbah:
+____BAH_COMPILER_VAR_1324_ahomeaaloisanijlijchargementsabahasrcaparserbbah: ;
 
 #line 2432 "/home/alois/Téléchargements/bah/src/parser.bah"
 prevIfChecks = ifElems->branchChecks;
@@ -19670,7 +19670,7 @@ unsigned int ____BAH_COMPILER_VAR_1330_ahomeaaloisanijlijchargementsabahasrcapar
 #line 2487 "/home/alois/Téléchargements/bah/src/parser.bah"
 ++i;
 };
-____BAH_COMPILER_VAR_1329_ahomeaaloisanijlijchargementsabahasrcaparserbbah:
+____BAH_COMPILER_VAR_1329_ahomeaaloisanijlijchargementsabahasrcaparserbbah: ;
 
 #line 2489 "/home/alois/Téléchargements/bah/src/parser.bah"
 parseIf(memory,true,elems);
@@ -19713,7 +19713,7 @@ unsigned int ____BAH_COMPILER_VAR_1333_ahomeaaloisanijlijchargementsabahasrcapar
 #line 2499 "/home/alois/Téléchargements/bah/src/parser.bah"
 ++i;
 };
-____BAH_COMPILER_VAR_1332_ahomeaaloisanijlijchargementsabahasrcaparserbbah:
+____BAH_COMPILER_VAR_1332_ahomeaaloisanijlijchargementsabahasrcaparserbbah: ;
 
 #line 2502 "/home/alois/Téléchargements/bah/src/parser.bah"
 i = 0;
@@ -19732,7 +19732,7 @@ bc.checkNull = (bc.checkNull==false);
     __Bah_realocate_arr(elems->branchChecks, i);
     ((struct varCheck*)elems->branchChecks->data)[i] = bc;
 };
-____BAH_COMPILER_VAR_1334_ahomeaaloisanijlijchargementsabahasrcaparserbbah:
+____BAH_COMPILER_VAR_1334_ahomeaaloisanijlijchargementsabahasrcaparserbbah: ;
 
 #line 2508 "/home/alois/Téléchargements/bah/src/parser.bah"
 char oldIB = compilerState.isBranch;
@@ -19837,7 +19837,7 @@ throwErr(&t,"\106\0\0\0""Invalid line separation of for, cannot set more than 2 
 #line 2550 "/home/alois/Téléchargements/bah/src/parser.bah"
 ++i;
 };
-____BAH_COMPILER_VAR_1335_ahomeaaloisanijlijchargementsabahasrcaparserbbah:
+____BAH_COMPILER_VAR_1335_ahomeaaloisanijlijchargementsabahasrcaparserbbah: ;
 
 #line 2553 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Elems* ifElems = dupElems(elems);
@@ -19912,7 +19912,7 @@ unsigned int ____BAH_COMPILER_VAR_1342_ahomeaaloisanijlijchargementsabahasrcapar
     __Bah_realocate_arr(inst, ____BAH_COMPILER_VAR_1342_ahomeaaloisanijlijchargementsabahasrcaparserbbah);
     ((struct Tok*)inst->data)[____BAH_COMPILER_VAR_1342_ahomeaaloisanijlijchargementsabahasrcaparserbbah] = t;
 };
-____BAH_COMPILER_VAR_1341_ahomeaaloisanijlijchargementsabahasrcaparserbbah:
+____BAH_COMPILER_VAR_1341_ahomeaaloisanijlijchargementsabahasrcaparserbbah: ;
 
 #line 2583 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct rope* oldOut = OUTPUT;
@@ -19963,7 +19963,7 @@ unsigned int ____BAH_COMPILER_VAR_1345_ahomeaaloisanijlijchargementsabahasrcapar
     __Bah_realocate_arr(tokens, ____BAH_COMPILER_VAR_1345_ahomeaaloisanijlijchargementsabahasrcaparserbbah);
     ((struct Tok*)tokens->data)[____BAH_COMPILER_VAR_1345_ahomeaaloisanijlijchargementsabahasrcaparserbbah] = t;
 };
-____BAH_COMPILER_VAR_1344_ahomeaaloisanijlijchargementsabahasrcaparserbbah:
+____BAH_COMPILER_VAR_1344_ahomeaaloisanijlijchargementsabahasrcaparserbbah: ;
 
 #line 2604 "/home/alois/Téléchargements/bah/src/parser.bah"
 char** ____BAH_COMPILER_VAR_1346_ahomeaaloisanijlijchargementsabahasrcaparserbbah = alloca(5 * sizeof(char*));____BAH_COMPILER_VAR_1346_ahomeaaloisanijlijchargementsabahasrcaparserbbah[4] = "\04\0\0\0"") {\n";____BAH_COMPILER_VAR_1346_ahomeaaloisanijlijchargementsabahasrcaparserbbah[3] = string__str(&instC);____BAH_COMPILER_VAR_1346_ahomeaaloisanijlijchargementsabahasrcaparserbbah[2] = "\02\0\0\0""; ";____BAH_COMPILER_VAR_1346_ahomeaaloisanijlijchargementsabahasrcaparserbbah[1] = condt.cont;____BAH_COMPILER_VAR_1346_ahomeaaloisanijlijchargementsabahasrcaparserbbah[0] = "\07\0\0\0""for (; ";char* ____BAH_COMPILER_VAR_1347_ahomeaaloisanijlijchargementsabahasrcaparserbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_1346_ahomeaaloisanijlijchargementsabahasrcaparserbbah, 5);OUTPUT = rope__add(OUTPUT, rope(____BAH_COMPILER_VAR_1347_ahomeaaloisanijlijchargementsabahasrcaparserbbah));
@@ -20000,7 +20000,7 @@ unsigned int ____BAH_COMPILER_VAR_1350_ahomeaaloisanijlijchargementsabahasrcapar
     __Bah_realocate_arr(tokens, ____BAH_COMPILER_VAR_1350_ahomeaaloisanijlijchargementsabahasrcaparserbbah);
     ((struct Tok*)tokens->data)[____BAH_COMPILER_VAR_1350_ahomeaaloisanijlijchargementsabahasrcaparserbbah] = t;
 };
-____BAH_COMPILER_VAR_1349_ahomeaaloisanijlijchargementsabahasrcaparserbbah:
+____BAH_COMPILER_VAR_1349_ahomeaaloisanijlijchargementsabahasrcaparserbbah: ;
 
 #line 2616 "/home/alois/Téléchargements/bah/src/parser.bah"
 char** ____BAH_COMPILER_VAR_1351_ahomeaaloisanijlijchargementsabahasrcaparserbbah = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_1351_ahomeaaloisanijlijchargementsabahasrcaparserbbah[2] = "\04\0\0\0"") {\n";____BAH_COMPILER_VAR_1351_ahomeaaloisanijlijchargementsabahasrcaparserbbah[1] = condt.cont;____BAH_COMPILER_VAR_1351_ahomeaaloisanijlijchargementsabahasrcaparserbbah[0] = "\07\0\0\0""while (";char* ____BAH_COMPILER_VAR_1352_ahomeaaloisanijlijchargementsabahasrcaparserbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_1351_ahomeaaloisanijlijchargementsabahasrcaparserbbah, 3);OUTPUT = rope__add(OUTPUT, rope(____BAH_COMPILER_VAR_1352_ahomeaaloisanijlijchargementsabahasrcaparserbbah));
@@ -20065,7 +20065,7 @@ char** ____BAH_COMPILER_VAR_1354_ahomeaaloisanijlijchargementsabahasrcaparserbba
 v->iterScope = null;
 }
 };
-____BAH_COMPILER_VAR_1353_ahomeaaloisanijlijchargementsabahasrcaparserbbah:
+____BAH_COMPILER_VAR_1353_ahomeaaloisanijlijchargementsabahasrcaparserbbah: ;
 }
 
 #line 2644 "/home/alois/Téléchargements/bah/src/parser.bah"
@@ -20088,7 +20088,7 @@ compilerState.isBranch = oldIB;
 compilerState.currForElems = oForElems;
 
 #line 2651 "/home/alois/Téléchargements/bah/src/parser.bah"
-char** ____BAH_COMPILER_VAR_1356_ahomeaaloisanijlijchargementsabahasrcaparserbbah = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_1356_ahomeaaloisanijlijchargementsabahasrcaparserbbah[2] = "\02\0\0\0"":\n";____BAH_COMPILER_VAR_1356_ahomeaaloisanijlijchargementsabahasrcaparserbbah[1] = ifElems->switchOptCurrLoop;____BAH_COMPILER_VAR_1356_ahomeaaloisanijlijchargementsabahasrcaparserbbah[0] = "\03\0\0\0""};\n";char* ____BAH_COMPILER_VAR_1357_ahomeaaloisanijlijchargementsabahasrcaparserbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_1356_ahomeaaloisanijlijchargementsabahasrcaparserbbah, 3);OUTPUT = rope__add(OUTPUT, rope(____BAH_COMPILER_VAR_1357_ahomeaaloisanijlijchargementsabahasrcaparserbbah));
+char** ____BAH_COMPILER_VAR_1356_ahomeaaloisanijlijchargementsabahasrcaparserbbah = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_1356_ahomeaaloisanijlijchargementsabahasrcaparserbbah[2] = "\04\0\0\0"": ;\n";____BAH_COMPILER_VAR_1356_ahomeaaloisanijlijchargementsabahasrcaparserbbah[1] = ifElems->switchOptCurrLoop;____BAH_COMPILER_VAR_1356_ahomeaaloisanijlijchargementsabahasrcaparserbbah[0] = "\03\0\0\0""};\n";char* ____BAH_COMPILER_VAR_1357_ahomeaaloisanijlijchargementsabahasrcaparserbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_1356_ahomeaaloisanijlijchargementsabahasrcaparserbbah, 3);OUTPUT = rope__add(OUTPUT, rope(____BAH_COMPILER_VAR_1357_ahomeaaloisanijlijchargementsabahasrcaparserbbah));
 };
 
 #line 2656 "/home/alois/Téléchargements/bah/src/parser.bah"
@@ -20248,7 +20248,7 @@ else{
 char** ____BAH_COMPILER_VAR_1383_ahomeaaloisanijlijchargementsabahasrcaparserbbah = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1383_ahomeaaloisanijlijchargementsabahasrcaparserbbah[1] = v;____BAH_COMPILER_VAR_1383_ahomeaaloisanijlijchargementsabahasrcaparserbbah[0] = "\01\0\0\0""*";char* ____BAH_COMPILER_VAR_1384_ahomeaaloisanijlijchargementsabahasrcaparserbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_1383_ahomeaaloisanijlijchargementsabahasrcaparserbbah, 2);char** ____BAH_COMPILER_VAR_1385_ahomeaaloisanijlijchargementsabahasrcaparserbbah = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1385_ahomeaaloisanijlijchargementsabahasrcaparserbbah[1] = ____BAH_COMPILER_VAR_1384_ahomeaaloisanijlijchargementsabahasrcaparserbbah;____BAH_COMPILER_VAR_1385_ahomeaaloisanijlijchargementsabahasrcaparserbbah[0] = fnCall;char* ____BAH_COMPILER_VAR_1386_ahomeaaloisanijlijchargementsabahasrcaparserbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_1385_ahomeaaloisanijlijchargementsabahasrcaparserbbah, 2);fnCall = ____BAH_COMPILER_VAR_1386_ahomeaaloisanijlijchargementsabahasrcaparserbbah;
 }
 };
-____BAH_COMPILER_VAR_1374_ahomeaaloisanijlijchargementsabahasrcaparserbbah:
+____BAH_COMPILER_VAR_1374_ahomeaaloisanijlijchargementsabahasrcaparserbbah: ;
 
 #line 2721 "/home/alois/Téléchargements/bah/src/parser.bah"
 char* setReturnValue = "\014\0\0\0""void* r = 0;";
@@ -20420,7 +20420,7 @@ if ((fn->isBinding==false)&&(strHasPrefix(fn->name,"\013\0\0\0""__Bah_eval_")==f
 makeEvalFunc(fn,elems);
 }
 };
-____BAH_COMPILER_VAR_1401_ahomeaaloisanijlijchargementsabahasrcaparserbbah:
+____BAH_COMPILER_VAR_1401_ahomeaaloisanijlijchargementsabahasrcaparserbbah: ;
 
 #line 2807 "/home/alois/Téléchargements/bah/src/parser.bah"
 return;
@@ -20649,7 +20649,7 @@ unsigned int ____BAH_COMPILER_VAR_1406_ahomeaaloisanijlijchargementsabahasrcapar
 #line 2881 "/home/alois/Téléchargements/bah/src/parser.bah"
 ++i;
 };
-____BAH_COMPILER_VAR_1405_ahomeaaloisanijlijchargementsabahasrcaparserbbah:
+____BAH_COMPILER_VAR_1405_ahomeaaloisanijlijchargementsabahasrcaparserbbah: ;
 
 #line 2884 "/home/alois/Téléchargements/bah/src/parser.bah"
 parseLines(nl,elems);
@@ -20702,7 +20702,7 @@ goto ____BAH_COMPILER_VAR_1409_ahomeaaloisanijlijchargementsabahasrcaparserbbah;
 #line 2905 "/home/alois/Téléchargements/bah/src/parser.bah"
 ++i;
 };
-____BAH_COMPILER_VAR_1409_ahomeaaloisanijlijchargementsabahasrcaparserbbah:
+____BAH_COMPILER_VAR_1409_ahomeaaloisanijlijchargementsabahasrcaparserbbah: ;
 
 #line 2907 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((found==false)) {
@@ -20784,7 +20784,7 @@ if ((i+1<len(fn->args))) {
 char** ____BAH_COMPILER_VAR_1432_ahomeaaloisanijlijchargementsabahasrcaparserbbah = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1432_ahomeaaloisanijlijchargementsabahasrcaparserbbah[1] = "\02\0\0\0"", ";____BAH_COMPILER_VAR_1432_ahomeaaloisanijlijchargementsabahasrcaparserbbah[0] = unSerMembs;char* ____BAH_COMPILER_VAR_1433_ahomeaaloisanijlijchargementsabahasrcaparserbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_1432_ahomeaaloisanijlijchargementsabahasrcaparserbbah, 2);unSerMembs = ____BAH_COMPILER_VAR_1433_ahomeaaloisanijlijchargementsabahasrcaparserbbah;
 }
 };
-____BAH_COMPILER_VAR_1415_ahomeaaloisanijlijchargementsabahasrcaparserbbah:
+____BAH_COMPILER_VAR_1415_ahomeaaloisanijlijchargementsabahasrcaparserbbah: ;
 
 #line 2943 "/home/alois/Téléchargements/bah/src/parser.bah"
 if (fn->isVar&&(fn->fromVar!=null)) {
@@ -21040,7 +21040,7 @@ unsigned int ____BAH_COMPILER_VAR_1475_ahomeaaloisanijlijchargementsabahasrcapar
     __Bah_realocate_arr(nl, ____BAH_COMPILER_VAR_1475_ahomeaaloisanijlijchargementsabahasrcaparserbbah);
     ((struct Tok*)nl->data)[____BAH_COMPILER_VAR_1475_ahomeaaloisanijlijchargementsabahasrcaparserbbah] = t;
 };
-____BAH_COMPILER_VAR_1447_ahomeaaloisanijlijchargementsabahasrcaparserbbah:
+____BAH_COMPILER_VAR_1447_ahomeaaloisanijlijchargementsabahasrcaparserbbah: ;
 
 #line 3068 "/home/alois/Téléchargements/bah/src/parser.bah"
 return nl;
@@ -21109,7 +21109,7 @@ fn = genericFunc__dupBaseFn(((struct genericFunc**)generics->data)[j]);
 goto ____BAH_COMPILER_VAR_1477_ahomeaaloisanijlijchargementsabahasrcavaluesbbah;
 }
 };
-____BAH_COMPILER_VAR_1477_ahomeaaloisanijlijchargementsabahasrcavaluesbbah:
+____BAH_COMPILER_VAR_1477_ahomeaaloisanijlijchargementsabahasrcavaluesbbah: ;
 
 #line 31 "/home/alois/Téléchargements/bah/src/values.bah"
 if (__builtin_expect((j==len(generics)), 0)) {
@@ -21238,7 +21238,7 @@ unsigned int ____BAH_COMPILER_VAR_1488_ahomeaaloisanijlijchargementsabahasrcaval
     __Bah_realocate_arr(memory, ____BAH_COMPILER_VAR_1488_ahomeaaloisanijlijchargementsabahasrcavaluesbbah);
     ((struct Tok*)memory->data)[____BAH_COMPILER_VAR_1488_ahomeaaloisanijlijchargementsabahasrcavaluesbbah] = t;
 };
-____BAH_COMPILER_VAR_1485_ahomeaaloisanijlijchargementsabahasrcavaluesbbah:
+____BAH_COMPILER_VAR_1485_ahomeaaloisanijlijchargementsabahasrcavaluesbbah: ;
 
 #line 82 "/home/alois/Téléchargements/bah/src/values.bah"
 deleteRange(l,tokPos+1,i);
@@ -21274,7 +21274,7 @@ struct Tok t = ((struct Tok*)memory->data)[j];
 #line 91 "/home/alois/Téléchargements/bah/src/values.bah"
 char** ____BAH_COMPILER_VAR_1491_ahomeaaloisanijlijchargementsabahasrcavaluesbbah = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1491_ahomeaaloisanijlijchargementsabahasrcavaluesbbah[1] = t.cont;____BAH_COMPILER_VAR_1491_ahomeaaloisanijlijchargementsabahasrcavaluesbbah[0] = fnt.cont;char* ____BAH_COMPILER_VAR_1492_ahomeaaloisanijlijchargementsabahasrcavaluesbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_1491_ahomeaaloisanijlijchargementsabahasrcavaluesbbah, 2);fnt.cont = ____BAH_COMPILER_VAR_1492_ahomeaaloisanijlijchargementsabahasrcavaluesbbah;
 };
-____BAH_COMPILER_VAR_1490_ahomeaaloisanijlijchargementsabahasrcavaluesbbah:
+____BAH_COMPILER_VAR_1490_ahomeaaloisanijlijchargementsabahasrcavaluesbbah: ;
 
 #line 93 "/home/alois/Téléchargements/bah/src/values.bah"
 char** ____BAH_COMPILER_VAR_1493_ahomeaaloisanijlijchargementsabahasrcavaluesbbah = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1493_ahomeaaloisanijlijchargementsabahasrcavaluesbbah[1] = "\01\0\0\0"")";____BAH_COMPILER_VAR_1493_ahomeaaloisanijlijchargementsabahasrcavaluesbbah[0] = fnt.cont;char* ____BAH_COMPILER_VAR_1494_ahomeaaloisanijlijchargementsabahasrcavaluesbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_1493_ahomeaaloisanijlijchargementsabahasrcavaluesbbah, 2);fnt.cont = ____BAH_COMPILER_VAR_1494_ahomeaaloisanijlijchargementsabahasrcavaluesbbah;
@@ -21420,7 +21420,7 @@ goto ____BAH_COMPILER_VAR_1503_ahomeaaloisanijlijchargementsabahasrcavaluesbbah;
 }
 }
 };
-____BAH_COMPILER_VAR_1503_ahomeaaloisanijlijchargementsabahasrcavaluesbbah:
+____BAH_COMPILER_VAR_1503_ahomeaaloisanijlijchargementsabahasrcavaluesbbah: ;
 
 #line 157 "/home/alois/Téléchargements/bah/src/values.bah"
 if ((start<i)) {
@@ -21459,7 +21459,7 @@ struct Tok t = ((struct Tok*)memory->data)[j];
 #line 170 "/home/alois/Téléchargements/bah/src/values.bah"
 char** ____BAH_COMPILER_VAR_1505_ahomeaaloisanijlijchargementsabahasrcavaluesbbah = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1505_ahomeaaloisanijlijchargementsabahasrcavaluesbbah[1] = t.cont;____BAH_COMPILER_VAR_1505_ahomeaaloisanijlijchargementsabahasrcavaluesbbah[0] = "\01\0\0\0"" ";char* ____BAH_COMPILER_VAR_1506_ahomeaaloisanijlijchargementsabahasrcavaluesbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_1505_ahomeaaloisanijlijchargementsabahasrcavaluesbbah, 2);char** ____BAH_COMPILER_VAR_1507_ahomeaaloisanijlijchargementsabahasrcavaluesbbah = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1507_ahomeaaloisanijlijchargementsabahasrcavaluesbbah[1] = ____BAH_COMPILER_VAR_1506_ahomeaaloisanijlijchargementsabahasrcavaluesbbah;____BAH_COMPILER_VAR_1507_ahomeaaloisanijlijchargementsabahasrcavaluesbbah[0] = fnt.cont;char* ____BAH_COMPILER_VAR_1508_ahomeaaloisanijlijchargementsabahasrcavaluesbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_1507_ahomeaaloisanijlijchargementsabahasrcavaluesbbah, 2);fnt.cont = ____BAH_COMPILER_VAR_1508_ahomeaaloisanijlijchargementsabahasrcavaluesbbah;
 };
-____BAH_COMPILER_VAR_1504_ahomeaaloisanijlijchargementsabahasrcavaluesbbah:
+____BAH_COMPILER_VAR_1504_ahomeaaloisanijlijchargementsabahasrcavaluesbbah: ;
 
 #line 172 "/home/alois/Téléchargements/bah/src/values.bah"
 
@@ -21535,7 +21535,7 @@ unsigned int ____BAH_COMPILER_VAR_1518_ahomeaaloisanijlijchargementsabahasrcaval
     ((struct variable**)symbols->data)[____BAH_COMPILER_VAR_1518_ahomeaaloisanijlijchargementsabahasrcavaluesbbah] = v;
 }
 };
-____BAH_COMPILER_VAR_1517_ahomeaaloisanijlijchargementsabahasrcavaluesbbah:
+____BAH_COMPILER_VAR_1517_ahomeaaloisanijlijchargementsabahasrcavaluesbbah: ;
 
 #line 198 "/home/alois/Téléchargements/bah/src/values.bah"
 struct variable* ____BAH_COMPILER_VAR_1519_ahomeaaloisanijlijchargementsabahasrcavaluesbbah = memoryAlloc(sizeof(struct variable));
@@ -21587,7 +21587,7 @@ tmpT = parseReflect(tmpT,v->type,elems,true,v->name,"\01\0\0\0""0");
 #line 217 "/home/alois/Téléchargements/bah/src/values.bah"
 char** ____BAH_COMPILER_VAR_1525_ahomeaaloisanijlijchargementsabahasrcavaluesbbah = alloca(7 * sizeof(char*));____BAH_COMPILER_VAR_1525_ahomeaaloisanijlijchargementsabahasrcavaluesbbah[6] = "\02\0\0\0"";\n";____BAH_COMPILER_VAR_1525_ahomeaaloisanijlijchargementsabahasrcavaluesbbah[5] = tmpT.cont;____BAH_COMPILER_VAR_1525_ahomeaaloisanijlijchargementsabahasrcavaluesbbah[4] = "\04\0\0\0""] = ";____BAH_COMPILER_VAR_1525_ahomeaaloisanijlijchargementsabahasrcavaluesbbah[3] = intToStr(j);____BAH_COMPILER_VAR_1525_ahomeaaloisanijlijchargementsabahasrcavaluesbbah[2] = "\010\0\0\0""->data)[";____BAH_COMPILER_VAR_1525_ahomeaaloisanijlijchargementsabahasrcavaluesbbah[1] = tmpV->name;____BAH_COMPILER_VAR_1525_ahomeaaloisanijlijchargementsabahasrcavaluesbbah[0] = "\031\0\0\0""((struct reflectElement*)";char* ____BAH_COMPILER_VAR_1526_ahomeaaloisanijlijchargementsabahasrcavaluesbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_1525_ahomeaaloisanijlijchargementsabahasrcavaluesbbah, 7);char** ____BAH_COMPILER_VAR_1527_ahomeaaloisanijlijchargementsabahasrcavaluesbbah = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1527_ahomeaaloisanijlijchargementsabahasrcavaluesbbah[1] = ____BAH_COMPILER_VAR_1526_ahomeaaloisanijlijchargementsabahasrcavaluesbbah;____BAH_COMPILER_VAR_1527_ahomeaaloisanijlijchargementsabahasrcavaluesbbah[0] = decls;char* ____BAH_COMPILER_VAR_1528_ahomeaaloisanijlijchargementsabahasrcavaluesbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_1527_ahomeaaloisanijlijchargementsabahasrcavaluesbbah, 2);decls = ____BAH_COMPILER_VAR_1528_ahomeaaloisanijlijchargementsabahasrcavaluesbbah;
 };
-____BAH_COMPILER_VAR_1520_ahomeaaloisanijlijchargementsabahasrcavaluesbbah:
+____BAH_COMPILER_VAR_1520_ahomeaaloisanijlijchargementsabahasrcavaluesbbah: ;
 
 #line 219 "/home/alois/Téléchargements/bah/src/values.bah"
 unsigned int ____BAH_COMPILER_VAR_1529_ahomeaaloisanijlijchargementsabahasrcavaluesbbah = len(elems->vars);
@@ -21704,7 +21704,7 @@ struct Tok tmpT = ((struct Tok*)memory->data)[j];
 #line 270 "/home/alois/Téléchargements/bah/src/values.bah"
 char** ____BAH_COMPILER_VAR_1543_ahomeaaloisanijlijchargementsabahasrcavaluesbbah = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1543_ahomeaaloisanijlijchargementsabahasrcavaluesbbah[1] = tmpT.cont;____BAH_COMPILER_VAR_1543_ahomeaaloisanijlijchargementsabahasrcavaluesbbah[0] = tp;char* ____BAH_COMPILER_VAR_1544_ahomeaaloisanijlijchargementsabahasrcavaluesbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_1543_ahomeaaloisanijlijchargementsabahasrcavaluesbbah, 2);tp = ____BAH_COMPILER_VAR_1544_ahomeaaloisanijlijchargementsabahasrcavaluesbbah;
 };
-____BAH_COMPILER_VAR_1542_ahomeaaloisanijlijchargementsabahasrcavaluesbbah:
+____BAH_COMPILER_VAR_1542_ahomeaaloisanijlijchargementsabahasrcavaluesbbah: ;
 
 #line 272 "/home/alois/Téléchargements/bah/src/values.bah"
 struct variable* tmpV = searchVar(tp,&((struct Tok*)memory->data)[0],elems);
@@ -21949,7 +21949,7 @@ char** ____BAH_COMPILER_VAR_1583_ahomeaaloisanijlijchargementsabahasrcavaluesbba
 char** ____BAH_COMPILER_VAR_1585_ahomeaaloisanijlijchargementsabahasrcavaluesbbah = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1585_ahomeaaloisanijlijchargementsabahasrcavaluesbbah[1] = "\01\0\0\0"",";____BAH_COMPILER_VAR_1585_ahomeaaloisanijlijchargementsabahasrcavaluesbbah[0] = fnt.cont;char* ____BAH_COMPILER_VAR_1586_ahomeaaloisanijlijchargementsabahasrcavaluesbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_1585_ahomeaaloisanijlijchargementsabahasrcavaluesbbah, 2);fnt.cont = ____BAH_COMPILER_VAR_1586_ahomeaaloisanijlijchargementsabahasrcavaluesbbah;
 }
 };
-____BAH_COMPILER_VAR_1560_ahomeaaloisanijlijchargementsabahasrcavaluesbbah:
+____BAH_COMPILER_VAR_1560_ahomeaaloisanijlijchargementsabahasrcavaluesbbah: ;
 
 #line 381 "/home/alois/Téléchargements/bah/src/values.bah"
 if (isTupleType(fn->returns->type)) {
@@ -22443,7 +22443,7 @@ unsigned int ____BAH_COMPILER_VAR_1661_ahomeaaloisanijlijchargementsabahasrcaval
     __Bah_realocate_arr(memory, ____BAH_COMPILER_VAR_1661_ahomeaaloisanijlijchargementsabahasrcavaluesbbah);
     ((struct Tok*)memory->data)[____BAH_COMPILER_VAR_1661_ahomeaaloisanijlijchargementsabahasrcavaluesbbah] = tmpT;
 };
-____BAH_COMPILER_VAR_1656_ahomeaaloisanijlijchargementsabahasrcavaluesbbah:
+____BAH_COMPILER_VAR_1656_ahomeaaloisanijlijchargementsabahasrcavaluesbbah: ;
 
 #line 611 "/home/alois/Téléchargements/bah/src/values.bah"
 deleteRange(l,tokPos+1,i);
@@ -23118,7 +23118,7 @@ for (; (j<ind); ++j) {
                 struct string keep_ref_____BAH_COMPILER_VAR_1760_ahomeaaloisanijlijchargementsabahasrcavaluesbbah = getCType(((char**)parts->data)[j],elems);
                 char** ____BAH_COMPILER_VAR_1761_ahomeaaloisanijlijchargementsabahasrcavaluesbbah = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_1761_ahomeaaloisanijlijchargementsabahasrcavaluesbbah[2] = "\01\0\0\0"")";____BAH_COMPILER_VAR_1761_ahomeaaloisanijlijchargementsabahasrcavaluesbbah[1] = string__str(&keep_ref_____BAH_COMPILER_VAR_1760_ahomeaaloisanijlijchargementsabahasrcavaluesbbah);____BAH_COMPILER_VAR_1761_ahomeaaloisanijlijchargementsabahasrcavaluesbbah[0] = "\011\0\0\0""+ sizeof(";char* ____BAH_COMPILER_VAR_1762_ahomeaaloisanijlijchargementsabahasrcavaluesbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_1761_ahomeaaloisanijlijchargementsabahasrcavaluesbbah, 3);char** ____BAH_COMPILER_VAR_1763_ahomeaaloisanijlijchargementsabahasrcavaluesbbah = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1763_ahomeaaloisanijlijchargementsabahasrcavaluesbbah[1] = ____BAH_COMPILER_VAR_1762_ahomeaaloisanijlijchargementsabahasrcavaluesbbah;____BAH_COMPILER_VAR_1763_ahomeaaloisanijlijchargementsabahasrcavaluesbbah[0] = offsets;char* ____BAH_COMPILER_VAR_1764_ahomeaaloisanijlijchargementsabahasrcavaluesbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_1763_ahomeaaloisanijlijchargementsabahasrcavaluesbbah, 2);offsets = ____BAH_COMPILER_VAR_1764_ahomeaaloisanijlijchargementsabahasrcavaluesbbah;
 };
-____BAH_COMPILER_VAR_1759_ahomeaaloisanijlijchargementsabahasrcavaluesbbah:
+____BAH_COMPILER_VAR_1759_ahomeaaloisanijlijchargementsabahasrcavaluesbbah: ;
 
 #line 863 "/home/alois/Téléchargements/bah/src/values.bah"
 
@@ -23840,7 +23840,7 @@ i = 0;
 goto ____BAH_COMPILER_VAR_1842_ahomeaaloisanijlijchargementsabahasrcavaluesbbah;
 }
 };
-____BAH_COMPILER_VAR_1842_ahomeaaloisanijlijchargementsabahasrcavaluesbbah:
+____BAH_COMPILER_VAR_1842_ahomeaaloisanijlijchargementsabahasrcavaluesbbah: ;
 
 #line 1171 "/home/alois/Téléchargements/bah/src/values.bah"
 deleteRange(l,i,rangeEnds);
@@ -24162,7 +24162,7 @@ while ((strcmp(((struct Tok*)l->data)[tokPos+offset+1].cont, "\01\0\0\0""[") == 
 #line 1316 "/home/alois/Téléchargements/bah/src/values.bah"
 offset = offset+2;
 };
-____BAH_COMPILER_VAR_1889_ahomeaaloisanijlijchargementsabahasrcavaluesbbah:
+____BAH_COMPILER_VAR_1889_ahomeaaloisanijlijchargementsabahasrcavaluesbbah: ;
 
 #line 1318 "/home/alois/Téléchargements/bah/src/values.bah"
 if ((((struct Tok*)l->data)[tokPos+offset+1].type==TOKEN_TYPE_VAR)||(strcmp(((struct Tok*)l->data)[tokPos+offset+1].cont, "\010\0\0\0""function") == 0)) {
@@ -24213,7 +24213,7 @@ goto ____BAH_COMPILER_VAR_1890_ahomeaaloisanijlijchargementsabahasrcavaluesbbah;
 }
 }
 };
-____BAH_COMPILER_VAR_1890_ahomeaaloisanijlijchargementsabahasrcavaluesbbah:
+____BAH_COMPILER_VAR_1890_ahomeaaloisanijlijchargementsabahasrcavaluesbbah: ;
 
 #line 1340 "/home/alois/Téléchargements/bah/src/values.bah"
 struct Bah_Array_Type* memory = arraySubstitute(l, tokPos+1, i+1);
@@ -24296,7 +24296,7 @@ char** ____BAH_COMPILER_VAR_1903_ahomeaaloisanijlijchargementsabahasrcavaluesbba
 #line 1363 "/home/alois/Téléchargements/bah/src/values.bah"
 char** ____BAH_COMPILER_VAR_1905_ahomeaaloisanijlijchargementsabahasrcavaluesbbah = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1905_ahomeaaloisanijlijchargementsabahasrcavaluesbbah[1] = "\01\0\0\0""+";____BAH_COMPILER_VAR_1905_ahomeaaloisanijlijchargementsabahasrcavaluesbbah[0] = size;char* ____BAH_COMPILER_VAR_1906_ahomeaaloisanijlijchargementsabahasrcavaluesbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_1905_ahomeaaloisanijlijchargementsabahasrcavaluesbbah, 2);size = ____BAH_COMPILER_VAR_1906_ahomeaaloisanijlijchargementsabahasrcavaluesbbah;
 };
-____BAH_COMPILER_VAR_1891_ahomeaaloisanijlijchargementsabahasrcavaluesbbah:
+____BAH_COMPILER_VAR_1891_ahomeaaloisanijlijchargementsabahasrcavaluesbbah: ;
 
 #line 1366 "/home/alois/Téléchargements/bah/src/values.bah"
 char** ____BAH_COMPILER_VAR_1907_ahomeaaloisanijlijchargementsabahasrcavaluesbbah = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_1907_ahomeaaloisanijlijchargementsabahasrcavaluesbbah[2] = "\01\0\0\0""]";____BAH_COMPILER_VAR_1907_ahomeaaloisanijlijchargementsabahasrcavaluesbbah[1] = tupT;____BAH_COMPILER_VAR_1907_ahomeaaloisanijlijchargementsabahasrcavaluesbbah[0] = "\01\0\0\0""[";char* ____BAH_COMPILER_VAR_1908_ahomeaaloisanijlijchargementsabahasrcavaluesbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_1907_ahomeaaloisanijlijchargementsabahasrcavaluesbbah, 3);char* type = ____BAH_COMPILER_VAR_1908_ahomeaaloisanijlijchargementsabahasrcavaluesbbah;
@@ -24334,7 +24334,7 @@ for (; (k<len(vals)); ++k) {
 #line 1379 "/home/alois/Téléchargements/bah/src/values.bah"
 char** ____BAH_COMPILER_VAR_1915_ahomeaaloisanijlijchargementsabahasrcavaluesbbah = alloca(13 * sizeof(char*));____BAH_COMPILER_VAR_1915_ahomeaaloisanijlijchargementsabahasrcavaluesbbah[12] = "\03\0\0\0"");\n";____BAH_COMPILER_VAR_1915_ahomeaaloisanijlijchargementsabahasrcavaluesbbah[11] = ct;____BAH_COMPILER_VAR_1915_ahomeaaloisanijlijchargementsabahasrcavaluesbbah[10] = "\011\0\0\0""+=sizeof(";____BAH_COMPILER_VAR_1915_ahomeaaloisanijlijchargementsabahasrcavaluesbbah[9] = offsetVar;____BAH_COMPILER_VAR_1915_ahomeaaloisanijlijchargementsabahasrcavaluesbbah[8] = "\02\0\0\0"";\n";____BAH_COMPILER_VAR_1915_ahomeaaloisanijlijchargementsabahasrcavaluesbbah[7] = ((char**)vals->data)[k];____BAH_COMPILER_VAR_1915_ahomeaaloisanijlijchargementsabahasrcavaluesbbah[6] = "\04\0\0\0"") = ";____BAH_COMPILER_VAR_1915_ahomeaaloisanijlijchargementsabahasrcavaluesbbah[5] = offsetVar;____BAH_COMPILER_VAR_1915_ahomeaaloisanijlijchargementsabahasrcavaluesbbah[4] = "\03\0\0\0"" + ";____BAH_COMPILER_VAR_1915_ahomeaaloisanijlijchargementsabahasrcavaluesbbah[3] = v;____BAH_COMPILER_VAR_1915_ahomeaaloisanijlijchargementsabahasrcavaluesbbah[2] = "\012\0\0\0""*)((char*)";____BAH_COMPILER_VAR_1915_ahomeaaloisanijlijchargementsabahasrcavaluesbbah[1] = ct;____BAH_COMPILER_VAR_1915_ahomeaaloisanijlijchargementsabahasrcavaluesbbah[0] = "\02\0\0\0""*(";char* ____BAH_COMPILER_VAR_1916_ahomeaaloisanijlijchargementsabahasrcavaluesbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_1915_ahomeaaloisanijlijchargementsabahasrcavaluesbbah, 13);char** ____BAH_COMPILER_VAR_1917_ahomeaaloisanijlijchargementsabahasrcavaluesbbah = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1917_ahomeaaloisanijlijchargementsabahasrcavaluesbbah[1] = ____BAH_COMPILER_VAR_1916_ahomeaaloisanijlijchargementsabahasrcavaluesbbah;____BAH_COMPILER_VAR_1917_ahomeaaloisanijlijchargementsabahasrcavaluesbbah[0] = r;char* ____BAH_COMPILER_VAR_1918_ahomeaaloisanijlijchargementsabahasrcavaluesbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_1917_ahomeaaloisanijlijchargementsabahasrcavaluesbbah, 2);r = ____BAH_COMPILER_VAR_1918_ahomeaaloisanijlijchargementsabahasrcavaluesbbah;
 };
-____BAH_COMPILER_VAR_1913_ahomeaaloisanijlijchargementsabahasrcavaluesbbah:
+____BAH_COMPILER_VAR_1913_ahomeaaloisanijlijchargementsabahasrcavaluesbbah: ;
 
 #line 1382 "/home/alois/Téléchargements/bah/src/values.bah"
 if (isGlobal()) {
@@ -24541,7 +24541,7 @@ goto ____BAH_COMPILER_VAR_1922_ahomeaaloisanijlijchargementsabahasrcaparserbbah;
 }
 }
 };
-____BAH_COMPILER_VAR_1922_ahomeaaloisanijlijchargementsabahasrcaparserbbah:
+____BAH_COMPILER_VAR_1922_ahomeaaloisanijlijchargementsabahasrcaparserbbah: ;
 
 #line 3096 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((i!=len(line))) {
@@ -24635,7 +24635,7 @@ if ((((struct Tok*)fl->data)[i].type==TOKEN_TYPE_STR)&&(((struct Tok*)fl->data)[
 }
 }
 };
-____BAH_COMPILER_VAR_1924_ahomeaaloisanijlijchargementsabahasrcaparserbbah:
+____BAH_COMPILER_VAR_1924_ahomeaaloisanijlijchargementsabahasrcaparserbbah: ;
 
 #line 3129 "/home/alois/Téléchargements/bah/src/parser.bah"
 if (fixMeEnabled()) {
@@ -24653,7 +24653,7 @@ if ((((struct Tok*)fl->data)[i].cont[0+4]==42)) {
 fixMeTestVar(&((struct Tok*)fl->data)[i],ltp,elems);
 }
 };
-____BAH_COMPILER_VAR_1925_ahomeaaloisanijlijchargementsabahasrcaparserbbah:
+____BAH_COMPILER_VAR_1925_ahomeaaloisanijlijchargementsabahasrcaparserbbah: ;
 }
 
 #line 3137 "/home/alois/Téléchargements/bah/src/parser.bah"
@@ -24990,7 +24990,7 @@ throwErr(&t,"\044\0\0\0""Cannot {TOKEN} nothing through chan.");
 }
 }
 };
-____BAH_COMPILER_VAR_1926_ahomeaaloisanijlijchargementsabahasrcaparserbbah:
+____BAH_COMPILER_VAR_1926_ahomeaaloisanijlijchargementsabahasrcaparserbbah: ;
 
 #line 3243 "/home/alois/Téléchargements/bah/src/parser.bah"
 i = 0;
@@ -25052,7 +25052,7 @@ deleteRange(fl,i,i+1);
 i = i-2;
 }
 };
-____BAH_COMPILER_VAR_1960_ahomeaaloisanijlijchargementsabahasrcaparserbbah:
+____BAH_COMPILER_VAR_1960_ahomeaaloisanijlijchargementsabahasrcaparserbbah: ;
 
 #line 3267 "/home/alois/Téléchargements/bah/src/parser.bah"
 parseArrayType(fl,elems);
@@ -25071,7 +25071,7 @@ unsigned int ____BAH_COMPILER_VAR_1973_ahomeaaloisanijlijchargementsabahasrcapar
 #line 3272 "/home/alois/Téléchargements/bah/src/parser.bah"
 ++sepI;
 };
-____BAH_COMPILER_VAR_1972_ahomeaaloisanijlijchargementsabahasrcaparserbbah:
+____BAH_COMPILER_VAR_1972_ahomeaaloisanijlijchargementsabahasrcaparserbbah: ;
 }
 
 #line 3278 "/home/alois/Téléchargements/bah/src/parser.bah"
@@ -25200,7 +25200,7 @@ debugVar__fromVar(dfa,((struct variable**)fn->args->data)[j]);
     __Bah_realocate_arr(df->args, j);
     ((struct debugVar**)df->args->data)[j] = dfa;
 };
-____BAH_COMPILER_VAR_1986_ahomeaaloisanijlijchargementsabahasrcaparserbbah:
+____BAH_COMPILER_VAR_1986_ahomeaaloisanijlijchargementsabahasrcaparserbbah: ;
 
 #line 3327 "/home/alois/Téléchargements/bah/src/parser.bah"
 df->returns = fn->returns->type;
@@ -25273,7 +25273,7 @@ unsigned int ____BAH_COMPILER_VAR_2012_ahomeaaloisanijlijchargementsabahasrcapar
 return;
 }
 };
-____BAH_COMPILER_VAR_2009_ahomeaaloisanijlijchargementsabahasrcaparserbbah:
+____BAH_COMPILER_VAR_2009_ahomeaaloisanijlijchargementsabahasrcaparserbbah: ;
 
 #line 3343 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((shouldOnlyDecl==true)) {
@@ -25341,7 +25341,7 @@ unsigned int ____BAH_COMPILER_VAR_2019_ahomeaaloisanijlijchargementsabahasrcapar
 #line 3369 "/home/alois/Téléchargements/bah/src/parser.bah"
 ++j;
 };
-____BAH_COMPILER_VAR_2018_ahomeaaloisanijlijchargementsabahasrcaparserbbah:
+____BAH_COMPILER_VAR_2018_ahomeaaloisanijlijchargementsabahasrcaparserbbah: ;
 
 #line 3371 "/home/alois/Téléchargements/bah/src/parser.bah"
 fnElems->vars = vs;
@@ -25720,7 +25720,7 @@ char** ____BAH_COMPILER_VAR_2058_ahomeaaloisanijlijchargementsabahasrcaparserbba
 #line 3553 "/home/alois/Téléchargements/bah/src/parser.bah"
 OUTPUT->totalLen = OUTPUT->totalLen+ropeSet(((struct rope**)elems->switchOpt->headerRopes->data)[(i*2)-1],"\010\0\0\0""}break;\n");
 };
-____BAH_COMPILER_VAR_2057_ahomeaaloisanijlijchargementsabahasrcaparserbbah:
+____BAH_COMPILER_VAR_2057_ahomeaaloisanijlijchargementsabahasrcaparserbbah: ;
 
 #line 3557 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((len(elems->switchOpt->headerRopes)%2==0)) {
@@ -25737,7 +25737,7 @@ for (; (i<len(elems->switchOpt->footerRopes)-1); ++i) {
 #line 3560 "/home/alois/Téléchargements/bah/src/parser.bah"
 OUTPUT->totalLen = OUTPUT->totalLen+ropeSet(((struct rope**)elems->switchOpt->footerRopes->data)[i],"\0\0\0\0""");
 };
-____BAH_COMPILER_VAR_2060_ahomeaaloisanijlijchargementsabahasrcaparserbbah:
+____BAH_COMPILER_VAR_2060_ahomeaaloisanijlijchargementsabahasrcaparserbbah: ;
 
 #line 3562 "/home/alois/Téléchargements/bah/src/parser.bah"
 OUTPUT->totalLen = OUTPUT->totalLen+ropeSet(((struct rope**)elems->switchOpt->footerRopes->data)[len(elems->switchOpt->footerRopes)-1],"\010\0\0\0""}break;\n");
@@ -25758,7 +25758,7 @@ for (; (i<len(elems->switchOpt->footerRopes)-1); ++i) {
 #line 3566 "/home/alois/Téléchargements/bah/src/parser.bah"
 OUTPUT->totalLen = OUTPUT->totalLen+ropeSet(((struct rope**)elems->switchOpt->footerRopes->data)[i],"\0\0\0\0""");
 };
-____BAH_COMPILER_VAR_2061_ahomeaaloisanijlijchargementsabahasrcaparserbbah:
+____BAH_COMPILER_VAR_2061_ahomeaaloisanijlijchargementsabahasrcaparserbbah: ;
 
 #line 3568 "/home/alois/Téléchargements/bah/src/parser.bah"
 OUTPUT->totalLen = OUTPUT->totalLen+ropeSet(((struct rope**)elems->switchOpt->footerRopes->data)[len(elems->switchOpt->footerRopes)-1],"\012\0\0\0""}break;\n}\n");
@@ -25780,7 +25780,7 @@ for (; (i<compilerState.nbElseIf); ++i) {
 #line 3576 "/home/alois/Téléchargements/bah/src/parser.bah"
 OUTPUT = rope__add(OUTPUT, rope("\02\0\0\0""}\n"));
 };
-____BAH_COMPILER_VAR_2062_ahomeaaloisanijlijchargementsabahasrcaparserbbah:
+____BAH_COMPILER_VAR_2062_ahomeaaloisanijlijchargementsabahasrcaparserbbah: ;
 }
 
 #line 3580 "/home/alois/Téléchargements/bah/src/parser.bah"
@@ -26139,7 +26139,7 @@ if ((((struct Tok*)l->data)[i].type==TOKEN_TYPE_CAST)&&(strcmp(((struct Tok*)l->
 return true;
 }
 };
-____BAH_COMPILER_VAR_2073_ahomeaaloisanijlijchargementsabahasrcaparserbbah:
+____BAH_COMPILER_VAR_2073_ahomeaaloisanijlijchargementsabahasrcaparserbbah: ;
 
 #line 3720 "/home/alois/Téléchargements/bah/src/parser.bah"
 return false;
@@ -26241,7 +26241,7 @@ goto ____BAH_COMPILER_VAR_2076_ahomeaaloisanijlijchargementsabahasrcaparserbbah;
 }
 }
 };
-____BAH_COMPILER_VAR_2076_ahomeaaloisanijlijchargementsabahasrcaparserbbah:
+____BAH_COMPILER_VAR_2076_ahomeaaloisanijlijchargementsabahasrcaparserbbah: ;
 
 #line 3759 "/home/alois/Téléchargements/bah/src/parser.bah"
 t = ((struct Tok*)tokens->data)[i];
@@ -26340,7 +26340,7 @@ unsigned int ____BAH_COMPILER_VAR_2078_ahomeaaloisanijlijchargementsabahasrcapar
 #line 3795 "/home/alois/Téléchargements/bah/src/parser.bah"
 ++i;
 };
-____BAH_COMPILER_VAR_2074_ahomeaaloisanijlijchargementsabahasrcaparserbbah:
+____BAH_COMPILER_VAR_2074_ahomeaaloisanijlijchargementsabahasrcaparserbbah: ;
 
 #line 3798 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((len(line)>0)) {
@@ -26382,7 +26382,7 @@ for (; (i<compilerState.nbElseIf); ++i) {
 #line 3811 "/home/alois/Téléchargements/bah/src/parser.bah"
 OUTPUT = rope__add(OUTPUT, rope("\02\0\0\0""}\n"));
 };
-____BAH_COMPILER_VAR_2080_ahomeaaloisanijlijchargementsabahasrcaparserbbah:
+____BAH_COMPILER_VAR_2080_ahomeaaloisanijlijchargementsabahasrcaparserbbah: ;
 }
 
 #line 3815 "/home/alois/Téléchargements/bah/src/parser.bah"
@@ -26423,7 +26423,7 @@ if ((j<len(fn->args))) {
 char** ____BAH_COMPILER_VAR_2086_ahomeaaloisanijlijchargementsabahasrcadeclarativebbah = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_2086_ahomeaaloisanijlijchargementsabahasrcadeclarativebbah[1] = "\02\0\0\0"", ";____BAH_COMPILER_VAR_2086_ahomeaaloisanijlijchargementsabahasrcadeclarativebbah[0] = tmpfnArgsCType;char* ____BAH_COMPILER_VAR_2087_ahomeaaloisanijlijchargementsabahasrcadeclarativebbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_2086_ahomeaaloisanijlijchargementsabahasrcadeclarativebbah, 2);tmpfnArgsCType = ____BAH_COMPILER_VAR_2087_ahomeaaloisanijlijchargementsabahasrcadeclarativebbah;
 }
 };
-____BAH_COMPILER_VAR_2081_ahomeaaloisanijlijchargementsabahasrcadeclarativebbah:
+____BAH_COMPILER_VAR_2081_ahomeaaloisanijlijchargementsabahasrcadeclarativebbah: ;
 
 #line 18 "/home/alois/Téléchargements/bah/src/declarative.bah"
 char** ____BAH_COMPILER_VAR_2088_ahomeaaloisanijlijchargementsabahasrcadeclarativebbah = alloca(6 * sizeof(char*));____BAH_COMPILER_VAR_2088_ahomeaaloisanijlijchargementsabahasrcadeclarativebbah[5] = "\03\0\0\0"");\n";____BAH_COMPILER_VAR_2088_ahomeaaloisanijlijchargementsabahasrcadeclarativebbah[4] = tmpfnArgsCType;____BAH_COMPILER_VAR_2088_ahomeaaloisanijlijchargementsabahasrcadeclarativebbah[3] = "\01\0\0\0""(";____BAH_COMPILER_VAR_2088_ahomeaaloisanijlijchargementsabahasrcadeclarativebbah[2] = fn->name;____BAH_COMPILER_VAR_2088_ahomeaaloisanijlijchargementsabahasrcadeclarativebbah[1] = "\01\0\0\0"" ";____BAH_COMPILER_VAR_2088_ahomeaaloisanijlijchargementsabahasrcadeclarativebbah[0] = string__str(&tmpfnRetCType);char* ____BAH_COMPILER_VAR_2089_ahomeaaloisanijlijchargementsabahasrcadeclarativebbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_2088_ahomeaaloisanijlijchargementsabahasrcadeclarativebbah, 6);OUTPUT = rope__add(OUTPUT, rope(____BAH_COMPILER_VAR_2089_ahomeaaloisanijlijchargementsabahasrcadeclarativebbah));
@@ -26465,7 +26465,7 @@ for (; (i<len(compilerState.cIncludes)); ++i) {
 #line 46 "/home/alois/Téléchargements/bah/src/declarative.bah"
 char** ____BAH_COMPILER_VAR_2095_ahomeaaloisanijlijchargementsabahasrcadeclarativebbah = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_2095_ahomeaaloisanijlijchargementsabahasrcadeclarativebbah[2] = "\01\0\0\0""\n";____BAH_COMPILER_VAR_2095_ahomeaaloisanijlijchargementsabahasrcadeclarativebbah[1] = ((char**)compilerState.cIncludes->data)[i];____BAH_COMPILER_VAR_2095_ahomeaaloisanijlijchargementsabahasrcadeclarativebbah[0] = "\011\0\0\0""#include ";char* ____BAH_COMPILER_VAR_2096_ahomeaaloisanijlijchargementsabahasrcadeclarativebbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_2095_ahomeaaloisanijlijchargementsabahasrcadeclarativebbah, 3);OUTPUT = rope__add(OUTPUT, rope(____BAH_COMPILER_VAR_2096_ahomeaaloisanijlijchargementsabahasrcadeclarativebbah));
 };
-____BAH_COMPILER_VAR_2094_ahomeaaloisanijlijchargementsabahasrcadeclarativebbah:
+____BAH_COMPILER_VAR_2094_ahomeaaloisanijlijchargementsabahasrcadeclarativebbah: ;
 
 #line 49 "/home/alois/Téléchargements/bah/src/declarative.bah"
 i = 0;
@@ -26479,7 +26479,7 @@ struct variable* v = ((struct variable**)elems->vars->data)[i];
 #line 51 "/home/alois/Téléchargements/bah/src/declarative.bah"
 declareVar(v,elems);
 };
-____BAH_COMPILER_VAR_2097_ahomeaaloisanijlijchargementsabahasrcadeclarativebbah:
+____BAH_COMPILER_VAR_2097_ahomeaaloisanijlijchargementsabahasrcadeclarativebbah: ;
 
 #line 54 "/home/alois/Téléchargements/bah/src/declarative.bah"
 i = 0;
@@ -26500,7 +26500,7 @@ continue;
 #line 59 "/home/alois/Téléchargements/bah/src/declarative.bah"
 declareFunc(fn,elems);
 };
-____BAH_COMPILER_VAR_2098_ahomeaaloisanijlijchargementsabahasrcadeclarativebbah:
+____BAH_COMPILER_VAR_2098_ahomeaaloisanijlijchargementsabahasrcadeclarativebbah: ;
 };
 
 #line 57 "/home/alois/Téléchargements/bah/src/main.bah"
@@ -26949,7 +26949,7 @@ continue;
 #line 317 "/home/alois/Téléchargements/bah/src/main.bah"
 ++l;
 };
-____BAH_COMPILER_VAR_2133_ahomeaaloisanijlijchargementsabahasrcamainbbah:
+____BAH_COMPILER_VAR_2133_ahomeaaloisanijlijchargementsabahasrcamainbbah: ;
 
 #line 319 "/home/alois/Téléchargements/bah/src/main.bah"
 char** ____BAH_COMPILER_VAR_2134_ahomeaaloisanijlijchargementsabahasrcamainbbah = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_2134_ahomeaaloisanijlijchargementsabahasrcamainbbah[2] = "\02\0\0\0""];";____BAH_COMPILER_VAR_2134_ahomeaaloisanijlijchargementsabahasrcamainbbah[1] = intToStr(l);____BAH_COMPILER_VAR_2134_ahomeaaloisanijlijchargementsabahasrcamainbbah[0] = "\071\0\0\0""volatile struct __Bah_fnName_mapper __tmp____Bah_fnNames[";char* ____BAH_COMPILER_VAR_2135_ahomeaaloisanijlijchargementsabahasrcamainbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_2134_ahomeaaloisanijlijchargementsabahasrcamainbbah, 3);OUTPUT = rope__add(OUTPUT, rope(____BAH_COMPILER_VAR_2135_ahomeaaloisanijlijchargementsabahasrcamainbbah));
@@ -26995,7 +26995,7 @@ char** ____BAH_COMPILER_VAR_2141_ahomeaaloisanijlijchargementsabahasrcamainbbah 
 #line 335 "/home/alois/Téléchargements/bah/src/main.bah"
 ++j;
 };
-____BAH_COMPILER_VAR_2136_ahomeaaloisanijlijchargementsabahasrcamainbbah:
+____BAH_COMPILER_VAR_2136_ahomeaaloisanijlijchargementsabahasrcamainbbah: ;
 
 #line 337 "/home/alois/Téléchargements/bah/src/main.bah"
 char** ____BAH_COMPILER_VAR_2145_ahomeaaloisanijlijchargementsabahasrcamainbbah = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_2145_ahomeaaloisanijlijchargementsabahasrcamainbbah[2] = "\01\0\0\0"";";____BAH_COMPILER_VAR_2145_ahomeaaloisanijlijchargementsabahasrcamainbbah[1] = intToStr(l);____BAH_COMPILER_VAR_2145_ahomeaaloisanijlijchargementsabahasrcamainbbah[0] = "\125\0\0\0""\n        __Bah_fnNames->data = __tmp____Bah_fnNames;\n        __Bah_fnNames->length = ";char* ____BAH_COMPILER_VAR_2146_ahomeaaloisanijlijchargementsabahasrcamainbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_2145_ahomeaaloisanijlijchargementsabahasrcamainbbah, 3);INIT = rope__add(INIT, rope(____BAH_COMPILER_VAR_2146_ahomeaaloisanijlijchargementsabahasrcamainbbah));
@@ -27030,7 +27030,7 @@ for (; (currentCompiling>0); --currentCompiling) {
 #line 358 "/home/alois/Téléchargements/bah/src/main.bah"
 char ok = *(char*)channel__receive(doneCompilingChan);
 };
-____BAH_COMPILER_VAR_2149_ahomeaaloisanijlijchargementsabahasrcamainbbah:
+____BAH_COMPILER_VAR_2149_ahomeaaloisanijlijchargementsabahasrcamainbbah: ;
 
 #line 361 "/home/alois/Téléchargements/bah/src/main.bah"
 writeCache();
@@ -27125,7 +27125,7 @@ char** ____BAH_COMPILER_VAR_2157_ahomeaaloisanijlijchargementsabahasrcamainbbah 
 #line 406 "/home/alois/Téléchargements/bah/src/main.bah"
 ++i;
 };
-____BAH_COMPILER_VAR_2156_ahomeaaloisanijlijchargementsabahasrcamainbbah:
+____BAH_COMPILER_VAR_2156_ahomeaaloisanijlijchargementsabahasrcamainbbah: ;
 
 #line 410 "/home/alois/Téléchargements/bah/src/main.bah"
 struct command cmd = command(gccArgs);
@@ -27206,7 +27206,7 @@ char** ____BAH_COMPILER_VAR_2168_ahomeaaloisanijlijchargementsabahasrcamainbbah 
 #line 444 "/home/alois/Téléchargements/bah/src/main.bah"
 ++i;
 };
-____BAH_COMPILER_VAR_2167_ahomeaaloisanijlijchargementsabahasrcamainbbah:
+____BAH_COMPILER_VAR_2167_ahomeaaloisanijlijchargementsabahasrcamainbbah: ;
 
 #line 448 "/home/alois/Téléchargements/bah/src/main.bah"
 char** ____BAH_COMPILER_VAR_2172_ahomeaaloisanijlijchargementsabahasrcamainbbah = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_2172_ahomeaaloisanijlijchargementsabahasrcamainbbah[2] = "\02\0\0\0""'\n";____BAH_COMPILER_VAR_2172_ahomeaaloisanijlijchargementsabahasrcamainbbah[1] = gccArgs;____BAH_COMPILER_VAR_2172_ahomeaaloisanijlijchargementsabahasrcamainbbah[0] = "\021\0\0\0""//COMPILE WITH: '";char* ____BAH_COMPILER_VAR_2173_ahomeaaloisanijlijchargementsabahasrcamainbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_2172_ahomeaaloisanijlijchargementsabahasrcamainbbah, 3);OUTPUT = rope__add(rope(____BAH_COMPILER_VAR_2173_ahomeaaloisanijlijchargementsabahasrcamainbbah), OUTPUT);

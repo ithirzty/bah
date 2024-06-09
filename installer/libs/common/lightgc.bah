@@ -491,7 +491,7 @@ const __thread_join = lightGC_join_thread
 
 //Called before main(), initializes the garbage collector.
 //_lgc variable is not initialized with zeros, every member needs to be filled.
-initiateMemory(args []cpstring) {
+initiateMemory(args []str) {
     _lgc.stackStart = __builtin_frame_address(1)
 
     _lgc.bssStart = getBSSbeg()
@@ -548,7 +548,7 @@ memoryAlloc(s int) ptr {
 
 //Ask to allocate s bytes for a cpstring of length s-1.
 //This is thread safe.
-memoryAllocSTR(s int) cpstring {
+memoryAllocSTR(s int) str {
     pthread_mutex_lock(_lgc.mut)
     if _lgc.memUsed >= _lgc.stopInterval { //same as in memoryAlloc()
         envJmp jmp_buf

@@ -169,24 +169,14 @@ It has been used to create:
 
 ### Awesome features
 Bah also supports awesome features like:
-- **reflection** (approach similar to Go, enabling one line (to and from) JSON conversion),
-- **reference counting** (-rcp flag),
+- **reflection** (single call JSON conversion, function evaluation...),
+- **multiple memory management** (GC by default, -lightGC, -nativeMem and -rcp flags),
 - **async calls** (execute function call in a new thread),
-- **channels, maps, arrays** (useful builtin data structures),
-- **runtime evaluation** (for 'evaluating' function calls at runtime `eval.bah`),
-- **embedded debugger** (for setting breakpoints... ...GDB also works),
+- **channels, maps, arrays, tuples** (useful builtin data structures),
 - **compile-time safety features** (null value checker, static loop iterator...),
 - **fixMe** (cry for help when a segfault occurs),
-- **let** (let var = 'maybe values' else handle exception),
-- **tuple** (light-weight wrapper for multiple values with different types, useful for returning multiple values).
-
-This enables you to do things that would be impossible in C
-such as scanning JSON content to a variable (event structs and arrays), and marshalling vars to JSON.
-All of that with a single function call!
-
-Bah also has a garbage collector AND a reference counter. You can choose the one that fits your needs at compile time!
-
-### [List of most important features](features.md)
+- **optional safe syntax** (let, type!...),
+and many other features (generics, optimizations, methods...)
 
 ## Imports and includes
 When to use `#import` and `#include`?
