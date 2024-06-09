@@ -1,6 +1,6 @@
 <div align="center">
 <p>
-    <a href="https://bah-lang.xyz"><img width="100px" src="https://raw.githubusercontent.com/ithirzty/bah/main/extra/logo.png"></a>
+    <a href="https:/alois.xyz/bah/"><img width="100px" src="https://raw.githubusercontent.com/ithirzty/bah/main/extra/logo.png"></a>
     <h1>Bah-lang</h1>
 </p>
 </div>
@@ -25,7 +25,7 @@ sudo ./linux_compile_install.sh
 ### Windows
 **Please make sure that you have [mingw gcc](https://sourceforge.net/projects/mingw/) installed.**
 
-#### For the newbies, **READ CAREFULLY**. More help [HERE](https://bah-lang.xyz/get-started-windows)
+#### For the newbies, **READ CAREFULLY**. More help [HERE](https:/alois.xyz/bah/get-started-windows)
 1. Install [MinGW](https://sourceforge.net/projects/mingw/).
 2. In the MinGW installation manager, select:
    - MinGW Base System: MinGW base,
@@ -151,7 +151,7 @@ Bah is a really fast language with as little bloat as possible. Its simplicity l
 
 It has been used to create:
 - website
-    - [bah-lang website](https://bah-lang.xyz)
+    - [bah-lang website](https:/alois.xyz/bah/)
 - compilers
     - [bah compiler](https://github.com/ithirzty/bah)
 - interpreters
