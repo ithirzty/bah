@@ -200,6 +200,18 @@ getDirFromFile(f str) str {
     return f
 }
 
+//Locates a file that is included/imported.
+findFilePath(name str) str {
+    fn = absPath(compilerState.currentDir + name)
+    if <ptr>fn == null {
+        fn = absPath(BAH_DIR + name)
+        if <ptr>fn == null {
+            return ""
+        }
+    }
+    return fn
+}
+
 //Includes a file.
 includeFile(ccstr str, elems Elems*) bool {
 
@@ -221,6 +233,10 @@ includeFile(ccstr str, elems Elems*) bool {
         } else {
             ccstr = "gc.bah"
         }
+    }
+
+    if isSubObject {
+        compilerState.importDeps[len(compilerState.importDeps)] = findFilePath(ccstr)
     }
 
     //include guard
@@ -303,7 +319,7 @@ includeFile(ccstr str, elems Elems*) bool {
 }
 
 //Compiles an object from an imported file.
-parallelObjCompile(fn str, oName str) {
+parallelObjCompile(fn str, oName str, incls []str) {
     cf = getCacheFile(fn)
     scf = cf
     if scf == null {
@@ -349,15 +365,20 @@ parallelObjCompile(fn str, oName str) {
             exit(1)
         }
         if cf == null {
-            makeCacheFile(fn)
+            makeCacheFile(fn, incls)
         } else {
-            updateCacheFile(cf)
+            updateCacheFile(cf, incls)
         }
     }
     true -> doneCompilingChan
 }
 
 importFile(fileName str, strt Tok*, elems Elems*) {
+
+    if isSubObject {
+        compilerState.importDeps[len(compilerState.importDeps)] = findFilePath(fileName)
+    }
+
     if noImport || BAH_OS != BAH_HOST_OS {
         includeFile(fileName, elems)
         return
@@ -400,6 +421,7 @@ importFile(fileName str, strt Tok*, elems Elems*) {
     osod = shouldOnlyDecl
     oiso = isSubObject
     oiiso = isImportedSubObject
+    ocsimpDeps = compilerState.importDeps
 
     if isSubObject == true {
         isImportedSubObject = true
@@ -416,12 +438,14 @@ importFile(fileName str, strt Tok*, elems Elems*) {
 
     compilerState.cLibs[0] = "w "+oName+".o" //adds object file to the linker
 
-    //checks for cache
-    currentCompiling++
-    async parallelObjCompile(fn, oName)
+    compilerState.importDeps = []str
 
     //parse file
     parseLines(tokens, elems)
+
+    //checks for cache
+    currentCompiling++
+    async parallelObjCompile(fn, oName, compilerState.importDeps)
 
     //adds its init function
     OUTPUT += rope("void __BAH_init"+pathToVarName(fn)+"();\n")
@@ -433,6 +457,8 @@ importFile(fileName str, strt Tok*, elems Elems*) {
     compilerState.currentFile = of
     compilerState.currentDir = od
     isImportedSubObject = oiiso
+    compilerState.importDeps = ocsimpDeps
+
 }
 
 //Parses file import.

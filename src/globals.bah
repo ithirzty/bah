@@ -134,6 +134,7 @@ struct Elems {
 struct compilerStateTag {
     includes: []str
     cIncludes: []str
+    importDeps: []str
     cLibs: []str
     currentFile: str
     currentDir: str = "./"

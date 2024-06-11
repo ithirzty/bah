@@ -1296,8 +1296,11 @@ struct http_request extend http_transport {
 
 //Used for parsing the request (with limited size)
 http_requestSizeLimited(sock http_socket*, size int) http_request* {
-    r = new http_request
-    r.socket = http_socket{
+    r = new http_request {
+        body: {}
+    }
+
+    r.socket = http_socket {
         sizeLimit: size
     }
     r.socket = *sock
@@ -1386,7 +1389,6 @@ http_requestSizeLimited(sock http_socket*, size int) http_request* {
         i--
     }
 
-    r.body = new string
     if i < len(req) {
         r.body.set(req[i:])
     } 
@@ -1456,16 +1458,8 @@ struct http_server {
     socket: http_socket
     socketTLS: http_socket
     error: http_serverError = HTTP_SERVER_NO_ERROR
+    maxRequestSize: int = 0
 
-    // cliChan: chan:http_socket*
-    // nbThreads: uint = 50
-
-    // setNbThreads(nb uint) {
-    //     if this.running {
-    //         panic("http: cannot change number of http.server worker threads while running.")
-    //     }
-    //     this.nbThreads = nb
-    // }
 
     linux_interface: str = ""
 
@@ -1494,7 +1488,7 @@ struct http_server {
             }
         }
 
-        req = http_request(sock)
+        req = http_requestSizeLimited(sock, this.maxRequestSize)
         resp = http_response(sock)
         this.handle(req, resp)
         sock.close()

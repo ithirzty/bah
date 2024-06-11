@@ -4,6 +4,12 @@
 //Note that you can purge the cache by deletint the cache folder's contents inside the Bah directory.
 
 //Represents an entry inside the cache.
+
+struct cacheFileDependency {
+    path: str
+    last: int
+}
+
 struct cacheFile {
     file: str
     last: int
@@ -11,7 +17,7 @@ struct cacheFile {
     date: int
     mem: int
     opti: int
-    files: []str
+    dependencies: []cacheFileDependency*
 }
 
 cache = []cacheFile*
@@ -50,14 +56,26 @@ getCacheFile(s str) cacheFile* {
 }
 
 //Updates a cacheFile instance to set the new modification date of the newly compiled file.
-updateCacheFile(c cacheFile*) {
+updateCacheFile(c cacheFile*, incls []str) {
     c.last = getLastModified(c.file)
     c.ver = BAH_VERSION
     c.date = getTimeUnix()
+
+    if c.dependencies == null {
+        c.dependencies = []cacheFileDependency*
+    }
+
+    i=0; for i < len(incls), i++ {
+        c.dependencies[i] = new cacheFileDependency {
+            path: incls[i]
+            last: getLastModified(incls[i])
+        }
+    }
+
 }
 
 //Used for registering a new cacheFile instance from an imported file's name.
-makeCacheFile(f str) {
+makeCacheFile(f str, incls []str) {
     c = new cacheFile
     c.file = f
     c.ver = BAH_VERSION
@@ -65,6 +83,14 @@ makeCacheFile(f str) {
     c.opti = isOptimized
     c.date = getTimeUnix()
     c.last = getLastModified(f)
+
+    i=0; for i < len(incls), i++ {
+        c.dependencies[i] = new cacheFileDependency {
+            path: incls[i]
+            last: getLastModified(incls[i])
+        }
+    }
+
     if cache == null {
         cache = []cacheFile*
     }
@@ -91,5 +117,12 @@ isValidCacheFile(cf cacheFile*) bool {
     if cf.ver != BAH_VERSION {
         return false
     }
+
+    i=0; for i < len(cf.dependencies), i++ {
+        if getLastModified(cf.dependencies[i].path) != cf.dependencies[i].last {
+            return false
+        }
+    } 
+
     return true
 }
