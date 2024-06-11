@@ -28,7 +28,7 @@
     const BAH_HOST_OS = "windows"
 }
 //////////////////////BUILD SPECIFIC THINGS//////////////////////
-const BAH_VERSION = "v1.5 (build 181)"
+const BAH_VERSION = "v1.5 (build 182)"
 
 debug = false
 verboseRuntime = false
@@ -281,7 +281,7 @@ main(args []str) int {
     //includes the builtin libraries
     if flags.isSet("nobuiltin") == 0 && string(fileName).hasSuffix(".bahstrp") == false {
         if noImport == false {
-            importFile(string("builtin.bah"), null, elems)
+            importFile("builtin.bah", null, elems)
         } else {
             if includeFile("builtin.bah", elems) == false {
                 panic("Could not find std-libs, please check '"+BAH_DIR+"'")

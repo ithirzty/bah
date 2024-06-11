@@ -1,83 +1,119 @@
 #include "iostream.bah"
 #include "string.bah"
 
-//An internal function used to append the array of chars b to the array a.
-appendCharArr(a []char, b []char) {
-    offset = len(a)
-    lenB = len(b)
-    i=0; for i < lenB {
-        a[offset+i] = b[i]
-        i = i + 1
+//An internal function iterating over the str s until s[*i] is not a space.
+_markdown_skipSpace(s str, i int*) uint {
+    j = *i
+    for *i < len(s), *i++ {
+        if isSpace(s[*i]) == false {
+            return *i - j
+        }
     }
+    return *i - j
 }
 
 //An internal structure to define a single line of markdown by its type.
 struct markdownLine {
-    line: string*
+    line: str
     type: int = 0
-    rel: string
+    rel: str
+    next: bool
+    indent: uint
 }
 
 //A wrapper for the markdown parser.
 struct markdown {
+    lines: []markdownLine
 
-    lines: []markdownLine*
+    //Internal function for generatil partial HTML (line by line).
+    htmlRange(from int, to int) str {
+        html = ""
 
-    //To retreive the document as lines without transpilling it to any other language.
-    //This is mainly for debugging/verbose purposes.
-    str() str {
-        s = ""
-        i=0;for i < len(this.lines) {
-            mdl = this.lines[i]
-            si = intToStr(i)
-            l = mdl.line.str()
-            s = s + si + ": " + l + "\n"
-            i = i + 1
-        }
+        i=from;for i < to, i++ {
+            l = this.lines[i]
 
-        return s
-    }
+            code = l.line
+            rn = 0
 
-    //To transpille your markdown document as a html document.
-    //This will return a str containning your markdown document as html code.
-    html() str {
-        html = "<p>"
-
-        i=0;for i < len(this.lines) {
-            mdl = this.lines[i]
-            l = mdl.line.str()
-
-            if mdl.type == 1 {
-                html = html + "<h1>"+l+"</h1><hr>"
-            } else if mdl.type == 2 {
-                html = html + "<h2>"+l+"</h2><hr>"
-            } else if mdl.type == 3 {
-                html = html + "<h3>"+l+"</h3>"
-            } else if mdl.type == 4 {
-                html = html + "<h4>"+l+"</h4>"
-            } else if mdl.type == 5 {
-                html = html + "<h5>"+l+"</h5>"
-            } else if mdl.type == 6 {
-                html = html + "<h3>"+l+"</h3>"
-            } else if mdl.type == 7 {
-                html = html + "&nbsp;• "+l+"<br>"
-            } else if mdl.type == 8 {
-                html = html + "\t"+l
-            } else if mdl.type == 9 {
-                html = html + "<blockquote>"+l+"</blockquote>"
-            } else if mdl.type == 10 {
-                rel = mdl.rel.str()
-                html = html + "<pre class=\"highlight highlight-source-"+rel+"\">"+l+"</pre>"
-            } else {
-                html = html + l + "<br>"
+            if l.next {
+                rn = 1
+                for this.lines[rn + i].indent > l.indent {
+                    rn++
+                }
+                rn--
+                code += " " + this.htmlRange(i+1, i + 1 + rn)
             }
 
-            html = html + "\n"
+            if l.type == 0 {
+                html += code + "<br/>"
+            } else if l.type <= 6 {
+                n = intToStr(l.type)
+                html += "<h"+n+">" + code + "</h"+n+">"
+                if l.type < 3 {
+                    html += "<hr/>"
+                }
+            } else if l.type == 7 {
+                html += "<ul>"
+                for i < to, i++ {
+                    if this.lines[i].type != 7 {
+                        i--
+                        break
+                    }
 
-            i = i + 1
+                    innerCode = this.lines[i].line
+
+                    if this.lines[i].next {
+                        rn = 1
+                        for this.lines[rn + i].indent > this.lines[i].indent {
+                            rn++
+                        }
+                        rn--
+                        innerCode += " " + this.htmlRange(i+1, i + 1 + rn)
+                        i += rn
+                    }
+
+
+                    html += "<li>"+innerCode+"</li>\n"
+                }
+                html += "</ul>"
+            } else if l.type == 8 {
+                html += "<ol>"
+                for i < to, i++ {
+                    if this.lines[i].type != 8 {
+                        i--
+                        break
+                    }
+
+                    innerCode = this.lines[i].line
+
+                    if this.lines[i].next {
+                        rn = 1
+                        for this.lines[rn + i].indent > this.lines[i].indent {
+                            rn++
+                        }
+                        rn--
+                        innerCode += " " + this.htmlRange(i+1, i + 1 + rn)
+                        i += rn
+                    }
+
+
+                    html += "<li>"+innerCode+"</li>"
+                }
+                html += "</ol>"
+            } else if l.type == 9 {
+                html += "<blockquote>" + code + "</blockquote>"
+            } else if l.type == 10 {
+                html += "<pre class=\"highlight highlight-source-"+l.rel+"\">"+code+"</pre>"
+           }
+
+            i += rn
         }
-        html = html + "</p>"
         return html
+    }
+
+    //This returns an str containg the markdown translated as html.
+    html() str {
+        return "<p>" + this.htmlRange(0, len(this.lines)) + "</p>"
     }
 
 }
@@ -85,292 +121,264 @@ struct markdown {
 //An internal function to parse every inline element of a line.
 //Inline elements are syntax features that do not impact the entire line.
 //For instance, the bold delimiter is an inline feature, the hastag at the biginning of a line is not.
-parseMarkdownInline(l string) string {
-    if l.length == 0 {
+parseMarkdownInline(l str) str {
+    nl = ""
+    lastI = 0
+
+    i=0; for i < len(l), i++ {
+
+        //parsing a link
+        if l[i] == '[' {
+            bracks = [i, 0]
+            pars = [0, 0]
+
+            j=i+1; for j < len(l), j++ {
+                if l[j] == ']' {
+                    break
+                }
+            }
+
+            bracks[1] = j
+            j++
+
+            if j >= len(l) {
+                continue
+            }
+
+            _markdown_skipSpace(l, &j)
+
+            if l[j] != '(' {
+                continue
+            }
+            pars[0] = j
+
+            j++; for j < len(l), j++ {
+                if l[j] == ')' {
+                    break
+                }
+            }
+
+            if j == len(l) {
+                continue
+            }
+
+            pars[1] = j
+
+            if bracks[0] > 0 && l[bracks[0]-1] == '!' {
+                nl += l[lastI:bracks[0]-1] + "<img src=\"" + l[pars[0]+1:pars[1]] + "\" alt=\"" + l[bracks[0]+1:bracks[1]] + "\" />"
+            } else {
+                nl += l[lastI:bracks[0]] + "<a href=\"" + l[pars[0]+1:pars[1]] + "\">" + l[bracks[0]+1:bracks[1]] + "</a>"
+            }
+            lastI = j+1
+            i = lastI
+
+        //parsing bold
+        } else if i+2 < len(l) && l[i] == '*' && l[i+1] == '*' && isSpace(l[i+2]) == false {
+            start = i+2
+            
+            j=start; for j+1 < len(l), j++ {
+                if l[j] == '*' && l[j+1] == '*' {
+                    break
+                }
+            }
+
+            if j+1 == len(l) || isSpace(l[j-1]) {
+                continue
+            }
+
+            nl += l[lastI:i] + "<b>"+parseMarkdownInline(l[start:j])+"</b>"
+            lastI = j+2
+            i = lastI
+
+        //parsing italic
+        } else if i+1 < len(l) && l[i] == '*' && isSpace(l[i+1]) == false {
+            start = i+1
+            
+            j=start; for j < len(l), j++ {
+                if l[j] == '*' {
+                    break
+                }
+            }
+
+            if j == len(l) || isSpace(l[j-1]) {
+                continue
+            }
+
+            nl += l[lastI:i] + "<i>"+parseMarkdownInline(l[start:j])+"</i>"
+            lastI = j+1
+            i = lastI
+
+        //parsing code
+        } else if i+1 < len(l) && l[i] == '`' && isSpace(l[i+1]) == false {
+            start = i+1
+            
+            j=start; for j < len(l), j++ {
+                if l[j] == '`' {
+                    break
+                }
+            }
+
+            if j == len(l) || isSpace(l[j-1]) {
+                continue
+            }
+
+            nl += l[lastI:i] + "<code>"+parseMarkdownInline(l[start:j])+"</code>"
+            lastI = j+1
+            i = lastI
+
+        //parsing underline
+        } else if i+2 < len(l) && l[i] == '_' && l[i+1] == '_' && isSpace(l[i+2]) == false {
+            start = i+2
+            
+            j=start; for j+1 < len(l), j++ {
+                if l[j] == '_' && l[j+1] == '_' {
+                    break
+                }
+            }
+
+            if j+1 == len(l) || isSpace(l[j-1]) {
+                continue
+            }
+
+            nl += l[lastI:i] + "<u>"+parseMarkdownInline(l[start:j])+"</u>"
+            lastI = j+2
+            i = lastI
+
+        //parsing strikethrough
+        } else if i+2 < len(l) && l[i] == '~' && l[i+1] == '~' && isSpace(l[i+2]) == false {
+            start = i+2
+            
+            j=start; for j+1 < len(l), j++ {
+                if l[j] == '~' && l[j+1] == '~' {
+                    break
+                }
+            }
+
+            if j+1 == len(l) || isSpace(l[j-1]) {
+                continue
+            }
+
+            nl += l[lastI:i] + "<s>"+parseMarkdownInline(l[start:j])+"</s>"
+            lastI = j+2
+            i = lastI
+        }
+    }
+
+    if lastI == 0 {
         return l
     }
-    nl = []char
-    
-    
 
-    isBold = 0
-    isItal = 0
-    isUline = 0
-
-    isImage = 0
-
-    isLink = 0
-    linkName = []char
-    linkUrl = []char
-
-    i=0;for i<l.length {
-        c = l.charAt(i)
-
-        //link
-        if isLink == 1 {
-            if c == ']' {
-                isLink = 2
-            } else {
-                linkName[len(linkName)] = c
-            }
-            i = i + 1
-            continue
-        }
-        if isLink == 2 {
-            if c == '(' {
-                isLink = 3
-            }
-            i = i + 1
-            continue
-        }
-        if isLink == 3 {
-            if c == ')' {
-                if isImage == 1 {
-                    appendCharArr(nl, strToArr("<img src=\""))
-                    appendCharArr(nl, linkUrl)
-                    appendCharArr(nl, strToArr("\" alt=\""))
-                    appendCharArr(nl, linkName)
-                    appendCharArr(nl, strToArr("\">"))
-                    // nl.append("<img src=\"")
-                    // nl.append(arrAsStr(linkUrl))
-                    // nl.append("\" alt=\"")
-                    // nl.append(arrAsStr(linkName))
-                    // nl.append("\">")
-
-                    isImage = 0
-                } else {
-                    appendCharArr(nl, strToArr("<a href=\""))
-                    appendCharArr(nl, linkUrl)
-                    appendCharArr(nl, strToArr("\">"))
-                    appendCharArr(nl, linkName)
-                    appendCharArr(nl, strToArr("</a>"))
-                    // nl.append("<a href=\"")
-                    // nl.append(arrAsStr(linkUrl))
-                    // nl.append("\">")
-                    // nl.append(arrAsStr(linkName))
-                    // nl.append("</a>")
-                }
-                isLink = 0
-                clear(linkName)
-                clear(linkUrl)
-            } else {
-                linkUrl[len(linkUrl)] = c
-            }
-            i = i + 1
-            continue
-        }
-        if c == '[' {
-            validateState = 0
-            ii=i;for ii<l.length {
-                vc = l.charAt(ii)
-                if validateState == 0 {
-                    if vc == ']' {
-                        validateState = 1
-                    }
-                } else if validateState == 1 {
-                    if vc == '(' {
-                        validateState = 2
-                        ii = ii + 1
-                        continue
-                    }
-                    if isSpace(vc) == 0 {
-                        validateState = 0
-                    }
-                } else if validateState == 2 {
-                    if vc == ')' {
-                        validateState = 3
-                        break
-                    }
-                }
-                ii = ii + 1
-            }
-            if validateState == 3 {
-                isLink = 1
-                i = i + 1
-                continue
-            } else if isImage == 1 {
-                isImage = 0
-                nl[len(nl)] = '!'
-                // nl.append("!")
-            }
-        }
-
-        if c == '!' {
-            nc = l.charAt(i+1)
-            if nc == '[' {
-                isImage = 1
-            }
-            i = i + 1
-            continue
-        }
-
-        //bold
-        if c == '*' {
-            if l.charAt(i+1) == '*' {
-            if isBold == 1 {
-                appendCharArr(nl, strToArr("</strong>"))
-                // nl.append("</strong>")
-                isBold = 0
-            } else {
-                appendCharArr(nl, strToArr("<strong>"))
-                // nl.append("<strong>")
-                isBold = 1
-            }
-            i = i + 2
-            continue
-            } else {
-        //italic
-                if isItal == 1 {
-                    appendCharArr(nl, strToArr("</em>"))
-                    // nl.append("</em>")
-                    isItal = 0
-                } else {
-                    appendCharArr(nl, strToArr("<em>"))
-                    // nl.append("<em>")
-                    isItal = 1
-                }
-                i = i + 1
-                continue
-            }
-        }
-
-        //underlining
-        if c == '_' {
-            if l.charAt(i+1) == '_' {
-                if isUline == 1 {
-                    appendCharArr(nl, strToArr("</u>"))
-                    // nl.append("</u>")
-                    isUline = 0
-                } else {
-                    appendCharArr(nl, strToArr("<u>"))
-                    // nl.append("<u>")
-                    isUline = 1
-                }
-                i = i + 2
-                continue
-            }
-        }
-
-        
-        // nl.append(charToString(c))
-        nl[len(nl)] = c
-        i = i + 1
+    if i < lastI {
+        nl += l[lastI:i]
     }
 
-    r = string(arrToStr(nl))
+    return nl
+}
 
-    return r
+//Escapes characters that are known to be text and not html generated by the parser.
+escapeMarkdownHTML(s str) str {
+    s = strReplace(s, ">", "&gt;")
+    s = strReplace(s, "<", "&lt;")
+    return s
 }
 
 //To parse a markdown document.
 //This will return a markdown structure that can be then transpilled into html.
-parseMarkdown(a str) markdown {
-    md = string(a)
-    lines = splitString(md, "\n")
+parseMarkdown(s str) markdown {
     m = markdown{}
-    
-    i = 0; for i < len(lines) {
-        l = lines[i]
-        nl = new string
+    lastI = 0
 
-        ml = new markdownLine
-        if l.count("```") > 0 {
-            starts = 1
-            lineParts = splitString(l, "```")
-            if len(lineParts) > 0 {
-                ml.rel = lineParts[1]
-            } else {
-                ml.rel = string("")
+    i=0; for i <= len(s), i++ {
+
+        if i+2 < len(s) && s[i] == '`' && s[i+1] == '`' && s[i+2] == '`' {
+            start = i+3
+            l = markdownLine{
+                type: 10
             }
-            ml.type = 10
-            nl.set("")
-            i=i+1;for i < len(lines) {
-                ll = lines[i]
-                if ll.count("```") > 0 {
+            j = start; for j < len(s), j++ {
+                if s[j] == <char>10 {
                     break
                 }
+            }
+            l.rel = s[start:j]
+            j++
+            start = j
 
-                ll.append("\n")
-                nl.append(ll.str())
-
-                i = i + 1
+            for j+2 < len(s), j++ {
+                if s[j] == '`' && s[j+1] == '`' && s[j+2] == '`' {
+                    break
+                }
             }
 
-            ml.line = nl
-            m.lines[len(m.lines)] = ml
-            i = i + 1
+            if j+2 == len(s) {
+                continue
+            }
+
+            l.line = s[start:j]
+            m.lines[len(m.lines)] = l
+
+            lastI = j+3
+            i = lastI
             continue
         }
 
-        l.trim()
-        l = parseMarkdownInline(l)
-        
-         if l.hasPrefix("# ") {
-            ml.type = 1
-            nl.set(l.str())
-            nl.trimLeft(2)
-        } else if l.hasPrefix("## ") {
-            ml.type = 2
-            nl.set(l.str())
-            nl.trimLeft(3)
-        } else if l.hasPrefix("### ") {
-            ml.type = 3
-            nl.set(l.str())
-            nl.trimLeft(4)
+        if i == len(s) || s[i] == <char>10 {
+            type = 0
 
-        } else if l.hasPrefix("#### ") {
-            ml.type = 4
-            nl.set(l.str())
-            nl.trimLeft(5)
+            indent = _markdown_skipSpace(s, &lastI)
 
-        } else if l.hasPrefix("##### ") {
-            ml.type = 5
-            nl.set(l.str())
-            nl.trimLeft(6)
-
-        } else if l.hasPrefix("###### ") {
-            ml.type = 6
-            nl.set(l.str())
-            nl.trimLeft(7)
-
-        } else if l.hasPrefix("- ") {
-            ml.type = 7
-            nl.set(l.str())
-            nl.trimLeft(2)
-        } else if l.hasPrefix("> ") {
-            ml.type = 9
-            nl.set(l.str())
-            nl.trimLeft(2)
-        } else {
-
-            if l.length > 0 {
-                fc=l.charAt(0); if isNumber(fc) {
-                    ml.type = 8
+            if len(m.lines) > 0 {
+                if indent > m.lines[len(m.lines)-1].indent {
+                    m.lines[len(m.lines)-1].next = true
                 }
             }
-                nl.set(l.str())
-            }
-        
-        ml.line = nl
-        m.lines[len(m.lines)] = ml
-        
-        i = i + 1
-    }
 
+
+            if lastI >= i {
+                m.lines[len(m.lines)] = markdownLine{
+                    line: ""
+                    type: type
+                }
+                lastI = i+1
+                continue
+            }
+
+            j = lastI; for s[j] == '#' {
+                j++
+            }
+
+
+            type = j - lastI
+            if j < len(s) && isSpace(s[j]) && type > 0 && type <= 6 {
+                lastI = j
+            } else {
+                type = 0
+                if lastI+1 < len(s) && s[lastI] == '-' && isSpace(s[lastI+1]) {
+                    type = 7
+                } else if lastI+1 < len(s) && isNumber(s[lastI]) && s[lastI+1] == '.' {
+                    type = 8
+                } else if lastI+1 < len(s) && s[lastI] == '>' && isSpace(s[lastI+1]) {
+                    type = 9
+                }
+
+                if type != 0 {
+                    lastI += 2
+                }
+
+            }
+
+            m.lines[len(m.lines)] = markdownLine{
+                line: parseMarkdownInline(s[lastI:i])
+                indent: indent
+                type: type
+            }
+            lastI = i+1
+        }
+    }
 
     return m
 }
 
-//This escapes every character that the markdown parser could take as markdown code.
-//It is not meant to be ran on your main markdown document but rather on some parts that you dont want to be taken as markdown.
-escapeMarkdownHTML(s string*) {
-    s.replace("*", "&ast;")
-    s.replace(">", "&gt;")
-    s.replace("<", "&lt;")
-    s.replace("__", "&lowbar;&lowbar;")
-    s.replace("-", "&minus;")
-    s.replace("#", "&num;")
-}
 
 //Example
 // #include "iostream.bah"

@@ -500,7 +500,7 @@ initiateMemory(args []str) {
     _lgc.stopInterval = 10000000 //10 MB
     _lgc.minHeapSize =  10000000
     _lgc.currentPass = 0
-    _lgc.numberPass = 2 //collect every 3 passes
+    _lgc.numberPass = 0 //collect every 3 passes
 
     _lgc.shouldBlock = 0
     _lgc.collecting = false

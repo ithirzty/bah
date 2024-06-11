@@ -256,7 +256,7 @@ includeFile(ccstr str, elems Elems*) bool {
     oFile = compilerState.currentFile
     compilerState.currentFile = fileName
     compilerState.includes[len(compilerState.includes)] = ccstr
-    
+
     //reads file
     tokens = lexer(f, fs.getSize())
     fs.close()
@@ -296,7 +296,7 @@ includeFile(ccstr str, elems Elems*) bool {
 
     //restore old file's parameters
     shouldOnlyDecl = oshd
-    compilerState.currentFile = oFile 
+    compilerState.currentFile = oFile
     compilerState.currentDir = oDir
 
     return true
@@ -304,7 +304,10 @@ includeFile(ccstr str, elems Elems*) bool {
 
 //Compiles an object from an imported file.
 parallelObjCompile(fn str, oName str) {
-    cf = getCacheFile(fn)
+    let cf = getCacheFile(fn) else {
+        cf = new cacheFile
+    }
+    scf = cf
     wrkd = getCurrentPath()
 
     rcp = ""
@@ -316,10 +319,6 @@ parallelObjCompile(fn str, oName str) {
         rcp = "-lightGC"
     }
 
-    scf = cf
-    if scf == null {
-        scf = new cacheFile
-    }
 
     //file not found in cache, need to compile it
     if cf == null || isValidCacheFile(scf) == false {
@@ -356,22 +355,22 @@ parallelObjCompile(fn str, oName str) {
     true -> doneCompilingChan
 }
 
-importFile(fileName string, strt Tok*, elems Elems*) {
+importFile(fileName str, strt Tok*, elems Elems*) {
     if noImport || BAH_OS != BAH_HOST_OS {
-        includeFile(fileName.str(), elems)
+        includeFile(fileName, elems)
         return
     }
 
     //include guard
-    if fileName.str() in compilerState.includes {
+    if fileName in compilerState.includes {
         return
     }
-    compilerState.includes[len(compilerState.includes)] = fileName.str()
+    compilerState.includes[len(compilerState.includes)] = fileName
 
     //locates file
-    fn = absPath(compilerState.currentDir + fileName.str())
+    fn = absPath(compilerState.currentDir + fileName)
     if <ptr>fn == null {
-        fn = absPath(BAH_DIR + fileName.str())
+        fn = absPath(BAH_DIR + fileName)
         if <ptr>fn == null {
             if strt != null {
                 throwErr(strt, "Unknown file {TOKEN}.")
@@ -394,7 +393,7 @@ importFile(fileName string, strt Tok*, elems Elems*) {
     //read file
     tokens = lexer(f, fs.getSize())
     fs.close()
-    
+
     //sets declarative parsing parameter
     osod = shouldOnlyDecl
     oiso = isSubObject
@@ -408,13 +407,13 @@ importFile(fileName string, strt Tok*, elems Elems*) {
     isSubObject = true
 
     oName = BAH_DIR+"cache/"+pathToVarName(fn)+intToStr(RCPlevel)+intToStr(isOptimized)+".o"
-    
+
     i=len(compilerState.cLibs); for i != 0, i-- {
         compilerState.cLibs[i] = compilerState.cLibs[i-1]
     }
 
     compilerState.cLibs[0] = "w "+oName+".o" //adds object file to the linker
-    
+
     //checks for cache
     currentCompiling++
     async parallelObjCompile(fn, oName)
@@ -447,9 +446,7 @@ parseImport(l []Tok, elems Elems*) {
     }
 
     //removes quotes from file name
-    fileName = string(strt.cont)
-    fileName.trimLeft(1)
-    fileName.trimRight(1)
+    fileName = strt.cont[1:len(strt.cont)-1]
 
     importFile(fileName, &strt, elems)
 }
@@ -497,8 +494,8 @@ parseStructValues(s cStruct*, isHeap bool, memory []Tok, elems Elems*) variable*
     if isHeap {
         sep = "->"
     }
-    
-    
+
+
     //preprocess the memory
     if len(memory) > 0 {
         memory = prePross(memory, <lineType>-1, elems)
@@ -569,7 +566,7 @@ parseStructValues(s cStruct*, isHeap bool, memory []Tok, elems Elems*) variable*
                             cont: ntmpV.name
                             bahType: ntmpV.type
                         }
-                        
+
                     }
                     vlt = getTypeFromToken(&vl, true, elems)
                     if compTypes(vlt, m.type) == false {
@@ -629,7 +626,7 @@ parseStructValues(s cStruct*, isHeap bool, memory []Tok, elems Elems*) variable*
                 cont: ntmpV.name
                 bahType: ntmpV.type
             }
-            
+
         }
 
         tt = getTypeFromToken(&t, true, elems)
@@ -703,6 +700,7 @@ parseStructType(line []Tok, ltp lineType, elems Elems*) []Tok {
                         }
                         t.cont = genCompilerVar()
                         tmpV = new variable
+                        tmpV.canBeNull = false
                         tmpV.name = t.cont
                         tmpV.type = s.name + "*"
                         cType = getCType(tmpV.type, elems)
@@ -768,7 +766,7 @@ parseStructType(line []Tok, ltp lineType, elems Elems*) []Tok {
                     }
                     i++
                     continue
-                    
+
                 } else {
                     i--
                 }
@@ -907,10 +905,10 @@ parseSerialize(e Tok*, elems Elems*) str {
 
     svt = string(v.type)
     ptrLevel = svt.countChar('*')
-    
+
     svt.replace("*", "")
 
-    code str
+    code = ""
 
     if ptrLevel == 0 {
         code = "__serialize(&" + e.cont + ", " + "sizeof(struct "+svt.str()+")"
@@ -929,7 +927,7 @@ parseSerialize(e Tok*, elems Elems*) str {
                 code += "+strlen("+e.cont+"->"+m.name+")"
             }
             i++
-        }   
+        }
 
     }
 
@@ -983,9 +981,9 @@ parseReflect(t Tok, tt str, elems Elems*, parsedPointer bool, ogName str, offset
         tmpT.type = TOKEN_TYPE_VAR
         tmpT.cont = "0"
         rt = parseReflect(tmpT, aet.str(), elems, true, "", "0")
-        
+
         aev = genCompilerVar()
-        
+
         OUTPUT += rope("
         struct reflectElement "+aev+" = "+rt.cont+";
         ")
@@ -1007,7 +1005,7 @@ parseReflect(t Tok, tt str, elems Elems*, parsedPointer bool, ogName str, offset
 
     isStruct = "0"
     ts = searchStruct(tt, elems)
-    structLayout = "0"    
+    structLayout = "0"
 
     if ts != null {
         isStruct = "1"
@@ -1159,7 +1157,7 @@ parseArrayDecl(v variable*, l []Tok, i int, max int, elems Elems*) str {
                     OUTPUT += r
                 }
                 NEXT_LINE = oldNL
-                
+
                 t = Tok{
                     type: TOKEN_TYPE_VAR
                     cont: tmpV.name
@@ -1172,7 +1170,7 @@ parseArrayDecl(v variable*, l []Tok, i int, max int, elems Elems*) str {
             if compTypes(tt, elemBahTypeStr) == false {
                 throwErr(&t, "Cannot use {TOKEN} ("+tt+") as "+elemBahTypeStr)
             }
-            
+
             strArrayLength = intToStr(arrayLength)
             arrayLength++
 
@@ -1202,7 +1200,7 @@ parseArrayDecl(v variable*, l []Tok, i int, max int, elems Elems*) str {
     }
     strArrayLength = intToStr(arrayLength)
     name = v.name
-    
+
     if v.isArray {
         ar Tok* = v.arrRoot
         ai Tok* = v.arrIndex
@@ -1247,10 +1245,21 @@ parseVar(l []Tok, elems Elems*) {
     currentType = ""
     // needsDefine = false
     ft = l[0]
-    v = searchVirtVarByToken(&ft, elems)
     exists = true
-    ogName str
-    if v == null {
+
+    // v = searchVirtVarByToken(&ft, elems)
+    // if v == null {
+    //     if ft.getRefVar() != null {
+    //         v = ft.getRefVar()
+    //     } else {
+    //         exists = false
+    //         v = new variable
+    //         v.name = ft.cont
+    //         v.type = ""
+    //     }
+    // }
+
+    let v = searchVirtVarByToken(&ft, elems) else {
         if ft.getRefVar() != null {
             v = ft.getRefVar()
         } else {
@@ -1259,9 +1268,11 @@ parseVar(l []Tok, elems Elems*) {
             v.name = ft.cont
             v.type = ""
         }
-    } else {
-        ogName = v.name
+        if v == null {
+            return
+        }
     }
+
     if v.isConst == true {
         throwErr(&ft, "Cannot set the value of const {TOKEN}.")
     }
@@ -1270,7 +1281,7 @@ parseVar(l []Tok, elems Elems*) {
     if exists == true && isGlobal() {
         throwErr(&ft, "Cannot redeclare global variable {TOKEN}.")
     }
-    
+
 
     if len(l) == 1 {
         t = l[0]
@@ -1406,7 +1417,7 @@ parseVar(l []Tok, elems Elems*) {
 
 
             tp = getTypeFromToken(&t, true, elems)
-            
+
             //safety check to know if it is possible that the declared/set variable can contain a null pointer
             if isUnsafe == false && string(compilerState.currentDir).hasPrefix(BAH_DIR) == false && isRCPpointerType(tp) && v.isArray == false {
                 if t.cont == "null" || tp[len(tp)-1] == '!' {
@@ -1426,6 +1437,22 @@ parseVar(l []Tok, elems Elems*) {
                                 rv = getRealVar(v.name, elems)
                                 if rv != null {
                                     rv.canBeNull = false
+                                }
+                            } else {
+                                j=0; for j < len(elems.branchChecks), j++ {
+                                    if elems.branchChecks[j].v == null {
+                                        continue
+                                    }
+                                    if elems.branchChecks[j].v.name == v.name {
+                                        elems.branchChecks[j].checkNull = false
+                                        break
+                                    }
+                                }
+                                if j == len(elems.branchChecks) {
+                                    elems.branchChecks[len(elems.branchChecks)] = varCheck {
+                                        v: v
+                                        checkNull: false
+                                    }
                                 }
                             }
                         } else {
@@ -1528,7 +1555,7 @@ parseVar(l []Tok, elems Elems*) {
     }
 
     if exists == true {
-        
+
         //safety
         rv = getRealVar(v.name, elems)
         if rv != null && isStaticToken(&l[equalIndex+1], elems) == false {
@@ -1618,7 +1645,7 @@ parseVar(l []Tok, elems Elems*) {
         }
         v.declScope = elems
         elems.vars[len(elems.vars)] = v
-        
+
         if fixMeEnabled() {
             fixMeRegisterVar(v, &ft)
         }
@@ -1630,7 +1657,7 @@ parseVar(l []Tok, elems Elems*) {
 
         if isGlobal() {
             OUTPUT += rope(vct+";\n")
-        }        
+        }
     }
 
     if isGlobal() {
@@ -1671,7 +1698,7 @@ parseFnHeader(prev str, l []Tok, i int*, fn func*, elems Elems*) [str,str] {
 
 
     j += 2
-    
+
     t = l[j]
     if t.cont != ")" {
 
@@ -1726,7 +1753,7 @@ parseFnHeader(prev str, l []Tok, i int*, fn func*, elems Elems*) [str,str] {
                 } else {
                     isComa = true
                     break
-                }                
+                }
                 j++
             }
 
@@ -1734,7 +1761,7 @@ parseFnHeader(prev str, l []Tok, i int*, fn func*, elems Elems*) [str,str] {
             argument.name = argName
             argument.type = argType
             arguments[len(arguments)] = argument
-            
+
 
             argCType = getCType(argType, elems)
 
@@ -1788,9 +1815,13 @@ parseFnHeader(prev str, l []Tok, i int*, fn func*, elems Elems*) [str,str] {
     fn.returns = returns
     fn.args = arguments
 
-    fnRetType = getCType(returns.type, elems)
-    newFnRetType = fnRetType.str()
-    code = newFnRetType + " " + code
+    crt = ""
+    if len(returns.type) > 0 && returns.type[len(returns.type)-1] == '!' {
+        crt = "void*"
+    } else {
+        crt = getCType(returns.type, elems).str()
+    }
+    code = crt + " " + code
     return [code,tpdf]
 }
 
@@ -1950,7 +1981,7 @@ parseStruct(l []Tok, elems Elems*) {
                 } else {
                     code += rope("{\n")
                 }
-                
+
                 fnElems = dupElems(elems)
                 j=0; for j < len(arguments), j++ {
                     a = arguments[j]
@@ -2059,7 +2090,7 @@ parseStruct(l []Tok, elems Elems*) {
             mbmType += t.cont
             i++
         }
-        
+
         memb.type = mbmType
         i++
         t = l[i]
@@ -2147,7 +2178,7 @@ parseDefine(l []Tok, elems Elems*) {
     if len(l) < 3 {
         throwErr(&l[len(l)-1], "Invalid usage of define, cannot end on {TOKEN}.")
     }
-    
+
     ft = l[1]
     st = l[2]
 
@@ -2161,7 +2192,7 @@ parseDefine(l []Tok, elems Elems*) {
     }
 
     if st.cont == "(" {
-        
+
         fn = new func
         header = parseFnHeader("", l, &i, fn, elems)
         code = header[1] + header[0]
@@ -2205,7 +2236,7 @@ parseDefine(l []Tok, elems Elems*) {
 parseClib(line []Tok) {
 
     clibs = compilerState.cLibs
-    
+
     i=1; for i < len(line) {
         t = line[i]
         if t.type != TOKEN_TYPE_STR {
@@ -2222,7 +2253,7 @@ parseClib(line []Tok) {
             l = clibs[j]
             if l == ccstr {
                 found = true
-                break               
+                break
             }
             j++
         }
@@ -2309,7 +2340,7 @@ parseReturn(l []Tok, elems Elems*) {
             if tmpV == null {
                 tmpV = searchVirtVarByToken(&rvt, elems)
             }
-            if tmpV != null {
+            if tmpV != null && rvt.isOper == false {
                 if isUnsafe == false && string(compilerState.currentDir).hasPrefix(BAH_DIR) == false && currentFn.returns.type[len(currentFn.returns.type)-1] != '!' {
                     if tmpV.canBeNull == true || rv == "null" {
                         currentFn.returns.canBeNull = true
@@ -2390,7 +2421,7 @@ parseIf(l []Tok, fromElse bool, elems Elems*) {
 
     ifElems = elems
     if fromElse == false {
-        
+
         //Initialize optimazation to replace by C switch
         if condt.switchOpt != null {
             elems.switchOpt = new chainsToSwitch {
@@ -2399,7 +2430,7 @@ parseIf(l []Tok, fromElse bool, elems Elems*) {
             elems.switchOpt.values[0] = condt.switchOpt.value
             elems.switchOpt.headerRopes[0] = ifHeader
         }
-        
+
         ifElems = dupElems(elems)
     }
 
@@ -2436,9 +2467,9 @@ parseIf(l []Tok, fromElse bool, elems Elems*) {
 
     oifeso = ifElems.switchOpt
     ifElems.switchOpt = null
-    
+
     parseLines(tokens, ifElems)
-    
+
     ifElems.switchOpt = oifeso
 
     RCPendScope(ifElems)
@@ -2498,7 +2529,7 @@ parseElse(l []Tok, elems Elems*) {
             memory[len(memory)] = l[i]
             i++
         }
-        
+
         i=0; for i < len(prevIfChecks), i++ {
             bc = prevIfChecks[i]
             bc.checkNull = bc.checkNull == false
@@ -2627,7 +2658,7 @@ parseFor(l []Tok, elems Elems*) {
     parseLines(tokens, ifElems)
     RCPendScope(ifElems)
     fixMeEndScope(ifElems, &tokens[len(tokens)-1])
-    
+
     if isUnsafe == false {
         i=0; for i < len(ifElems.vars), i++ {
             v = ifElems.vars[i]
@@ -2640,7 +2671,7 @@ parseFor(l []Tok, elems Elems*) {
             }
         }
     }
-    
+
     if debug == true {
         lt = l[len(l)-1]
         debugEndScope(lt.line, ifElems)
@@ -2663,7 +2694,7 @@ parseForOp(l []Tok, elems Elems*) {
         throwErr(&ft, "Nothing expected after {TOKEN}.")
     }
     //TODO: include outter forloop declared variables incase the keyword is inside a if branch,etc...
-    
+
     RCPendScope(elems)
     RCPendScope(compilerState.currForElems)
     fixMeEndScope(elems, &ft)
@@ -2806,11 +2837,11 @@ parsePreKeyword(l []Tok, elems Elems*) {
         }
         return
     }
-    
+
     if len(l) < 3 {
         throwErr(&ft, "Invalid usage of keyword {TOKEN}.")
     }
-    
+
     if ft.cont == "#linux" || ft.cont == "#windows" || ft.cont == "#darwin" {
         isOS = string(ft.cont)
         isOS.trimLeft(1)
@@ -2895,7 +2926,7 @@ parseAsync(l []Tok, elems Elems*) {
     if fnT.isFunc == false {
         throwErr(&fnT, "Cannot use keyword async on {TOKEN}. Usage: 'async <function call>'.")
     }
-    
+
     found = false
     i=0; for i < len(compilerState.cLibs) {
         if compilerState.cLibs[i] == "lpthread" {
@@ -2923,7 +2954,7 @@ parseAsync(l []Tok, elems Elems*) {
     unSerMembs = ""
     threadClean = ""
     threadPrep = ""
-    
+
     i=0; for i < len(fn.args), i++ {
         a = fn.args[i]
         cType = getCType(a.type, elems)
@@ -2962,7 +2993,7 @@ parseAsync(l []Tok, elems Elems*) {
         "+fnName.str()+"("+unSerMembs+");
         "+threadClean+"
     };\n")
-    
+
     OUTPUT += rope(
     "{
         "+tmpArgsStruct+" "+tmpArgs+" = {"+sFnT.str()+"};
@@ -2974,8 +3005,8 @@ parseAsync(l []Tok, elems Elems*) {
         pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_DETACHED);
         __thread_create(&id, &attr, "+fnWrapper+", tmpArgs);
         pthread_attr_destroy(&attr);
-    }; 
-    
+    };
+
     ")
 }
 
@@ -3254,10 +3285,10 @@ prePross(line []Tok, ltp lineType, elems Elems*) []Tok {
                 throwErr(&t, "Cannot use {TOKEN} on "+ptt+".")
             }
             pt.cont += t.cont + nt.cont
-            
+
             //Remove switchable property
             pt.switchOpt = null
-            
+
             fl[i-1] = pt
             deleteRange(fl, i, i+1)
             i -= 2
@@ -3306,12 +3337,12 @@ parseFnDeclare(l []Tok, elems Elems*) {
             throwErr(&ft, "{TOKEN} function should return 'int'.")
         }
         if len(fn.args) != 1 {
-            throwErr(&ft, "{TOKEN} function should take one []str argument. Should be: 
+            throwErr(&ft, "{TOKEN} function should take one []str argument. Should be:
             'main(args []str) int'")
         }
         fa = fn.args[0]
         if compTypes(fa.type, "[]str") == false {
-            throwErr(&ft, "{TOKEN} function should take []str as argument. Should be: 
+            throwErr(&ft, "{TOKEN} function should take []str as argument. Should be:
             'main(args []str) int'")
         }
     }
@@ -3359,7 +3390,7 @@ parseFnDeclare(l []Tok, elems Elems*) {
 
 
     fnElems = dupElems(elems)
-    
+
     vs = fnElems.vars
     j=0; for j < len(fn.args) {
         a = fn.args[j]
@@ -3369,7 +3400,7 @@ parseFnDeclare(l []Tok, elems Elems*) {
         j++
     }
     fnElems.vars = vs
-    
+
     if ogFn != null {
         ogFn.isBinding = false
         ogFn.used = true
@@ -3440,7 +3471,7 @@ parseLet(line []Tok, elems Elems*) {
     if varTok.type != TOKEN_TYPE_VAR {
         throwErr(&varTok, "Cannot use {TOKEN} as variable.")
     }
-    
+
     //check equal sign
     if line[2].cont != "=" {
         throwErr(&line[2], "Expected '=' got {TOKEN}.")
@@ -3473,13 +3504,12 @@ parseLet(line []Tok, elems Elems*) {
     tmpVar = ""
 
     //asign variable
-    v = searchVirtVarByToken(&varTok, elems)
+    v = searchVarByToken(&varTok, elems)
     code = ""
     if v == null {
         v = new variable {
             name: varTok.cont
             type: newType
-            canBeNull: isThen == false
         }
         if isThen == false {
             elems.vars[len(elems.vars)] = v
@@ -3494,7 +3524,11 @@ parseLet(line []Tok, elems Elems*) {
         }
     }
 
+    v.canBeNull = isThen == false
     captElems = dupElems(elems)
+    ocib = compilerState.isBranch
+    compilerState.isBranch = true
+    
     if isThen {
         v.declScope = captElems
     } else {
@@ -3522,12 +3556,19 @@ parseLet(line []Tok, elems Elems*) {
         debugEndScope(lt.line, captElems)
     }
 
-    v.canBeNull = isThen
+    compilerState.isBranch = ocib
+
 
     if isThen == true {
+        v.canBeNull = true
         OUTPUT += rope("}\n")
     } else {
-        OUTPUT += rope("\n__BAH_panic(\"Undefined let resolution.\", \""+compilerState.currentFile+":"+intToStr(line[0].line)+"\");}\n")
+        if v.canBeNull == true && checkedNotNull(v.name, captElems) == false && captElems.currFlowEnd == false {
+            throwErr(&line[0], "Variable "+v.name+" could still be null after exiting else block and program is not terminated")
+        } else {
+            v.canBeNull = false
+        }
+        OUTPUT += rope("}\n")
     }
 
 
@@ -3535,7 +3576,7 @@ parseLet(line []Tok, elems Elems*) {
 
 // Checks done after parsing a line.
 afterLineCheck(line []Tok, ltp lineType, elems Elems*) {
-    
+
     // At the end of a else if chain
     if (prevLine == LINE_TYPE_IF || prevLine == LINE_TYPE_ELSE) && (ltp != LINE_TYPE_ELSE) && compilerState.nbElseIf > 0 {
 
@@ -3546,7 +3587,7 @@ afterLineCheck(line []Tok, ltp lineType, elems Elems*) {
             t Tok* = elems.switchOpt.values[0]
             v Tok* = elems.switchOpt.var
             OUTPUT.totalLen += ropeSet(elems.switchOpt.headerRopes[0], "switch("+v.cont+"){\ncase "+t.cont+":{\n")
-            
+
             i=1; for i < len(elems.switchOpt.values), i++ {
                 t = <Tok*>elems.switchOpt.values[i]
                 OUTPUT.totalLen += ropeSet(elems.switchOpt.headerRopes[i*2], "case "+t.cont+": {\n")
@@ -3557,15 +3598,15 @@ afterLineCheck(line []Tok, ltp lineType, elems Elems*) {
             if len(elems.switchOpt.headerRopes) % 2 == 0 {
                 OUTPUT.totalLen += ropeSet(elems.switchOpt.headerRopes[len(elems.switchOpt.headerRopes)-1], "default: {\n")
                 i = 0; for i < len(elems.switchOpt.footerRopes)-1, i++ {
-                    OUTPUT.totalLen += ropeSet(elems.switchOpt.footerRopes[i], "")            
+                    OUTPUT.totalLen += ropeSet(elems.switchOpt.footerRopes[i], "")
                 }
                 OUTPUT.totalLen += ropeSet(elems.switchOpt.footerRopes[len(elems.switchOpt.footerRopes)-1], "}break;\n")
                 OUTPUT += rope("}break;}\n")
             } else {
                 i = 0; for i < len(elems.switchOpt.footerRopes)-1, i++ {
-                    OUTPUT.totalLen += ropeSet(elems.switchOpt.footerRopes[i], "")            
+                    OUTPUT.totalLen += ropeSet(elems.switchOpt.footerRopes[i], "")
                 }
-                OUTPUT.totalLen += ropeSet(elems.switchOpt.footerRopes[len(elems.switchOpt.footerRopes)-1], "}break;\n}\n")            
+                OUTPUT.totalLen += ropeSet(elems.switchOpt.footerRopes[len(elems.switchOpt.footerRopes)-1], "}break;\n}\n")
 
             }
 
@@ -3603,9 +3644,9 @@ parseLine(line []Tok, elems Elems*) {
             currSetVar = v
         }
     }
-    
+
     afterLineCheck(line, ltp, elems)
-    
+
     parsed = false
     if ltp == LINE_TYPE_INCLUDE {
         parsed = true
@@ -3734,7 +3775,7 @@ parseLines(tokens []Tok, elems Elems*) {
     nbEncl = 0
     i=0; for i < len(tokens) {
         t = tokens[i]
-        
+
         if t.type == TOKEN_TYPE_ENCL {
             if t.cont[0] == '(' || t.cont[0] == '{' || t.cont[0] == '[' {
                 nbEncl++
