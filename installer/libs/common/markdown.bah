@@ -268,8 +268,8 @@ parseMarkdownInline(l str) str {
         return l
     }
 
-    if i < lastI {
-        nl += l[lastI:i]
+    if i > lastI {
+        nl += l[lastI:len(l)]
     }
 
     return nl
@@ -314,10 +314,20 @@ parseMarkdown(s str) markdown {
                 continue
             }
 
-            l.line = s[start:j]
+            if s[j-1] == <char>10 {
+                l.line = s[start:j-1]
+            } else {
+                l.line = s[start:j]
+            }
+
             m.lines[len(m.lines)] = l
 
             lastI = j+3
+            for lastI < len(s), lastI++ {
+                if s[lastI] == <char>10 {
+                    break
+                }
+            }
             i = lastI
             continue
         }
@@ -328,7 +338,7 @@ parseMarkdown(s str) markdown {
             indent = _markdown_skipSpace(s, &lastI)
 
             if len(m.lines) > 0 {
-                if indent > m.lines[len(m.lines)-1].indent {
+                if indent > m.lines[len(m.lines)-1].indent && m.lines[len(m.lines)-1].type != 10 {
                     m.lines[len(m.lines)-1].next = true
                 }
             }
