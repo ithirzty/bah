@@ -7708,7 +7708,7 @@ char* BAH_CC;
 #define BAH_HOST_OS "\07\0\0\0""windows"
 
 #line 31 "/home/alois/Téléchargements/bah/src/main.bah"
-#define BAH_VERSION "\020\0\0\0""v1.5 (build 182)"
+#define BAH_VERSION "\020\0\0\0""v1.5 (build 183)"
 
 #line 33 "/home/alois/Téléchargements/bah/src/main.bah"
 char debug;
@@ -14180,133 +14180,137 @@ return true;
 void parallelObjCompile(char* fn,char* oName){
 
 #line 307 "/home/alois/Téléchargements/bah/src/parser.bah"
-struct cacheFile* cf = getCacheFile(fn);if (cf == null) {
+struct cacheFile* cf = getCacheFile(fn);
+
 #line 308 "/home/alois/Téléchargements/bah/src/parser.bah"
+struct cacheFile* scf = cf;
+
+#line 309 "/home/alois/Téléchargements/bah/src/parser.bah"
+if ((scf==null)) {
+
+#line 310 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct cacheFile* ____BAH_COMPILER_VAR_787_ahomeaaloisanijlijchargementsabahasrcaparserbbah = memoryAlloc(sizeof(struct cacheFile));
 ____BAH_COMPILER_VAR_787_ahomeaaloisanijlijchargementsabahasrcaparserbbah->files = memoryAlloc(sizeof(struct Bah_Array_Type));
             ____BAH_COMPILER_VAR_787_ahomeaaloisanijlijchargementsabahasrcaparserbbah->files->length = 0;
             ____BAH_COMPILER_VAR_787_ahomeaaloisanijlijchargementsabahasrcaparserbbah->files->elemSize = sizeof(char*);
-            cf = ____BAH_COMPILER_VAR_787_ahomeaaloisanijlijchargementsabahasrcaparserbbah;
+            scf = ____BAH_COMPILER_VAR_787_ahomeaaloisanijlijchargementsabahasrcaparserbbah;
 }
-
-#line 310 "/home/alois/Téléchargements/bah/src/parser.bah"
-struct cacheFile* scf = cf;
-
-#line 311 "/home/alois/Téléchargements/bah/src/parser.bah"
-char* wrkd = getCurrentPath();
 
 #line 313 "/home/alois/Téléchargements/bah/src/parser.bah"
-char* rcp = "\0\0\0\0""";
-
-#line 314 "/home/alois/Téléchargements/bah/src/parser.bah"
-if ((RCPlevel==1)) {
+char* wrkd = getCurrentPath();
 
 #line 315 "/home/alois/Téléchargements/bah/src/parser.bah"
-rcp = "\04\0\0\0""-rcp";
-}
+char* rcp = "\0\0\0\0""";
 
 #line 316 "/home/alois/Téléchargements/bah/src/parser.bah"
-else{
-if ((RCPlevel==2)) {
+if ((RCPlevel==1)) {
 
 #line 317 "/home/alois/Téléchargements/bah/src/parser.bah"
-rcp = "\010\0\0\0""-fastrcp";
+rcp = "\04\0\0\0""-rcp";
 }
 
 #line 318 "/home/alois/Téléchargements/bah/src/parser.bah"
 else{
-if (lightGCenabled) {
+if ((RCPlevel==2)) {
 
 #line 319 "/home/alois/Téléchargements/bah/src/parser.bah"
+rcp = "\010\0\0\0""-fastrcp";
+}
+
+#line 320 "/home/alois/Téléchargements/bah/src/parser.bah"
+else{
+if (lightGCenabled) {
+
+#line 321 "/home/alois/Téléchargements/bah/src/parser.bah"
 rcp = "\010\0\0\0""-lightGC";
 }
 }
 }
 
-#line 324 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 326 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((cf==null)||(isValidCacheFile(scf)==false)) {
 
-#line 325 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 327 "/home/alois/Téléchargements/bah/src/parser.bah"
 char* verboseCC = "\0\0\0\0""";
 
-#line 326 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 328 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((flags__isSet(&flags,"\011\0\0\0""verboseCC")==1)) {
 
-#line 327 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 329 "/home/alois/Téléchargements/bah/src/parser.bah"
 verboseCC = "\012\0\0\0""-verboseCC";
 }
 
-#line 329 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 331 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((debug==false)) {
 
-#line 330 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 332 "/home/alois/Téléchargements/bah/src/parser.bah"
 char** ____BAH_COMPILER_VAR_788_ahomeaaloisanijlijchargementsabahasrcaparserbbah = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_788_ahomeaaloisanijlijchargementsabahasrcaparserbbah[1] = fn;____BAH_COMPILER_VAR_788_ahomeaaloisanijlijchargementsabahasrcaparserbbah[0] = "\014\0\0\0""[compiling] ";char* ____BAH_COMPILER_VAR_789_ahomeaaloisanijlijchargementsabahasrcaparserbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_788_ahomeaaloisanijlijchargementsabahasrcaparserbbah, 2);println(____BAH_COMPILER_VAR_789_ahomeaaloisanijlijchargementsabahasrcaparserbbah);
 }
 
-#line 332 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 334 "/home/alois/Téléchargements/bah/src/parser.bah"
 char* opti = "\0\0\0\0""";
 
-#line 333 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 335 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((isOptimized==true)) {
 
-#line 334 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 336 "/home/alois/Téléchargements/bah/src/parser.bah"
 opti = "\011\0\0\0""-optimize";
 }
 
-#line 336 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 338 "/home/alois/Téléchargements/bah/src/parser.bah"
 char* nbtin = "\0\0\0\0""";
 
-#line 337 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 339 "/home/alois/Téléchargements/bah/src/parser.bah"
 char** ____BAH_COMPILER_VAR_790_ahomeaaloisanijlijchargementsabahasrcaparserbbah = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_790_ahomeaaloisanijlijchargementsabahasrcaparserbbah[1] = "\013\0\0\0""builtin.bah";____BAH_COMPILER_VAR_790_ahomeaaloisanijlijchargementsabahasrcaparserbbah[0] = BAH_DIR;char* ____BAH_COMPILER_VAR_791_ahomeaaloisanijlijchargementsabahasrcaparserbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_790_ahomeaaloisanijlijchargementsabahasrcaparserbbah, 2);if ((strcmp(fn, ____BAH_COMPILER_VAR_791_ahomeaaloisanijlijchargementsabahasrcaparserbbah) == 0)) {
 
-#line 338 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 340 "/home/alois/Téléchargements/bah/src/parser.bah"
 nbtin = "\012\0\0\0""-nobuiltin";
 }
 
-#line 341 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 343 "/home/alois/Téléchargements/bah/src/parser.bah"
 setCurrentPath(compilerState.currentDir);
 
-#line 342 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 344 "/home/alois/Téléchargements/bah/src/parser.bah"
 char** ____BAH_COMPILER_VAR_792_ahomeaaloisanijlijchargementsabahasrcaparserbbah = alloca(13 * sizeof(char*));____BAH_COMPILER_VAR_792_ahomeaaloisanijlijchargementsabahasrcaparserbbah[12] = oName;____BAH_COMPILER_VAR_792_ahomeaaloisanijlijchargementsabahasrcaparserbbah[11] = "\04\0\0\0"" -o ";____BAH_COMPILER_VAR_792_ahomeaaloisanijlijchargementsabahasrcaparserbbah[10] = nbtin;____BAH_COMPILER_VAR_792_ahomeaaloisanijlijchargementsabahasrcaparserbbah[9] = "\01\0\0\0"" ";____BAH_COMPILER_VAR_792_ahomeaaloisanijlijchargementsabahasrcaparserbbah[8] = verboseCC;____BAH_COMPILER_VAR_792_ahomeaaloisanijlijchargementsabahasrcaparserbbah[7] = "\011\0\0\0"" -object ";____BAH_COMPILER_VAR_792_ahomeaaloisanijlijchargementsabahasrcaparserbbah[6] = opti;____BAH_COMPILER_VAR_792_ahomeaaloisanijlijchargementsabahasrcaparserbbah[5] = "\01\0\0\0"" ";____BAH_COMPILER_VAR_792_ahomeaaloisanijlijchargementsabahasrcaparserbbah[4] = rcp;____BAH_COMPILER_VAR_792_ahomeaaloisanijlijchargementsabahasrcaparserbbah[3] = "\01\0\0\0"" ";____BAH_COMPILER_VAR_792_ahomeaaloisanijlijchargementsabahasrcaparserbbah[2] = fn;____BAH_COMPILER_VAR_792_ahomeaaloisanijlijchargementsabahasrcaparserbbah[1] = "\01\0\0\0"" ";____BAH_COMPILER_VAR_792_ahomeaaloisanijlijchargementsabahasrcaparserbbah[0] = execName;char* ____BAH_COMPILER_VAR_793_ahomeaaloisanijlijchargementsabahasrcaparserbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_792_ahomeaaloisanijlijchargementsabahasrcaparserbbah, 13);struct command cmd = command(____BAH_COMPILER_VAR_793_ahomeaaloisanijlijchargementsabahasrcaparserbbah);
 
-#line 343 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 345 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Bah_Array_Type* res = command__runBytes(&cmd);
 
-#line 344 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 346 "/home/alois/Téléchargements/bah/src/parser.bah"
 setCurrentPath(wrkd);
 
-#line 345 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 347 "/home/alois/Téléchargements/bah/src/parser.bah"
 if (__builtin_expect((cmd.status!=0), 0)) {
 
-#line 346 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 348 "/home/alois/Téléchargements/bah/src/parser.bah"
 print(arrToStr(res));
 
-#line 347 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 349 "/home/alois/Téléchargements/bah/src/parser.bah"
 exit(1);
 }
 
-#line 349 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 351 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((cf==null)) {
 
-#line 350 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 352 "/home/alois/Téléchargements/bah/src/parser.bah"
 makeCacheFile(fn);
 }
 
-#line 351 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 353 "/home/alois/Téléchargements/bah/src/parser.bah"
 else{
 
-#line 352 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 354 "/home/alois/Téléchargements/bah/src/parser.bah"
 updateCacheFile(cf);
 }
 }
 
-#line 355 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 357 "/home/alois/Téléchargements/bah/src/parser.bah"
 
         char ____BAH_COMPILER_VAR_794_ahomeaaloisanijlijchargementsabahasrcaparserbbah = true;
         channel__sendAny(doneCompilingChan, &____BAH_COMPILER_VAR_794_ahomeaaloisanijlijchargementsabahasrcaparserbbah, sizeof(____BAH_COMPILER_VAR_794_ahomeaaloisanijlijchargementsabahasrcaparserbbah));
         };
 
-#line 358 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 360 "/home/alois/Téléchargements/bah/src/parser.bah"
 char ____BAH_COMPILER_VAR_795_ahomeaaloisanijlijchargementsabahasrcaparserbbah(struct Bah_Array_Type* arr, char* el) {
         if (__builtin_expect(arr == 0, 0)) {
             return 0;
@@ -14329,127 +14333,127 @@ char* oName;
     };
 void importFile(char* fileName,struct Tok* strt,struct Elems* elems){
 
-#line 359 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 361 "/home/alois/Téléchargements/bah/src/parser.bah"
 if (noImport||(strcmp(BAH_OS, BAH_HOST_OS) != 0)) {
 
-#line 360 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 362 "/home/alois/Téléchargements/bah/src/parser.bah"
 includeFile(fileName,elems);
 
-#line 361 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 363 "/home/alois/Téléchargements/bah/src/parser.bah"
 return;
 }
 
-#line 365 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 367 "/home/alois/Téléchargements/bah/src/parser.bah"
 if (____BAH_COMPILER_VAR_795_ahomeaaloisanijlijchargementsabahasrcaparserbbah(compilerState.includes, fileName)) {
 
-#line 366 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 368 "/home/alois/Téléchargements/bah/src/parser.bah"
 return;
 }
 
-#line 368 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 370 "/home/alois/Téléchargements/bah/src/parser.bah"
 unsigned int ____BAH_COMPILER_VAR_796_ahomeaaloisanijlijchargementsabahasrcaparserbbah = len(compilerState.includes);
     __Bah_realocate_arr(compilerState.includes, ____BAH_COMPILER_VAR_796_ahomeaaloisanijlijchargementsabahasrcaparserbbah);
     ((char**)compilerState.includes->data)[____BAH_COMPILER_VAR_796_ahomeaaloisanijlijchargementsabahasrcaparserbbah] = fileName;
 
-#line 371 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 373 "/home/alois/Téléchargements/bah/src/parser.bah"
 char** ____BAH_COMPILER_VAR_797_ahomeaaloisanijlijchargementsabahasrcaparserbbah = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_797_ahomeaaloisanijlijchargementsabahasrcaparserbbah[1] = fileName;____BAH_COMPILER_VAR_797_ahomeaaloisanijlijchargementsabahasrcaparserbbah[0] = compilerState.currentDir;char* ____BAH_COMPILER_VAR_798_ahomeaaloisanijlijchargementsabahasrcaparserbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_797_ahomeaaloisanijlijchargementsabahasrcaparserbbah, 2);char* fn = absPath(____BAH_COMPILER_VAR_798_ahomeaaloisanijlijchargementsabahasrcaparserbbah);
 
-#line 372 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 374 "/home/alois/Téléchargements/bah/src/parser.bah"
 if (((void *)fn==null)) {
 
-#line 373 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 375 "/home/alois/Téléchargements/bah/src/parser.bah"
 char** ____BAH_COMPILER_VAR_799_ahomeaaloisanijlijchargementsabahasrcaparserbbah = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_799_ahomeaaloisanijlijchargementsabahasrcaparserbbah[1] = fileName;____BAH_COMPILER_VAR_799_ahomeaaloisanijlijchargementsabahasrcaparserbbah[0] = BAH_DIR;char* ____BAH_COMPILER_VAR_800_ahomeaaloisanijlijchargementsabahasrcaparserbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_799_ahomeaaloisanijlijchargementsabahasrcaparserbbah, 2);fn = absPath(____BAH_COMPILER_VAR_800_ahomeaaloisanijlijchargementsabahasrcaparserbbah);
 
-#line 374 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 376 "/home/alois/Téléchargements/bah/src/parser.bah"
 if (__builtin_expect(((void *)fn==null), 0)) {
 
-#line 375 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 377 "/home/alois/Téléchargements/bah/src/parser.bah"
 if (__builtin_expect((strt!=null), 0)) {
 
-#line 376 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 378 "/home/alois/Téléchargements/bah/src/parser.bah"
 throwErr(strt,"\025\0\0\0""Unknown file {TOKEN}.");
 }
 
-#line 378 "/home/alois/Téléchargements/bah/src/parser.bah"
-char** ____BAH_COMPILER_VAR_801_ahomeaaloisanijlijchargementsabahasrcaparserbbah = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_801_ahomeaaloisanijlijchargementsabahasrcaparserbbah[2] = "\01\0\0\0""'";____BAH_COMPILER_VAR_801_ahomeaaloisanijlijchargementsabahasrcaparserbbah[1] = BAH_DIR;____BAH_COMPILER_VAR_801_ahomeaaloisanijlijchargementsabahasrcaparserbbah[0] = "\047\0\0\0""Could not find std-libs, please check '";char* ____BAH_COMPILER_VAR_802_ahomeaaloisanijlijchargementsabahasrcaparserbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_801_ahomeaaloisanijlijchargementsabahasrcaparserbbah, 3);__BAH_panic(____BAH_COMPILER_VAR_802_ahomeaaloisanijlijchargementsabahasrcaparserbbah,"\064\0\0\0""/home/alois/Téléchargements/bah/src/parser.bah:378");
+#line 380 "/home/alois/Téléchargements/bah/src/parser.bah"
+char** ____BAH_COMPILER_VAR_801_ahomeaaloisanijlijchargementsabahasrcaparserbbah = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_801_ahomeaaloisanijlijchargementsabahasrcaparserbbah[2] = "\01\0\0\0""'";____BAH_COMPILER_VAR_801_ahomeaaloisanijlijchargementsabahasrcaparserbbah[1] = BAH_DIR;____BAH_COMPILER_VAR_801_ahomeaaloisanijlijchargementsabahasrcaparserbbah[0] = "\047\0\0\0""Could not find std-libs, please check '";char* ____BAH_COMPILER_VAR_802_ahomeaaloisanijlijchargementsabahasrcaparserbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_801_ahomeaaloisanijlijchargementsabahasrcaparserbbah, 3);__BAH_panic(____BAH_COMPILER_VAR_802_ahomeaaloisanijlijchargementsabahasrcaparserbbah,"\064\0\0\0""/home/alois/Téléchargements/bah/src/parser.bah:380");
 }
 }
-
-#line 383 "/home/alois/Téléchargements/bah/src/parser.bah"
-char* of = compilerState.currentFile;
-
-#line 384 "/home/alois/Téléchargements/bah/src/parser.bah"
-char* od = compilerState.currentDir;
 
 #line 385 "/home/alois/Téléchargements/bah/src/parser.bah"
-compilerState.currentFile = fn;
+char* of = compilerState.currentFile;
 
 #line 386 "/home/alois/Téléchargements/bah/src/parser.bah"
+char* od = compilerState.currentDir;
+
+#line 387 "/home/alois/Téléchargements/bah/src/parser.bah"
+compilerState.currentFile = fn;
+
+#line 388 "/home/alois/Téléchargements/bah/src/parser.bah"
 compilerState.currentDir = getDirFromFile(fn);
 
-#line 389 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 391 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct fileStream ____BAH_COMPILER_VAR_803_ahomeaaloisanijlijchargementsabahasrcaparserbbah = {};
 struct fileStream fs = ____BAH_COMPILER_VAR_803_ahomeaaloisanijlijchargementsabahasrcaparserbbah;
 
-#line 390 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 392 "/home/alois/Téléchargements/bah/src/parser.bah"
 fileStream__open(&fs,fn,"\01\0\0\0""r");
 
-#line 391 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 393 "/home/alois/Téléchargements/bah/src/parser.bah"
 char* f = fileStream__readContent(&fs);
 
-#line 394 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 396 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Bah_Array_Type* tokens = lexer(f,fileStream__getSize(&fs));
 
-#line 395 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 397 "/home/alois/Téléchargements/bah/src/parser.bah"
 fileStream__close(&fs);
 
-#line 398 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 400 "/home/alois/Téléchargements/bah/src/parser.bah"
 char osod = shouldOnlyDecl;
 
-#line 399 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 401 "/home/alois/Téléchargements/bah/src/parser.bah"
 char oiso = isSubObject;
 
-#line 400 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 402 "/home/alois/Téléchargements/bah/src/parser.bah"
 char oiiso = isImportedSubObject;
 
-#line 402 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 404 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((isSubObject==true)) {
 
-#line 403 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 405 "/home/alois/Téléchargements/bah/src/parser.bah"
 isImportedSubObject = true;
 }
 
-#line 406 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 408 "/home/alois/Téléchargements/bah/src/parser.bah"
 shouldOnlyDecl = true;
 
-#line 407 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 409 "/home/alois/Téléchargements/bah/src/parser.bah"
 isSubObject = true;
 
-#line 409 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 411 "/home/alois/Téléchargements/bah/src/parser.bah"
 char** ____BAH_COMPILER_VAR_804_ahomeaaloisanijlijchargementsabahasrcaparserbbah = alloca(6 * sizeof(char*));____BAH_COMPILER_VAR_804_ahomeaaloisanijlijchargementsabahasrcaparserbbah[5] = "\02\0\0\0"".o";____BAH_COMPILER_VAR_804_ahomeaaloisanijlijchargementsabahasrcaparserbbah[4] = intToStr(isOptimized);____BAH_COMPILER_VAR_804_ahomeaaloisanijlijchargementsabahasrcaparserbbah[3] = intToStr(RCPlevel);____BAH_COMPILER_VAR_804_ahomeaaloisanijlijchargementsabahasrcaparserbbah[2] = pathToVarName(fn);____BAH_COMPILER_VAR_804_ahomeaaloisanijlijchargementsabahasrcaparserbbah[1] = "\06\0\0\0""cache/";____BAH_COMPILER_VAR_804_ahomeaaloisanijlijchargementsabahasrcaparserbbah[0] = BAH_DIR;char* ____BAH_COMPILER_VAR_805_ahomeaaloisanijlijchargementsabahasrcaparserbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_804_ahomeaaloisanijlijchargementsabahasrcaparserbbah, 6);char* oName = ____BAH_COMPILER_VAR_805_ahomeaaloisanijlijchargementsabahasrcaparserbbah;
 
-#line 411 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 413 "/home/alois/Téléchargements/bah/src/parser.bah"
 unsigned long long int i = len(compilerState.cLibs);
 
-#line 411 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 413 "/home/alois/Téléchargements/bah/src/parser.bah"
 for (; (i!=0); --i) {
 
-#line 412 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 414 "/home/alois/Téléchargements/bah/src/parser.bah"
 
     __Bah_realocate_arr(compilerState.cLibs, i);
     ((char**)compilerState.cLibs->data)[i] = ((char**)compilerState.cLibs->data)[i-1];
 };
 ____BAH_COMPILER_VAR_806_ahomeaaloisanijlijchargementsabahasrcaparserbbah: ;
 
-#line 415 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 417 "/home/alois/Téléchargements/bah/src/parser.bah"
 char** ____BAH_COMPILER_VAR_807_ahomeaaloisanijlijchargementsabahasrcaparserbbah = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_807_ahomeaaloisanijlijchargementsabahasrcaparserbbah[2] = "\02\0\0\0"".o";____BAH_COMPILER_VAR_807_ahomeaaloisanijlijchargementsabahasrcaparserbbah[1] = oName;____BAH_COMPILER_VAR_807_ahomeaaloisanijlijchargementsabahasrcaparserbbah[0] = "\02\0\0\0""w ";char* ____BAH_COMPILER_VAR_808_ahomeaaloisanijlijchargementsabahasrcaparserbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_807_ahomeaaloisanijlijchargementsabahasrcaparserbbah, 3);
     __Bah_realocate_arr(compilerState.cLibs, 0);
     ((char**)compilerState.cLibs->data)[0] = ____BAH_COMPILER_VAR_808_ahomeaaloisanijlijchargementsabahasrcaparserbbah;
 
-#line 418 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 420 "/home/alois/Téléchargements/bah/src/parser.bah"
 ++currentCompiling;
 
-#line 419 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 421 "/home/alois/Téléchargements/bah/src/parser.bah"
 {
         struct {
 char* fn;
@@ -14466,136 +14470,136 @@ char* oName;
     };
 
     
-#line 422 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 424 "/home/alois/Téléchargements/bah/src/parser.bah"
 parseLines(tokens,elems);
 
-#line 425 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 427 "/home/alois/Téléchargements/bah/src/parser.bah"
 char** ____BAH_COMPILER_VAR_811_ahomeaaloisanijlijchargementsabahasrcaparserbbah = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_811_ahomeaaloisanijlijchargementsabahasrcaparserbbah[2] = "\04\0\0\0""();\n";____BAH_COMPILER_VAR_811_ahomeaaloisanijlijchargementsabahasrcaparserbbah[1] = pathToVarName(fn);____BAH_COMPILER_VAR_811_ahomeaaloisanijlijchargementsabahasrcaparserbbah[0] = "\017\0\0\0""void __BAH_init";char* ____BAH_COMPILER_VAR_812_ahomeaaloisanijlijchargementsabahasrcaparserbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_811_ahomeaaloisanijlijchargementsabahasrcaparserbbah, 3);OUTPUT = rope__add(OUTPUT, rope(____BAH_COMPILER_VAR_812_ahomeaaloisanijlijchargementsabahasrcaparserbbah));
 
-#line 426 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 428 "/home/alois/Téléchargements/bah/src/parser.bah"
 char** ____BAH_COMPILER_VAR_813_ahomeaaloisanijlijchargementsabahasrcaparserbbah = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_813_ahomeaaloisanijlijchargementsabahasrcaparserbbah[2] = "\04\0\0\0""();\n";____BAH_COMPILER_VAR_813_ahomeaaloisanijlijchargementsabahasrcaparserbbah[1] = pathToVarName(fn);____BAH_COMPILER_VAR_813_ahomeaaloisanijlijchargementsabahasrcaparserbbah[0] = "\012\0\0\0""__BAH_init";char* ____BAH_COMPILER_VAR_814_ahomeaaloisanijlijchargementsabahasrcaparserbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_813_ahomeaaloisanijlijchargementsabahasrcaparserbbah, 3);INIT = rope__add(INIT, rope(____BAH_COMPILER_VAR_814_ahomeaaloisanijlijchargementsabahasrcaparserbbah));
 
-#line 429 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 431 "/home/alois/Téléchargements/bah/src/parser.bah"
 shouldOnlyDecl = osod;
 
-#line 430 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 432 "/home/alois/Téléchargements/bah/src/parser.bah"
 isSubObject = oiso;
 
-#line 431 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 433 "/home/alois/Téléchargements/bah/src/parser.bah"
 compilerState.currentFile = of;
 
-#line 432 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 434 "/home/alois/Téléchargements/bah/src/parser.bah"
 compilerState.currentDir = od;
 
-#line 433 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 435 "/home/alois/Téléchargements/bah/src/parser.bah"
 isImportedSubObject = oiiso;
 };
 
-#line 437 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 439 "/home/alois/Téléchargements/bah/src/parser.bah"
 void parseImport(struct Bah_Array_Type* l,struct Elems* elems){
 
-#line 438 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 440 "/home/alois/Téléchargements/bah/src/parser.bah"
 compilerState.hasImports = true;
 
-#line 440 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 442 "/home/alois/Téléchargements/bah/src/parser.bah"
 if (__builtin_expect((len(l)!=2), 0)) {
 
-#line 441 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 443 "/home/alois/Téléchargements/bah/src/parser.bah"
 throwErr(&((struct Tok*)l->data)[0],"\031\0\0\0""Invalid usage of {TOKEN}.");
 }
 
-#line 443 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 445 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Tok strt = ((struct Tok*)l->data)[1];
 
-#line 444 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 446 "/home/alois/Téléchargements/bah/src/parser.bah"
 if (__builtin_expect((strt.type!=TOKEN_TYPE_STR), 0)) {
 
-#line 445 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 447 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Tok keep_ref_____BAH_COMPILER_VAR_815_ahomeaaloisanijlijchargementsabahasrcaparserbbah = strt;
 throwErr(&strt,"\060\0\0\0""Cannot use {TOKEN} as file name (#import \"file\")");
 }
 
-#line 449 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 451 "/home/alois/Téléchargements/bah/src/parser.bah"
 char* fileName = strSubstitute(strt.cont, 1, strlen(strt.cont)-1);
 
-#line 451 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 453 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Tok keep_ref_____BAH_COMPILER_VAR_816_ahomeaaloisanijlijchargementsabahasrcaparserbbah = strt;
 importFile(fileName,&strt,elems);
 };
 
-#line 455 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 457 "/home/alois/Téléchargements/bah/src/parser.bah"
 void parseInclude(struct Bah_Array_Type* l,struct Elems* elems){
 
-#line 457 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 459 "/home/alois/Téléchargements/bah/src/parser.bah"
 if (__builtin_expect((len(l)!=2)&&(len(l)!=3), 0)) {
 
-#line 458 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 460 "/home/alois/Téléchargements/bah/src/parser.bah"
 throwErr(&((struct Tok*)l->data)[len(l)-1],"\054\0\0\0""Invalid usage of include, ending by {TOKEN}.");
 }
 
-#line 460 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 462 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Tok strt = ((struct Tok*)l->data)[1];
 
-#line 461 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 463 "/home/alois/Téléchargements/bah/src/parser.bah"
 char isSupressed = false;
 
-#line 462 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 464 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((strcmp(strt.cont, "\01\0\0\0""!") == 0)&&(len(l)>2)) {
 
-#line 463 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 465 "/home/alois/Téléchargements/bah/src/parser.bah"
 isSupressed = true;
 
-#line 464 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 466 "/home/alois/Téléchargements/bah/src/parser.bah"
 strt = ((struct Tok*)l->data)[2];
 }
 
-#line 466 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 468 "/home/alois/Téléchargements/bah/src/parser.bah"
 if (__builtin_expect((strt.type!=TOKEN_TYPE_STR), 0)) {
 
-#line 467 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 469 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Tok keep_ref_____BAH_COMPILER_VAR_817_ahomeaaloisanijlijchargementsabahasrcaparserbbah = strt;
 throwErr(&strt,"\050\0\0\0""Cannot use {TOKEN} as string in include.");
 }
 
-#line 471 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 473 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct string sc = string(strt.cont);
 
-#line 472 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 474 "/home/alois/Téléchargements/bah/src/parser.bah"
 string__trimLeft(&sc,1);
 
-#line 473 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 475 "/home/alois/Téléchargements/bah/src/parser.bah"
 string__trimRight(&sc,1);
 
-#line 474 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 476 "/home/alois/Téléchargements/bah/src/parser.bah"
 if (string__hasPrefix(&sc,"\01\0\0\0""<")||string__hasSuffix(&sc,"\02\0\0\0"".h")||string__hasSuffix(&sc,"\02\0\0\0"".c")) {
 
-#line 475 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 477 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((isSubObject==false)||(isSupressed==false)) {
 
-#line 476 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 478 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((string__hasPrefix(&sc,"\01\0\0\0""<")==false)) {
 
-#line 477 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 479 "/home/alois/Téléchargements/bah/src/parser.bah"
 string__set(&sc,strt.cont);
 }
 
-#line 479 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 481 "/home/alois/Téléchargements/bah/src/parser.bah"
 char** ____BAH_COMPILER_VAR_818_ahomeaaloisanijlijchargementsabahasrcaparserbbah = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_818_ahomeaaloisanijlijchargementsabahasrcaparserbbah[2] = "\01\0\0\0""\n";____BAH_COMPILER_VAR_818_ahomeaaloisanijlijchargementsabahasrcaparserbbah[1] = string__str(&sc);____BAH_COMPILER_VAR_818_ahomeaaloisanijlijchargementsabahasrcaparserbbah[0] = "\011\0\0\0""#include ";char* ____BAH_COMPILER_VAR_819_ahomeaaloisanijlijchargementsabahasrcaparserbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_818_ahomeaaloisanijlijchargementsabahasrcaparserbbah, 3);OUTPUT = rope__add(OUTPUT, rope(____BAH_COMPILER_VAR_819_ahomeaaloisanijlijchargementsabahasrcaparserbbah));
 
-#line 480 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 482 "/home/alois/Téléchargements/bah/src/parser.bah"
 unsigned int ____BAH_COMPILER_VAR_820_ahomeaaloisanijlijchargementsabahasrcaparserbbah = len(compilerState.cIncludes);
     __Bah_realocate_arr(compilerState.cIncludes, ____BAH_COMPILER_VAR_820_ahomeaaloisanijlijchargementsabahasrcaparserbbah);
     ((char**)compilerState.cIncludes->data)[____BAH_COMPILER_VAR_820_ahomeaaloisanijlijchargementsabahasrcaparserbbah] = string__str(&sc);
 }
 }
 
-#line 482 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 484 "/home/alois/Téléchargements/bah/src/parser.bah"
 else{
 
-#line 483 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 485 "/home/alois/Téléchargements/bah/src/parser.bah"
 if (__builtin_expect((includeFile(string__str(&sc),elems)==false), 0)) {
 
-#line 484 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 486 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Tok keep_ref_____BAH_COMPILER_VAR_821_ahomeaaloisanijlijchargementsabahasrcaparserbbah = strt;
 throwErr(&strt,"\034\0\0\0""Could not find file {TOKEN}.");
 }
@@ -14603,33 +14607,33 @@ throwErr(&strt,"\034\0\0\0""Could not find file {TOKEN}.");
 };
 struct Bah_Array_Type* prePross(struct Bah_Array_Type* line,lineType ltp,struct Elems* elems);
 
-#line 492 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 494 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct variable* parseStructValues(struct cStruct* s,char isHeap,struct Bah_Array_Type* memory,struct Elems* elems){
 
-#line 493 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 495 "/home/alois/Téléchargements/bah/src/parser.bah"
 char* sep = "\01\0\0\0"".";
 
-#line 494 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 496 "/home/alois/Téléchargements/bah/src/parser.bah"
 if (isHeap) {
 
-#line 495 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 497 "/home/alois/Téléchargements/bah/src/parser.bah"
 sep = "\02\0\0\0""->";
 }
 
-#line 500 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 502 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((len(memory)>0)) {
 
-#line 501 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 503 "/home/alois/Téléchargements/bah/src/parser.bah"
 memory = prePross(memory,(lineType)-1,elems);
 }
 
-#line 504 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 506 "/home/alois/Téléchargements/bah/src/parser.bah"
 long long int declType = 0;
 
-#line 506 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 508 "/home/alois/Téléchargements/bah/src/parser.bah"
 char* rvn = genCompilerVar();
 
-#line 507 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 509 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct variable* ____BAH_COMPILER_VAR_822_ahomeaaloisanijlijchargementsabahasrcaparserbbah = memoryAlloc(sizeof(struct variable));
 ____BAH_COMPILER_VAR_822_ahomeaaloisanijlijchargementsabahasrcaparserbbah->name = "\0\0\0\0""";
 ____BAH_COMPILER_VAR_822_ahomeaaloisanijlijchargementsabahasrcaparserbbah->type = "\0\0\0\0""";
@@ -14637,151 +14641,151 @@ ____BAH_COMPILER_VAR_822_ahomeaaloisanijlijchargementsabahasrcaparserbbah->const
 ____BAH_COMPILER_VAR_822_ahomeaaloisanijlijchargementsabahasrcaparserbbah->from = "\0\0\0\0""";
 struct variable* tmpV = ____BAH_COMPILER_VAR_822_ahomeaaloisanijlijchargementsabahasrcaparserbbah;
 
-#line 508 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 510 "/home/alois/Téléchargements/bah/src/parser.bah"
 tmpV->name = rvn;
 
-#line 509 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 511 "/home/alois/Téléchargements/bah/src/parser.bah"
 if (isHeap) {
 
-#line 510 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 512 "/home/alois/Téléchargements/bah/src/parser.bah"
 char** ____BAH_COMPILER_VAR_823_ahomeaaloisanijlijchargementsabahasrcaparserbbah = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_823_ahomeaaloisanijlijchargementsabahasrcaparserbbah[1] = "\01\0\0\0""*";____BAH_COMPILER_VAR_823_ahomeaaloisanijlijchargementsabahasrcaparserbbah[0] = s->name;char* ____BAH_COMPILER_VAR_824_ahomeaaloisanijlijchargementsabahasrcaparserbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_823_ahomeaaloisanijlijchargementsabahasrcaparserbbah, 2);tmpV->type = ____BAH_COMPILER_VAR_824_ahomeaaloisanijlijchargementsabahasrcaparserbbah;
 
-#line 511 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 513 "/home/alois/Téléchargements/bah/src/parser.bah"
 unsigned int ____BAH_COMPILER_VAR_825_ahomeaaloisanijlijchargementsabahasrcaparserbbah = len(elems->vars);
     __Bah_realocate_arr(elems->vars, ____BAH_COMPILER_VAR_825_ahomeaaloisanijlijchargementsabahasrcaparserbbah);
     ((struct variable**)elems->vars->data)[____BAH_COMPILER_VAR_825_ahomeaaloisanijlijchargementsabahasrcaparserbbah] = tmpV;
 }
 
-#line 512 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 514 "/home/alois/Téléchargements/bah/src/parser.bah"
 else{
 
-#line 513 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 515 "/home/alois/Téléchargements/bah/src/parser.bah"
 tmpV->type = s->name;
 }
 
-#line 515 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 517 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct string rst = getCType(tmpV->type,elems);
 
-#line 516 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 518 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct rope* r = rope("\0\0\0\0""");
 
-#line 517 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 519 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Bah_Array_Type* excl = memoryAlloc(sizeof(struct Bah_Array_Type));
 
 excl->length = 0;
 excl->elemSize = sizeof(long long int);
 
-#line 518 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 520 "/home/alois/Téléchargements/bah/src/parser.bah"
 register long long int j = 0;
 
-#line 518 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 520 "/home/alois/Téléchargements/bah/src/parser.bah"
 register long long int k = 0;
 
-#line 518 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 520 "/home/alois/Téléchargements/bah/src/parser.bah"
 while ((k<len(memory))) {
 
-#line 519 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 521 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Tok t = ((struct Tok*)memory->data)[k];
 
-#line 521 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 523 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((k+2<len(memory))) {
 
-#line 522 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 524 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Tok st = ((struct Tok*)memory->data)[k+1];
 
-#line 523 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 525 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Tok vl = ((struct Tok*)memory->data)[k+2];
 
-#line 524 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 526 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((strcmp(st.cont, "\01\0\0\0"":") == 0)) {
 
-#line 525 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 527 "/home/alois/Téléchargements/bah/src/parser.bah"
 if (__builtin_expect((declType!=0)&&(declType!=1), 0)) {
 
-#line 526 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 528 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Tok keep_ref_____BAH_COMPILER_VAR_827_ahomeaaloisanijlijchargementsabahasrcaparserbbah = t;
 throwErr(&t,"\072\0\0\0""Cannot declare member {TOKEN} by name in list declaration.");
 }
 
-#line 528 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 530 "/home/alois/Téléchargements/bah/src/parser.bah"
 declType = 1;
 
-#line 529 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 531 "/home/alois/Téléchargements/bah/src/parser.bah"
 if (__builtin_expect((t.type!=TOKEN_TYPE_VAR), 0)) {
 
-#line 530 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 532 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Tok keep_ref_____BAH_COMPILER_VAR_828_ahomeaaloisanijlijchargementsabahasrcaparserbbah = t;
 throwErr(&t,"\051\0\0\0""Cannot use {TOKEN} as struct member name.");
 }
 
-#line 532 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 534 "/home/alois/Téléchargements/bah/src/parser.bah"
 j = 0;
 
-#line 532 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 534 "/home/alois/Téléchargements/bah/src/parser.bah"
 while ((j<len(s->members))) {
 
-#line 533 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 535 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct structMemb* m = ((struct structMemb**)s->members->data)[j];
 
-#line 534 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 536 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((strcmp(m->name, t.cont) != 0)) {
 
-#line 535 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 537 "/home/alois/Téléchargements/bah/src/parser.bah"
 ++j;
 
-#line 536 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 538 "/home/alois/Téléchargements/bah/src/parser.bah"
 continue;
 }
 
-#line 538 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 540 "/home/alois/Téléchargements/bah/src/parser.bah"
 unsigned int ____BAH_COMPILER_VAR_830_ahomeaaloisanijlijchargementsabahasrcaparserbbah = len(excl);
     __Bah_realocate_arr(excl, ____BAH_COMPILER_VAR_830_ahomeaaloisanijlijchargementsabahasrcaparserbbah);
     ((long long int*)excl->data)[____BAH_COMPILER_VAR_830_ahomeaaloisanijlijchargementsabahasrcaparserbbah] = j;
 
-#line 539 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 541 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((strcmp(vl.cont, "\01\0\0\0""{") == 0)) {
 
-#line 540 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 542 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct cStruct* vs = searchStruct(m->type,elems);
 
-#line 541 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 543 "/home/alois/Téléchargements/bah/src/parser.bah"
 if (__builtin_expect((vs==null), 0)) {
 
-#line 542 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 544 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Tok keep_ref_____BAH_COMPILER_VAR_831_ahomeaaloisanijlijchargementsabahasrcaparserbbah = vl;
 char** ____BAH_COMPILER_VAR_832_ahomeaaloisanijlijchargementsabahasrcaparserbbah = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_832_ahomeaaloisanijlijchargementsabahasrcaparserbbah[2] = "\052\0\0\0""), got struct declaration {TOKEN} instead.";____BAH_COMPILER_VAR_832_ahomeaaloisanijlijchargementsabahasrcaparserbbah[1] = m->type;____BAH_COMPILER_VAR_832_ahomeaaloisanijlijchargementsabahasrcaparserbbah[0] = "\020\0\0\0""Expected value (";char* ____BAH_COMPILER_VAR_833_ahomeaaloisanijlijchargementsabahasrcaparserbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_832_ahomeaaloisanijlijchargementsabahasrcaparserbbah, 3);throwErr(&vl,____BAH_COMPILER_VAR_833_ahomeaaloisanijlijchargementsabahasrcaparserbbah);
 }
 
-#line 545 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 547 "/home/alois/Téléchargements/bah/src/parser.bah"
 k = k+3;
 
-#line 546 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 548 "/home/alois/Téléchargements/bah/src/parser.bah"
 long long int start = k;
 
-#line 547 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 549 "/home/alois/Téléchargements/bah/src/parser.bah"
 long long int nbBraces = 1;
 
-#line 548 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 550 "/home/alois/Téléchargements/bah/src/parser.bah"
 for (; (k<len(memory)); ++k) {
 
-#line 549 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 551 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((strcmp(((struct Tok*)memory->data)[k].cont, "\01\0\0\0""{") == 0)) {
 
-#line 550 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 552 "/home/alois/Téléchargements/bah/src/parser.bah"
 ++nbBraces;
 }
 
-#line 551 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 553 "/home/alois/Téléchargements/bah/src/parser.bah"
 else{
 if ((strcmp(((struct Tok*)memory->data)[k].cont, "\01\0\0\0""}") == 0)) {
 
-#line 552 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 554 "/home/alois/Téléchargements/bah/src/parser.bah"
 --nbBraces;
 
-#line 553 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 555 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((nbBraces==0)) {
 
-#line 554 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 556 "/home/alois/Téléchargements/bah/src/parser.bah"
 goto ____BAH_COMPILER_VAR_834_ahomeaaloisanijlijchargementsabahasrcaparserbbah;
 }
 }
@@ -14789,16 +14793,16 @@ goto ____BAH_COMPILER_VAR_834_ahomeaaloisanijlijchargementsabahasrcaparserbbah;
 };
 ____BAH_COMPILER_VAR_834_ahomeaaloisanijlijchargementsabahasrcaparserbbah: ;
 
-#line 559 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 561 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Bah_Array_Type* mm = arraySubstitute(memory, start, k);
 
-#line 561 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 563 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct variable* ntmpV = parseStructValues(vs,isRCPpointerType(m->type),mm,elems);
 
-#line 562 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 564 "/home/alois/Téléchargements/bah/src/parser.bah"
 k = k-2;
 
-#line 564 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 566 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Tok ____BAH_COMPILER_VAR_835_ahomeaaloisanijlijchargementsabahasrcaparserbbah = {};
 ____BAH_COMPILER_VAR_835_ahomeaaloisanijlijchargementsabahasrcaparserbbah.ogCont = "\0\0\0\0""";
 ____BAH_COMPILER_VAR_835_ahomeaaloisanijlijchargementsabahasrcaparserbbah.line = 1;
@@ -14809,124 +14813,124 @@ ____BAH_COMPILER_VAR_835_ahomeaaloisanijlijchargementsabahasrcaparserbbah.bahTyp
 vl = ____BAH_COMPILER_VAR_835_ahomeaaloisanijlijchargementsabahasrcaparserbbah;
 }
 
-#line 571 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 573 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Tok keep_ref_____BAH_COMPILER_VAR_836_ahomeaaloisanijlijchargementsabahasrcaparserbbah = vl;
 char* vlt = getTypeFromToken(&vl,true,elems);
 
-#line 572 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 574 "/home/alois/Téléchargements/bah/src/parser.bah"
 if (__builtin_expect((compTypes(vlt,m->type)==false), 0)) {
 
-#line 573 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 575 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Tok keep_ref_____BAH_COMPILER_VAR_837_ahomeaaloisanijlijchargementsabahasrcaparserbbah = vl;
 char** ____BAH_COMPILER_VAR_838_ahomeaaloisanijlijchargementsabahasrcaparserbbah = alloca(5 * sizeof(char*));____BAH_COMPILER_VAR_838_ahomeaaloisanijlijchargementsabahasrcaparserbbah[4] = "\02\0\0\0""'.";____BAH_COMPILER_VAR_838_ahomeaaloisanijlijchargementsabahasrcaparserbbah[3] = m->type;____BAH_COMPILER_VAR_838_ahomeaaloisanijlijchargementsabahasrcaparserbbah[2] = "\06\0\0\0"") as '";____BAH_COMPILER_VAR_838_ahomeaaloisanijlijchargementsabahasrcaparserbbah[1] = vlt;____BAH_COMPILER_VAR_838_ahomeaaloisanijlijchargementsabahasrcaparserbbah[0] = "\024\0\0\0""Cannot use {TOKEN} (";char* ____BAH_COMPILER_VAR_839_ahomeaaloisanijlijchargementsabahasrcaparserbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_838_ahomeaaloisanijlijchargementsabahasrcaparserbbah, 5);throwErr(&vl,____BAH_COMPILER_VAR_839_ahomeaaloisanijlijchargementsabahasrcaparserbbah);
 }
 
-#line 575 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 577 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Tok keep_ref_____BAH_COMPILER_VAR_840_ahomeaaloisanijlijchargementsabahasrcaparserbbah = vl;
 if (RCPavailable()&&RCPisTokRef(&vl,vlt,elems)) {
 
-#line 576 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 578 "/home/alois/Téléchargements/bah/src/parser.bah"
 RCPincrVar(vl.cont,isRCPpointerType(vlt));
 }
 
-#line 578 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 580 "/home/alois/Téléchargements/bah/src/parser.bah"
 char** ____BAH_COMPILER_VAR_841_ahomeaaloisanijlijchargementsabahasrcaparserbbah = alloca(6 * sizeof(char*));____BAH_COMPILER_VAR_841_ahomeaaloisanijlijchargementsabahasrcaparserbbah[5] = "\02\0\0\0"";\n";____BAH_COMPILER_VAR_841_ahomeaaloisanijlijchargementsabahasrcaparserbbah[4] = vl.cont;____BAH_COMPILER_VAR_841_ahomeaaloisanijlijchargementsabahasrcaparserbbah[3] = "\03\0\0\0"" = ";____BAH_COMPILER_VAR_841_ahomeaaloisanijlijchargementsabahasrcaparserbbah[2] = m->name;____BAH_COMPILER_VAR_841_ahomeaaloisanijlijchargementsabahasrcaparserbbah[1] = sep;____BAH_COMPILER_VAR_841_ahomeaaloisanijlijchargementsabahasrcaparserbbah[0] = rvn;char* ____BAH_COMPILER_VAR_842_ahomeaaloisanijlijchargementsabahasrcaparserbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_841_ahomeaaloisanijlijchargementsabahasrcaparserbbah, 6);r = rope__add(r, rope(____BAH_COMPILER_VAR_842_ahomeaaloisanijlijchargementsabahasrcaparserbbah));
 
-#line 579 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 581 "/home/alois/Téléchargements/bah/src/parser.bah"
 goto ____BAH_COMPILER_VAR_829_ahomeaaloisanijlijchargementsabahasrcaparserbbah;
 };
 ____BAH_COMPILER_VAR_829_ahomeaaloisanijlijchargementsabahasrcaparserbbah: ;
 
-#line 581 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 583 "/home/alois/Téléchargements/bah/src/parser.bah"
 if (__builtin_expect((j==len(s->members)), 0)) {
 
-#line 582 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 584 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Tok keep_ref_____BAH_COMPILER_VAR_843_ahomeaaloisanijlijchargementsabahasrcaparserbbah = t;
 char** ____BAH_COMPILER_VAR_844_ahomeaaloisanijlijchargementsabahasrcaparserbbah = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_844_ahomeaaloisanijlijchargementsabahasrcaparserbbah[2] = "\037\0\0\0""' has no member called {TOKEN}.";____BAH_COMPILER_VAR_844_ahomeaaloisanijlijchargementsabahasrcaparserbbah[1] = s->name;____BAH_COMPILER_VAR_844_ahomeaaloisanijlijchargementsabahasrcaparserbbah[0] = "\010\0\0\0""Struct '";char* ____BAH_COMPILER_VAR_845_ahomeaaloisanijlijchargementsabahasrcaparserbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_844_ahomeaaloisanijlijchargementsabahasrcaparserbbah, 3);throwErr(&t,____BAH_COMPILER_VAR_845_ahomeaaloisanijlijchargementsabahasrcaparserbbah);
 }
 
-#line 584 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 586 "/home/alois/Téléchargements/bah/src/parser.bah"
 k = k+3;
 
-#line 585 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 587 "/home/alois/Téléchargements/bah/src/parser.bah"
 continue;
 }
 }
 
-#line 588 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 590 "/home/alois/Téléchargements/bah/src/parser.bah"
 if (__builtin_expect((declType!=0)&&(declType!=2), 0)) {
 
-#line 589 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 591 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Tok keep_ref_____BAH_COMPILER_VAR_846_ahomeaaloisanijlijchargementsabahasrcaparserbbah = t;
 throwErr(&t,"\072\0\0\0""Cannot declare member {TOKEN} without specifying its name.");
 }
 
-#line 592 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 594 "/home/alois/Téléchargements/bah/src/parser.bah"
 declType = 2;
 
-#line 593 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 595 "/home/alois/Téléchargements/bah/src/parser.bah"
 if (__builtin_expect((j>len(s->members)), 0)) {
 
-#line 594 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 596 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Tok keep_ref_____BAH_COMPILER_VAR_847_ahomeaaloisanijlijchargementsabahasrcaparserbbah = t;
 throwErr(&t,"\031\0\0\0""Too many members {TOKEN}.");
 }
 
-#line 596 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 598 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct structMemb* m = ((struct structMemb**)s->members->data)[j];
 
-#line 597 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 599 "/home/alois/Téléchargements/bah/src/parser.bah"
 unsigned int ____BAH_COMPILER_VAR_848_ahomeaaloisanijlijchargementsabahasrcaparserbbah = len(excl);
     __Bah_realocate_arr(excl, ____BAH_COMPILER_VAR_848_ahomeaaloisanijlijchargementsabahasrcaparserbbah);
     ((long long int*)excl->data)[____BAH_COMPILER_VAR_848_ahomeaaloisanijlijchargementsabahasrcaparserbbah] = j;
 
-#line 598 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 600 "/home/alois/Téléchargements/bah/src/parser.bah"
 ++j;
 
-#line 600 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 602 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((strcmp(t.cont, "\01\0\0\0""{") == 0)) {
 
-#line 601 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 603 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct cStruct* vs = searchStruct(m->type,elems);
 
-#line 602 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 604 "/home/alois/Téléchargements/bah/src/parser.bah"
 if (__builtin_expect((vs==null), 0)) {
 
-#line 603 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 605 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Tok keep_ref_____BAH_COMPILER_VAR_849_ahomeaaloisanijlijchargementsabahasrcaparserbbah = t;
 char** ____BAH_COMPILER_VAR_850_ahomeaaloisanijlijchargementsabahasrcaparserbbah = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_850_ahomeaaloisanijlijchargementsabahasrcaparserbbah[2] = "\052\0\0\0""), got struct declaration {TOKEN} instead.";____BAH_COMPILER_VAR_850_ahomeaaloisanijlijchargementsabahasrcaparserbbah[1] = m->type;____BAH_COMPILER_VAR_850_ahomeaaloisanijlijchargementsabahasrcaparserbbah[0] = "\020\0\0\0""Expected value (";char* ____BAH_COMPILER_VAR_851_ahomeaaloisanijlijchargementsabahasrcaparserbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_850_ahomeaaloisanijlijchargementsabahasrcaparserbbah, 3);throwErr(&t,____BAH_COMPILER_VAR_851_ahomeaaloisanijlijchargementsabahasrcaparserbbah);
 }
 
-#line 606 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 608 "/home/alois/Téléchargements/bah/src/parser.bah"
 ++k;
 
-#line 607 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 609 "/home/alois/Téléchargements/bah/src/parser.bah"
 long long int start = k;
 
-#line 608 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 610 "/home/alois/Téléchargements/bah/src/parser.bah"
 long long int nbBraces = 1;
 
-#line 609 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 611 "/home/alois/Téléchargements/bah/src/parser.bah"
 for (; (k<len(memory)); ++k) {
 
-#line 610 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 612 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((strcmp(((struct Tok*)memory->data)[k].cont, "\01\0\0\0""{") == 0)) {
 
-#line 611 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 613 "/home/alois/Téléchargements/bah/src/parser.bah"
 ++nbBraces;
 }
 
-#line 612 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 614 "/home/alois/Téléchargements/bah/src/parser.bah"
 else{
 if ((strcmp(((struct Tok*)memory->data)[k].cont, "\01\0\0\0""}") == 0)) {
 
-#line 613 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 615 "/home/alois/Téléchargements/bah/src/parser.bah"
 --nbBraces;
 
-#line 614 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 616 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((nbBraces==0)) {
 
-#line 615 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 617 "/home/alois/Téléchargements/bah/src/parser.bah"
 goto ____BAH_COMPILER_VAR_852_ahomeaaloisanijlijchargementsabahasrcaparserbbah;
 }
 }
@@ -14934,13 +14938,13 @@ goto ____BAH_COMPILER_VAR_852_ahomeaaloisanijlijchargementsabahasrcaparserbbah;
 };
 ____BAH_COMPILER_VAR_852_ahomeaaloisanijlijchargementsabahasrcaparserbbah: ;
 
-#line 620 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 622 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Bah_Array_Type* mm = arraySubstitute(memory, start, k);
 
-#line 622 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 624 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct variable* ntmpV = parseStructValues(vs,isRCPpointerType(m->type),mm,elems);
 
-#line 624 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 626 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Tok ____BAH_COMPILER_VAR_853_ahomeaaloisanijlijchargementsabahasrcaparserbbah = {};
 ____BAH_COMPILER_VAR_853_ahomeaaloisanijlijchargementsabahasrcaparserbbah.ogCont = "\0\0\0\0""";
 ____BAH_COMPILER_VAR_853_ahomeaaloisanijlijchargementsabahasrcaparserbbah.line = 1;
@@ -14951,129 +14955,129 @@ ____BAH_COMPILER_VAR_853_ahomeaaloisanijlijchargementsabahasrcaparserbbah.bahTyp
 t = ____BAH_COMPILER_VAR_853_ahomeaaloisanijlijchargementsabahasrcaparserbbah;
 }
 
-#line 632 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 634 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Tok keep_ref_____BAH_COMPILER_VAR_854_ahomeaaloisanijlijchargementsabahasrcaparserbbah = t;
 char* tt = getTypeFromToken(&t,true,elems);
 
-#line 633 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 635 "/home/alois/Téléchargements/bah/src/parser.bah"
 if (__builtin_expect((compTypes(tt,m->type)==false), 0)) {
 
-#line 634 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 636 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Tok keep_ref_____BAH_COMPILER_VAR_855_ahomeaaloisanijlijchargementsabahasrcaparserbbah = t;
 char** ____BAH_COMPILER_VAR_856_ahomeaaloisanijlijchargementsabahasrcaparserbbah = alloca(5 * sizeof(char*));____BAH_COMPILER_VAR_856_ahomeaaloisanijlijchargementsabahasrcaparserbbah[4] = "\02\0\0\0""'.";____BAH_COMPILER_VAR_856_ahomeaaloisanijlijchargementsabahasrcaparserbbah[3] = m->type;____BAH_COMPILER_VAR_856_ahomeaaloisanijlijchargementsabahasrcaparserbbah[2] = "\06\0\0\0"") as '";____BAH_COMPILER_VAR_856_ahomeaaloisanijlijchargementsabahasrcaparserbbah[1] = tt;____BAH_COMPILER_VAR_856_ahomeaaloisanijlijchargementsabahasrcaparserbbah[0] = "\024\0\0\0""Cannot use {TOKEN} (";char* ____BAH_COMPILER_VAR_857_ahomeaaloisanijlijchargementsabahasrcaparserbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_856_ahomeaaloisanijlijchargementsabahasrcaparserbbah, 5);throwErr(&t,____BAH_COMPILER_VAR_857_ahomeaaloisanijlijchargementsabahasrcaparserbbah);
 }
 
-#line 637 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 639 "/home/alois/Téléchargements/bah/src/parser.bah"
 char** ____BAH_COMPILER_VAR_858_ahomeaaloisanijlijchargementsabahasrcaparserbbah = alloca(6 * sizeof(char*));____BAH_COMPILER_VAR_858_ahomeaaloisanijlijchargementsabahasrcaparserbbah[5] = "\02\0\0\0"";\n";____BAH_COMPILER_VAR_858_ahomeaaloisanijlijchargementsabahasrcaparserbbah[4] = t.cont;____BAH_COMPILER_VAR_858_ahomeaaloisanijlijchargementsabahasrcaparserbbah[3] = "\03\0\0\0"" = ";____BAH_COMPILER_VAR_858_ahomeaaloisanijlijchargementsabahasrcaparserbbah[2] = m->name;____BAH_COMPILER_VAR_858_ahomeaaloisanijlijchargementsabahasrcaparserbbah[1] = sep;____BAH_COMPILER_VAR_858_ahomeaaloisanijlijchargementsabahasrcaparserbbah[0] = rvn;char* ____BAH_COMPILER_VAR_859_ahomeaaloisanijlijchargementsabahasrcaparserbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_858_ahomeaaloisanijlijchargementsabahasrcaparserbbah, 6);r = rope__add(r, rope(____BAH_COMPILER_VAR_859_ahomeaaloisanijlijchargementsabahasrcaparserbbah));
 
-#line 639 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 641 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((k+1<len(memory))) {
 
-#line 640 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 642 "/home/alois/Téléchargements/bah/src/parser.bah"
 ++k;
 
-#line 641 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 643 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Tok st = ((struct Tok*)memory->data)[k];
 
-#line 642 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 644 "/home/alois/Téléchargements/bah/src/parser.bah"
 if (__builtin_expect((strcmp(st.cont, "\01\0\0\0"",") != 0), 0)) {
 
-#line 643 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 645 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Tok keep_ref_____BAH_COMPILER_VAR_860_ahomeaaloisanijlijchargementsabahasrcaparserbbah = st;
 throwErr(&st,"\063\0\0\0""Need ',' separator between two values, not {TOKEN}.");
 }
 }
 
-#line 646 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 648 "/home/alois/Téléchargements/bah/src/parser.bah"
 ++k;
 };
 ____BAH_COMPILER_VAR_826_ahomeaaloisanijlijchargementsabahasrcaparserbbah: ;
 
-#line 650 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 652 "/home/alois/Téléchargements/bah/src/parser.bah"
 if (isHeap) {
 
-#line 651 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 653 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct string structType = string(string__str(&rst));
 
-#line 652 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 654 "/home/alois/Téléchargements/bah/src/parser.bah"
 string__trimRight(&structType,1);
 
-#line 653 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 655 "/home/alois/Téléchargements/bah/src/parser.bah"
 char** ____BAH_COMPILER_VAR_861_ahomeaaloisanijlijchargementsabahasrcaparserbbah = alloca(7 * sizeof(char*));____BAH_COMPILER_VAR_861_ahomeaaloisanijlijchargementsabahasrcaparserbbah[6] = declareStructMethods(tmpV,excl,s,elems);____BAH_COMPILER_VAR_861_ahomeaaloisanijlijchargementsabahasrcaparserbbah[5] = "\04\0\0\0""));\n";____BAH_COMPILER_VAR_861_ahomeaaloisanijlijchargementsabahasrcaparserbbah[4] = string__str(&structType);____BAH_COMPILER_VAR_861_ahomeaaloisanijlijchargementsabahasrcaparserbbah[3] = "\026\0\0\0"" = memoryAlloc(sizeof(";____BAH_COMPILER_VAR_861_ahomeaaloisanijlijchargementsabahasrcaparserbbah[2] = rvn;____BAH_COMPILER_VAR_861_ahomeaaloisanijlijchargementsabahasrcaparserbbah[1] = "\01\0\0\0"" ";____BAH_COMPILER_VAR_861_ahomeaaloisanijlijchargementsabahasrcaparserbbah[0] = string__str(&rst);char* ____BAH_COMPILER_VAR_862_ahomeaaloisanijlijchargementsabahasrcaparserbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_861_ahomeaaloisanijlijchargementsabahasrcaparserbbah, 7);r = rope__add(rope(____BAH_COMPILER_VAR_862_ahomeaaloisanijlijchargementsabahasrcaparserbbah), r);
 }
 
-#line 654 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 656 "/home/alois/Téléchargements/bah/src/parser.bah"
 else{
 
-#line 655 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 657 "/home/alois/Téléchargements/bah/src/parser.bah"
 char** ____BAH_COMPILER_VAR_863_ahomeaaloisanijlijchargementsabahasrcaparserbbah = alloca(5 * sizeof(char*));____BAH_COMPILER_VAR_863_ahomeaaloisanijlijchargementsabahasrcaparserbbah[4] = declareStructMethods(tmpV,excl,s,elems);____BAH_COMPILER_VAR_863_ahomeaaloisanijlijchargementsabahasrcaparserbbah[3] = "\07\0\0\0"" = {};\n";____BAH_COMPILER_VAR_863_ahomeaaloisanijlijchargementsabahasrcaparserbbah[2] = rvn;____BAH_COMPILER_VAR_863_ahomeaaloisanijlijchargementsabahasrcaparserbbah[1] = "\01\0\0\0"" ";____BAH_COMPILER_VAR_863_ahomeaaloisanijlijchargementsabahasrcaparserbbah[0] = string__str(&rst);char* ____BAH_COMPILER_VAR_864_ahomeaaloisanijlijchargementsabahasrcaparserbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_863_ahomeaaloisanijlijchargementsabahasrcaparserbbah, 5);r = rope__add(rope(____BAH_COMPILER_VAR_864_ahomeaaloisanijlijchargementsabahasrcaparserbbah), r);
 }
 
-#line 659 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 661 "/home/alois/Téléchargements/bah/src/parser.bah"
 if (isGlobal()) {
 
-#line 660 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 662 "/home/alois/Téléchargements/bah/src/parser.bah"
 INIT = rope__add(INIT, r);
 }
 
-#line 661 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 663 "/home/alois/Téléchargements/bah/src/parser.bah"
 else{
 
-#line 662 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 664 "/home/alois/Téléchargements/bah/src/parser.bah"
 OUTPUT = rope__add(OUTPUT, r);
 }
 
-#line 665 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 667 "/home/alois/Téléchargements/bah/src/parser.bah"
 return tmpV;
 };
 
-#line 669 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 671 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Bah_Array_Type* parseStructType(struct Bah_Array_Type* line,lineType ltp,struct Elems* elems){
 
-#line 671 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 673 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((ltp==LINE_TYPE_VAR)) {
 
-#line 672 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 674 "/home/alois/Téléchargements/bah/src/parser.bah"
 return line;
 }
 
-#line 675 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 677 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Bah_Array_Type* nl = memoryAlloc(sizeof(struct Bah_Array_Type));
 
 nl->length = 0;
 nl->elemSize = sizeof(struct Tok);
 
-#line 676 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 678 "/home/alois/Téléchargements/bah/src/parser.bah"
 register long long int i = 0;
 
-#line 676 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 678 "/home/alois/Téléchargements/bah/src/parser.bah"
 while ((i<len(line))) {
 
-#line 677 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 679 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Tok t = ((struct Tok*)line->data)[i];
 
-#line 678 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 680 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((t.type==TOKEN_TYPE_VAR)) {
 
-#line 680 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 682 "/home/alois/Téléchargements/bah/src/parser.bah"
 if (strHasPrefix(t.bahType,"\02\0\0\0""[]")) {
 
-#line 681 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 683 "/home/alois/Téléchargements/bah/src/parser.bah"
 unsigned int ____BAH_COMPILER_VAR_866_ahomeaaloisanijlijchargementsabahasrcaparserbbah = len(nl);
     __Bah_realocate_arr(nl, ____BAH_COMPILER_VAR_866_ahomeaaloisanijlijchargementsabahasrcaparserbbah);
     ((struct Tok*)nl->data)[____BAH_COMPILER_VAR_866_ahomeaaloisanijlijchargementsabahasrcaparserbbah] = t;
 
-#line 682 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 684 "/home/alois/Téléchargements/bah/src/parser.bah"
 ++i;
 
-#line 683 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 685 "/home/alois/Téléchargements/bah/src/parser.bah"
 continue;
 }
 
-#line 685 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 687 "/home/alois/Téléchargements/bah/src/parser.bah"
 ++i;
 
-#line 686 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 688 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Tok ____BAH_COMPILER_VAR_867_ahomeaaloisanijlijchargementsabahasrcaparserbbah = {};
 ____BAH_COMPILER_VAR_867_ahomeaaloisanijlijchargementsabahasrcaparserbbah.ogCont = "\0\0\0\0""";
 ____BAH_COMPILER_VAR_867_ahomeaaloisanijlijchargementsabahasrcaparserbbah.type = TOKEN_NO_TYPE;
@@ -15083,40 +15087,40 @@ ____BAH_COMPILER_VAR_867_ahomeaaloisanijlijchargementsabahasrcaparserbbah.bahTyp
 ____BAH_COMPILER_VAR_867_ahomeaaloisanijlijchargementsabahasrcaparserbbah.cont = "\0\0\0\0""";
 struct Tok nt = ____BAH_COMPILER_VAR_867_ahomeaaloisanijlijchargementsabahasrcaparserbbah;
 
-#line 689 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 691 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((i<len(line))) {
 
-#line 690 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 692 "/home/alois/Téléchargements/bah/src/parser.bah"
 nt = ((struct Tok*)line->data)[i];
 }
 
-#line 692 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 694 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((i==len(line))||(strcmp(nt.cont, "\01\0\0\0""{") != 0)) {
 
-#line 693 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 695 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((i-2>=0)) {
 
-#line 694 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 696 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Tok newTk = ((struct Tok*)line->data)[i-2];
 
-#line 696 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 698 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((strcmp(newTk.cont, "\03\0\0\0""new") == 0)) {
 
-#line 697 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 699 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct cStruct* s = searchStruct(t.cont,elems);
 
-#line 698 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 700 "/home/alois/Téléchargements/bah/src/parser.bah"
 if (__builtin_expect((s==null), 0)) {
 
-#line 699 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 701 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Tok keep_ref_____BAH_COMPILER_VAR_868_ahomeaaloisanijlijchargementsabahasrcaparserbbah = t;
 throwErr(&t,"\055\0\0\0""Cannot initialize new unknown struct {TOKEN}.");
 }
 
-#line 701 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 703 "/home/alois/Téléchargements/bah/src/parser.bah"
 t.cont = genCompilerVar();
 
-#line 702 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 704 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct variable* ____BAH_COMPILER_VAR_869_ahomeaaloisanijlijchargementsabahasrcaparserbbah = memoryAlloc(sizeof(struct variable));
 ____BAH_COMPILER_VAR_869_ahomeaaloisanijlijchargementsabahasrcaparserbbah->name = "\0\0\0\0""";
 ____BAH_COMPILER_VAR_869_ahomeaaloisanijlijchargementsabahasrcaparserbbah->type = "\0\0\0\0""";
@@ -15124,373 +15128,373 @@ ____BAH_COMPILER_VAR_869_ahomeaaloisanijlijchargementsabahasrcaparserbbah->const
 ____BAH_COMPILER_VAR_869_ahomeaaloisanijlijchargementsabahasrcaparserbbah->from = "\0\0\0\0""";
 struct variable* tmpV = ____BAH_COMPILER_VAR_869_ahomeaaloisanijlijchargementsabahasrcaparserbbah;
 
-#line 703 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 705 "/home/alois/Téléchargements/bah/src/parser.bah"
 tmpV->canBeNull = false;
 
-#line 704 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 706 "/home/alois/Téléchargements/bah/src/parser.bah"
 tmpV->name = t.cont;
 
-#line 705 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 707 "/home/alois/Téléchargements/bah/src/parser.bah"
 char** ____BAH_COMPILER_VAR_870_ahomeaaloisanijlijchargementsabahasrcaparserbbah = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_870_ahomeaaloisanijlijchargementsabahasrcaparserbbah[1] = "\01\0\0\0""*";____BAH_COMPILER_VAR_870_ahomeaaloisanijlijchargementsabahasrcaparserbbah[0] = s->name;char* ____BAH_COMPILER_VAR_871_ahomeaaloisanijlijchargementsabahasrcaparserbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_870_ahomeaaloisanijlijchargementsabahasrcaparserbbah, 2);tmpV->type = ____BAH_COMPILER_VAR_871_ahomeaaloisanijlijchargementsabahasrcaparserbbah;
 
-#line 706 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 708 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct string cType = getCType(tmpV->type,elems);
 
-#line 707 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 709 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct string structType = getCType(s->name,elems);
 
-#line 708 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 710 "/home/alois/Téléchargements/bah/src/parser.bah"
 unsigned int ____BAH_COMPILER_VAR_872_ahomeaaloisanijlijchargementsabahasrcaparserbbah = len(elems->vars);
     __Bah_realocate_arr(elems->vars, ____BAH_COMPILER_VAR_872_ahomeaaloisanijlijchargementsabahasrcaparserbbah);
     ((struct variable**)elems->vars->data)[____BAH_COMPILER_VAR_872_ahomeaaloisanijlijchargementsabahasrcaparserbbah] = tmpV;
 
-#line 710 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 712 "/home/alois/Téléchargements/bah/src/parser.bah"
 char** ____BAH_COMPILER_VAR_873_ahomeaaloisanijlijchargementsabahasrcaparserbbah = alloca(7 * sizeof(char*));____BAH_COMPILER_VAR_873_ahomeaaloisanijlijchargementsabahasrcaparserbbah[6] = declareStructMethods(tmpV,null,s,elems);____BAH_COMPILER_VAR_873_ahomeaaloisanijlijchargementsabahasrcaparserbbah[5] = "\04\0\0\0""));\n";____BAH_COMPILER_VAR_873_ahomeaaloisanijlijchargementsabahasrcaparserbbah[4] = string__str(&structType);____BAH_COMPILER_VAR_873_ahomeaaloisanijlijchargementsabahasrcaparserbbah[3] = "\026\0\0\0"" = memoryAlloc(sizeof(";____BAH_COMPILER_VAR_873_ahomeaaloisanijlijchargementsabahasrcaparserbbah[2] = t.cont;____BAH_COMPILER_VAR_873_ahomeaaloisanijlijchargementsabahasrcaparserbbah[1] = "\01\0\0\0"" ";____BAH_COMPILER_VAR_873_ahomeaaloisanijlijchargementsabahasrcaparserbbah[0] = string__str(&cType);char* ____BAH_COMPILER_VAR_874_ahomeaaloisanijlijchargementsabahasrcaparserbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_873_ahomeaaloisanijlijchargementsabahasrcaparserbbah, 7);struct rope* r = rope(____BAH_COMPILER_VAR_874_ahomeaaloisanijlijchargementsabahasrcaparserbbah);
 
-#line 712 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 714 "/home/alois/Téléchargements/bah/src/parser.bah"
 if (isGlobal()) {
 
-#line 713 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 715 "/home/alois/Téléchargements/bah/src/parser.bah"
 INIT = rope__add(INIT, r);
 }
 
-#line 714 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 716 "/home/alois/Téléchargements/bah/src/parser.bah"
 else{
 
-#line 715 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 717 "/home/alois/Téléchargements/bah/src/parser.bah"
 OUTPUT = rope__add(OUTPUT, r);
 }
 
-#line 718 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 720 "/home/alois/Téléchargements/bah/src/parser.bah"
 unsigned int ____BAH_COMPILER_VAR_875_ahomeaaloisanijlijchargementsabahasrcaparserbbah = len(nl)-1;
     __Bah_realocate_arr(nl, ____BAH_COMPILER_VAR_875_ahomeaaloisanijlijchargementsabahasrcaparserbbah);
     ((struct Tok*)nl->data)[____BAH_COMPILER_VAR_875_ahomeaaloisanijlijchargementsabahasrcaparserbbah] = t;
 
-#line 719 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 721 "/home/alois/Téléchargements/bah/src/parser.bah"
 continue;
 }
 }
 }
 
-#line 724 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 726 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((i<len(line))) {
 
-#line 725 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 727 "/home/alois/Téléchargements/bah/src/parser.bah"
 nt = ((struct Tok*)line->data)[i];
 
-#line 726 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 728 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((strcmp(nt.cont, "\01\0\0\0""{") == 0)) {
 
-#line 727 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 729 "/home/alois/Téléchargements/bah/src/parser.bah"
 char isHeap = false;
 
-#line 728 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 730 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((i-2>=0)) {
 
-#line 729 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 731 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Tok newTk = ((struct Tok*)line->data)[i-2];
 
-#line 730 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 732 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((strcmp(newTk.cont, "\03\0\0\0""new") == 0)) {
 
-#line 731 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 733 "/home/alois/Téléchargements/bah/src/parser.bah"
 isHeap = true;
 }
 }
 
-#line 734 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 736 "/home/alois/Téléchargements/bah/src/parser.bah"
 ++i;
 
-#line 735 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 737 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct cStruct* s = searchStruct(t.cont,elems);
 
-#line 736 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 738 "/home/alois/Téléchargements/bah/src/parser.bah"
 if (__builtin_expect((s==null), 0)) {
 
-#line 737 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 739 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Tok keep_ref_____BAH_COMPILER_VAR_876_ahomeaaloisanijlijchargementsabahasrcaparserbbah = t;
 throwErr(&t,"\034\0\0\0""Unknown struct name {TOKEN}.");
 }
 
-#line 740 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 742 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Bah_Array_Type* memory = memoryAlloc(sizeof(struct Bah_Array_Type));
 
 memory->length = 0;
 memory->elemSize = sizeof(struct Tok);
 
-#line 741 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 743 "/home/alois/Téléchargements/bah/src/parser.bah"
 long long int nbBraces = 1;
 
-#line 742 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 744 "/home/alois/Téléchargements/bah/src/parser.bah"
 for (; (i<len(line)); ++i) {
 
-#line 743 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 745 "/home/alois/Téléchargements/bah/src/parser.bah"
 t = ((struct Tok*)line->data)[i];
 
-#line 744 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 746 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((strcmp(t.cont, "\01\0\0\0""{") == 0)) {
 
-#line 745 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 747 "/home/alois/Téléchargements/bah/src/parser.bah"
 ++nbBraces;
 }
 
-#line 746 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 748 "/home/alois/Téléchargements/bah/src/parser.bah"
 else{
 if ((strcmp(t.cont, "\01\0\0\0""}") == 0)) {
 
-#line 747 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 749 "/home/alois/Téléchargements/bah/src/parser.bah"
 --nbBraces;
 
-#line 748 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 750 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((nbBraces==0)) {
 
-#line 749 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 751 "/home/alois/Téléchargements/bah/src/parser.bah"
 goto ____BAH_COMPILER_VAR_877_ahomeaaloisanijlijchargementsabahasrcaparserbbah;
 }
 }
 }
 
-#line 752 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 754 "/home/alois/Téléchargements/bah/src/parser.bah"
 unsigned int ____BAH_COMPILER_VAR_878_ahomeaaloisanijlijchargementsabahasrcaparserbbah = len(memory);
     __Bah_realocate_arr(memory, ____BAH_COMPILER_VAR_878_ahomeaaloisanijlijchargementsabahasrcaparserbbah);
     ((struct Tok*)memory->data)[____BAH_COMPILER_VAR_878_ahomeaaloisanijlijchargementsabahasrcaparserbbah] = t;
 };
 ____BAH_COMPILER_VAR_877_ahomeaaloisanijlijchargementsabahasrcaparserbbah: ;
 
-#line 755 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 757 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct variable* tmpV = parseStructValues(s,isHeap,memory,elems);
 
-#line 758 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 760 "/home/alois/Téléchargements/bah/src/parser.bah"
 t.bahType = tmpV->type;
 
-#line 759 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 761 "/home/alois/Téléchargements/bah/src/parser.bah"
 t.cont = tmpV->name;
 
-#line 760 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 762 "/home/alois/Téléchargements/bah/src/parser.bah"
 t.isValue = true;
 
-#line 761 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 763 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((isHeap==true)) {
 
-#line 762 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 764 "/home/alois/Téléchargements/bah/src/parser.bah"
 unsigned int ____BAH_COMPILER_VAR_879_ahomeaaloisanijlijchargementsabahasrcaparserbbah = len(nl)-1;
     __Bah_realocate_arr(nl, ____BAH_COMPILER_VAR_879_ahomeaaloisanijlijchargementsabahasrcaparserbbah);
     ((struct Tok*)nl->data)[____BAH_COMPILER_VAR_879_ahomeaaloisanijlijchargementsabahasrcaparserbbah] = t;
 }
 
-#line 763 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 765 "/home/alois/Téléchargements/bah/src/parser.bah"
 else{
 
-#line 764 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 766 "/home/alois/Téléchargements/bah/src/parser.bah"
 t.isEqual = true;
 
-#line 765 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 767 "/home/alois/Téléchargements/bah/src/parser.bah"
 unsigned int ____BAH_COMPILER_VAR_880_ahomeaaloisanijlijchargementsabahasrcaparserbbah = len(nl);
     __Bah_realocate_arr(nl, ____BAH_COMPILER_VAR_880_ahomeaaloisanijlijchargementsabahasrcaparserbbah);
     ((struct Tok*)nl->data)[____BAH_COMPILER_VAR_880_ahomeaaloisanijlijchargementsabahasrcaparserbbah] = t;
 }
 
-#line 767 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 769 "/home/alois/Téléchargements/bah/src/parser.bah"
 ++i;
 
-#line 768 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 770 "/home/alois/Téléchargements/bah/src/parser.bah"
 continue;
 }
 
-#line 770 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 772 "/home/alois/Téléchargements/bah/src/parser.bah"
 else{
 
-#line 771 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 773 "/home/alois/Téléchargements/bah/src/parser.bah"
 --i;
 }
 }
 }
 
-#line 775 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 777 "/home/alois/Téléchargements/bah/src/parser.bah"
 unsigned int ____BAH_COMPILER_VAR_881_ahomeaaloisanijlijchargementsabahasrcaparserbbah = len(nl);
     __Bah_realocate_arr(nl, ____BAH_COMPILER_VAR_881_ahomeaaloisanijlijchargementsabahasrcaparserbbah);
     ((struct Tok*)nl->data)[____BAH_COMPILER_VAR_881_ahomeaaloisanijlijchargementsabahasrcaparserbbah] = t;
 
-#line 776 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 778 "/home/alois/Téléchargements/bah/src/parser.bah"
 ++i;
 };
 ____BAH_COMPILER_VAR_865_ahomeaaloisanijlijchargementsabahasrcaparserbbah: ;
 
-#line 779 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 781 "/home/alois/Téléchargements/bah/src/parser.bah"
 return nl;
 };
 
-#line 783 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 785 "/home/alois/Téléchargements/bah/src/parser.bah"
 void parseArrayType(struct Bah_Array_Type* line,struct Elems* elems){
 
-#line 784 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 786 "/home/alois/Téléchargements/bah/src/parser.bah"
 register long long int i = 0;
 
-#line 784 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 786 "/home/alois/Téléchargements/bah/src/parser.bah"
 for (; (i<len(line)); ++i) {
 
-#line 785 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 787 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Tok t = ((struct Tok*)line->data)[i];
 
-#line 786 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 788 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((t.type==TOKEN_TYPE_ENCL)&&(t.cont[0+4]==91)&&(i+1<len(line))) {
 
-#line 787 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 789 "/home/alois/Téléchargements/bah/src/parser.bah"
 long long int start = i;
 
-#line 788 "/home/alois/Téléchargements/bah/src/parser.bah"
-++i;
-
-#line 789 "/home/alois/Téléchargements/bah/src/parser.bah"
-t = ((struct Tok*)line->data)[i];
-
 #line 790 "/home/alois/Téléchargements/bah/src/parser.bah"
-if ((t.type==TOKEN_TYPE_ENCL)&&(t.cont[0+4]==93)) {
+++i;
 
 #line 791 "/home/alois/Téléchargements/bah/src/parser.bah"
-++i;
-
-#line 792 "/home/alois/Téléchargements/bah/src/parser.bah"
-long long int depth = 1;
-
-#line 793 "/home/alois/Téléchargements/bah/src/parser.bah"
-char* bracks = "\02\0\0\0""[]";
-
-#line 794 "/home/alois/Téléchargements/bah/src/parser.bah"
-for (; (i<len(line)-1); i = i+2) {
-
-#line 795 "/home/alois/Téléchargements/bah/src/parser.bah"
 t = ((struct Tok*)line->data)[i];
 
+#line 792 "/home/alois/Téléchargements/bah/src/parser.bah"
+if ((t.type==TOKEN_TYPE_ENCL)&&(t.cont[0+4]==93)) {
+
+#line 793 "/home/alois/Téléchargements/bah/src/parser.bah"
+++i;
+
+#line 794 "/home/alois/Téléchargements/bah/src/parser.bah"
+long long int depth = 1;
+
+#line 795 "/home/alois/Téléchargements/bah/src/parser.bah"
+char* bracks = "\02\0\0\0""[]";
+
 #line 796 "/home/alois/Téléchargements/bah/src/parser.bah"
-struct Tok nt = ((struct Tok*)line->data)[i+1];
+for (; (i<len(line)-1); i = i+2) {
 
 #line 797 "/home/alois/Téléchargements/bah/src/parser.bah"
-if ((t.type==TOKEN_TYPE_ENCL)&&(t.cont[0+4]==91)&&(nt.type==TOKEN_TYPE_ENCL)&&(nt.cont[0+4]==93)) {
+t = ((struct Tok*)line->data)[i];
 
 #line 798 "/home/alois/Téléchargements/bah/src/parser.bah"
-++depth;
+struct Tok nt = ((struct Tok*)line->data)[i+1];
 
 #line 799 "/home/alois/Téléchargements/bah/src/parser.bah"
+if ((t.type==TOKEN_TYPE_ENCL)&&(t.cont[0+4]==91)&&(nt.type==TOKEN_TYPE_ENCL)&&(nt.cont[0+4]==93)) {
+
+#line 800 "/home/alois/Téléchargements/bah/src/parser.bah"
+++depth;
+
+#line 801 "/home/alois/Téléchargements/bah/src/parser.bah"
 char** ____BAH_COMPILER_VAR_884_ahomeaaloisanijlijchargementsabahasrcaparserbbah = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_884_ahomeaaloisanijlijchargementsabahasrcaparserbbah[1] = "\02\0\0\0""[]";____BAH_COMPILER_VAR_884_ahomeaaloisanijlijchargementsabahasrcaparserbbah[0] = bracks;char* ____BAH_COMPILER_VAR_885_ahomeaaloisanijlijchargementsabahasrcaparserbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_884_ahomeaaloisanijlijchargementsabahasrcaparserbbah, 2);bracks = ____BAH_COMPILER_VAR_885_ahomeaaloisanijlijchargementsabahasrcaparserbbah;
 }
 
-#line 800 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 802 "/home/alois/Téléchargements/bah/src/parser.bah"
 else{
 
-#line 801 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 803 "/home/alois/Téléchargements/bah/src/parser.bah"
 goto ____BAH_COMPILER_VAR_883_ahomeaaloisanijlijchargementsabahasrcaparserbbah;
 }
 };
 ____BAH_COMPILER_VAR_883_ahomeaaloisanijlijchargementsabahasrcaparserbbah: ;
 
-#line 804 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 806 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((i<len(line))) {
 
-#line 805 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 807 "/home/alois/Téléchargements/bah/src/parser.bah"
 t = ((struct Tok*)line->data)[i];
 
-#line 806 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 808 "/home/alois/Téléchargements/bah/src/parser.bah"
 char* arrElem = t.cont;
 
-#line 807 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 809 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((t.type!=TOKEN_TYPE_VAR)) {
 
-#line 808 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 810 "/home/alois/Téléchargements/bah/src/parser.bah"
 if (__builtin_expect((strcmp(t.cont, "\010\0\0\0""function") != 0), 0)) {
 
-#line 809 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 811 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Tok keep_ref_____BAH_COMPILER_VAR_886_ahomeaaloisanijlijchargementsabahasrcaparserbbah = t;
 throwErr(&t,"\041\0\0\0""Cannot use {TOKEN} as array type.");
 }
 
-#line 811 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 813 "/home/alois/Téléchargements/bah/src/parser.bah"
 if (__builtin_expect((i+2>=len(line))||(strcmp(((struct Tok*)line->data)[i+1].cont, "\01\0\0\0""(") != 0), 0)) {
 
-#line 812 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 814 "/home/alois/Téléchargements/bah/src/parser.bah"
 throwErr(&((struct Tok*)line->data)[i],"\105\0\0\0""Invalid usage of {TOKEN}. Expected 'function(argtype,...)returntype'.");
 }
 
-#line 814 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 816 "/home/alois/Téléchargements/bah/src/parser.bah"
 long long int fnPos = i;
 
-#line 815 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 817 "/home/alois/Téléchargements/bah/src/parser.bah"
 i = i+2;
 
-#line 816 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 818 "/home/alois/Téléchargements/bah/src/parser.bah"
 long long int nbEncl = 1;
 
-#line 817 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 819 "/home/alois/Téléchargements/bah/src/parser.bah"
 char* mem = "\0\0\0\0""";
 
-#line 818 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 820 "/home/alois/Téléchargements/bah/src/parser.bah"
 for (; (i<len(line)); ++i) {
 
-#line 819 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 821 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((strcmp(((struct Tok*)line->data)[i].cont, "\01\0\0\0""(") == 0)||(strcmp(((struct Tok*)line->data)[i].cont, "\01\0\0\0""[") == 0)) {
 
-#line 820 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 822 "/home/alois/Téléchargements/bah/src/parser.bah"
 ++nbEncl;
 }
 
-#line 821 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 823 "/home/alois/Téléchargements/bah/src/parser.bah"
 else{
 if ((strcmp(((struct Tok*)line->data)[i].cont, "\01\0\0\0"")") == 0)||(strcmp(((struct Tok*)line->data)[i].cont, "\01\0\0\0""]") == 0)) {
 
-#line 822 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 824 "/home/alois/Téléchargements/bah/src/parser.bah"
 --nbEncl;
 
-#line 823 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 825 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((nbEncl==0)) {
 
-#line 824 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 826 "/home/alois/Téléchargements/bah/src/parser.bah"
 goto ____BAH_COMPILER_VAR_887_ahomeaaloisanijlijchargementsabahasrcaparserbbah;
 }
 }
 }
 
-#line 827 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 829 "/home/alois/Téléchargements/bah/src/parser.bah"
 char** ____BAH_COMPILER_VAR_888_ahomeaaloisanijlijchargementsabahasrcaparserbbah = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_888_ahomeaaloisanijlijchargementsabahasrcaparserbbah[1] = ((struct Tok*)line->data)[i].cont;____BAH_COMPILER_VAR_888_ahomeaaloisanijlijchargementsabahasrcaparserbbah[0] = mem;char* ____BAH_COMPILER_VAR_889_ahomeaaloisanijlijchargementsabahasrcaparserbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_888_ahomeaaloisanijlijchargementsabahasrcaparserbbah, 2);mem = ____BAH_COMPILER_VAR_889_ahomeaaloisanijlijchargementsabahasrcaparserbbah;
 };
 ____BAH_COMPILER_VAR_887_ahomeaaloisanijlijchargementsabahasrcaparserbbah: ;
 
-#line 830 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 832 "/home/alois/Téléchargements/bah/src/parser.bah"
 if (__builtin_expect((i==len(line)), 0)) {
 
-#line 831 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 833 "/home/alois/Téléchargements/bah/src/parser.bah"
 throwErr(&((struct Tok*)line->data)[fnPos],"\032\0\0\0""Type {TOKEN} does not end.");
 }
 
-#line 834 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 836 "/home/alois/Téléchargements/bah/src/parser.bah"
 char** ____BAH_COMPILER_VAR_890_ahomeaaloisanijlijchargementsabahasrcaparserbbah = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_890_ahomeaaloisanijlijchargementsabahasrcaparserbbah[2] = "\01\0\0\0"")";____BAH_COMPILER_VAR_890_ahomeaaloisanijlijchargementsabahasrcaparserbbah[1] = mem;____BAH_COMPILER_VAR_890_ahomeaaloisanijlijchargementsabahasrcaparserbbah[0] = "\01\0\0\0""(";char* ____BAH_COMPILER_VAR_891_ahomeaaloisanijlijchargementsabahasrcaparserbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_890_ahomeaaloisanijlijchargementsabahasrcaparserbbah, 3);char** ____BAH_COMPILER_VAR_892_ahomeaaloisanijlijchargementsabahasrcaparserbbah = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_892_ahomeaaloisanijlijchargementsabahasrcaparserbbah[1] = ____BAH_COMPILER_VAR_891_ahomeaaloisanijlijchargementsabahasrcaparserbbah;____BAH_COMPILER_VAR_892_ahomeaaloisanijlijchargementsabahasrcaparserbbah[0] = arrElem;char* ____BAH_COMPILER_VAR_893_ahomeaaloisanijlijchargementsabahasrcaparserbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_892_ahomeaaloisanijlijchargementsabahasrcaparserbbah, 2);arrElem = ____BAH_COMPILER_VAR_893_ahomeaaloisanijlijchargementsabahasrcaparserbbah;
 }
 
-#line 837 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 839 "/home/alois/Téléchargements/bah/src/parser.bah"
 deleteRange(line,start+1,i);
 
-#line 838 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 840 "/home/alois/Téléchargements/bah/src/parser.bah"
 char** ____BAH_COMPILER_VAR_894_ahomeaaloisanijlijchargementsabahasrcaparserbbah = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_894_ahomeaaloisanijlijchargementsabahasrcaparserbbah[1] = arrElem;____BAH_COMPILER_VAR_894_ahomeaaloisanijlijchargementsabahasrcaparserbbah[0] = bracks;char* ____BAH_COMPILER_VAR_895_ahomeaaloisanijlijchargementsabahasrcaparserbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_894_ahomeaaloisanijlijchargementsabahasrcaparserbbah, 2);t.bahType = ____BAH_COMPILER_VAR_895_ahomeaaloisanijlijchargementsabahasrcaparserbbah;
 
-#line 839 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 841 "/home/alois/Téléchargements/bah/src/parser.bah"
 t.cont = "\0\0\0\0""";
 
-#line 840 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 842 "/home/alois/Téléchargements/bah/src/parser.bah"
 t.isValue = true;
 
-#line 841 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 843 "/home/alois/Téléchargements/bah/src/parser.bah"
 
     __Bah_realocate_arr(line, start);
     ((struct Tok*)line->data)[start] = t;
 
-#line 842 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 844 "/home/alois/Téléchargements/bah/src/parser.bah"
 continue;
 }
 }
 
-#line 844 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 846 "/home/alois/Téléchargements/bah/src/parser.bah"
 else{
 
-#line 845 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 847 "/home/alois/Téléchargements/bah/src/parser.bah"
 --i;
 }
 }
@@ -15498,89 +15502,89 @@ else{
 ____BAH_COMPILER_VAR_882_ahomeaaloisanijlijchargementsabahasrcaparserbbah: ;
 };
 
-#line 852 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 854 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Bah_Array_Type* parsePointers(struct Bah_Array_Type* l,struct Elems* elems){
 
-#line 853 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 855 "/home/alois/Téléchargements/bah/src/parser.bah"
 register long long int i = 0;
 
-#line 853 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 855 "/home/alois/Téléchargements/bah/src/parser.bah"
 for (; (i<len(l)); ++i) {
 
-#line 854 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 856 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Tok t = ((struct Tok*)l->data)[i];
 
-#line 855 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 857 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((t.type==TOKEN_TYPE_SYNTAX)&&((t.cont[0+4]==38)||(t.cont[0+4]==42))) {
 
-#line 856 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 858 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((i>0)&&(((struct Tok*)l->data)[i-1].isValue==true)) {
 
-#line 857 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 859 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((t.cont[0+4]==42)) {
 
-#line 858 "/home/alois/Téléchargements/bah/src/parser.bah"
-if ((i+1<len(l))) {
-
-#line 859 "/home/alois/Téléchargements/bah/src/parser.bah"
-if ((strcmp(((struct Tok*)l->data)[i+1].cont, "\01\0\0\0""(") != 0)&&(((struct Tok*)l->data)[i+1].type!=TOKEN_TYPE_CAST)&&(((struct Tok*)l->data)[i+1].isValue==false)) {
-
 #line 860 "/home/alois/Téléchargements/bah/src/parser.bah"
-char** ____BAH_COMPILER_VAR_897_ahomeaaloisanijlijchargementsabahasrcaparserbbah = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_897_ahomeaaloisanijlijchargementsabahasrcaparserbbah[1] = t.cont;____BAH_COMPILER_VAR_897_ahomeaaloisanijlijchargementsabahasrcaparserbbah[0] = ((struct Tok*)l->data)[i-1].cont;char* ____BAH_COMPILER_VAR_898_ahomeaaloisanijlijchargementsabahasrcaparserbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_897_ahomeaaloisanijlijchargementsabahasrcaparserbbah, 2);((struct Tok*)l->data)[i-1].cont = ____BAH_COMPILER_VAR_898_ahomeaaloisanijlijchargementsabahasrcaparserbbah;
+if ((i+1<len(l))) {
 
 #line 861 "/home/alois/Téléchargements/bah/src/parser.bah"
-delete(l,i);
+if ((strcmp(((struct Tok*)l->data)[i+1].cont, "\01\0\0\0""(") != 0)&&(((struct Tok*)l->data)[i+1].type!=TOKEN_TYPE_CAST)&&(((struct Tok*)l->data)[i+1].isValue==false)) {
 
 #line 862 "/home/alois/Téléchargements/bah/src/parser.bah"
---i;
-}
-}
+char** ____BAH_COMPILER_VAR_897_ahomeaaloisanijlijchargementsabahasrcaparserbbah = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_897_ahomeaaloisanijlijchargementsabahasrcaparserbbah[1] = t.cont;____BAH_COMPILER_VAR_897_ahomeaaloisanijlijchargementsabahasrcaparserbbah[0] = ((struct Tok*)l->data)[i-1].cont;char* ____BAH_COMPILER_VAR_898_ahomeaaloisanijlijchargementsabahasrcaparserbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_897_ahomeaaloisanijlijchargementsabahasrcaparserbbah, 2);((struct Tok*)l->data)[i-1].cont = ____BAH_COMPILER_VAR_898_ahomeaaloisanijlijchargementsabahasrcaparserbbah;
 
-#line 864 "/home/alois/Téléchargements/bah/src/parser.bah"
-else{
-
-#line 865 "/home/alois/Téléchargements/bah/src/parser.bah"
-char** ____BAH_COMPILER_VAR_899_ahomeaaloisanijlijchargementsabahasrcaparserbbah = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_899_ahomeaaloisanijlijchargementsabahasrcaparserbbah[1] = t.cont;____BAH_COMPILER_VAR_899_ahomeaaloisanijlijchargementsabahasrcaparserbbah[0] = ((struct Tok*)l->data)[i-1].cont;char* ____BAH_COMPILER_VAR_900_ahomeaaloisanijlijchargementsabahasrcaparserbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_899_ahomeaaloisanijlijchargementsabahasrcaparserbbah, 2);((struct Tok*)l->data)[i-1].cont = ____BAH_COMPILER_VAR_900_ahomeaaloisanijlijchargementsabahasrcaparserbbah;
-
-#line 866 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 863 "/home/alois/Téléchargements/bah/src/parser.bah"
 delete(l,i);
 
-#line 867 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 864 "/home/alois/Téléchargements/bah/src/parser.bah"
 --i;
 }
 }
 
-#line 870 "/home/alois/Téléchargements/bah/src/parser.bah"
-continue;
+#line 866 "/home/alois/Téléchargements/bah/src/parser.bah"
+else{
+
+#line 867 "/home/alois/Téléchargements/bah/src/parser.bah"
+char** ____BAH_COMPILER_VAR_899_ahomeaaloisanijlijchargementsabahasrcaparserbbah = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_899_ahomeaaloisanijlijchargementsabahasrcaparserbbah[1] = t.cont;____BAH_COMPILER_VAR_899_ahomeaaloisanijlijchargementsabahasrcaparserbbah[0] = ((struct Tok*)l->data)[i-1].cont;char* ____BAH_COMPILER_VAR_900_ahomeaaloisanijlijchargementsabahasrcaparserbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_899_ahomeaaloisanijlijchargementsabahasrcaparserbbah, 2);((struct Tok*)l->data)[i-1].cont = ____BAH_COMPILER_VAR_900_ahomeaaloisanijlijchargementsabahasrcaparserbbah;
+
+#line 868 "/home/alois/Téléchargements/bah/src/parser.bah"
+delete(l,i);
+
+#line 869 "/home/alois/Téléchargements/bah/src/parser.bah"
+--i;
+}
 }
 
-#line 873 "/home/alois/Téléchargements/bah/src/parser.bah"
-if ((i+1<len(l))) {
-
-#line 874 "/home/alois/Téléchargements/bah/src/parser.bah"
-if ((i>0)&&((strcmp(((struct Tok*)l->data)[i-1].cont, "\01\0\0\0"")") == 0)||(((struct Tok*)l->data)[i-1].isValue==true))) {
+#line 872 "/home/alois/Téléchargements/bah/src/parser.bah"
+continue;
+}
 
 #line 875 "/home/alois/Téléchargements/bah/src/parser.bah"
+if ((i+1<len(l))) {
+
+#line 876 "/home/alois/Téléchargements/bah/src/parser.bah"
+if ((i>0)&&((strcmp(((struct Tok*)l->data)[i-1].cont, "\01\0\0\0"")") == 0)||(((struct Tok*)l->data)[i-1].isValue==true))) {
+
+#line 877 "/home/alois/Téléchargements/bah/src/parser.bah"
 continue;
 }
 
-#line 877 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 879 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((((struct Tok*)l->data)[i+1].type==TOKEN_TYPE_VAR)) {
 
-#line 878 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 880 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((t.cont[0+4]==38)) {
 
-#line 879 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 881 "/home/alois/Téléchargements/bah/src/parser.bah"
 ((struct Tok*)l->data)[i+1].hasAmp = true;
 }
 
-#line 881 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 883 "/home/alois/Téléchargements/bah/src/parser.bah"
 char** ____BAH_COMPILER_VAR_901_ahomeaaloisanijlijchargementsabahasrcaparserbbah = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_901_ahomeaaloisanijlijchargementsabahasrcaparserbbah[1] = ((struct Tok*)l->data)[i+1].cont;____BAH_COMPILER_VAR_901_ahomeaaloisanijlijchargementsabahasrcaparserbbah[0] = t.cont;char* ____BAH_COMPILER_VAR_902_ahomeaaloisanijlijchargementsabahasrcaparserbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_901_ahomeaaloisanijlijchargementsabahasrcaparserbbah, 2);((struct Tok*)l->data)[i+1].cont = ____BAH_COMPILER_VAR_902_ahomeaaloisanijlijchargementsabahasrcaparserbbah;
 
-#line 882 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 884 "/home/alois/Téléchargements/bah/src/parser.bah"
 delete(l,i);
 
-#line 883 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 885 "/home/alois/Téléchargements/bah/src/parser.bah"
 --i;
 }
 }
@@ -15588,149 +15592,149 @@ delete(l,i);
 };
 ____BAH_COMPILER_VAR_896_ahomeaaloisanijlijchargementsabahasrcaparserbbah: ;
 
-#line 889 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 891 "/home/alois/Téléchargements/bah/src/parser.bah"
 return l;
 };
 
-#line 893 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 895 "/home/alois/Téléchargements/bah/src/parser.bah"
 char* parseSerialize(struct Tok* e,struct Elems* elems){
 
-#line 896 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 898 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct variable* v = searchVar(e->cont,e,elems);
 
-#line 897 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 899 "/home/alois/Téléchargements/bah/src/parser.bah"
 if (__builtin_expect((v==null), 0)) {
 
-#line 898 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 900 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Tok* keep_ref_____BAH_COMPILER_VAR_903_ahomeaaloisanijlijchargementsabahasrcaparserbbah = e;
 throwErr(&e,"\033\0\0\0""Must be a var, not {TOKEN}.");
 }
 
-#line 901 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 903 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct cStruct* s = searchStruct(v->type,elems);
 
-#line 902 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 904 "/home/alois/Téléchargements/bah/src/parser.bah"
 if (__builtin_expect((s==null), 0)) {
 
-#line 903 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 905 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Tok* keep_ref_____BAH_COMPILER_VAR_904_ahomeaaloisanijlijchargementsabahasrcaparserbbah = e;
 throwErr(&e,"\036\0\0\0""Must be a struct, not {TOKEN}.");
 }
 
-#line 906 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 908 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct string svt = string(v->type);
 
-#line 907 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 909 "/home/alois/Téléchargements/bah/src/parser.bah"
 register long long int ptrLevel = string__countChar(&svt,42);
 
-#line 909 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 911 "/home/alois/Téléchargements/bah/src/parser.bah"
 string__replace(&svt,"\01\0\0\0""*","\0\0\0\0""");
 
-#line 911 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 913 "/home/alois/Téléchargements/bah/src/parser.bah"
 char* code = "\0\0\0\0""";
 
-#line 913 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 915 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((ptrLevel==0)) {
 
-#line 914 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 916 "/home/alois/Téléchargements/bah/src/parser.bah"
 char** ____BAH_COMPILER_VAR_905_ahomeaaloisanijlijchargementsabahasrcaparserbbah = alloca(6 * sizeof(char*));____BAH_COMPILER_VAR_905_ahomeaaloisanijlijchargementsabahasrcaparserbbah[5] = "\01\0\0\0"")";____BAH_COMPILER_VAR_905_ahomeaaloisanijlijchargementsabahasrcaparserbbah[4] = string__str(&svt);____BAH_COMPILER_VAR_905_ahomeaaloisanijlijchargementsabahasrcaparserbbah[3] = "\016\0\0\0""sizeof(struct ";____BAH_COMPILER_VAR_905_ahomeaaloisanijlijchargementsabahasrcaparserbbah[2] = "\02\0\0\0"", ";____BAH_COMPILER_VAR_905_ahomeaaloisanijlijchargementsabahasrcaparserbbah[1] = e->cont;____BAH_COMPILER_VAR_905_ahomeaaloisanijlijchargementsabahasrcaparserbbah[0] = "\015\0\0\0""__serialize(&";char* ____BAH_COMPILER_VAR_906_ahomeaaloisanijlijchargementsabahasrcaparserbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_905_ahomeaaloisanijlijchargementsabahasrcaparserbbah, 6);code = ____BAH_COMPILER_VAR_906_ahomeaaloisanijlijchargementsabahasrcaparserbbah;
 }
 
-#line 915 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 917 "/home/alois/Téléchargements/bah/src/parser.bah"
 else{
 
-#line 916 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 918 "/home/alois/Téléchargements/bah/src/parser.bah"
 char* ptrRect = "\0\0\0\0""";
 
-#line 917 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 919 "/home/alois/Téléchargements/bah/src/parser.bah"
 while ((ptrLevel>1)) {
 
-#line 918 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 920 "/home/alois/Téléchargements/bah/src/parser.bah"
 char** ____BAH_COMPILER_VAR_908_ahomeaaloisanijlijchargementsabahasrcaparserbbah = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_908_ahomeaaloisanijlijchargementsabahasrcaparserbbah[1] = "\01\0\0\0""*";____BAH_COMPILER_VAR_908_ahomeaaloisanijlijchargementsabahasrcaparserbbah[0] = ptrRect;char* ____BAH_COMPILER_VAR_909_ahomeaaloisanijlijchargementsabahasrcaparserbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_908_ahomeaaloisanijlijchargementsabahasrcaparserbbah, 2);ptrRect = ____BAH_COMPILER_VAR_909_ahomeaaloisanijlijchargementsabahasrcaparserbbah;
 
-#line 919 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 921 "/home/alois/Téléchargements/bah/src/parser.bah"
 --ptrLevel;
 };
 ____BAH_COMPILER_VAR_907_ahomeaaloisanijlijchargementsabahasrcaparserbbah: ;
 
-#line 921 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 923 "/home/alois/Téléchargements/bah/src/parser.bah"
 char** ____BAH_COMPILER_VAR_910_ahomeaaloisanijlijchargementsabahasrcaparserbbah = alloca(7 * sizeof(char*));____BAH_COMPILER_VAR_910_ahomeaaloisanijlijchargementsabahasrcaparserbbah[6] = "\01\0\0\0"")";____BAH_COMPILER_VAR_910_ahomeaaloisanijlijchargementsabahasrcaparserbbah[5] = string__str(&svt);____BAH_COMPILER_VAR_910_ahomeaaloisanijlijchargementsabahasrcaparserbbah[4] = "\016\0\0\0""sizeof(struct ";____BAH_COMPILER_VAR_910_ahomeaaloisanijlijchargementsabahasrcaparserbbah[3] = "\02\0\0\0"", ";____BAH_COMPILER_VAR_910_ahomeaaloisanijlijchargementsabahasrcaparserbbah[2] = e->cont;____BAH_COMPILER_VAR_910_ahomeaaloisanijlijchargementsabahasrcaparserbbah[1] = ptrRect;____BAH_COMPILER_VAR_910_ahomeaaloisanijlijchargementsabahasrcaparserbbah[0] = "\014\0\0\0""__serialize(";char* ____BAH_COMPILER_VAR_911_ahomeaaloisanijlijchargementsabahasrcaparserbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_910_ahomeaaloisanijlijchargementsabahasrcaparserbbah, 7);code = ____BAH_COMPILER_VAR_911_ahomeaaloisanijlijchargementsabahasrcaparserbbah;
 
-#line 924 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 926 "/home/alois/Téléchargements/bah/src/parser.bah"
 register long long int i = 0;
 
-#line 924 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 926 "/home/alois/Téléchargements/bah/src/parser.bah"
 while ((i<len(s->members))) {
 
-#line 925 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 927 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct structMemb* m = ((struct structMemb**)s->members->data)[i];
 
-#line 926 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 928 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((strcmp(m->type, "\03\0\0\0""str") == 0)) {
 
-#line 927 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 929 "/home/alois/Téléchargements/bah/src/parser.bah"
 char** ____BAH_COMPILER_VAR_913_ahomeaaloisanijlijchargementsabahasrcaparserbbah = alloca(5 * sizeof(char*));____BAH_COMPILER_VAR_913_ahomeaaloisanijlijchargementsabahasrcaparserbbah[4] = "\01\0\0\0"")";____BAH_COMPILER_VAR_913_ahomeaaloisanijlijchargementsabahasrcaparserbbah[3] = m->name;____BAH_COMPILER_VAR_913_ahomeaaloisanijlijchargementsabahasrcaparserbbah[2] = "\02\0\0\0""->";____BAH_COMPILER_VAR_913_ahomeaaloisanijlijchargementsabahasrcaparserbbah[1] = e->cont;____BAH_COMPILER_VAR_913_ahomeaaloisanijlijchargementsabahasrcaparserbbah[0] = "\010\0\0\0""+strlen(";char* ____BAH_COMPILER_VAR_914_ahomeaaloisanijlijchargementsabahasrcaparserbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_913_ahomeaaloisanijlijchargementsabahasrcaparserbbah, 5);char** ____BAH_COMPILER_VAR_915_ahomeaaloisanijlijchargementsabahasrcaparserbbah = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_915_ahomeaaloisanijlijchargementsabahasrcaparserbbah[1] = ____BAH_COMPILER_VAR_914_ahomeaaloisanijlijchargementsabahasrcaparserbbah;____BAH_COMPILER_VAR_915_ahomeaaloisanijlijchargementsabahasrcaparserbbah[0] = code;char* ____BAH_COMPILER_VAR_916_ahomeaaloisanijlijchargementsabahasrcaparserbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_915_ahomeaaloisanijlijchargementsabahasrcaparserbbah, 2);code = ____BAH_COMPILER_VAR_916_ahomeaaloisanijlijchargementsabahasrcaparserbbah;
 }
 
-#line 929 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 931 "/home/alois/Téléchargements/bah/src/parser.bah"
 ++i;
 };
 ____BAH_COMPILER_VAR_912_ahomeaaloisanijlijchargementsabahasrcaparserbbah: ;
 }
 
-#line 935 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 937 "/home/alois/Téléchargements/bah/src/parser.bah"
 char** ____BAH_COMPILER_VAR_917_ahomeaaloisanijlijchargementsabahasrcaparserbbah = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_917_ahomeaaloisanijlijchargementsabahasrcaparserbbah[1] = "\01\0\0\0"")";____BAH_COMPILER_VAR_917_ahomeaaloisanijlijchargementsabahasrcaparserbbah[0] = code;char* ____BAH_COMPILER_VAR_918_ahomeaaloisanijlijchargementsabahasrcaparserbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_917_ahomeaaloisanijlijchargementsabahasrcaparserbbah, 2);return ____BAH_COMPILER_VAR_918_ahomeaaloisanijlijchargementsabahasrcaparserbbah;
 };
 
-#line 939 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 941 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Tok parseReflect(struct Tok t,char* tt,struct Elems* elems,char parsedPointer,char* ogName,char* offset){
 
-#line 941 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 943 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((parsedPointer==false)) {
 
-#line 942 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 944 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Tok keep_ref_____BAH_COMPILER_VAR_919_ahomeaaloisanijlijchargementsabahasrcaparserbbah = t;
 tt = getTypeFromToken(&t,true,elems);
 
-#line 943 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 945 "/home/alois/Téléchargements/bah/src/parser.bah"
 if (__builtin_expect((isRCPpointerType(tt)==false), 0)) {
 
-#line 944 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 946 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Tok keep_ref_____BAH_COMPILER_VAR_920_ahomeaaloisanijlijchargementsabahasrcaparserbbah = t;
 char** ____BAH_COMPILER_VAR_921_ahomeaaloisanijlijchargementsabahasrcaparserbbah = alloca(5 * sizeof(char*));____BAH_COMPILER_VAR_921_ahomeaaloisanijlijchargementsabahasrcaparserbbah[4] = "\02\0\0\0""'.";____BAH_COMPILER_VAR_921_ahomeaaloisanijlijchargementsabahasrcaparserbbah[3] = t.ogCont;____BAH_COMPILER_VAR_921_ahomeaaloisanijlijchargementsabahasrcaparserbbah[2] = "\032\0\0\0"") as pointer. Try using '&";____BAH_COMPILER_VAR_921_ahomeaaloisanijlijchargementsabahasrcaparserbbah[1] = tt;____BAH_COMPILER_VAR_921_ahomeaaloisanijlijchargementsabahasrcaparserbbah[0] = "\024\0\0\0""Cannot use {TOKEN} (";char* ____BAH_COMPILER_VAR_922_ahomeaaloisanijlijchargementsabahasrcaparserbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_921_ahomeaaloisanijlijchargementsabahasrcaparserbbah, 5);throwErr(&t,____BAH_COMPILER_VAR_922_ahomeaaloisanijlijchargementsabahasrcaparserbbah);
 }
 }
 
-#line 948 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 950 "/home/alois/Téléchargements/bah/src/parser.bah"
 char* isArr = "\01\0\0\0""0";
 
-#line 950 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 952 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((t.type!=TOKEN_TYPE_VAR)||(t.type!=TOKEN_TYPE_FUNC)) {
 
-#line 951 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 953 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct string cType;
 
-#line 952 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 954 "/home/alois/Téléchargements/bah/src/parser.bah"
 if (strHasPrefix(tt,"\011\0\0\0""function(")) {
 
-#line 953 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 955 "/home/alois/Téléchargements/bah/src/parser.bah"
 cType = string("\05\0\0\0""void*");
 }
 
-#line 954 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 956 "/home/alois/Téléchargements/bah/src/parser.bah"
 else{
 
-#line 955 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 957 "/home/alois/Téléchargements/bah/src/parser.bah"
 cType = getCType(tt,elems);
 }
 
-#line 957 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 959 "/home/alois/Téléchargements/bah/src/parser.bah"
 char** ____BAH_COMPILER_VAR_923_ahomeaaloisanijlijchargementsabahasrcaparserbbah = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_923_ahomeaaloisanijlijchargementsabahasrcaparserbbah[1] = genCompilerVar();____BAH_COMPILER_VAR_923_ahomeaaloisanijlijchargementsabahasrcaparserbbah[0] = "\011\0\0\0""keep_ref_";char* ____BAH_COMPILER_VAR_924_ahomeaaloisanijlijchargementsabahasrcaparserbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_923_ahomeaaloisanijlijchargementsabahasrcaparserbbah, 2);char* v = ____BAH_COMPILER_VAR_924_ahomeaaloisanijlijchargementsabahasrcaparserbbah;
 
-#line 958 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 960 "/home/alois/Téléchargements/bah/src/parser.bah"
 if (RCPavailable()) {
 
-#line 959 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 961 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct variable* ____BAH_COMPILER_VAR_925_ahomeaaloisanijlijchargementsabahasrcaparserbbah = memoryAlloc(sizeof(struct variable));
 ____BAH_COMPILER_VAR_925_ahomeaaloisanijlijchargementsabahasrcaparserbbah->constVal = "\0\0\0\0""";
 ____BAH_COMPILER_VAR_925_ahomeaaloisanijlijchargementsabahasrcaparserbbah->from = "\0\0\0\0""";
@@ -15742,43 +15746,43 @@ unsigned int ____BAH_COMPILER_VAR_926_ahomeaaloisanijlijchargementsabahasrcapars
     ((struct variable**)elems->vars->data)[____BAH_COMPILER_VAR_926_ahomeaaloisanijlijchargementsabahasrcaparserbbah] = ____BAH_COMPILER_VAR_925_ahomeaaloisanijlijchargementsabahasrcaparserbbah;
 }
 
-#line 965 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 967 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((parsedPointer==true)) {
 
-#line 966 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 968 "/home/alois/Téléchargements/bah/src/parser.bah"
 string__append(&cType,"\01\0\0\0""*");
 }
 
-#line 968 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 970 "/home/alois/Téléchargements/bah/src/parser.bah"
 char** ____BAH_COMPILER_VAR_927_ahomeaaloisanijlijchargementsabahasrcaparserbbah = alloca(6 * sizeof(char*));____BAH_COMPILER_VAR_927_ahomeaaloisanijlijchargementsabahasrcaparserbbah[5] = "\02\0\0\0"";\n";____BAH_COMPILER_VAR_927_ahomeaaloisanijlijchargementsabahasrcaparserbbah[4] = t.cont;____BAH_COMPILER_VAR_927_ahomeaaloisanijlijchargementsabahasrcaparserbbah[3] = "\03\0\0\0"" = ";____BAH_COMPILER_VAR_927_ahomeaaloisanijlijchargementsabahasrcaparserbbah[2] = v;____BAH_COMPILER_VAR_927_ahomeaaloisanijlijchargementsabahasrcaparserbbah[1] = "\01\0\0\0"" ";____BAH_COMPILER_VAR_927_ahomeaaloisanijlijchargementsabahasrcaparserbbah[0] = string__str(&cType);char* ____BAH_COMPILER_VAR_928_ahomeaaloisanijlijchargementsabahasrcaparserbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_927_ahomeaaloisanijlijchargementsabahasrcaparserbbah, 6);OUTPUT = rope__add(OUTPUT, rope(____BAH_COMPILER_VAR_928_ahomeaaloisanijlijchargementsabahasrcaparserbbah));
 
-#line 969 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 971 "/home/alois/Téléchargements/bah/src/parser.bah"
 t.cont = v;
 
-#line 970 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 972 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((t.type==TOKEN_TYPE_STR)) {
 
-#line 971 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 973 "/home/alois/Téléchargements/bah/src/parser.bah"
 ogName = "\011\0\0\0""[bah str]";
 }
 }
 
-#line 975 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 977 "/home/alois/Téléchargements/bah/src/parser.bah"
 char* arrElem = "\01\0\0\0""0";
 
-#line 976 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 978 "/home/alois/Téléchargements/bah/src/parser.bah"
 if (strHasPrefix(tt,"\02\0\0\0""[]")) {
 
-#line 977 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 979 "/home/alois/Téléchargements/bah/src/parser.bah"
 isArr = "\01\0\0\0""1";
 
-#line 978 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 980 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct string aet = string(tt);
 
-#line 979 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 981 "/home/alois/Téléchargements/bah/src/parser.bah"
 string__trimLeft(&aet,2);
 
-#line 980 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 982 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Tok ____BAH_COMPILER_VAR_929_ahomeaaloisanijlijchargementsabahasrcaparserbbah = {};
 ____BAH_COMPILER_VAR_929_ahomeaaloisanijlijchargementsabahasrcaparserbbah.cont = "\0\0\0\0""";
 ____BAH_COMPILER_VAR_929_ahomeaaloisanijlijchargementsabahasrcaparserbbah.ogCont = "\0\0\0\0""";
@@ -15788,36 +15792,36 @@ ____BAH_COMPILER_VAR_929_ahomeaaloisanijlijchargementsabahasrcaparserbbah.begLin
 ____BAH_COMPILER_VAR_929_ahomeaaloisanijlijchargementsabahasrcaparserbbah.bahType = "\0\0\0\0""";
 struct Tok tmpT = ____BAH_COMPILER_VAR_929_ahomeaaloisanijlijchargementsabahasrcaparserbbah;
 
-#line 981 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 983 "/home/alois/Téléchargements/bah/src/parser.bah"
 tmpT.type = TOKEN_TYPE_VAR;
 
-#line 982 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 984 "/home/alois/Téléchargements/bah/src/parser.bah"
 tmpT.cont = "\01\0\0\0""0";
 
-#line 983 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 985 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Tok rt = parseReflect(tmpT,string__str(&aet),elems,true,"\0\0\0\0""","\01\0\0\0""0");
 
-#line 985 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 987 "/home/alois/Téléchargements/bah/src/parser.bah"
 char* aev = genCompilerVar();
 
-#line 987 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 989 "/home/alois/Téléchargements/bah/src/parser.bah"
 char** ____BAH_COMPILER_VAR_930_ahomeaaloisanijlijchargementsabahasrcaparserbbah = alloca(5 * sizeof(char*));____BAH_COMPILER_VAR_930_ahomeaaloisanijlijchargementsabahasrcaparserbbah[4] = "\012\0\0\0"";\n        ";____BAH_COMPILER_VAR_930_ahomeaaloisanijlijchargementsabahasrcaparserbbah[3] = rt.cont;____BAH_COMPILER_VAR_930_ahomeaaloisanijlijchargementsabahasrcaparserbbah[2] = "\03\0\0\0"" = ";____BAH_COMPILER_VAR_930_ahomeaaloisanijlijchargementsabahasrcaparserbbah[1] = aev;____BAH_COMPILER_VAR_930_ahomeaaloisanijlijchargementsabahasrcaparserbbah[0] = "\037\0\0\0""\n        struct reflectElement ";char* ____BAH_COMPILER_VAR_931_ahomeaaloisanijlijchargementsabahasrcaparserbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_930_ahomeaaloisanijlijchargementsabahasrcaparserbbah, 5);OUTPUT = rope__add(OUTPUT, rope(____BAH_COMPILER_VAR_931_ahomeaaloisanijlijchargementsabahasrcaparserbbah));
 
-#line 991 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 993 "/home/alois/Téléchargements/bah/src/parser.bah"
 char** ____BAH_COMPILER_VAR_932_ahomeaaloisanijlijchargementsabahasrcaparserbbah = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_932_ahomeaaloisanijlijchargementsabahasrcaparserbbah[1] = aev;____BAH_COMPILER_VAR_932_ahomeaaloisanijlijchargementsabahasrcaparserbbah[0] = "\01\0\0\0""&";char* ____BAH_COMPILER_VAR_933_ahomeaaloisanijlijchargementsabahasrcaparserbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_932_ahomeaaloisanijlijchargementsabahasrcaparserbbah, 2);arrElem = ____BAH_COMPILER_VAR_933_ahomeaaloisanijlijchargementsabahasrcaparserbbah;
 }
 
-#line 992 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 994 "/home/alois/Téléchargements/bah/src/parser.bah"
 else{
 if (strHasPrefix(tt,"\04\0\0\0""map:")) {
 
-#line 993 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 995 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct string aet = string(tt);
 
-#line 994 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 996 "/home/alois/Téléchargements/bah/src/parser.bah"
 string__trimLeft(&aet,4);
 
-#line 995 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 997 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Tok ____BAH_COMPILER_VAR_934_ahomeaaloisanijlijchargementsabahasrcaparserbbah = {};
 ____BAH_COMPILER_VAR_934_ahomeaaloisanijlijchargementsabahasrcaparserbbah.cont = "\0\0\0\0""";
 ____BAH_COMPILER_VAR_934_ahomeaaloisanijlijchargementsabahasrcaparserbbah.ogCont = "\0\0\0\0""";
@@ -15827,48 +15831,48 @@ ____BAH_COMPILER_VAR_934_ahomeaaloisanijlijchargementsabahasrcaparserbbah.begLin
 ____BAH_COMPILER_VAR_934_ahomeaaloisanijlijchargementsabahasrcaparserbbah.bahType = "\0\0\0\0""";
 struct Tok tmpT = ____BAH_COMPILER_VAR_934_ahomeaaloisanijlijchargementsabahasrcaparserbbah;
 
-#line 996 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 998 "/home/alois/Téléchargements/bah/src/parser.bah"
 tmpT.type = TOKEN_TYPE_VAR;
 
-#line 997 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 999 "/home/alois/Téléchargements/bah/src/parser.bah"
 tmpT.cont = "\01\0\0\0""0";
 
-#line 998 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1000 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Tok rt = parseReflect(tmpT,string__str(&aet),elems,true,"\0\0\0\0""","\01\0\0\0""0");
 
-#line 999 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1001 "/home/alois/Téléchargements/bah/src/parser.bah"
 char* aev = genCompilerVar();
 
-#line 1000 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1002 "/home/alois/Téléchargements/bah/src/parser.bah"
 char** ____BAH_COMPILER_VAR_935_ahomeaaloisanijlijchargementsabahasrcaparserbbah = alloca(5 * sizeof(char*));____BAH_COMPILER_VAR_935_ahomeaaloisanijlijchargementsabahasrcaparserbbah[4] = "\012\0\0\0"";\n        ";____BAH_COMPILER_VAR_935_ahomeaaloisanijlijchargementsabahasrcaparserbbah[3] = rt.cont;____BAH_COMPILER_VAR_935_ahomeaaloisanijlijchargementsabahasrcaparserbbah[2] = "\03\0\0\0"" = ";____BAH_COMPILER_VAR_935_ahomeaaloisanijlijchargementsabahasrcaparserbbah[1] = aev;____BAH_COMPILER_VAR_935_ahomeaaloisanijlijchargementsabahasrcaparserbbah[0] = "\037\0\0\0""\n        struct reflectElement ";char* ____BAH_COMPILER_VAR_936_ahomeaaloisanijlijchargementsabahasrcaparserbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_935_ahomeaaloisanijlijchargementsabahasrcaparserbbah, 5);OUTPUT = rope__add(OUTPUT, rope(____BAH_COMPILER_VAR_936_ahomeaaloisanijlijchargementsabahasrcaparserbbah));
 
-#line 1003 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1005 "/home/alois/Téléchargements/bah/src/parser.bah"
 char** ____BAH_COMPILER_VAR_937_ahomeaaloisanijlijchargementsabahasrcaparserbbah = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_937_ahomeaaloisanijlijchargementsabahasrcaparserbbah[1] = aev;____BAH_COMPILER_VAR_937_ahomeaaloisanijlijchargementsabahasrcaparserbbah[0] = "\01\0\0\0""&";char* ____BAH_COMPILER_VAR_938_ahomeaaloisanijlijchargementsabahasrcaparserbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_937_ahomeaaloisanijlijchargementsabahasrcaparserbbah, 2);arrElem = ____BAH_COMPILER_VAR_938_ahomeaaloisanijlijchargementsabahasrcaparserbbah;
 }
 }
 
-#line 1006 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1008 "/home/alois/Téléchargements/bah/src/parser.bah"
 char* isStruct = "\01\0\0\0""0";
 
-#line 1007 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1009 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct cStruct* ts = searchStruct(tt,elems);
 
-#line 1008 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1010 "/home/alois/Téléchargements/bah/src/parser.bah"
 char* structLayout = "\01\0\0\0""0";
 
-#line 1010 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1012 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((ts!=null)) {
 
-#line 1011 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1013 "/home/alois/Téléchargements/bah/src/parser.bah"
 isStruct = "\01\0\0\0""1";
 
-#line 1012 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1014 "/home/alois/Téléchargements/bah/src/parser.bah"
 char** ____BAH_COMPILER_VAR_939_ahomeaaloisanijlijchargementsabahasrcaparserbbah = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_939_ahomeaaloisanijlijchargementsabahasrcaparserbbah[1] = genCompilerVar();____BAH_COMPILER_VAR_939_ahomeaaloisanijlijchargementsabahasrcaparserbbah[0] = "\011\0\0\0""keep_ref_";char* ____BAH_COMPILER_VAR_940_ahomeaaloisanijlijchargementsabahasrcaparserbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_939_ahomeaaloisanijlijchargementsabahasrcaparserbbah, 2);structLayout = ____BAH_COMPILER_VAR_940_ahomeaaloisanijlijchargementsabahasrcaparserbbah;
 
-#line 1014 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1016 "/home/alois/Téléchargements/bah/src/parser.bah"
 if (RCPavailable()) {
 
-#line 1015 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1017 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct variable* ____BAH_COMPILER_VAR_941_ahomeaaloisanijlijchargementsabahasrcaparserbbah = memoryAlloc(sizeof(struct variable));
 ____BAH_COMPILER_VAR_941_ahomeaaloisanijlijchargementsabahasrcaparserbbah->constVal = "\0\0\0\0""";
 ____BAH_COMPILER_VAR_941_ahomeaaloisanijlijchargementsabahasrcaparserbbah->from = "\0\0\0\0""";
@@ -15880,7 +15884,7 @@ unsigned int ____BAH_COMPILER_VAR_942_ahomeaaloisanijlijchargementsabahasrcapars
     ((struct variable**)elems->vars->data)[____BAH_COMPILER_VAR_942_ahomeaaloisanijlijchargementsabahasrcaparserbbah] = ____BAH_COMPILER_VAR_941_ahomeaaloisanijlijchargementsabahasrcaparserbbah;
 }
 
-#line 1022 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1024 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct variable* ____BAH_COMPILER_VAR_943_ahomeaaloisanijlijchargementsabahasrcaparserbbah = memoryAlloc(sizeof(struct variable));
 ____BAH_COMPILER_VAR_943_ahomeaaloisanijlijchargementsabahasrcaparserbbah->name = "\0\0\0\0""";
 ____BAH_COMPILER_VAR_943_ahomeaaloisanijlijchargementsabahasrcaparserbbah->type = "\0\0\0\0""";
@@ -15888,33 +15892,33 @@ ____BAH_COMPILER_VAR_943_ahomeaaloisanijlijchargementsabahasrcaparserbbah->const
 ____BAH_COMPILER_VAR_943_ahomeaaloisanijlijchargementsabahasrcaparserbbah->from = "\0\0\0\0""";
 struct variable* slv = ____BAH_COMPILER_VAR_943_ahomeaaloisanijlijchargementsabahasrcaparserbbah;
 
-#line 1023 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1025 "/home/alois/Téléchargements/bah/src/parser.bah"
 slv->name = structLayout;
 
-#line 1024 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1026 "/home/alois/Téléchargements/bah/src/parser.bah"
 slv->type = "\020\0\0\0""[]reflectElement";
 
-#line 1026 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1028 "/home/alois/Téléchargements/bah/src/parser.bah"
 unsigned int ____BAH_COMPILER_VAR_944_ahomeaaloisanijlijchargementsabahasrcaparserbbah = len(elems->vars);
     __Bah_realocate_arr(elems->vars, ____BAH_COMPILER_VAR_944_ahomeaaloisanijlijchargementsabahasrcaparserbbah);
     ((struct variable**)elems->vars->data)[____BAH_COMPILER_VAR_944_ahomeaaloisanijlijchargementsabahasrcaparserbbah] = slv;
 
-#line 1028 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1030 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct rope* dataLayout = rope("\0\0\0\0""");
 
-#line 1030 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1032 "/home/alois/Téléchargements/bah/src/parser.bah"
 register long long int i = 0;
 
-#line 1030 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1032 "/home/alois/Téléchargements/bah/src/parser.bah"
 for (; (i<len(ts->members)); ++i) {
 
-#line 1031 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1033 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct structMemb* m = ((struct structMemb**)ts->members->data)[i];
 
-#line 1032 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1034 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((strcmp(m->type, tt) == 0)) {
 
-#line 1033 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1035 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct structMemb* ____BAH_COMPILER_VAR_946_ahomeaaloisanijlijchargementsabahasrcaparserbbah = memoryAlloc(sizeof(struct structMemb));
 ____BAH_COMPILER_VAR_946_ahomeaaloisanijlijchargementsabahasrcaparserbbah->name = "\0\0\0\0""";
 ____BAH_COMPILER_VAR_946_ahomeaaloisanijlijchargementsabahasrcaparserbbah->type = "\0\0\0\0""";
@@ -15923,17 +15927,17 @@ ____BAH_COMPILER_VAR_946_ahomeaaloisanijlijchargementsabahasrcaparserbbah->from 
 ____BAH_COMPILER_VAR_946_ahomeaaloisanijlijchargementsabahasrcaparserbbah->def = "\0\0\0\0""";
 struct structMemb* nm = ____BAH_COMPILER_VAR_946_ahomeaaloisanijlijchargementsabahasrcaparserbbah;
 
-#line 1034 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1036 "/home/alois/Téléchargements/bah/src/parser.bah"
 *nm = *m;
 
-#line 1035 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1037 "/home/alois/Téléchargements/bah/src/parser.bah"
 m = nm;
 
-#line 1036 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1038 "/home/alois/Téléchargements/bah/src/parser.bah"
 m->type = "\03\0\0\0""ptr";
 }
 
-#line 1038 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1040 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Tok ____BAH_COMPILER_VAR_947_ahomeaaloisanijlijchargementsabahasrcaparserbbah = {};
 ____BAH_COMPILER_VAR_947_ahomeaaloisanijlijchargementsabahasrcaparserbbah.cont = "\0\0\0\0""";
 ____BAH_COMPILER_VAR_947_ahomeaaloisanijlijchargementsabahasrcaparserbbah.ogCont = "\0\0\0\0""";
@@ -15943,100 +15947,100 @@ ____BAH_COMPILER_VAR_947_ahomeaaloisanijlijchargementsabahasrcaparserbbah.begLin
 ____BAH_COMPILER_VAR_947_ahomeaaloisanijlijchargementsabahasrcaparserbbah.bahType = "\0\0\0\0""";
 struct Tok tmpT = ____BAH_COMPILER_VAR_947_ahomeaaloisanijlijchargementsabahasrcaparserbbah;
 
-#line 1039 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1041 "/home/alois/Téléchargements/bah/src/parser.bah"
 tmpT.type = TOKEN_TYPE_VAR;
 
-#line 1040 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1042 "/home/alois/Téléchargements/bah/src/parser.bah"
 char* sep = "\02\0\0\0""->";
 
-#line 1041 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1043 "/home/alois/Téléchargements/bah/src/parser.bah"
 
                 struct string keep_ref_____BAH_COMPILER_VAR_948_ahomeaaloisanijlijchargementsabahasrcaparserbbah = string(tt);
                 if ((string__containsChar(&keep_ref_____BAH_COMPILER_VAR_948_ahomeaaloisanijlijchargementsabahasrcaparserbbah,42)==false)) {
 
-#line 1042 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1044 "/home/alois/Téléchargements/bah/src/parser.bah"
 sep = "\01\0\0\0"".";
 }
 
-#line 1044 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1046 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct string mCtype = getCType(m->type,elems);
 
-#line 1045 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1047 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct string offsetTT = string(tt);
 
-#line 1046 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1048 "/home/alois/Téléchargements/bah/src/parser.bah"
 string__replace(&offsetTT,"\01\0\0\0""*","\0\0\0\0""");
 
-#line 1047 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1049 "/home/alois/Téléchargements/bah/src/parser.bah"
 char** ____BAH_COMPILER_VAR_949_ahomeaaloisanijlijchargementsabahasrcaparserbbah = alloca(9 * sizeof(char*));____BAH_COMPILER_VAR_949_ahomeaaloisanijlijchargementsabahasrcaparserbbah[8] = "\02\0\0\0""))";____BAH_COMPILER_VAR_949_ahomeaaloisanijlijchargementsabahasrcaparserbbah[7] = m->name;____BAH_COMPILER_VAR_949_ahomeaaloisanijlijchargementsabahasrcaparserbbah[6] = "\02\0\0\0"", ";____BAH_COMPILER_VAR_949_ahomeaaloisanijlijchargementsabahasrcaparserbbah[5] = string__str(&offsetTT);____BAH_COMPILER_VAR_949_ahomeaaloisanijlijchargementsabahasrcaparserbbah[4] = "\024\0\0\0"") + offsetof(struct ";____BAH_COMPILER_VAR_949_ahomeaaloisanijlijchargementsabahasrcaparserbbah[3] = t.cont;____BAH_COMPILER_VAR_949_ahomeaaloisanijlijchargementsabahasrcaparserbbah[2] = "\013\0\0\0""*)((char*)(";____BAH_COMPILER_VAR_949_ahomeaaloisanijlijchargementsabahasrcaparserbbah[1] = string__str(&mCtype);____BAH_COMPILER_VAR_949_ahomeaaloisanijlijchargementsabahasrcaparserbbah[0] = "\01\0\0\0""(";char* ____BAH_COMPILER_VAR_950_ahomeaaloisanijlijchargementsabahasrcaparserbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_949_ahomeaaloisanijlijchargementsabahasrcaparserbbah, 9);tmpT.cont = ____BAH_COMPILER_VAR_950_ahomeaaloisanijlijchargementsabahasrcaparserbbah;
 
-#line 1048 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1050 "/home/alois/Téléchargements/bah/src/parser.bah"
 char** ____BAH_COMPILER_VAR_951_ahomeaaloisanijlijchargementsabahasrcaparserbbah = alloca(5 * sizeof(char*));____BAH_COMPILER_VAR_951_ahomeaaloisanijlijchargementsabahasrcaparserbbah[4] = "\01\0\0\0"")";____BAH_COMPILER_VAR_951_ahomeaaloisanijlijchargementsabahasrcaparserbbah[3] = m->name;____BAH_COMPILER_VAR_951_ahomeaaloisanijlijchargementsabahasrcaparserbbah[2] = "\02\0\0\0"", ";____BAH_COMPILER_VAR_951_ahomeaaloisanijlijchargementsabahasrcaparserbbah[1] = string__str(&offsetTT);____BAH_COMPILER_VAR_951_ahomeaaloisanijlijchargementsabahasrcaparserbbah[0] = "\020\0\0\0""offsetof(struct ";char* ____BAH_COMPILER_VAR_952_ahomeaaloisanijlijchargementsabahasrcaparserbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_951_ahomeaaloisanijlijchargementsabahasrcaparserbbah, 5);struct Tok rt = parseReflect(tmpT,m->type,elems,true,m->name,____BAH_COMPILER_VAR_952_ahomeaaloisanijlijchargementsabahasrcaparserbbah);
 
-#line 1049 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1051 "/home/alois/Téléchargements/bah/src/parser.bah"
 char** ____BAH_COMPILER_VAR_953_ahomeaaloisanijlijchargementsabahasrcaparserbbah = alloca(7 * sizeof(char*));____BAH_COMPILER_VAR_953_ahomeaaloisanijlijchargementsabahasrcaparserbbah[6] = "\02\0\0\0"";\n";____BAH_COMPILER_VAR_953_ahomeaaloisanijlijchargementsabahasrcaparserbbah[5] = rt.cont;____BAH_COMPILER_VAR_953_ahomeaaloisanijlijchargementsabahasrcaparserbbah[4] = "\04\0\0\0""] = ";____BAH_COMPILER_VAR_953_ahomeaaloisanijlijchargementsabahasrcaparserbbah[3] = intToStr(i);____BAH_COMPILER_VAR_953_ahomeaaloisanijlijchargementsabahasrcaparserbbah[2] = "\010\0\0\0""->data)[";____BAH_COMPILER_VAR_953_ahomeaaloisanijlijchargementsabahasrcaparserbbah[1] = structLayout;____BAH_COMPILER_VAR_953_ahomeaaloisanijlijchargementsabahasrcaparserbbah[0] = "\031\0\0\0""((struct reflectElement*)";char* ____BAH_COMPILER_VAR_954_ahomeaaloisanijlijchargementsabahasrcaparserbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_953_ahomeaaloisanijlijchargementsabahasrcaparserbbah, 7);dataLayout = rope__add(dataLayout, rope(____BAH_COMPILER_VAR_954_ahomeaaloisanijlijchargementsabahasrcaparserbbah));
 };
 ____BAH_COMPILER_VAR_945_ahomeaaloisanijlijchargementsabahasrcaparserbbah: ;
 
-#line 1052 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1054 "/home/alois/Téléchargements/bah/src/parser.bah"
 char** ____BAH_COMPILER_VAR_955_ahomeaaloisanijlijchargementsabahasrcaparserbbah = alloca(15 * sizeof(char*));____BAH_COMPILER_VAR_955_ahomeaaloisanijlijchargementsabahasrcaparserbbah[14] = "\025\0\0\0""->elemSize);\n        ";____BAH_COMPILER_VAR_955_ahomeaaloisanijlijchargementsabahasrcaparserbbah[13] = structLayout;____BAH_COMPILER_VAR_955_ahomeaaloisanijlijchargementsabahasrcaparserbbah[12] = "\013\0\0\0""->length * ";____BAH_COMPILER_VAR_955_ahomeaaloisanijlijchargementsabahasrcaparserbbah[11] = structLayout;____BAH_COMPILER_VAR_955_ahomeaaloisanijlijchargementsabahasrcaparserbbah[10] = "\025\0\0\0""->data = memoryAlloc(";____BAH_COMPILER_VAR_955_ahomeaaloisanijlijchargementsabahasrcaparserbbah[9] = structLayout;____BAH_COMPILER_VAR_955_ahomeaaloisanijlijchargementsabahasrcaparserbbah[8] = "\012\0\0\0"";\n        ";____BAH_COMPILER_VAR_955_ahomeaaloisanijlijchargementsabahasrcaparserbbah[7] = intToStr(len(ts->members));____BAH_COMPILER_VAR_955_ahomeaaloisanijlijchargementsabahasrcaparserbbah[6] = "\013\0\0\0""->length = ";____BAH_COMPILER_VAR_955_ahomeaaloisanijlijchargementsabahasrcaparserbbah[5] = structLayout;____BAH_COMPILER_VAR_955_ahomeaaloisanijlijchargementsabahasrcaparserbbah[4] = "\064\0\0\0""->elemSize = sizeof(struct reflectElement);\n        ";____BAH_COMPILER_VAR_955_ahomeaaloisanijlijchargementsabahasrcaparserbbah[3] = structLayout;____BAH_COMPILER_VAR_955_ahomeaaloisanijlijchargementsabahasrcaparserbbah[2] = "\067\0\0\0"" = memoryAlloc(sizeof(struct Bah_Array_Type));\n        ";____BAH_COMPILER_VAR_955_ahomeaaloisanijlijchargementsabahasrcaparserbbah[1] = structLayout;____BAH_COMPILER_VAR_955_ahomeaaloisanijlijchargementsabahasrcaparserbbah[0] = "\041\0\0\0""\n        struct Bah_Array_Type * ";char* ____BAH_COMPILER_VAR_956_ahomeaaloisanijlijchargementsabahasrcaparserbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_955_ahomeaaloisanijlijchargementsabahasrcaparserbbah, 15);OUTPUT = rope__add(OUTPUT, (rope__add(rope(____BAH_COMPILER_VAR_956_ahomeaaloisanijlijchargementsabahasrcaparserbbah), dataLayout)));
 }
 
-#line 1060 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1062 "/home/alois/Téléchargements/bah/src/parser.bah"
 char* amp = "\0\0\0\0""";
 
-#line 1061 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1063 "/home/alois/Téléchargements/bah/src/parser.bah"
 
                 struct string keep_ref_____BAH_COMPILER_VAR_957_ahomeaaloisanijlijchargementsabahasrcaparserbbah = string(tt);
                 if ((string__containsChar(&keep_ref_____BAH_COMPILER_VAR_957_ahomeaaloisanijlijchargementsabahasrcaparserbbah,42)==false)&&(strcmp(tt, "\03\0\0\0""str") != 0)&&(strcmp(tt, "\03\0\0\0""ptr") != 0)&&(parsedPointer==false)) {
 
-#line 1062 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1064 "/home/alois/Téléchargements/bah/src/parser.bah"
 amp = "\01\0\0\0""&";
 }
 
-#line 1065 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1067 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct string name = string(ogName);
 
-#line 1066 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1068 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct string keep_ref_____BAH_COMPILER_VAR_958_ahomeaaloisanijlijchargementsabahasrcaparserbbah = name;
 if ((hasStructSep(&name)==true)) {
 
-#line 1067 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1069 "/home/alois/Téléchargements/bah/src/parser.bah"
 name = splitStructSepAfter(name);
 }
 
-#line 1070 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1072 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct string cType;
 
-#line 1072 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1074 "/home/alois/Téléchargements/bah/src/parser.bah"
 if (strHasPrefix(tt,"\011\0\0\0""function(")) {
 
-#line 1073 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1075 "/home/alois/Téléchargements/bah/src/parser.bah"
 cType = string("\05\0\0\0""void*");
 }
 
-#line 1074 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1076 "/home/alois/Téléchargements/bah/src/parser.bah"
 else{
 
-#line 1075 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1077 "/home/alois/Téléchargements/bah/src/parser.bah"
 cType = getCType(tt,elems);
 }
 
-#line 1079 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1081 "/home/alois/Téléchargements/bah/src/parser.bah"
 if (string__hasPrefix(&cType,"\07\0\0\0""struct ")) {
 
-#line 1080 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1082 "/home/alois/Téléchargements/bah/src/parser.bah"
 string__replace(&cType,"\01\0\0\0""*","\0\0\0\0""");
 }
 
-#line 1083 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1085 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((cType.length==0)) {
 
-#line 1084 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1086 "/home/alois/Téléchargements/bah/src/parser.bah"
 string__set(&cType,"\01\0\0\0""0");
 }
 
-#line 1087 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1089 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct variable* ____BAH_COMPILER_VAR_959_ahomeaaloisanijlijchargementsabahasrcaparserbbah = memoryAlloc(sizeof(struct variable));
 ____BAH_COMPILER_VAR_959_ahomeaaloisanijlijchargementsabahasrcaparserbbah->name = "\0\0\0\0""";
 ____BAH_COMPILER_VAR_959_ahomeaaloisanijlijchargementsabahasrcaparserbbah->type = "\0\0\0\0""";
@@ -16044,142 +16048,142 @@ ____BAH_COMPILER_VAR_959_ahomeaaloisanijlijchargementsabahasrcaparserbbah->const
 ____BAH_COMPILER_VAR_959_ahomeaaloisanijlijchargementsabahasrcaparserbbah->from = "\0\0\0\0""";
 struct variable* rv = ____BAH_COMPILER_VAR_959_ahomeaaloisanijlijchargementsabahasrcaparserbbah;
 
-#line 1088 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1090 "/home/alois/Téléchargements/bah/src/parser.bah"
 rv->name = genCompilerVar();
 
-#line 1089 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1091 "/home/alois/Téléchargements/bah/src/parser.bah"
 rv->type = "\016\0\0\0""reflectElement";
 
-#line 1091 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1093 "/home/alois/Téléchargements/bah/src/parser.bah"
 unsigned int ____BAH_COMPILER_VAR_960_ahomeaaloisanijlijchargementsabahasrcaparserbbah = len(elems->vars);
     __Bah_realocate_arr(elems->vars, ____BAH_COMPILER_VAR_960_ahomeaaloisanijlijchargementsabahasrcaparserbbah);
     ((struct variable**)elems->vars->data)[____BAH_COMPILER_VAR_960_ahomeaaloisanijlijchargementsabahasrcaparserbbah] = rv;
 
-#line 1093 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1095 "/home/alois/Téléchargements/bah/src/parser.bah"
 char** ____BAH_COMPILER_VAR_961_ahomeaaloisanijlijchargementsabahasrcaparserbbah = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_961_ahomeaaloisanijlijchargementsabahasrcaparserbbah[2] = "\01\0\0\0""\"";____BAH_COMPILER_VAR_961_ahomeaaloisanijlijchargementsabahasrcaparserbbah[1] = tt;____BAH_COMPILER_VAR_961_ahomeaaloisanijlijchargementsabahasrcaparserbbah[0] = "\01\0\0\0""\"";char* ____BAH_COMPILER_VAR_962_ahomeaaloisanijlijchargementsabahasrcaparserbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_961_ahomeaaloisanijlijchargementsabahasrcaparserbbah, 3);char** ____BAH_COMPILER_VAR_963_ahomeaaloisanijlijchargementsabahasrcaparserbbah = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_963_ahomeaaloisanijlijchargementsabahasrcaparserbbah[2] = "\01\0\0\0""\"";____BAH_COMPILER_VAR_963_ahomeaaloisanijlijchargementsabahasrcaparserbbah[1] = string__str(&name);____BAH_COMPILER_VAR_963_ahomeaaloisanijlijchargementsabahasrcaparserbbah[0] = "\01\0\0\0""\"";char* ____BAH_COMPILER_VAR_964_ahomeaaloisanijlijchargementsabahasrcaparserbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_963_ahomeaaloisanijlijchargementsabahasrcaparserbbah, 3);char** ____BAH_COMPILER_VAR_965_ahomeaaloisanijlijchargementsabahasrcaparserbbah = alloca(22 * sizeof(char*));____BAH_COMPILER_VAR_965_ahomeaaloisanijlijchargementsabahasrcaparserbbah[21] = "\03\0\0\0"");\n";____BAH_COMPILER_VAR_965_ahomeaaloisanijlijchargementsabahasrcaparserbbah[20] = offset;____BAH_COMPILER_VAR_965_ahomeaaloisanijlijchargementsabahasrcaparserbbah[19] = "\02\0\0\0"", ";____BAH_COMPILER_VAR_965_ahomeaaloisanijlijchargementsabahasrcaparserbbah[18] = structLayout;____BAH_COMPILER_VAR_965_ahomeaaloisanijlijchargementsabahasrcaparserbbah[17] = "\02\0\0\0"", ";____BAH_COMPILER_VAR_965_ahomeaaloisanijlijchargementsabahasrcaparserbbah[16] = isStruct;____BAH_COMPILER_VAR_965_ahomeaaloisanijlijchargementsabahasrcaparserbbah[15] = "\02\0\0\0"", ";____BAH_COMPILER_VAR_965_ahomeaaloisanijlijchargementsabahasrcaparserbbah[14] = arrElem;____BAH_COMPILER_VAR_965_ahomeaaloisanijlijchargementsabahasrcaparserbbah[13] = "\02\0\0\0"", ";____BAH_COMPILER_VAR_965_ahomeaaloisanijlijchargementsabahasrcaparserbbah[12] = isArr;____BAH_COMPILER_VAR_965_ahomeaaloisanijlijchargementsabahasrcaparserbbah[11] = "\02\0\0\0"", ";____BAH_COMPILER_VAR_965_ahomeaaloisanijlijchargementsabahasrcaparserbbah[10] = strLitteralToBahStr(____BAH_COMPILER_VAR_964_ahomeaaloisanijlijchargementsabahasrcaparserbbah);____BAH_COMPILER_VAR_965_ahomeaaloisanijlijchargementsabahasrcaparserbbah[9] = "\02\0\0\0"", ";____BAH_COMPILER_VAR_965_ahomeaaloisanijlijchargementsabahasrcaparserbbah[8] = strLitteralToBahStr(____BAH_COMPILER_VAR_962_ahomeaaloisanijlijchargementsabahasrcaparserbbah);____BAH_COMPILER_VAR_965_ahomeaaloisanijlijchargementsabahasrcaparserbbah[7] = "\03\0\0\0""), ";____BAH_COMPILER_VAR_965_ahomeaaloisanijlijchargementsabahasrcaparserbbah[6] = string__str(&cType);____BAH_COMPILER_VAR_965_ahomeaaloisanijlijchargementsabahasrcaparserbbah[5] = "\011\0\0\0"", sizeof(";____BAH_COMPILER_VAR_965_ahomeaaloisanijlijchargementsabahasrcaparserbbah[4] = t.cont;____BAH_COMPILER_VAR_965_ahomeaaloisanijlijchargementsabahasrcaparserbbah[3] = amp;____BAH_COMPILER_VAR_965_ahomeaaloisanijlijchargementsabahasrcaparserbbah[2] = "\015\0\0\0"" = __reflect(";____BAH_COMPILER_VAR_965_ahomeaaloisanijlijchargementsabahasrcaparserbbah[1] = rv->name;____BAH_COMPILER_VAR_965_ahomeaaloisanijlijchargementsabahasrcaparserbbah[0] = "\026\0\0\0""struct reflectElement ";char* ____BAH_COMPILER_VAR_966_ahomeaaloisanijlijchargementsabahasrcaparserbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_965_ahomeaaloisanijlijchargementsabahasrcaparserbbah, 22);OUTPUT = rope__add(OUTPUT, rope(____BAH_COMPILER_VAR_966_ahomeaaloisanijlijchargementsabahasrcaparserbbah));
 
-#line 1095 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1097 "/home/alois/Téléchargements/bah/src/parser.bah"
 t.cont = rv->name;
 
-#line 1097 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1099 "/home/alois/Téléchargements/bah/src/parser.bah"
 return t;
 };
 
-#line 1101 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1103 "/home/alois/Téléchargements/bah/src/parser.bah"
 char* parseArrayDecl(struct variable* v,struct Bah_Array_Type* l,long long int i,long long int max,struct Elems* elems){
 
-#line 1102 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1104 "/home/alois/Téléchargements/bah/src/parser.bah"
 long long int arrayLength = 0;
 
-#line 1103 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1105 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct string arrType = getCType(strSubstitute(v->type, 2, strlen(v->type)),elems);
 
-#line 1104 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1106 "/home/alois/Téléchargements/bah/src/parser.bah"
 char* code = "\052\0\0\0""memoryAlloc(sizeof(struct Bah_Array_Type))";
 
-#line 1105 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1107 "/home/alois/Téléchargements/bah/src/parser.bah"
 char* elemTypeStr = string__str(&arrType);
 
-#line 1107 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1109 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((i+1!=max)) {
 
-#line 1108 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1110 "/home/alois/Téléchargements/bah/src/parser.bah"
 ++i;
 
-#line 1109 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1111 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Tok nt = ((struct Tok*)l->data)[i];
 
-#line 1110 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1112 "/home/alois/Téléchargements/bah/src/parser.bah"
 if (__builtin_expect((strcmp(nt.cont, "\01\0\0\0""{") != 0), 0)) {
 
-#line 1111 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1113 "/home/alois/Téléchargements/bah/src/parser.bah"
 throwErr(&((struct Tok*)l->data)[i+1],"\060\0\0\0""{TOKEN} not expected after array initialization.");
 }
 
-#line 1113 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1115 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct string elemBahType = string(v->type);
 
-#line 1114 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1116 "/home/alois/Téléchargements/bah/src/parser.bah"
 string__trimLeft(&elemBahType,2);
 
-#line 1115 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1117 "/home/alois/Téléchargements/bah/src/parser.bah"
 char* elemBahTypeStr = string__str(&elemBahType);
 
-#line 1116 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1118 "/home/alois/Téléchargements/bah/src/parser.bah"
 ++i;
 
-#line 1117 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1119 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Bah_Array_Type* memory = memoryAlloc(sizeof(struct Bah_Array_Type));
 
 memory->length = 0;
 memory->elemSize = sizeof(struct Tok);
 
-#line 1118 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1120 "/home/alois/Téléchargements/bah/src/parser.bah"
 while ((i<max)) {
 
-#line 1119 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1121 "/home/alois/Téléchargements/bah/src/parser.bah"
 unsigned int ____BAH_COMPILER_VAR_968_ahomeaaloisanijlijchargementsabahasrcaparserbbah = len(memory);
     __Bah_realocate_arr(memory, ____BAH_COMPILER_VAR_968_ahomeaaloisanijlijchargementsabahasrcaparserbbah);
     ((struct Tok*)memory->data)[____BAH_COMPILER_VAR_968_ahomeaaloisanijlijchargementsabahasrcaparserbbah] = ((struct Tok*)l->data)[i];
 
-#line 1120 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1122 "/home/alois/Téléchargements/bah/src/parser.bah"
 ++i;
 };
 ____BAH_COMPILER_VAR_967_ahomeaaloisanijlijchargementsabahasrcaparserbbah: ;
 
-#line 1122 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1124 "/home/alois/Téléchargements/bah/src/parser.bah"
 memory = prePross(memory,(lineType)-1,elems);
 
-#line 1123 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1125 "/home/alois/Téléchargements/bah/src/parser.bah"
 i = 0;
 
-#line 1123 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1125 "/home/alois/Téléchargements/bah/src/parser.bah"
 while ((i<len(memory))) {
 
-#line 1124 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1126 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Tok t = ((struct Tok*)memory->data)[i];
 
-#line 1125 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1127 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((strcmp(t.cont, "\01\0\0\0""{") == 0)) {
 
-#line 1127 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1129 "/home/alois/Téléchargements/bah/src/parser.bah"
 long long int j = i-1;
 
-#line 1128 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1130 "/home/alois/Téléchargements/bah/src/parser.bah"
 long long int nbBraces = 0;
 
-#line 1129 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1131 "/home/alois/Téléchargements/bah/src/parser.bah"
 for (; (i<len(memory)); ++i) {
 
-#line 1130 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1132 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Tok tmpT = ((struct Tok*)memory->data)[i];
 
-#line 1131 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1133 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((strcmp(tmpT.cont, "\01\0\0\0""{") == 0)) {
 
-#line 1132 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1134 "/home/alois/Téléchargements/bah/src/parser.bah"
 ++nbBraces;
 }
 
-#line 1133 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1135 "/home/alois/Téléchargements/bah/src/parser.bah"
 else{
 if ((strcmp(tmpT.cont, "\01\0\0\0""}") == 0)) {
 
-#line 1134 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1136 "/home/alois/Téléchargements/bah/src/parser.bah"
 --nbBraces;
 }
 }
 
-#line 1136 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1138 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((nbBraces==0)) {
 
-#line 1137 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1139 "/home/alois/Téléchargements/bah/src/parser.bah"
 goto ____BAH_COMPILER_VAR_970_ahomeaaloisanijlijchargementsabahasrcaparserbbah;
 }
 };
 ____BAH_COMPILER_VAR_970_ahomeaaloisanijlijchargementsabahasrcaparserbbah: ;
 
-#line 1140 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1142 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct variable* ____BAH_COMPILER_VAR_971_ahomeaaloisanijlijchargementsabahasrcaparserbbah = memoryAlloc(sizeof(struct variable));
 ____BAH_COMPILER_VAR_971_ahomeaaloisanijlijchargementsabahasrcaparserbbah->name = "\0\0\0\0""";
 ____BAH_COMPILER_VAR_971_ahomeaaloisanijlijchargementsabahasrcaparserbbah->type = "\0\0\0\0""";
@@ -16187,53 +16191,53 @@ ____BAH_COMPILER_VAR_971_ahomeaaloisanijlijchargementsabahasrcaparserbbah->const
 ____BAH_COMPILER_VAR_971_ahomeaaloisanijlijchargementsabahasrcaparserbbah->from = "\0\0\0\0""";
 struct variable* tmpV = ____BAH_COMPILER_VAR_971_ahomeaaloisanijlijchargementsabahasrcaparserbbah;
 
-#line 1141 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1143 "/home/alois/Téléchargements/bah/src/parser.bah"
 tmpV->name = genCompilerVar();
 
-#line 1142 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1144 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct string elemType = string(v->type);
 
-#line 1143 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1145 "/home/alois/Téléchargements/bah/src/parser.bah"
 string__trimLeft(&elemType,2);
 
-#line 1144 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1146 "/home/alois/Téléchargements/bah/src/parser.bah"
 tmpV->type = string__str(&elemType);
 
-#line 1145 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1147 "/home/alois/Téléchargements/bah/src/parser.bah"
 unsigned int ____BAH_COMPILER_VAR_972_ahomeaaloisanijlijchargementsabahasrcaparserbbah = len(elems->vars);
     __Bah_realocate_arr(elems->vars, ____BAH_COMPILER_VAR_972_ahomeaaloisanijlijchargementsabahasrcaparserbbah);
     ((struct variable**)elems->vars->data)[____BAH_COMPILER_VAR_972_ahomeaaloisanijlijchargementsabahasrcaparserbbah] = tmpV;
 
-#line 1147 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1149 "/home/alois/Téléchargements/bah/src/parser.bah"
 char* oldNL = NEXT_LINE;
 
-#line 1148 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1150 "/home/alois/Téléchargements/bah/src/parser.bah"
 NEXT_LINE = "\0\0\0\0""";
 
-#line 1149 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1151 "/home/alois/Téléchargements/bah/src/parser.bah"
 char* innerCode = parseArrayDecl(tmpV,memory,j,i+1,elems);
 
-#line 1150 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1152 "/home/alois/Téléchargements/bah/src/parser.bah"
 char** ____BAH_COMPILER_VAR_973_ahomeaaloisanijlijchargementsabahasrcaparserbbah = alloca(7 * sizeof(char*));____BAH_COMPILER_VAR_973_ahomeaaloisanijlijchargementsabahasrcaparserbbah[6] = "\021\0\0\0""\n                ";____BAH_COMPILER_VAR_973_ahomeaaloisanijlijchargementsabahasrcaparserbbah[5] = NEXT_LINE;____BAH_COMPILER_VAR_973_ahomeaaloisanijlijchargementsabahasrcaparserbbah[4] = "\022\0\0\0"";\n                ";____BAH_COMPILER_VAR_973_ahomeaaloisanijlijchargementsabahasrcaparserbbah[3] = innerCode;____BAH_COMPILER_VAR_973_ahomeaaloisanijlijchargementsabahasrcaparserbbah[2] = "\03\0\0\0"" = ";____BAH_COMPILER_VAR_973_ahomeaaloisanijlijchargementsabahasrcaparserbbah[1] = tmpV->name;____BAH_COMPILER_VAR_973_ahomeaaloisanijlijchargementsabahasrcaparserbbah[0] = "\051\0\0\0""\n                struct Bah_Array_Type * ";char* ____BAH_COMPILER_VAR_974_ahomeaaloisanijlijchargementsabahasrcaparserbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_973_ahomeaaloisanijlijchargementsabahasrcaparserbbah, 7);struct rope* r = rope(____BAH_COMPILER_VAR_974_ahomeaaloisanijlijchargementsabahasrcaparserbbah);
 
-#line 1154 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1156 "/home/alois/Téléchargements/bah/src/parser.bah"
 if (isGlobal()) {
 
-#line 1155 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1157 "/home/alois/Téléchargements/bah/src/parser.bah"
 INIT = rope__add(INIT, r);
 }
 
-#line 1156 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1158 "/home/alois/Téléchargements/bah/src/parser.bah"
 else{
 
-#line 1157 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1159 "/home/alois/Téléchargements/bah/src/parser.bah"
 OUTPUT = rope__add(OUTPUT, r);
 }
 
-#line 1159 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1161 "/home/alois/Téléchargements/bah/src/parser.bah"
 NEXT_LINE = oldNL;
 
-#line 1161 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1163 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Tok ____BAH_COMPILER_VAR_975_ahomeaaloisanijlijchargementsabahasrcaparserbbah = {};
 ____BAH_COMPILER_VAR_975_ahomeaaloisanijlijchargementsabahasrcaparserbbah.ogCont = "\0\0\0\0""";
 ____BAH_COMPILER_VAR_975_ahomeaaloisanijlijchargementsabahasrcaparserbbah.line = 1;
@@ -16245,113 +16249,113 @@ ____BAH_COMPILER_VAR_975_ahomeaaloisanijlijchargementsabahasrcaparserbbah.isValu
 t = ____BAH_COMPILER_VAR_975_ahomeaaloisanijlijchargementsabahasrcaparserbbah;
 }
 
-#line 1169 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1171 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Tok keep_ref_____BAH_COMPILER_VAR_976_ahomeaaloisanijlijchargementsabahasrcaparserbbah = t;
 char* tt = getTypeFromToken(&t,true,elems);
 
-#line 1170 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1172 "/home/alois/Téléchargements/bah/src/parser.bah"
 if (__builtin_expect((compTypes(tt,elemBahTypeStr)==false), 0)) {
 
-#line 1171 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1173 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Tok keep_ref_____BAH_COMPILER_VAR_977_ahomeaaloisanijlijchargementsabahasrcaparserbbah = t;
 char** ____BAH_COMPILER_VAR_978_ahomeaaloisanijlijchargementsabahasrcaparserbbah = alloca(4 * sizeof(char*));____BAH_COMPILER_VAR_978_ahomeaaloisanijlijchargementsabahasrcaparserbbah[3] = elemBahTypeStr;____BAH_COMPILER_VAR_978_ahomeaaloisanijlijchargementsabahasrcaparserbbah[2] = "\05\0\0\0"") as ";____BAH_COMPILER_VAR_978_ahomeaaloisanijlijchargementsabahasrcaparserbbah[1] = tt;____BAH_COMPILER_VAR_978_ahomeaaloisanijlijchargementsabahasrcaparserbbah[0] = "\024\0\0\0""Cannot use {TOKEN} (";char* ____BAH_COMPILER_VAR_979_ahomeaaloisanijlijchargementsabahasrcaparserbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_978_ahomeaaloisanijlijchargementsabahasrcaparserbbah, 4);throwErr(&t,____BAH_COMPILER_VAR_979_ahomeaaloisanijlijchargementsabahasrcaparserbbah);
 }
 
-#line 1174 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1176 "/home/alois/Téléchargements/bah/src/parser.bah"
 char* strArrayLength = intToStr(arrayLength);
 
-#line 1175 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1177 "/home/alois/Téléchargements/bah/src/parser.bah"
 ++arrayLength;
 
-#line 1177 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1179 "/home/alois/Téléchargements/bah/src/parser.bah"
 char** ____BAH_COMPILER_VAR_980_ahomeaaloisanijlijchargementsabahasrcaparserbbah = alloca(9 * sizeof(char*));____BAH_COMPILER_VAR_980_ahomeaaloisanijlijchargementsabahasrcaparserbbah[8] = "\02\0\0\0"";\n";____BAH_COMPILER_VAR_980_ahomeaaloisanijlijchargementsabahasrcaparserbbah[7] = t.cont;____BAH_COMPILER_VAR_980_ahomeaaloisanijlijchargementsabahasrcaparserbbah[6] = "\04\0\0\0""] = ";____BAH_COMPILER_VAR_980_ahomeaaloisanijlijchargementsabahasrcaparserbbah[5] = strArrayLength;____BAH_COMPILER_VAR_980_ahomeaaloisanijlijchargementsabahasrcaparserbbah[4] = "\010\0\0\0""->data)[";____BAH_COMPILER_VAR_980_ahomeaaloisanijlijchargementsabahasrcaparserbbah[3] = v->name;____BAH_COMPILER_VAR_980_ahomeaaloisanijlijchargementsabahasrcaparserbbah[2] = "\02\0\0\0""*)";____BAH_COMPILER_VAR_980_ahomeaaloisanijlijchargementsabahasrcaparserbbah[1] = elemTypeStr;____BAH_COMPILER_VAR_980_ahomeaaloisanijlijchargementsabahasrcaparserbbah[0] = "\02\0\0\0""((";char* ____BAH_COMPILER_VAR_981_ahomeaaloisanijlijchargementsabahasrcaparserbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_980_ahomeaaloisanijlijchargementsabahasrcaparserbbah, 9);char** ____BAH_COMPILER_VAR_982_ahomeaaloisanijlijchargementsabahasrcaparserbbah = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_982_ahomeaaloisanijlijchargementsabahasrcaparserbbah[1] = ____BAH_COMPILER_VAR_981_ahomeaaloisanijlijchargementsabahasrcaparserbbah;____BAH_COMPILER_VAR_982_ahomeaaloisanijlijchargementsabahasrcaparserbbah[0] = NEXT_LINE;char* ____BAH_COMPILER_VAR_983_ahomeaaloisanijlijchargementsabahasrcaparserbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_982_ahomeaaloisanijlijchargementsabahasrcaparserbbah, 2);NEXT_LINE = ____BAH_COMPILER_VAR_983_ahomeaaloisanijlijchargementsabahasrcaparserbbah;
 
-#line 1178 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1180 "/home/alois/Téléchargements/bah/src/parser.bah"
 ++i;
 
-#line 1179 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1181 "/home/alois/Téléchargements/bah/src/parser.bah"
 t = ((struct Tok*)memory->data)[i];
 
-#line 1181 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1183 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((strcmp(t.cont, "\01\0\0\0"",") != 0)) {
 
-#line 1182 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1184 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((strcmp(t.cont, "\01\0\0\0""}") == 0)) {
 
-#line 1183 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1185 "/home/alois/Téléchargements/bah/src/parser.bah"
 long long int allocLength = arrayLength;
 
-#line 1184 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1186 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((allocLength>50)) {
 
-#line 1185 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1187 "/home/alois/Téléchargements/bah/src/parser.bah"
 long long int modAllocAmm = allocLength%50;
 
-#line 1186 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1188 "/home/alois/Téléchargements/bah/src/parser.bah"
 allocLength = allocLength+modAllocAmm;
 }
 
-#line 1187 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1189 "/home/alois/Téléchargements/bah/src/parser.bah"
 else{
 
-#line 1188 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1190 "/home/alois/Téléchargements/bah/src/parser.bah"
 allocLength = 50;
 }
 
-#line 1190 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1192 "/home/alois/Téléchargements/bah/src/parser.bah"
 char* allocLengthStr = intToStr(allocLength);
 
-#line 1191 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1193 "/home/alois/Téléchargements/bah/src/parser.bah"
 char** ____BAH_COMPILER_VAR_984_ahomeaaloisanijlijchargementsabahasrcaparserbbah = alloca(11 * sizeof(char*));____BAH_COMPILER_VAR_984_ahomeaaloisanijlijchargementsabahasrcaparserbbah[10] = NEXT_LINE;____BAH_COMPILER_VAR_984_ahomeaaloisanijlijchargementsabahasrcaparserbbah[9] = "\02\0\0\0"";\n";____BAH_COMPILER_VAR_984_ahomeaaloisanijlijchargementsabahasrcaparserbbah[8] = allocLengthStr;____BAH_COMPILER_VAR_984_ahomeaaloisanijlijchargementsabahasrcaparserbbah[7] = "\017\0\0\0""->realLength = ";____BAH_COMPILER_VAR_984_ahomeaaloisanijlijchargementsabahasrcaparserbbah[6] = v->name;____BAH_COMPILER_VAR_984_ahomeaaloisanijlijchargementsabahasrcaparserbbah[5] = "\027\0\0\0"");\n                    ";____BAH_COMPILER_VAR_984_ahomeaaloisanijlijchargementsabahasrcaparserbbah[4] = allocLengthStr;____BAH_COMPILER_VAR_984_ahomeaaloisanijlijchargementsabahasrcaparserbbah[3] = "\04\0\0\0"") * ";____BAH_COMPILER_VAR_984_ahomeaaloisanijlijchargementsabahasrcaparserbbah[2] = elemTypeStr;____BAH_COMPILER_VAR_984_ahomeaaloisanijlijchargementsabahasrcaparserbbah[1] = "\034\0\0\0""->data = memoryAlloc(sizeof(";____BAH_COMPILER_VAR_984_ahomeaaloisanijlijchargementsabahasrcaparserbbah[0] = v->name;char* ____BAH_COMPILER_VAR_985_ahomeaaloisanijlijchargementsabahasrcaparserbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_984_ahomeaaloisanijlijchargementsabahasrcaparserbbah, 11);NEXT_LINE = ____BAH_COMPILER_VAR_985_ahomeaaloisanijlijchargementsabahasrcaparserbbah;
 
-#line 1193 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1195 "/home/alois/Téléchargements/bah/src/parser.bah"
 goto ____BAH_COMPILER_VAR_969_ahomeaaloisanijlijchargementsabahasrcaparserbbah;
 }
 
-#line 1194 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1196 "/home/alois/Téléchargements/bah/src/parser.bah"
 else{
 
-#line 1195 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1197 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Tok keep_ref_____BAH_COMPILER_VAR_986_ahomeaaloisanijlijchargementsabahasrcaparserbbah = t;
 throwErr(&t,"\031\0\0\0""Expected ',' got {TOKEN}.");
 }
 }
 
-#line 1198 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1200 "/home/alois/Téléchargements/bah/src/parser.bah"
 ++i;
 };
 ____BAH_COMPILER_VAR_969_ahomeaaloisanijlijchargementsabahasrcaparserbbah: ;
 }
 
-#line 1201 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1203 "/home/alois/Téléchargements/bah/src/parser.bah"
 char* strArrayLength = intToStr(arrayLength);
 
-#line 1202 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1204 "/home/alois/Téléchargements/bah/src/parser.bah"
 char* name = v->name;
 
-#line 1204 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1206 "/home/alois/Téléchargements/bah/src/parser.bah"
 if (v->isArray) {
 
-#line 1205 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1207 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Tok* ar = v->arrRoot;
 
-#line 1206 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1208 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Tok* ai = v->arrIndex;
 
-#line 1207 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1209 "/home/alois/Téléchargements/bah/src/parser.bah"
 
                 struct string keep_ref_____BAH_COMPILER_VAR_987_ahomeaaloisanijlijchargementsabahasrcaparserbbah = getCType(v->type,elems);
                 char** ____BAH_COMPILER_VAR_988_ahomeaaloisanijlijchargementsabahasrcaparserbbah = alloca(7 * sizeof(char*));____BAH_COMPILER_VAR_988_ahomeaaloisanijlijchargementsabahasrcaparserbbah[6] = "\01\0\0\0""]";____BAH_COMPILER_VAR_988_ahomeaaloisanijlijchargementsabahasrcaparserbbah[5] = ai->cont;____BAH_COMPILER_VAR_988_ahomeaaloisanijlijchargementsabahasrcaparserbbah[4] = "\010\0\0\0""->data)[";____BAH_COMPILER_VAR_988_ahomeaaloisanijlijchargementsabahasrcaparserbbah[3] = ar->cont;____BAH_COMPILER_VAR_988_ahomeaaloisanijlijchargementsabahasrcaparserbbah[2] = "\02\0\0\0""*)";____BAH_COMPILER_VAR_988_ahomeaaloisanijlijchargementsabahasrcaparserbbah[1] = string__str(&keep_ref_____BAH_COMPILER_VAR_987_ahomeaaloisanijlijchargementsabahasrcaparserbbah);____BAH_COMPILER_VAR_988_ahomeaaloisanijlijchargementsabahasrcaparserbbah[0] = "\02\0\0\0""((";char* ____BAH_COMPILER_VAR_989_ahomeaaloisanijlijchargementsabahasrcaparserbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_988_ahomeaaloisanijlijchargementsabahasrcaparserbbah, 7);name = ____BAH_COMPILER_VAR_989_ahomeaaloisanijlijchargementsabahasrcaparserbbah;
 }
 
-#line 1210 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1212 "/home/alois/Téléchargements/bah/src/parser.bah"
 char** ____BAH_COMPILER_VAR_990_ahomeaaloisanijlijchargementsabahasrcaparserbbah = alloca(10 * sizeof(char*));____BAH_COMPILER_VAR_990_ahomeaaloisanijlijchargementsabahasrcaparserbbah[9] = NEXT_LINE;____BAH_COMPILER_VAR_990_ahomeaaloisanijlijchargementsabahasrcaparserbbah[8] = "\03\0\0\0"");\n";____BAH_COMPILER_VAR_990_ahomeaaloisanijlijchargementsabahasrcaparserbbah[7] = elemTypeStr;____BAH_COMPILER_VAR_990_ahomeaaloisanijlijchargementsabahasrcaparserbbah[6] = "\024\0\0\0""->elemSize = sizeof(";____BAH_COMPILER_VAR_990_ahomeaaloisanijlijchargementsabahasrcaparserbbah[5] = name;____BAH_COMPILER_VAR_990_ahomeaaloisanijlijchargementsabahasrcaparserbbah[4] = "\02\0\0\0"";\n";____BAH_COMPILER_VAR_990_ahomeaaloisanijlijchargementsabahasrcaparserbbah[3] = strArrayLength;____BAH_COMPILER_VAR_990_ahomeaaloisanijlijchargementsabahasrcaparserbbah[2] = "\013\0\0\0""->length = ";____BAH_COMPILER_VAR_990_ahomeaaloisanijlijchargementsabahasrcaparserbbah[1] = name;____BAH_COMPILER_VAR_990_ahomeaaloisanijlijchargementsabahasrcaparserbbah[0] = "\01\0\0\0""\n";char* ____BAH_COMPILER_VAR_991_ahomeaaloisanijlijchargementsabahasrcaparserbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_990_ahomeaaloisanijlijchargementsabahasrcaparserbbah, 10);NEXT_LINE = ____BAH_COMPILER_VAR_991_ahomeaaloisanijlijchargementsabahasrcaparserbbah;
 
-#line 1214 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1216 "/home/alois/Téléchargements/bah/src/parser.bah"
 return code;
 };
 
-#line 1218 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1220 "/home/alois/Téléchargements/bah/src/parser.bah"
 char ____BAH_COMPILER_VAR_1007_ahomeaaloisanijlijchargementsabahasrcaparserbbah(struct Bah_Array_Type* arr, char* el) {
         if (__builtin_expect(arr == 0, 0)) {
             return 0;
@@ -16365,93 +16369,93 @@ char ____BAH_COMPILER_VAR_1007_ahomeaaloisanijlijchargementsabahasrcaparserbbah(
         }
 void parseVar(struct Bah_Array_Type* l,struct Elems* elems){
 
-#line 1219 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1221 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Tok ft = ((struct Tok*)l->data)[0];
 
-#line 1220 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1222 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((ft.isFunc==true)) {
 
-#line 1221 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1223 "/home/alois/Téléchargements/bah/src/parser.bah"
 if (__builtin_expect((len(l)>1), 0)) {
 
-#line 1222 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1224 "/home/alois/Téléchargements/bah/src/parser.bah"
 throwErr(&((struct Tok*)l->data)[len(l)-1],"\052\0\0\0""Not expecting {TOKEN} after function call.");
 }
 
-#line 1224 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1226 "/home/alois/Téléchargements/bah/src/parser.bah"
 ft = ((struct Tok*)l->data)[0];
 
-#line 1225 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1227 "/home/alois/Téléchargements/bah/src/parser.bah"
 char parsed = true;
 
-#line 1227 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1229 "/home/alois/Téléchargements/bah/src/parser.bah"
 if (RCPavailable()) {
 
-#line 1228 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1230 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Tok keep_ref_____BAH_COMPILER_VAR_992_ahomeaaloisanijlijchargementsabahasrcaparserbbah = ft;
 struct func* ____BAH_COMPILER_VAR_993_ahomeaaloisanijlijchargementsabahasrcaparserbbah = searchVirtFuncByToken(&ft,elems);if (____BAH_COMPILER_VAR_993_ahomeaaloisanijlijchargementsabahasrcaparserbbah != null) {
 struct func* fn = ____BAH_COMPILER_VAR_993_ahomeaaloisanijlijchargementsabahasrcaparserbbah;
 
-#line 1229 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1231 "/home/alois/Téléchargements/bah/src/parser.bah"
 if (isRCPtype(fn->returns->type,elems)) {
 
-#line 1230 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1232 "/home/alois/Téléchargements/bah/src/parser.bah"
 char** ____BAH_COMPILER_VAR_994_ahomeaaloisanijlijchargementsabahasrcaparserbbah = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_994_ahomeaaloisanijlijchargementsabahasrcaparserbbah[2] = "\04\0\0\0"", 0)";____BAH_COMPILER_VAR_994_ahomeaaloisanijlijchargementsabahasrcaparserbbah[1] = ft.cont;____BAH_COMPILER_VAR_994_ahomeaaloisanijlijchargementsabahasrcaparserbbah[0] = "\011\0\0\0""RCP_decr(";char* ____BAH_COMPILER_VAR_995_ahomeaaloisanijlijchargementsabahasrcaparserbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_994_ahomeaaloisanijlijchargementsabahasrcaparserbbah, 3);ft.cont = ____BAH_COMPILER_VAR_995_ahomeaaloisanijlijchargementsabahasrcaparserbbah;
 }
 }
 }
 
-#line 1236 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1238 "/home/alois/Téléchargements/bah/src/parser.bah"
 char** ____BAH_COMPILER_VAR_996_ahomeaaloisanijlijchargementsabahasrcaparserbbah = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_996_ahomeaaloisanijlijchargementsabahasrcaparserbbah[1] = "\02\0\0\0"";\n";____BAH_COMPILER_VAR_996_ahomeaaloisanijlijchargementsabahasrcaparserbbah[0] = ft.cont;char* ____BAH_COMPILER_VAR_997_ahomeaaloisanijlijchargementsabahasrcaparserbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_996_ahomeaaloisanijlijchargementsabahasrcaparserbbah, 2);OUTPUT = rope__add(OUTPUT, rope(____BAH_COMPILER_VAR_997_ahomeaaloisanijlijchargementsabahasrcaparserbbah));
 
-#line 1237 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1239 "/home/alois/Téléchargements/bah/src/parser.bah"
 return;
 }
 
-#line 1239 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1241 "/home/alois/Téléchargements/bah/src/parser.bah"
 l = parseStructType(l,(lineType)-1,elems);
 
-#line 1240 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1242 "/home/alois/Téléchargements/bah/src/parser.bah"
 char isEqual = false;
 
-#line 1241 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1243 "/home/alois/Téléchargements/bah/src/parser.bah"
 long long int equalIndex = 0;
 
-#line 1242 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1244 "/home/alois/Téléchargements/bah/src/parser.bah"
 char toVar = false;
 
-#line 1243 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1245 "/home/alois/Téléchargements/bah/src/parser.bah"
 char isPointedVar = false;
 
-#line 1244 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1246 "/home/alois/Téléchargements/bah/src/parser.bah"
 char isStruct = false;
 
-#line 1245 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1247 "/home/alois/Téléchargements/bah/src/parser.bah"
 char* currentType = "\0\0\0\0""";
 
-#line 1247 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1249 "/home/alois/Téléchargements/bah/src/parser.bah"
 ft = ((struct Tok*)l->data)[0];
 
-#line 1248 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1250 "/home/alois/Téléchargements/bah/src/parser.bah"
 char exists = true;
 
-#line 1262 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1264 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Tok keep_ref_____BAH_COMPILER_VAR_998_ahomeaaloisanijlijchargementsabahasrcaparserbbah = ft;
 struct variable* v = searchVirtVarByToken(&ft,elems);if (v == null) {
-#line 1263 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1265 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((Tok__getRefVar(&ft)!=null)) {
 
-#line 1264 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1266 "/home/alois/Téléchargements/bah/src/parser.bah"
 v = Tok__getRefVar(&ft);
 }
 
-#line 1265 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1267 "/home/alois/Téléchargements/bah/src/parser.bah"
 else{
 
-#line 1266 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1268 "/home/alois/Téléchargements/bah/src/parser.bah"
 exists = false;
 
-#line 1267 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1269 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct variable* ____BAH_COMPILER_VAR_999_ahomeaaloisanijlijchargementsabahasrcaparserbbah = memoryAlloc(sizeof(struct variable));
 ____BAH_COMPILER_VAR_999_ahomeaaloisanijlijchargementsabahasrcaparserbbah->name = "\0\0\0\0""";
 ____BAH_COMPILER_VAR_999_ahomeaaloisanijlijchargementsabahasrcaparserbbah->type = "\0\0\0\0""";
@@ -16459,90 +16463,90 @@ ____BAH_COMPILER_VAR_999_ahomeaaloisanijlijchargementsabahasrcaparserbbah->const
 ____BAH_COMPILER_VAR_999_ahomeaaloisanijlijchargementsabahasrcaparserbbah->from = "\0\0\0\0""";
 v = ____BAH_COMPILER_VAR_999_ahomeaaloisanijlijchargementsabahasrcaparserbbah;
 
-#line 1268 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1270 "/home/alois/Téléchargements/bah/src/parser.bah"
 v->name = ft.cont;
 
-#line 1269 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1271 "/home/alois/Téléchargements/bah/src/parser.bah"
 v->type = "\0\0\0\0""";
 }
 
-#line 1271 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1273 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((v==null)) {
 
-#line 1272 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1274 "/home/alois/Téléchargements/bah/src/parser.bah"
 return;
 }
 }
 
-#line 1276 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1278 "/home/alois/Téléchargements/bah/src/parser.bah"
 if (__builtin_expect((v->isConst==true), 0)) {
 
-#line 1277 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1279 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Tok keep_ref_____BAH_COMPILER_VAR_1000_ahomeaaloisanijlijchargementsabahasrcaparserbbah = ft;
 throwErr(&ft,"\046\0\0\0""Cannot set the value of const {TOKEN}.");
 }
 
-#line 1279 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1281 "/home/alois/Téléchargements/bah/src/parser.bah"
 char* code = "\0\0\0\0""";
 
-#line 1281 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1283 "/home/alois/Téléchargements/bah/src/parser.bah"
 if (__builtin_expect((exists==true)&&isGlobal(), 0)) {
 
-#line 1282 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1284 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Tok keep_ref_____BAH_COMPILER_VAR_1001_ahomeaaloisanijlijchargementsabahasrcaparserbbah = ft;
 throwErr(&ft,"\051\0\0\0""Cannot redeclare global variable {TOKEN}.");
 }
 
-#line 1286 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1288 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((len(l)==1)) {
 
-#line 1287 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1289 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Tok t = ((struct Tok*)l->data)[0];
 
-#line 1288 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1290 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Tok keep_ref_____BAH_COMPILER_VAR_1002_ahomeaaloisanijlijchargementsabahasrcaparserbbah = t;
 v = searchVirtVarByToken(&t,elems);
 
-#line 1289 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1291 "/home/alois/Téléchargements/bah/src/parser.bah"
 if (__builtin_expect((v==null), 0)) {
 
-#line 1290 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1292 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Tok keep_ref_____BAH_COMPILER_VAR_1003_ahomeaaloisanijlijchargementsabahasrcaparserbbah = t;
 throwErr(&t,"\067\0\0\0""Cannot increase/decrease not declared variable {TOKEN}.");
 }
 
-#line 1292 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1294 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct variable* rv = getRealVar(v->name,elems);
 
-#line 1293 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1295 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((rv!=null)) {
 
-#line 1294 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1296 "/home/alois/Téléchargements/bah/src/parser.bah"
 rv->lastSet = elems;
 }
 
-#line 1296 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1298 "/home/alois/Téléchargements/bah/src/parser.bah"
 char** ____BAH_COMPILER_VAR_1004_ahomeaaloisanijlijchargementsabahasrcaparserbbah = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1004_ahomeaaloisanijlijchargementsabahasrcaparserbbah[1] = "\02\0\0\0"";\n";____BAH_COMPILER_VAR_1004_ahomeaaloisanijlijchargementsabahasrcaparserbbah[0] = t.cont;char* ____BAH_COMPILER_VAR_1005_ahomeaaloisanijlijchargementsabahasrcaparserbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_1004_ahomeaaloisanijlijchargementsabahasrcaparserbbah, 2);OUTPUT = rope__add(OUTPUT, rope(____BAH_COMPILER_VAR_1005_ahomeaaloisanijlijchargementsabahasrcaparserbbah));
 
-#line 1297 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1299 "/home/alois/Téléchargements/bah/src/parser.bah"
 return;
 }
 
-#line 1300 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1302 "/home/alois/Téléchargements/bah/src/parser.bah"
 if (__builtin_expect((len(l)<2), 0)) {
 
-#line 1301 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1303 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Tok keep_ref_____BAH_COMPILER_VAR_1006_ahomeaaloisanijlijchargementsabahasrcaparserbbah = ft;
 throwErr(&ft,"\032\0\0\0""Missing '=' after {TOKEN}.");
 }
 
-#line 1303 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1305 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Tok operT = ((struct Tok*)l->data)[1];
 
-#line 1304 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1306 "/home/alois/Téléchargements/bah/src/parser.bah"
 if (____BAH_COMPILER_VAR_1007_ahomeaaloisanijlijchargementsabahasrcaparserbbah(equalsTokens, operT.cont)&&(strcmp(operT.cont, "\01\0\0\0""=") != 0)) {
 
-#line 1305 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1307 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Bah_Array_Type* nl = memoryAlloc(sizeof(struct Bah_Array_Type));
 
 nl->length = 1;
@@ -16551,34 +16555,34 @@ nl->data = memoryAlloc(sizeof(struct Tok) * 50);
                     nl->realLength = 50;
 ((struct Tok*)nl->data)[0] = ((struct Tok*)l->data)[0];
 
-#line 1306 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1308 "/home/alois/Téléchargements/bah/src/parser.bah"
 if (__builtin_expect((2==len(l)), 0)) {
 
-#line 1307 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1309 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Tok keep_ref_____BAH_COMPILER_VAR_1008_ahomeaaloisanijlijchargementsabahasrcaparserbbah = operT;
 throwErr(&operT,"\036\0\0\0""Cannot use {TOKEN} on nothing.");
 }
 
-#line 1309 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1311 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct string oper = string(operT.cont);
 
-#line 1310 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1312 "/home/alois/Téléchargements/bah/src/parser.bah"
 string__trimRight(&oper,1);
 
-#line 1311 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1313 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Tok operTok = operT;
 
-#line 1312 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1314 "/home/alois/Téléchargements/bah/src/parser.bah"
 operTok.cont = string__str(&oper);
 
-#line 1314 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1316 "/home/alois/Téléchargements/bah/src/parser.bah"
 if (((struct Tok*)l->data)[2].isOper) {
 
-#line 1315 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1317 "/home/alois/Téléchargements/bah/src/parser.bah"
 char** ____BAH_COMPILER_VAR_1009_ahomeaaloisanijlijchargementsabahasrcaparserbbah = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_1009_ahomeaaloisanijlijchargementsabahasrcaparserbbah[2] = "\01\0\0\0"")";____BAH_COMPILER_VAR_1009_ahomeaaloisanijlijchargementsabahasrcaparserbbah[1] = ((struct Tok*)l->data)[2].cont;____BAH_COMPILER_VAR_1009_ahomeaaloisanijlijchargementsabahasrcaparserbbah[0] = "\01\0\0\0""(";char* ____BAH_COMPILER_VAR_1010_ahomeaaloisanijlijchargementsabahasrcaparserbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_1009_ahomeaaloisanijlijchargementsabahasrcaparserbbah, 3);((struct Tok*)l->data)[2].cont = ____BAH_COMPILER_VAR_1010_ahomeaaloisanijlijchargementsabahasrcaparserbbah;
 }
 
-#line 1318 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1320 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Bah_Array_Type* tmpL = memoryAlloc(sizeof(struct Bah_Array_Type));
 
 tmpL->length = 3;
@@ -16589,217 +16593,217 @@ tmpL->data = memoryAlloc(sizeof(struct Tok) * 50);
 ((struct Tok*)tmpL->data)[1] = operTok;
 ((struct Tok*)tmpL->data)[2] = ((struct Tok*)l->data)[2];
 
-#line 1324 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1326 "/home/alois/Téléchargements/bah/src/parser.bah"
 currSetVar = v;
 
-#line 1326 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1328 "/home/alois/Téléchargements/bah/src/parser.bah"
 tmpL = prePross(tmpL,LINE_TYPE_VAR,elems);
 
-#line 1327 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1329 "/home/alois/Téléchargements/bah/src/parser.bah"
 currSetVar = null;
 
-#line 1329 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1331 "/home/alois/Téléchargements/bah/src/parser.bah"
 operT.cont = "\01\0\0\0""=";
 
-#line 1330 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1332 "/home/alois/Téléchargements/bah/src/parser.bah"
 unsigned int ____BAH_COMPILER_VAR_1011_ahomeaaloisanijlijchargementsabahasrcaparserbbah = len(nl);
     __Bah_realocate_arr(nl, ____BAH_COMPILER_VAR_1011_ahomeaaloisanijlijchargementsabahasrcaparserbbah);
     ((struct Tok*)nl->data)[____BAH_COMPILER_VAR_1011_ahomeaaloisanijlijchargementsabahasrcaparserbbah] = operT;
 
-#line 1332 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1334 "/home/alois/Téléchargements/bah/src/parser.bah"
 register long long int j = 0;
 
-#line 1332 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1334 "/home/alois/Téléchargements/bah/src/parser.bah"
 for (; (j<len(tmpL)); ++j) {
 
-#line 1333 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1335 "/home/alois/Téléchargements/bah/src/parser.bah"
 unsigned int ____BAH_COMPILER_VAR_1013_ahomeaaloisanijlijchargementsabahasrcaparserbbah = len(nl);
     __Bah_realocate_arr(nl, ____BAH_COMPILER_VAR_1013_ahomeaaloisanijlijchargementsabahasrcaparserbbah);
     ((struct Tok*)nl->data)[____BAH_COMPILER_VAR_1013_ahomeaaloisanijlijchargementsabahasrcaparserbbah] = ((struct Tok*)tmpL->data)[j];
 };
 ____BAH_COMPILER_VAR_1012_ahomeaaloisanijlijchargementsabahasrcaparserbbah: ;
 
-#line 1337 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1339 "/home/alois/Téléchargements/bah/src/parser.bah"
 l = nl;
 }
 
-#line 1340 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1342 "/home/alois/Téléchargements/bah/src/parser.bah"
 register long long int i = 1;
 
-#line 1340 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1342 "/home/alois/Téléchargements/bah/src/parser.bah"
 while ((i<len(l))) {
 
-#line 1341 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1343 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Tok t = ((struct Tok*)l->data)[i];
 
-#line 1342 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1344 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((t.type==TOKEN_TYPE_SYNTAX)) {
 
-#line 1343 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1345 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((strcmp(t.cont, "\01\0\0\0""=") == 0)) {
 
-#line 1344 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1346 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((strlen(currentType)>0)) {
 
-#line 1345 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1347 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct string sct = string(currentType);
 
-#line 1346 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1348 "/home/alois/Téléchargements/bah/src/parser.bah"
 string__replace(&sct,"\01\0\0\0"" ","\0\0\0\0""");
 
-#line 1347 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1349 "/home/alois/Téléchargements/bah/src/parser.bah"
 v->type = string__str(&sct);
 }
 
-#line 1349 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1351 "/home/alois/Téléchargements/bah/src/parser.bah"
 isEqual = true;
 
-#line 1350 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1352 "/home/alois/Téléchargements/bah/src/parser.bah"
 equalIndex = i;
 
-#line 1351 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1353 "/home/alois/Téléchargements/bah/src/parser.bah"
 ++i;
 
-#line 1352 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1354 "/home/alois/Téléchargements/bah/src/parser.bah"
 continue;
 }
 }
 
-#line 1355 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1357 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((isEqual==false)) {
 
-#line 1356 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1358 "/home/alois/Téléchargements/bah/src/parser.bah"
 if (__builtin_expect((t.type!=TOKEN_TYPE_KEYWORD)&&(t.type!=TOKEN_TYPE_VAR)&&((strcmp(t.cont, "\01\0\0\0"":") != 0)&&(strcmp(t.cont, "\01\0\0\0""(") != 0)&&(strcmp(t.cont, "\01\0\0\0"")") != 0))||t.isFunc||t.isOper, 0)) {
 
-#line 1357 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1359 "/home/alois/Téléchargements/bah/src/parser.bah"
 char** ____BAH_COMPILER_VAR_1015_ahomeaaloisanijlijchargementsabahasrcaparserbbah = alloca(5 * sizeof(char*));____BAH_COMPILER_VAR_1015_ahomeaaloisanijlijchargementsabahasrcaparserbbah[4] = "\01\0\0\0"".";____BAH_COMPILER_VAR_1015_ahomeaaloisanijlijchargementsabahasrcaparserbbah[3] = t.ogCont;____BAH_COMPILER_VAR_1015_ahomeaaloisanijlijchargementsabahasrcaparserbbah[2] = "\05\0\0\0"" and ";____BAH_COMPILER_VAR_1015_ahomeaaloisanijlijchargementsabahasrcaparserbbah[1] = v->name;____BAH_COMPILER_VAR_1015_ahomeaaloisanijlijchargementsabahasrcaparserbbah[0] = "\043\0\0\0""You may have forgotten '=' between ";char* ____BAH_COMPILER_VAR_1016_ahomeaaloisanijlijchargementsabahasrcaparserbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_1015_ahomeaaloisanijlijchargementsabahasrcaparserbbah, 5);throwWarningLine(____BAH_COMPILER_VAR_1016_ahomeaaloisanijlijchargementsabahasrcaparserbbah,t.line);
 
-#line 1358 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1360 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Tok keep_ref_____BAH_COMPILER_VAR_1017_ahomeaaloisanijlijchargementsabahasrcaparserbbah = t;
 throwErr(&t,"\033\0\0\0""Cannot use {TOKEN} as type.");
 }
 
-#line 1360 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1362 "/home/alois/Téléchargements/bah/src/parser.bah"
 char** ____BAH_COMPILER_VAR_1018_ahomeaaloisanijlijchargementsabahasrcaparserbbah = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1018_ahomeaaloisanijlijchargementsabahasrcaparserbbah[1] = t.cont;____BAH_COMPILER_VAR_1018_ahomeaaloisanijlijchargementsabahasrcaparserbbah[0] = currentType;char* ____BAH_COMPILER_VAR_1019_ahomeaaloisanijlijchargementsabahasrcaparserbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_1018_ahomeaaloisanijlijchargementsabahasrcaparserbbah, 2);currentType = ____BAH_COMPILER_VAR_1019_ahomeaaloisanijlijchargementsabahasrcaparserbbah;
 }
 
-#line 1361 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1363 "/home/alois/Téléchargements/bah/src/parser.bah"
 else{
 
-#line 1363 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1365 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((t.isEqual==true)&&(exists==false)&&(isGlobal()==false)) {
 
-#line 1365 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1367 "/home/alois/Téléchargements/bah/src/parser.bah"
 v->canBeNull = false;
 }
 
-#line 1368 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1370 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((strcmp(t.cont, "\04\0\0\0""chan") == 0)) {
 
-#line 1369 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1371 "/home/alois/Téléchargements/bah/src/parser.bah"
 if (__builtin_expect((i>=len(l)), 0)) {
 
-#line 1370 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1372 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Tok keep_ref_____BAH_COMPILER_VAR_1020_ahomeaaloisanijlijchargementsabahasrcaparserbbah = t;
 throwErr(&t,"\066\0\0\0""Cannot declare a {TOKEN} without a type (chan <type>).");
 }
 
-#line 1372 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1374 "/home/alois/Téléchargements/bah/src/parser.bah"
 ++i;
 
-#line 1373 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1375 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Tok nt = ((struct Tok*)l->data)[i];
 
-#line 1374 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1376 "/home/alois/Téléchargements/bah/src/parser.bah"
 char** ____BAH_COMPILER_VAR_1021_ahomeaaloisanijlijchargementsabahasrcaparserbbah = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1021_ahomeaaloisanijlijchargementsabahasrcaparserbbah[1] = nt.cont;____BAH_COMPILER_VAR_1021_ahomeaaloisanijlijchargementsabahasrcaparserbbah[0] = "\05\0\0\0""chan:";char* ____BAH_COMPILER_VAR_1022_ahomeaaloisanijlijchargementsabahasrcaparserbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_1021_ahomeaaloisanijlijchargementsabahasrcaparserbbah, 2);v->type = ____BAH_COMPILER_VAR_1022_ahomeaaloisanijlijchargementsabahasrcaparserbbah;
 
-#line 1375 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1377 "/home/alois/Téléchargements/bah/src/parser.bah"
 code = "\011\0\0\0""channel()";
 
-#line 1376 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1378 "/home/alois/Téléchargements/bah/src/parser.bah"
 if (__builtin_expect((i+1!=len(l)), 0)) {
 
-#line 1377 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1379 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Tok errT = ((struct Tok*)l->data)[i+1];
 
-#line 1378 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1380 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Tok keep_ref_____BAH_COMPILER_VAR_1023_ahomeaaloisanijlijchargementsabahasrcaparserbbah = errT;
 throwErr(&errT,"\057\0\0\0""{TOKEN} not expected after channel declaration.");
 }
 
-#line 1380 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1382 "/home/alois/Téléchargements/bah/src/parser.bah"
 goto ____BAH_COMPILER_VAR_1014_ahomeaaloisanijlijchargementsabahasrcaparserbbah;
 }
 
-#line 1381 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1383 "/home/alois/Téléchargements/bah/src/parser.bah"
 else{
 if ((strcmp(t.cont, "\03\0\0\0""map") == 0)) {
 
-#line 1382 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1384 "/home/alois/Téléchargements/bah/src/parser.bah"
 if (__builtin_expect((i>=len(l)), 0)) {
 
-#line 1383 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1385 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Tok keep_ref_____BAH_COMPILER_VAR_1024_ahomeaaloisanijlijchargementsabahasrcaparserbbah = t;
 throwErr(&t,"\065\0\0\0""Cannot declare a {TOKEN} without a type (map <type>).");
 }
 
-#line 1385 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1387 "/home/alois/Téléchargements/bah/src/parser.bah"
 ++i;
 
-#line 1386 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1388 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Tok nt = ((struct Tok*)l->data)[i];
 
-#line 1387 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1389 "/home/alois/Téléchargements/bah/src/parser.bah"
 char** ____BAH_COMPILER_VAR_1025_ahomeaaloisanijlijchargementsabahasrcaparserbbah = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1025_ahomeaaloisanijlijchargementsabahasrcaparserbbah[1] = nt.cont;____BAH_COMPILER_VAR_1025_ahomeaaloisanijlijchargementsabahasrcaparserbbah[0] = "\04\0\0\0""map:";char* ____BAH_COMPILER_VAR_1026_ahomeaaloisanijlijchargementsabahasrcaparserbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_1025_ahomeaaloisanijlijchargementsabahasrcaparserbbah, 2);v->type = ____BAH_COMPILER_VAR_1026_ahomeaaloisanijlijchargementsabahasrcaparserbbah;
 
-#line 1388 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1390 "/home/alois/Téléchargements/bah/src/parser.bah"
 code = "\014\0\0\0""mapWrapper()";
 
-#line 1389 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1391 "/home/alois/Téléchargements/bah/src/parser.bah"
 if (__builtin_expect((i+1!=len(l)), 0)) {
 
-#line 1390 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1392 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Tok errT = ((struct Tok*)l->data)[i+1];
 
-#line 1391 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1393 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Tok keep_ref_____BAH_COMPILER_VAR_1027_ahomeaaloisanijlijchargementsabahasrcaparserbbah = errT;
 throwErr(&errT,"\053\0\0\0""{TOKEN} not expected after map declaration.");
 }
 
-#line 1393 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1395 "/home/alois/Téléchargements/bah/src/parser.bah"
 goto ____BAH_COMPILER_VAR_1014_ahomeaaloisanijlijchargementsabahasrcaparserbbah;
 }
 
-#line 1394 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1396 "/home/alois/Téléchargements/bah/src/parser.bah"
 else{
 if ((strcmp(t.cont, "\06\0\0\0""buffer") == 0)) {
 
-#line 1395 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1397 "/home/alois/Téléchargements/bah/src/parser.bah"
 if (__builtin_expect((i>=len(l)), 0)) {
 
-#line 1396 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1398 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Tok keep_ref_____BAH_COMPILER_VAR_1028_ahomeaaloisanijlijchargementsabahasrcaparserbbah = t;
 throwErr(&t,"\074\0\0\0""Cannot declare a {TOKEN} without a length (buffer <length>).");
 }
 
-#line 1398 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1400 "/home/alois/Téléchargements/bah/src/parser.bah"
 ++i;
 
-#line 1399 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1401 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Tok nt = ((struct Tok*)l->data)[i];
 
-#line 1400 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1402 "/home/alois/Téléchargements/bah/src/parser.bah"
 if (__builtin_expect((nt.type!=TOKEN_TYPE_INT), 0)) {
 
-#line 1401 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1403 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Tok keep_ref_____BAH_COMPILER_VAR_1029_ahomeaaloisanijlijchargementsabahasrcaparserbbah = nt;
 throwErr(&nt,"\044\0\0\0""Expected buffer length, not {TOKEN}.");
 }
 
-#line 1403 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1405 "/home/alois/Téléchargements/bah/src/parser.bah"
 char** ____BAH_COMPILER_VAR_1030_ahomeaaloisanijlijchargementsabahasrcaparserbbah = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1030_ahomeaaloisanijlijchargementsabahasrcaparserbbah[1] = nt.cont;____BAH_COMPILER_VAR_1030_ahomeaaloisanijlijchargementsabahasrcaparserbbah[0] = "\07\0\0\0""buffer:";char* ____BAH_COMPILER_VAR_1031_ahomeaaloisanijlijchargementsabahasrcaparserbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_1030_ahomeaaloisanijlijchargementsabahasrcaparserbbah, 2);v->type = ____BAH_COMPILER_VAR_1031_ahomeaaloisanijlijchargementsabahasrcaparserbbah;
 
-#line 1404 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1406 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct variable* ____BAH_COMPILER_VAR_1032_ahomeaaloisanijlijchargementsabahasrcaparserbbah = memoryAlloc(sizeof(struct variable));
 ____BAH_COMPILER_VAR_1032_ahomeaaloisanijlijchargementsabahasrcaparserbbah->name = "\0\0\0\0""";
 ____BAH_COMPILER_VAR_1032_ahomeaaloisanijlijchargementsabahasrcaparserbbah->type = "\0\0\0\0""";
@@ -16807,137 +16811,137 @@ ____BAH_COMPILER_VAR_1032_ahomeaaloisanijlijchargementsabahasrcaparserbbah->cons
 ____BAH_COMPILER_VAR_1032_ahomeaaloisanijlijchargementsabahasrcaparserbbah->from = "\0\0\0\0""";
 struct variable* av = ____BAH_COMPILER_VAR_1032_ahomeaaloisanijlijchargementsabahasrcaparserbbah;
 
-#line 1405 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1407 "/home/alois/Téléchargements/bah/src/parser.bah"
 av->type = "\05\0\0\0""char*";
 
-#line 1406 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1408 "/home/alois/Téléchargements/bah/src/parser.bah"
 av->name = genCompilerVar();
 
-#line 1407 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1409 "/home/alois/Téléchargements/bah/src/parser.bah"
 unsigned int ____BAH_COMPILER_VAR_1033_ahomeaaloisanijlijchargementsabahasrcaparserbbah = len(elems->vars);
     __Bah_realocate_arr(elems->vars, ____BAH_COMPILER_VAR_1033_ahomeaaloisanijlijchargementsabahasrcaparserbbah);
     ((struct variable**)elems->vars->data)[____BAH_COMPILER_VAR_1033_ahomeaaloisanijlijchargementsabahasrcaparserbbah] = av;
 
-#line 1408 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1410 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct string cType = getCType(av->type,elems);
 
-#line 1409 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1411 "/home/alois/Téléchargements/bah/src/parser.bah"
 char** ____BAH_COMPILER_VAR_1034_ahomeaaloisanijlijchargementsabahasrcaparserbbah = alloca(5 * sizeof(char*));____BAH_COMPILER_VAR_1034_ahomeaaloisanijlijchargementsabahasrcaparserbbah[4] = "\02\0\0\0""];";____BAH_COMPILER_VAR_1034_ahomeaaloisanijlijchargementsabahasrcaparserbbah[3] = nt.cont;____BAH_COMPILER_VAR_1034_ahomeaaloisanijlijchargementsabahasrcaparserbbah[2] = "\01\0\0\0""[";____BAH_COMPILER_VAR_1034_ahomeaaloisanijlijchargementsabahasrcaparserbbah[1] = av->name;____BAH_COMPILER_VAR_1034_ahomeaaloisanijlijchargementsabahasrcaparserbbah[0] = "\05\0\0\0""char ";char* ____BAH_COMPILER_VAR_1035_ahomeaaloisanijlijchargementsabahasrcaparserbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_1034_ahomeaaloisanijlijchargementsabahasrcaparserbbah, 5);OUTPUT = rope__add(OUTPUT, rope(____BAH_COMPILER_VAR_1035_ahomeaaloisanijlijchargementsabahasrcaparserbbah));
 
-#line 1410 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1412 "/home/alois/Téléchargements/bah/src/parser.bah"
 code = av->name;
 
-#line 1411 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1413 "/home/alois/Téléchargements/bah/src/parser.bah"
 if (__builtin_expect((i+1!=len(l)), 0)) {
 
-#line 1412 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1414 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Tok errT = ((struct Tok*)l->data)[i+1];
 
-#line 1413 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1415 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Tok keep_ref_____BAH_COMPILER_VAR_1036_ahomeaaloisanijlijchargementsabahasrcaparserbbah = errT;
 throwErr(&errT,"\056\0\0\0""{TOKEN} not expected after buffer declaration.");
 }
 
-#line 1415 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1417 "/home/alois/Téléchargements/bah/src/parser.bah"
 goto ____BAH_COMPILER_VAR_1014_ahomeaaloisanijlijchargementsabahasrcaparserbbah;
 }
 }
 }
 
-#line 1419 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1421 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Tok keep_ref_____BAH_COMPILER_VAR_1037_ahomeaaloisanijlijchargementsabahasrcaparserbbah = t;
 char* tp = getTypeFromToken(&t,true,elems);
 
-#line 1422 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1424 "/home/alois/Téléchargements/bah/src/parser.bah"
 
                 struct string keep_ref_____BAH_COMPILER_VAR_1038_ahomeaaloisanijlijchargementsabahasrcaparserbbah = string(compilerState.currentDir);
                 if ((isUnsafe==false)&&(string__hasPrefix(&keep_ref_____BAH_COMPILER_VAR_1038_ahomeaaloisanijlijchargementsabahasrcaparserbbah,BAH_DIR)==false)&&isRCPpointerType(tp)&&(v->isArray==false)) {
 
-#line 1423 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1425 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((strcmp(t.cont, "\04\0\0\0""null") == 0)||(tp[strlen(tp)-1+4]==33)) {
 
-#line 1424 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1426 "/home/alois/Téléchargements/bah/src/parser.bah"
 if (exists) {
 
-#line 1425 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1427 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct variable* rv = getRealVar(v->name,elems);
 
-#line 1426 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1428 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((rv!=null)) {
 
-#line 1427 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1429 "/home/alois/Téléchargements/bah/src/parser.bah"
 rv->canBeNull = true;
 }
 }
 
-#line 1429 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1431 "/home/alois/Téléchargements/bah/src/parser.bah"
 else{
 
-#line 1430 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1432 "/home/alois/Téléchargements/bah/src/parser.bah"
 v->canBeNull = true;
 }
 }
 
-#line 1432 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1434 "/home/alois/Téléchargements/bah/src/parser.bah"
 else{
 if ((t.type==TOKEN_TYPE_VAR)&&(t.isOper==false)) {
 
-#line 1433 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1435 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Tok keep_ref_____BAH_COMPILER_VAR_1039_ahomeaaloisanijlijchargementsabahasrcaparserbbah = t;
 struct variable* tv = searchVirtVarByToken(&t,elems);
 
-#line 1434 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1436 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((tv!=null)) {
 
-#line 1435 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1437 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((exists==true)&&(tv->canBeNull==false)) {
 
-#line 1436 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1438 "/home/alois/Téléchargements/bah/src/parser.bah"
 if (canChangeNullState(v,elems)) {
 
-#line 1437 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1439 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct variable* rv = getRealVar(v->name,elems);
 
-#line 1438 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1440 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((rv!=null)) {
 
-#line 1439 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1441 "/home/alois/Téléchargements/bah/src/parser.bah"
 rv->canBeNull = false;
 }
 }
 
-#line 1441 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1443 "/home/alois/Téléchargements/bah/src/parser.bah"
 else{
 
-#line 1442 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1444 "/home/alois/Téléchargements/bah/src/parser.bah"
 register long long int j = 0;
 
-#line 1442 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1444 "/home/alois/Téléchargements/bah/src/parser.bah"
 for (; (j<len(elems->branchChecks)); ++j) {
 
-#line 1443 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1445 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((((struct varCheck*)elems->branchChecks->data)[j].v==null)) {
 
-#line 1444 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1446 "/home/alois/Téléchargements/bah/src/parser.bah"
 continue;
 }
 
-#line 1446 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1448 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((strcmp(((struct varCheck*)elems->branchChecks->data)[j].v->name, v->name) == 0)) {
 
-#line 1447 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1449 "/home/alois/Téléchargements/bah/src/parser.bah"
 ((struct varCheck*)elems->branchChecks->data)[j].checkNull = false;
 
-#line 1448 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1450 "/home/alois/Téléchargements/bah/src/parser.bah"
 goto ____BAH_COMPILER_VAR_1040_ahomeaaloisanijlijchargementsabahasrcaparserbbah;
 }
 };
 ____BAH_COMPILER_VAR_1040_ahomeaaloisanijlijchargementsabahasrcaparserbbah: ;
 
-#line 1451 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1453 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((j==len(elems->branchChecks))) {
 
-#line 1452 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1454 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct varCheck ____BAH_COMPILER_VAR_1041_ahomeaaloisanijlijchargementsabahasrcaparserbbah = {};
 ____BAH_COMPILER_VAR_1041_ahomeaaloisanijlijchargementsabahasrcaparserbbah.v = v;
 ____BAH_COMPILER_VAR_1041_ahomeaaloisanijlijchargementsabahasrcaparserbbah.checkNull = false;
@@ -16948,82 +16952,82 @@ unsigned int ____BAH_COMPILER_VAR_1042_ahomeaaloisanijlijchargementsabahasrcapar
 }
 }
 
-#line 1458 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1460 "/home/alois/Téléchargements/bah/src/parser.bah"
 else{
 
-#line 1459 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1461 "/home/alois/Téléchargements/bah/src/parser.bah"
 v->canBeNull = tv->canBeNull;
 }
 }
 }
 
-#line 1462 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1464 "/home/alois/Téléchargements/bah/src/parser.bah"
 else{
 if ((t.isFunc==true)) {
 
-#line 1463 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1465 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Tok keep_ref_____BAH_COMPILER_VAR_1043_ahomeaaloisanijlijchargementsabahasrcaparserbbah = t;
 struct func* fn = searchFuncByToken(&t,elems);
 
-#line 1464 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1466 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((fn!=null)&&(fn->returns!=null)) {
 
-#line 1465 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1467 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((fn->returns->canBeNull==true)) {
 
-#line 1466 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1468 "/home/alois/Téléchargements/bah/src/parser.bah"
 v->canBeNull = true;
 }
 
-#line 1467 "/home/alois/Téléchargements/bah/src/parser.bah"
-else{
-
-#line 1468 "/home/alois/Téléchargements/bah/src/parser.bah"
-if ((exists==true)) {
-
 #line 1469 "/home/alois/Téléchargements/bah/src/parser.bah"
-if (canChangeNullState(v,elems)) {
+else{
 
 #line 1470 "/home/alois/Téléchargements/bah/src/parser.bah"
-v->canBeNull = false;
-}
-}
-
-#line 1472 "/home/alois/Téléchargements/bah/src/parser.bah"
-else{
-
-#line 1473 "/home/alois/Téléchargements/bah/src/parser.bah"
-v->canBeNull = false;
-}
-}
-}
-}
-
-#line 1477 "/home/alois/Téléchargements/bah/src/parser.bah"
-else{
-
-#line 1478 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((exists==true)) {
 
-#line 1479 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1471 "/home/alois/Téléchargements/bah/src/parser.bah"
 if (canChangeNullState(v,elems)) {
 
+#line 1472 "/home/alois/Téléchargements/bah/src/parser.bah"
+v->canBeNull = false;
+}
+}
+
+#line 1474 "/home/alois/Téléchargements/bah/src/parser.bah"
+else{
+
+#line 1475 "/home/alois/Téléchargements/bah/src/parser.bah"
+v->canBeNull = false;
+}
+}
+}
+}
+
+#line 1479 "/home/alois/Téléchargements/bah/src/parser.bah"
+else{
+
 #line 1480 "/home/alois/Téléchargements/bah/src/parser.bah"
-struct variable* rv = getRealVar(v->name,elems);
+if ((exists==true)) {
 
 #line 1481 "/home/alois/Téléchargements/bah/src/parser.bah"
-if ((rv!=null)) {
+if (canChangeNullState(v,elems)) {
 
 #line 1482 "/home/alois/Téléchargements/bah/src/parser.bah"
+struct variable* rv = getRealVar(v->name,elems);
+
+#line 1483 "/home/alois/Téléchargements/bah/src/parser.bah"
+if ((rv!=null)) {
+
+#line 1484 "/home/alois/Téléchargements/bah/src/parser.bah"
 rv->canBeNull = false;
 }
 }
 }
 
-#line 1485 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1487 "/home/alois/Téléchargements/bah/src/parser.bah"
 else{
 
-#line 1486 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1488 "/home/alois/Téléchargements/bah/src/parser.bah"
 v->canBeNull = false;
 }
 }
@@ -17031,38 +17035,38 @@ v->canBeNull = false;
 }
 }
 
-#line 1492 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1494 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((exists==true)) {
 
-#line 1493 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1495 "/home/alois/Téléchargements/bah/src/parser.bah"
 if (__builtin_expect((compTypes(tp,v->type)==false), 0)) {
 
-#line 1494 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1496 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Tok keep_ref_____BAH_COMPILER_VAR_1044_ahomeaaloisanijlijchargementsabahasrcaparserbbah = t;
 char** ____BAH_COMPILER_VAR_1045_ahomeaaloisanijlijchargementsabahasrcaparserbbah = alloca(5 * sizeof(char*));____BAH_COMPILER_VAR_1045_ahomeaaloisanijlijchargementsabahasrcaparserbbah[4] = "\01\0\0\0"".";____BAH_COMPILER_VAR_1045_ahomeaaloisanijlijchargementsabahasrcaparserbbah[3] = v->type;____BAH_COMPILER_VAR_1045_ahomeaaloisanijlijchargementsabahasrcaparserbbah[2] = "\05\0\0\0"") as ";____BAH_COMPILER_VAR_1045_ahomeaaloisanijlijchargementsabahasrcaparserbbah[1] = tp;____BAH_COMPILER_VAR_1045_ahomeaaloisanijlijchargementsabahasrcaparserbbah[0] = "\024\0\0\0""Cannot use {TOKEN} (";char* ____BAH_COMPILER_VAR_1046_ahomeaaloisanijlijchargementsabahasrcaparserbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_1045_ahomeaaloisanijlijchargementsabahasrcaparserbbah, 5);throwErr(&t,____BAH_COMPILER_VAR_1046_ahomeaaloisanijlijchargementsabahasrcaparserbbah);
 }
 }
 
-#line 1496 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1498 "/home/alois/Téléchargements/bah/src/parser.bah"
 else{
 
-#line 1497 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1499 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((strcmp(currentType, "\0\0\0\0""") == 0)) {
 
-#line 1498 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1500 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((strcmp(v->type, "\0\0\0\0""") == 0)) {
 
-#line 1499 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1501 "/home/alois/Téléchargements/bah/src/parser.bah"
 v->type = tp;
 }
 
-#line 1500 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1502 "/home/alois/Téléchargements/bah/src/parser.bah"
 else{
 
-#line 1501 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1503 "/home/alois/Téléchargements/bah/src/parser.bah"
 if (__builtin_expect((compTypes(tp,v->type)==false), 0)) {
 
-#line 1502 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1504 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Tok keep_ref_____BAH_COMPILER_VAR_1047_ahomeaaloisanijlijchargementsabahasrcaparserbbah = t;
 char** ____BAH_COMPILER_VAR_1048_ahomeaaloisanijlijchargementsabahasrcaparserbbah = alloca(5 * sizeof(char*));____BAH_COMPILER_VAR_1048_ahomeaaloisanijlijchargementsabahasrcaparserbbah[4] = "\01\0\0\0"".";____BAH_COMPILER_VAR_1048_ahomeaaloisanijlijchargementsabahasrcaparserbbah[3] = v->type;____BAH_COMPILER_VAR_1048_ahomeaaloisanijlijchargementsabahasrcaparserbbah[2] = "\05\0\0\0"") as ";____BAH_COMPILER_VAR_1048_ahomeaaloisanijlijchargementsabahasrcaparserbbah[1] = tp;____BAH_COMPILER_VAR_1048_ahomeaaloisanijlijchargementsabahasrcaparserbbah[0] = "\024\0\0\0""Cannot use {TOKEN} (";char* ____BAH_COMPILER_VAR_1049_ahomeaaloisanijlijchargementsabahasrcaparserbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_1048_ahomeaaloisanijlijchargementsabahasrcaparserbbah, 5);throwErr(&t,____BAH_COMPILER_VAR_1049_ahomeaaloisanijlijchargementsabahasrcaparserbbah);
 }
@@ -17070,356 +17074,356 @@ char** ____BAH_COMPILER_VAR_1048_ahomeaaloisanijlijchargementsabahasrcaparserbba
 }
 }
 
-#line 1508 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1510 "/home/alois/Téléchargements/bah/src/parser.bah"
 if (RCPavailable()&&isRCPtype(v->type,elems)) {
 
-#line 1509 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1511 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Tok keep_ref_____BAH_COMPILER_VAR_1050_ahomeaaloisanijlijchargementsabahasrcaparserbbah = t;
 if (RCPisTokRef(&t,tp,elems)&&(strcmp(t.cont, "\04\0\0\0""null") != 0)) {
 
-#line 1510 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1512 "/home/alois/Téléchargements/bah/src/parser.bah"
 RCPincrVar(t.cont,isRCPpointerType(v->type));
 }
 
-#line 1512 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1514 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((v->isArray==false)&&exists) {
 
-#line 1513 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1515 "/home/alois/Téléchargements/bah/src/parser.bah"
 RCPdecrVar(ft.cont,isRCPpointerType(tp));
 }
 }
 
-#line 1517 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1519 "/home/alois/Téléchargements/bah/src/parser.bah"
 if (isTupleType(tp)) {
 
-#line 1518 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1520 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((t.type==TOKEN_TYPE_VAR)&&(t.ogCont[0+4]!=91)) {
 
-#line 1519 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1521 "/home/alois/Téléchargements/bah/src/parser.bah"
 char* size = getTupleSize(tp,elems);
 
-#line 1520 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1522 "/home/alois/Téléchargements/bah/src/parser.bah"
 char* tmpV = genCompilerVar();
 
-#line 1521 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1523 "/home/alois/Téléchargements/bah/src/parser.bah"
 char** ____BAH_COMPILER_VAR_1051_ahomeaaloisanijlijchargementsabahasrcaparserbbah = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_1051_ahomeaaloisanijlijchargementsabahasrcaparserbbah[2] = "\01\0\0\0"")";____BAH_COMPILER_VAR_1051_ahomeaaloisanijlijchargementsabahasrcaparserbbah[1] = size;____BAH_COMPILER_VAR_1051_ahomeaaloisanijlijchargementsabahasrcaparserbbah[0] = "\014\0\0\0""memoryAlloc(";char* ____BAH_COMPILER_VAR_1052_ahomeaaloisanijlijchargementsabahasrcaparserbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_1051_ahomeaaloisanijlijchargementsabahasrcaparserbbah, 3);code = ____BAH_COMPILER_VAR_1052_ahomeaaloisanijlijchargementsabahasrcaparserbbah;
 
-#line 1522 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1524 "/home/alois/Téléchargements/bah/src/parser.bah"
 char** ____BAH_COMPILER_VAR_1053_ahomeaaloisanijlijchargementsabahasrcaparserbbah = alloca(7 * sizeof(char*));____BAH_COMPILER_VAR_1053_ahomeaaloisanijlijchargementsabahasrcaparserbbah[6] = "\03\0\0\0"");\n";____BAH_COMPILER_VAR_1053_ahomeaaloisanijlijchargementsabahasrcaparserbbah[5] = size;____BAH_COMPILER_VAR_1053_ahomeaaloisanijlijchargementsabahasrcaparserbbah[4] = "\02\0\0\0"", ";____BAH_COMPILER_VAR_1053_ahomeaaloisanijlijchargementsabahasrcaparserbbah[3] = t.cont;____BAH_COMPILER_VAR_1053_ahomeaaloisanijlijchargementsabahasrcaparserbbah[2] = "\02\0\0\0"", ";____BAH_COMPILER_VAR_1053_ahomeaaloisanijlijchargementsabahasrcaparserbbah[1] = v->name;____BAH_COMPILER_VAR_1053_ahomeaaloisanijlijchargementsabahasrcaparserbbah[0] = "\07\0\0\0""memcpy(";char* ____BAH_COMPILER_VAR_1054_ahomeaaloisanijlijchargementsabahasrcaparserbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_1053_ahomeaaloisanijlijchargementsabahasrcaparserbbah, 7);char** ____BAH_COMPILER_VAR_1055_ahomeaaloisanijlijchargementsabahasrcaparserbbah = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1055_ahomeaaloisanijlijchargementsabahasrcaparserbbah[1] = ____BAH_COMPILER_VAR_1054_ahomeaaloisanijlijchargementsabahasrcaparserbbah;____BAH_COMPILER_VAR_1055_ahomeaaloisanijlijchargementsabahasrcaparserbbah[0] = NEXT_LINE;char* ____BAH_COMPILER_VAR_1056_ahomeaaloisanijlijchargementsabahasrcaparserbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_1055_ahomeaaloisanijlijchargementsabahasrcaparserbbah, 2);NEXT_LINE = ____BAH_COMPILER_VAR_1056_ahomeaaloisanijlijchargementsabahasrcaparserbbah;
 
-#line 1523 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1525 "/home/alois/Téléchargements/bah/src/parser.bah"
 ++i;
 
-#line 1523 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1525 "/home/alois/Téléchargements/bah/src/parser.bah"
 continue;
 }
 
-#line 1524 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1526 "/home/alois/Téléchargements/bah/src/parser.bah"
 else{
 if (exists&&(v->declScope!=elems)&&(v->canBeNull==false)) {
 
-#line 1525 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1527 "/home/alois/Téléchargements/bah/src/parser.bah"
 code = ft.cont;
 
-#line 1526 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1528 "/home/alois/Téléchargements/bah/src/parser.bah"
 char* size = getTupleSize(tp,elems);
 
-#line 1527 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1529 "/home/alois/Téléchargements/bah/src/parser.bah"
 char** ____BAH_COMPILER_VAR_1057_ahomeaaloisanijlijchargementsabahasrcaparserbbah = alloca(13 * sizeof(char*));____BAH_COMPILER_VAR_1057_ahomeaaloisanijlijchargementsabahasrcaparserbbah[12] = "\03\0\0\0"");\n";____BAH_COMPILER_VAR_1057_ahomeaaloisanijlijchargementsabahasrcaparserbbah[11] = size;____BAH_COMPILER_VAR_1057_ahomeaaloisanijlijchargementsabahasrcaparserbbah[10] = "\02\0\0\0"", ";____BAH_COMPILER_VAR_1057_ahomeaaloisanijlijchargementsabahasrcaparserbbah[9] = t.cont;____BAH_COMPILER_VAR_1057_ahomeaaloisanijlijchargementsabahasrcaparserbbah[8] = "\02\0\0\0"", ";____BAH_COMPILER_VAR_1057_ahomeaaloisanijlijchargementsabahasrcaparserbbah[7] = v->name;____BAH_COMPILER_VAR_1057_ahomeaaloisanijlijchargementsabahasrcaparserbbah[6] = "\064\0\0\0"");\n                    }\n                    memcpy(";____BAH_COMPILER_VAR_1057_ahomeaaloisanijlijchargementsabahasrcaparserbbah[5] = size;____BAH_COMPILER_VAR_1057_ahomeaaloisanijlijchargementsabahasrcaparserbbah[4] = "\017\0\0\0"" = memoryAlloc(";____BAH_COMPILER_VAR_1057_ahomeaaloisanijlijchargementsabahasrcaparserbbah[3] = v->name;____BAH_COMPILER_VAR_1057_ahomeaaloisanijlijchargementsabahasrcaparserbbah[2] = "\042\0\0\0""==null) {\n                        ";____BAH_COMPILER_VAR_1057_ahomeaaloisanijlijchargementsabahasrcaparserbbah[1] = v->name;____BAH_COMPILER_VAR_1057_ahomeaaloisanijlijchargementsabahasrcaparserbbah[0] = "\04\0\0\0""if (";char* ____BAH_COMPILER_VAR_1058_ahomeaaloisanijlijchargementsabahasrcaparserbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_1057_ahomeaaloisanijlijchargementsabahasrcaparserbbah, 13);char** ____BAH_COMPILER_VAR_1059_ahomeaaloisanijlijchargementsabahasrcaparserbbah = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1059_ahomeaaloisanijlijchargementsabahasrcaparserbbah[1] = ____BAH_COMPILER_VAR_1058_ahomeaaloisanijlijchargementsabahasrcaparserbbah;____BAH_COMPILER_VAR_1059_ahomeaaloisanijlijchargementsabahasrcaparserbbah[0] = NEXT_LINE;char* ____BAH_COMPILER_VAR_1060_ahomeaaloisanijlijchargementsabahasrcaparserbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_1059_ahomeaaloisanijlijchargementsabahasrcaparserbbah, 2);NEXT_LINE = ____BAH_COMPILER_VAR_1060_ahomeaaloisanijlijchargementsabahasrcaparserbbah;
 
-#line 1531 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1533 "/home/alois/Téléchargements/bah/src/parser.bah"
 ++i;
 
-#line 1531 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1533 "/home/alois/Téléchargements/bah/src/parser.bah"
 continue;
 }
 }
 }
 
-#line 1535 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1537 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((strcmp(t.cont, "\0\0\0\0""") != 0)&&(strHasPrefix(t.cont,"\01\0\0\0""{")==false)) {
 
-#line 1536 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1538 "/home/alois/Téléchargements/bah/src/parser.bah"
 char** ____BAH_COMPILER_VAR_1061_ahomeaaloisanijlijchargementsabahasrcaparserbbah = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1061_ahomeaaloisanijlijchargementsabahasrcaparserbbah[1] = t.cont;____BAH_COMPILER_VAR_1061_ahomeaaloisanijlijchargementsabahasrcaparserbbah[0] = code;char* ____BAH_COMPILER_VAR_1062_ahomeaaloisanijlijchargementsabahasrcaparserbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_1061_ahomeaaloisanijlijchargementsabahasrcaparserbbah, 2);code = ____BAH_COMPILER_VAR_1062_ahomeaaloisanijlijchargementsabahasrcaparserbbah;
 
-#line 1537 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1539 "/home/alois/Téléchargements/bah/src/parser.bah"
 goto ____BAH_COMPILER_VAR_1014_ahomeaaloisanijlijchargementsabahasrcaparserbbah;
 }
-
-#line 1541 "/home/alois/Téléchargements/bah/src/parser.bah"
-if (strHasPrefix(v->type,"\02\0\0\0""[]")) {
-
-#line 1542 "/home/alois/Téléchargements/bah/src/parser.bah"
-code = parseArrayDecl(v,l,i,len(l),elems);
 
 #line 1543 "/home/alois/Téléchargements/bah/src/parser.bah"
+if (strHasPrefix(v->type,"\02\0\0\0""[]")) {
+
+#line 1544 "/home/alois/Téléchargements/bah/src/parser.bah"
+code = parseArrayDecl(v,l,i,len(l),elems);
+
+#line 1545 "/home/alois/Téléchargements/bah/src/parser.bah"
 goto ____BAH_COMPILER_VAR_1014_ahomeaaloisanijlijchargementsabahasrcaparserbbah;
 }
 
-#line 1545 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1547 "/home/alois/Téléchargements/bah/src/parser.bah"
 isStruct = true;
 
-#line 1546 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1548 "/home/alois/Téléchargements/bah/src/parser.bah"
 if (__builtin_expect((i+1!=len(l)), 0)) {
 
-#line 1547 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1549 "/home/alois/Téléchargements/bah/src/parser.bah"
 throwErr(&((struct Tok*)l->data)[i+1],"\061\0\0\0""{TOKEN} not expected after struct initialization.");
 }
 
-#line 1551 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1553 "/home/alois/Téléchargements/bah/src/parser.bah"
 char** ____BAH_COMPILER_VAR_1063_ahomeaaloisanijlijchargementsabahasrcaparserbbah = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1063_ahomeaaloisanijlijchargementsabahasrcaparserbbah[1] = t.cont;____BAH_COMPILER_VAR_1063_ahomeaaloisanijlijchargementsabahasrcaparserbbah[0] = code;char* ____BAH_COMPILER_VAR_1064_ahomeaaloisanijlijchargementsabahasrcaparserbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_1063_ahomeaaloisanijlijchargementsabahasrcaparserbbah, 2);code = ____BAH_COMPILER_VAR_1064_ahomeaaloisanijlijchargementsabahasrcaparserbbah;
 }
 
-#line 1554 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1556 "/home/alois/Téléchargements/bah/src/parser.bah"
 ++i;
 };
 ____BAH_COMPILER_VAR_1014_ahomeaaloisanijlijchargementsabahasrcaparserbbah: ;
 
-#line 1557 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1559 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((exists==true)) {
 
-#line 1560 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1562 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct variable* rv = getRealVar(v->name,elems);
 
-#line 1561 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1563 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((rv!=null)&&(isStaticToken(&((struct Tok*)l->data)[equalIndex+1],elems)==false)) {
 
-#line 1562 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1564 "/home/alois/Téléchargements/bah/src/parser.bah"
 rv->lastSet = elems;
 
-#line 1563 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1565 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((((struct Tok*)l->data)[equalIndex+1].type==TOKEN_TYPE_VAR)) {
 
-#line 1564 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1566 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct variable* vv = searchVirtVarByToken(&((struct Tok*)l->data)[equalIndex+1],elems);
 
-#line 1565 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1567 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((vv!=null)) {
 
-#line 1566 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1568 "/home/alois/Téléchargements/bah/src/parser.bah"
 rv->lastSet = vv->lastSet;
 }
 }
 }
 
-#line 1571 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1573 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((ft.parent!=null)) {
 
-#line 1572 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1574 "/home/alois/Téléchargements/bah/src/parser.bah"
 ft.parent->lastSet = elems;
 }
 
-#line 1574 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1576 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((currentFn!=null)) {
 
-#line 1575 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1577 "/home/alois/Téléchargements/bah/src/parser.bah"
 
                 struct string keep_ref_____BAH_COMPILER_VAR_1065_ahomeaaloisanijlijchargementsabahasrcaparserbbah = string(v->name);
                 if ((strcmp(v->name, "\04\0\0\0""this") == 0)||string__hasPrefix(&keep_ref_____BAH_COMPILER_VAR_1065_ahomeaaloisanijlijchargementsabahasrcaparserbbah,"\06\0\0\0""this->")) {
 
-#line 1576 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1578 "/home/alois/Téléchargements/bah/src/parser.bah"
 currentFn->isMut = true;
 }
 }
 
-#line 1579 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1581 "/home/alois/Téléchargements/bah/src/parser.bah"
 if (__builtin_expect((strlen(code)==0), 0)) {
 
-#line 1580 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1582 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Tok keep_ref_____BAH_COMPILER_VAR_1066_ahomeaaloisanijlijchargementsabahasrcaparserbbah = ft;
 throwErr(&ft,"\032\0\0\0""Cannot re-declare {TOKEN}.");
 }
 
-#line 1582 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1584 "/home/alois/Téléchargements/bah/src/parser.bah"
 if (__builtin_expect((strlen(currentType)>0), 0)) {
 
-#line 1583 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1585 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Tok st = ((struct Tok*)l->data)[1];
 
-#line 1584 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1586 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Tok keep_ref_____BAH_COMPILER_VAR_1067_ahomeaaloisanijlijchargementsabahasrcaparserbbah = st;
 char** ____BAH_COMPILER_VAR_1068_ahomeaaloisanijlijchargementsabahasrcaparserbbah = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_1068_ahomeaaloisanijlijchargementsabahasrcaparserbbah[2] = "\015\0\0\0""' to {TOKEN}.";____BAH_COMPILER_VAR_1068_ahomeaaloisanijlijchargementsabahasrcaparserbbah[1] = ft.cont;____BAH_COMPILER_VAR_1068_ahomeaaloisanijlijchargementsabahasrcaparserbbah[0] = "\060\0\0\0""Cannot change the type of already declared var '";char* ____BAH_COMPILER_VAR_1069_ahomeaaloisanijlijchargementsabahasrcaparserbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_1068_ahomeaaloisanijlijchargementsabahasrcaparserbbah, 3);throwErr(&st,____BAH_COMPILER_VAR_1069_ahomeaaloisanijlijchargementsabahasrcaparserbbah);
 }
 
-#line 1586 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1588 "/home/alois/Téléchargements/bah/src/parser.bah"
 char* preCode = "\0\0\0\0""";
 
-#line 1587 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1589 "/home/alois/Téléchargements/bah/src/parser.bah"
 char* val = code;
 
-#line 1588 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1590 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((isStruct==false)) {
 
-#line 1589 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1591 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct cStruct* s = searchStruct(v->type,elems);
 
-#line 1590 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1592 "/home/alois/Téléchargements/bah/src/parser.bah"
 char** ____BAH_COMPILER_VAR_1070_ahomeaaloisanijlijchargementsabahasrcaparserbbah = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_1070_ahomeaaloisanijlijchargementsabahasrcaparserbbah[2] = code;____BAH_COMPILER_VAR_1070_ahomeaaloisanijlijchargementsabahasrcaparserbbah[1] = "\03\0\0\0"" = ";____BAH_COMPILER_VAR_1070_ahomeaaloisanijlijchargementsabahasrcaparserbbah[0] = ((struct Tok*)l->data)[0].cont;char* ____BAH_COMPILER_VAR_1071_ahomeaaloisanijlijchargementsabahasrcaparserbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_1070_ahomeaaloisanijlijchargementsabahasrcaparserbbah, 3);code = ____BAH_COMPILER_VAR_1071_ahomeaaloisanijlijchargementsabahasrcaparserbbah;
 }
 
-#line 1591 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1593 "/home/alois/Téléchargements/bah/src/parser.bah"
 else{
 
-#line 1592 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1594 "/home/alois/Téléchargements/bah/src/parser.bah"
 char* keep_ref_____BAH_COMPILER_VAR_1072_ahomeaaloisanijlijchargementsabahasrcaparserbbah = code;
 strTrim(&code);
 
-#line 1593 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1595 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((strHasPrefix(code,"\01\0\0\0""{")==false)) {
 
-#line 1594 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1596 "/home/alois/Téléchargements/bah/src/parser.bah"
 char** ____BAH_COMPILER_VAR_1073_ahomeaaloisanijlijchargementsabahasrcaparserbbah = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_1073_ahomeaaloisanijlijchargementsabahasrcaparserbbah[2] = code;____BAH_COMPILER_VAR_1073_ahomeaaloisanijlijchargementsabahasrcaparserbbah[1] = "\03\0\0\0"" = ";____BAH_COMPILER_VAR_1073_ahomeaaloisanijlijchargementsabahasrcaparserbbah[0] = ((struct Tok*)l->data)[0].cont;char* ____BAH_COMPILER_VAR_1074_ahomeaaloisanijlijchargementsabahasrcaparserbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_1073_ahomeaaloisanijlijchargementsabahasrcaparserbbah, 3);code = ____BAH_COMPILER_VAR_1074_ahomeaaloisanijlijchargementsabahasrcaparserbbah;
 }
 }
 
-#line 1597 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1599 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((v->isArray==true)) {
 
-#line 1598 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1600 "/home/alois/Téléchargements/bah/src/parser.bah"
 code = genArrRealloc(v,preCode,val,elems);
 }
 
-#line 1599 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1601 "/home/alois/Téléchargements/bah/src/parser.bah"
 else{
 
-#line 1600 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1602 "/home/alois/Téléchargements/bah/src/parser.bah"
 char** ____BAH_COMPILER_VAR_1075_ahomeaaloisanijlijchargementsabahasrcaparserbbah = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1075_ahomeaaloisanijlijchargementsabahasrcaparserbbah[1] = code;____BAH_COMPILER_VAR_1075_ahomeaaloisanijlijchargementsabahasrcaparserbbah[0] = preCode;char* ____BAH_COMPILER_VAR_1076_ahomeaaloisanijlijchargementsabahasrcaparserbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_1075_ahomeaaloisanijlijchargementsabahasrcaparserbbah, 2);code = ____BAH_COMPILER_VAR_1076_ahomeaaloisanijlijchargementsabahasrcaparserbbah;
 }
 }
 
-#line 1602 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1604 "/home/alois/Téléchargements/bah/src/parser.bah"
 else{
 
-#line 1603 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1605 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((strcmp(currentType, "\0\0\0\0""") != 0)) {
 
-#line 1604 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1606 "/home/alois/Téléchargements/bah/src/parser.bah"
 v->type = currentType;
 }
 
-#line 1607 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1609 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((strlen(code)==0)) {
 
-#line 1608 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1610 "/home/alois/Téléchargements/bah/src/parser.bah"
 v->canBeNull = true;
 }
 
-#line 1611 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1613 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct string vts = string(v->type);
 
-#line 1612 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1614 "/home/alois/Téléchargements/bah/src/parser.bah"
 string__replace(&vts,"\01\0\0\0"" ","\0\0\0\0""");
 
-#line 1613 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1615 "/home/alois/Téléchargements/bah/src/parser.bah"
 v->type = string__str(&vts);
 
-#line 1614 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1616 "/home/alois/Téléchargements/bah/src/parser.bah"
 if (__builtin_expect((strlen(v->type)==0), 0)) {
 
-#line 1615 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1617 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Tok keep_ref_____BAH_COMPILER_VAR_1077_ahomeaaloisanijlijchargementsabahasrcaparserbbah = ft;
 throwErr(&ft,"\046\0\0\0""Cannot declare {TOKEN} without a type.");
 }
 
-#line 1617 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1619 "/home/alois/Téléchargements/bah/src/parser.bah"
 char* vct = "\0\0\0\0""";
 
-#line 1618 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1620 "/home/alois/Téléchargements/bah/src/parser.bah"
 if (string__hasPrefix(&vts,"\011\0\0\0""function(")) {
 
-#line 1619 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1621 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct string keep_ref_____BAH_COMPILER_VAR_1078_ahomeaaloisanijlijchargementsabahasrcaparserbbah = vts;
 vct = getCfunctionType(&vts,((struct Tok*)l->data)[0].cont,elems);
 }
 
-#line 1620 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1622 "/home/alois/Téléchargements/bah/src/parser.bah"
 else{
 
-#line 1621 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1623 "/home/alois/Téléchargements/bah/src/parser.bah"
 vct = setCType(v,elems);
 }
 
-#line 1623 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1625 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((strcmp(code, "\0\0\0\0""") != 0)&&(shouldOnlyDecl==false)) {
 
-#line 1624 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1626 "/home/alois/Téléchargements/bah/src/parser.bah"
 if (isGlobal()) {
 
-#line 1625 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1627 "/home/alois/Téléchargements/bah/src/parser.bah"
 char** ____BAH_COMPILER_VAR_1079_ahomeaaloisanijlijchargementsabahasrcaparserbbah = alloca(4 * sizeof(char*));____BAH_COMPILER_VAR_1079_ahomeaaloisanijlijchargementsabahasrcaparserbbah[3] = "\02\0\0\0"";\n";____BAH_COMPILER_VAR_1079_ahomeaaloisanijlijchargementsabahasrcaparserbbah[2] = code;____BAH_COMPILER_VAR_1079_ahomeaaloisanijlijchargementsabahasrcaparserbbah[1] = "\03\0\0\0"" = ";____BAH_COMPILER_VAR_1079_ahomeaaloisanijlijchargementsabahasrcaparserbbah[0] = ((struct Tok*)l->data)[0].cont;char* ____BAH_COMPILER_VAR_1080_ahomeaaloisanijlijchargementsabahasrcaparserbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_1079_ahomeaaloisanijlijchargementsabahasrcaparserbbah, 4);INIT = rope__add(INIT, rope(____BAH_COMPILER_VAR_1080_ahomeaaloisanijlijchargementsabahasrcaparserbbah));
 }
 
-#line 1626 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1628 "/home/alois/Téléchargements/bah/src/parser.bah"
 else{
 
-#line 1627 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1629 "/home/alois/Téléchargements/bah/src/parser.bah"
 char** ____BAH_COMPILER_VAR_1081_ahomeaaloisanijlijchargementsabahasrcaparserbbah = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_1081_ahomeaaloisanijlijchargementsabahasrcaparserbbah[2] = code;____BAH_COMPILER_VAR_1081_ahomeaaloisanijlijchargementsabahasrcaparserbbah[1] = "\03\0\0\0"" = ";____BAH_COMPILER_VAR_1081_ahomeaaloisanijlijchargementsabahasrcaparserbbah[0] = vct;char* ____BAH_COMPILER_VAR_1082_ahomeaaloisanijlijchargementsabahasrcaparserbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_1081_ahomeaaloisanijlijchargementsabahasrcaparserbbah, 3);code = ____BAH_COMPILER_VAR_1082_ahomeaaloisanijlijchargementsabahasrcaparserbbah;
 }
 }
 
-#line 1629 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1631 "/home/alois/Téléchargements/bah/src/parser.bah"
 else{
 
-#line 1630 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1632 "/home/alois/Téléchargements/bah/src/parser.bah"
 if (isRCPpointerType(v->type)&&(shouldOnlyDecl==false)) {
 
-#line 1631 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1633 "/home/alois/Téléchargements/bah/src/parser.bah"
 char** ____BAH_COMPILER_VAR_1083_ahomeaaloisanijlijchargementsabahasrcaparserbbah = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1083_ahomeaaloisanijlijchargementsabahasrcaparserbbah[1] = "\06\0\0\0""= null";____BAH_COMPILER_VAR_1083_ahomeaaloisanijlijchargementsabahasrcaparserbbah[0] = vct;char* ____BAH_COMPILER_VAR_1084_ahomeaaloisanijlijchargementsabahasrcaparserbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_1083_ahomeaaloisanijlijchargementsabahasrcaparserbbah, 2);code = ____BAH_COMPILER_VAR_1084_ahomeaaloisanijlijchargementsabahasrcaparserbbah;
 }
 
-#line 1632 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1634 "/home/alois/Téléchargements/bah/src/parser.bah"
 else{
 
-#line 1633 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1635 "/home/alois/Téléchargements/bah/src/parser.bah"
 code = vct;
 }
 }
 
-#line 1637 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1639 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((shouldOnlyDecl==true)) {
 
-#line 1638 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1640 "/home/alois/Téléchargements/bah/src/parser.bah"
 char** ____BAH_COMPILER_VAR_1085_ahomeaaloisanijlijchargementsabahasrcaparserbbah = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1085_ahomeaaloisanijlijchargementsabahasrcaparserbbah[1] = vct;____BAH_COMPILER_VAR_1085_ahomeaaloisanijlijchargementsabahasrcaparserbbah[0] = "\07\0\0\0""extern ";char* ____BAH_COMPILER_VAR_1086_ahomeaaloisanijlijchargementsabahasrcaparserbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_1085_ahomeaaloisanijlijchargementsabahasrcaparserbbah, 2);vct = ____BAH_COMPILER_VAR_1086_ahomeaaloisanijlijchargementsabahasrcaparserbbah;
 }
 
-#line 1641 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1643 "/home/alois/Téléchargements/bah/src/parser.bah"
 if (isGlobal()) {
 
-#line 1642 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1644 "/home/alois/Téléchargements/bah/src/parser.bah"
 v->isGlobal = true;
 }
 
-#line 1643 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1645 "/home/alois/Téléchargements/bah/src/parser.bah"
 else{
 
-#line 1644 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1646 "/home/alois/Téléchargements/bah/src/parser.bah"
 v->isGlobal = false;
 }
 
-#line 1646 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1648 "/home/alois/Téléchargements/bah/src/parser.bah"
 v->declScope = elems;
 
-#line 1647 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1649 "/home/alois/Téléchargements/bah/src/parser.bah"
 unsigned int ____BAH_COMPILER_VAR_1087_ahomeaaloisanijlijchargementsabahasrcaparserbbah = len(elems->vars);
     __Bah_realocate_arr(elems->vars, ____BAH_COMPILER_VAR_1087_ahomeaaloisanijlijchargementsabahasrcaparserbbah);
     ((struct variable**)elems->vars->data)[____BAH_COMPILER_VAR_1087_ahomeaaloisanijlijchargementsabahasrcaparserbbah] = v;
 
-#line 1649 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1651 "/home/alois/Téléchargements/bah/src/parser.bah"
 if (fixMeEnabled()) {
 
-#line 1650 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1652 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Tok keep_ref_____BAH_COMPILER_VAR_1088_ahomeaaloisanijlijchargementsabahasrcaparserbbah = ft;
 fixMeRegisterVar(v,&ft);
 }
 
-#line 1653 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1655 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct debugVar ____BAH_COMPILER_VAR_1089_ahomeaaloisanijlijchargementsabahasrcaparserbbah = {};
 struct debugVar dv = ____BAH_COMPILER_VAR_1089_ahomeaaloisanijlijchargementsabahasrcaparserbbah;
 
-#line 1654 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1656 "/home/alois/Téléchargements/bah/src/parser.bah"
 debugVar__fromVar(&dv,v);
 
-#line 1655 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1657 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct debugVar keep_ref_____BAH_COMPILER_VAR_1090_ahomeaaloisanijlijchargementsabahasrcaparserbbah = dv;
 struct debugVar* keep_ref_____BAH_COMPILER_VAR_1091_ahomeaaloisanijlijchargementsabahasrcaparserbbah = &dv;
 char** keep_ref_____BAH_COMPILER_VAR_1093_ahomeaaloisanijlijchargementsabahasrcaparserbbah = (char**)((char*)(keep_ref_____BAH_COMPILER_VAR_1091_ahomeaaloisanijlijchargementsabahasrcaparserbbah) + offsetof(struct debugVar, name));
@@ -17442,157 +17446,157 @@ struct reflectElement ____BAH_COMPILER_VAR_1100_ahomeaaloisanijlijchargementsaba
 struct reflectElement ____BAH_COMPILER_VAR_1101_ahomeaaloisanijlijchargementsabahasrcaparserbbah = __reflect(keep_ref_____BAH_COMPILER_VAR_1091_ahomeaaloisanijlijchargementsabahasrcaparserbbah, sizeof(struct debugVar), "\011\0\0\0""debugVar*", "\03\0\0\0""&dv", 0, 0, 1, keep_ref_____BAH_COMPILER_VAR_1092_ahomeaaloisanijlijchargementsabahasrcaparserbbah, 0);
 debugPrint("\017\0\0\0""var_declaration",ft.line,____BAH_COMPILER_VAR_1101_ahomeaaloisanijlijchargementsabahasrcaparserbbah);
 
-#line 1658 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1660 "/home/alois/Téléchargements/bah/src/parser.bah"
 if (isGlobal()) {
 
-#line 1659 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1661 "/home/alois/Téléchargements/bah/src/parser.bah"
 char** ____BAH_COMPILER_VAR_1102_ahomeaaloisanijlijchargementsabahasrcaparserbbah = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1102_ahomeaaloisanijlijchargementsabahasrcaparserbbah[1] = "\02\0\0\0"";\n";____BAH_COMPILER_VAR_1102_ahomeaaloisanijlijchargementsabahasrcaparserbbah[0] = vct;char* ____BAH_COMPILER_VAR_1103_ahomeaaloisanijlijchargementsabahasrcaparserbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_1102_ahomeaaloisanijlijchargementsabahasrcaparserbbah, 2);OUTPUT = rope__add(OUTPUT, rope(____BAH_COMPILER_VAR_1103_ahomeaaloisanijlijchargementsabahasrcaparserbbah));
 }
 }
 
-#line 1663 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1665 "/home/alois/Téléchargements/bah/src/parser.bah"
 if (isGlobal()) {
 
-#line 1664 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1666 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((isSubObject==false)) {
 
-#line 1665 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1667 "/home/alois/Téléchargements/bah/src/parser.bah"
 INIT = rope__add(INIT, rope(NEXT_LINE));
 }
 
-#line 1667 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1669 "/home/alois/Téléchargements/bah/src/parser.bah"
 NEXT_LINE = "\0\0\0\0""";
 }
 
-#line 1668 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1670 "/home/alois/Téléchargements/bah/src/parser.bah"
 else{
 
-#line 1669 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1671 "/home/alois/Téléchargements/bah/src/parser.bah"
 char** ____BAH_COMPILER_VAR_1104_ahomeaaloisanijlijchargementsabahasrcaparserbbah = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1104_ahomeaaloisanijlijchargementsabahasrcaparserbbah[1] = "\02\0\0\0"";\n";____BAH_COMPILER_VAR_1104_ahomeaaloisanijlijchargementsabahasrcaparserbbah[0] = code;char* ____BAH_COMPILER_VAR_1105_ahomeaaloisanijlijchargementsabahasrcaparserbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_1104_ahomeaaloisanijlijchargementsabahasrcaparserbbah, 2);struct rope* declR = rope(____BAH_COMPILER_VAR_1105_ahomeaaloisanijlijchargementsabahasrcaparserbbah);
 
-#line 1670 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1672 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((exists==false)) {
 
-#line 1672 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1674 "/home/alois/Téléchargements/bah/src/parser.bah"
 v->declRope = declR;
 
-#line 1673 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1675 "/home/alois/Téléchargements/bah/src/parser.bah"
 v->canBeReg = true;
 }
 
-#line 1675 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1677 "/home/alois/Téléchargements/bah/src/parser.bah"
 OUTPUT = rope__add(OUTPUT, declR);
 }
 };
 
-#line 1685 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1687 "/home/alois/Téléchargements/bah/src/parser.bah"
 void* parseFnHeader(char* prev,struct Bah_Array_Type* l,long long int* i,struct func* fn,struct Elems* elems, void* __BAH_TUPLE_RET_PTR){
 
-#line 1687 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1689 "/home/alois/Téléchargements/bah/src/parser.bah"
 register long long int j = *i;
 
-#line 1688 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1690 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Tok ft = ((struct Tok*)l->data)[j];
 
-#line 1689 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1691 "/home/alois/Téléchargements/bah/src/parser.bah"
 char* tpdf = "\0\0\0\0""";
 
-#line 1690 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1692 "/home/alois/Téléchargements/bah/src/parser.bah"
 if (__builtin_expect((ft.type!=TOKEN_TYPE_VAR), 0)) {
 
-#line 1691 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1693 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Tok keep_ref_____BAH_COMPILER_VAR_1106_ahomeaaloisanijlijchargementsabahasrcaparserbbah = ft;
 throwErr(&ft,"\044\0\0\0""Cannot use {TOKEN} as function name.");
 }
 
-#line 1693 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1695 "/home/alois/Téléchargements/bah/src/parser.bah"
 char** ____BAH_COMPILER_VAR_1107_ahomeaaloisanijlijchargementsabahasrcaparserbbah = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1107_ahomeaaloisanijlijchargementsabahasrcaparserbbah[1] = ft.cont;____BAH_COMPILER_VAR_1107_ahomeaaloisanijlijchargementsabahasrcaparserbbah[0] = prev;char* ____BAH_COMPILER_VAR_1108_ahomeaaloisanijlijchargementsabahasrcaparserbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_1107_ahomeaaloisanijlijchargementsabahasrcaparserbbah, 2);fn->name = ____BAH_COMPILER_VAR_1108_ahomeaaloisanijlijchargementsabahasrcaparserbbah;
 
-#line 1695 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1697 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Bah_Array_Type* arguments = memoryAlloc(sizeof(struct Bah_Array_Type));
 
 arguments->length = 0;
 arguments->elemSize = sizeof(struct variable*);
 
-#line 1697 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1699 "/home/alois/Téléchargements/bah/src/parser.bah"
 char** ____BAH_COMPILER_VAR_1109_ahomeaaloisanijlijchargementsabahasrcaparserbbah = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1109_ahomeaaloisanijlijchargementsabahasrcaparserbbah[1] = "\01\0\0\0""(";____BAH_COMPILER_VAR_1109_ahomeaaloisanijlijchargementsabahasrcaparserbbah[0] = fn->name;char* ____BAH_COMPILER_VAR_1110_ahomeaaloisanijlijchargementsabahasrcaparserbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_1109_ahomeaaloisanijlijchargementsabahasrcaparserbbah, 2);char* code = ____BAH_COMPILER_VAR_1110_ahomeaaloisanijlijchargementsabahasrcaparserbbah;
 
-#line 1700 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1702 "/home/alois/Téléchargements/bah/src/parser.bah"
 j = j+2;
 
-#line 1702 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1704 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Tok t = ((struct Tok*)l->data)[j];
 
-#line 1703 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1705 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((strcmp(t.cont, "\01\0\0\0"")") != 0)) {
 
-#line 1705 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1707 "/home/alois/Téléchargements/bah/src/parser.bah"
 while ((j<len(l))) {
 
-#line 1706 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1708 "/home/alois/Téléchargements/bah/src/parser.bah"
 t = ((struct Tok*)l->data)[j];
 
-#line 1707 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1709 "/home/alois/Téléchargements/bah/src/parser.bah"
 if (__builtin_expect((t.type!=TOKEN_TYPE_VAR), 0)) {
 
-#line 1708 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1710 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Tok keep_ref_____BAH_COMPILER_VAR_1112_ahomeaaloisanijlijchargementsabahasrcaparserbbah = t;
 throwErr(&t,"\044\0\0\0""Cannot use {TOKEN} as argument name.");
 }
 
-#line 1710 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1712 "/home/alois/Téléchargements/bah/src/parser.bah"
 char* argName = t.cont;
 
-#line 1712 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1714 "/home/alois/Téléchargements/bah/src/parser.bah"
 ++j;
 
-#line 1713 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1715 "/home/alois/Téléchargements/bah/src/parser.bah"
 if (__builtin_expect((j>=len(l)), 0)) {
 
-#line 1714 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1716 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Tok keep_ref_____BAH_COMPILER_VAR_1113_ahomeaaloisanijlijchargementsabahasrcaparserbbah = t;
 throwErr(&t,"\057\0\0\0""Cannot declare argument {TOKEN} without a type.");
 }
 
-#line 1716 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1718 "/home/alois/Téléchargements/bah/src/parser.bah"
 t = ((struct Tok*)l->data)[j];
 
-#line 1717 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1719 "/home/alois/Téléchargements/bah/src/parser.bah"
 char* argType = t.cont;
 
-#line 1719 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1721 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((t.cont[0+4]==91)) {
 
-#line 1720 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1722 "/home/alois/Téléchargements/bah/src/parser.bah"
 long long int nbEncl = 1;
 
-#line 1721 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1723 "/home/alois/Téléchargements/bah/src/parser.bah"
 ++j;
 
-#line 1722 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1724 "/home/alois/Téléchargements/bah/src/parser.bah"
 for (; (j<len(l)); ++j) {
 
-#line 1723 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1725 "/home/alois/Téléchargements/bah/src/parser.bah"
 char** ____BAH_COMPILER_VAR_1115_ahomeaaloisanijlijchargementsabahasrcaparserbbah = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1115_ahomeaaloisanijlijchargementsabahasrcaparserbbah[1] = ((struct Tok*)l->data)[j].cont;____BAH_COMPILER_VAR_1115_ahomeaaloisanijlijchargementsabahasrcaparserbbah[0] = argType;char* ____BAH_COMPILER_VAR_1116_ahomeaaloisanijlijchargementsabahasrcaparserbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_1115_ahomeaaloisanijlijchargementsabahasrcaparserbbah, 2);argType = ____BAH_COMPILER_VAR_1116_ahomeaaloisanijlijchargementsabahasrcaparserbbah;
 
-#line 1724 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1726 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((strcmp(((struct Tok*)l->data)[j].cont, "\01\0\0\0""[") == 0)||(strcmp(((struct Tok*)l->data)[j].cont, "\01\0\0\0""(") == 0)||(strcmp(((struct Tok*)l->data)[j].cont, "\01\0\0\0""{") == 0)) {
 
-#line 1725 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1727 "/home/alois/Téléchargements/bah/src/parser.bah"
 ++nbEncl;
 }
 
-#line 1726 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1728 "/home/alois/Téléchargements/bah/src/parser.bah"
 else{
 if ((strcmp(((struct Tok*)l->data)[j].cont, "\01\0\0\0""]") == 0)||(strcmp(((struct Tok*)l->data)[j].cont, "\01\0\0\0"")") == 0)||(strcmp(((struct Tok*)l->data)[j].cont, "\01\0\0\0""}") == 0)) {
 
-#line 1727 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1729 "/home/alois/Téléchargements/bah/src/parser.bah"
 --nbEncl;
 
-#line 1728 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1730 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((nbEncl==0)) {
 
-#line 1729 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1731 "/home/alois/Téléchargements/bah/src/parser.bah"
 goto ____BAH_COMPILER_VAR_1114_ahomeaaloisanijlijchargementsabahasrcaparserbbah;
 }
 }
@@ -17601,74 +17605,74 @@ goto ____BAH_COMPILER_VAR_1114_ahomeaaloisanijlijchargementsabahasrcaparserbbah;
 ____BAH_COMPILER_VAR_1114_ahomeaaloisanijlijchargementsabahasrcaparserbbah: ;
 }
 
-#line 1736 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1738 "/home/alois/Téléchargements/bah/src/parser.bah"
 ++j;
 
-#line 1737 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1739 "/home/alois/Téléchargements/bah/src/parser.bah"
 char isComa = false;
 
-#line 1738 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1740 "/home/alois/Téléchargements/bah/src/parser.bah"
 long long int nbPars = 1;
 
-#line 1739 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1741 "/home/alois/Téléchargements/bah/src/parser.bah"
 while ((j<len(l))) {
 
-#line 1740 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1742 "/home/alois/Téléchargements/bah/src/parser.bah"
 t = ((struct Tok*)l->data)[j];
 
-#line 1741 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1743 "/home/alois/Téléchargements/bah/src/parser.bah"
 isComa = false;
 
-#line 1742 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1744 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((strcmp(t.cont, "\01\0\0\0"",") != 0)) {
 
-#line 1743 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1745 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((strcmp(t.cont, "\01\0\0\0""(") == 0)) {
 
-#line 1744 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1746 "/home/alois/Téléchargements/bah/src/parser.bah"
 ++nbPars;
 }
 
-#line 1745 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1747 "/home/alois/Téléchargements/bah/src/parser.bah"
 else{
 if ((strcmp(t.cont, "\01\0\0\0"")") == 0)) {
 
-#line 1746 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1748 "/home/alois/Téléchargements/bah/src/parser.bah"
 --nbPars;
 }
 }
 
-#line 1748 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1750 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((strcmp(t.cont, "\01\0\0\0"")") == 0)&&(nbPars==0)) {
 
-#line 1749 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1751 "/home/alois/Téléchargements/bah/src/parser.bah"
 goto ____BAH_COMPILER_VAR_1117_ahomeaaloisanijlijchargementsabahasrcaparserbbah;
 }
 
-#line 1750 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1752 "/home/alois/Téléchargements/bah/src/parser.bah"
 else{
 
-#line 1751 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1753 "/home/alois/Téléchargements/bah/src/parser.bah"
 char** ____BAH_COMPILER_VAR_1118_ahomeaaloisanijlijchargementsabahasrcaparserbbah = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1118_ahomeaaloisanijlijchargementsabahasrcaparserbbah[1] = t.cont;____BAH_COMPILER_VAR_1118_ahomeaaloisanijlijchargementsabahasrcaparserbbah[0] = argType;char* ____BAH_COMPILER_VAR_1119_ahomeaaloisanijlijchargementsabahasrcaparserbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_1118_ahomeaaloisanijlijchargementsabahasrcaparserbbah, 2);argType = ____BAH_COMPILER_VAR_1119_ahomeaaloisanijlijchargementsabahasrcaparserbbah;
 }
 }
 
-#line 1753 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1755 "/home/alois/Téléchargements/bah/src/parser.bah"
 else{
 
-#line 1754 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1756 "/home/alois/Téléchargements/bah/src/parser.bah"
 isComa = true;
 
-#line 1755 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1757 "/home/alois/Téléchargements/bah/src/parser.bah"
 goto ____BAH_COMPILER_VAR_1117_ahomeaaloisanijlijchargementsabahasrcaparserbbah;
 }
 
-#line 1757 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1759 "/home/alois/Téléchargements/bah/src/parser.bah"
 ++j;
 };
 ____BAH_COMPILER_VAR_1117_ahomeaaloisanijlijchargementsabahasrcaparserbbah: ;
 
-#line 1760 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1762 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct variable* ____BAH_COMPILER_VAR_1120_ahomeaaloisanijlijchargementsabahasrcaparserbbah = memoryAlloc(sizeof(struct variable));
 ____BAH_COMPILER_VAR_1120_ahomeaaloisanijlijchargementsabahasrcaparserbbah->name = "\0\0\0\0""";
 ____BAH_COMPILER_VAR_1120_ahomeaaloisanijlijchargementsabahasrcaparserbbah->type = "\0\0\0\0""";
@@ -17676,75 +17680,75 @@ ____BAH_COMPILER_VAR_1120_ahomeaaloisanijlijchargementsabahasrcaparserbbah->cons
 ____BAH_COMPILER_VAR_1120_ahomeaaloisanijlijchargementsabahasrcaparserbbah->from = "\0\0\0\0""";
 struct variable* argument = ____BAH_COMPILER_VAR_1120_ahomeaaloisanijlijchargementsabahasrcaparserbbah;
 
-#line 1761 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1763 "/home/alois/Téléchargements/bah/src/parser.bah"
 argument->name = argName;
 
-#line 1762 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1764 "/home/alois/Téléchargements/bah/src/parser.bah"
 argument->type = argType;
 
-#line 1763 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1765 "/home/alois/Téléchargements/bah/src/parser.bah"
 unsigned int ____BAH_COMPILER_VAR_1121_ahomeaaloisanijlijchargementsabahasrcaparserbbah = len(arguments);
     __Bah_realocate_arr(arguments, ____BAH_COMPILER_VAR_1121_ahomeaaloisanijlijchargementsabahasrcaparserbbah);
     ((struct variable**)arguments->data)[____BAH_COMPILER_VAR_1121_ahomeaaloisanijlijchargementsabahasrcaparserbbah] = argument;
 
-#line 1766 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1768 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct string argCType = getCType(argType,elems);
 
-#line 1768 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1770 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct string cfrt = string(argType);
 
-#line 1769 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1771 "/home/alois/Téléchargements/bah/src/parser.bah"
 char* newArgType = string__str(&argCType);
 
-#line 1770 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1772 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((string__hasPrefix(&cfrt,"\011\0\0\0""function(")==1)) {
 
-#line 1771 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1773 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct string keep_ref_____BAH_COMPILER_VAR_1122_ahomeaaloisanijlijchargementsabahasrcaparserbbah = cfrt;
 char** ____BAH_COMPILER_VAR_1123_ahomeaaloisanijlijchargementsabahasrcaparserbbah = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1123_ahomeaaloisanijlijchargementsabahasrcaparserbbah[1] = getCfunctionType(&cfrt,argName,elems);____BAH_COMPILER_VAR_1123_ahomeaaloisanijlijchargementsabahasrcaparserbbah[0] = code;char* ____BAH_COMPILER_VAR_1124_ahomeaaloisanijlijchargementsabahasrcaparserbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_1123_ahomeaaloisanijlijchargementsabahasrcaparserbbah, 2);code = ____BAH_COMPILER_VAR_1124_ahomeaaloisanijlijchargementsabahasrcaparserbbah;
 }
 
-#line 1772 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1774 "/home/alois/Téléchargements/bah/src/parser.bah"
 else{
 
-#line 1773 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1775 "/home/alois/Téléchargements/bah/src/parser.bah"
 char** ____BAH_COMPILER_VAR_1125_ahomeaaloisanijlijchargementsabahasrcaparserbbah = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_1125_ahomeaaloisanijlijchargementsabahasrcaparserbbah[2] = argName;____BAH_COMPILER_VAR_1125_ahomeaaloisanijlijchargementsabahasrcaparserbbah[1] = "\01\0\0\0"" ";____BAH_COMPILER_VAR_1125_ahomeaaloisanijlijchargementsabahasrcaparserbbah[0] = newArgType;char* ____BAH_COMPILER_VAR_1126_ahomeaaloisanijlijchargementsabahasrcaparserbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_1125_ahomeaaloisanijlijchargementsabahasrcaparserbbah, 3);char** ____BAH_COMPILER_VAR_1127_ahomeaaloisanijlijchargementsabahasrcaparserbbah = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1127_ahomeaaloisanijlijchargementsabahasrcaparserbbah[1] = ____BAH_COMPILER_VAR_1126_ahomeaaloisanijlijchargementsabahasrcaparserbbah;____BAH_COMPILER_VAR_1127_ahomeaaloisanijlijchargementsabahasrcaparserbbah[0] = code;char* ____BAH_COMPILER_VAR_1128_ahomeaaloisanijlijchargementsabahasrcaparserbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_1127_ahomeaaloisanijlijchargementsabahasrcaparserbbah, 2);code = ____BAH_COMPILER_VAR_1128_ahomeaaloisanijlijchargementsabahasrcaparserbbah;
 }
 
-#line 1775 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1777 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((isComa==true)) {
 
-#line 1776 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1778 "/home/alois/Téléchargements/bah/src/parser.bah"
 char** ____BAH_COMPILER_VAR_1129_ahomeaaloisanijlijchargementsabahasrcaparserbbah = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1129_ahomeaaloisanijlijchargementsabahasrcaparserbbah[1] = "\01\0\0\0"",";____BAH_COMPILER_VAR_1129_ahomeaaloisanijlijchargementsabahasrcaparserbbah[0] = code;char* ____BAH_COMPILER_VAR_1130_ahomeaaloisanijlijchargementsabahasrcaparserbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_1129_ahomeaaloisanijlijchargementsabahasrcaparserbbah, 2);code = ____BAH_COMPILER_VAR_1130_ahomeaaloisanijlijchargementsabahasrcaparserbbah;
 }
 
-#line 1777 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1779 "/home/alois/Téléchargements/bah/src/parser.bah"
 else{
 
-#line 1778 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1780 "/home/alois/Téléchargements/bah/src/parser.bah"
 char** ____BAH_COMPILER_VAR_1131_ahomeaaloisanijlijchargementsabahasrcaparserbbah = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1131_ahomeaaloisanijlijchargementsabahasrcaparserbbah[1] = "\01\0\0\0"")";____BAH_COMPILER_VAR_1131_ahomeaaloisanijlijchargementsabahasrcaparserbbah[0] = code;char* ____BAH_COMPILER_VAR_1132_ahomeaaloisanijlijchargementsabahasrcaparserbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_1131_ahomeaaloisanijlijchargementsabahasrcaparserbbah, 2);code = ____BAH_COMPILER_VAR_1132_ahomeaaloisanijlijchargementsabahasrcaparserbbah;
 
-#line 1779 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1781 "/home/alois/Téléchargements/bah/src/parser.bah"
 goto ____BAH_COMPILER_VAR_1111_ahomeaaloisanijlijchargementsabahasrcaparserbbah;
 }
 
-#line 1781 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1783 "/home/alois/Téléchargements/bah/src/parser.bah"
 ++j;
 };
 ____BAH_COMPILER_VAR_1111_ahomeaaloisanijlijchargementsabahasrcaparserbbah: ;
 }
 
-#line 1783 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1785 "/home/alois/Téléchargements/bah/src/parser.bah"
 else{
 
-#line 1784 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1786 "/home/alois/Téléchargements/bah/src/parser.bah"
 char** ____BAH_COMPILER_VAR_1133_ahomeaaloisanijlijchargementsabahasrcaparserbbah = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1133_ahomeaaloisanijlijchargementsabahasrcaparserbbah[1] = "\01\0\0\0"")";____BAH_COMPILER_VAR_1133_ahomeaaloisanijlijchargementsabahasrcaparserbbah[0] = code;char* ____BAH_COMPILER_VAR_1134_ahomeaaloisanijlijchargementsabahasrcaparserbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_1133_ahomeaaloisanijlijchargementsabahasrcaparserbbah, 2);code = ____BAH_COMPILER_VAR_1134_ahomeaaloisanijlijchargementsabahasrcaparserbbah;
 }
 
-#line 1787 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1789 "/home/alois/Téléchargements/bah/src/parser.bah"
 ++j;
 
-#line 1789 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1791 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct variable* ____BAH_COMPILER_VAR_1135_ahomeaaloisanijlijchargementsabahasrcaparserbbah = memoryAlloc(sizeof(struct variable));
 ____BAH_COMPILER_VAR_1135_ahomeaaloisanijlijchargementsabahasrcaparserbbah->name = "\0\0\0\0""";
 ____BAH_COMPILER_VAR_1135_ahomeaaloisanijlijchargementsabahasrcaparserbbah->type = "\0\0\0\0""";
@@ -17752,95 +17756,95 @@ ____BAH_COMPILER_VAR_1135_ahomeaaloisanijlijchargementsabahasrcaparserbbah->cons
 ____BAH_COMPILER_VAR_1135_ahomeaaloisanijlijchargementsabahasrcaparserbbah->from = "\0\0\0\0""";
 struct variable* returns = ____BAH_COMPILER_VAR_1135_ahomeaaloisanijlijchargementsabahasrcaparserbbah;
 
-#line 1790 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1792 "/home/alois/Téléchargements/bah/src/parser.bah"
 returns->type = "\0\0\0\0""";
 
-#line 1791 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1793 "/home/alois/Téléchargements/bah/src/parser.bah"
 while ((j<len(l))) {
 
-#line 1792 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1794 "/home/alois/Téléchargements/bah/src/parser.bah"
 t = ((struct Tok*)l->data)[j];
 
-#line 1793 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1795 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((strcmp(t.cont, "\01\0\0\0""{") == 0)) {
 
-#line 1794 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1796 "/home/alois/Téléchargements/bah/src/parser.bah"
 goto ____BAH_COMPILER_VAR_1136_ahomeaaloisanijlijchargementsabahasrcaparserbbah;
 }
 
-#line 1796 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1798 "/home/alois/Téléchargements/bah/src/parser.bah"
 char** ____BAH_COMPILER_VAR_1137_ahomeaaloisanijlijchargementsabahasrcaparserbbah = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1137_ahomeaaloisanijlijchargementsabahasrcaparserbbah[1] = t.cont;____BAH_COMPILER_VAR_1137_ahomeaaloisanijlijchargementsabahasrcaparserbbah[0] = returns->type;char* ____BAH_COMPILER_VAR_1138_ahomeaaloisanijlijchargementsabahasrcaparserbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_1137_ahomeaaloisanijlijchargementsabahasrcaparserbbah, 2);returns->type = ____BAH_COMPILER_VAR_1138_ahomeaaloisanijlijchargementsabahasrcaparserbbah;
 
-#line 1797 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1799 "/home/alois/Téléchargements/bah/src/parser.bah"
 ++j;
 };
 ____BAH_COMPILER_VAR_1136_ahomeaaloisanijlijchargementsabahasrcaparserbbah: ;
 
-#line 1799 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1801 "/home/alois/Téléchargements/bah/src/parser.bah"
 if (strlen(returns->type)) {
 
-#line 1800 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1802 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct string rts = string(returns->type);
 
-#line 1801 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1803 "/home/alois/Téléchargements/bah/src/parser.bah"
 string__replace(&rts,"\01\0\0\0"" ","\0\0\0\0""");
 
-#line 1802 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1804 "/home/alois/Téléchargements/bah/src/parser.bah"
 returns->type = rts.content;
 }
 
-#line 1805 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1807 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((strlen(returns->type)>1)&&(returns->type[0+4]==91)&&(returns->type[strlen(returns->type)-1+4]==93)) {
 
-#line 1806 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1808 "/home/alois/Téléchargements/bah/src/parser.bah"
 char* coma = "\0\0\0\0""";
 
-#line 1807 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1809 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((len(arguments)>0)) {
 
-#line 1808 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1810 "/home/alois/Téléchargements/bah/src/parser.bah"
 coma = "\02\0\0\0"", ";
 }
 
-#line 1810 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1812 "/home/alois/Téléchargements/bah/src/parser.bah"
 char** ____BAH_COMPILER_VAR_1139_ahomeaaloisanijlijchargementsabahasrcaparserbbah = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_1139_ahomeaaloisanijlijchargementsabahasrcaparserbbah[2] = "\032\0\0\0""void* __BAH_TUPLE_RET_PTR)";____BAH_COMPILER_VAR_1139_ahomeaaloisanijlijchargementsabahasrcaparserbbah[1] = coma;____BAH_COMPILER_VAR_1139_ahomeaaloisanijlijchargementsabahasrcaparserbbah[0] = strSubstitute(code, 0, strlen(code)-1);char* ____BAH_COMPILER_VAR_1140_ahomeaaloisanijlijchargementsabahasrcaparserbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_1139_ahomeaaloisanijlijchargementsabahasrcaparserbbah, 3);code = ____BAH_COMPILER_VAR_1140_ahomeaaloisanijlijchargementsabahasrcaparserbbah;
 }
 
-#line 1813 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1815 "/home/alois/Téléchargements/bah/src/parser.bah"
 *i = j;
 
-#line 1814 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1816 "/home/alois/Téléchargements/bah/src/parser.bah"
 returns->name = fn->name;
 
-#line 1815 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1817 "/home/alois/Téléchargements/bah/src/parser.bah"
 fn->returns = returns;
 
-#line 1816 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1818 "/home/alois/Téléchargements/bah/src/parser.bah"
 fn->args = arguments;
 
-#line 1818 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1820 "/home/alois/Téléchargements/bah/src/parser.bah"
 char* crt = "\0\0\0\0""";
 
-#line 1819 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1821 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((strlen(returns->type)>0)&&(returns->type[strlen(returns->type)-1+4]==33)) {
 
-#line 1820 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1822 "/home/alois/Téléchargements/bah/src/parser.bah"
 crt = "\05\0\0\0""void*";
 }
 
-#line 1821 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1823 "/home/alois/Téléchargements/bah/src/parser.bah"
 else{
 
-#line 1822 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1824 "/home/alois/Téléchargements/bah/src/parser.bah"
 
                 struct string keep_ref_____BAH_COMPILER_VAR_1141_ahomeaaloisanijlijchargementsabahasrcaparserbbah = getCType(returns->type,elems);
                 crt = string__str(&keep_ref_____BAH_COMPILER_VAR_1141_ahomeaaloisanijlijchargementsabahasrcaparserbbah);
 }
 
-#line 1824 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1826 "/home/alois/Téléchargements/bah/src/parser.bah"
 char** ____BAH_COMPILER_VAR_1142_ahomeaaloisanijlijchargementsabahasrcaparserbbah = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_1142_ahomeaaloisanijlijchargementsabahasrcaparserbbah[2] = code;____BAH_COMPILER_VAR_1142_ahomeaaloisanijlijchargementsabahasrcaparserbbah[1] = "\01\0\0\0"" ";____BAH_COMPILER_VAR_1142_ahomeaaloisanijlijchargementsabahasrcaparserbbah[0] = crt;char* ____BAH_COMPILER_VAR_1143_ahomeaaloisanijlijchargementsabahasrcaparserbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_1142_ahomeaaloisanijlijchargementsabahasrcaparserbbah, 3);code = ____BAH_COMPILER_VAR_1143_ahomeaaloisanijlijchargementsabahasrcaparserbbah;
 
-#line 1825 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1827 "/home/alois/Téléchargements/bah/src/parser.bah"
 void* ____BAH_COMPILER_VAR_1144_ahomeaaloisanijlijchargementsabahasrcaparserbbah =alloca(sizeof(char*)+sizeof(char*));long int ____BAH_COMPILER_VAR_1145_ahomeaaloisanijlijchargementsabahasrcaparserbbah = 0;
 *(char**)((char*)____BAH_COMPILER_VAR_1144_ahomeaaloisanijlijchargementsabahasrcaparserbbah + ____BAH_COMPILER_VAR_1145_ahomeaaloisanijlijchargementsabahasrcaparserbbah) = code;
 ____BAH_COMPILER_VAR_1145_ahomeaaloisanijlijchargementsabahasrcaparserbbah+=sizeof(char*);
@@ -17850,10 +17854,10 @@ memcpy(__BAH_TUPLE_RET_PTR, ____BAH_COMPILER_VAR_1144_ahomeaaloisanijlijchargeme
 return __BAH_TUPLE_RET_PTR;
 };
 
-#line 1829 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1831 "/home/alois/Téléchargements/bah/src/parser.bah"
 void parseStruct(struct Bah_Array_Type* l,struct Elems* elems){
 
-#line 1830 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1832 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct cStruct* ____BAH_COMPILER_VAR_1146_ahomeaaloisanijlijchargementsabahasrcaparserbbah = memoryAlloc(sizeof(struct cStruct));
 ____BAH_COMPILER_VAR_1146_ahomeaaloisanijlijchargementsabahasrcaparserbbah->name = "\0\0\0\0""";
 ____BAH_COMPILER_VAR_1146_ahomeaaloisanijlijchargementsabahasrcaparserbbah->members = memoryAlloc(sizeof(struct Bah_Array_Type));
@@ -17866,261 +17870,261 @@ ____BAH_COMPILER_VAR_1146_ahomeaaloisanijlijchargementsabahasrcaparserbbah->memb
 ____BAH_COMPILER_VAR_1146_ahomeaaloisanijlijchargementsabahasrcaparserbbah->extendedFrom = "\0\0\0\0""";
 struct cStruct* s = ____BAH_COMPILER_VAR_1146_ahomeaaloisanijlijchargementsabahasrcaparserbbah;
 
-#line 1831 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1833 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Bah_Array_Type* structs = elems->structs;
 
-#line 1832 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1834 "/home/alois/Téléchargements/bah/src/parser.bah"
 unsigned int ____BAH_COMPILER_VAR_1147_ahomeaaloisanijlijchargementsabahasrcaparserbbah = len(structs);
     __Bah_realocate_arr(structs, ____BAH_COMPILER_VAR_1147_ahomeaaloisanijlijchargementsabahasrcaparserbbah);
     ((struct cStruct**)structs->data)[____BAH_COMPILER_VAR_1147_ahomeaaloisanijlijchargementsabahasrcaparserbbah] = s;
 
-#line 1833 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1835 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Bah_Array_Type* methds = s->methods;
 
-#line 1834 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1836 "/home/alois/Téléchargements/bah/src/parser.bah"
 if (__builtin_expect((len(l)<4), 0)) {
 
-#line 1835 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1837 "/home/alois/Téléchargements/bah/src/parser.bah"
 throwErr(&((struct Tok*)l->data)[len(l)-1],"\130\0\0\0""Cannot declare struct has such, please do 'struct <name> { <memberName>:<memberType> }'.");
 }
 
-#line 1837 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1839 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Tok nameToken = ((struct Tok*)l->data)[1];
 
-#line 1838 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1840 "/home/alois/Téléchargements/bah/src/parser.bah"
 register long long int i = 2;
 
-#line 1839 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1841 "/home/alois/Téléchargements/bah/src/parser.bah"
 char doesOutput = true;
 
-#line 1840 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1842 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((strcmp(nameToken.cont, "\01\0\0\0""!") == 0)) {
 
-#line 1841 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1843 "/home/alois/Téléchargements/bah/src/parser.bah"
 nameToken = ((struct Tok*)l->data)[2];
 
-#line 1842 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1844 "/home/alois/Téléchargements/bah/src/parser.bah"
 i = 3;
 
-#line 1843 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1845 "/home/alois/Téléchargements/bah/src/parser.bah"
 doesOutput = false;
 
-#line 1844 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1846 "/home/alois/Téléchargements/bah/src/parser.bah"
 s->isBinding = true;
 }
 
-#line 1846 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1848 "/home/alois/Téléchargements/bah/src/parser.bah"
 if (__builtin_expect((nameToken.type!=TOKEN_TYPE_VAR), 0)) {
 
-#line 1847 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1849 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Tok keep_ref_____BAH_COMPILER_VAR_1148_ahomeaaloisanijlijchargementsabahasrcaparserbbah = nameToken;
 throwErr(&nameToken,"\042\0\0\0""Cannot use {TOKEN} as struct name.");
 }
 
-#line 1849 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1851 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct cStruct* os = searchStruct(nameToken.cont,elems);
 
-#line 1850 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1852 "/home/alois/Téléchargements/bah/src/parser.bah"
 if (__builtin_expect((os!=null), 0)) {
 
-#line 1851 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1853 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Tok keep_ref_____BAH_COMPILER_VAR_1149_ahomeaaloisanijlijchargementsabahasrcaparserbbah = nameToken;
 throwErr(&nameToken,"\036\0\0\0""Struct {TOKEN} already exists.");
 }
 
-#line 1853 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1855 "/home/alois/Téléchargements/bah/src/parser.bah"
 s->name = nameToken.cont;
 
-#line 1854 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1856 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Bah_Array_Type* members = s->members;
 
-#line 1855 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1857 "/home/alois/Téléchargements/bah/src/parser.bah"
 currentCStruct = s;
 
-#line 1856 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1858 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Bah_Array_Type* allMembs = memoryAlloc(sizeof(struct Bah_Array_Type));
 
 allMembs->length = 0;
 allMembs->elemSize = sizeof(char*);
 
-#line 1857 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1859 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Tok st = ((struct Tok*)l->data)[i];
 
-#line 1858 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1860 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((st.type==TOKEN_TYPE_KEYWORD)) {
 
-#line 1859 "/home/alois/Téléchargements/bah/src/parser.bah"
-if ((strcmp(st.cont, "\06\0\0\0""extend") == 0)) {
-
-#line 1860 "/home/alois/Téléchargements/bah/src/parser.bah"
-++i;
-
 #line 1861 "/home/alois/Téléchargements/bah/src/parser.bah"
-struct Tok extdSNameTk = ((struct Tok*)l->data)[i];
+if ((strcmp(st.cont, "\06\0\0\0""extend") == 0)) {
 
 #line 1862 "/home/alois/Téléchargements/bah/src/parser.bah"
 ++i;
 
 #line 1863 "/home/alois/Téléchargements/bah/src/parser.bah"
-if (__builtin_expect((extdSNameTk.type!=TOKEN_TYPE_VAR), 0)) {
+struct Tok extdSNameTk = ((struct Tok*)l->data)[i];
 
 #line 1864 "/home/alois/Téléchargements/bah/src/parser.bah"
+++i;
+
+#line 1865 "/home/alois/Téléchargements/bah/src/parser.bah"
+if (__builtin_expect((extdSNameTk.type!=TOKEN_TYPE_VAR), 0)) {
+
+#line 1866 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Tok keep_ref_____BAH_COMPILER_VAR_1150_ahomeaaloisanijlijchargementsabahasrcaparserbbah = extdSNameTk;
 throwErr(&extdSNameTk,"\042\0\0\0""Cannot use {TOKEN} as struct name.");
 }
 
-#line 1866 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1868 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct cStruct* extdS = searchStruct(extdSNameTk.cont,elems);
 
-#line 1867 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1869 "/home/alois/Téléchargements/bah/src/parser.bah"
 if (__builtin_expect((extdS==null), 0)) {
 
-#line 1868 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1870 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Tok keep_ref_____BAH_COMPILER_VAR_1151_ahomeaaloisanijlijchargementsabahasrcaparserbbah = extdSNameTk;
 throwErr(&extdSNameTk,"\036\0\0\0""Struct {TOKEN} does not exist.");
 }
 
-#line 1870 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1872 "/home/alois/Téléchargements/bah/src/parser.bah"
 s->extendedFrom = extdS->name;
 
-#line 1871 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1873 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Bah_Array_Type* extdsmbs = extdS->members;
 
-#line 1872 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1874 "/home/alois/Téléchargements/bah/src/parser.bah"
 register long long int j = 0;
 
-#line 1872 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1874 "/home/alois/Téléchargements/bah/src/parser.bah"
 while ((j<len(extdsmbs))) {
 
-#line 1873 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1875 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct structMemb* em = ((struct structMemb**)extdsmbs->data)[j];
 
-#line 1874 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1876 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct string cemt = string(em->type);
 
-#line 1875 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1877 "/home/alois/Téléchargements/bah/src/parser.bah"
 char* membDeclStr= null;
 
-#line 1876 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1878 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((string__hasPrefix(&cemt,"\011\0\0\0""function(")==1)) {
 
-#line 1877 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1879 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct string keep_ref_____BAH_COMPILER_VAR_1153_ahomeaaloisanijlijchargementsabahasrcaparserbbah = cemt;
 membDeclStr = getCfunctionType(&cemt,em->name,elems);
 }
 
-#line 1878 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1880 "/home/alois/Téléchargements/bah/src/parser.bah"
 else{
 
-#line 1879 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1881 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct string membDecl = getCType(em->type,elems);
 
-#line 1880 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1882 "/home/alois/Téléchargements/bah/src/parser.bah"
 string__append(&membDecl,"\01\0\0\0"" ");
 
-#line 1881 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1883 "/home/alois/Téléchargements/bah/src/parser.bah"
 string__append(&membDecl,em->name);
 
-#line 1882 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1884 "/home/alois/Téléchargements/bah/src/parser.bah"
 membDeclStr = membDecl.content;
 }
 
-#line 1884 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1886 "/home/alois/Téléchargements/bah/src/parser.bah"
 unsigned int ____BAH_COMPILER_VAR_1154_ahomeaaloisanijlijchargementsabahasrcaparserbbah = len(allMembs);
     __Bah_realocate_arr(allMembs, ____BAH_COMPILER_VAR_1154_ahomeaaloisanijlijchargementsabahasrcaparserbbah);
     ((char**)allMembs->data)[____BAH_COMPILER_VAR_1154_ahomeaaloisanijlijchargementsabahasrcaparserbbah] = membDeclStr;
 
-#line 1885 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1887 "/home/alois/Téléchargements/bah/src/parser.bah"
 unsigned int ____BAH_COMPILER_VAR_1155_ahomeaaloisanijlijchargementsabahasrcaparserbbah = len(members);
     __Bah_realocate_arr(members, ____BAH_COMPILER_VAR_1155_ahomeaaloisanijlijchargementsabahasrcaparserbbah);
     ((struct structMemb**)members->data)[____BAH_COMPILER_VAR_1155_ahomeaaloisanijlijchargementsabahasrcaparserbbah] = em;
 
-#line 1886 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1888 "/home/alois/Téléchargements/bah/src/parser.bah"
 ++j;
 };
 ____BAH_COMPILER_VAR_1152_ahomeaaloisanijlijchargementsabahasrcaparserbbah: ;
 }
 
-#line 1888 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1890 "/home/alois/Téléchargements/bah/src/parser.bah"
 else{
 
-#line 1889 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1891 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Tok keep_ref_____BAH_COMPILER_VAR_1156_ahomeaaloisanijlijchargementsabahasrcaparserbbah = st;
 throwErr(&st,"\061\0\0\0""Cannot use keyword {TOKEN} in struct declaration.");
 }
 }
 
-#line 1892 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1894 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Tok braceTk = ((struct Tok*)l->data)[i];
 
-#line 1893 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1895 "/home/alois/Téléchargements/bah/src/parser.bah"
 ++i;
 
-#line 1894 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1896 "/home/alois/Téléchargements/bah/src/parser.bah"
 if (__builtin_expect((strcmp(braceTk.cont, "\01\0\0\0""{") != 0), 0)) {
 
-#line 1895 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1897 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Tok keep_ref_____BAH_COMPILER_VAR_1157_ahomeaaloisanijlijchargementsabahasrcaparserbbah = braceTk;
 throwErr(&braceTk,"\051\0\0\0""Cannot use {TOKEN} in struct declaration.");
 }
 
-#line 1897 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1899 "/home/alois/Téléchargements/bah/src/parser.bah"
 postDeclHandle = rope("\0\0\0\0""");
 
-#line 1898 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1900 "/home/alois/Téléchargements/bah/src/parser.bah"
 OUTPUT = rope__add(OUTPUT, postDeclHandle);
 
-#line 1899 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1901 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct rope* OOUT = OUTPUT;
 
-#line 1900 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1902 "/home/alois/Téléchargements/bah/src/parser.bah"
 char* nextLine = "\0\0\0\0""";
 
-#line 1901 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1903 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct rope* bottomDecl = rope("\0\0\0\0""");
 
-#line 1902 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1904 "/home/alois/Téléchargements/bah/src/parser.bah"
 register long long int j = 0;
 
-#line 1902 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1904 "/home/alois/Téléchargements/bah/src/parser.bah"
 for (; (j<len(l)); ++j) {
 
-#line 1903 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1905 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((((struct Tok*)l->data)[j].type==TOKEN_TYPE_STR)&&(((struct Tok*)l->data)[j].processedStr==false)) {
 
-#line 1904 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1906 "/home/alois/Téléchargements/bah/src/parser.bah"
 ((struct Tok*)l->data)[j].cont = strLitteralToBahStr(((struct Tok*)l->data)[j].cont);
 
-#line 1905 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1907 "/home/alois/Téléchargements/bah/src/parser.bah"
 ((struct Tok*)l->data)[j].processedStr = true;
 }
 };
 ____BAH_COMPILER_VAR_1158_ahomeaaloisanijlijchargementsabahasrcaparserbbah: ;
 
-#line 1908 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1910 "/home/alois/Téléchargements/bah/src/parser.bah"
 while ((i<len(l))) {
 
-#line 1909 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1911 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Tok t = ((struct Tok*)l->data)[i];
 
-#line 1910 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1912 "/home/alois/Téléchargements/bah/src/parser.bah"
 long long int max = i+2;
 
-#line 1911 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1913 "/home/alois/Téléchargements/bah/src/parser.bah"
 if (__builtin_expect((max>=len(l)), 0)) {
 
-#line 1912 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1914 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((t.type==TOKEN_TYPE_ENCL)&&(strcmp(t.cont, "\01\0\0\0""}") == 0)) {
 
-#line 1913 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1915 "/home/alois/Téléchargements/bah/src/parser.bah"
 goto ____BAH_COMPILER_VAR_1159_ahomeaaloisanijlijchargementsabahasrcaparserbbah;
 }
 
-#line 1915 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1917 "/home/alois/Téléchargements/bah/src/parser.bah"
 throwErr(&((struct Tok*)l->data)[len(l)-1],"\075\0\0\0""Not enough argument in member declaration, ending by {TOKEN}.");
 }
 
-#line 1917 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1919 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct structMemb* ____BAH_COMPILER_VAR_1160_ahomeaaloisanijlijchargementsabahasrcaparserbbah = memoryAlloc(sizeof(struct structMemb));
 ____BAH_COMPILER_VAR_1160_ahomeaaloisanijlijchargementsabahasrcaparserbbah->name = "\0\0\0\0""";
 ____BAH_COMPILER_VAR_1160_ahomeaaloisanijlijchargementsabahasrcaparserbbah->type = "\0\0\0\0""";
@@ -18129,66 +18133,66 @@ ____BAH_COMPILER_VAR_1160_ahomeaaloisanijlijchargementsabahasrcaparserbbah->from
 ____BAH_COMPILER_VAR_1160_ahomeaaloisanijlijchargementsabahasrcaparserbbah->def = "\0\0\0\0""";
 struct structMemb* memb = ____BAH_COMPILER_VAR_1160_ahomeaaloisanijlijchargementsabahasrcaparserbbah;
 
-#line 1918 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1920 "/home/alois/Téléchargements/bah/src/parser.bah"
 if (__builtin_expect((t.type!=TOKEN_TYPE_VAR), 0)) {
 
-#line 1919 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1921 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Tok keep_ref_____BAH_COMPILER_VAR_1161_ahomeaaloisanijlijchargementsabahasrcaparserbbah = t;
 throwErr(&t,"\042\0\0\0""Cannot use {TOKEN} as member name.");
 }
 
-#line 1921 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1923 "/home/alois/Téléchargements/bah/src/parser.bah"
 memb->name = t.cont;
 
-#line 1922 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1924 "/home/alois/Téléchargements/bah/src/parser.bah"
 register long long int ii = 0;
 
-#line 1922 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1924 "/home/alois/Téléchargements/bah/src/parser.bah"
 while ((ii<len(members))) {
 
-#line 1923 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1925 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct structMemb* m = ((struct structMemb**)members->data)[ii];
 
-#line 1924 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1926 "/home/alois/Téléchargements/bah/src/parser.bah"
 if (__builtin_expect((strcmp(m->name, memb->name) == 0), 0)) {
 
-#line 1925 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1927 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Tok keep_ref_____BAH_COMPILER_VAR_1163_ahomeaaloisanijlijchargementsabahasrcaparserbbah = t;
 throwErr(&t,"\051\0\0\0""Member {TOKEN} has already been declared.");
 }
 
-#line 1927 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1929 "/home/alois/Téléchargements/bah/src/parser.bah"
 ++ii;
 };
 ____BAH_COMPILER_VAR_1162_ahomeaaloisanijlijchargementsabahasrcaparserbbah: ;
 
-#line 1929 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1931 "/home/alois/Téléchargements/bah/src/parser.bah"
 ++i;
 
-#line 1930 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1932 "/home/alois/Téléchargements/bah/src/parser.bah"
 t = ((struct Tok*)l->data)[i];
 
-#line 1931 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1933 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((strcmp(t.cont, "\01\0\0\0"":") != 0)) {
 
-#line 1932 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1934 "/home/alois/Téléchargements/bah/src/parser.bah"
 if (__builtin_expect((strcmp(t.cont, "\01\0\0\0""(") != 0), 0)) {
 
-#line 1933 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1935 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Tok keep_ref_____BAH_COMPILER_VAR_1164_ahomeaaloisanijlijchargementsabahasrcaparserbbah = t;
 throwErr(&t,"\062\0\0\0""Member name should be followed by ':' not {TOKEN}.");
 }
 
-#line 1934 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1936 "/home/alois/Téléchargements/bah/src/parser.bah"
 else{
 
-#line 1935 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1937 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Tok declT = t;
 
-#line 1936 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1938 "/home/alois/Téléchargements/bah/src/parser.bah"
 char** ____BAH_COMPILER_VAR_1165_ahomeaaloisanijlijchargementsabahasrcaparserbbah = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1165_ahomeaaloisanijlijchargementsabahasrcaparserbbah[1] = "\02\0\0\0""__";____BAH_COMPILER_VAR_1165_ahomeaaloisanijlijchargementsabahasrcaparserbbah[0] = s->name;char* ____BAH_COMPILER_VAR_1166_ahomeaaloisanijlijchargementsabahasrcaparserbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_1165_ahomeaaloisanijlijchargementsabahasrcaparserbbah, 2);char* fnPrefix = ____BAH_COMPILER_VAR_1166_ahomeaaloisanijlijchargementsabahasrcaparserbbah;
 
-#line 1937 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1939 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct func* ____BAH_COMPILER_VAR_1167_ahomeaaloisanijlijchargementsabahasrcaparserbbah = memoryAlloc(sizeof(struct func));
 ____BAH_COMPILER_VAR_1167_ahomeaaloisanijlijchargementsabahasrcaparserbbah->name = "\0\0\0\0""";
 ____BAH_COMPILER_VAR_1167_ahomeaaloisanijlijchargementsabahasrcaparserbbah->args = memoryAlloc(sizeof(struct Bah_Array_Type));
@@ -18199,205 +18203,205 @@ ____BAH_COMPILER_VAR_1167_ahomeaaloisanijlijchargementsabahasrcaparserbbah->file
 ____BAH_COMPILER_VAR_1167_ahomeaaloisanijlijchargementsabahasrcaparserbbah->line = 1;
 struct func* fn = ____BAH_COMPILER_VAR_1167_ahomeaaloisanijlijchargementsabahasrcaparserbbah;
 
-#line 1938 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1940 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Bah_Array_Type* nl = memoryAlloc(sizeof(struct Bah_Array_Type));
 
 nl->length = 0;
 nl->elemSize = sizeof(struct Tok);
 
-#line 1939 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1941 "/home/alois/Téléchargements/bah/src/parser.bah"
 j = i-1;
 
-#line 1939 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1941 "/home/alois/Téléchargements/bah/src/parser.bah"
 while ((j<len(l))) {
 
-#line 1940 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1942 "/home/alois/Téléchargements/bah/src/parser.bah"
 t = ((struct Tok*)l->data)[j];
 
-#line 1941 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1943 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((strcmp(t.cont, "\01\0\0\0""{") == 0)) {
 
-#line 1942 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1944 "/home/alois/Téléchargements/bah/src/parser.bah"
 goto ____BAH_COMPILER_VAR_1168_ahomeaaloisanijlijchargementsabahasrcaparserbbah;
 }
 
-#line 1944 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1946 "/home/alois/Téléchargements/bah/src/parser.bah"
 unsigned int ____BAH_COMPILER_VAR_1169_ahomeaaloisanijlijchargementsabahasrcaparserbbah = len(nl);
     __Bah_realocate_arr(nl, ____BAH_COMPILER_VAR_1169_ahomeaaloisanijlijchargementsabahasrcaparserbbah);
     ((struct Tok*)nl->data)[____BAH_COMPILER_VAR_1169_ahomeaaloisanijlijchargementsabahasrcaparserbbah] = t;
 
-#line 1945 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1947 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((j==i)) {
 
-#line 1946 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1948 "/home/alois/Téléchargements/bah/src/parser.bah"
 t.type = TOKEN_TYPE_VAR;
 
-#line 1947 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1949 "/home/alois/Téléchargements/bah/src/parser.bah"
 t.cont = "\04\0\0\0""this";
 
-#line 1948 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1950 "/home/alois/Téléchargements/bah/src/parser.bah"
 t.isValue = true;
 
-#line 1949 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1951 "/home/alois/Téléchargements/bah/src/parser.bah"
 unsigned int ____BAH_COMPILER_VAR_1170_ahomeaaloisanijlijchargementsabahasrcaparserbbah = len(nl);
     __Bah_realocate_arr(nl, ____BAH_COMPILER_VAR_1170_ahomeaaloisanijlijchargementsabahasrcaparserbbah);
     ((struct Tok*)nl->data)[____BAH_COMPILER_VAR_1170_ahomeaaloisanijlijchargementsabahasrcaparserbbah] = t;
 
-#line 1951 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1953 "/home/alois/Téléchargements/bah/src/parser.bah"
 t.type = TOKEN_TYPE_VAR;
 
-#line 1952 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1954 "/home/alois/Téléchargements/bah/src/parser.bah"
 char** ____BAH_COMPILER_VAR_1171_ahomeaaloisanijlijchargementsabahasrcaparserbbah = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1171_ahomeaaloisanijlijchargementsabahasrcaparserbbah[1] = "\01\0\0\0""*";____BAH_COMPILER_VAR_1171_ahomeaaloisanijlijchargementsabahasrcaparserbbah[0] = s->name;char* ____BAH_COMPILER_VAR_1172_ahomeaaloisanijlijchargementsabahasrcaparserbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_1171_ahomeaaloisanijlijchargementsabahasrcaparserbbah, 2);t.cont = ____BAH_COMPILER_VAR_1172_ahomeaaloisanijlijchargementsabahasrcaparserbbah;
 
-#line 1953 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1955 "/home/alois/Téléchargements/bah/src/parser.bah"
 t.isValue = true;
 
-#line 1954 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1956 "/home/alois/Téléchargements/bah/src/parser.bah"
 unsigned int ____BAH_COMPILER_VAR_1173_ahomeaaloisanijlijchargementsabahasrcaparserbbah = len(nl);
     __Bah_realocate_arr(nl, ____BAH_COMPILER_VAR_1173_ahomeaaloisanijlijchargementsabahasrcaparserbbah);
     ((struct Tok*)nl->data)[____BAH_COMPILER_VAR_1173_ahomeaaloisanijlijchargementsabahasrcaparserbbah] = t;
 
-#line 1956 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1958 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Tok nt = ((struct Tok*)l->data)[j+1];
 
-#line 1957 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1959 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((strcmp(nt.cont, "\01\0\0\0"")") != 0)) {
 
-#line 1958 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1960 "/home/alois/Téléchargements/bah/src/parser.bah"
 t.type = TOKEN_TYPE_SYNTAX;
 
-#line 1959 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1961 "/home/alois/Téléchargements/bah/src/parser.bah"
 t.cont = "\01\0\0\0"",";
 
-#line 1960 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1962 "/home/alois/Téléchargements/bah/src/parser.bah"
 t.isValue = false;
 
-#line 1961 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1963 "/home/alois/Téléchargements/bah/src/parser.bah"
 unsigned int ____BAH_COMPILER_VAR_1174_ahomeaaloisanijlijchargementsabahasrcaparserbbah = len(nl);
     __Bah_realocate_arr(nl, ____BAH_COMPILER_VAR_1174_ahomeaaloisanijlijchargementsabahasrcaparserbbah);
     ((struct Tok*)nl->data)[____BAH_COMPILER_VAR_1174_ahomeaaloisanijlijchargementsabahasrcaparserbbah] = t;
 }
 }
 
-#line 1964 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1966 "/home/alois/Téléchargements/bah/src/parser.bah"
 ++j;
 };
 ____BAH_COMPILER_VAR_1168_ahomeaaloisanijlijchargementsabahasrcaparserbbah: ;
 
-#line 1966 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1968 "/home/alois/Téléchargements/bah/src/parser.bah"
 --i;
 
-#line 1968 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1970 "/home/alois/Téléchargements/bah/src/parser.bah"
 long long int nli = 0;
 
-#line 1970 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1972 "/home/alois/Téléchargements/bah/src/parser.bah"
 void* header = parseFnHeader(fnPrefix,nl,&nli,fn,elems,alloca(0+sizeof(char*)+sizeof(char*)));
 
-#line 1971 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1973 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct rope* code = rope(*(char**)((char*)header+0));
 
-#line 1972 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1974 "/home/alois/Téléchargements/bah/src/parser.bah"
 char** ____BAH_COMPILER_VAR_1177_ahomeaaloisanijlijchargementsabahasrcaparserbbah = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1177_ahomeaaloisanijlijchargementsabahasrcaparserbbah[1] = rope__toStr(code);____BAH_COMPILER_VAR_1177_ahomeaaloisanijlijchargementsabahasrcaparserbbah[0] = *(char**)((char*)header+0+ sizeof(char*));char* ____BAH_COMPILER_VAR_1178_ahomeaaloisanijlijchargementsabahasrcaparserbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_1177_ahomeaaloisanijlijchargementsabahasrcaparserbbah, 2);char* headerDecl = ____BAH_COMPILER_VAR_1178_ahomeaaloisanijlijchargementsabahasrcaparserbbah;
 
-#line 1973 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1975 "/home/alois/Téléchargements/bah/src/parser.bah"
 i = i+nli;
 
-#line 1974 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1976 "/home/alois/Téléchargements/bah/src/parser.bah"
 i = i-2;
 
-#line 1976 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1978 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct variable* returns = fn->returns;
 
-#line 1977 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1979 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Bah_Array_Type* arguments = fn->args;
 
-#line 1978 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1980 "/home/alois/Téléchargements/bah/src/parser.bah"
 fn->from = s->name;
 
-#line 1979 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1981 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((shouldOnlyDecl==true)) {
 
-#line 1980 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1982 "/home/alois/Téléchargements/bah/src/parser.bah"
 code = rope__add(code, rope("\02\0\0\0"";\n"));
 }
 
-#line 1981 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1983 "/home/alois/Téléchargements/bah/src/parser.bah"
 else{
 
-#line 1982 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1984 "/home/alois/Téléchargements/bah/src/parser.bah"
 code = rope__add(code, rope("\02\0\0\0""{\n"));
 }
 
-#line 1985 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1987 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Elems* fnElems = dupElems(elems);
 
-#line 1986 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1988 "/home/alois/Téléchargements/bah/src/parser.bah"
 j = 0;
 
-#line 1986 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1988 "/home/alois/Téléchargements/bah/src/parser.bah"
 for (; (j<len(arguments)); ++j) {
 
-#line 1987 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1989 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct variable* a = ((struct variable**)arguments->data)[j];
 
-#line 1988 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1990 "/home/alois/Téléchargements/bah/src/parser.bah"
 a->declScope = elems;
 
-#line 1989 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1991 "/home/alois/Téléchargements/bah/src/parser.bah"
 a->isArg = true;
 
-#line 1990 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1992 "/home/alois/Téléchargements/bah/src/parser.bah"
 unsigned int ____BAH_COMPILER_VAR_1180_ahomeaaloisanijlijchargementsabahasrcaparserbbah = len(fnElems->vars);
     __Bah_realocate_arr(fnElems->vars, ____BAH_COMPILER_VAR_1180_ahomeaaloisanijlijchargementsabahasrcaparserbbah);
     ((struct variable**)fnElems->vars->data)[____BAH_COMPILER_VAR_1180_ahomeaaloisanijlijchargementsabahasrcaparserbbah] = a;
 };
 ____BAH_COMPILER_VAR_1179_ahomeaaloisanijlijchargementsabahasrcaparserbbah: ;
 
-#line 1993 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1995 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Bah_Array_Type* fns = elems->fns;
 
-#line 1994 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1996 "/home/alois/Téléchargements/bah/src/parser.bah"
 unsigned int ____BAH_COMPILER_VAR_1181_ahomeaaloisanijlijchargementsabahasrcaparserbbah = len(fns);
     __Bah_realocate_arr(fns, ____BAH_COMPILER_VAR_1181_ahomeaaloisanijlijchargementsabahasrcaparserbbah);
     ((struct func**)fns->data)[____BAH_COMPILER_VAR_1181_ahomeaaloisanijlijchargementsabahasrcaparserbbah] = fn;
 
-#line 1996 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1998 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((debug==true)) {
 
-#line 1997 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 1999 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct debugFunction* ____BAH_COMPILER_VAR_1182_ahomeaaloisanijlijchargementsabahasrcaparserbbah = memoryAlloc(sizeof(struct debugFunction));
 ____BAH_COMPILER_VAR_1182_ahomeaaloisanijlijchargementsabahasrcaparserbbah->args = memoryAlloc(sizeof(struct Bah_Array_Type));
             ____BAH_COMPILER_VAR_1182_ahomeaaloisanijlijchargementsabahasrcaparserbbah->args->length = 0;
             ____BAH_COMPILER_VAR_1182_ahomeaaloisanijlijchargementsabahasrcaparserbbah->args->elemSize = sizeof(struct debugVar*);
             struct debugFunction* df = ____BAH_COMPILER_VAR_1182_ahomeaaloisanijlijchargementsabahasrcaparserbbah;
 
-#line 1998 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2000 "/home/alois/Téléchargements/bah/src/parser.bah"
 df->name = fn->name;
 
-#line 1999 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2001 "/home/alois/Téléchargements/bah/src/parser.bah"
 j = 0;
 
-#line 1999 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2001 "/home/alois/Téléchargements/bah/src/parser.bah"
 for (; (j<len(fn->args)); ++j) {
 
-#line 2000 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2002 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct debugVar* ____BAH_COMPILER_VAR_1184_ahomeaaloisanijlijchargementsabahasrcaparserbbah = memoryAlloc(sizeof(struct debugVar));
 struct debugVar* dfa = ____BAH_COMPILER_VAR_1184_ahomeaaloisanijlijchargementsabahasrcaparserbbah;
 
-#line 2001 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2003 "/home/alois/Téléchargements/bah/src/parser.bah"
 debugVar__fromVar(dfa,((struct variable**)fn->args->data)[j]);
 
-#line 2002 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2004 "/home/alois/Téléchargements/bah/src/parser.bah"
 
     __Bah_realocate_arr(df->args, j);
     ((struct debugVar**)df->args->data)[j] = dfa;
 };
 ____BAH_COMPILER_VAR_1183_ahomeaaloisanijlijchargementsabahasrcaparserbbah: ;
 
-#line 2004 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2006 "/home/alois/Téléchargements/bah/src/parser.bah"
 df->returns = fn->returns->type;
 
-#line 2005 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2007 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct debugFunction* keep_ref_____BAH_COMPILER_VAR_1185_ahomeaaloisanijlijchargementsabahasrcaparserbbah = df;
 char** keep_ref_____BAH_COMPILER_VAR_1187_ahomeaaloisanijlijchargementsabahasrcaparserbbah = (char**)((char*)(keep_ref_____BAH_COMPILER_VAR_1185_ahomeaaloisanijlijchargementsabahasrcaparserbbah) + offsetof(struct debugFunction, name));
 struct reflectElement ____BAH_COMPILER_VAR_1188_ahomeaaloisanijlijchargementsabahasrcaparserbbah = __reflect(keep_ref_____BAH_COMPILER_VAR_1187_ahomeaaloisanijlijchargementsabahasrcaparserbbah, sizeof(char*), "\03\0\0\0""str", "\04\0\0\0""name", 0, 0, 0, 0, offsetof(struct debugFunction, name));
@@ -18438,55 +18442,55 @@ struct reflectElement ____BAH_COMPILER_VAR_1205_ahomeaaloisanijlijchargementsaba
 debugPrint("\012\0\0\0""fn_declare",declT.line,____BAH_COMPILER_VAR_1205_ahomeaaloisanijlijchargementsabahasrcaparserbbah);
 }
 
-#line 2008 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2010 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Bah_Array_Type* tokens = memoryAlloc(sizeof(struct Bah_Array_Type));
 
 tokens->length = 0;
 tokens->elemSize = sizeof(struct Tok);
 
-#line 2009 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2011 "/home/alois/Téléchargements/bah/src/parser.bah"
 long long int nbBraces = 1;
 
-#line 2010 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2012 "/home/alois/Téléchargements/bah/src/parser.bah"
 t = ((struct Tok*)l->data)[i];
 
-#line 2011 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2013 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((strcmp(t.cont, "\01\0\0\0""{") == 0)) {
 
-#line 2012 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2014 "/home/alois/Téléchargements/bah/src/parser.bah"
 ++i;
 }
 
-#line 2014 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2016 "/home/alois/Téléchargements/bah/src/parser.bah"
 long long int start = i;
 
-#line 2015 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2017 "/home/alois/Téléchargements/bah/src/parser.bah"
 tokens = (struct Bah_Array_Type*)null;
 
-#line 2016 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2018 "/home/alois/Téléchargements/bah/src/parser.bah"
 for (; (i<len(l)); ++i) {
 
-#line 2017 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2019 "/home/alois/Téléchargements/bah/src/parser.bah"
 t = ((struct Tok*)l->data)[i];
 
-#line 2018 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2020 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((strcmp(t.cont, "\01\0\0\0""{") == 0)) {
 
-#line 2019 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2021 "/home/alois/Téléchargements/bah/src/parser.bah"
 ++nbBraces;
 }
 
-#line 2020 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2022 "/home/alois/Téléchargements/bah/src/parser.bah"
 else{
 if ((strcmp(t.cont, "\01\0\0\0""}") == 0)) {
 
-#line 2021 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2023 "/home/alois/Téléchargements/bah/src/parser.bah"
 --nbBraces;
 
-#line 2022 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2024 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((nbBraces==0)) {
 
-#line 2023 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2025 "/home/alois/Téléchargements/bah/src/parser.bah"
 goto ____BAH_COMPILER_VAR_1206_ahomeaaloisanijlijchargementsabahasrcaparserbbah;
 }
 }
@@ -18494,14 +18498,14 @@ goto ____BAH_COMPILER_VAR_1206_ahomeaaloisanijlijchargementsabahasrcaparserbbah;
 };
 ____BAH_COMPILER_VAR_1206_ahomeaaloisanijlijchargementsabahasrcaparserbbah: ;
 
-#line 2028 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2030 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((shouldOnlyDecl==false)) {
 
-#line 2029 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2031 "/home/alois/Téléchargements/bah/src/parser.bah"
 tokens = arraySubstitute(l, start, i);
 }
 
-#line 2033 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2035 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct func* ____BAH_COMPILER_VAR_1207_ahomeaaloisanijlijchargementsabahasrcaparserbbah = memoryAlloc(sizeof(struct func));
 ____BAH_COMPILER_VAR_1207_ahomeaaloisanijlijchargementsabahasrcaparserbbah->name = "\0\0\0\0""";
 ____BAH_COMPILER_VAR_1207_ahomeaaloisanijlijchargementsabahasrcaparserbbah->args = memoryAlloc(sizeof(struct Bah_Array_Type));
@@ -18512,314 +18516,314 @@ ____BAH_COMPILER_VAR_1207_ahomeaaloisanijlijchargementsabahasrcaparserbbah->file
 ____BAH_COMPILER_VAR_1207_ahomeaaloisanijlijchargementsabahasrcaparserbbah->line = 1;
 struct func* mfn = ____BAH_COMPILER_VAR_1207_ahomeaaloisanijlijchargementsabahasrcaparserbbah;
 
-#line 2034 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2036 "/home/alois/Téléchargements/bah/src/parser.bah"
 mfn->args = fn->args;
 
-#line 2035 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2037 "/home/alois/Téléchargements/bah/src/parser.bah"
 mfn->name = strSubstitute(fn->name, strlen(fnPrefix), strlen(fn->name));
 
-#line 2036 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2038 "/home/alois/Téléchargements/bah/src/parser.bah"
 mfn->returns = fn->returns;
 
-#line 2037 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2039 "/home/alois/Téléchargements/bah/src/parser.bah"
 mfn->from = s->name;
 
-#line 2039 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2041 "/home/alois/Téléchargements/bah/src/parser.bah"
 unsigned int ____BAH_COMPILER_VAR_1208_ahomeaaloisanijlijchargementsabahasrcaparserbbah = len(methds);
     __Bah_realocate_arr(methds, ____BAH_COMPILER_VAR_1208_ahomeaaloisanijlijchargementsabahasrcaparserbbah);
     ((struct func**)methds->data)[____BAH_COMPILER_VAR_1208_ahomeaaloisanijlijchargementsabahasrcaparserbbah] = mfn;
 
-#line 2041 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2043 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((shouldOnlyDecl==false)) {
 
-#line 2042 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2044 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((len(tokens)==0)) {
 
-#line 2043 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2045 "/home/alois/Téléchargements/bah/src/parser.bah"
 code = rope__add(code, rope("\03\0\0\0""};\n"));
 }
 
-#line 2044 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2046 "/home/alois/Téléchargements/bah/src/parser.bah"
 else{
 
-#line 2045 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2047 "/home/alois/Téléchargements/bah/src/parser.bah"
 OUTPUT = rope("\0\0\0\0""");
 
-#line 2046 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2048 "/home/alois/Téléchargements/bah/src/parser.bah"
 currentFn = fn;
 
-#line 2047 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2049 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Elems* ocurrFnElems = compilerState.currFnElems;
 
-#line 2048 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2050 "/home/alois/Téléchargements/bah/src/parser.bah"
 compilerState.currFnElems = fnElems;
 
-#line 2049 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2051 "/home/alois/Téléchargements/bah/src/parser.bah"
 parseLines(tokens,fnElems);
 
-#line 2050 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2052 "/home/alois/Téléchargements/bah/src/parser.bah"
 RCPendScope(fnElems);
 
-#line 2051 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2053 "/home/alois/Téléchargements/bah/src/parser.bah"
 OPTI_checkFuncScopeRef(fnElems);
 
-#line 2052 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2054 "/home/alois/Téléchargements/bah/src/parser.bah"
 compilerState.currFnElems = ocurrFnElems;
 
-#line 2054 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2056 "/home/alois/Téléchargements/bah/src/parser.bah"
 currentFn = null;
 
-#line 2055 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2057 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((fn->returned==false)) {
 
-#line 2056 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2058 "/home/alois/Téléchargements/bah/src/parser.bah"
 if (__builtin_expect((strlen(fn->returns->type)>0), 0)) {
 
-#line 2057 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2059 "/home/alois/Téléchargements/bah/src/parser.bah"
 char** ____BAH_COMPILER_VAR_1209_ahomeaaloisanijlijchargementsabahasrcaparserbbah = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_1209_ahomeaaloisanijlijchargementsabahasrcaparserbbah[2] = "\022\0\0\0""' is not returned.";____BAH_COMPILER_VAR_1209_ahomeaaloisanijlijchargementsabahasrcaparserbbah[1] = fn->name;____BAH_COMPILER_VAR_1209_ahomeaaloisanijlijchargementsabahasrcaparserbbah[0] = "\012\0\0\0""Function '";char* ____BAH_COMPILER_VAR_1210_ahomeaaloisanijlijchargementsabahasrcaparserbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_1209_ahomeaaloisanijlijchargementsabahasrcaparserbbah, 3);throwErr(&((struct Tok*)l->data)[len(l)-1],____BAH_COMPILER_VAR_1210_ahomeaaloisanijlijchargementsabahasrcaparserbbah);
 }
 
-#line 2059 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2061 "/home/alois/Téléchargements/bah/src/parser.bah"
 fixMeEndScope(fnElems,&((struct Tok*)tokens->data)[len(tokens)-1]);
 }
 
-#line 2061 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2063 "/home/alois/Téléchargements/bah/src/parser.bah"
 code = rope__add(code, (rope__add(OUTPUT, rope("\03\0\0\0""};\n"))));
 }
 }
 
-#line 2063 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2065 "/home/alois/Téléchargements/bah/src/parser.bah"
 else{
 
-#line 2064 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2066 "/home/alois/Téléchargements/bah/src/parser.bah"
 fn->isImported = true;
 
-#line 2064 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2066 "/home/alois/Téléchargements/bah/src/parser.bah"
 mfn->isImported = true;
 }
 
-#line 2067 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2069 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((doesOutput==true)) {
 
-#line 2068 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2070 "/home/alois/Téléchargements/bah/src/parser.bah"
 char** ____BAH_COMPILER_VAR_1211_ahomeaaloisanijlijchargementsabahasrcaparserbbah = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1211_ahomeaaloisanijlijchargementsabahasrcaparserbbah[1] = "\02\0\0\0"";\n";____BAH_COMPILER_VAR_1211_ahomeaaloisanijlijchargementsabahasrcaparserbbah[0] = headerDecl;char* ____BAH_COMPILER_VAR_1212_ahomeaaloisanijlijchargementsabahasrcaparserbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_1211_ahomeaaloisanijlijchargementsabahasrcaparserbbah, 2);bottomDecl = rope__add(bottomDecl, rope(____BAH_COMPILER_VAR_1212_ahomeaaloisanijlijchargementsabahasrcaparserbbah));
 
-#line 2069 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2071 "/home/alois/Téléchargements/bah/src/parser.bah"
 char** ____BAH_COMPILER_VAR_1213_ahomeaaloisanijlijchargementsabahasrcaparserbbah = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1213_ahomeaaloisanijlijchargementsabahasrcaparserbbah[1] = rope__toStr(code);____BAH_COMPILER_VAR_1213_ahomeaaloisanijlijchargementsabahasrcaparserbbah[0] = nextLine;char* ____BAH_COMPILER_VAR_1214_ahomeaaloisanijlijchargementsabahasrcaparserbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_1213_ahomeaaloisanijlijchargementsabahasrcaparserbbah, 2);nextLine = ____BAH_COMPILER_VAR_1214_ahomeaaloisanijlijchargementsabahasrcaparserbbah;
 }
 
-#line 2072 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2074 "/home/alois/Téléchargements/bah/src/parser.bah"
 ++i;
 
-#line 2073 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2075 "/home/alois/Téléchargements/bah/src/parser.bah"
 continue;
 }
 }
 
-#line 2077 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2079 "/home/alois/Téléchargements/bah/src/parser.bah"
 ++i;
 
-#line 2078 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2080 "/home/alois/Téléchargements/bah/src/parser.bah"
 char* mbmType = "\0\0\0\0""";
 
-#line 2079 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2081 "/home/alois/Téléchargements/bah/src/parser.bah"
 unsigned int currentLine = t.line;
 
-#line 2080 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2082 "/home/alois/Téléchargements/bah/src/parser.bah"
 while ((i<len(l))) {
 
-#line 2081 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2083 "/home/alois/Téléchargements/bah/src/parser.bah"
 t = ((struct Tok*)l->data)[i];
 
-#line 2082 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2084 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((strcmp(t.cont, "\01\0\0\0""=") == 0)) {
 
-#line 2083 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2085 "/home/alois/Téléchargements/bah/src/parser.bah"
 --i;
-
-#line 2084 "/home/alois/Téléchargements/bah/src/parser.bah"
-goto ____BAH_COMPILER_VAR_1215_ahomeaaloisanijlijchargementsabahasrcaparserbbah;
-}
 
 #line 2086 "/home/alois/Téléchargements/bah/src/parser.bah"
-if ((t.line!=currentLine)) {
-
-#line 2087 "/home/alois/Téléchargements/bah/src/parser.bah"
---i;
-
-#line 2088 "/home/alois/Téléchargements/bah/src/parser.bah"
 goto ____BAH_COMPILER_VAR_1215_ahomeaaloisanijlijchargementsabahasrcaparserbbah;
 }
 
+#line 2088 "/home/alois/Téléchargements/bah/src/parser.bah"
+if ((t.line!=currentLine)) {
+
+#line 2089 "/home/alois/Téléchargements/bah/src/parser.bah"
+--i;
+
 #line 2090 "/home/alois/Téléchargements/bah/src/parser.bah"
+goto ____BAH_COMPILER_VAR_1215_ahomeaaloisanijlijchargementsabahasrcaparserbbah;
+}
+
+#line 2092 "/home/alois/Téléchargements/bah/src/parser.bah"
 char** ____BAH_COMPILER_VAR_1216_ahomeaaloisanijlijchargementsabahasrcaparserbbah = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1216_ahomeaaloisanijlijchargementsabahasrcaparserbbah[1] = t.cont;____BAH_COMPILER_VAR_1216_ahomeaaloisanijlijchargementsabahasrcaparserbbah[0] = mbmType;char* ____BAH_COMPILER_VAR_1217_ahomeaaloisanijlijchargementsabahasrcaparserbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_1216_ahomeaaloisanijlijchargementsabahasrcaparserbbah, 2);mbmType = ____BAH_COMPILER_VAR_1217_ahomeaaloisanijlijchargementsabahasrcaparserbbah;
 
-#line 2091 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2093 "/home/alois/Téléchargements/bah/src/parser.bah"
 ++i;
 };
 ____BAH_COMPILER_VAR_1215_ahomeaaloisanijlijchargementsabahasrcaparserbbah: ;
 
-#line 2094 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2096 "/home/alois/Téléchargements/bah/src/parser.bah"
 memb->type = mbmType;
 
-#line 2095 "/home/alois/Téléchargements/bah/src/parser.bah"
-++i;
-
-#line 2096 "/home/alois/Téléchargements/bah/src/parser.bah"
-t = ((struct Tok*)l->data)[i];
-
 #line 2097 "/home/alois/Téléchargements/bah/src/parser.bah"
-if ((i<len(l))) {
+++i;
 
 #line 2098 "/home/alois/Téléchargements/bah/src/parser.bah"
-if ((strcmp(t.cont, "\01\0\0\0""=") == 0)) {
-
-#line 2099 "/home/alois/Téléchargements/bah/src/parser.bah"
-++i;
-
-#line 2100 "/home/alois/Téléchargements/bah/src/parser.bah"
 t = ((struct Tok*)l->data)[i];
 
+#line 2099 "/home/alois/Téléchargements/bah/src/parser.bah"
+if ((i<len(l))) {
+
+#line 2100 "/home/alois/Téléchargements/bah/src/parser.bah"
+if ((strcmp(t.cont, "\01\0\0\0""=") == 0)) {
+
 #line 2101 "/home/alois/Téléchargements/bah/src/parser.bah"
-if (__builtin_expect((t.isValue==false), 0)) {
+++i;
 
 #line 2102 "/home/alois/Téléchargements/bah/src/parser.bah"
+t = ((struct Tok*)l->data)[i];
+
+#line 2103 "/home/alois/Téléchargements/bah/src/parser.bah"
+if (__builtin_expect((t.isValue==false), 0)) {
+
+#line 2104 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Tok keep_ref_____BAH_COMPILER_VAR_1218_ahomeaaloisanijlijchargementsabahasrcaparserbbah = t;
 throwErr(&t,"\057\0\0\0""Cannot use {TOKEN} as default value for member.");
 }
 
-#line 2104 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2106 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Tok keep_ref_____BAH_COMPILER_VAR_1219_ahomeaaloisanijlijchargementsabahasrcaparserbbah = t;
 char* tt = getTypeFromToken(&t,true,elems);
 
-#line 2105 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2107 "/home/alois/Téléchargements/bah/src/parser.bah"
 if (__builtin_expect((compTypes(tt,memb->type)==false), 0)) {
 
-#line 2106 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2108 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Tok keep_ref_____BAH_COMPILER_VAR_1220_ahomeaaloisanijlijchargementsabahasrcaparserbbah = t;
 char** ____BAH_COMPILER_VAR_1221_ahomeaaloisanijlijchargementsabahasrcaparserbbah = alloca(5 * sizeof(char*));____BAH_COMPILER_VAR_1221_ahomeaaloisanijlijchargementsabahasrcaparserbbah[4] = "\014\0\0\0"" for member.";____BAH_COMPILER_VAR_1221_ahomeaaloisanijlijchargementsabahasrcaparserbbah[3] = memb->type;____BAH_COMPILER_VAR_1221_ahomeaaloisanijlijchargementsabahasrcaparserbbah[2] = "\05\0\0\0"") as ";____BAH_COMPILER_VAR_1221_ahomeaaloisanijlijchargementsabahasrcaparserbbah[1] = tt;____BAH_COMPILER_VAR_1221_ahomeaaloisanijlijchargementsabahasrcaparserbbah[0] = "\024\0\0\0""Cannot use {TOKEN} (";char* ____BAH_COMPILER_VAR_1222_ahomeaaloisanijlijchargementsabahasrcaparserbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_1221_ahomeaaloisanijlijchargementsabahasrcaparserbbah, 5);throwErr(&t,____BAH_COMPILER_VAR_1222_ahomeaaloisanijlijchargementsabahasrcaparserbbah);
 }
 
-#line 2108 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2110 "/home/alois/Téléchargements/bah/src/parser.bah"
 memb->def = t.cont;
 }
 
-#line 2110 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2112 "/home/alois/Téléchargements/bah/src/parser.bah"
 else{
 
-#line 2111 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2113 "/home/alois/Téléchargements/bah/src/parser.bah"
 --i;
 }
 }
 
-#line 2114 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2116 "/home/alois/Téléchargements/bah/src/parser.bah"
 if (isRCPpointerType(memb->type)) {
 
-#line 2115 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2117 "/home/alois/Téléchargements/bah/src/parser.bah"
 s->hasRCPmemb = true;
 }
 
-#line 2117 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2119 "/home/alois/Téléchargements/bah/src/parser.bah"
 unsigned int ____BAH_COMPILER_VAR_1223_ahomeaaloisanijlijchargementsabahasrcaparserbbah = len(members);
     __Bah_realocate_arr(members, ____BAH_COMPILER_VAR_1223_ahomeaaloisanijlijchargementsabahasrcaparserbbah);
     ((struct structMemb**)members->data)[____BAH_COMPILER_VAR_1223_ahomeaaloisanijlijchargementsabahasrcaparserbbah] = memb;
 
-#line 2119 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2121 "/home/alois/Téléchargements/bah/src/parser.bah"
 char* membDeclStr= null;
 
-#line 2120 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2122 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct string cmt = string(memb->type);
 
-#line 2121 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2123 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((string__hasPrefix(&cmt,"\011\0\0\0""function(")==1)) {
 
-#line 2122 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2124 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct string keep_ref_____BAH_COMPILER_VAR_1224_ahomeaaloisanijlijchargementsabahasrcaparserbbah = cmt;
 membDeclStr = getCfunctionType(&cmt,memb->name,elems);
 }
 
-#line 2123 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2125 "/home/alois/Téléchargements/bah/src/parser.bah"
 else{
 
-#line 2124 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2126 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct string membDecl = getCType(memb->type,elems);
 
-#line 2125 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2127 "/home/alois/Téléchargements/bah/src/parser.bah"
 char** ____BAH_COMPILER_VAR_1225_ahomeaaloisanijlijchargementsabahasrcaparserbbah = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1225_ahomeaaloisanijlijchargementsabahasrcaparserbbah[1] = memb->name;____BAH_COMPILER_VAR_1225_ahomeaaloisanijlijchargementsabahasrcaparserbbah[0] = "\01\0\0\0"" ";char* ____BAH_COMPILER_VAR_1226_ahomeaaloisanijlijchargementsabahasrcaparserbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_1225_ahomeaaloisanijlijchargementsabahasrcaparserbbah, 2);string__append(&membDecl,____BAH_COMPILER_VAR_1226_ahomeaaloisanijlijchargementsabahasrcaparserbbah);
 
-#line 2126 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2128 "/home/alois/Téléchargements/bah/src/parser.bah"
 membDeclStr = string__str(&membDecl);
 }
 
-#line 2128 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2130 "/home/alois/Téléchargements/bah/src/parser.bah"
 unsigned int ____BAH_COMPILER_VAR_1227_ahomeaaloisanijlijchargementsabahasrcaparserbbah = len(allMembs);
     __Bah_realocate_arr(allMembs, ____BAH_COMPILER_VAR_1227_ahomeaaloisanijlijchargementsabahasrcaparserbbah);
     ((char**)allMembs->data)[____BAH_COMPILER_VAR_1227_ahomeaaloisanijlijchargementsabahasrcaparserbbah] = membDeclStr;
 
-#line 2129 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2131 "/home/alois/Téléchargements/bah/src/parser.bah"
 ++i;
 };
 ____BAH_COMPILER_VAR_1159_ahomeaaloisanijlijchargementsabahasrcaparserbbah: ;
 
-#line 2131 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2133 "/home/alois/Téléchargements/bah/src/parser.bah"
 s->members = members;
 
-#line 2132 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2134 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((doesOutput==true)) {
 
-#line 2133 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2135 "/home/alois/Téléchargements/bah/src/parser.bah"
 OUTPUT = OOUT;
 
-#line 2134 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2136 "/home/alois/Téléchargements/bah/src/parser.bah"
 NEXT_LINE = nextLine;
 
-#line 2135 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2137 "/home/alois/Téléchargements/bah/src/parser.bah"
 char** ____BAH_COMPILER_VAR_1228_ahomeaaloisanijlijchargementsabahasrcaparserbbah = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_1228_ahomeaaloisanijlijchargementsabahasrcaparserbbah[2] = "\03\0\0\0"" {\n";____BAH_COMPILER_VAR_1228_ahomeaaloisanijlijchargementsabahasrcaparserbbah[1] = s->name;____BAH_COMPILER_VAR_1228_ahomeaaloisanijlijchargementsabahasrcaparserbbah[0] = "\07\0\0\0""struct ";char* ____BAH_COMPILER_VAR_1229_ahomeaaloisanijlijchargementsabahasrcaparserbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_1228_ahomeaaloisanijlijchargementsabahasrcaparserbbah, 3);struct rope* code = rope(____BAH_COMPILER_VAR_1229_ahomeaaloisanijlijchargementsabahasrcaparserbbah);
 
-#line 2137 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2139 "/home/alois/Téléchargements/bah/src/parser.bah"
 if (RCPavailable()) {
 
-#line 2138 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2140 "/home/alois/Téléchargements/bah/src/parser.bah"
 code = rope__add(code, rope("\033\0\0\0""volatile char __RCP_GUARD;\n"));
 }
 
-#line 2141 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2143 "/home/alois/Téléchargements/bah/src/parser.bah"
 i = 0;
 
-#line 2141 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2143 "/home/alois/Téléchargements/bah/src/parser.bah"
 while ((i<len(allMembs))) {
 
-#line 2142 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2144 "/home/alois/Téléchargements/bah/src/parser.bah"
 char* m = ((char**)allMembs->data)[i];
 
-#line 2143 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2145 "/home/alois/Téléchargements/bah/src/parser.bah"
 char** ____BAH_COMPILER_VAR_1231_ahomeaaloisanijlijchargementsabahasrcaparserbbah = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1231_ahomeaaloisanijlijchargementsabahasrcaparserbbah[1] = "\02\0\0\0"";\n";____BAH_COMPILER_VAR_1231_ahomeaaloisanijlijchargementsabahasrcaparserbbah[0] = m;char* ____BAH_COMPILER_VAR_1232_ahomeaaloisanijlijchargementsabahasrcaparserbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_1231_ahomeaaloisanijlijchargementsabahasrcaparserbbah, 2);code = rope__add(code, rope(____BAH_COMPILER_VAR_1232_ahomeaaloisanijlijchargementsabahasrcaparserbbah));
 
-#line 2144 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2146 "/home/alois/Téléchargements/bah/src/parser.bah"
 ++i;
 };
 ____BAH_COMPILER_VAR_1230_ahomeaaloisanijlijchargementsabahasrcaparserbbah: ;
 
-#line 2146 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2148 "/home/alois/Téléchargements/bah/src/parser.bah"
 code = rope__add(code, rope("\03\0\0\0""};\n"));
 
-#line 2147 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2149 "/home/alois/Téléchargements/bah/src/parser.bah"
 OUTPUT = rope__add(OUTPUT, (rope__add(code, bottomDecl)));
 
-#line 2148 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2150 "/home/alois/Téléchargements/bah/src/parser.bah"
 char* phd = rope__toStr(postDeclHandle);
 
-#line 2149 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2151 "/home/alois/Téléchargements/bah/src/parser.bah"
 ropeSet(postDeclHandle,"\0\0\0\0""");
 
-#line 2150 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2152 "/home/alois/Téléchargements/bah/src/parser.bah"
 OUTPUT = rope__add(OUTPUT, rope(phd));
 }
 
-#line 2153 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2155 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((debug==true)) {
 
-#line 2155 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2157 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct debugStruct* ____BAH_COMPILER_VAR_1233_ahomeaaloisanijlijchargementsabahasrcaparserbbah = memoryAlloc(sizeof(struct debugStruct));
 ____BAH_COMPILER_VAR_1233_ahomeaaloisanijlijchargementsabahasrcaparserbbah->membs = memoryAlloc(sizeof(struct Bah_Array_Type));
             ____BAH_COMPILER_VAR_1233_ahomeaaloisanijlijchargementsabahasrcaparserbbah->membs->length = 0;
@@ -18829,52 +18833,52 @@ ____BAH_COMPILER_VAR_1233_ahomeaaloisanijlijchargementsabahasrcaparserbbah->memb
             ____BAH_COMPILER_VAR_1233_ahomeaaloisanijlijchargementsabahasrcaparserbbah->methods->elemSize = sizeof(char*);
             struct debugStruct* ds = ____BAH_COMPILER_VAR_1233_ahomeaaloisanijlijchargementsabahasrcaparserbbah;
 
-#line 2156 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2158 "/home/alois/Téléchargements/bah/src/parser.bah"
 ds->name = s->name;
 
-#line 2157 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2159 "/home/alois/Téléchargements/bah/src/parser.bah"
 i = 0;
 
-#line 2157 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2159 "/home/alois/Téléchargements/bah/src/parser.bah"
 while ((i<len(s->members))) {
 
-#line 2158 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2160 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct structMemb* m = ((struct structMemb**)s->members->data)[i];
 
-#line 2159 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2161 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct debugVar* ____BAH_COMPILER_VAR_1235_ahomeaaloisanijlijchargementsabahasrcaparserbbah = memoryAlloc(sizeof(struct debugVar));
 struct debugVar* mv = ____BAH_COMPILER_VAR_1235_ahomeaaloisanijlijchargementsabahasrcaparserbbah;
 
-#line 2160 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2162 "/home/alois/Téléchargements/bah/src/parser.bah"
 debugVar__fromVar(mv,(struct variable*)m);
 
-#line 2161 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2163 "/home/alois/Téléchargements/bah/src/parser.bah"
 
     __Bah_realocate_arr(ds->membs, i);
     ((struct debugVar**)ds->membs->data)[i] = mv;
 
-#line 2162 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2164 "/home/alois/Téléchargements/bah/src/parser.bah"
 ++i;
 };
 ____BAH_COMPILER_VAR_1234_ahomeaaloisanijlijchargementsabahasrcaparserbbah: ;
 
-#line 2165 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2167 "/home/alois/Téléchargements/bah/src/parser.bah"
 i = 0;
 
-#line 2165 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2167 "/home/alois/Téléchargements/bah/src/parser.bah"
 for (; (i<len(s->methods)); ++i) {
 
-#line 2166 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2168 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct func* me = ((struct func**)s->methods->data)[i];
 
-#line 2167 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2169 "/home/alois/Téléchargements/bah/src/parser.bah"
 
     __Bah_realocate_arr(ds->methods, i);
     ((char**)ds->methods->data)[i] = me->name;
 };
 ____BAH_COMPILER_VAR_1236_ahomeaaloisanijlijchargementsabahasrcaparserbbah: ;
 
-#line 2169 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2171 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct debugStruct* keep_ref_____BAH_COMPILER_VAR_1237_ahomeaaloisanijlijchargementsabahasrcaparserbbah = ds;
 char** keep_ref_____BAH_COMPILER_VAR_1239_ahomeaaloisanijlijchargementsabahasrcaparserbbah = (char**)((char*)(keep_ref_____BAH_COMPILER_VAR_1237_ahomeaaloisanijlijchargementsabahasrcaparserbbah) + offsetof(struct debugStruct, name));
 struct reflectElement ____BAH_COMPILER_VAR_1240_ahomeaaloisanijlijchargementsabahasrcaparserbbah = __reflect(keep_ref_____BAH_COMPILER_VAR_1239_ahomeaaloisanijlijchargementsabahasrcaparserbbah, sizeof(char*), "\03\0\0\0""str", "\04\0\0\0""name", 0, 0, 0, 0, offsetof(struct debugStruct, name));
@@ -18920,48 +18924,48 @@ debugPrint("\016\0\0\0""struct_declare",nameToken.line,____BAH_COMPILER_VAR_1260
 }
 };
 
-#line 2176 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2178 "/home/alois/Téléchargements/bah/src/parser.bah"
 void parseDefine(struct Bah_Array_Type* l,struct Elems* elems){
 
-#line 2178 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2180 "/home/alois/Téléchargements/bah/src/parser.bah"
 if (__builtin_expect((len(l)<3), 0)) {
 
-#line 2179 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2181 "/home/alois/Téléchargements/bah/src/parser.bah"
 throwErr(&((struct Tok*)l->data)[len(l)-1],"\057\0\0\0""Invalid usage of define, cannot end on {TOKEN}.");
 }
 
-#line 2182 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2184 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Tok ft = ((struct Tok*)l->data)[1];
 
-#line 2183 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2185 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Tok st = ((struct Tok*)l->data)[2];
 
-#line 2185 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2187 "/home/alois/Téléchargements/bah/src/parser.bah"
 long long int i = 1;
 
-#line 2186 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2188 "/home/alois/Téléchargements/bah/src/parser.bah"
 char doesOutput = true;
 
-#line 2187 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2189 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((strcmp(ft.cont, "\01\0\0\0""!") == 0)) {
 
-#line 2188 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2190 "/home/alois/Téléchargements/bah/src/parser.bah"
 ft = ((struct Tok*)l->data)[2];
 
-#line 2189 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2191 "/home/alois/Téléchargements/bah/src/parser.bah"
 st = ((struct Tok*)l->data)[3];
 
-#line 2190 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2192 "/home/alois/Téléchargements/bah/src/parser.bah"
 i = 2;
 
-#line 2191 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2193 "/home/alois/Téléchargements/bah/src/parser.bah"
 doesOutput = false;
 }
 
-#line 2194 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2196 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((strcmp(st.cont, "\01\0\0\0""(") == 0)) {
 
-#line 2196 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2198 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct func* ____BAH_COMPILER_VAR_1261_ahomeaaloisanijlijchargementsabahasrcaparserbbah = memoryAlloc(sizeof(struct func));
 ____BAH_COMPILER_VAR_1261_ahomeaaloisanijlijchargementsabahasrcaparserbbah->name = "\0\0\0\0""";
 ____BAH_COMPILER_VAR_1261_ahomeaaloisanijlijchargementsabahasrcaparserbbah->args = memoryAlloc(sizeof(struct Bah_Array_Type));
@@ -18972,89 +18976,89 @@ ____BAH_COMPILER_VAR_1261_ahomeaaloisanijlijchargementsabahasrcaparserbbah->file
 ____BAH_COMPILER_VAR_1261_ahomeaaloisanijlijchargementsabahasrcaparserbbah->line = 1;
 struct func* fn = ____BAH_COMPILER_VAR_1261_ahomeaaloisanijlijchargementsabahasrcaparserbbah;
 
-#line 2197 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2199 "/home/alois/Téléchargements/bah/src/parser.bah"
 void* header = parseFnHeader("\0\0\0\0""",l,&i,fn,elems,alloca(0+sizeof(char*)+sizeof(char*)));
 
-#line 2198 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2200 "/home/alois/Téléchargements/bah/src/parser.bah"
 char** ____BAH_COMPILER_VAR_1264_ahomeaaloisanijlijchargementsabahasrcaparserbbah = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1264_ahomeaaloisanijlijchargementsabahasrcaparserbbah[1] = *(char**)((char*)header+0);____BAH_COMPILER_VAR_1264_ahomeaaloisanijlijchargementsabahasrcaparserbbah[0] = *(char**)((char*)header+0+ sizeof(char*));char* ____BAH_COMPILER_VAR_1265_ahomeaaloisanijlijchargementsabahasrcaparserbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_1264_ahomeaaloisanijlijchargementsabahasrcaparserbbah, 2);char* code = ____BAH_COMPILER_VAR_1265_ahomeaaloisanijlijchargementsabahasrcaparserbbah;
 
-#line 2199 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2201 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Bah_Array_Type* fns = elems->fns;
 
-#line 2200 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2202 "/home/alois/Téléchargements/bah/src/parser.bah"
 fn->isBinding = true;
 
-#line 2201 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2203 "/home/alois/Téléchargements/bah/src/parser.bah"
 fn->isCbinding = (doesOutput==false);
 
-#line 2202 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2204 "/home/alois/Téléchargements/bah/src/parser.bah"
 unsigned int ____BAH_COMPILER_VAR_1266_ahomeaaloisanijlijchargementsabahasrcaparserbbah = len(fns);
     __Bah_realocate_arr(fns, ____BAH_COMPILER_VAR_1266_ahomeaaloisanijlijchargementsabahasrcaparserbbah);
     ((struct func**)fns->data)[____BAH_COMPILER_VAR_1266_ahomeaaloisanijlijchargementsabahasrcaparserbbah] = fn;
 
-#line 2203 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2205 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((doesOutput==true)) {
 
-#line 2204 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2206 "/home/alois/Téléchargements/bah/src/parser.bah"
 char** ____BAH_COMPILER_VAR_1267_ahomeaaloisanijlijchargementsabahasrcaparserbbah = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1267_ahomeaaloisanijlijchargementsabahasrcaparserbbah[1] = "\02\0\0\0"";\n";____BAH_COMPILER_VAR_1267_ahomeaaloisanijlijchargementsabahasrcaparserbbah[0] = code;char* ____BAH_COMPILER_VAR_1268_ahomeaaloisanijlijchargementsabahasrcaparserbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_1267_ahomeaaloisanijlijchargementsabahasrcaparserbbah, 2);OUTPUT = rope__add(OUTPUT, rope(____BAH_COMPILER_VAR_1268_ahomeaaloisanijlijchargementsabahasrcaparserbbah));
 }
 }
 
-#line 2207 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2209 "/home/alois/Téléchargements/bah/src/parser.bah"
 else{
 
-#line 2208 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2210 "/home/alois/Téléchargements/bah/src/parser.bah"
 char* tp = "\0\0\0\0""";
 
-#line 2209 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2211 "/home/alois/Téléchargements/bah/src/parser.bah"
 ++i;
 
-#line 2209 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2211 "/home/alois/Téléchargements/bah/src/parser.bah"
 for (; (i<len(l)); ++i) {
 
-#line 2210 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2212 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Tok t = ((struct Tok*)l->data)[i];
 
-#line 2211 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2213 "/home/alois/Téléchargements/bah/src/parser.bah"
 char** ____BAH_COMPILER_VAR_1270_ahomeaaloisanijlijchargementsabahasrcaparserbbah = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1270_ahomeaaloisanijlijchargementsabahasrcaparserbbah[1] = t.cont;____BAH_COMPILER_VAR_1270_ahomeaaloisanijlijchargementsabahasrcaparserbbah[0] = tp;char* ____BAH_COMPILER_VAR_1271_ahomeaaloisanijlijchargementsabahasrcaparserbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_1270_ahomeaaloisanijlijchargementsabahasrcaparserbbah, 2);tp = ____BAH_COMPILER_VAR_1271_ahomeaaloisanijlijchargementsabahasrcaparserbbah;
 };
 ____BAH_COMPILER_VAR_1269_ahomeaaloisanijlijchargementsabahasrcaparserbbah: ;
 
-#line 2213 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2215 "/home/alois/Téléchargements/bah/src/parser.bah"
 if (__builtin_expect((ft.type!=TOKEN_TYPE_VAR), 0)) {
 
-#line 2214 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2216 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Tok keep_ref_____BAH_COMPILER_VAR_1272_ahomeaaloisanijlijchargementsabahasrcaparserbbah = ft;
 throwErr(&ft,"\044\0\0\0""Cannot use {TOKEN} as new type name.");
 }
 
-#line 2216 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2218 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct string cTypeNewType = getCType(tp,elems);
 
-#line 2217 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2219 "/home/alois/Téléchargements/bah/src/parser.bah"
 char* cTypeNewTypeStr = string__str(&cTypeNewType);
 
-#line 2218 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2220 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((doesOutput==true)) {
 
-#line 2219 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2221 "/home/alois/Téléchargements/bah/src/parser.bah"
 char** ____BAH_COMPILER_VAR_1273_ahomeaaloisanijlijchargementsabahasrcaparserbbah = alloca(5 * sizeof(char*));____BAH_COMPILER_VAR_1273_ahomeaaloisanijlijchargementsabahasrcaparserbbah[4] = "\02\0\0\0"";\n";____BAH_COMPILER_VAR_1273_ahomeaaloisanijlijchargementsabahasrcaparserbbah[3] = ft.cont;____BAH_COMPILER_VAR_1273_ahomeaaloisanijlijchargementsabahasrcaparserbbah[2] = "\01\0\0\0"" ";____BAH_COMPILER_VAR_1273_ahomeaaloisanijlijchargementsabahasrcaparserbbah[1] = cTypeNewTypeStr;____BAH_COMPILER_VAR_1273_ahomeaaloisanijlijchargementsabahasrcaparserbbah[0] = "\010\0\0\0""typedef ";char* ____BAH_COMPILER_VAR_1274_ahomeaaloisanijlijchargementsabahasrcaparserbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_1273_ahomeaaloisanijlijchargementsabahasrcaparserbbah, 5);OUTPUT = rope__add(OUTPUT, rope(____BAH_COMPILER_VAR_1274_ahomeaaloisanijlijchargementsabahasrcaparserbbah));
 }
 
-#line 2222 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2224 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((debug==true)) {
 
-#line 2223 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2225 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct debugType* ____BAH_COMPILER_VAR_1275_ahomeaaloisanijlijchargementsabahasrcaparserbbah = memoryAlloc(sizeof(struct debugType));
 struct debugType* dt = ____BAH_COMPILER_VAR_1275_ahomeaaloisanijlijchargementsabahasrcaparserbbah;
 
-#line 2224 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2226 "/home/alois/Téléchargements/bah/src/parser.bah"
 dt->name = ft.cont;
 
-#line 2225 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2227 "/home/alois/Téléchargements/bah/src/parser.bah"
 dt->refers = tp;
 
-#line 2226 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2228 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct debugType* keep_ref_____BAH_COMPILER_VAR_1276_ahomeaaloisanijlijchargementsabahasrcaparserbbah = dt;
 char** keep_ref_____BAH_COMPILER_VAR_1278_ahomeaaloisanijlijchargementsabahasrcaparserbbah = (char**)((char*)(keep_ref_____BAH_COMPILER_VAR_1276_ahomeaaloisanijlijchargementsabahasrcaparserbbah) + offsetof(struct debugType, name));
 struct reflectElement ____BAH_COMPILER_VAR_1279_ahomeaaloisanijlijchargementsabahasrcaparserbbah = __reflect(keep_ref_____BAH_COMPILER_VAR_1278_ahomeaaloisanijlijchargementsabahasrcaparserbbah, sizeof(char*), "\03\0\0\0""str", "\04\0\0\0""name", 0, 0, 0, 0, offsetof(struct debugType, name));
@@ -19071,160 +19075,160 @@ struct reflectElement ____BAH_COMPILER_VAR_1282_ahomeaaloisanijlijchargementsaba
 debugPrint("\014\0\0\0""type_declare",ft.line,____BAH_COMPILER_VAR_1282_ahomeaaloisanijlijchargementsabahasrcaparserbbah);
 }
 
-#line 2229 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2231 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Bah_Array_Type* tps = elems->types;
 
-#line 2230 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2232 "/home/alois/Téléchargements/bah/src/parser.bah"
 unsigned int ____BAH_COMPILER_VAR_1283_ahomeaaloisanijlijchargementsabahasrcaparserbbah = len(tps);
     __Bah_realocate_arr(tps, ____BAH_COMPILER_VAR_1283_ahomeaaloisanijlijchargementsabahasrcaparserbbah);
     ((char**)tps->data)[____BAH_COMPILER_VAR_1283_ahomeaaloisanijlijchargementsabahasrcaparserbbah] = ft.cont;
 }
 };
 
-#line 2236 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2238 "/home/alois/Téléchargements/bah/src/parser.bah"
 void parseClib(struct Bah_Array_Type* line){
 
-#line 2238 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2240 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Bah_Array_Type* clibs = compilerState.cLibs;
 
-#line 2240 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2242 "/home/alois/Téléchargements/bah/src/parser.bah"
 register long long int i = 1;
 
-#line 2240 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2242 "/home/alois/Téléchargements/bah/src/parser.bah"
 while ((i<len(line))) {
 
-#line 2241 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2243 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Tok t = ((struct Tok*)line->data)[i];
 
-#line 2242 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2244 "/home/alois/Téléchargements/bah/src/parser.bah"
 if (__builtin_expect((t.type!=TOKEN_TYPE_STR), 0)) {
 
-#line 2243 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2245 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Tok keep_ref_____BAH_COMPILER_VAR_1285_ahomeaaloisanijlijchargementsabahasrcaparserbbah = t;
 throwErr(&t,"\045\0\0\0""Cannot use {TOKEN} as C library name.");
 }
 
-#line 2246 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2248 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct string cc = string(t.cont);
 
-#line 2247 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2249 "/home/alois/Téléchargements/bah/src/parser.bah"
 string__trimLeft(&cc,1);
 
-#line 2248 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2250 "/home/alois/Téléchargements/bah/src/parser.bah"
 string__trimRight(&cc,1);
 
-#line 2249 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2251 "/home/alois/Téléchargements/bah/src/parser.bah"
 char* ccstr = string__str(&cc);
 
-#line 2251 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2253 "/home/alois/Téléchargements/bah/src/parser.bah"
 char found = false;
 
-#line 2252 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2254 "/home/alois/Téléchargements/bah/src/parser.bah"
 register long long int j = 0;
 
-#line 2252 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2254 "/home/alois/Téléchargements/bah/src/parser.bah"
 while ((j<len(clibs))) {
 
-#line 2253 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2255 "/home/alois/Téléchargements/bah/src/parser.bah"
 char* l = ((char**)clibs->data)[j];
 
-#line 2254 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2256 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((strcmp(l, ccstr) == 0)) {
 
-#line 2255 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2257 "/home/alois/Téléchargements/bah/src/parser.bah"
 found = true;
 
-#line 2256 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2258 "/home/alois/Téléchargements/bah/src/parser.bah"
 goto ____BAH_COMPILER_VAR_1286_ahomeaaloisanijlijchargementsabahasrcaparserbbah;
 }
 
-#line 2258 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2260 "/home/alois/Téléchargements/bah/src/parser.bah"
 ++j;
 };
 ____BAH_COMPILER_VAR_1286_ahomeaaloisanijlijchargementsabahasrcaparserbbah: ;
 
-#line 2260 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2262 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((found==true)) {
 
-#line 2261 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2263 "/home/alois/Téléchargements/bah/src/parser.bah"
 ++i;
 
-#line 2262 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2264 "/home/alois/Téléchargements/bah/src/parser.bah"
 continue;
 }
 
-#line 2264 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2266 "/home/alois/Téléchargements/bah/src/parser.bah"
 unsigned int ____BAH_COMPILER_VAR_1287_ahomeaaloisanijlijchargementsabahasrcaparserbbah = len(clibs);
     __Bah_realocate_arr(clibs, ____BAH_COMPILER_VAR_1287_ahomeaaloisanijlijchargementsabahasrcaparserbbah);
     ((char**)clibs->data)[____BAH_COMPILER_VAR_1287_ahomeaaloisanijlijchargementsabahasrcaparserbbah] = ccstr;
 
-#line 2266 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2268 "/home/alois/Téléchargements/bah/src/parser.bah"
 ++i;
 };
 ____BAH_COMPILER_VAR_1284_ahomeaaloisanijlijchargementsabahasrcaparserbbah: ;
 };
 
-#line 2272 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2274 "/home/alois/Téléchargements/bah/src/parser.bah"
 void parseConst(struct Bah_Array_Type* l,struct Elems* elems){
 
-#line 2273 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2275 "/home/alois/Téléchargements/bah/src/parser.bah"
 l = parseCast(l,elems,true);
 
-#line 2274 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2276 "/home/alois/Téléchargements/bah/src/parser.bah"
 if (__builtin_expect((len(l)!=4), 0)) {
 
-#line 2275 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2277 "/home/alois/Téléchargements/bah/src/parser.bah"
 throwErr(&((struct Tok*)l->data)[0],"\106\0\0\0""Invalid usage of {TOKEN}, must be 'const <constName> = <constValue>'. ");
 }
 
-#line 2277 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2279 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Tok vart = ((struct Tok*)l->data)[1];
 
-#line 2278 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2280 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Tok equt = ((struct Tok*)l->data)[2];
 
-#line 2279 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2281 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Tok valt = ((struct Tok*)l->data)[3];
 
-#line 2280 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2282 "/home/alois/Téléchargements/bah/src/parser.bah"
 if (__builtin_expect((vart.type!=TOKEN_TYPE_VAR), 0)) {
 
-#line 2281 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2283 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Tok keep_ref_____BAH_COMPILER_VAR_1288_ahomeaaloisanijlijchargementsabahasrcaparserbbah = vart;
 throwErr(&vart,"\042\0\0\0""Cannot take {TOKEN} as const name.");
 }
 
-#line 2283 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2285 "/home/alois/Téléchargements/bah/src/parser.bah"
 if (__builtin_expect((strcmp(equt.cont, "\01\0\0\0""=") != 0), 0)) {
 
-#line 2284 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2286 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Tok keep_ref_____BAH_COMPILER_VAR_1289_ahomeaaloisanijlijchargementsabahasrcaparserbbah = equt;
 throwErr(&equt,"\031\0\0\0""Expected '=' not {TOKEN}.");
 }
 
-#line 2286 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2288 "/home/alois/Téléchargements/bah/src/parser.bah"
 if (__builtin_expect((valt.isValue==false), 0)) {
 
-#line 2287 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2289 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Tok keep_ref_____BAH_COMPILER_VAR_1290_ahomeaaloisanijlijchargementsabahasrcaparserbbah = equt;
 throwErr(&equt,"\035\0\0\0""Must be a value, not {TOKEN}.");
 }
 
-#line 2290 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2292 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((valt.type==TOKEN_TYPE_VAR)) {
 
-#line 2291 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2293 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct func* fn = searchFunc(valt.cont,elems,true);
 
-#line 2292 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2294 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((fn!=null)) {
 
-#line 2293 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2295 "/home/alois/Téléchargements/bah/src/parser.bah"
 fn->used = true;
 }
 }
 
-#line 2297 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2299 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct variable* ____BAH_COMPILER_VAR_1291_ahomeaaloisanijlijchargementsabahasrcaparserbbah = memoryAlloc(sizeof(struct variable));
 ____BAH_COMPILER_VAR_1291_ahomeaaloisanijlijchargementsabahasrcaparserbbah->name = "\0\0\0\0""";
 ____BAH_COMPILER_VAR_1291_ahomeaaloisanijlijchargementsabahasrcaparserbbah->type = "\0\0\0\0""";
@@ -19232,131 +19236,131 @@ ____BAH_COMPILER_VAR_1291_ahomeaaloisanijlijchargementsabahasrcaparserbbah->cons
 ____BAH_COMPILER_VAR_1291_ahomeaaloisanijlijchargementsabahasrcaparserbbah->from = "\0\0\0\0""";
 struct variable* v = ____BAH_COMPILER_VAR_1291_ahomeaaloisanijlijchargementsabahasrcaparserbbah;
 
-#line 2299 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2301 "/home/alois/Téléchargements/bah/src/parser.bah"
 if (isGlobal()) {
 
-#line 2300 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2302 "/home/alois/Téléchargements/bah/src/parser.bah"
 v->isGlobal = true;
 }
 
-#line 2303 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2305 "/home/alois/Téléchargements/bah/src/parser.bah"
 v->isConst = true;
 
-#line 2304 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2306 "/home/alois/Téléchargements/bah/src/parser.bah"
 v->constVal = valt.cont;
 
-#line 2305 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2307 "/home/alois/Téléchargements/bah/src/parser.bah"
 v->name = vart.cont;
 
-#line 2306 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2308 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Tok keep_ref_____BAH_COMPILER_VAR_1292_ahomeaaloisanijlijchargementsabahasrcaparserbbah = valt;
 v->type = getTypeFromToken(&valt,true,elems);
 
-#line 2307 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2309 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Bah_Array_Type* vars = elems->vars;
 
-#line 2308 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2310 "/home/alois/Téléchargements/bah/src/parser.bah"
 unsigned int ____BAH_COMPILER_VAR_1293_ahomeaaloisanijlijchargementsabahasrcaparserbbah = len(vars);
     __Bah_realocate_arr(vars, ____BAH_COMPILER_VAR_1293_ahomeaaloisanijlijchargementsabahasrcaparserbbah);
     ((struct variable**)vars->data)[____BAH_COMPILER_VAR_1293_ahomeaaloisanijlijchargementsabahasrcaparserbbah] = v;
 
-#line 2310 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2312 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((valt.type==TOKEN_TYPE_STR)) {
 
-#line 2311 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2313 "/home/alois/Téléchargements/bah/src/parser.bah"
 valt.cont = strLitteralToBahStr(valt.cont);
 }
 
-#line 2314 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2316 "/home/alois/Téléchargements/bah/src/parser.bah"
 char** ____BAH_COMPILER_VAR_1294_ahomeaaloisanijlijchargementsabahasrcaparserbbah = alloca(5 * sizeof(char*));____BAH_COMPILER_VAR_1294_ahomeaaloisanijlijchargementsabahasrcaparserbbah[4] = "\01\0\0\0""\n";____BAH_COMPILER_VAR_1294_ahomeaaloisanijlijchargementsabahasrcaparserbbah[3] = valt.cont;____BAH_COMPILER_VAR_1294_ahomeaaloisanijlijchargementsabahasrcaparserbbah[2] = "\01\0\0\0"" ";____BAH_COMPILER_VAR_1294_ahomeaaloisanijlijchargementsabahasrcaparserbbah[1] = v->name;____BAH_COMPILER_VAR_1294_ahomeaaloisanijlijchargementsabahasrcaparserbbah[0] = "\010\0\0\0""#define ";char* ____BAH_COMPILER_VAR_1295_ahomeaaloisanijlijchargementsabahasrcaparserbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_1294_ahomeaaloisanijlijchargementsabahasrcaparserbbah, 5);OUTPUT = rope__add(OUTPUT, rope(____BAH_COMPILER_VAR_1295_ahomeaaloisanijlijchargementsabahasrcaparserbbah));
 };
 
-#line 2319 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2321 "/home/alois/Téléchargements/bah/src/parser.bah"
 void parseReturn(struct Bah_Array_Type* l,struct Elems* elems){
 
-#line 2320 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2322 "/home/alois/Téléchargements/bah/src/parser.bah"
 if (__builtin_expect((len(l)>2), 0)) {
 
-#line 2321 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2323 "/home/alois/Téléchargements/bah/src/parser.bah"
 throwErr(&((struct Tok*)l->data)[2],"\116\0\0\0""Invalid usage of return, must be 'return <returnValue>'. {TOKEN} not expected.");
 }
 
-#line 2323 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2325 "/home/alois/Téléchargements/bah/src/parser.bah"
 if (__builtin_expect((currentFn==null), 0)) {
 
-#line 2324 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2326 "/home/alois/Téléchargements/bah/src/parser.bah"
 throwErr(&((struct Tok*)l->data)[0],"\054\0\0\0""Cannot return a value outside of a function.");
 }
 
-#line 2326 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2328 "/home/alois/Téléchargements/bah/src/parser.bah"
 char* rv = "\0\0\0\0""";
 
-#line 2327 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2329 "/home/alois/Téléchargements/bah/src/parser.bah"
 char* tt = "\0\0\0\0""";
 
-#line 2328 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2330 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct variable* tmpV = null;
 
-#line 2329 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2331 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Tok rvt;
 
-#line 2330 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2332 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((len(l)==1)) {
 
-#line 2331 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2333 "/home/alois/Téléchargements/bah/src/parser.bah"
 if (__builtin_expect((strlen(currentFn->returns->type)!=0), 0)) {
 
-#line 2332 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2334 "/home/alois/Téléchargements/bah/src/parser.bah"
 char** ____BAH_COMPILER_VAR_1296_ahomeaaloisanijlijchargementsabahasrcaparserbbah = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_1296_ahomeaaloisanijlijchargementsabahasrcaparserbbah[2] = "\01\0\0\0"".";____BAH_COMPILER_VAR_1296_ahomeaaloisanijlijchargementsabahasrcaparserbbah[1] = currentFn->returns->type;____BAH_COMPILER_VAR_1296_ahomeaaloisanijlijchargementsabahasrcaparserbbah[0] = "\031\0\0\0""Cannot return nothing as ";char* ____BAH_COMPILER_VAR_1297_ahomeaaloisanijlijchargementsabahasrcaparserbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_1296_ahomeaaloisanijlijchargementsabahasrcaparserbbah, 3);throwErr(&((struct Tok*)l->data)[0],____BAH_COMPILER_VAR_1297_ahomeaaloisanijlijchargementsabahasrcaparserbbah);
 }
 }
 
-#line 2334 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2336 "/home/alois/Téléchargements/bah/src/parser.bah"
 else{
 
-#line 2335 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2337 "/home/alois/Téléchargements/bah/src/parser.bah"
 rvt = ((struct Tok*)l->data)[1];
 
-#line 2336 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2338 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Tok keep_ref_____BAH_COMPILER_VAR_1298_ahomeaaloisanijlijchargementsabahasrcaparserbbah = rvt;
 tt = getTypeFromToken(&rvt,true,elems);
 
-#line 2337 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2339 "/home/alois/Téléchargements/bah/src/parser.bah"
 rv = rvt.cont;
 
-#line 2338 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2340 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((rvt.type==TOKEN_TYPE_VAR)&&(rvt.isOper==false)) {
 
-#line 2339 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2341 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Tok keep_ref_____BAH_COMPILER_VAR_1299_ahomeaaloisanijlijchargementsabahasrcaparserbbah = rvt;
 tmpV = searchVirtVarByToken(&rvt,compilerState.currFnElems);
 
-#line 2340 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2342 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((tmpV==null)) {
 
-#line 2341 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2343 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Tok keep_ref_____BAH_COMPILER_VAR_1300_ahomeaaloisanijlijchargementsabahasrcaparserbbah = rvt;
 tmpV = searchVirtVarByToken(&rvt,elems);
 }
 
-#line 2343 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2345 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((tmpV!=null)&&(rvt.isOper==false)) {
 
-#line 2344 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2346 "/home/alois/Téléchargements/bah/src/parser.bah"
 
                 struct string keep_ref_____BAH_COMPILER_VAR_1301_ahomeaaloisanijlijchargementsabahasrcaparserbbah = string(compilerState.currentDir);
                 if ((isUnsafe==false)&&(string__hasPrefix(&keep_ref_____BAH_COMPILER_VAR_1301_ahomeaaloisanijlijchargementsabahasrcaparserbbah,BAH_DIR)==false)&&(currentFn->returns->type[strlen(currentFn->returns->type)-1+4]!=33)) {
 
-#line 2345 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2347 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((tmpV->canBeNull==true)||(strcmp(rv, "\04\0\0\0""null") == 0)) {
 
-#line 2346 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2348 "/home/alois/Téléchargements/bah/src/parser.bah"
 currentFn->returns->canBeNull = true;
 
-#line 2347 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2349 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((strcmp(currentFn->returns->type, "\03\0\0\0""ptr") != 0)) {
 
-#line 2348 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2350 "/home/alois/Téléchargements/bah/src/parser.bah"
 char** ____BAH_COMPILER_VAR_1302_ahomeaaloisanijlijchargementsabahasrcaparserbbah = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_1302_ahomeaaloisanijlijchargementsabahasrcaparserbbah[2] = "\071\0\0\0""' that can be null as pointer.\n\tUse maybe values instead.";____BAH_COMPILER_VAR_1302_ahomeaaloisanijlijchargementsabahasrcaparserbbah[1] = tmpV->name;____BAH_COMPILER_VAR_1302_ahomeaaloisanijlijchargementsabahasrcaparserbbah[0] = "\013\0\0\0""Returning '";char* ____BAH_COMPILER_VAR_1303_ahomeaaloisanijlijchargementsabahasrcaparserbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_1302_ahomeaaloisanijlijchargementsabahasrcaparserbbah, 3);throwNoticeLine(____BAH_COMPILER_VAR_1303_ahomeaaloisanijlijchargementsabahasrcaparserbbah,rvt.line);
 }
 }
@@ -19364,181 +19368,181 @@ char** ____BAH_COMPILER_VAR_1302_ahomeaaloisanijlijchargementsabahasrcaparserbba
 }
 }
 
-#line 2354 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2356 "/home/alois/Téléchargements/bah/src/parser.bah"
 if (__builtin_expect((compTypes(tt,currentFn->returns->type)==false), 0)) {
 
-#line 2355 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2357 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Tok keep_ref_____BAH_COMPILER_VAR_1304_ahomeaaloisanijlijchargementsabahasrcaparserbbah = rvt;
 char** ____BAH_COMPILER_VAR_1305_ahomeaaloisanijlijchargementsabahasrcaparserbbah = alloca(5 * sizeof(char*));____BAH_COMPILER_VAR_1305_ahomeaaloisanijlijchargementsabahasrcaparserbbah[4] = "\01\0\0\0"".";____BAH_COMPILER_VAR_1305_ahomeaaloisanijlijchargementsabahasrcaparserbbah[3] = currentFn->returns->type;____BAH_COMPILER_VAR_1305_ahomeaaloisanijlijchargementsabahasrcaparserbbah[2] = "\05\0\0\0"") as ";____BAH_COMPILER_VAR_1305_ahomeaaloisanijlijchargementsabahasrcaparserbbah[1] = tt;____BAH_COMPILER_VAR_1305_ahomeaaloisanijlijchargementsabahasrcaparserbbah[0] = "\027\0\0\0""Cannot return {TOKEN} (";char* ____BAH_COMPILER_VAR_1306_ahomeaaloisanijlijchargementsabahasrcaparserbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_1305_ahomeaaloisanijlijchargementsabahasrcaparserbbah, 5);throwErr(&rvt,____BAH_COMPILER_VAR_1306_ahomeaaloisanijlijchargementsabahasrcaparserbbah);
 }
 }
 
-#line 2358 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2360 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((compilerState.isBranch==false)) {
 
-#line 2359 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2361 "/home/alois/Téléchargements/bah/src/parser.bah"
 currentFn->returned = true;
 }
 
-#line 2360 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2362 "/home/alois/Téléchargements/bah/src/parser.bah"
 else{
 
-#line 2361 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2363 "/home/alois/Téléchargements/bah/src/parser.bah"
 currentFn->couldAlreadyReturn = true;
 
-#line 2362 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2364 "/home/alois/Téléchargements/bah/src/parser.bah"
 setNullStateBranchFlowEnd(elems);
 }
 
-#line 2365 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2367 "/home/alois/Téléchargements/bah/src/parser.bah"
 fixMeEndScope(elems,&((struct Tok*)l->data)[0]);
 
-#line 2366 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2368 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((strlen(rv)>0)) {
 
-#line 2367 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2369 "/home/alois/Téléchargements/bah/src/parser.bah"
 char* rvar = rv;
 
-#line 2368 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2370 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct string stt = string(tt);
 
-#line 2369 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2371 "/home/alois/Téléchargements/bah/src/parser.bah"
 if (string__hasPrefix(&stt,"\07\0\0\0""buffer:")) {
 
-#line 2370 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2372 "/home/alois/Téléchargements/bah/src/parser.bah"
 char** ____BAH_COMPILER_VAR_1307_ahomeaaloisanijlijchargementsabahasrcaparserbbah = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_1307_ahomeaaloisanijlijchargementsabahasrcaparserbbah[2] = "\01\0\0\0"")";____BAH_COMPILER_VAR_1307_ahomeaaloisanijlijchargementsabahasrcaparserbbah[1] = rvar;____BAH_COMPILER_VAR_1307_ahomeaaloisanijlijchargementsabahasrcaparserbbah[0] = "\012\0\0\0""buffToStr(";char* ____BAH_COMPILER_VAR_1308_ahomeaaloisanijlijchargementsabahasrcaparserbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_1307_ahomeaaloisanijlijchargementsabahasrcaparserbbah, 3);rvar = ____BAH_COMPILER_VAR_1308_ahomeaaloisanijlijchargementsabahasrcaparserbbah;
 }
 
-#line 2371 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2373 "/home/alois/Téléchargements/bah/src/parser.bah"
 else{
 if (string__hasPrefix(&stt,"\01\0\0\0""[")&&string__hasSuffix(&stt,"\01\0\0\0""]")) {
 
-#line 2372 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2374 "/home/alois/Téléchargements/bah/src/parser.bah"
 char* size = getTupleSize(string__str(&stt),elems);
 
-#line 2373 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2375 "/home/alois/Téléchargements/bah/src/parser.bah"
 char** ____BAH_COMPILER_VAR_1309_ahomeaaloisanijlijchargementsabahasrcaparserbbah = alloca(5 * sizeof(char*));____BAH_COMPILER_VAR_1309_ahomeaaloisanijlijchargementsabahasrcaparserbbah[4] = "\03\0\0\0"");\n";____BAH_COMPILER_VAR_1309_ahomeaaloisanijlijchargementsabahasrcaparserbbah[3] = size;____BAH_COMPILER_VAR_1309_ahomeaaloisanijlijchargementsabahasrcaparserbbah[2] = "\02\0\0\0"", ";____BAH_COMPILER_VAR_1309_ahomeaaloisanijlijchargementsabahasrcaparserbbah[1] = rv;____BAH_COMPILER_VAR_1309_ahomeaaloisanijlijchargementsabahasrcaparserbbah[0] = "\034\0\0\0""memcpy(__BAH_TUPLE_RET_PTR, ";char* ____BAH_COMPILER_VAR_1310_ahomeaaloisanijlijchargementsabahasrcaparserbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_1309_ahomeaaloisanijlijchargementsabahasrcaparserbbah, 5);OUTPUT = rope__add(OUTPUT, rope(____BAH_COMPILER_VAR_1310_ahomeaaloisanijlijchargementsabahasrcaparserbbah));
 
-#line 2374 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2376 "/home/alois/Téléchargements/bah/src/parser.bah"
 rvar = "\023\0\0\0""__BAH_TUPLE_RET_PTR";
 }
 }
 
-#line 2376 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2378 "/home/alois/Téléchargements/bah/src/parser.bah"
 if (RCPavailable()) {
 
-#line 2377 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2379 "/home/alois/Téléchargements/bah/src/parser.bah"
 char* retVal = genCompilerVar();
 
-#line 2378 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2380 "/home/alois/Téléchargements/bah/src/parser.bah"
 
                 struct string keep_ref_____BAH_COMPILER_VAR_1311_ahomeaaloisanijlijchargementsabahasrcaparserbbah = getCType(currentFn->returns->type,elems);
                 char** ____BAH_COMPILER_VAR_1312_ahomeaaloisanijlijchargementsabahasrcaparserbbah = alloca(6 * sizeof(char*));____BAH_COMPILER_VAR_1312_ahomeaaloisanijlijchargementsabahasrcaparserbbah[5] = "\02\0\0\0"";\n";____BAH_COMPILER_VAR_1312_ahomeaaloisanijlijchargementsabahasrcaparserbbah[4] = rvar;____BAH_COMPILER_VAR_1312_ahomeaaloisanijlijchargementsabahasrcaparserbbah[3] = "\03\0\0\0"" = ";____BAH_COMPILER_VAR_1312_ahomeaaloisanijlijchargementsabahasrcaparserbbah[2] = retVal;____BAH_COMPILER_VAR_1312_ahomeaaloisanijlijchargementsabahasrcaparserbbah[1] = "\01\0\0\0"" ";____BAH_COMPILER_VAR_1312_ahomeaaloisanijlijchargementsabahasrcaparserbbah[0] = string__str(&keep_ref_____BAH_COMPILER_VAR_1311_ahomeaaloisanijlijchargementsabahasrcaparserbbah);char* ____BAH_COMPILER_VAR_1313_ahomeaaloisanijlijchargementsabahasrcaparserbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_1312_ahomeaaloisanijlijchargementsabahasrcaparserbbah, 6);OUTPUT = rope__add(OUTPUT, rope(____BAH_COMPILER_VAR_1313_ahomeaaloisanijlijchargementsabahasrcaparserbbah));
 
-#line 2379 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2381 "/home/alois/Téléchargements/bah/src/parser.bah"
 if (isRCPtype(currentFn->returns->type,elems)&&((rvt.isFunc==false)||(rvt.isFunc&&rvt.isOper))) {
 
-#line 2380 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2382 "/home/alois/Téléchargements/bah/src/parser.bah"
 RCPincrVar(retVal,isRCPpointerType(currentFn->returns->type));
 }
 
-#line 2382 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2384 "/home/alois/Téléchargements/bah/src/parser.bah"
 RCPendScopeRange(elems,compilerState.currFnElems);
 
-#line 2383 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2385 "/home/alois/Téléchargements/bah/src/parser.bah"
 char** ____BAH_COMPILER_VAR_1314_ahomeaaloisanijlijchargementsabahasrcaparserbbah = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_1314_ahomeaaloisanijlijchargementsabahasrcaparserbbah[2] = "\02\0\0\0"";\n";____BAH_COMPILER_VAR_1314_ahomeaaloisanijlijchargementsabahasrcaparserbbah[1] = retVal;____BAH_COMPILER_VAR_1314_ahomeaaloisanijlijchargementsabahasrcaparserbbah[0] = "\07\0\0\0""return ";char* ____BAH_COMPILER_VAR_1315_ahomeaaloisanijlijchargementsabahasrcaparserbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_1314_ahomeaaloisanijlijchargementsabahasrcaparserbbah, 3);OUTPUT = rope__add(OUTPUT, rope(____BAH_COMPILER_VAR_1315_ahomeaaloisanijlijchargementsabahasrcaparserbbah));
 }
 
-#line 2385 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2387 "/home/alois/Téléchargements/bah/src/parser.bah"
 else{
 
-#line 2386 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2388 "/home/alois/Téléchargements/bah/src/parser.bah"
 char** ____BAH_COMPILER_VAR_1316_ahomeaaloisanijlijchargementsabahasrcaparserbbah = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_1316_ahomeaaloisanijlijchargementsabahasrcaparserbbah[2] = "\02\0\0\0"";\n";____BAH_COMPILER_VAR_1316_ahomeaaloisanijlijchargementsabahasrcaparserbbah[1] = rvar;____BAH_COMPILER_VAR_1316_ahomeaaloisanijlijchargementsabahasrcaparserbbah[0] = "\07\0\0\0""return ";char* ____BAH_COMPILER_VAR_1317_ahomeaaloisanijlijchargementsabahasrcaparserbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_1316_ahomeaaloisanijlijchargementsabahasrcaparserbbah, 3);OUTPUT = rope__add(OUTPUT, rope(____BAH_COMPILER_VAR_1317_ahomeaaloisanijlijchargementsabahasrcaparserbbah));
 }
 }
 
-#line 2388 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2390 "/home/alois/Téléchargements/bah/src/parser.bah"
 else{
 
-#line 2389 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2391 "/home/alois/Téléchargements/bah/src/parser.bah"
 RCPendScopeRange(elems,compilerState.currFnElems);
 
-#line 2390 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2392 "/home/alois/Téléchargements/bah/src/parser.bah"
 OUTPUT = rope__add(OUTPUT, rope("\010\0\0\0""return;\n"));
 }
 };
 
-#line 2395 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2397 "/home/alois/Téléchargements/bah/src/parser.bah"
 void parseIf(struct Bah_Array_Type* l,char fromElse,struct Elems* elems){
 
-#line 2396 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2398 "/home/alois/Téléchargements/bah/src/parser.bah"
 prevIfExits = false;
 
-#line 2397 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2399 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Tok ft = ((struct Tok*)l->data)[0];
 
-#line 2398 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2400 "/home/alois/Téléchargements/bah/src/parser.bah"
 if (__builtin_expect((len(l)<4), 0)) {
 
-#line 2399 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2401 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Tok keep_ref_____BAH_COMPILER_VAR_1318_ahomeaaloisanijlijchargementsabahasrcaparserbbah = ft;
 throwErr(&ft,"\073\0\0\0""Invalid usage of {TOKEN}, must be 'if <condition> {<code>}'");
 }
 
-#line 2401 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2403 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Tok condt = ((struct Tok*)l->data)[1];
 
-#line 2402 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2404 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Tok keep_ref_____BAH_COMPILER_VAR_1319_ahomeaaloisanijlijchargementsabahasrcaparserbbah = condt;
 char* tt = getTypeFromToken(&condt,true,elems);
 
-#line 2403 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2405 "/home/alois/Téléchargements/bah/src/parser.bah"
 if (__builtin_expect((compTypes(tt,"\04\0\0\0""bool")==false), 0)) {
 
-#line 2404 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2406 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Tok keep_ref_____BAH_COMPILER_VAR_1320_ahomeaaloisanijlijchargementsabahasrcaparserbbah = condt;
 throwErr(&condt,"\060\0\0\0""Cannot use {TOKEN} as condition in if statement.");
 }
 
-#line 2407 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2409 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Tok t = ((struct Tok*)l->data)[2];
 
-#line 2408 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2410 "/home/alois/Téléchargements/bah/src/parser.bah"
 if (__builtin_expect((strcmp(t.cont, "\01\0\0\0""{") != 0), 0)) {
 
-#line 2409 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2411 "/home/alois/Téléchargements/bah/src/parser.bah"
 debugLine(l);
 
-#line 2410 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2412 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Tok keep_ref_____BAH_COMPILER_VAR_1321_ahomeaaloisanijlijchargementsabahasrcaparserbbah = t;
 throwErr(&t,"\072\0\0\0""Expected '{' not {TOKEN} after condtition in if statement.");
 }
 
-#line 2412 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2414 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Bah_Array_Type* tokens = arraySubstitute(l, 3, len(l)-1);
 
-#line 2414 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2416 "/home/alois/Téléchargements/bah/src/parser.bah"
 begIfHandle = rope("\0\0\0\0""");
 
-#line 2415 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2417 "/home/alois/Téléchargements/bah/src/parser.bah"
 OUTPUT = rope__add(OUTPUT, begIfHandle);
 
-#line 2418 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2420 "/home/alois/Téléchargements/bah/src/parser.bah"
 char** ____BAH_COMPILER_VAR_1322_ahomeaaloisanijlijchargementsabahasrcaparserbbah = alloca(4 * sizeof(char*));____BAH_COMPILER_VAR_1322_ahomeaaloisanijlijchargementsabahasrcaparserbbah[3] = "\04\0\0\0"") {\n";____BAH_COMPILER_VAR_1322_ahomeaaloisanijlijchargementsabahasrcaparserbbah[2] = condt.cont;____BAH_COMPILER_VAR_1322_ahomeaaloisanijlijchargementsabahasrcaparserbbah[1] = prevIfShortcut;____BAH_COMPILER_VAR_1322_ahomeaaloisanijlijchargementsabahasrcaparserbbah[0] = "\04\0\0\0""if (";char* ____BAH_COMPILER_VAR_1323_ahomeaaloisanijlijchargementsabahasrcaparserbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_1322_ahomeaaloisanijlijchargementsabahasrcaparserbbah, 4);struct rope* ifHeader = rope(____BAH_COMPILER_VAR_1323_ahomeaaloisanijlijchargementsabahasrcaparserbbah);
 
-#line 2420 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2422 "/home/alois/Téléchargements/bah/src/parser.bah"
 OUTPUT = rope__add(OUTPUT, ifHeader);
 
-#line 2422 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2424 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Elems* ifElems = elems;
 
-#line 2423 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2425 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((fromElse==false)) {
 
-#line 2426 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2428 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((condt.switchOpt!=null)) {
 
-#line 2427 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2429 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct chainsToSwitch* ____BAH_COMPILER_VAR_1324_ahomeaaloisanijlijchargementsabahasrcaparserbbah = memoryAlloc(sizeof(struct chainsToSwitch));
 ____BAH_COMPILER_VAR_1324_ahomeaaloisanijlijchargementsabahasrcaparserbbah->values = memoryAlloc(sizeof(struct Bah_Array_Type));
             ____BAH_COMPILER_VAR_1324_ahomeaaloisanijlijchargementsabahasrcaparserbbah->values->length = 0;
@@ -19552,53 +19556,53 @@ ____BAH_COMPILER_VAR_1324_ahomeaaloisanijlijchargementsabahasrcaparserbbah->valu
             ____BAH_COMPILER_VAR_1324_ahomeaaloisanijlijchargementsabahasrcaparserbbah->var = condt.switchOpt->var;
 elems->switchOpt = ____BAH_COMPILER_VAR_1324_ahomeaaloisanijlijchargementsabahasrcaparserbbah;
 
-#line 2430 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2432 "/home/alois/Téléchargements/bah/src/parser.bah"
 
     __Bah_realocate_arr(elems->switchOpt->values, 0);
     ((void **)elems->switchOpt->values->data)[0] = condt.switchOpt->value;
 
-#line 2431 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2433 "/home/alois/Téléchargements/bah/src/parser.bah"
 
     __Bah_realocate_arr(elems->switchOpt->headerRopes, 0);
     ((struct rope**)elems->switchOpt->headerRopes->data)[0] = ifHeader;
 }
 
-#line 2434 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2436 "/home/alois/Téléchargements/bah/src/parser.bah"
 ifElems = dupElems(elems);
 }
 
-#line 2438 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2440 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((fromElse==true)) {
 
-#line 2439 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2441 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((elems->switchOpt!=null)) {
 
-#line 2440 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2442 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((condt.switchOpt==null)) {
 
-#line 2441 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2443 "/home/alois/Téléchargements/bah/src/parser.bah"
 Elems__resetSwitchOpt(elems);
 }
-
-#line 2442 "/home/alois/Téléchargements/bah/src/parser.bah"
-else{
-
-#line 2443 "/home/alois/Téléchargements/bah/src/parser.bah"
-if ((strcmp(((struct Tok*)condt.switchOpt->var)->cont, ((struct Tok*)elems->switchOpt->var)->cont) != 0)) {
 
 #line 2444 "/home/alois/Téléchargements/bah/src/parser.bah"
+else{
+
+#line 2445 "/home/alois/Téléchargements/bah/src/parser.bah"
+if ((strcmp(((struct Tok*)condt.switchOpt->var)->cont, ((struct Tok*)elems->switchOpt->var)->cont) != 0)) {
+
+#line 2446 "/home/alois/Téléchargements/bah/src/parser.bah"
 Elems__resetSwitchOpt(elems);
 }
 
-#line 2445 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2447 "/home/alois/Téléchargements/bah/src/parser.bah"
 else{
 
-#line 2446 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2448 "/home/alois/Téléchargements/bah/src/parser.bah"
 unsigned int ____BAH_COMPILER_VAR_1325_ahomeaaloisanijlijchargementsabahasrcaparserbbah = len(elems->switchOpt->values);
     __Bah_realocate_arr(elems->switchOpt->values, ____BAH_COMPILER_VAR_1325_ahomeaaloisanijlijchargementsabahasrcaparserbbah);
     ((void **)elems->switchOpt->values->data)[____BAH_COMPILER_VAR_1325_ahomeaaloisanijlijchargementsabahasrcaparserbbah] = condt.switchOpt->value;
 
-#line 2447 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2449 "/home/alois/Téléchargements/bah/src/parser.bah"
 unsigned int ____BAH_COMPILER_VAR_1326_ahomeaaloisanijlijchargementsabahasrcaparserbbah = len(elems->switchOpt->headerRopes);
     __Bah_realocate_arr(elems->switchOpt->headerRopes, ____BAH_COMPILER_VAR_1326_ahomeaaloisanijlijchargementsabahasrcaparserbbah);
     ((struct rope**)elems->switchOpt->headerRopes->data)[____BAH_COMPILER_VAR_1326_ahomeaaloisanijlijchargementsabahasrcaparserbbah] = ifHeader;
@@ -19606,19 +19610,19 @@ unsigned int ____BAH_COMPILER_VAR_1326_ahomeaaloisanijlijchargementsabahasrcapar
 }
 }
 
-#line 2453 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2455 "/home/alois/Téléchargements/bah/src/parser.bah"
 register long long int i = 0;
 
-#line 2453 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2455 "/home/alois/Téléchargements/bah/src/parser.bah"
 for (; (i<len(prevIfChecks)); ++i) {
 
-#line 2454 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2456 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct varCheck bc = ((struct varCheck*)prevIfChecks->data)[i];
 
-#line 2455 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2457 "/home/alois/Téléchargements/bah/src/parser.bah"
 bc.checkNull = (bc.checkNull==false);
 
-#line 2456 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2458 "/home/alois/Téléchargements/bah/src/parser.bah"
 
     __Bah_realocate_arr(ifElems->branchChecks, i);
     ((struct varCheck*)ifElems->branchChecks->data)[i] = bc;
@@ -19626,604 +19630,604 @@ bc.checkNull = (bc.checkNull==false);
 ____BAH_COMPILER_VAR_1327_ahomeaaloisanijlijchargementsabahasrcaparserbbah: ;
 }
 
-#line 2460 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2462 "/home/alois/Téléchargements/bah/src/parser.bah"
 register long long int i = 0;
 
-#line 2460 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2462 "/home/alois/Téléchargements/bah/src/parser.bah"
 for (; (i<len(currChecks)); ++i) {
 
-#line 2461 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2463 "/home/alois/Téléchargements/bah/src/parser.bah"
 unsigned int ____BAH_COMPILER_VAR_1329_ahomeaaloisanijlijchargementsabahasrcaparserbbah = len(ifElems->branchChecks);
     __Bah_realocate_arr(ifElems->branchChecks, ____BAH_COMPILER_VAR_1329_ahomeaaloisanijlijchargementsabahasrcaparserbbah);
     ((struct varCheck*)ifElems->branchChecks->data)[____BAH_COMPILER_VAR_1329_ahomeaaloisanijlijchargementsabahasrcaparserbbah] = ((struct varCheck*)currChecks->data)[i];
 };
 ____BAH_COMPILER_VAR_1328_ahomeaaloisanijlijchargementsabahasrcaparserbbah: ;
 
-#line 2463 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2465 "/home/alois/Téléchargements/bah/src/parser.bah"
 prevIfChecks = ifElems->branchChecks;
 
-#line 2465 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2467 "/home/alois/Téléchargements/bah/src/parser.bah"
 char oldIB = compilerState.isBranch;
 
-#line 2466 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2468 "/home/alois/Téléchargements/bah/src/parser.bah"
 compilerState.isBranch = true;
 
-#line 2468 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2470 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct chainsToSwitch* oifeso = ifElems->switchOpt;
 
-#line 2469 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2471 "/home/alois/Téléchargements/bah/src/parser.bah"
 ifElems->switchOpt = null;
 
-#line 2471 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2473 "/home/alois/Téléchargements/bah/src/parser.bah"
 parseLines(tokens,ifElems);
 
-#line 2473 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2475 "/home/alois/Téléchargements/bah/src/parser.bah"
 ifElems->switchOpt = oifeso;
 
-#line 2475 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2477 "/home/alois/Téléchargements/bah/src/parser.bah"
 RCPendScope(ifElems);
 
-#line 2478 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2480 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((ifElems->currFlowEnd==true)) {
 
-#line 2479 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2481 "/home/alois/Téléchargements/bah/src/parser.bah"
 char** ____BAH_COMPILER_VAR_1330_ahomeaaloisanijlijchargementsabahasrcaparserbbah = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_1330_ahomeaaloisanijlijchargementsabahasrcaparserbbah[2] = "\010\0\0\0"", 0)) {\n";____BAH_COMPILER_VAR_1330_ahomeaaloisanijlijchargementsabahasrcaparserbbah[1] = condt.cont;____BAH_COMPILER_VAR_1330_ahomeaaloisanijlijchargementsabahasrcaparserbbah[0] = "\025\0\0\0""if (__builtin_expect(";char* ____BAH_COMPILER_VAR_1331_ahomeaaloisanijlijchargementsabahasrcaparserbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_1330_ahomeaaloisanijlijchargementsabahasrcaparserbbah, 3);OUTPUT->totalLen = OUTPUT->totalLen+ropeSet(ifHeader,____BAH_COMPILER_VAR_1331_ahomeaaloisanijlijchargementsabahasrcaparserbbah);
 }
 
-#line 2483 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2485 "/home/alois/Téléchargements/bah/src/parser.bah"
 fixMeEndScope(ifElems,&((struct Tok*)tokens->data)[len(tokens)-1]);
 
-#line 2484 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2486 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((debug==true)) {
 
-#line 2485 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2487 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Tok lt = ((struct Tok*)l->data)[len(l)-1];
 
-#line 2486 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2488 "/home/alois/Téléchargements/bah/src/parser.bah"
 debugEndScope(lt.line,ifElems);
 }
 
-#line 2488 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2490 "/home/alois/Téléchargements/bah/src/parser.bah"
 compilerState.isBranch = oldIB;
 
-#line 2490 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2492 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct rope* cb = rope("\02\0\0\0""}\n");
 
-#line 2491 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2493 "/home/alois/Téléchargements/bah/src/parser.bah"
 OUTPUT = rope__add(OUTPUT, cb);
 
-#line 2493 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2495 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((elems->switchOpt!=null)) {
 
-#line 2494 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2496 "/home/alois/Téléchargements/bah/src/parser.bah"
 unsigned int ____BAH_COMPILER_VAR_1332_ahomeaaloisanijlijchargementsabahasrcaparserbbah = len(elems->switchOpt->footerRopes);
     __Bah_realocate_arr(elems->switchOpt->footerRopes, ____BAH_COMPILER_VAR_1332_ahomeaaloisanijlijchargementsabahasrcaparserbbah);
     ((struct rope**)elems->switchOpt->footerRopes->data)[____BAH_COMPILER_VAR_1332_ahomeaaloisanijlijchargementsabahasrcaparserbbah] = cb;
 }
 
-#line 2498 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2500 "/home/alois/Téléchargements/bah/src/parser.bah"
 prevIfShortcut = "\0\0\0\0""";
 };
 
-#line 2502 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2504 "/home/alois/Téléchargements/bah/src/parser.bah"
 void parseElse(struct Bah_Array_Type* l,struct Elems* elems){
 
-#line 2504 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2506 "/home/alois/Téléchargements/bah/src/parser.bah"
 if (__builtin_expect((prevLine!=LINE_TYPE_IF)&&(prevLine!=LINE_TYPE_ELSE), 0)) {
 
-#line 2505 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2507 "/home/alois/Téléchargements/bah/src/parser.bah"
 throwErr(&((struct Tok*)l->data)[0],"\052\0\0\0""Can only use {TOKEN} after 'if' statement.");
 }
 
-#line 2507 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2509 "/home/alois/Téléchargements/bah/src/parser.bah"
 if (__builtin_expect((len(l)<3), 0)) {
 
-#line 2508 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2510 "/home/alois/Téléchargements/bah/src/parser.bah"
 throwErr(&((struct Tok*)l->data)[0],"\062\0\0\0""Incalid usage of {TOKEN}, must be 'else {<code>}'.");
 }
 
-#line 2510 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2512 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Tok ft = ((struct Tok*)l->data)[1];
 
-#line 2512 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2514 "/home/alois/Téléchargements/bah/src/parser.bah"
 char prevReturned = prevIfExits;
 
-#line 2514 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2516 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((strcmp(ft.cont, "\02\0\0\0""if") == 0)) {
 
-#line 2515 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2517 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Bah_Array_Type* memory = memoryAlloc(sizeof(struct Bah_Array_Type));
 
 memory->length = 0;
 memory->elemSize = sizeof(struct Tok);
 
-#line 2516 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2518 "/home/alois/Téléchargements/bah/src/parser.bah"
 register long long int i = 1;
 
-#line 2516 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2518 "/home/alois/Téléchargements/bah/src/parser.bah"
 while ((i<len(l))) {
 
-#line 2517 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2519 "/home/alois/Téléchargements/bah/src/parser.bah"
 unsigned int ____BAH_COMPILER_VAR_1334_ahomeaaloisanijlijchargementsabahasrcaparserbbah = len(memory);
     __Bah_realocate_arr(memory, ____BAH_COMPILER_VAR_1334_ahomeaaloisanijlijchargementsabahasrcaparserbbah);
     ((struct Tok*)memory->data)[____BAH_COMPILER_VAR_1334_ahomeaaloisanijlijchargementsabahasrcaparserbbah] = ((struct Tok*)l->data)[i];
 
-#line 2518 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2520 "/home/alois/Téléchargements/bah/src/parser.bah"
 ++i;
 };
 ____BAH_COMPILER_VAR_1333_ahomeaaloisanijlijchargementsabahasrcaparserbbah: ;
 
-#line 2520 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2522 "/home/alois/Téléchargements/bah/src/parser.bah"
 parseIf(memory,true,elems);
 
-#line 2521 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2523 "/home/alois/Téléchargements/bah/src/parser.bah"
 prevLine = LINE_TYPE_IF;
 }
 
-#line 2522 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2524 "/home/alois/Téléchargements/bah/src/parser.bah"
 else{
 
-#line 2523 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2525 "/home/alois/Téléchargements/bah/src/parser.bah"
 if (__builtin_expect((strcmp(ft.cont, "\01\0\0\0""{") != 0), 0)) {
 
-#line 2524 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2526 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Tok keep_ref_____BAH_COMPILER_VAR_1335_ahomeaaloisanijlijchargementsabahasrcaparserbbah = ft;
 throwErr(&ft,"\041\0\0\0""Expected 'if' or '{' not {TOKEN}.");
 }
 
-#line 2526 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2528 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Bah_Array_Type* memory = memoryAlloc(sizeof(struct Bah_Array_Type));
 
 memory->length = 0;
 memory->elemSize = sizeof(struct Tok);
 
-#line 2527 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2529 "/home/alois/Téléchargements/bah/src/parser.bah"
 unsigned long long int max = len(l)-1;
 
-#line 2528 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2530 "/home/alois/Téléchargements/bah/src/parser.bah"
 register long long int i = 2;
 
-#line 2528 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2530 "/home/alois/Téléchargements/bah/src/parser.bah"
 while ((i<max)) {
 
-#line 2529 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2531 "/home/alois/Téléchargements/bah/src/parser.bah"
 unsigned int ____BAH_COMPILER_VAR_1337_ahomeaaloisanijlijchargementsabahasrcaparserbbah = len(memory);
     __Bah_realocate_arr(memory, ____BAH_COMPILER_VAR_1337_ahomeaaloisanijlijchargementsabahasrcaparserbbah);
     ((struct Tok*)memory->data)[____BAH_COMPILER_VAR_1337_ahomeaaloisanijlijchargementsabahasrcaparserbbah] = ((struct Tok*)l->data)[i];
 
-#line 2530 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2532 "/home/alois/Téléchargements/bah/src/parser.bah"
 ++i;
 };
 ____BAH_COMPILER_VAR_1336_ahomeaaloisanijlijchargementsabahasrcaparserbbah: ;
 
-#line 2533 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2535 "/home/alois/Téléchargements/bah/src/parser.bah"
 i = 0;
 
-#line 2533 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2535 "/home/alois/Téléchargements/bah/src/parser.bah"
 for (; (i<len(prevIfChecks)); ++i) {
 
-#line 2534 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2536 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct varCheck bc = ((struct varCheck*)prevIfChecks->data)[i];
 
-#line 2535 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2537 "/home/alois/Téléchargements/bah/src/parser.bah"
 bc.checkNull = (bc.checkNull==false);
 
-#line 2536 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2538 "/home/alois/Téléchargements/bah/src/parser.bah"
 
     __Bah_realocate_arr(elems->branchChecks, i);
     ((struct varCheck*)elems->branchChecks->data)[i] = bc;
 };
 ____BAH_COMPILER_VAR_1338_ahomeaaloisanijlijchargementsabahasrcaparserbbah: ;
 
-#line 2539 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2541 "/home/alois/Téléchargements/bah/src/parser.bah"
 char oldIB = compilerState.isBranch;
 
-#line 2540 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2542 "/home/alois/Téléchargements/bah/src/parser.bah"
 compilerState.isBranch = true;
 
-#line 2541 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2543 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Tok t = ((struct Tok*)l->data)[0];
 
-#line 2542 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2544 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((len(memory)==0)) {
 
-#line 2543 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2545 "/home/alois/Téléchargements/bah/src/parser.bah"
 throwWarningLine("\021\0\0\0""Empty else block.",t.line);
 }
 
-#line 2544 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2546 "/home/alois/Téléchargements/bah/src/parser.bah"
 else{
 
-#line 2545 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2547 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct chainsToSwitch* oswtopt = elems->switchOpt;
 
-#line 2546 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2548 "/home/alois/Téléchargements/bah/src/parser.bah"
 elems->switchOpt = null;
 
-#line 2547 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2549 "/home/alois/Téléchargements/bah/src/parser.bah"
 parseLines(memory,elems);
 
-#line 2548 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2550 "/home/alois/Téléchargements/bah/src/parser.bah"
 elems->switchOpt = oswtopt;
 }
 
-#line 2550 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2552 "/home/alois/Téléchargements/bah/src/parser.bah"
 RCPendScope(elems);
 
-#line 2551 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2553 "/home/alois/Téléchargements/bah/src/parser.bah"
 fixMeEndScope(elems,&((struct Tok*)memory->data)[len(memory)-1]);
 
-#line 2552 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2554 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((debug==true)) {
 
-#line 2553 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2555 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Tok lt = ((struct Tok*)l->data)[len(l)-1];
 
-#line 2554 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2556 "/home/alois/Téléchargements/bah/src/parser.bah"
 debugEndScope(lt.line,elems);
 }
 
-#line 2556 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2558 "/home/alois/Téléchargements/bah/src/parser.bah"
 compilerState.isBranch = oldIB;
 
-#line 2557 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2559 "/home/alois/Téléchargements/bah/src/parser.bah"
 prevIfExits = false;
 }
 };
 
-#line 2563 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2565 "/home/alois/Téléchargements/bah/src/parser.bah"
 void parseFor(struct Bah_Array_Type* l,struct Elems* elems){
 
-#line 2565 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2567 "/home/alois/Téléchargements/bah/src/parser.bah"
 if (__builtin_expect((len(l)<4), 0)) {
 
-#line 2566 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2568 "/home/alois/Téléchargements/bah/src/parser.bah"
 throwErr(&((struct Tok*)l->data)[0],"\031\0\0\0""Invalid usage of {TOKEN}.");
 }
 
-#line 2569 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2571 "/home/alois/Téléchargements/bah/src/parser.bah"
 long long int nbComas = 0;
 
-#line 2570 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2572 "/home/alois/Téléchargements/bah/src/parser.bah"
 register long long int i = 1;
 
-#line 2570 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2572 "/home/alois/Téléchargements/bah/src/parser.bah"
 while ((i<len(l))) {
 
-#line 2571 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2573 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Tok t = ((struct Tok*)l->data)[i];
 
-#line 2572 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2574 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((strcmp(t.cont, "\01\0\0\0""{") == 0)) {
 
-#line 2573 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2575 "/home/alois/Téléchargements/bah/src/parser.bah"
 goto ____BAH_COMPILER_VAR_1339_ahomeaaloisanijlijchargementsabahasrcaparserbbah;
 }
 
-#line 2575 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2577 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((t.type==TOKEN_TYPE_SYNTAX)&&(strcmp(t.cont, "\01\0\0\0"",") == 0)) {
 
-#line 2576 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2578 "/home/alois/Téléchargements/bah/src/parser.bah"
 if (__builtin_expect((nbComas==1), 0)) {
 
-#line 2577 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2579 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Tok keep_ref_____BAH_COMPILER_VAR_1340_ahomeaaloisanijlijchargementsabahasrcaparserbbah = t;
 throwErr(&t,"\106\0\0\0""Invalid line separation of for, cannot set more than 2 lines: {TOKEN}.");
 }
 
-#line 2579 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2581 "/home/alois/Téléchargements/bah/src/parser.bah"
 ++nbComas;
 }
 
-#line 2581 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2583 "/home/alois/Téléchargements/bah/src/parser.bah"
 ++i;
 };
 ____BAH_COMPILER_VAR_1339_ahomeaaloisanijlijchargementsabahasrcaparserbbah: ;
 
-#line 2584 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2586 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Elems* ifElems = dupElems(elems);
 
-#line 2585 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2587 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Bah_Array_Type* tokens = memoryAlloc(sizeof(struct Bah_Array_Type));
 
 tokens->length = 0;
 tokens->elemSize = sizeof(struct Tok);
 
-#line 2586 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2588 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Tok condt = ((struct Tok*)l->data)[1];
 
-#line 2587 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2589 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Tok keep_ref_____BAH_COMPILER_VAR_1341_ahomeaaloisanijlijchargementsabahasrcaparserbbah = condt;
 if (__builtin_expect((compTypes(getTypeFromToken(&condt,true,elems),"\04\0\0\0""bool")==false), 0)) {
 
-#line 2588 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2590 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Tok keep_ref_____BAH_COMPILER_VAR_1342_ahomeaaloisanijlijchargementsabahasrcaparserbbah = condt;
 throwErr(&condt,"\061\0\0\0""Cannot use {TOKEN} as condition in for statement.");
 }
 
-#line 2591 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2593 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((nbComas>0)) {
 
-#line 2592 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2594 "/home/alois/Téléchargements/bah/src/parser.bah"
 if (__builtin_expect((nbComas!=1), 0)) {
 
-#line 2593 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2595 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Tok t = ((struct Tok*)l->data)[0];
 
-#line 2594 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2596 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Tok keep_ref_____BAH_COMPILER_VAR_1343_ahomeaaloisanijlijchargementsabahasrcaparserbbah = t;
 throwErr(&t,"\150\0\0\0""Invalid usage of {TOKEN}, can only partition line in 2 using 'for <condition>, <insctruction> {<code>}'.");
 }
 
-#line 2597 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2599 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Bah_Array_Type* inst = memoryAlloc(sizeof(struct Bah_Array_Type));
 
 inst->length = 0;
 inst->elemSize = sizeof(struct Tok);
 
-#line 2600 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2602 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Tok st = ((struct Tok*)l->data)[2];
 
-#line 2602 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2604 "/home/alois/Téléchargements/bah/src/parser.bah"
 if (__builtin_expect((st.type!=TOKEN_TYPE_SYNTAX)||(strcmp(st.cont, "\01\0\0\0"",") != 0), 0)) {
 
-#line 2603 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2605 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Tok keep_ref_____BAH_COMPILER_VAR_1344_ahomeaaloisanijlijchargementsabahasrcaparserbbah = st;
 throwErr(&st,"\074\0\0\0""Cannot use {TOKEN}, need ',' to split for loop instructions.");
 }
 
-#line 2606 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2608 "/home/alois/Téléchargements/bah/src/parser.bah"
 i = 3;
 
-#line 2606 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2608 "/home/alois/Téléchargements/bah/src/parser.bah"
 for (; (i<len(l)); ++i) {
 
-#line 2607 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2609 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Tok t = ((struct Tok*)l->data)[i];
 
-#line 2608 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2610 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((t.type==TOKEN_TYPE_ENCL)&&(strcmp(t.cont, "\01\0\0\0""{") == 0)) {
 
-#line 2609 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2611 "/home/alois/Téléchargements/bah/src/parser.bah"
 goto ____BAH_COMPILER_VAR_1345_ahomeaaloisanijlijchargementsabahasrcaparserbbah;
 }
 
-#line 2611 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2613 "/home/alois/Téléchargements/bah/src/parser.bah"
 unsigned int ____BAH_COMPILER_VAR_1346_ahomeaaloisanijlijchargementsabahasrcaparserbbah = len(inst);
     __Bah_realocate_arr(inst, ____BAH_COMPILER_VAR_1346_ahomeaaloisanijlijchargementsabahasrcaparserbbah);
     ((struct Tok*)inst->data)[____BAH_COMPILER_VAR_1346_ahomeaaloisanijlijchargementsabahasrcaparserbbah] = t;
 };
 ____BAH_COMPILER_VAR_1345_ahomeaaloisanijlijchargementsabahasrcaparserbbah: ;
 
-#line 2614 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2616 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct rope* oldOut = OUTPUT;
 
-#line 2615 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2617 "/home/alois/Téléchargements/bah/src/parser.bah"
 OUTPUT = rope("\0\0\0\0""");
 
-#line 2617 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2619 "/home/alois/Téléchargements/bah/src/parser.bah"
 inst = prePross(inst,LINE_TYPE_ELSE,ifElems);
 
-#line 2618 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2620 "/home/alois/Téléchargements/bah/src/parser.bah"
 parseVar(inst,ifElems);
 
-#line 2620 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2622 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct string instC = string(rope__toStr(OUTPUT));
 
-#line 2621 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2623 "/home/alois/Téléchargements/bah/src/parser.bah"
 OUTPUT = oldOut;
 
-#line 2622 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2624 "/home/alois/Téléchargements/bah/src/parser.bah"
 string__trimRight(&instC,2);
 
-#line 2624 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2626 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Tok t = ((struct Tok*)l->data)[i];
 
-#line 2625 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2627 "/home/alois/Téléchargements/bah/src/parser.bah"
 if (__builtin_expect((strcmp(t.cont, "\01\0\0\0""{") != 0), 0)) {
 
-#line 2626 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2628 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Tok keep_ref_____BAH_COMPILER_VAR_1347_ahomeaaloisanijlijchargementsabahasrcaparserbbah = t;
 throwErr(&t,"\114\0\0\0""Expected '{' not {TOKEN} after '<condition>,<instruction>' in for statement.");
 }
 
-#line 2629 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2631 "/home/alois/Téléchargements/bah/src/parser.bah"
 unsigned long long int max = len(l)-1;
 
-#line 2630 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2632 "/home/alois/Téléchargements/bah/src/parser.bah"
 ++i;
 
-#line 2630 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2632 "/home/alois/Téléchargements/bah/src/parser.bah"
 for (; (i<max); ++i) {
 
-#line 2631 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2633 "/home/alois/Téléchargements/bah/src/parser.bah"
 t = ((struct Tok*)l->data)[i];
 
-#line 2632 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2634 "/home/alois/Téléchargements/bah/src/parser.bah"
 unsigned int ____BAH_COMPILER_VAR_1349_ahomeaaloisanijlijchargementsabahasrcaparserbbah = len(tokens);
     __Bah_realocate_arr(tokens, ____BAH_COMPILER_VAR_1349_ahomeaaloisanijlijchargementsabahasrcaparserbbah);
     ((struct Tok*)tokens->data)[____BAH_COMPILER_VAR_1349_ahomeaaloisanijlijchargementsabahasrcaparserbbah] = t;
 };
 ____BAH_COMPILER_VAR_1348_ahomeaaloisanijlijchargementsabahasrcaparserbbah: ;
 
-#line 2635 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2637 "/home/alois/Téléchargements/bah/src/parser.bah"
 char** ____BAH_COMPILER_VAR_1350_ahomeaaloisanijlijchargementsabahasrcaparserbbah = alloca(5 * sizeof(char*));____BAH_COMPILER_VAR_1350_ahomeaaloisanijlijchargementsabahasrcaparserbbah[4] = "\04\0\0\0"") {\n";____BAH_COMPILER_VAR_1350_ahomeaaloisanijlijchargementsabahasrcaparserbbah[3] = string__str(&instC);____BAH_COMPILER_VAR_1350_ahomeaaloisanijlijchargementsabahasrcaparserbbah[2] = "\02\0\0\0""; ";____BAH_COMPILER_VAR_1350_ahomeaaloisanijlijchargementsabahasrcaparserbbah[1] = condt.cont;____BAH_COMPILER_VAR_1350_ahomeaaloisanijlijchargementsabahasrcaparserbbah[0] = "\07\0\0\0""for (; ";char* ____BAH_COMPILER_VAR_1351_ahomeaaloisanijlijchargementsabahasrcaparserbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_1350_ahomeaaloisanijlijchargementsabahasrcaparserbbah, 5);OUTPUT = rope__add(OUTPUT, rope(____BAH_COMPILER_VAR_1351_ahomeaaloisanijlijchargementsabahasrcaparserbbah));
 }
 
-#line 2637 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2639 "/home/alois/Téléchargements/bah/src/parser.bah"
 else{
 
-#line 2638 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2640 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Tok t = ((struct Tok*)l->data)[2];
 
-#line 2639 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2641 "/home/alois/Téléchargements/bah/src/parser.bah"
 if (__builtin_expect((strcmp(t.cont, "\01\0\0\0""{") != 0), 0)) {
 
-#line 2640 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2642 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Tok keep_ref_____BAH_COMPILER_VAR_1352_ahomeaaloisanijlijchargementsabahasrcaparserbbah = t;
 throwErr(&t,"\073\0\0\0""Expected '{' not {TOKEN} after condtition in for statement.");
 }
 
-#line 2642 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2644 "/home/alois/Téléchargements/bah/src/parser.bah"
 unsigned long long int max = len(l)-1;
 
-#line 2643 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2645 "/home/alois/Téléchargements/bah/src/parser.bah"
 i = 3;
 
-#line 2643 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2645 "/home/alois/Téléchargements/bah/src/parser.bah"
 for (; (i<max); ++i) {
 
-#line 2644 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2646 "/home/alois/Téléchargements/bah/src/parser.bah"
 t = ((struct Tok*)l->data)[i];
 
-#line 2645 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2647 "/home/alois/Téléchargements/bah/src/parser.bah"
 unsigned int ____BAH_COMPILER_VAR_1354_ahomeaaloisanijlijchargementsabahasrcaparserbbah = len(tokens);
     __Bah_realocate_arr(tokens, ____BAH_COMPILER_VAR_1354_ahomeaaloisanijlijchargementsabahasrcaparserbbah);
     ((struct Tok*)tokens->data)[____BAH_COMPILER_VAR_1354_ahomeaaloisanijlijchargementsabahasrcaparserbbah] = t;
 };
 ____BAH_COMPILER_VAR_1353_ahomeaaloisanijlijchargementsabahasrcaparserbbah: ;
 
-#line 2647 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2649 "/home/alois/Téléchargements/bah/src/parser.bah"
 char** ____BAH_COMPILER_VAR_1355_ahomeaaloisanijlijchargementsabahasrcaparserbbah = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_1355_ahomeaaloisanijlijchargementsabahasrcaparserbbah[2] = "\04\0\0\0"") {\n";____BAH_COMPILER_VAR_1355_ahomeaaloisanijlijchargementsabahasrcaparserbbah[1] = condt.cont;____BAH_COMPILER_VAR_1355_ahomeaaloisanijlijchargementsabahasrcaparserbbah[0] = "\07\0\0\0""while (";char* ____BAH_COMPILER_VAR_1356_ahomeaaloisanijlijchargementsabahasrcaparserbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_1355_ahomeaaloisanijlijchargementsabahasrcaparserbbah, 3);OUTPUT = rope__add(OUTPUT, rope(____BAH_COMPILER_VAR_1356_ahomeaaloisanijlijchargementsabahasrcaparserbbah));
 }
 
-#line 2649 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2651 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Elems* oForElems = compilerState.currForElems;
 
-#line 2650 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2652 "/home/alois/Téléchargements/bah/src/parser.bah"
 compilerState.currForElems = ifElems;
 
-#line 2652 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2654 "/home/alois/Téléchargements/bah/src/parser.bah"
 char oldIB = compilerState.isBranch;
 
-#line 2653 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2655 "/home/alois/Téléchargements/bah/src/parser.bah"
 char oldIF = compilerState.isFor;
 
-#line 2654 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2656 "/home/alois/Téléchargements/bah/src/parser.bah"
 compilerState.isBranch = true;
 
-#line 2655 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2657 "/home/alois/Téléchargements/bah/src/parser.bah"
 compilerState.isFor = true;
 
-#line 2656 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2658 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Tok t = ((struct Tok*)l->data)[0];
 
-#line 2657 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2659 "/home/alois/Téléchargements/bah/src/parser.bah"
 ifElems->switchOptCurrLoop = genCompilerVar();
 
-#line 2658 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2660 "/home/alois/Téléchargements/bah/src/parser.bah"
 parseLines(tokens,ifElems);
 
-#line 2659 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2661 "/home/alois/Téléchargements/bah/src/parser.bah"
 RCPendScope(ifElems);
 
-#line 2660 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2662 "/home/alois/Téléchargements/bah/src/parser.bah"
 fixMeEndScope(ifElems,&((struct Tok*)tokens->data)[len(tokens)-1]);
 
-#line 2662 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2664 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((isUnsafe==false)) {
 
-#line 2663 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2665 "/home/alois/Téléchargements/bah/src/parser.bah"
 i = 0;
 
-#line 2663 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2665 "/home/alois/Téléchargements/bah/src/parser.bah"
 for (; (i<len(ifElems->vars)); ++i) {
 
-#line 2664 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2666 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct variable* v = ((struct variable**)ifElems->vars->data)[i];
 
-#line 2665 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2667 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((v->iterScope==elems)) {
 
-#line 2666 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2668 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((v->lastSet!=ifElems)&&(Elems__isChildren(ifElems,v->lastSet)==false)) {
 
-#line 2667 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2669 "/home/alois/Téléchargements/bah/src/parser.bah"
 char** ____BAH_COMPILER_VAR_1358_ahomeaaloisanijlijchargementsabahasrcaparserbbah = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_1358_ahomeaaloisanijlijchargementsabahasrcaparserbbah[2] = "\163\0\0\0""' but its value is not changed inside the scope of the for loop.\n    This may result in the loop never terminating.";____BAH_COMPILER_VAR_1358_ahomeaaloisanijlijchargementsabahasrcaparserbbah[1] = v->name;____BAH_COMPILER_VAR_1358_ahomeaaloisanijlijchargementsabahasrcaparserbbah[0] = "\041\0\0\0""For loop iterates over variable '";char* ____BAH_COMPILER_VAR_1359_ahomeaaloisanijlijchargementsabahasrcaparserbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_1358_ahomeaaloisanijlijchargementsabahasrcaparserbbah, 3);throwWarningLine(____BAH_COMPILER_VAR_1359_ahomeaaloisanijlijchargementsabahasrcaparserbbah,t.line);
 }
 
-#line 2670 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2672 "/home/alois/Téléchargements/bah/src/parser.bah"
 v->iterScope = null;
 }
 };
 ____BAH_COMPILER_VAR_1357_ahomeaaloisanijlijchargementsabahasrcaparserbbah: ;
 }
 
-#line 2675 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2677 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((debug==true)) {
 
-#line 2676 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2678 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Tok lt = ((struct Tok*)l->data)[len(l)-1];
 
-#line 2677 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2679 "/home/alois/Téléchargements/bah/src/parser.bah"
 debugEndScope(lt.line,ifElems);
 }
 
-#line 2679 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2681 "/home/alois/Téléchargements/bah/src/parser.bah"
 compilerState.isFor = oldIF;
 
-#line 2680 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2682 "/home/alois/Téléchargements/bah/src/parser.bah"
 compilerState.isBranch = oldIB;
 
-#line 2681 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2683 "/home/alois/Téléchargements/bah/src/parser.bah"
 compilerState.currForElems = oForElems;
 
-#line 2682 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2684 "/home/alois/Téléchargements/bah/src/parser.bah"
 char** ____BAH_COMPILER_VAR_1360_ahomeaaloisanijlijchargementsabahasrcaparserbbah = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_1360_ahomeaaloisanijlijchargementsabahasrcaparserbbah[2] = "\04\0\0\0"": ;\n";____BAH_COMPILER_VAR_1360_ahomeaaloisanijlijchargementsabahasrcaparserbbah[1] = ifElems->switchOptCurrLoop;____BAH_COMPILER_VAR_1360_ahomeaaloisanijlijchargementsabahasrcaparserbbah[0] = "\03\0\0\0""};\n";char* ____BAH_COMPILER_VAR_1361_ahomeaaloisanijlijchargementsabahasrcaparserbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_1360_ahomeaaloisanijlijchargementsabahasrcaparserbbah, 3);OUTPUT = rope__add(OUTPUT, rope(____BAH_COMPILER_VAR_1361_ahomeaaloisanijlijchargementsabahasrcaparserbbah));
 };
 
-#line 2687 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2689 "/home/alois/Téléchargements/bah/src/parser.bah"
 void parseForOp(struct Bah_Array_Type* l,struct Elems* elems){
 
-#line 2689 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2691 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Tok ft = ((struct Tok*)l->data)[0];
 
-#line 2690 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2692 "/home/alois/Téléchargements/bah/src/parser.bah"
 if (__builtin_expect((compilerState.isFor==false), 0)) {
 
-#line 2691 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2693 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Tok keep_ref_____BAH_COMPILER_VAR_1362_ahomeaaloisanijlijchargementsabahasrcaparserbbah = ft;
 throwErr(&ft,"\050\0\0\0""Cannot {TOKEN} outside of for statement.");
 }
 
-#line 2693 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2695 "/home/alois/Téléchargements/bah/src/parser.bah"
 if (__builtin_expect((len(l)!=1), 0)) {
 
-#line 2694 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2696 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Tok keep_ref_____BAH_COMPILER_VAR_1363_ahomeaaloisanijlijchargementsabahasrcaparserbbah = ft;
 throwErr(&ft,"\037\0\0\0""Nothing expected after {TOKEN}.");
 }
 
-#line 2698 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2700 "/home/alois/Téléchargements/bah/src/parser.bah"
 RCPendScope(elems);
 
-#line 2699 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2701 "/home/alois/Téléchargements/bah/src/parser.bah"
 RCPendScope(compilerState.currForElems);
 
-#line 2700 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2702 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Tok keep_ref_____BAH_COMPILER_VAR_1364_ahomeaaloisanijlijchargementsabahasrcaparserbbah = ft;
 fixMeEndScope(elems,&ft);
 
-#line 2701 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2703 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Tok keep_ref_____BAH_COMPILER_VAR_1365_ahomeaaloisanijlijchargementsabahasrcaparserbbah = ft;
 fixMeEndScope(compilerState.currForElems,&ft);
 
-#line 2703 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2705 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((strcmp(ft.cont, "\05\0\0\0""break") == 0)) {
 
-#line 2704 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2706 "/home/alois/Téléchargements/bah/src/parser.bah"
 char** ____BAH_COMPILER_VAR_1366_ahomeaaloisanijlijchargementsabahasrcaparserbbah = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_1366_ahomeaaloisanijlijchargementsabahasrcaparserbbah[2] = "\02\0\0\0"";\n";____BAH_COMPILER_VAR_1366_ahomeaaloisanijlijchargementsabahasrcaparserbbah[1] = elems->switchOptCurrLoop;____BAH_COMPILER_VAR_1366_ahomeaaloisanijlijchargementsabahasrcaparserbbah[0] = "\05\0\0\0""goto ";char* ____BAH_COMPILER_VAR_1367_ahomeaaloisanijlijchargementsabahasrcaparserbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_1366_ahomeaaloisanijlijchargementsabahasrcaparserbbah, 3);OUTPUT = rope__add(OUTPUT, rope(____BAH_COMPILER_VAR_1367_ahomeaaloisanijlijchargementsabahasrcaparserbbah));
 }
 
-#line 2705 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2707 "/home/alois/Téléchargements/bah/src/parser.bah"
 else{
 
-#line 2706 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2708 "/home/alois/Téléchargements/bah/src/parser.bah"
 char** ____BAH_COMPILER_VAR_1368_ahomeaaloisanijlijchargementsabahasrcaparserbbah = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1368_ahomeaaloisanijlijchargementsabahasrcaparserbbah[1] = "\02\0\0\0"";\n";____BAH_COMPILER_VAR_1368_ahomeaaloisanijlijchargementsabahasrcaparserbbah[0] = ft.cont;char* ____BAH_COMPILER_VAR_1369_ahomeaaloisanijlijchargementsabahasrcaparserbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_1368_ahomeaaloisanijlijchargementsabahasrcaparserbbah, 2);OUTPUT = rope__add(OUTPUT, rope(____BAH_COMPILER_VAR_1369_ahomeaaloisanijlijchargementsabahasrcaparserbbah));
 }
 };
 
-#line 2713 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2715 "/home/alois/Téléchargements/bah/src/parser.bah"
 char ____BAH_COMPILER_VAR_1370_ahomeaaloisanijlijchargementsabahasrcaparserbbah(struct Bah_Array_Type* arr, char* el) {
         if (__builtin_expect(arr == 0, 0)) {
             return 0;
@@ -20237,14 +20241,14 @@ char ____BAH_COMPILER_VAR_1370_ahomeaaloisanijlijchargementsabahasrcaparserbbah(
         }
 void makeEvalFunc(struct func* fn,struct Elems* elems){
 
-#line 2714 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2716 "/home/alois/Téléchargements/bah/src/parser.bah"
 if (____BAH_COMPILER_VAR_1370_ahomeaaloisanijlijchargementsabahasrcaparserbbah(compilerState.evals, fn->name)) {
 
-#line 2715 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2717 "/home/alois/Téléchargements/bah/src/parser.bah"
 return;
 }
 
-#line 2718 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2720 "/home/alois/Téléchargements/bah/src/parser.bah"
 char** ____BAH_COMPILER_VAR_1371_ahomeaaloisanijlijchargementsabahasrcaparserbbah = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1371_ahomeaaloisanijlijchargementsabahasrcaparserbbah[1] = fn->name;____BAH_COMPILER_VAR_1371_ahomeaaloisanijlijchargementsabahasrcaparserbbah[0] = "\013\0\0\0""__Bah_eval_";char* ____BAH_COMPILER_VAR_1372_ahomeaaloisanijlijchargementsabahasrcaparserbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_1371_ahomeaaloisanijlijchargementsabahasrcaparserbbah, 2);struct func* ____BAH_COMPILER_VAR_1373_ahomeaaloisanijlijchargementsabahasrcaparserbbah = memoryAlloc(sizeof(struct func));
 ____BAH_COMPILER_VAR_1373_ahomeaaloisanijlijchargementsabahasrcaparserbbah->args = memoryAlloc(sizeof(struct Bah_Array_Type));
             ____BAH_COMPILER_VAR_1373_ahomeaaloisanijlijchargementsabahasrcaparserbbah->args->length = 0;
@@ -20255,7 +20259,7 @@ ____BAH_COMPILER_VAR_1373_ahomeaaloisanijlijchargementsabahasrcaparserbbah->line
 ____BAH_COMPILER_VAR_1373_ahomeaaloisanijlijchargementsabahasrcaparserbbah->name = ____BAH_COMPILER_VAR_1372_ahomeaaloisanijlijchargementsabahasrcaparserbbah;
 struct func* efn = ____BAH_COMPILER_VAR_1373_ahomeaaloisanijlijchargementsabahasrcaparserbbah;
 
-#line 2721 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2723 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct variable* ____BAH_COMPILER_VAR_1374_ahomeaaloisanijlijchargementsabahasrcaparserbbah = memoryAlloc(sizeof(struct variable));
 ____BAH_COMPILER_VAR_1374_ahomeaaloisanijlijchargementsabahasrcaparserbbah->name = "\0\0\0\0""";
 ____BAH_COMPILER_VAR_1374_ahomeaaloisanijlijchargementsabahasrcaparserbbah->constVal = "\0\0\0\0""";
@@ -20263,7 +20267,7 @@ ____BAH_COMPILER_VAR_1374_ahomeaaloisanijlijchargementsabahasrcaparserbbah->from
 ____BAH_COMPILER_VAR_1374_ahomeaaloisanijlijchargementsabahasrcaparserbbah->type = "\03\0\0\0""ptr";
 efn->returns = ____BAH_COMPILER_VAR_1374_ahomeaaloisanijlijchargementsabahasrcaparserbbah;
 
-#line 2725 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2727 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct variable* ____BAH_COMPILER_VAR_1375_ahomeaaloisanijlijchargementsabahasrcaparserbbah = memoryAlloc(sizeof(struct variable));
 ____BAH_COMPILER_VAR_1375_ahomeaaloisanijlijchargementsabahasrcaparserbbah->constVal = "\0\0\0\0""";
 ____BAH_COMPILER_VAR_1375_ahomeaaloisanijlijchargementsabahasrcaparserbbah->from = "\0\0\0\0""";
@@ -20277,109 +20281,109 @@ efn->args->data = memoryAlloc(sizeof(struct variable*) * 50);
                     efn->args->realLength = 50;
 ((struct variable**)efn->args->data)[0] = ____BAH_COMPILER_VAR_1375_ahomeaaloisanijlijchargementsabahasrcaparserbbah;
 
-#line 2732 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2734 "/home/alois/Téléchargements/bah/src/parser.bah"
 char* fnBinding = "\0\0\0\0""";
 
-#line 2733 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2735 "/home/alois/Téléchargements/bah/src/parser.bah"
 char** ____BAH_COMPILER_VAR_1376_ahomeaaloisanijlijchargementsabahasrcaparserbbah = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1376_ahomeaaloisanijlijchargementsabahasrcaparserbbah[1] = "\01\0\0\0""(";____BAH_COMPILER_VAR_1376_ahomeaaloisanijlijchargementsabahasrcaparserbbah[0] = fn->name;char* ____BAH_COMPILER_VAR_1377_ahomeaaloisanijlijchargementsabahasrcaparserbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_1376_ahomeaaloisanijlijchargementsabahasrcaparserbbah, 2);char* fnCall = ____BAH_COMPILER_VAR_1377_ahomeaaloisanijlijchargementsabahasrcaparserbbah;
 
-#line 2734 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2736 "/home/alois/Téléchargements/bah/src/parser.bah"
 register long long int i = 0;
 
-#line 2734 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2736 "/home/alois/Téléchargements/bah/src/parser.bah"
 for (; (i<len(fn->args)); ++i) {
 
-#line 2735 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2737 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct variable* a = ((struct variable**)fn->args->data)[i];
 
-#line 2736 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2738 "/home/alois/Téléchargements/bah/src/parser.bah"
 char* v = genCompilerVar();
 
-#line 2737 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2739 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct string cType = getCType(a->type,elems);
 
-#line 2738 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2740 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((isRCPpointerType(a->type)==false)) {
 
-#line 2739 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2741 "/home/alois/Téléchargements/bah/src/parser.bah"
 string__append(&cType,"\01\0\0\0""*");
 }
 
-#line 2741 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2743 "/home/alois/Téléchargements/bah/src/parser.bah"
 char** ____BAH_COMPILER_VAR_1379_ahomeaaloisanijlijchargementsabahasrcaparserbbah = alloca(8 * sizeof(char*));____BAH_COMPILER_VAR_1379_ahomeaaloisanijlijchargementsabahasrcaparserbbah[7] = "\02\0\0\0""];";____BAH_COMPILER_VAR_1379_ahomeaaloisanijlijchargementsabahasrcaparserbbah[6] = intToStr(i);____BAH_COMPILER_VAR_1379_ahomeaaloisanijlijchargementsabahasrcaparserbbah[5] = "\020\0\0\0""*)fnArgs->data)[";____BAH_COMPILER_VAR_1379_ahomeaaloisanijlijchargementsabahasrcaparserbbah[4] = string__str(&cType);____BAH_COMPILER_VAR_1379_ahomeaaloisanijlijchargementsabahasrcaparserbbah[3] = "\05\0\0\0"" = ((";____BAH_COMPILER_VAR_1379_ahomeaaloisanijlijchargementsabahasrcaparserbbah[2] = v;____BAH_COMPILER_VAR_1379_ahomeaaloisanijlijchargementsabahasrcaparserbbah[1] = "\01\0\0\0"" ";____BAH_COMPILER_VAR_1379_ahomeaaloisanijlijchargementsabahasrcaparserbbah[0] = string__str(&cType);char* ____BAH_COMPILER_VAR_1380_ahomeaaloisanijlijchargementsabahasrcaparserbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_1379_ahomeaaloisanijlijchargementsabahasrcaparserbbah, 8);char** ____BAH_COMPILER_VAR_1381_ahomeaaloisanijlijchargementsabahasrcaparserbbah = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1381_ahomeaaloisanijlijchargementsabahasrcaparserbbah[1] = ____BAH_COMPILER_VAR_1380_ahomeaaloisanijlijchargementsabahasrcaparserbbah;____BAH_COMPILER_VAR_1381_ahomeaaloisanijlijchargementsabahasrcaparserbbah[0] = fnBinding;char* ____BAH_COMPILER_VAR_1382_ahomeaaloisanijlijchargementsabahasrcaparserbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_1381_ahomeaaloisanijlijchargementsabahasrcaparserbbah, 2);fnBinding = ____BAH_COMPILER_VAR_1382_ahomeaaloisanijlijchargementsabahasrcaparserbbah;
 
-#line 2742 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2744 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((i!=0)) {
 
-#line 2743 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2745 "/home/alois/Téléchargements/bah/src/parser.bah"
 char** ____BAH_COMPILER_VAR_1383_ahomeaaloisanijlijchargementsabahasrcaparserbbah = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1383_ahomeaaloisanijlijchargementsabahasrcaparserbbah[1] = "\02\0\0\0"", ";____BAH_COMPILER_VAR_1383_ahomeaaloisanijlijchargementsabahasrcaparserbbah[0] = fnCall;char* ____BAH_COMPILER_VAR_1384_ahomeaaloisanijlijchargementsabahasrcaparserbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_1383_ahomeaaloisanijlijchargementsabahasrcaparserbbah, 2);fnCall = ____BAH_COMPILER_VAR_1384_ahomeaaloisanijlijchargementsabahasrcaparserbbah;
 }
 
-#line 2745 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2747 "/home/alois/Téléchargements/bah/src/parser.bah"
 if (isRCPpointerType(a->type)) {
 
-#line 2746 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2748 "/home/alois/Téléchargements/bah/src/parser.bah"
 char** ____BAH_COMPILER_VAR_1385_ahomeaaloisanijlijchargementsabahasrcaparserbbah = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1385_ahomeaaloisanijlijchargementsabahasrcaparserbbah[1] = v;____BAH_COMPILER_VAR_1385_ahomeaaloisanijlijchargementsabahasrcaparserbbah[0] = fnCall;char* ____BAH_COMPILER_VAR_1386_ahomeaaloisanijlijchargementsabahasrcaparserbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_1385_ahomeaaloisanijlijchargementsabahasrcaparserbbah, 2);fnCall = ____BAH_COMPILER_VAR_1386_ahomeaaloisanijlijchargementsabahasrcaparserbbah;
 }
 
-#line 2747 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2749 "/home/alois/Téléchargements/bah/src/parser.bah"
 else{
 
-#line 2748 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2750 "/home/alois/Téléchargements/bah/src/parser.bah"
 char** ____BAH_COMPILER_VAR_1387_ahomeaaloisanijlijchargementsabahasrcaparserbbah = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1387_ahomeaaloisanijlijchargementsabahasrcaparserbbah[1] = v;____BAH_COMPILER_VAR_1387_ahomeaaloisanijlijchargementsabahasrcaparserbbah[0] = "\01\0\0\0""*";char* ____BAH_COMPILER_VAR_1388_ahomeaaloisanijlijchargementsabahasrcaparserbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_1387_ahomeaaloisanijlijchargementsabahasrcaparserbbah, 2);char** ____BAH_COMPILER_VAR_1389_ahomeaaloisanijlijchargementsabahasrcaparserbbah = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1389_ahomeaaloisanijlijchargementsabahasrcaparserbbah[1] = ____BAH_COMPILER_VAR_1388_ahomeaaloisanijlijchargementsabahasrcaparserbbah;____BAH_COMPILER_VAR_1389_ahomeaaloisanijlijchargementsabahasrcaparserbbah[0] = fnCall;char* ____BAH_COMPILER_VAR_1390_ahomeaaloisanijlijchargementsabahasrcaparserbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_1389_ahomeaaloisanijlijchargementsabahasrcaparserbbah, 2);fnCall = ____BAH_COMPILER_VAR_1390_ahomeaaloisanijlijchargementsabahasrcaparserbbah;
 }
 };
 ____BAH_COMPILER_VAR_1378_ahomeaaloisanijlijchargementsabahasrcaparserbbah: ;
 
-#line 2752 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2754 "/home/alois/Téléchargements/bah/src/parser.bah"
 char* setReturnValue = "\014\0\0\0""void* r = 0;";
 
-#line 2753 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2755 "/home/alois/Téléchargements/bah/src/parser.bah"
 if (isRCPpointerType(fn->returns->type)) {
 
-#line 2754 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2756 "/home/alois/Téléchargements/bah/src/parser.bah"
 setReturnValue = "\012\0\0\0""void* r = ";
 }
 
-#line 2755 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2757 "/home/alois/Téléchargements/bah/src/parser.bah"
 else{
 
-#line 2756 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2758 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct string cType = getCType(fn->returns->type,elems);
 
-#line 2757 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2759 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((strcmp(string__str(&cType), "\04\0\0\0""void") != 0)) {
 
-#line 2758 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2760 "/home/alois/Téléchargements/bah/src/parser.bah"
 char** ____BAH_COMPILER_VAR_1391_ahomeaaloisanijlijchargementsabahasrcaparserbbah = alloca(4 * sizeof(char*));____BAH_COMPILER_VAR_1391_ahomeaaloisanijlijchargementsabahasrcaparserbbah[3] = "\010\0\0\0""));*r = ";____BAH_COMPILER_VAR_1391_ahomeaaloisanijlijchargementsabahasrcaparserbbah[2] = string__str(&cType);____BAH_COMPILER_VAR_1391_ahomeaaloisanijlijchargementsabahasrcaparserbbah[1] = "\031\0\0\0""* r = memoryAlloc(sizeof(";____BAH_COMPILER_VAR_1391_ahomeaaloisanijlijchargementsabahasrcaparserbbah[0] = string__str(&cType);char* ____BAH_COMPILER_VAR_1392_ahomeaaloisanijlijchargementsabahasrcaparserbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_1391_ahomeaaloisanijlijchargementsabahasrcaparserbbah, 4);setReturnValue = ____BAH_COMPILER_VAR_1392_ahomeaaloisanijlijchargementsabahasrcaparserbbah;
 }
 }
 
-#line 2762 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2764 "/home/alois/Téléchargements/bah/src/parser.bah"
 char* cleanup = "\0\0\0\0""";
 
-#line 2764 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2766 "/home/alois/Téléchargements/bah/src/parser.bah"
 if (RCPavailable()) {
 
-#line 2765 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2767 "/home/alois/Téléchargements/bah/src/parser.bah"
 cleanup = RCPdecrVarStr("\06\0\0\0""fnArgs",true);
 }
 
-#line 2768 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2770 "/home/alois/Téléchargements/bah/src/parser.bah"
 char** ____BAH_COMPILER_VAR_1393_ahomeaaloisanijlijchargementsabahasrcaparserbbah = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_1393_ahomeaaloisanijlijchargementsabahasrcaparserbbah[2] = "\047\0\0\0""() with the wrong number of arguments.\"";____BAH_COMPILER_VAR_1393_ahomeaaloisanijlijchargementsabahasrcaparserbbah[1] = fn->name;____BAH_COMPILER_VAR_1393_ahomeaaloisanijlijchargementsabahasrcaparserbbah[0] = "\030\0\0\0""\"eval: calling function ";char* ____BAH_COMPILER_VAR_1394_ahomeaaloisanijlijchargementsabahasrcaparserbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_1393_ahomeaaloisanijlijchargementsabahasrcaparserbbah, 3);char** ____BAH_COMPILER_VAR_1395_ahomeaaloisanijlijchargementsabahasrcaparserbbah = alloca(16 * sizeof(char*));____BAH_COMPILER_VAR_1395_ahomeaaloisanijlijchargementsabahasrcaparserbbah[15] = "\040\0\0\0""\n        return (void*)r;\n    };";____BAH_COMPILER_VAR_1395_ahomeaaloisanijlijchargementsabahasrcaparserbbah[14] = cleanup;____BAH_COMPILER_VAR_1395_ahomeaaloisanijlijchargementsabahasrcaparserbbah[13] = "\013\0\0\0"");\n        ";____BAH_COMPILER_VAR_1395_ahomeaaloisanijlijchargementsabahasrcaparserbbah[12] = fnCall;____BAH_COMPILER_VAR_1395_ahomeaaloisanijlijchargementsabahasrcaparserbbah[11] = setReturnValue;____BAH_COMPILER_VAR_1395_ahomeaaloisanijlijchargementsabahasrcaparserbbah[10] = "\011\0\0\0""\n        ";____BAH_COMPILER_VAR_1395_ahomeaaloisanijlijchargementsabahasrcaparserbbah[9] = fnBinding;____BAH_COMPILER_VAR_1395_ahomeaaloisanijlijchargementsabahasrcaparserbbah[8] = "\025\0\0\0"");\n        }\n        ";____BAH_COMPILER_VAR_1395_ahomeaaloisanijlijchargementsabahasrcaparserbbah[7] = strLitteralToBahStr("\027\0\0\0""\"BAH_COMPILER_INTERNAL\"");____BAH_COMPILER_VAR_1395_ahomeaaloisanijlijchargementsabahasrcaparserbbah[6] = "\02\0\0\0"", ";____BAH_COMPILER_VAR_1395_ahomeaaloisanijlijchargementsabahasrcaparserbbah[5] = strLitteralToBahStr(____BAH_COMPILER_VAR_1394_ahomeaaloisanijlijchargementsabahasrcaparserbbah);____BAH_COMPILER_VAR_1395_ahomeaaloisanijlijchargementsabahasrcaparserbbah[4] = "\043\0\0\0"") {\n            __BAH_panic((char*)";____BAH_COMPILER_VAR_1395_ahomeaaloisanijlijchargementsabahasrcaparserbbah[3] = intToStr(len(fn->args));____BAH_COMPILER_VAR_1395_ahomeaaloisanijlijchargementsabahasrcaparserbbah[2] = "\100\0\0\0""(struct Bah_Array_Type* fnArgs) {\n        if (fnArgs->length != ";____BAH_COMPILER_VAR_1395_ahomeaaloisanijlijchargementsabahasrcaparserbbah[1] = efn->name;____BAH_COMPILER_VAR_1395_ahomeaaloisanijlijchargementsabahasrcaparserbbah[0] = "\046\0\0\0""void* __attribute__((optimize(\"O0\"))) ";char* ____BAH_COMPILER_VAR_1396_ahomeaaloisanijlijchargementsabahasrcaparserbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_1395_ahomeaaloisanijlijchargementsabahasrcaparserbbah, 16);OUTPUT = rope__add(OUTPUT, rope(____BAH_COMPILER_VAR_1396_ahomeaaloisanijlijchargementsabahasrcaparserbbah));
 
-#line 2778 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2780 "/home/alois/Téléchargements/bah/src/parser.bah"
 unsigned int ____BAH_COMPILER_VAR_1397_ahomeaaloisanijlijchargementsabahasrcaparserbbah = len(compilerState.evals);
     __Bah_realocate_arr(compilerState.evals, ____BAH_COMPILER_VAR_1397_ahomeaaloisanijlijchargementsabahasrcaparserbbah);
     ((char**)compilerState.evals->data)[____BAH_COMPILER_VAR_1397_ahomeaaloisanijlijchargementsabahasrcaparserbbah] = fn->name;
 
-#line 2779 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2781 "/home/alois/Téléchargements/bah/src/parser.bah"
 unsigned int ____BAH_COMPILER_VAR_1398_ahomeaaloisanijlijchargementsabahasrcaparserbbah = len(elems->fns);
     __Bah_realocate_arr(elems->fns, ____BAH_COMPILER_VAR_1398_ahomeaaloisanijlijchargementsabahasrcaparserbbah);
     ((struct func**)elems->fns->data)[____BAH_COMPILER_VAR_1398_ahomeaaloisanijlijchargementsabahasrcaparserbbah] = efn;
 };
 
-#line 2783 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2785 "/home/alois/Téléchargements/bah/src/parser.bah"
 char ____BAH_COMPILER_VAR_1401_ahomeaaloisanijlijchargementsabahasrcaparserbbah(struct Bah_Array_Type* arr, char* el) {
         if (__builtin_expect(arr == 0, 0)) {
             return 0;
@@ -20393,293 +20397,293 @@ char ____BAH_COMPILER_VAR_1401_ahomeaaloisanijlijchargementsabahasrcaparserbbah(
         }
 void parsePreKeyword(struct Bah_Array_Type* l,struct Elems* elems){
 
-#line 2785 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2787 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Tok ft = ((struct Tok*)l->data)[0];
 
-#line 2787 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2789 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((strcmp(ft.cont, "\010\0\0\0""#warning") == 0)) {
 
-#line 2788 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2790 "/home/alois/Téléchargements/bah/src/parser.bah"
 if (__builtin_expect((len(l)!=2), 0)) {
 
-#line 2789 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2791 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Tok keep_ref_____BAH_COMPILER_VAR_1399_ahomeaaloisanijlijchargementsabahasrcaparserbbah = ft;
 throwErr(&ft,"\056\0\0\0""Invalid usage of {TOKEN} '#warning \"message\"'.");
 }
 
-#line 2791 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2793 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Tok mt = ((struct Tok*)l->data)[1];
 
-#line 2792 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2794 "/home/alois/Téléchargements/bah/src/parser.bah"
 if (__builtin_expect((mt.type!=TOKEN_TYPE_STR), 0)) {
 
-#line 2793 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2795 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Tok keep_ref_____BAH_COMPILER_VAR_1400_ahomeaaloisanijlijchargementsabahasrcaparserbbah = mt;
 throwErr(&mt,"\037\0\0\0""Cannot use {TOKEN} as a string.");
 }
 
-#line 2796 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2798 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct string msg = string(mt.cont);
 
-#line 2797 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2799 "/home/alois/Téléchargements/bah/src/parser.bah"
 string__trimLeft(&msg,1);
 
-#line 2798 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2800 "/home/alois/Téléchargements/bah/src/parser.bah"
 string__trimRight(&msg,1);
 
-#line 2801 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2803 "/home/alois/Téléchargements/bah/src/parser.bah"
 throwWarning(string__str(&msg));
 
-#line 2802 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2804 "/home/alois/Téléchargements/bah/src/parser.bah"
 return;
 }
 
-#line 2806 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2808 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((strcmp(ft.cont, "\05\0\0\0""#eval") == 0)) {
 
-#line 2808 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2810 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((____BAH_COMPILER_VAR_1401_ahomeaaloisanijlijchargementsabahasrcaparserbbah(compilerState.includes, "\010\0\0\0""eval.bah")==false)) {
 
-#line 2809 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2811 "/home/alois/Téléchargements/bah/src/parser.bah"
 if (__builtin_expect((includeFile("\010\0\0\0""eval.bah",elems)==false), 0)) {
 
-#line 2810 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2812 "/home/alois/Téléchargements/bah/src/parser.bah"
 char** ____BAH_COMPILER_VAR_1402_ahomeaaloisanijlijchargementsabahasrcaparserbbah = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_1402_ahomeaaloisanijlijchargementsabahasrcaparserbbah[2] = "\02\0\0\0"").";____BAH_COMPILER_VAR_1402_ahomeaaloisanijlijchargementsabahasrcaparserbbah[1] = BAH_DIR;____BAH_COMPILER_VAR_1402_ahomeaaloisanijlijchargementsabahasrcaparserbbah[0] = "\072\0\0\0""Could not find file 'eval.bah'. Check your bah directory (";char* ____BAH_COMPILER_VAR_1403_ahomeaaloisanijlijchargementsabahasrcaparserbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_1402_ahomeaaloisanijlijchargementsabahasrcaparserbbah, 3);throwErr(&((struct Tok*)l->data)[0],____BAH_COMPILER_VAR_1403_ahomeaaloisanijlijchargementsabahasrcaparserbbah);
 }
 }
 
-#line 2814 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2816 "/home/alois/Téléchargements/bah/src/parser.bah"
 if (__builtin_expect((len(l)!=2)||(isGlobal()==false), 0)) {
 
-#line 2815 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2817 "/home/alois/Téléchargements/bah/src/parser.bah"
 throwErr(&((struct Tok*)l->data)[0],"\050\0\0\0""Invalid usage of {TOKEN} <#eval fnName>.");
 }
 
-#line 2818 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2820 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Tok fnT = ((struct Tok*)l->data)[1];
 
-#line 2819 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2821 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct func* fn = searchFunc(fnT.cont,elems,false);
 
-#line 2820 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2822 "/home/alois/Téléchargements/bah/src/parser.bah"
 if (__builtin_expect((fn==null), 0)) {
 
-#line 2821 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2823 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Tok keep_ref_____BAH_COMPILER_VAR_1404_ahomeaaloisanijlijchargementsabahasrcaparserbbah = fnT;
 throwErr(&fnT,"\031\0\0\0""Unknown function {TOKEN}.");
 }
 
-#line 2823 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2825 "/home/alois/Téléchargements/bah/src/parser.bah"
 fn->used = true;
 
-#line 2825 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2827 "/home/alois/Téléchargements/bah/src/parser.bah"
 makeEvalFunc(fn,elems);
 
-#line 2827 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2829 "/home/alois/Téléchargements/bah/src/parser.bah"
 return;
 }
 
-#line 2830 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2832 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((strcmp(ft.cont, "\010\0\0\0""#evalAll") == 0)) {
 
-#line 2831 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2833 "/home/alois/Téléchargements/bah/src/parser.bah"
 register long long int i = 0;
 
-#line 2831 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2833 "/home/alois/Téléchargements/bah/src/parser.bah"
 for (; (i<len(elems->fns)); ++i) {
 
-#line 2832 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2834 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct func* fn = ((struct func**)elems->fns->data)[i];
 
-#line 2833 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2835 "/home/alois/Téléchargements/bah/src/parser.bah"
 fn->used = true;
 
-#line 2834 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2836 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((fn->isBinding==false)&&(strHasPrefix(fn->name,"\013\0\0\0""__Bah_eval_")==false)) {
 
-#line 2835 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2837 "/home/alois/Téléchargements/bah/src/parser.bah"
 makeEvalFunc(fn,elems);
 }
 };
 ____BAH_COMPILER_VAR_1405_ahomeaaloisanijlijchargementsabahasrcaparserbbah: ;
 
-#line 2838 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2840 "/home/alois/Téléchargements/bah/src/parser.bah"
 return;
 }
 
-#line 2841 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2843 "/home/alois/Téléchargements/bah/src/parser.bah"
 if (__builtin_expect((len(l)<3), 0)) {
 
-#line 2842 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2844 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Tok keep_ref_____BAH_COMPILER_VAR_1406_ahomeaaloisanijlijchargementsabahasrcaparserbbah = ft;
 throwErr(&ft,"\041\0\0\0""Invalid usage of keyword {TOKEN}.");
 }
 
-#line 2845 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2847 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((strcmp(ft.cont, "\06\0\0\0""#linux") == 0)||(strcmp(ft.cont, "\010\0\0\0""#windows") == 0)||(strcmp(ft.cont, "\07\0\0\0""#darwin") == 0)) {
 
-#line 2846 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2848 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct string isOS = string(ft.cont);
 
-#line 2847 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2849 "/home/alois/Téléchargements/bah/src/parser.bah"
 string__trimLeft(&isOS,1);
 
-#line 2848 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2850 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((strcmp(string__str(&isOS), BAH_OS) != 0)) {
 
-#line 2849 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2851 "/home/alois/Téléchargements/bah/src/parser.bah"
 return;
 }
 }
 
-#line 2851 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2853 "/home/alois/Téléchargements/bah/src/parser.bah"
 else{
 if ((strcmp(ft.cont, "\07\0\0\0""#static") == 0)) {
 
-#line 2852 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2854 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((flags__isSet(&flags,"\01\0\0\0""d")==1)) {
 
-#line 2853 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2855 "/home/alois/Téléchargements/bah/src/parser.bah"
 return;
 }
 }
 
-#line 2855 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2857 "/home/alois/Téléchargements/bah/src/parser.bah"
 else{
 if ((strcmp(ft.cont, "\010\0\0\0""#dynamic") == 0)) {
 
-#line 2856 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2858 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((flags__isSet(&flags,"\01\0\0\0""d")==0)) {
 
-#line 2857 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2859 "/home/alois/Téléchargements/bah/src/parser.bah"
 return;
 }
 }
 
-#line 2859 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2861 "/home/alois/Téléchargements/bah/src/parser.bah"
 else{
 if ((strcmp(ft.cont, "\03\0\0\0""#gc") == 0)) {
 
-#line 2860 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2862 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((RCPavailable()==true)||lightGCenabled||nativeMemenabled) {
 
-#line 2861 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2863 "/home/alois/Téléchargements/bah/src/parser.bah"
 return;
 }
 }
 
-#line 2863 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2865 "/home/alois/Téléchargements/bah/src/parser.bah"
 else{
 if ((strcmp(ft.cont, "\07\0\0\0""#altMem") == 0)) {
 
-#line 2864 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2866 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((lightGCenabled==false)&&(nativeMemenabled==false)) {
 
-#line 2865 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2867 "/home/alois/Téléchargements/bah/src/parser.bah"
 return;
 }
 }
 
-#line 2867 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2869 "/home/alois/Téléchargements/bah/src/parser.bah"
 else{
 if ((strcmp(ft.cont, "\04\0\0\0""#rcp") == 0)) {
 
-#line 2868 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2870 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((RCPavailable()==false)) {
 
-#line 2869 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2871 "/home/alois/Téléchargements/bah/src/parser.bah"
 return;
 }
 }
 
-#line 2871 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2873 "/home/alois/Téléchargements/bah/src/parser.bah"
 else{
 if ((strcmp(ft.cont, "\04\0\0\0""#lib") == 0)) {
 
-#line 2872 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2874 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((flags__isSet(&flags,"\01\0\0\0""l")==0)) {
 
-#line 2873 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2875 "/home/alois/Téléchargements/bah/src/parser.bah"
 return;
 }
 }
 
-#line 2875 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2877 "/home/alois/Téléchargements/bah/src/parser.bah"
 else{
 if ((strcmp(ft.cont, "\05\0\0\0""#exec") == 0)) {
 
-#line 2876 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2878 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((flags__isSet(&flags,"\01\0\0\0""l")==1)) {
 
-#line 2877 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2879 "/home/alois/Téléchargements/bah/src/parser.bah"
 return;
 }
 }
 
-#line 2879 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2881 "/home/alois/Téléchargements/bah/src/parser.bah"
 else{
 if ((strcmp(ft.cont, "\011\0\0\0""#imported") == 0)) {
 
-#line 2880 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2882 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((isSubObject==false)||(isObject==false)) {
 
-#line 2881 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2883 "/home/alois/Téléchargements/bah/src/parser.bah"
 return;
 }
 }
 
-#line 2883 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2885 "/home/alois/Téléchargements/bah/src/parser.bah"
 else{
 if ((strcmp(ft.cont, "\05\0\0\0""#main") == 0)) {
 
-#line 2884 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2886 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((isSubObject==true)||(isObject==true)) {
 
-#line 2885 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2887 "/home/alois/Téléchargements/bah/src/parser.bah"
 return;
 }
 }
 
-#line 2887 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2889 "/home/alois/Téléchargements/bah/src/parser.bah"
 else{
 if ((strcmp(ft.cont, "\011\0\0\0""#included") == 0)) {
 
-#line 2888 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2890 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((isSubObject==true)||(isObject==true)) {
 
-#line 2889 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2891 "/home/alois/Téléchargements/bah/src/parser.bah"
 return;
 }
 }
 
-#line 2891 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2893 "/home/alois/Téléchargements/bah/src/parser.bah"
 else{
 if ((strcmp(ft.cont, "\012\0\0\0""#optimized") == 0)) {
 
-#line 2892 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2894 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((isOptimized==false)) {
 
-#line 2893 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2895 "/home/alois/Téléchargements/bah/src/parser.bah"
 return;
 }
 }
 
-#line 2895 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2897 "/home/alois/Téléchargements/bah/src/parser.bah"
 else{
 if ((strcmp(ft.cont, "\014\0\0\0""#unoptimized") == 0)) {
 
-#line 2896 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2898 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((isOptimized==true)) {
 
-#line 2897 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2899 "/home/alois/Téléchargements/bah/src/parser.bah"
 return;
 }
 }
 
-#line 2899 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2901 "/home/alois/Téléchargements/bah/src/parser.bah"
 else{
 
-#line 2900 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2902 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Tok keep_ref_____BAH_COMPILER_VAR_1407_ahomeaaloisanijlijchargementsabahasrcaparserbbah = ft;
 throwErr(&ft,"\030\0\0\0""Undefined token {TOKEN}.");
 }
@@ -20696,434 +20700,434 @@ throwErr(&ft,"\030\0\0\0""Undefined token {TOKEN}.");
 }
 }
 
-#line 2903 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2905 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Tok st = ((struct Tok*)l->data)[1];
 
-#line 2904 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2906 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Tok lt = ((struct Tok*)l->data)[len(l)-1];
 
-#line 2905 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2907 "/home/alois/Téléchargements/bah/src/parser.bah"
 if (__builtin_expect((strcmp(st.cont, "\01\0\0\0""{") != 0)||(strcmp(lt.cont, "\01\0\0\0""}") != 0), 0)) {
 
-#line 2906 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2908 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Tok keep_ref_____BAH_COMPILER_VAR_1408_ahomeaaloisanijlijchargementsabahasrcaparserbbah = st;
 throwErr(&st,"\052\0\0\0""Expected code block after keyword {TOKEN}.");
 }
 
-#line 2909 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2911 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Bah_Array_Type* nl = memoryAlloc(sizeof(struct Bah_Array_Type));
 
 nl->length = 0;
 nl->elemSize = sizeof(struct Tok);
 
-#line 2910 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2912 "/home/alois/Téléchargements/bah/src/parser.bah"
 register long long int i = 2;
 
-#line 2910 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2912 "/home/alois/Téléchargements/bah/src/parser.bah"
 while ((i<len(l)-1)) {
 
-#line 2911 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2913 "/home/alois/Téléchargements/bah/src/parser.bah"
 unsigned int ____BAH_COMPILER_VAR_1410_ahomeaaloisanijlijchargementsabahasrcaparserbbah = i-2;
     __Bah_realocate_arr(nl, ____BAH_COMPILER_VAR_1410_ahomeaaloisanijlijchargementsabahasrcaparserbbah);
     ((struct Tok*)nl->data)[____BAH_COMPILER_VAR_1410_ahomeaaloisanijlijchargementsabahasrcaparserbbah] = ((struct Tok*)l->data)[i];
 
-#line 2912 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2914 "/home/alois/Téléchargements/bah/src/parser.bah"
 ++i;
 };
 ____BAH_COMPILER_VAR_1409_ahomeaaloisanijlijchargementsabahasrcaparserbbah: ;
 
-#line 2915 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2917 "/home/alois/Téléchargements/bah/src/parser.bah"
 parseLines(nl,elems);
 };
 
-#line 2920 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2922 "/home/alois/Téléchargements/bah/src/parser.bah"
 void parseAsync(struct Bah_Array_Type* l,struct Elems* elems){
 
-#line 2921 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2923 "/home/alois/Téléchargements/bah/src/parser.bah"
 if (__builtin_expect((len(l)!=2), 0)) {
 
-#line 2922 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2924 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Tok ft = ((struct Tok*)l->data)[0];
 
-#line 2923 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2925 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Tok keep_ref_____BAH_COMPILER_VAR_1411_ahomeaaloisanijlijchargementsabahasrcaparserbbah = ft;
 throwErr(&ft,"\106\0\0\0""Cannot use keyword {TOKEN} on a function call 'async <function call>'.");
 }
 
-#line 2925 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2927 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Tok fnT = ((struct Tok*)l->data)[1];
 
-#line 2926 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2928 "/home/alois/Téléchargements/bah/src/parser.bah"
 if (__builtin_expect((fnT.isFunc==false), 0)) {
 
-#line 2927 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2929 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Tok keep_ref_____BAH_COMPILER_VAR_1412_ahomeaaloisanijlijchargementsabahasrcaparserbbah = fnT;
 throwErr(&fnT,"\104\0\0\0""Cannot use keyword async on {TOKEN}. Usage: 'async <function call>'.");
 }
 
-#line 2930 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2932 "/home/alois/Téléchargements/bah/src/parser.bah"
 char found = false;
 
-#line 2931 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2933 "/home/alois/Téléchargements/bah/src/parser.bah"
 register long long int i = 0;
 
-#line 2931 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2933 "/home/alois/Téléchargements/bah/src/parser.bah"
 while ((i<len(compilerState.cLibs))) {
 
-#line 2932 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2934 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((strcmp(((char**)compilerState.cLibs->data)[i], "\010\0\0\0""lpthread") == 0)) {
 
-#line 2933 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2935 "/home/alois/Téléchargements/bah/src/parser.bah"
 found = true;
 
-#line 2934 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2936 "/home/alois/Téléchargements/bah/src/parser.bah"
 goto ____BAH_COMPILER_VAR_1413_ahomeaaloisanijlijchargementsabahasrcaparserbbah;
 }
 
-#line 2936 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2938 "/home/alois/Téléchargements/bah/src/parser.bah"
 ++i;
 };
 ____BAH_COMPILER_VAR_1413_ahomeaaloisanijlijchargementsabahasrcaparserbbah: ;
 
-#line 2938 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2940 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((found==false)) {
 
-#line 2939 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2941 "/home/alois/Téléchargements/bah/src/parser.bah"
 unsigned int ____BAH_COMPILER_VAR_1414_ahomeaaloisanijlijchargementsabahasrcaparserbbah = len(compilerState.cLibs);
     __Bah_realocate_arr(compilerState.cLibs, ____BAH_COMPILER_VAR_1414_ahomeaaloisanijlijchargementsabahasrcaparserbbah);
     ((char**)compilerState.cLibs->data)[____BAH_COMPILER_VAR_1414_ahomeaaloisanijlijchargementsabahasrcaparserbbah] = "\010\0\0\0""lpthread";
 }
 
-#line 2942 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2944 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct string sFnT = string(fnT.cont);
 
-#line 2944 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2946 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Bah_Array_Type* fnNameParts = splitString(sFnT,"\01\0\0\0""(");
 
-#line 2945 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2947 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct string fnName = ((struct string*)fnNameParts->data)[0];
 
-#line 2947 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2949 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Tok keep_ref_____BAH_COMPILER_VAR_1415_ahomeaaloisanijlijchargementsabahasrcaparserbbah = fnT;
 struct func* fn = searchVirtFuncByToken(&fnT,elems);
 
-#line 2949 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2951 "/home/alois/Téléchargements/bah/src/parser.bah"
 if (__builtin_expect((fn==null), 0)) {
 
-#line 2950 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2952 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Tok keep_ref_____BAH_COMPILER_VAR_1416_ahomeaaloisanijlijchargementsabahasrcaparserbbah = fnT;
 char** ____BAH_COMPILER_VAR_1417_ahomeaaloisanijlijchargementsabahasrcaparserbbah = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_1417_ahomeaaloisanijlijchargementsabahasrcaparserbbah[2] = "\023\0\0\0""', arround {TOKEN}.";____BAH_COMPILER_VAR_1417_ahomeaaloisanijlijchargementsabahasrcaparserbbah[1] = string__str(&fnName);____BAH_COMPILER_VAR_1417_ahomeaaloisanijlijchargementsabahasrcaparserbbah[0] = "\101\0\0\0""Internal compiler error.\n Error parsing async call for function '";char* ____BAH_COMPILER_VAR_1418_ahomeaaloisanijlijchargementsabahasrcaparserbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_1417_ahomeaaloisanijlijchargementsabahasrcaparserbbah, 3);throwErr(&fnT,____BAH_COMPILER_VAR_1418_ahomeaaloisanijlijchargementsabahasrcaparserbbah);
 }
 
-#line 2952 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2954 "/home/alois/Téléchargements/bah/src/parser.bah"
 fnName = string(fn->name);
 
-#line 2953 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2955 "/home/alois/Téléchargements/bah/src/parser.bah"
 char* sMembs = "\0\0\0\0""";
 
-#line 2954 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2956 "/home/alois/Téléchargements/bah/src/parser.bah"
 char* unSerMembs = "\0\0\0\0""";
 
-#line 2955 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2957 "/home/alois/Téléchargements/bah/src/parser.bah"
 char* threadClean = "\0\0\0\0""";
 
-#line 2956 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2958 "/home/alois/Téléchargements/bah/src/parser.bah"
 char* threadPrep = "\0\0\0\0""";
 
-#line 2958 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2960 "/home/alois/Téléchargements/bah/src/parser.bah"
 i = 0;
 
-#line 2958 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2960 "/home/alois/Téléchargements/bah/src/parser.bah"
 for (; (i<len(fn->args)); ++i) {
 
-#line 2959 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2961 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct variable* a = ((struct variable**)fn->args->data)[i];
 
-#line 2960 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2962 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct string cType = getCType(a->type,elems);
 
-#line 2961 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2963 "/home/alois/Téléchargements/bah/src/parser.bah"
 char** ____BAH_COMPILER_VAR_1420_ahomeaaloisanijlijchargementsabahasrcaparserbbah = alloca(4 * sizeof(char*));____BAH_COMPILER_VAR_1420_ahomeaaloisanijlijchargementsabahasrcaparserbbah[3] = "\02\0\0\0"";\n";____BAH_COMPILER_VAR_1420_ahomeaaloisanijlijchargementsabahasrcaparserbbah[2] = a->name;____BAH_COMPILER_VAR_1420_ahomeaaloisanijlijchargementsabahasrcaparserbbah[1] = "\01\0\0\0"" ";____BAH_COMPILER_VAR_1420_ahomeaaloisanijlijchargementsabahasrcaparserbbah[0] = string__str(&cType);char* ____BAH_COMPILER_VAR_1421_ahomeaaloisanijlijchargementsabahasrcaparserbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_1420_ahomeaaloisanijlijchargementsabahasrcaparserbbah, 4);char** ____BAH_COMPILER_VAR_1422_ahomeaaloisanijlijchargementsabahasrcaparserbbah = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1422_ahomeaaloisanijlijchargementsabahasrcaparserbbah[1] = ____BAH_COMPILER_VAR_1421_ahomeaaloisanijlijchargementsabahasrcaparserbbah;____BAH_COMPILER_VAR_1422_ahomeaaloisanijlijchargementsabahasrcaparserbbah[0] = sMembs;char* ____BAH_COMPILER_VAR_1423_ahomeaaloisanijlijchargementsabahasrcaparserbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_1422_ahomeaaloisanijlijchargementsabahasrcaparserbbah, 2);sMembs = ____BAH_COMPILER_VAR_1423_ahomeaaloisanijlijchargementsabahasrcaparserbbah;
 
-#line 2962 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2964 "/home/alois/Téléchargements/bah/src/parser.bah"
 char** ____BAH_COMPILER_VAR_1424_ahomeaaloisanijlijchargementsabahasrcaparserbbah = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1424_ahomeaaloisanijlijchargementsabahasrcaparserbbah[1] = a->name;____BAH_COMPILER_VAR_1424_ahomeaaloisanijlijchargementsabahasrcaparserbbah[0] = "\06\0\0\0""args->";char* ____BAH_COMPILER_VAR_1425_ahomeaaloisanijlijchargementsabahasrcaparserbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_1424_ahomeaaloisanijlijchargementsabahasrcaparserbbah, 2);char** ____BAH_COMPILER_VAR_1426_ahomeaaloisanijlijchargementsabahasrcaparserbbah = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1426_ahomeaaloisanijlijchargementsabahasrcaparserbbah[1] = ____BAH_COMPILER_VAR_1425_ahomeaaloisanijlijchargementsabahasrcaparserbbah;____BAH_COMPILER_VAR_1426_ahomeaaloisanijlijchargementsabahasrcaparserbbah[0] = unSerMembs;char* ____BAH_COMPILER_VAR_1427_ahomeaaloisanijlijchargementsabahasrcaparserbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_1426_ahomeaaloisanijlijchargementsabahasrcaparserbbah, 2);unSerMembs = ____BAH_COMPILER_VAR_1427_ahomeaaloisanijlijchargementsabahasrcaparserbbah;
 
-#line 2963 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2965 "/home/alois/Téléchargements/bah/src/parser.bah"
 if (RCPavailable()&&isRCPtype(a->type,elems)) {
 
-#line 2964 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2966 "/home/alois/Téléchargements/bah/src/parser.bah"
 char** ____BAH_COMPILER_VAR_1428_ahomeaaloisanijlijchargementsabahasrcaparserbbah = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1428_ahomeaaloisanijlijchargementsabahasrcaparserbbah[1] = a->name;____BAH_COMPILER_VAR_1428_ahomeaaloisanijlijchargementsabahasrcaparserbbah[0] = "\06\0\0\0""args->";char* ____BAH_COMPILER_VAR_1429_ahomeaaloisanijlijchargementsabahasrcaparserbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_1428_ahomeaaloisanijlijchargementsabahasrcaparserbbah, 2);char** ____BAH_COMPILER_VAR_1430_ahomeaaloisanijlijchargementsabahasrcaparserbbah = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1430_ahomeaaloisanijlijchargementsabahasrcaparserbbah[1] = RCPincrVarStr(____BAH_COMPILER_VAR_1429_ahomeaaloisanijlijchargementsabahasrcaparserbbah,isRCPpointerType(a->type));____BAH_COMPILER_VAR_1430_ahomeaaloisanijlijchargementsabahasrcaparserbbah[0] = threadPrep;char* ____BAH_COMPILER_VAR_1431_ahomeaaloisanijlijchargementsabahasrcaparserbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_1430_ahomeaaloisanijlijchargementsabahasrcaparserbbah, 2);threadPrep = ____BAH_COMPILER_VAR_1431_ahomeaaloisanijlijchargementsabahasrcaparserbbah;
 
-#line 2965 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2967 "/home/alois/Téléchargements/bah/src/parser.bah"
 char** ____BAH_COMPILER_VAR_1432_ahomeaaloisanijlijchargementsabahasrcaparserbbah = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1432_ahomeaaloisanijlijchargementsabahasrcaparserbbah[1] = a->name;____BAH_COMPILER_VAR_1432_ahomeaaloisanijlijchargementsabahasrcaparserbbah[0] = "\06\0\0\0""args->";char* ____BAH_COMPILER_VAR_1433_ahomeaaloisanijlijchargementsabahasrcaparserbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_1432_ahomeaaloisanijlijchargementsabahasrcaparserbbah, 2);char** ____BAH_COMPILER_VAR_1434_ahomeaaloisanijlijchargementsabahasrcaparserbbah = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1434_ahomeaaloisanijlijchargementsabahasrcaparserbbah[1] = RCPdecrVarStr(____BAH_COMPILER_VAR_1433_ahomeaaloisanijlijchargementsabahasrcaparserbbah,isRCPpointerType(a->type));____BAH_COMPILER_VAR_1434_ahomeaaloisanijlijchargementsabahasrcaparserbbah[0] = threadClean;char* ____BAH_COMPILER_VAR_1435_ahomeaaloisanijlijchargementsabahasrcaparserbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_1434_ahomeaaloisanijlijchargementsabahasrcaparserbbah, 2);threadClean = ____BAH_COMPILER_VAR_1435_ahomeaaloisanijlijchargementsabahasrcaparserbbah;
 }
 
-#line 2967 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2969 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((i+1<len(fn->args))) {
 
-#line 2968 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2970 "/home/alois/Téléchargements/bah/src/parser.bah"
 char** ____BAH_COMPILER_VAR_1436_ahomeaaloisanijlijchargementsabahasrcaparserbbah = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1436_ahomeaaloisanijlijchargementsabahasrcaparserbbah[1] = "\02\0\0\0"", ";____BAH_COMPILER_VAR_1436_ahomeaaloisanijlijchargementsabahasrcaparserbbah[0] = unSerMembs;char* ____BAH_COMPILER_VAR_1437_ahomeaaloisanijlijchargementsabahasrcaparserbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_1436_ahomeaaloisanijlijchargementsabahasrcaparserbbah, 2);unSerMembs = ____BAH_COMPILER_VAR_1437_ahomeaaloisanijlijchargementsabahasrcaparserbbah;
 }
 };
 ____BAH_COMPILER_VAR_1419_ahomeaaloisanijlijchargementsabahasrcaparserbbah: ;
 
-#line 2974 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2976 "/home/alois/Téléchargements/bah/src/parser.bah"
 if (fn->isVar&&(fn->fromVar!=null)) {
 
-#line 2975 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2977 "/home/alois/Téléchargements/bah/src/parser.bah"
 
                 struct string keep_ref_____BAH_COMPILER_VAR_1438_ahomeaaloisanijlijchargementsabahasrcaparserbbah = getCType(fn->fromVar->type,elems);
                 char** ____BAH_COMPILER_VAR_1439_ahomeaaloisanijlijchargementsabahasrcaparserbbah = alloca(6 * sizeof(char*));____BAH_COMPILER_VAR_1439_ahomeaaloisanijlijchargementsabahasrcaparserbbah[5] = "\01\0\0\0"";";____BAH_COMPILER_VAR_1439_ahomeaaloisanijlijchargementsabahasrcaparserbbah[4] = ((struct variable**)fn->args->data)[0]->name;____BAH_COMPILER_VAR_1439_ahomeaaloisanijlijchargementsabahasrcaparserbbah[3] = "\011\0\0\0"" = args->";____BAH_COMPILER_VAR_1439_ahomeaaloisanijlijchargementsabahasrcaparserbbah[2] = fn->fromVar->name;____BAH_COMPILER_VAR_1439_ahomeaaloisanijlijchargementsabahasrcaparserbbah[1] = "\01\0\0\0"" ";____BAH_COMPILER_VAR_1439_ahomeaaloisanijlijchargementsabahasrcaparserbbah[0] = string__str(&keep_ref_____BAH_COMPILER_VAR_1438_ahomeaaloisanijlijchargementsabahasrcaparserbbah);char* ____BAH_COMPILER_VAR_1440_ahomeaaloisanijlijchargementsabahasrcaparserbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_1439_ahomeaaloisanijlijchargementsabahasrcaparserbbah, 6);char** ____BAH_COMPILER_VAR_1441_ahomeaaloisanijlijchargementsabahasrcaparserbbah = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1441_ahomeaaloisanijlijchargementsabahasrcaparserbbah[1] = ____BAH_COMPILER_VAR_1440_ahomeaaloisanijlijchargementsabahasrcaparserbbah;____BAH_COMPILER_VAR_1441_ahomeaaloisanijlijchargementsabahasrcaparserbbah[0] = threadPrep;char* ____BAH_COMPILER_VAR_1442_ahomeaaloisanijlijchargementsabahasrcaparserbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_1441_ahomeaaloisanijlijchargementsabahasrcaparserbbah, 2);threadPrep = ____BAH_COMPILER_VAR_1442_ahomeaaloisanijlijchargementsabahasrcaparserbbah;
 }
 
-#line 2979 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2981 "/home/alois/Téléchargements/bah/src/parser.bah"
 if (RCPavailable()) {
 
-#line 2980 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2982 "/home/alois/Téléchargements/bah/src/parser.bah"
 char** ____BAH_COMPILER_VAR_1443_ahomeaaloisanijlijchargementsabahasrcaparserbbah = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1443_ahomeaaloisanijlijchargementsabahasrcaparserbbah[1] = "\037\0\0\0""RCP_decr(args, sizeof(*args));\n";____BAH_COMPILER_VAR_1443_ahomeaaloisanijlijchargementsabahasrcaparserbbah[0] = threadClean;char* ____BAH_COMPILER_VAR_1444_ahomeaaloisanijlijchargementsabahasrcaparserbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_1443_ahomeaaloisanijlijchargementsabahasrcaparserbbah, 2);threadClean = ____BAH_COMPILER_VAR_1444_ahomeaaloisanijlijchargementsabahasrcaparserbbah;
 }
 
-#line 2983 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2985 "/home/alois/Téléchargements/bah/src/parser.bah"
 char** ____BAH_COMPILER_VAR_1445_ahomeaaloisanijlijchargementsabahasrcaparserbbah = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_1445_ahomeaaloisanijlijchargementsabahasrcaparserbbah[2] = "\01\0\0\0""}";____BAH_COMPILER_VAR_1445_ahomeaaloisanijlijchargementsabahasrcaparserbbah[1] = sMembs;____BAH_COMPILER_VAR_1445_ahomeaaloisanijlijchargementsabahasrcaparserbbah[0] = "\011\0\0\0""struct {\n";char* ____BAH_COMPILER_VAR_1446_ahomeaaloisanijlijchargementsabahasrcaparserbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_1445_ahomeaaloisanijlijchargementsabahasrcaparserbbah, 3);char* tmpArgsStruct = ____BAH_COMPILER_VAR_1446_ahomeaaloisanijlijchargementsabahasrcaparserbbah;
 
-#line 2984 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2986 "/home/alois/Téléchargements/bah/src/parser.bah"
 char* fnWrapper = genCompilerVar();
 
-#line 2985 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2987 "/home/alois/Téléchargements/bah/src/parser.bah"
 char* tmpArgs = genCompilerVar();
 
-#line 2987 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2989 "/home/alois/Téléchargements/bah/src/parser.bah"
 string__trimLeft(&sFnT,fnName.length+1);
 
-#line 2988 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2990 "/home/alois/Téléchargements/bah/src/parser.bah"
 string__trimRight(&sFnT,1);
 
-#line 2990 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2992 "/home/alois/Téléchargements/bah/src/parser.bah"
 char** ____BAH_COMPILER_VAR_1447_ahomeaaloisanijlijchargementsabahasrcaparserbbah = alloca(14 * sizeof(char*));____BAH_COMPILER_VAR_1447_ahomeaaloisanijlijchargementsabahasrcaparserbbah[13] = "\010\0\0\0""\n    };\n";____BAH_COMPILER_VAR_1447_ahomeaaloisanijlijchargementsabahasrcaparserbbah[12] = threadClean;____BAH_COMPILER_VAR_1447_ahomeaaloisanijlijchargementsabahasrcaparserbbah[11] = "\013\0\0\0"");\n        ";____BAH_COMPILER_VAR_1447_ahomeaaloisanijlijchargementsabahasrcaparserbbah[10] = unSerMembs;____BAH_COMPILER_VAR_1447_ahomeaaloisanijlijchargementsabahasrcaparserbbah[9] = "\01\0\0\0""(";____BAH_COMPILER_VAR_1447_ahomeaaloisanijlijchargementsabahasrcaparserbbah[8] = string__str(&fnName);____BAH_COMPILER_VAR_1447_ahomeaaloisanijlijchargementsabahasrcaparserbbah[7] = "\011\0\0\0""\n        ";____BAH_COMPILER_VAR_1447_ahomeaaloisanijlijchargementsabahasrcaparserbbah[6] = threadPrep;____BAH_COMPILER_VAR_1447_ahomeaaloisanijlijchargementsabahasrcaparserbbah[5] = "\022\0\0\0""* args) {\n        ";____BAH_COMPILER_VAR_1447_ahomeaaloisanijlijchargementsabahasrcaparserbbah[4] = tmpArgsStruct;____BAH_COMPILER_VAR_1447_ahomeaaloisanijlijchargementsabahasrcaparserbbah[3] = "\01\0\0\0""(";____BAH_COMPILER_VAR_1447_ahomeaaloisanijlijchargementsabahasrcaparserbbah[2] = fnWrapper;____BAH_COMPILER_VAR_1447_ahomeaaloisanijlijchargementsabahasrcaparserbbah[1] = "\012\0\0\0""\n    void ";____BAH_COMPILER_VAR_1447_ahomeaaloisanijlijchargementsabahasrcaparserbbah[0] = rope__toStr(postDeclHandle);char* ____BAH_COMPILER_VAR_1448_ahomeaaloisanijlijchargementsabahasrcaparserbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_1447_ahomeaaloisanijlijchargementsabahasrcaparserbbah, 14);OUTPUT->totalLen = OUTPUT->totalLen+ropeSet(postDeclHandle,____BAH_COMPILER_VAR_1448_ahomeaaloisanijlijchargementsabahasrcaparserbbah);
 
-#line 2997 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 2999 "/home/alois/Téléchargements/bah/src/parser.bah"
 char** ____BAH_COMPILER_VAR_1449_ahomeaaloisanijlijchargementsabahasrcaparserbbah = alloca(15 * sizeof(char*));____BAH_COMPILER_VAR_1449_ahomeaaloisanijlijchargementsabahasrcaparserbbah[14] = "\075\0\0\0"", tmpArgs);\n        pthread_attr_destroy(&attr);\n    };\n\n    ";____BAH_COMPILER_VAR_1449_ahomeaaloisanijlijchargementsabahasrcaparserbbah[13] = fnWrapper;____BAH_COMPILER_VAR_1449_ahomeaaloisanijlijchargementsabahasrcaparserbbah[12] = "\302\0\0\0""));\n        pthread_t id;\n        pthread_attr_t attr;\n        pthread_attr_init(&attr);\n        pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_DETACHED);\n        __thread_create(&id, &attr, ";____BAH_COMPILER_VAR_1449_ahomeaaloisanijlijchargementsabahasrcaparserbbah[11] = tmpArgs;____BAH_COMPILER_VAR_1449_ahomeaaloisanijlijchargementsabahasrcaparserbbah[10] = "\011\0\0\0"", sizeof(";____BAH_COMPILER_VAR_1449_ahomeaaloisanijlijchargementsabahasrcaparserbbah[9] = tmpArgs;____BAH_COMPILER_VAR_1449_ahomeaaloisanijlijchargementsabahasrcaparserbbah[8] = "\035\0\0\0""));\n        memcpy(tmpArgs, &";____BAH_COMPILER_VAR_1449_ahomeaaloisanijlijchargementsabahasrcaparserbbah[7] = tmpArgs;____BAH_COMPILER_VAR_1449_ahomeaaloisanijlijchargementsabahasrcaparserbbah[6] = "\056\0\0\0""};\n        void* tmpArgs = memoryAlloc(sizeof(";____BAH_COMPILER_VAR_1449_ahomeaaloisanijlijchargementsabahasrcaparserbbah[5] = string__str(&sFnT);____BAH_COMPILER_VAR_1449_ahomeaaloisanijlijchargementsabahasrcaparserbbah[4] = "\04\0\0\0"" = {";____BAH_COMPILER_VAR_1449_ahomeaaloisanijlijchargementsabahasrcaparserbbah[3] = tmpArgs;____BAH_COMPILER_VAR_1449_ahomeaaloisanijlijchargementsabahasrcaparserbbah[2] = "\01\0\0\0"" ";____BAH_COMPILER_VAR_1449_ahomeaaloisanijlijchargementsabahasrcaparserbbah[1] = tmpArgsStruct;____BAH_COMPILER_VAR_1449_ahomeaaloisanijlijchargementsabahasrcaparserbbah[0] = "\012\0\0\0""{\n        ";char* ____BAH_COMPILER_VAR_1450_ahomeaaloisanijlijchargementsabahasrcaparserbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_1449_ahomeaaloisanijlijchargementsabahasrcaparserbbah, 15);OUTPUT = rope__add(OUTPUT, rope(____BAH_COMPILER_VAR_1450_ahomeaaloisanijlijchargementsabahasrcaparserbbah));
 };
 
-#line 3014 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3016 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Bah_Array_Type* parseChan(struct Bah_Array_Type* l,struct Elems* elems){
 
-#line 3015 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3017 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Bah_Array_Type* nl = memoryAlloc(sizeof(struct Bah_Array_Type));
 
 nl->length = 0;
 nl->elemSize = sizeof(struct Tok);
 
-#line 3016 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3018 "/home/alois/Téléchargements/bah/src/parser.bah"
 register long long int i = 0;
 
-#line 3016 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3018 "/home/alois/Téléchargements/bah/src/parser.bah"
 for (; (i<len(l)); ++i) {
 
-#line 3017 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3019 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Tok t = ((struct Tok*)l->data)[i];
 
-#line 3018 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3020 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((t.type==TOKEN_TYPE_SYNTAX)&&(strcmp(t.cont, "\02\0\0\0""->") == 0)||(strcmp(t.cont, "\02\0\0\0""<-") == 0)) {
 
-#line 3020 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3022 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((strcmp(t.cont, "\02\0\0\0""<-") == 0)) {
 
-#line 3021 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3023 "/home/alois/Téléchargements/bah/src/parser.bah"
 ++i;
 
-#line 3022 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3024 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((i<len(l))) {
 
-#line 3023 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3025 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Tok nt = ((struct Tok*)l->data)[i];
 
-#line 3024 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3026 "/home/alois/Téléchargements/bah/src/parser.bah"
 if (__builtin_expect((nt.type!=TOKEN_TYPE_VAR), 0)) {
 
-#line 3025 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3027 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Tok keep_ref_____BAH_COMPILER_VAR_1452_ahomeaaloisanijlijchargementsabahasrcaparserbbah = nt;
 throwErr(&nt,"\036\0\0\0""Cannot use {TOKEN} as channel.");
 }
 
-#line 3027 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3029 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Tok keep_ref_____BAH_COMPILER_VAR_1453_ahomeaaloisanijlijchargementsabahasrcaparserbbah = nt;
 struct string ntt = string(getTypeFromToken(&nt,true,elems));
 
-#line 3028 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3030 "/home/alois/Téléchargements/bah/src/parser.bah"
 if (__builtin_expect((string__hasPrefix(&ntt,"\05\0\0\0""chan:")==0), 0)) {
 
-#line 3029 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3031 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Tok keep_ref_____BAH_COMPILER_VAR_1454_ahomeaaloisanijlijchargementsabahasrcaparserbbah = nt;
 char** ____BAH_COMPILER_VAR_1455_ahomeaaloisanijlijchargementsabahasrcaparserbbah = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_1455_ahomeaaloisanijlijchargementsabahasrcaparserbbah[2] = "\015\0\0\0"") as channel.";____BAH_COMPILER_VAR_1455_ahomeaaloisanijlijchargementsabahasrcaparserbbah[1] = string__str(&ntt);____BAH_COMPILER_VAR_1455_ahomeaaloisanijlijchargementsabahasrcaparserbbah[0] = "\030\0\0\0""Cannot use var {TOKEN} (";char* ____BAH_COMPILER_VAR_1456_ahomeaaloisanijlijchargementsabahasrcaparserbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_1455_ahomeaaloisanijlijchargementsabahasrcaparserbbah, 3);throwErr(&nt,____BAH_COMPILER_VAR_1456_ahomeaaloisanijlijchargementsabahasrcaparserbbah);
 }
 
-#line 3031 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3033 "/home/alois/Téléchargements/bah/src/parser.bah"
 string__trimLeft(&ntt,5);
 
-#line 3033 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3035 "/home/alois/Téléchargements/bah/src/parser.bah"
 if (__builtin_expect(isGlobal(), 0)) {
 
-#line 3034 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3036 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Tok keep_ref_____BAH_COMPILER_VAR_1457_ahomeaaloisanijlijchargementsabahasrcaparserbbah = t;
 throwErr(&t,"\076\0\0\0""Cannot receive ({TOKEN}) from a channel outside of a function.");
 }
 
-#line 3037 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3039 "/home/alois/Téléchargements/bah/src/parser.bah"
 char* tmpV = "\0\0\0\0""";
 
-#line 3039 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3041 "/home/alois/Téléchargements/bah/src/parser.bah"
 if (isRCPpointerType(string__str(&ntt))) {
 
-#line 3040 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3042 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct string ct = getCType(string__str(&ntt),elems);
 
-#line 3041 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3043 "/home/alois/Téléchargements/bah/src/parser.bah"
 char** ____BAH_COMPILER_VAR_1458_ahomeaaloisanijlijchargementsabahasrcaparserbbah = alloca(7 * sizeof(char*));____BAH_COMPILER_VAR_1458_ahomeaaloisanijlijchargementsabahasrcaparserbbah[6] = "\01\0\0\0"")";____BAH_COMPILER_VAR_1458_ahomeaaloisanijlijchargementsabahasrcaparserbbah[5] = nt.cont;____BAH_COMPILER_VAR_1458_ahomeaaloisanijlijchargementsabahasrcaparserbbah[4] = "\012\0\0\0""->receive(";____BAH_COMPILER_VAR_1458_ahomeaaloisanijlijchargementsabahasrcaparserbbah[3] = nt.cont;____BAH_COMPILER_VAR_1458_ahomeaaloisanijlijchargementsabahasrcaparserbbah[2] = "\01\0\0\0"")";____BAH_COMPILER_VAR_1458_ahomeaaloisanijlijchargementsabahasrcaparserbbah[1] = string__str(&ct);____BAH_COMPILER_VAR_1458_ahomeaaloisanijlijchargementsabahasrcaparserbbah[0] = "\01\0\0\0""(";char* ____BAH_COMPILER_VAR_1459_ahomeaaloisanijlijchargementsabahasrcaparserbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_1458_ahomeaaloisanijlijchargementsabahasrcaparserbbah, 7);t.cont = ____BAH_COMPILER_VAR_1459_ahomeaaloisanijlijchargementsabahasrcaparserbbah;
 }
 
-#line 3042 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3044 "/home/alois/Téléchargements/bah/src/parser.bah"
 else{
 
-#line 3043 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3045 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct string ct = getCType(string__str(&ntt),elems);
 
-#line 3044 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3046 "/home/alois/Téléchargements/bah/src/parser.bah"
 char** ____BAH_COMPILER_VAR_1460_ahomeaaloisanijlijchargementsabahasrcaparserbbah = alloca(7 * sizeof(char*));____BAH_COMPILER_VAR_1460_ahomeaaloisanijlijchargementsabahasrcaparserbbah[6] = "\01\0\0\0"")";____BAH_COMPILER_VAR_1460_ahomeaaloisanijlijchargementsabahasrcaparserbbah[5] = nt.cont;____BAH_COMPILER_VAR_1460_ahomeaaloisanijlijchargementsabahasrcaparserbbah[4] = "\012\0\0\0""->receive(";____BAH_COMPILER_VAR_1460_ahomeaaloisanijlijchargementsabahasrcaparserbbah[3] = nt.cont;____BAH_COMPILER_VAR_1460_ahomeaaloisanijlijchargementsabahasrcaparserbbah[2] = "\02\0\0\0""*)";____BAH_COMPILER_VAR_1460_ahomeaaloisanijlijchargementsabahasrcaparserbbah[1] = string__str(&ct);____BAH_COMPILER_VAR_1460_ahomeaaloisanijlijchargementsabahasrcaparserbbah[0] = "\02\0\0\0""*(";char* ____BAH_COMPILER_VAR_1461_ahomeaaloisanijlijchargementsabahasrcaparserbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_1460_ahomeaaloisanijlijchargementsabahasrcaparserbbah, 7);t.cont = ____BAH_COMPILER_VAR_1461_ahomeaaloisanijlijchargementsabahasrcaparserbbah;
 }
 
-#line 3046 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3048 "/home/alois/Téléchargements/bah/src/parser.bah"
 t.type = TOKEN_TYPE_FUNC;
 
-#line 3047 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3049 "/home/alois/Téléchargements/bah/src/parser.bah"
 t.isFunc = true;
 
-#line 3049 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3051 "/home/alois/Téléchargements/bah/src/parser.bah"
 t.isValue = true;
 
-#line 3050 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3052 "/home/alois/Téléchargements/bah/src/parser.bah"
 t.bahType = string__str(&ntt);
 }
 
-#line 3051 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3053 "/home/alois/Téléchargements/bah/src/parser.bah"
 else{
 
-#line 3052 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3054 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Tok keep_ref_____BAH_COMPILER_VAR_1462_ahomeaaloisanijlijchargementsabahasrcaparserbbah = t;
 throwErr(&t,"\035\0\0\0""Cannot use {TOKEN} on nothing");
 }
 }
 
-#line 3054 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3056 "/home/alois/Téléchargements/bah/src/parser.bah"
 else{
 
-#line 3055 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3057 "/home/alois/Téléchargements/bah/src/parser.bah"
 if (__builtin_expect((i==0), 0)) {
 
-#line 3056 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3058 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Tok keep_ref_____BAH_COMPILER_VAR_1463_ahomeaaloisanijlijchargementsabahasrcaparserbbah = t;
 throwErr(&t,"\036\0\0\0""Cannot une {TOKEN} on nothing.");
 }
 
-#line 3058 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3060 "/home/alois/Téléchargements/bah/src/parser.bah"
 if (__builtin_expect((i+1>=len(l)), 0)) {
 
-#line 3059 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3061 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Tok keep_ref_____BAH_COMPILER_VAR_1464_ahomeaaloisanijlijchargementsabahasrcaparserbbah = t;
 throwErr(&t,"\041\0\0\0""Cannot send ({TOKEN}) to nothing.");
 }
 
-#line 3061 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3063 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Tok pt = ((struct Tok*)l->data)[i+1];
 
-#line 3062 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3064 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Tok nt = ((struct Tok*)l->data)[i-1];
 
-#line 3063 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3065 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Tok keep_ref_____BAH_COMPILER_VAR_1465_ahomeaaloisanijlijchargementsabahasrcaparserbbah = nt;
 char* ntt = getTypeFromToken(&nt,true,elems);
 
-#line 3065 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3067 "/home/alois/Téléchargements/bah/src/parser.bah"
 if (__builtin_expect((pt.type!=TOKEN_TYPE_VAR), 0)) {
 
-#line 3066 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3068 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Tok keep_ref_____BAH_COMPILER_VAR_1466_ahomeaaloisanijlijchargementsabahasrcaparserbbah = pt;
 throwErr(&pt,"\036\0\0\0""Cannot use {TOKEN} as channel.");
 }
 
-#line 3068 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3070 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Tok keep_ref_____BAH_COMPILER_VAR_1467_ahomeaaloisanijlijchargementsabahasrcaparserbbah = pt;
 struct string ptt = string(getTypeFromToken(&pt,true,elems));
 
-#line 3069 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3071 "/home/alois/Téléchargements/bah/src/parser.bah"
 if (__builtin_expect((string__hasPrefix(&ptt,"\05\0\0\0""chan:")==0), 0)) {
 
-#line 3070 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3072 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Tok keep_ref_____BAH_COMPILER_VAR_1468_ahomeaaloisanijlijchargementsabahasrcaparserbbah = pt;
 char** ____BAH_COMPILER_VAR_1469_ahomeaaloisanijlijchargementsabahasrcaparserbbah = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_1469_ahomeaaloisanijlijchargementsabahasrcaparserbbah[2] = "\015\0\0\0"") as channel.";____BAH_COMPILER_VAR_1469_ahomeaaloisanijlijchargementsabahasrcaparserbbah[1] = ntt;____BAH_COMPILER_VAR_1469_ahomeaaloisanijlijchargementsabahasrcaparserbbah[0] = "\030\0\0\0""Cannot use var {TOKEN} (";char* ____BAH_COMPILER_VAR_1470_ahomeaaloisanijlijchargementsabahasrcaparserbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_1469_ahomeaaloisanijlijchargementsabahasrcaparserbbah, 3);throwErr(&pt,____BAH_COMPILER_VAR_1470_ahomeaaloisanijlijchargementsabahasrcaparserbbah);
 }
 
-#line 3072 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3074 "/home/alois/Téléchargements/bah/src/parser.bah"
 string__trimLeft(&ptt,5);
 
-#line 3074 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3076 "/home/alois/Téléchargements/bah/src/parser.bah"
 if (__builtin_expect(isGlobal(), 0)) {
 
-#line 3075 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3077 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Tok keep_ref_____BAH_COMPILER_VAR_1471_ahomeaaloisanijlijchargementsabahasrcaparserbbah = t;
 throwErr(&t,"\071\0\0\0""Cannot send ({TOKEN}) to a channel outside of a function.");
 }
 
-#line 3078 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3080 "/home/alois/Téléchargements/bah/src/parser.bah"
 if (__builtin_expect((compTypes(string__str(&ptt),ntt)==false), 0)) {
 
-#line 3079 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3081 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Tok keep_ref_____BAH_COMPILER_VAR_1472_ahomeaaloisanijlijchargementsabahasrcaparserbbah = nt;
 char** ____BAH_COMPILER_VAR_1473_ahomeaaloisanijlijchargementsabahasrcaparserbbah = alloca(5 * sizeof(char*));____BAH_COMPILER_VAR_1473_ahomeaaloisanijlijchargementsabahasrcaparserbbah[4] = "\01\0\0\0"".";____BAH_COMPILER_VAR_1473_ahomeaaloisanijlijchargementsabahasrcaparserbbah[3] = string__str(&ptt);____BAH_COMPILER_VAR_1473_ahomeaaloisanijlijchargementsabahasrcaparserbbah[2] = "\025\0\0\0"") to channel of type ";____BAH_COMPILER_VAR_1473_ahomeaaloisanijlijchargementsabahasrcaparserbbah[1] = ntt;____BAH_COMPILER_VAR_1473_ahomeaaloisanijlijchargementsabahasrcaparserbbah[0] = "\025\0\0\0""Cannot send {TOKEN} (";char* ____BAH_COMPILER_VAR_1474_ahomeaaloisanijlijchargementsabahasrcaparserbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_1473_ahomeaaloisanijlijchargementsabahasrcaparserbbah, 5);throwErr(&nt,____BAH_COMPILER_VAR_1474_ahomeaaloisanijlijchargementsabahasrcaparserbbah);
 }
 
-#line 3082 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3084 "/home/alois/Téléchargements/bah/src/parser.bah"
 ++i;
 
-#line 3083 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3085 "/home/alois/Téléchargements/bah/src/parser.bah"
 if (isRCPpointerType(string__str(&ptt))) {
 
-#line 3084 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3086 "/home/alois/Téléchargements/bah/src/parser.bah"
 char** ____BAH_COMPILER_VAR_1475_ahomeaaloisanijlijchargementsabahasrcaparserbbah = alloca(6 * sizeof(char*));____BAH_COMPILER_VAR_1475_ahomeaaloisanijlijchargementsabahasrcaparserbbah[5] = "\03\0\0\0"");\n";____BAH_COMPILER_VAR_1475_ahomeaaloisanijlijchargementsabahasrcaparserbbah[4] = nt.cont;____BAH_COMPILER_VAR_1475_ahomeaaloisanijlijchargementsabahasrcaparserbbah[3] = "\02\0\0\0"", ";____BAH_COMPILER_VAR_1475_ahomeaaloisanijlijchargementsabahasrcaparserbbah[2] = pt.cont;____BAH_COMPILER_VAR_1475_ahomeaaloisanijlijchargementsabahasrcaparserbbah[1] = "\07\0\0\0""->send(";____BAH_COMPILER_VAR_1475_ahomeaaloisanijlijchargementsabahasrcaparserbbah[0] = pt.cont;char* ____BAH_COMPILER_VAR_1476_ahomeaaloisanijlijchargementsabahasrcaparserbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_1475_ahomeaaloisanijlijchargementsabahasrcaparserbbah, 6);OUTPUT = rope__add(OUTPUT, rope(____BAH_COMPILER_VAR_1476_ahomeaaloisanijlijchargementsabahasrcaparserbbah));
 }
 
-#line 3085 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3087 "/home/alois/Téléchargements/bah/src/parser.bah"
 else{
 
-#line 3086 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3088 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct string ct = getCType(ntt,elems);
 
-#line 3087 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3089 "/home/alois/Téléchargements/bah/src/parser.bah"
 char* tmpV = genCompilerVar();
 
-#line 3088 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3090 "/home/alois/Téléchargements/bah/src/parser.bah"
 char** ____BAH_COMPILER_VAR_1477_ahomeaaloisanijlijchargementsabahasrcaparserbbah = alloca(15 * sizeof(char*));____BAH_COMPILER_VAR_1477_ahomeaaloisanijlijchargementsabahasrcaparserbbah[14] = "\04\0\0\0""));\n";____BAH_COMPILER_VAR_1477_ahomeaaloisanijlijchargementsabahasrcaparserbbah[13] = tmpV;____BAH_COMPILER_VAR_1477_ahomeaaloisanijlijchargementsabahasrcaparserbbah[12] = "\011\0\0\0"", sizeof(";____BAH_COMPILER_VAR_1477_ahomeaaloisanijlijchargementsabahasrcaparserbbah[11] = tmpV;____BAH_COMPILER_VAR_1477_ahomeaaloisanijlijchargementsabahasrcaparserbbah[10] = "\03\0\0\0"", &";____BAH_COMPILER_VAR_1477_ahomeaaloisanijlijchargementsabahasrcaparserbbah[9] = pt.cont;____BAH_COMPILER_VAR_1477_ahomeaaloisanijlijchargementsabahasrcaparserbbah[8] = "\012\0\0\0""->sendAny(";____BAH_COMPILER_VAR_1477_ahomeaaloisanijlijchargementsabahasrcaparserbbah[7] = pt.cont;____BAH_COMPILER_VAR_1477_ahomeaaloisanijlijchargementsabahasrcaparserbbah[6] = "\026\0\0\0"";\n                    ";____BAH_COMPILER_VAR_1477_ahomeaaloisanijlijchargementsabahasrcaparserbbah[5] = nt.cont;____BAH_COMPILER_VAR_1477_ahomeaaloisanijlijchargementsabahasrcaparserbbah[4] = "\03\0\0\0"" = ";____BAH_COMPILER_VAR_1477_ahomeaaloisanijlijchargementsabahasrcaparserbbah[3] = tmpV;____BAH_COMPILER_VAR_1477_ahomeaaloisanijlijchargementsabahasrcaparserbbah[2] = "\01\0\0\0"" ";____BAH_COMPILER_VAR_1477_ahomeaaloisanijlijchargementsabahasrcaparserbbah[1] = string__str(&ct);____BAH_COMPILER_VAR_1477_ahomeaaloisanijlijchargementsabahasrcaparserbbah[0] = "\025\0\0\0""\n                    ";char* ____BAH_COMPILER_VAR_1478_ahomeaaloisanijlijchargementsabahasrcaparserbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_1477_ahomeaaloisanijlijchargementsabahasrcaparserbbah, 15);OUTPUT = rope__add(OUTPUT, rope(____BAH_COMPILER_VAR_1478_ahomeaaloisanijlijchargementsabahasrcaparserbbah));
 }
 
-#line 3093 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3095 "/home/alois/Téléchargements/bah/src/parser.bah"
 nl = memoryAlloc(sizeof(struct Bah_Array_Type));
 
 nl->length = 0;
 nl->elemSize = sizeof(struct Tok);
 
-#line 3094 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3096 "/home/alois/Téléchargements/bah/src/parser.bah"
 return nl;
 }
 }
 
-#line 3097 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3099 "/home/alois/Téléchargements/bah/src/parser.bah"
 unsigned int ____BAH_COMPILER_VAR_1479_ahomeaaloisanijlijchargementsabahasrcaparserbbah = len(nl);
     __Bah_realocate_arr(nl, ____BAH_COMPILER_VAR_1479_ahomeaaloisanijlijchargementsabahasrcaparserbbah);
     ((struct Tok*)nl->data)[____BAH_COMPILER_VAR_1479_ahomeaaloisanijlijchargementsabahasrcaparserbbah] = t;
 };
 ____BAH_COMPILER_VAR_1451_ahomeaaloisanijlijchargementsabahasrcaparserbbah: ;
 
-#line 3099 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3101 "/home/alois/Téléchargements/bah/src/parser.bah"
 return nl;
 };
 
@@ -24540,7 +24544,7 @@ return false;
 return true;
 };
 
-#line 3105 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3107 "/home/alois/Téléchargements/bah/src/parser.bah"
 char ____BAH_COMPILER_VAR_1952_ahomeaaloisanijlijchargementsabahasrcaparserbbah(struct Bah_Array_Type* arr, char* el) {
         if (__builtin_expect(arr == 0, 0)) {
             return 0;
@@ -24565,56 +24569,56 @@ char ____BAH_COMPILER_VAR_1962_ahomeaaloisanijlijchargementsabahasrcaparserbbah(
         }
 struct Bah_Array_Type* prePross(struct Bah_Array_Type* line,lineType ltp,struct Elems* elems){
 
-#line 3106 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3108 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Bah_Array_Type* fl = (struct Bah_Array_Type*)null;
 
-#line 3107 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3109 "/home/alois/Téléchargements/bah/src/parser.bah"
 register long long int i = 0;
 
-#line 3108 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3110 "/home/alois/Téléchargements/bah/src/parser.bah"
 register long long int sepI = 0;
 
-#line 3109 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3111 "/home/alois/Téléchargements/bah/src/parser.bah"
 long long int nbPar = 0;
 
-#line 3111 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3113 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((ltp!=(lineType)-1)) {
 
-#line 3112 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3114 "/home/alois/Téléchargements/bah/src/parser.bah"
 for (; (i<len(line)); ++i) {
 
-#line 3113 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3115 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Tok t = ((struct Tok*)line->data)[i];
 
-#line 3114 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3116 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((t.type==TOKEN_TYPE_ENCL)) {
 
-#line 3115 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3117 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((t.cont[0+4]==40)) {
 
-#line 3116 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3118 "/home/alois/Téléchargements/bah/src/parser.bah"
 char isFunc = true;
 
-#line 3117 "/home/alois/Téléchargements/bah/src/parser.bah"
-++nbPar;
-}
-
-#line 3118 "/home/alois/Téléchargements/bah/src/parser.bah"
-else{
-if ((t.cont[0+4]==41)) {
-
 #line 3119 "/home/alois/Téléchargements/bah/src/parser.bah"
---nbPar;
+++nbPar;
 }
 
 #line 3120 "/home/alois/Téléchargements/bah/src/parser.bah"
 else{
-if ((nbPar==0)&&(t.cont[0+4]==123)) {
+if ((t.cont[0+4]==41)) {
 
 #line 3121 "/home/alois/Téléchargements/bah/src/parser.bah"
-if ((((struct Tok*)line->data)[i+1].line!=t.line)) {
+--nbPar;
+}
 
 #line 3122 "/home/alois/Téléchargements/bah/src/parser.bah"
+else{
+if ((nbPar==0)&&(t.cont[0+4]==123)) {
+
+#line 3123 "/home/alois/Téléchargements/bah/src/parser.bah"
+if ((((struct Tok*)line->data)[i+1].line!=t.line)) {
+
+#line 3124 "/home/alois/Téléchargements/bah/src/parser.bah"
 goto ____BAH_COMPILER_VAR_1926_ahomeaaloisanijlijchargementsabahasrcaparserbbah;
 }
 }
@@ -24624,32 +24628,32 @@ goto ____BAH_COMPILER_VAR_1926_ahomeaaloisanijlijchargementsabahasrcaparserbbah;
 };
 ____BAH_COMPILER_VAR_1926_ahomeaaloisanijlijchargementsabahasrcaparserbbah: ;
 
-#line 3127 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3129 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((i!=len(line))) {
 
-#line 3128 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3130 "/home/alois/Téléchargements/bah/src/parser.bah"
 fl = arraySubstitute(line, 0, i);
 }
 
-#line 3129 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3131 "/home/alois/Téléchargements/bah/src/parser.bah"
 else{
 
-#line 3130 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3132 "/home/alois/Téléchargements/bah/src/parser.bah"
 fl = line;
 }
 
-#line 3132 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3134 "/home/alois/Téléchargements/bah/src/parser.bah"
 sepI = i;
 }
 
-#line 3133 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3135 "/home/alois/Téléchargements/bah/src/parser.bah"
 else{
 
-#line 3134 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3136 "/home/alois/Téléchargements/bah/src/parser.bah"
 fl = line;
 }
 
-#line 3137 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3139 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Tok ____BAH_COMPILER_VAR_1927_ahomeaaloisanijlijchargementsabahasrcaparserbbah = {};
 ____BAH_COMPILER_VAR_1927_ahomeaaloisanijlijchargementsabahasrcaparserbbah.cont = "\0\0\0\0""";
 ____BAH_COMPILER_VAR_1927_ahomeaaloisanijlijchargementsabahasrcaparserbbah.ogCont = "\0\0\0\0""";
@@ -24659,104 +24663,104 @@ ____BAH_COMPILER_VAR_1927_ahomeaaloisanijlijchargementsabahasrcaparserbbah.begLi
 ____BAH_COMPILER_VAR_1927_ahomeaaloisanijlijchargementsabahasrcaparserbbah.bahType = "\0\0\0\0""";
 struct Tok pt = ____BAH_COMPILER_VAR_1927_ahomeaaloisanijlijchargementsabahasrcaparserbbah;
 
-#line 3138 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3140 "/home/alois/Téléchargements/bah/src/parser.bah"
 unsigned long long int l = len(fl);
 
-#line 3140 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3142 "/home/alois/Téléchargements/bah/src/parser.bah"
 i = 0;
 
-#line 3140 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3142 "/home/alois/Téléchargements/bah/src/parser.bah"
 for (; (i<len(fl)); ++i) {
 
-#line 3141 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3143 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Tok t = ((struct Tok*)fl->data)[i];
 
-#line 3142 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3144 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((t.type==TOKEN_TYPE_VAR)&&(t.isOper==false)&&(t.cont[0+4]==38)) {
 
-#line 3143 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3145 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct string tc = string(t.cont);
 
-#line 3144 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3146 "/home/alois/Téléchargements/bah/src/parser.bah"
 string__trimLeft(&tc,1);
 
-#line 3145 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3147 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct variable* rv = getRealVar(string__str(&tc),elems);
 
-#line 3146 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3148 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((rv!=null)&&(rv->canBeReg==true)&&(rv->declRope!=null)) {
 
-#line 3147 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3149 "/home/alois/Téléchargements/bah/src/parser.bah"
 char* rvdr = rope__toStr(rv->declRope);
 
-#line 3148 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3150 "/home/alois/Téléchargements/bah/src/parser.bah"
 if (strHasPrefix(rvdr,"\011\0\0\0""register ")) {
 
-#line 3149 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3151 "/home/alois/Téléchargements/bah/src/parser.bah"
 rvdr = strSubstitute(rvdr, 9, strlen(rvdr));
 
-#line 3150 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3152 "/home/alois/Téléchargements/bah/src/parser.bah"
 OUTPUT->totalLen = OUTPUT->totalLen+ropeSet(rv->declRope,rvdr);
 }
 
-#line 3152 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3154 "/home/alois/Téléchargements/bah/src/parser.bah"
 rv->canBeReg = false;
 }
 }
 
-#line 3154 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3156 "/home/alois/Téléchargements/bah/src/parser.bah"
 else{
 if ((((struct Tok*)fl->data)[i].type==TOKEN_TYPE_STR)&&(((struct Tok*)fl->data)[i].processedStr==false)) {
 
-#line 3155 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3157 "/home/alois/Téléchargements/bah/src/parser.bah"
 ((struct Tok*)fl->data)[i].cont = strLitteralToBahStr(((struct Tok*)fl->data)[i].cont);
 
-#line 3156 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3158 "/home/alois/Téléchargements/bah/src/parser.bah"
 ((struct Tok*)fl->data)[i].processedStr = true;
 }
 }
 };
 ____BAH_COMPILER_VAR_1928_ahomeaaloisanijlijchargementsabahasrcaparserbbah: ;
 
-#line 3160 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3162 "/home/alois/Téléchargements/bah/src/parser.bah"
 if (fixMeEnabled()) {
 
-#line 3161 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3163 "/home/alois/Téléchargements/bah/src/parser.bah"
 i = 0;
 
-#line 3161 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3163 "/home/alois/Téléchargements/bah/src/parser.bah"
 for (; (i<len(fl)); ++i) {
 
-#line 3162 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3164 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((((struct Tok*)fl->data)[i].cont[0+4]==42)) {
 
-#line 3163 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3165 "/home/alois/Téléchargements/bah/src/parser.bah"
 fixMeTestVar(&((struct Tok*)fl->data)[i],ltp,elems);
 }
 };
 ____BAH_COMPILER_VAR_1929_ahomeaaloisanijlijchargementsabahasrcaparserbbah: ;
 }
 
-#line 3168 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3170 "/home/alois/Téléchargements/bah/src/parser.bah"
 i = 0;
 
-#line 3168 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3170 "/home/alois/Téléchargements/bah/src/parser.bah"
 for (; (i<len(fl)); ++i) {
 
-#line 3169 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3171 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Tok t = ((struct Tok*)fl->data)[i];
 
-#line 3170 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3172 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((i>0)) {
 
-#line 3171 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3173 "/home/alois/Téléchargements/bah/src/parser.bah"
 pt = ((struct Tok*)fl->data)[i-1];
 }
 
-#line 3172 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3174 "/home/alois/Téléchargements/bah/src/parser.bah"
 else{
 
-#line 3173 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3175 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Tok ____BAH_COMPILER_VAR_1931_ahomeaaloisanijlijchargementsabahasrcaparserbbah = {};
 ____BAH_COMPILER_VAR_1931_ahomeaaloisanijlijchargementsabahasrcaparserbbah.cont = "\0\0\0\0""";
 ____BAH_COMPILER_VAR_1931_ahomeaaloisanijlijchargementsabahasrcaparserbbah.ogCont = "\0\0\0\0""";
@@ -24767,27 +24771,27 @@ ____BAH_COMPILER_VAR_1931_ahomeaaloisanijlijchargementsabahasrcaparserbbah.bahTy
 pt = ____BAH_COMPILER_VAR_1931_ahomeaaloisanijlijchargementsabahasrcaparserbbah;
 }
 
-#line 3176 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3178 "/home/alois/Téléchargements/bah/src/parser.bah"
 if (t.hasAmp&&isValue(fl,i)&&(t.processedPtr==false)) {
 
-#line 3177 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3179 "/home/alois/Téléchargements/bah/src/parser.bah"
 t.processedPtr = true;
 
-#line 3178 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3180 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((Tok__getRefVar(&t)==null)) {
 
-#line 3179 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3181 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Tok keep_ref_____BAH_COMPILER_VAR_1932_ahomeaaloisanijlijchargementsabahasrcaparserbbah = t;
 struct variable* ____BAH_COMPILER_VAR_1933_ahomeaaloisanijlijchargementsabahasrcaparserbbah = searchVar(t.cont,&t,elems);if (____BAH_COMPILER_VAR_1933_ahomeaaloisanijlijchargementsabahasrcaparserbbah != null) {
 struct variable* v = ____BAH_COMPILER_VAR_1933_ahomeaaloisanijlijchargementsabahasrcaparserbbah;
 
-#line 3180 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3182 "/home/alois/Téléchargements/bah/src/parser.bah"
 if (isRCPtype(v->type,elems)) {
 
-#line 3181 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3183 "/home/alois/Téléchargements/bah/src/parser.bah"
 char** ____BAH_COMPILER_VAR_1934_ahomeaaloisanijlijchargementsabahasrcaparserbbah = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1934_ahomeaaloisanijlijchargementsabahasrcaparserbbah[1] = genCompilerVar();____BAH_COMPILER_VAR_1934_ahomeaaloisanijlijchargementsabahasrcaparserbbah[0] = "\011\0\0\0""keep_ref_";char* ____BAH_COMPILER_VAR_1935_ahomeaaloisanijlijchargementsabahasrcaparserbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_1934_ahomeaaloisanijlijchargementsabahasrcaparserbbah, 2);char* tmpName = ____BAH_COMPILER_VAR_1935_ahomeaaloisanijlijchargementsabahasrcaparserbbah;
 
-#line 3182 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3184 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct variable* ____BAH_COMPILER_VAR_1936_ahomeaaloisanijlijchargementsabahasrcaparserbbah = memoryAlloc(sizeof(struct variable));
 ____BAH_COMPILER_VAR_1936_ahomeaaloisanijlijchargementsabahasrcaparserbbah->constVal = "\0\0\0\0""";
 ____BAH_COMPILER_VAR_1936_ahomeaaloisanijlijchargementsabahasrcaparserbbah->from = "\0\0\0\0""";
@@ -24798,264 +24802,264 @@ unsigned int ____BAH_COMPILER_VAR_1937_ahomeaaloisanijlijchargementsabahasrcapar
     __Bah_realocate_arr(elems->vars, ____BAH_COMPILER_VAR_1937_ahomeaaloisanijlijchargementsabahasrcaparserbbah);
     ((struct variable**)elems->vars->data)[____BAH_COMPILER_VAR_1937_ahomeaaloisanijlijchargementsabahasrcaparserbbah] = ____BAH_COMPILER_VAR_1936_ahomeaaloisanijlijchargementsabahasrcaparserbbah;
 
-#line 3187 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3189 "/home/alois/Téléchargements/bah/src/parser.bah"
 
                 struct string keep_ref_____BAH_COMPILER_VAR_1938_ahomeaaloisanijlijchargementsabahasrcaparserbbah = getCType(v->type,elems);
                 char** ____BAH_COMPILER_VAR_1939_ahomeaaloisanijlijchargementsabahasrcaparserbbah = alloca(6 * sizeof(char*));____BAH_COMPILER_VAR_1939_ahomeaaloisanijlijchargementsabahasrcaparserbbah[5] = "\02\0\0\0"";\n";____BAH_COMPILER_VAR_1939_ahomeaaloisanijlijchargementsabahasrcaparserbbah[4] = strSubstitute(v->name, 1, strlen(v->name));____BAH_COMPILER_VAR_1939_ahomeaaloisanijlijchargementsabahasrcaparserbbah[3] = "\03\0\0\0"" = ";____BAH_COMPILER_VAR_1939_ahomeaaloisanijlijchargementsabahasrcaparserbbah[2] = tmpName;____BAH_COMPILER_VAR_1939_ahomeaaloisanijlijchargementsabahasrcaparserbbah[1] = "\01\0\0\0"" ";____BAH_COMPILER_VAR_1939_ahomeaaloisanijlijchargementsabahasrcaparserbbah[0] = string__str(&keep_ref_____BAH_COMPILER_VAR_1938_ahomeaaloisanijlijchargementsabahasrcaparserbbah);char* ____BAH_COMPILER_VAR_1940_ahomeaaloisanijlijchargementsabahasrcaparserbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_1939_ahomeaaloisanijlijchargementsabahasrcaparserbbah, 6);OUTPUT = rope__add(OUTPUT, rope(____BAH_COMPILER_VAR_1940_ahomeaaloisanijlijchargementsabahasrcaparserbbah));
 }
 
-#line 3189 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3191 "/home/alois/Téléchargements/bah/src/parser.bah"
 char** ____BAH_COMPILER_VAR_1941_ahomeaaloisanijlijchargementsabahasrcaparserbbah = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1941_ahomeaaloisanijlijchargementsabahasrcaparserbbah[1] = "\01\0\0\0""*";____BAH_COMPILER_VAR_1941_ahomeaaloisanijlijchargementsabahasrcaparserbbah[0] = v->type;char* ____BAH_COMPILER_VAR_1942_ahomeaaloisanijlijchargementsabahasrcaparserbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_1941_ahomeaaloisanijlijchargementsabahasrcaparserbbah, 2);v->type = ____BAH_COMPILER_VAR_1942_ahomeaaloisanijlijchargementsabahasrcaparserbbah;
 
-#line 3190 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3192 "/home/alois/Téléchargements/bah/src/parser.bah"
 Tok__setRefVar(&t,v);
 }
 
-#line 3192 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3194 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((strcmp(t.bahType, "\0\0\0\0""") == 0)) {
 
-#line 3193 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3195 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Tok keep_ref_____BAH_COMPILER_VAR_1943_ahomeaaloisanijlijchargementsabahasrcaparserbbah = t;
 t.bahType = getTypeFromToken(&t,true,elems);
 
-#line 3194 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3196 "/home/alois/Téléchargements/bah/src/parser.bah"
 if (__builtin_expect((t.bahType[0+4]==91)&&(t.bahType[strlen(t.bahType)-1+4]==93), 0)) {
 
-#line 3195 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3197 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Tok keep_ref_____BAH_COMPILER_VAR_1944_ahomeaaloisanijlijchargementsabahasrcaparserbbah = t;
 throwErr(&t,"\052\0\0\0""Cannot get the pointer of a tuple {TOKEN}.");
 }
 }
 
-#line 3198 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3200 "/home/alois/Téléchargements/bah/src/parser.bah"
 char** ____BAH_COMPILER_VAR_1945_ahomeaaloisanijlijchargementsabahasrcaparserbbah = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1945_ahomeaaloisanijlijchargementsabahasrcaparserbbah[1] = "\01\0\0\0""*";____BAH_COMPILER_VAR_1945_ahomeaaloisanijlijchargementsabahasrcaparserbbah[0] = t.bahType;char* ____BAH_COMPILER_VAR_1946_ahomeaaloisanijlijchargementsabahasrcaparserbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_1945_ahomeaaloisanijlijchargementsabahasrcaparserbbah, 2);t.bahType = ____BAH_COMPILER_VAR_1946_ahomeaaloisanijlijchargementsabahasrcaparserbbah;
 }
 
-#line 3200 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3202 "/home/alois/Téléchargements/bah/src/parser.bah"
 
     __Bah_realocate_arr(fl, i);
     ((struct Tok*)fl->data)[i] = t;
 
-#line 3201 "/home/alois/Téléchargements/bah/src/parser.bah"
-i = i-1;
-}
-
-#line 3202 "/home/alois/Téléchargements/bah/src/parser.bah"
-else{
-if ((strcmp(t.cont, "\01\0\0\0"".") == 0)&&(i>0)) {
-
 #line 3203 "/home/alois/Téléchargements/bah/src/parser.bah"
-i = valueStruct(fl,i,ltp,elems)-1;
+i = i-1;
 }
 
 #line 3204 "/home/alois/Téléchargements/bah/src/parser.bah"
 else{
-if ((strcmp(t.cont, "\01\0\0\0""(") == 0)&&(strcmp(pt.cont, "\010\0\0\0""function") != 0)) {
+if ((strcmp(t.cont, "\01\0\0\0"".") == 0)&&(i>0)) {
 
 #line 3205 "/home/alois/Téléchargements/bah/src/parser.bah"
-i = valueFunc(null,null,fl,i,ltp,elems)-1;
+i = valueStruct(fl,i,ltp,elems)-1;
 }
 
 #line 3206 "/home/alois/Téléchargements/bah/src/parser.bah"
 else{
-if ((strcmp(t.cont, "\01\0\0\0""[") == 0)&&(pt.isValue==true)) {
+if ((strcmp(t.cont, "\01\0\0\0""(") == 0)&&(strcmp(pt.cont, "\010\0\0\0""function") != 0)) {
 
 #line 3207 "/home/alois/Téléchargements/bah/src/parser.bah"
-i = valueArr(fl,i,ltp,elems)-1;
+i = valueFunc(null,null,fl,i,ltp,elems)-1;
 }
 
 #line 3208 "/home/alois/Téléchargements/bah/src/parser.bah"
 else{
-if ((strcmp(t.cont, "\01\0\0\0""[") == 0)) {
+if ((strcmp(t.cont, "\01\0\0\0""[") == 0)&&(pt.isValue==true)) {
 
 #line 3209 "/home/alois/Téléchargements/bah/src/parser.bah"
-i = valueTuple(fl,i,elems)-1;
+i = valueArr(fl,i,ltp,elems)-1;
 }
 
 #line 3210 "/home/alois/Téléchargements/bah/src/parser.bah"
 else{
-if ((pt.type==TOKEN_TYPE_CAST)&&isSmallValue(fl,i)) {
+if ((strcmp(t.cont, "\01\0\0\0""[") == 0)) {
 
 #line 3211 "/home/alois/Téléchargements/bah/src/parser.bah"
-delete(fl,i-1);
+i = valueTuple(fl,i,elems)-1;
+}
 
 #line 3212 "/home/alois/Téléchargements/bah/src/parser.bah"
-struct string ptc = string(pt.cont);
+else{
+if ((pt.type==TOKEN_TYPE_CAST)&&isSmallValue(fl,i)) {
 
 #line 3213 "/home/alois/Téléchargements/bah/src/parser.bah"
-string__trimLeft(&ptc,1);
+delete(fl,i-1);
 
 #line 3214 "/home/alois/Téléchargements/bah/src/parser.bah"
-string__trimRight(&ptc,1);
+struct string ptc = string(pt.cont);
 
 #line 3215 "/home/alois/Téléchargements/bah/src/parser.bah"
-if ((t.type==TOKEN_TYPE_VAR)) {
+string__trimLeft(&ptc,1);
 
 #line 3216 "/home/alois/Téléchargements/bah/src/parser.bah"
+string__trimRight(&ptc,1);
+
+#line 3217 "/home/alois/Téléchargements/bah/src/parser.bah"
+if ((t.type==TOKEN_TYPE_VAR)) {
+
+#line 3218 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Tok keep_ref_____BAH_COMPILER_VAR_1947_ahomeaaloisanijlijchargementsabahasrcaparserbbah = t;
 struct variable* ____BAH_COMPILER_VAR_1948_ahomeaaloisanijlijchargementsabahasrcaparserbbah = searchVirtVarByToken(&t,elems);if (____BAH_COMPILER_VAR_1948_ahomeaaloisanijlijchargementsabahasrcaparserbbah != null) {
 struct variable* v = ____BAH_COMPILER_VAR_1948_ahomeaaloisanijlijchargementsabahasrcaparserbbah;
 
-#line 3217 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3219 "/home/alois/Téléchargements/bah/src/parser.bah"
 Tok__setRefVar(&t,v);
 }
 }
 
-#line 3220 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3222 "/home/alois/Téléchargements/bah/src/parser.bah"
 t.bahType = string__str(&ptc);
 
-#line 3221 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3223 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct string cType = getCType(string__str(&ptc),elems);
 
-#line 3222 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3224 "/home/alois/Téléchargements/bah/src/parser.bah"
 char** ____BAH_COMPILER_VAR_1949_ahomeaaloisanijlijchargementsabahasrcaparserbbah = alloca(4 * sizeof(char*));____BAH_COMPILER_VAR_1949_ahomeaaloisanijlijchargementsabahasrcaparserbbah[3] = t.cont;____BAH_COMPILER_VAR_1949_ahomeaaloisanijlijchargementsabahasrcaparserbbah[2] = "\01\0\0\0"")";____BAH_COMPILER_VAR_1949_ahomeaaloisanijlijchargementsabahasrcaparserbbah[1] = string__str(&cType);____BAH_COMPILER_VAR_1949_ahomeaaloisanijlijchargementsabahasrcaparserbbah[0] = "\01\0\0\0""(";char* ____BAH_COMPILER_VAR_1950_ahomeaaloisanijlijchargementsabahasrcaparserbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_1949_ahomeaaloisanijlijchargementsabahasrcaparserbbah, 4);t.cont = ____BAH_COMPILER_VAR_1950_ahomeaaloisanijlijchargementsabahasrcaparserbbah;
 
-#line 3223 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3225 "/home/alois/Téléchargements/bah/src/parser.bah"
 unsigned int ____BAH_COMPILER_VAR_1951_ahomeaaloisanijlijchargementsabahasrcaparserbbah = i-1;
     __Bah_realocate_arr(fl, ____BAH_COMPILER_VAR_1951_ahomeaaloisanijlijchargementsabahasrcaparserbbah);
     ((struct Tok*)fl->data)[____BAH_COMPILER_VAR_1951_ahomeaaloisanijlijchargementsabahasrcaparserbbah] = t;
 
-#line 3224 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3226 "/home/alois/Téléchargements/bah/src/parser.bah"
 i = i-2;
 }
 
-#line 3225 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3227 "/home/alois/Téléchargements/bah/src/parser.bah"
 else{
 if (____BAH_COMPILER_VAR_1952_ahomeaaloisanijlijchargementsabahasrcaparserbbah(signs, pt.cont)&&(i>1)) {
 
-#line 3226 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3228 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((strcmp(t.cont, pt.cont) == 0)) {
 
-#line 3227 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3229 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Tok ppt = ((struct Tok*)fl->data)[i-2];
 
-#line 3228 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3230 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((ppt.type==TOKEN_TYPE_VAR)) {
 
-#line 3229 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3231 "/home/alois/Téléchargements/bah/src/parser.bah"
 long long int posTok = i-2;
 
-#line 3230 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3232 "/home/alois/Téléchargements/bah/src/parser.bah"
 deleteRange(fl,i-1,i);
 
-#line 3231 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3233 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((Tok__getRefVar(&ppt)==null)) {
 
-#line 3232 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3234 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Tok keep_ref_____BAH_COMPILER_VAR_1953_ahomeaaloisanijlijchargementsabahasrcaparserbbah = ppt;
 struct variable* ____BAH_COMPILER_VAR_1954_ahomeaaloisanijlijchargementsabahasrcaparserbbah = searchVirtVarByToken(&ppt,elems);if (____BAH_COMPILER_VAR_1954_ahomeaaloisanijlijchargementsabahasrcaparserbbah != null) {
 struct variable* v = ____BAH_COMPILER_VAR_1954_ahomeaaloisanijlijchargementsabahasrcaparserbbah;
 
-#line 3233 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3235 "/home/alois/Téléchargements/bah/src/parser.bah"
 Tok__setRefVar(&ppt,v);
 }
 }
 
-#line 3237 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3239 "/home/alois/Téléchargements/bah/src/parser.bah"
 char** ____BAH_COMPILER_VAR_1955_ahomeaaloisanijlijchargementsabahasrcaparserbbah = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_1955_ahomeaaloisanijlijchargementsabahasrcaparserbbah[2] = ppt.cont;____BAH_COMPILER_VAR_1955_ahomeaaloisanijlijchargementsabahasrcaparserbbah[1] = t.cont;____BAH_COMPILER_VAR_1955_ahomeaaloisanijlijchargementsabahasrcaparserbbah[0] = t.cont;char* ____BAH_COMPILER_VAR_1956_ahomeaaloisanijlijchargementsabahasrcaparserbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_1955_ahomeaaloisanijlijchargementsabahasrcaparserbbah, 3);ppt.cont = ____BAH_COMPILER_VAR_1956_ahomeaaloisanijlijchargementsabahasrcaparserbbah;
 
-#line 3238 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3240 "/home/alois/Téléchargements/bah/src/parser.bah"
 ppt.isValue = true;
 
-#line 3239 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3241 "/home/alois/Téléchargements/bah/src/parser.bah"
 ppt.isOper = true;
 
-#line 3240 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3242 "/home/alois/Téléchargements/bah/src/parser.bah"
 
     __Bah_realocate_arr(fl, posTok);
     ((struct Tok*)fl->data)[posTok] = ppt;
 
-#line 3241 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3243 "/home/alois/Téléchargements/bah/src/parser.bah"
 i = posTok-1;
 }
 
-#line 3242 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3244 "/home/alois/Téléchargements/bah/src/parser.bah"
 else{
 
-#line 3243 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3245 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Tok keep_ref_____BAH_COMPILER_VAR_1957_ahomeaaloisanijlijchargementsabahasrcaparserbbah = ppt;
 throwErr(&ppt,"\066\0\0\0""Cannot increment/decrement non variable value {TOKEN}.");
 }
 }
 
-#line 3245 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3247 "/home/alois/Téléchargements/bah/src/parser.bah"
 else{
 if (isValue(fl,i)) {
 
-#line 3246 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3248 "/home/alois/Téléchargements/bah/src/parser.bah"
 i = valueOper(fl,i,elems)-1;
 }
 }
 }
 
-#line 3248 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3250 "/home/alois/Téléchargements/bah/src/parser.bah"
 else{
 if ((t.cont[0+4]==45)&&(pt.isValue==true)) {
 
-#line 3249 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3251 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((t.type==TOKEN_TYPE_INT)||(t.type==TOKEN_TYPE_FLOAT)) {
 
-#line 3250 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3252 "/home/alois/Téléchargements/bah/src/parser.bah"
 delete(fl,i);
 
-#line 3251 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3253 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Tok keep_ref_____BAH_COMPILER_VAR_1958_ahomeaaloisanijlijchargementsabahasrcaparserbbah = pt;
 char* ptt = getTypeFromToken(&pt,true,elems);
 
-#line 3252 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3254 "/home/alois/Téléchargements/bah/src/parser.bah"
 pt.bahType = ptt;
 
-#line 3253 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3255 "/home/alois/Téléchargements/bah/src/parser.bah"
 pt.isOper = true;
 
-#line 3254 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3256 "/home/alois/Téléchargements/bah/src/parser.bah"
 char** ____BAH_COMPILER_VAR_1959_ahomeaaloisanijlijchargementsabahasrcaparserbbah = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1959_ahomeaaloisanijlijchargementsabahasrcaparserbbah[1] = t.cont;____BAH_COMPILER_VAR_1959_ahomeaaloisanijlijchargementsabahasrcaparserbbah[0] = pt.cont;char* ____BAH_COMPILER_VAR_1960_ahomeaaloisanijlijchargementsabahasrcaparserbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_1959_ahomeaaloisanijlijchargementsabahasrcaparserbbah, 2);pt.cont = ____BAH_COMPILER_VAR_1960_ahomeaaloisanijlijchargementsabahasrcaparserbbah;
 
-#line 3255 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3257 "/home/alois/Téléchargements/bah/src/parser.bah"
 unsigned int ____BAH_COMPILER_VAR_1961_ahomeaaloisanijlijchargementsabahasrcaparserbbah = i-1;
     __Bah_realocate_arr(fl, ____BAH_COMPILER_VAR_1961_ahomeaaloisanijlijchargementsabahasrcaparserbbah);
     ((struct Tok*)fl->data)[____BAH_COMPILER_VAR_1961_ahomeaaloisanijlijchargementsabahasrcaparserbbah] = pt;
 
-#line 3256 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3258 "/home/alois/Téléchargements/bah/src/parser.bah"
 i = i-2;
 }
 }
 
-#line 3258 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3260 "/home/alois/Téléchargements/bah/src/parser.bah"
 else{
 if (____BAH_COMPILER_VAR_1962_ahomeaaloisanijlijchargementsabahasrcaparserbbah(comparators, pt.cont)&&isValue(fl,i)) {
 
-#line 3259 "/home/alois/Téléchargements/bah/src/parser.bah"
-i = valueBool(fl,i,ltp,elems)-1;
-}
-
-#line 3260 "/home/alois/Téléchargements/bah/src/parser.bah"
-else{
-if ((strcmp(pt.cont, "\02\0\0\0""<-") == 0)&&isValue(fl,i)) {
-
 #line 3261 "/home/alois/Téléchargements/bah/src/parser.bah"
-i = valueChan(fl,i,elems)-1;
+i = valueBool(fl,i,ltp,elems)-1;
 }
 
 #line 3262 "/home/alois/Téléchargements/bah/src/parser.bah"
 else{
-if ((strcmp(pt.cont, "\02\0\0\0""->") == 0)&&isValue(fl,i)) {
+if ((strcmp(pt.cont, "\02\0\0\0""<-") == 0)&&isValue(fl,i)) {
 
 #line 3263 "/home/alois/Téléchargements/bah/src/parser.bah"
-if ((i-2>=0)) {
+i = valueChan(fl,i,elems)-1;
+}
 
 #line 3264 "/home/alois/Téléchargements/bah/src/parser.bah"
-if (isValue(fl,i-2)) {
+else{
+if ((strcmp(pt.cont, "\02\0\0\0""->") == 0)&&isValue(fl,i)) {
 
 #line 3265 "/home/alois/Téléchargements/bah/src/parser.bah"
+if ((i-2>=0)) {
+
+#line 3266 "/home/alois/Téléchargements/bah/src/parser.bah"
+if (isValue(fl,i-2)) {
+
+#line 3267 "/home/alois/Téléchargements/bah/src/parser.bah"
 i = valueSendChan(fl,i,elems)-1;
 }
 }
 
-#line 3267 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3269 "/home/alois/Téléchargements/bah/src/parser.bah"
 else{
 
-#line 3268 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3270 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Tok keep_ref_____BAH_COMPILER_VAR_1963_ahomeaaloisanijlijchargementsabahasrcaparserbbah = t;
 throwErr(&t,"\044\0\0\0""Cannot {TOKEN} nothing through chan.");
 }
@@ -25073,99 +25077,99 @@ throwErr(&t,"\044\0\0\0""Cannot {TOKEN} nothing through chan.");
 };
 ____BAH_COMPILER_VAR_1930_ahomeaaloisanijlijchargementsabahasrcaparserbbah: ;
 
-#line 3274 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3276 "/home/alois/Téléchargements/bah/src/parser.bah"
 i = 0;
 
-#line 3274 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3276 "/home/alois/Téléchargements/bah/src/parser.bah"
 for (; (i<len(fl)); ++i) {
 
-#line 3275 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3277 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Tok t = ((struct Tok*)fl->data)[i];
 
-#line 3276 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3278 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((strcmp(t.cont, "\02\0\0\0""||") == 0)||(strcmp(t.cont, "\02\0\0\0""&&") == 0)) {
 
-#line 3277 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3279 "/home/alois/Téléchargements/bah/src/parser.bah"
 if (__builtin_expect((i==0)||(i+1==len(fl)), 0)) {
 
-#line 3278 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3280 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Tok keep_ref_____BAH_COMPILER_VAR_1965_ahomeaaloisanijlijchargementsabahasrcaparserbbah = t;
 throwErr(&t,"\036\0\0\0""Cannot use {TOKEN} on nothing.");
 }
 
-#line 3280 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3282 "/home/alois/Téléchargements/bah/src/parser.bah"
 pt = ((struct Tok*)fl->data)[i-1];
 
-#line 3281 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3283 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Tok nt = ((struct Tok*)fl->data)[i+1];
 
-#line 3282 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3284 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Tok keep_ref_____BAH_COMPILER_VAR_1966_ahomeaaloisanijlijchargementsabahasrcaparserbbah = pt;
 char* ptt = getTypeFromToken(&pt,true,elems);
 
-#line 3283 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3285 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Tok keep_ref_____BAH_COMPILER_VAR_1967_ahomeaaloisanijlijchargementsabahasrcaparserbbah = nt;
 char* ntt = getTypeFromToken(&nt,true,elems);
 
-#line 3284 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3286 "/home/alois/Téléchargements/bah/src/parser.bah"
 if (__builtin_expect((compTypes(ptt,ntt)==false)||(compTypes(ptt,"\04\0\0\0""bool")==false), 0)) {
 
-#line 3285 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3287 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Tok keep_ref_____BAH_COMPILER_VAR_1968_ahomeaaloisanijlijchargementsabahasrcaparserbbah = t;
 char** ____BAH_COMPILER_VAR_1969_ahomeaaloisanijlijchargementsabahasrcaparserbbah = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_1969_ahomeaaloisanijlijchargementsabahasrcaparserbbah[2] = "\01\0\0\0"".";____BAH_COMPILER_VAR_1969_ahomeaaloisanijlijchargementsabahasrcaparserbbah[1] = ptt;____BAH_COMPILER_VAR_1969_ahomeaaloisanijlijchargementsabahasrcaparserbbah[0] = "\026\0\0\0""Cannot use {TOKEN} on ";char* ____BAH_COMPILER_VAR_1970_ahomeaaloisanijlijchargementsabahasrcaparserbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_1969_ahomeaaloisanijlijchargementsabahasrcaparserbbah, 3);throwErr(&t,____BAH_COMPILER_VAR_1970_ahomeaaloisanijlijchargementsabahasrcaparserbbah);
 }
 
-#line 3287 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3289 "/home/alois/Téléchargements/bah/src/parser.bah"
 char** ____BAH_COMPILER_VAR_1971_ahomeaaloisanijlijchargementsabahasrcaparserbbah = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1971_ahomeaaloisanijlijchargementsabahasrcaparserbbah[1] = nt.cont;____BAH_COMPILER_VAR_1971_ahomeaaloisanijlijchargementsabahasrcaparserbbah[0] = t.cont;char* ____BAH_COMPILER_VAR_1972_ahomeaaloisanijlijchargementsabahasrcaparserbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_1971_ahomeaaloisanijlijchargementsabahasrcaparserbbah, 2);char** ____BAH_COMPILER_VAR_1973_ahomeaaloisanijlijchargementsabahasrcaparserbbah = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1973_ahomeaaloisanijlijchargementsabahasrcaparserbbah[1] = ____BAH_COMPILER_VAR_1972_ahomeaaloisanijlijchargementsabahasrcaparserbbah;____BAH_COMPILER_VAR_1973_ahomeaaloisanijlijchargementsabahasrcaparserbbah[0] = pt.cont;char* ____BAH_COMPILER_VAR_1974_ahomeaaloisanijlijchargementsabahasrcaparserbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_1973_ahomeaaloisanijlijchargementsabahasrcaparserbbah, 2);pt.cont = ____BAH_COMPILER_VAR_1974_ahomeaaloisanijlijchargementsabahasrcaparserbbah;
 
-#line 3290 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3292 "/home/alois/Téléchargements/bah/src/parser.bah"
 pt.switchOpt = null;
 
-#line 3292 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3294 "/home/alois/Téléchargements/bah/src/parser.bah"
 unsigned int ____BAH_COMPILER_VAR_1975_ahomeaaloisanijlijchargementsabahasrcaparserbbah = i-1;
     __Bah_realocate_arr(fl, ____BAH_COMPILER_VAR_1975_ahomeaaloisanijlijchargementsabahasrcaparserbbah);
     ((struct Tok*)fl->data)[____BAH_COMPILER_VAR_1975_ahomeaaloisanijlijchargementsabahasrcaparserbbah] = pt;
 
-#line 3293 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3295 "/home/alois/Téléchargements/bah/src/parser.bah"
 deleteRange(fl,i,i+1);
 
-#line 3294 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3296 "/home/alois/Téléchargements/bah/src/parser.bah"
 i = i-2;
 }
 };
 ____BAH_COMPILER_VAR_1964_ahomeaaloisanijlijchargementsabahasrcaparserbbah: ;
 
-#line 3298 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3300 "/home/alois/Téléchargements/bah/src/parser.bah"
 parseArrayType(fl,elems);
 
-#line 3300 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3302 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((ltp!=(lineType)-1)) {
 
-#line 3301 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3303 "/home/alois/Téléchargements/bah/src/parser.bah"
 while ((sepI<len(line))) {
 
-#line 3302 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3304 "/home/alois/Téléchargements/bah/src/parser.bah"
 unsigned int ____BAH_COMPILER_VAR_1977_ahomeaaloisanijlijchargementsabahasrcaparserbbah = len(fl);
     __Bah_realocate_arr(fl, ____BAH_COMPILER_VAR_1977_ahomeaaloisanijlijchargementsabahasrcaparserbbah);
     ((struct Tok*)fl->data)[____BAH_COMPILER_VAR_1977_ahomeaaloisanijlijchargementsabahasrcaparserbbah] = ((struct Tok*)line->data)[sepI];
 
-#line 3303 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3305 "/home/alois/Téléchargements/bah/src/parser.bah"
 ++sepI;
 };
 ____BAH_COMPILER_VAR_1976_ahomeaaloisanijlijchargementsabahasrcaparserbbah: ;
 }
 
-#line 3309 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3311 "/home/alois/Téléchargements/bah/src/parser.bah"
 return fl;
 };
 
-#line 3313 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3315 "/home/alois/Téléchargements/bah/src/parser.bah"
 void parseFnDeclare(struct Bah_Array_Type* l,struct Elems* elems){
 
-#line 3314 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3316 "/home/alois/Téléchargements/bah/src/parser.bah"
 long long int i = 0;
 
-#line 3315 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3317 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct func* ____BAH_COMPILER_VAR_1978_ahomeaaloisanijlijchargementsabahasrcaparserbbah = memoryAlloc(sizeof(struct func));
 ____BAH_COMPILER_VAR_1978_ahomeaaloisanijlijchargementsabahasrcaparserbbah->name = "\0\0\0\0""";
 ____BAH_COMPILER_VAR_1978_ahomeaaloisanijlijchargementsabahasrcaparserbbah->args = memoryAlloc(sizeof(struct Bah_Array_Type));
@@ -25176,117 +25180,117 @@ ____BAH_COMPILER_VAR_1978_ahomeaaloisanijlijchargementsabahasrcaparserbbah->file
 ____BAH_COMPILER_VAR_1978_ahomeaaloisanijlijchargementsabahasrcaparserbbah->line = 1;
 struct func* fn = ____BAH_COMPILER_VAR_1978_ahomeaaloisanijlijchargementsabahasrcaparserbbah;
 
-#line 3317 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3319 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((RCPavailable()==false)&&(RCPenabled==true)) {
 
-#line 3318 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3320 "/home/alois/Téléchargements/bah/src/parser.bah"
 fn->used = true;
 }
 
-#line 3321 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3323 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Tok ft = ((struct Tok*)l->data)[0];
 
-#line 3322 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3324 "/home/alois/Téléchargements/bah/src/parser.bah"
 void* header = parseFnHeader("\0\0\0\0""",l,&i,fn,elems,alloca(0+sizeof(char*)+sizeof(char*)));
 
-#line 3323 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3325 "/home/alois/Téléchargements/bah/src/parser.bah"
 char** ____BAH_COMPILER_VAR_1981_ahomeaaloisanijlijchargementsabahasrcaparserbbah = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_1981_ahomeaaloisanijlijchargementsabahasrcaparserbbah[1] = *(char**)((char*)header+0);____BAH_COMPILER_VAR_1981_ahomeaaloisanijlijchargementsabahasrcaparserbbah[0] = *(char**)((char*)header+0+ sizeof(char*));char* ____BAH_COMPILER_VAR_1982_ahomeaaloisanijlijchargementsabahasrcaparserbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_1981_ahomeaaloisanijlijchargementsabahasrcaparserbbah, 2);char* code = ____BAH_COMPILER_VAR_1982_ahomeaaloisanijlijchargementsabahasrcaparserbbah;
 
-#line 3324 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3326 "/home/alois/Téléchargements/bah/src/parser.bah"
 fn->line = ft.line;
 
-#line 3325 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3327 "/home/alois/Téléchargements/bah/src/parser.bah"
 fn->file = compilerState.currentFile;
 
-#line 3326 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3328 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct func* ogFn = searchFunc(fn->name,elems,false);
 
-#line 3327 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3329 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((ogFn!=null)) {
 
-#line 3328 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3330 "/home/alois/Téléchargements/bah/src/parser.bah"
 if (__builtin_expect((ogFn->isBinding==false), 0)) {
 
-#line 3329 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3331 "/home/alois/Téléchargements/bah/src/parser.bah"
 char* lineStr = intToStr(ogFn->line);
 
-#line 3330 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3332 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Tok keep_ref_____BAH_COMPILER_VAR_1983_ahomeaaloisanijlijchargementsabahasrcaparserbbah = ft;
 char** ____BAH_COMPILER_VAR_1984_ahomeaaloisanijlijchargementsabahasrcaparserbbah = alloca(5 * sizeof(char*));____BAH_COMPILER_VAR_1984_ahomeaaloisanijlijchargementsabahasrcaparserbbah[4] = "\01\0\0\0"".";____BAH_COMPILER_VAR_1984_ahomeaaloisanijlijchargementsabahasrcaparserbbah[3] = lineStr;____BAH_COMPILER_VAR_1984_ahomeaaloisanijlijchargementsabahasrcaparserbbah[2] = "\01\0\0\0"":";____BAH_COMPILER_VAR_1984_ahomeaaloisanijlijchargementsabahasrcaparserbbah[1] = ogFn->file;____BAH_COMPILER_VAR_1984_ahomeaaloisanijlijchargementsabahasrcaparserbbah[0] = "\071\0\0\0""Cannot redeclare function {TOKEN}, previous declaration: ";char* ____BAH_COMPILER_VAR_1985_ahomeaaloisanijlijchargementsabahasrcaparserbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_1984_ahomeaaloisanijlijchargementsabahasrcaparserbbah, 5);throwErr(&ft,____BAH_COMPILER_VAR_1985_ahomeaaloisanijlijchargementsabahasrcaparserbbah);
 }
 }
 
-#line 3334 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3336 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((strcmp(fn->name, "\04\0\0\0""main") == 0)) {
 
-#line 3335 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3337 "/home/alois/Téléchargements/bah/src/parser.bah"
 compilerState.haveEntryPoint = true;
 
-#line 3336 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3338 "/home/alois/Téléchargements/bah/src/parser.bah"
 if (__builtin_expect((compTypes(fn->returns->type,"\03\0\0\0""int")==false), 0)) {
 
-#line 3337 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3339 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Tok keep_ref_____BAH_COMPILER_VAR_1986_ahomeaaloisanijlijchargementsabahasrcaparserbbah = ft;
 throwErr(&ft,"\045\0\0\0""{TOKEN} function should return 'int'.");
 }
 
-#line 3339 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3341 "/home/alois/Téléchargements/bah/src/parser.bah"
 if (__builtin_expect((len(fn->args)!=1), 0)) {
 
-#line 3340 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3342 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Tok keep_ref_____BAH_COMPILER_VAR_1987_ahomeaaloisanijlijchargementsabahasrcaparserbbah = ft;
 throwErr(&ft,"\136\0\0\0""{TOKEN} function should take one []str argument. Should be:\n            'main(args []str) int'");
 }
 
-#line 3343 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3345 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct variable* fa = ((struct variable**)fn->args->data)[0];
 
-#line 3344 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3346 "/home/alois/Téléchargements/bah/src/parser.bah"
 if (__builtin_expect((compTypes(fa->type,"\05\0\0\0""[]str")==false), 0)) {
 
-#line 3345 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3347 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Tok keep_ref_____BAH_COMPILER_VAR_1988_ahomeaaloisanijlijchargementsabahasrcaparserbbah = ft;
 throwErr(&ft,"\135\0\0\0""{TOKEN} function should take []str as argument. Should be:\n            'main(args []str) int'");
 }
 }
 
-#line 3350 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3352 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((debug==true)) {
 
-#line 3351 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3353 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct debugFunction* ____BAH_COMPILER_VAR_1989_ahomeaaloisanijlijchargementsabahasrcaparserbbah = memoryAlloc(sizeof(struct debugFunction));
 ____BAH_COMPILER_VAR_1989_ahomeaaloisanijlijchargementsabahasrcaparserbbah->args = memoryAlloc(sizeof(struct Bah_Array_Type));
             ____BAH_COMPILER_VAR_1989_ahomeaaloisanijlijchargementsabahasrcaparserbbah->args->length = 0;
             ____BAH_COMPILER_VAR_1989_ahomeaaloisanijlijchargementsabahasrcaparserbbah->args->elemSize = sizeof(struct debugVar*);
             struct debugFunction* df = ____BAH_COMPILER_VAR_1989_ahomeaaloisanijlijchargementsabahasrcaparserbbah;
 
-#line 3352 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3354 "/home/alois/Téléchargements/bah/src/parser.bah"
 df->name = fn->name;
 
-#line 3353 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3355 "/home/alois/Téléchargements/bah/src/parser.bah"
 register long long int j = 0;
 
-#line 3353 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3355 "/home/alois/Téléchargements/bah/src/parser.bah"
 for (; (j<len(fn->args)); ++j) {
 
-#line 3354 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3356 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct debugVar* ____BAH_COMPILER_VAR_1991_ahomeaaloisanijlijchargementsabahasrcaparserbbah = memoryAlloc(sizeof(struct debugVar));
 struct debugVar* dfa = ____BAH_COMPILER_VAR_1991_ahomeaaloisanijlijchargementsabahasrcaparserbbah;
 
-#line 3355 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3357 "/home/alois/Téléchargements/bah/src/parser.bah"
 debugVar__fromVar(dfa,((struct variable**)fn->args->data)[j]);
 
-#line 3356 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3358 "/home/alois/Téléchargements/bah/src/parser.bah"
 
     __Bah_realocate_arr(df->args, j);
     ((struct debugVar**)df->args->data)[j] = dfa;
 };
 ____BAH_COMPILER_VAR_1990_ahomeaaloisanijlijchargementsabahasrcaparserbbah: ;
 
-#line 3358 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3360 "/home/alois/Téléchargements/bah/src/parser.bah"
 df->returns = fn->returns->type;
 
-#line 3359 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3361 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct debugFunction* keep_ref_____BAH_COMPILER_VAR_1992_ahomeaaloisanijlijchargementsabahasrcaparserbbah = df;
 char** keep_ref_____BAH_COMPILER_VAR_1994_ahomeaaloisanijlijchargementsabahasrcaparserbbah = (char**)((char*)(keep_ref_____BAH_COMPILER_VAR_1992_ahomeaaloisanijlijchargementsabahasrcaparserbbah) + offsetof(struct debugFunction, name));
 struct reflectElement ____BAH_COMPILER_VAR_1995_ahomeaaloisanijlijchargementsabahasrcaparserbbah = __reflect(keep_ref_____BAH_COMPILER_VAR_1994_ahomeaaloisanijlijchargementsabahasrcaparserbbah, sizeof(char*), "\03\0\0\0""str", "\04\0\0\0""name", 0, 0, 0, 0, offsetof(struct debugFunction, name));
@@ -25327,16 +25331,16 @@ struct reflectElement ____BAH_COMPILER_VAR_2012_ahomeaaloisanijlijchargementsaba
 debugPrint("\012\0\0\0""fn_declare",ft.line,____BAH_COMPILER_VAR_2012_ahomeaaloisanijlijchargementsabahasrcaparserbbah);
 }
 
-#line 3362 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3364 "/home/alois/Téléchargements/bah/src/parser.bah"
 register long long int j = 0;
 
-#line 3362 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3364 "/home/alois/Téléchargements/bah/src/parser.bah"
 for (; (j<len(fn->args)); ++j) {
 
-#line 3363 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3365 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((strcmp(((struct variable**)fn->args->data)[j]->type, "\05\0\0\0""<any>") == 0)) {
 
-#line 3364 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3366 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Tok keep_ref_____BAH_COMPILER_VAR_2014_ahomeaaloisanijlijchargementsabahasrcaparserbbah = ft;
 struct genericFunc* ____BAH_COMPILER_VAR_2015_ahomeaaloisanijlijchargementsabahasrcaparserbbah = memoryAlloc(sizeof(struct genericFunc));
 ____BAH_COMPILER_VAR_2015_ahomeaaloisanijlijchargementsabahasrcaparserbbah->declared = memoryAlloc(sizeof(struct Bah_Array_Type));
@@ -25350,291 +25354,291 @@ unsigned int ____BAH_COMPILER_VAR_2016_ahomeaaloisanijlijchargementsabahasrcapar
     __Bah_realocate_arr(generics, ____BAH_COMPILER_VAR_2016_ahomeaaloisanijlijchargementsabahasrcaparserbbah);
     ((struct genericFunc**)generics->data)[____BAH_COMPILER_VAR_2016_ahomeaaloisanijlijchargementsabahasrcaparserbbah] = ____BAH_COMPILER_VAR_2015_ahomeaaloisanijlijchargementsabahasrcaparserbbah;
 
-#line 3370 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3372 "/home/alois/Téléchargements/bah/src/parser.bah"
 return;
 }
 };
 ____BAH_COMPILER_VAR_2013_ahomeaaloisanijlijchargementsabahasrcaparserbbah: ;
 
-#line 3374 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3376 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((shouldOnlyDecl==true)) {
 
-#line 3375 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3377 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((ogFn!=null)) {
 
-#line 3376 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3378 "/home/alois/Téléchargements/bah/src/parser.bah"
 fn->isBinding = false;
 }
 
-#line 3378 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3380 "/home/alois/Téléchargements/bah/src/parser.bah"
 fn->isImported = true;
 
-#line 3379 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3381 "/home/alois/Téléchargements/bah/src/parser.bah"
 unsigned int ____BAH_COMPILER_VAR_2017_ahomeaaloisanijlijchargementsabahasrcaparserbbah = len(elems->fns);
     __Bah_realocate_arr(elems->fns, ____BAH_COMPILER_VAR_2017_ahomeaaloisanijlijchargementsabahasrcaparserbbah);
     ((struct func**)elems->fns->data)[____BAH_COMPILER_VAR_2017_ahomeaaloisanijlijchargementsabahasrcaparserbbah] = fn;
 
-#line 3380 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3382 "/home/alois/Téléchargements/bah/src/parser.bah"
 char** ____BAH_COMPILER_VAR_2018_ahomeaaloisanijlijchargementsabahasrcaparserbbah = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_2018_ahomeaaloisanijlijchargementsabahasrcaparserbbah[1] = "\02\0\0\0"";\n";____BAH_COMPILER_VAR_2018_ahomeaaloisanijlijchargementsabahasrcaparserbbah[0] = code;char* ____BAH_COMPILER_VAR_2019_ahomeaaloisanijlijchargementsabahasrcaparserbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_2018_ahomeaaloisanijlijchargementsabahasrcaparserbbah, 2);OUTPUT = rope__add(OUTPUT, rope(____BAH_COMPILER_VAR_2019_ahomeaaloisanijlijchargementsabahasrcaparserbbah));
 
-#line 3381 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3383 "/home/alois/Téléchargements/bah/src/parser.bah"
 return;
 }
 
-#line 3384 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3386 "/home/alois/Téléchargements/bah/src/parser.bah"
 postDeclHandle = rope("\0\0\0\0""");
 
-#line 3385 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3387 "/home/alois/Téléchargements/bah/src/parser.bah"
 OUTPUT = rope__add(OUTPUT, postDeclHandle);
 
-#line 3387 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3389 "/home/alois/Téléchargements/bah/src/parser.bah"
 char** ____BAH_COMPILER_VAR_2020_ahomeaaloisanijlijchargementsabahasrcaparserbbah = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_2020_ahomeaaloisanijlijchargementsabahasrcaparserbbah[1] = "\02\0\0\0""{\n";____BAH_COMPILER_VAR_2020_ahomeaaloisanijlijchargementsabahasrcaparserbbah[0] = code;char* ____BAH_COMPILER_VAR_2021_ahomeaaloisanijlijchargementsabahasrcaparserbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_2020_ahomeaaloisanijlijchargementsabahasrcaparserbbah, 2);code = ____BAH_COMPILER_VAR_2021_ahomeaaloisanijlijchargementsabahasrcaparserbbah;
 
-#line 3389 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3391 "/home/alois/Téléchargements/bah/src/parser.bah"
 fn->code = rope(code);
 
-#line 3392 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3394 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Elems* fnElems = dupElems(elems);
 
-#line 3394 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3396 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Bah_Array_Type* vs = fnElems->vars;
 
-#line 3395 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3397 "/home/alois/Téléchargements/bah/src/parser.bah"
 j = 0;
 
-#line 3395 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3397 "/home/alois/Téléchargements/bah/src/parser.bah"
 while ((j<len(fn->args))) {
 
-#line 3396 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3398 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct variable* a = ((struct variable**)fn->args->data)[j];
 
-#line 3397 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3399 "/home/alois/Téléchargements/bah/src/parser.bah"
 a->declScope = elems;
 
-#line 3398 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3400 "/home/alois/Téléchargements/bah/src/parser.bah"
 a->isArg = true;
 
-#line 3399 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3401 "/home/alois/Téléchargements/bah/src/parser.bah"
 unsigned int ____BAH_COMPILER_VAR_2023_ahomeaaloisanijlijchargementsabahasrcaparserbbah = len(vs);
     __Bah_realocate_arr(vs, ____BAH_COMPILER_VAR_2023_ahomeaaloisanijlijchargementsabahasrcaparserbbah);
     ((struct variable**)vs->data)[____BAH_COMPILER_VAR_2023_ahomeaaloisanijlijchargementsabahasrcaparserbbah] = a;
 
-#line 3400 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3402 "/home/alois/Téléchargements/bah/src/parser.bah"
 ++j;
 };
 ____BAH_COMPILER_VAR_2022_ahomeaaloisanijlijchargementsabahasrcaparserbbah: ;
 
-#line 3402 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3404 "/home/alois/Téléchargements/bah/src/parser.bah"
 fnElems->vars = vs;
 
-#line 3404 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3406 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((ogFn!=null)) {
 
-#line 3405 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3407 "/home/alois/Téléchargements/bah/src/parser.bah"
 ogFn->isBinding = false;
 
-#line 3406 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3408 "/home/alois/Téléchargements/bah/src/parser.bah"
 ogFn->used = true;
 
-#line 3407 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3409 "/home/alois/Téléchargements/bah/src/parser.bah"
 ogFn = fn;
 }
 
-#line 3408 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3410 "/home/alois/Téléchargements/bah/src/parser.bah"
 else{
 
-#line 3409 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3411 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Bah_Array_Type* fns = elems->fns;
 
-#line 3410 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3412 "/home/alois/Téléchargements/bah/src/parser.bah"
 unsigned int ____BAH_COMPILER_VAR_2024_ahomeaaloisanijlijchargementsabahasrcaparserbbah = len(fns);
     __Bah_realocate_arr(fns, ____BAH_COMPILER_VAR_2024_ahomeaaloisanijlijchargementsabahasrcaparserbbah);
     ((struct func**)fns->data)[____BAH_COMPILER_VAR_2024_ahomeaaloisanijlijchargementsabahasrcaparserbbah] = fn;
 }
 
-#line 3413 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3415 "/home/alois/Téléchargements/bah/src/parser.bah"
 ++i;
 
-#line 3414 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3416 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Bah_Array_Type* tokens = arraySubstitute(l, i, len(l)-1);
 
-#line 3416 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3418 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((len(tokens)==0)) {
 
-#line 3417 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3419 "/home/alois/Téléchargements/bah/src/parser.bah"
 fn->code = rope__add(fn->code, rope("\03\0\0\0""};\n"));
 
-#line 3418 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3420 "/home/alois/Téléchargements/bah/src/parser.bah"
 OUTPUT = rope__add(OUTPUT, fn->code);
 
-#line 3419 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3421 "/home/alois/Téléchargements/bah/src/parser.bah"
 return;
 }
 
-#line 3422 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3424 "/home/alois/Téléchargements/bah/src/parser.bah"
 currentFn = fn;
 
-#line 3424 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3426 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct rope* oOut = OUTPUT;
 
-#line 3425 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3427 "/home/alois/Téléchargements/bah/src/parser.bah"
 OUTPUT = rope("\0\0\0\0""");
 
-#line 3426 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3428 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Elems* ocurrFnElems = compilerState.currFnElems;
 
-#line 3427 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3429 "/home/alois/Téléchargements/bah/src/parser.bah"
 compilerState.currFnElems = fnElems;
 
-#line 3428 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3430 "/home/alois/Téléchargements/bah/src/parser.bah"
 parseLines(tokens,fnElems);
 
-#line 3429 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3431 "/home/alois/Téléchargements/bah/src/parser.bah"
 OPTI_checkFuncScopeRef(fnElems);
 
-#line 3430 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3432 "/home/alois/Téléchargements/bah/src/parser.bah"
 RCPendScope(fnElems);
 
-#line 3432 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3434 "/home/alois/Téléchargements/bah/src/parser.bah"
 compilerState.currFnElems = ocurrFnElems;
 
-#line 3433 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3435 "/home/alois/Téléchargements/bah/src/parser.bah"
 currentFn = null;
 
-#line 3434 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3436 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((fn->returned==false)) {
 
-#line 3435 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3437 "/home/alois/Téléchargements/bah/src/parser.bah"
 if (__builtin_expect((strlen(fn->returns->type)>0), 0)) {
 
-#line 3436 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3438 "/home/alois/Téléchargements/bah/src/parser.bah"
 char** ____BAH_COMPILER_VAR_2025_ahomeaaloisanijlijchargementsabahasrcaparserbbah = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_2025_ahomeaaloisanijlijchargementsabahasrcaparserbbah[2] = "\022\0\0\0""' is not returned.";____BAH_COMPILER_VAR_2025_ahomeaaloisanijlijchargementsabahasrcaparserbbah[1] = fn->name;____BAH_COMPILER_VAR_2025_ahomeaaloisanijlijchargementsabahasrcaparserbbah[0] = "\012\0\0\0""Function '";char* ____BAH_COMPILER_VAR_2026_ahomeaaloisanijlijchargementsabahasrcaparserbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_2025_ahomeaaloisanijlijchargementsabahasrcaparserbbah, 3);throwErr(&((struct Tok*)l->data)[len(l)-1],____BAH_COMPILER_VAR_2026_ahomeaaloisanijlijchargementsabahasrcaparserbbah);
 }
 
-#line 3438 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3440 "/home/alois/Téléchargements/bah/src/parser.bah"
 fixMeEndScope(fnElems,&((struct Tok*)tokens->data)[len(tokens)-1]);
 }
 
-#line 3442 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3444 "/home/alois/Téléchargements/bah/src/parser.bah"
 fn->code = rope__add(fn->code, OUTPUT);
 
-#line 3443 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3445 "/home/alois/Téléchargements/bah/src/parser.bah"
 OUTPUT = oOut;
 
-#line 3444 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3446 "/home/alois/Téléchargements/bah/src/parser.bah"
 fn->code = rope__add(fn->code, rope("\03\0\0\0""};\n"));
 
-#line 3446 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3448 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((debug==true)) {
 
-#line 3447 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3449 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Tok lt = ((struct Tok*)l->data)[len(l)-1];
 
-#line 3448 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3450 "/home/alois/Téléchargements/bah/src/parser.bah"
 debugEndScope(lt.line,fnElems);
 }
 
-#line 3451 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3453 "/home/alois/Téléchargements/bah/src/parser.bah"
 OUTPUT = rope__add(OUTPUT, fn->code);
 };
 
-#line 3462 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3464 "/home/alois/Téléchargements/bah/src/parser.bah"
 void parseLet(struct Bah_Array_Type* line,struct Elems* elems){
 
-#line 3463 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3465 "/home/alois/Téléchargements/bah/src/parser.bah"
 if (__builtin_expect((len(line)<7), 0)) {
 
-#line 3464 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3466 "/home/alois/Téléchargements/bah/src/parser.bah"
 throwErr(&((struct Tok*)line->data)[0],"\107\0\0\0""Invalid usage of {TOKEN} 'let <var> = <maybe value> else|then {<code>}'");
 }
 
-#line 3467 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3469 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Tok varTok = ((struct Tok*)line->data)[1];
 
-#line 3468 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3470 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Tok valTok = ((struct Tok*)line->data)[3];
 
-#line 3469 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3471 "/home/alois/Téléchargements/bah/src/parser.bah"
 char isThen = false;
 
-#line 3471 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3473 "/home/alois/Téléchargements/bah/src/parser.bah"
 if (__builtin_expect((varTok.type!=TOKEN_TYPE_VAR), 0)) {
 
-#line 3472 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3474 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Tok keep_ref_____BAH_COMPILER_VAR_2027_ahomeaaloisanijlijchargementsabahasrcaparserbbah = varTok;
 throwErr(&varTok,"\037\0\0\0""Cannot use {TOKEN} as variable.");
 }
 
-#line 3476 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3478 "/home/alois/Téléchargements/bah/src/parser.bah"
 if (__builtin_expect((strcmp(((struct Tok*)line->data)[2].cont, "\01\0\0\0""=") != 0), 0)) {
 
-#line 3477 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3479 "/home/alois/Téléchargements/bah/src/parser.bah"
 throwErr(&((struct Tok*)line->data)[2],"\031\0\0\0""Expected '=' got {TOKEN}.");
 }
 
-#line 3480 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3482 "/home/alois/Téléchargements/bah/src/parser.bah"
 char isMaybe = true;
 
-#line 3481 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3483 "/home/alois/Téléchargements/bah/src/parser.bah"
 char* newType = "\0\0\0\0""";
 
-#line 3484 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3486 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Tok keep_ref_____BAH_COMPILER_VAR_2028_ahomeaaloisanijlijchargementsabahasrcaparserbbah = valTok;
 char* valType = getTypeFromToken(&valTok,true,elems);
 
-#line 3485 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3487 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((valType[strlen(valType)-1+4]!=33)) {
 
-#line 3486 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3488 "/home/alois/Téléchargements/bah/src/parser.bah"
 if (__builtin_expect((isRCPpointerType(valType)==false), 0)) {
 
-#line 3487 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3489 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Tok keep_ref_____BAH_COMPILER_VAR_2029_ahomeaaloisanijlijchargementsabahasrcaparserbbah = valTok;
 char** ____BAH_COMPILER_VAR_2030_ahomeaaloisanijlijchargementsabahasrcaparserbbah = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_2030_ahomeaaloisanijlijchargementsabahasrcaparserbbah[2] = "\033\0\0\0"") as maybe value / pointer.";____BAH_COMPILER_VAR_2030_ahomeaaloisanijlijchargementsabahasrcaparserbbah[1] = valType;____BAH_COMPILER_VAR_2030_ahomeaaloisanijlijchargementsabahasrcaparserbbah[0] = "\024\0\0\0""Cannot use {TOKEN} (";char* ____BAH_COMPILER_VAR_2031_ahomeaaloisanijlijchargementsabahasrcaparserbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_2030_ahomeaaloisanijlijchargementsabahasrcaparserbbah, 3);throwErr(&valTok,____BAH_COMPILER_VAR_2031_ahomeaaloisanijlijchargementsabahasrcaparserbbah);
 }
 
-#line 3489 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3491 "/home/alois/Téléchargements/bah/src/parser.bah"
 isMaybe = false;
 
-#line 3490 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3492 "/home/alois/Téléchargements/bah/src/parser.bah"
 newType = valType;
 }
 
-#line 3491 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3493 "/home/alois/Téléchargements/bah/src/parser.bah"
 else{
 
-#line 3492 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3494 "/home/alois/Téléchargements/bah/src/parser.bah"
 char** ____BAH_COMPILER_VAR_2032_ahomeaaloisanijlijchargementsabahasrcaparserbbah = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_2032_ahomeaaloisanijlijchargementsabahasrcaparserbbah[1] = "\01\0\0\0""*";____BAH_COMPILER_VAR_2032_ahomeaaloisanijlijchargementsabahasrcaparserbbah[0] = strSubstitute(valType, 0, strlen(valType)-1);char* ____BAH_COMPILER_VAR_2033_ahomeaaloisanijlijchargementsabahasrcaparserbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_2032_ahomeaaloisanijlijchargementsabahasrcaparserbbah, 2);newType = ____BAH_COMPILER_VAR_2033_ahomeaaloisanijlijchargementsabahasrcaparserbbah;
 }
 
-#line 3496 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3498 "/home/alois/Téléchargements/bah/src/parser.bah"
 if (__builtin_expect((strcmp(((struct Tok*)line->data)[4].cont, "\04\0\0\0""else") != 0)&&(strcmp(((struct Tok*)line->data)[4].cont, "\04\0\0\0""then") != 0), 0)) {
 
-#line 3497 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3499 "/home/alois/Téléchargements/bah/src/parser.bah"
 throwErr(&((struct Tok*)line->data)[4],"\046\0\0\0""Expected 'then' or 'else' got {TOKEN}.");
 }
 
-#line 3500 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3502 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((strcmp(((struct Tok*)line->data)[4].cont, "\04\0\0\0""then") == 0)) {
 
-#line 3501 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3503 "/home/alois/Téléchargements/bah/src/parser.bah"
 isThen = true;
 }
 
-#line 3504 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3506 "/home/alois/Téléchargements/bah/src/parser.bah"
 char* tmpVar = "\0\0\0\0""";
 
-#line 3507 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3509 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Tok keep_ref_____BAH_COMPILER_VAR_2034_ahomeaaloisanijlijchargementsabahasrcaparserbbah = varTok;
 struct variable* v = searchVarByToken(&varTok,elems);
 
-#line 3508 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3510 "/home/alois/Téléchargements/bah/src/parser.bah"
 char* code = "\0\0\0\0""";
 
-#line 3509 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3511 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((v==null)) {
 
-#line 3510 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3512 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct variable* ____BAH_COMPILER_VAR_2035_ahomeaaloisanijlijchargementsabahasrcaparserbbah = memoryAlloc(sizeof(struct variable));
 ____BAH_COMPILER_VAR_2035_ahomeaaloisanijlijchargementsabahasrcaparserbbah->constVal = "\0\0\0\0""";
 ____BAH_COMPILER_VAR_2035_ahomeaaloisanijlijchargementsabahasrcaparserbbah->from = "\0\0\0\0""";
@@ -25642,435 +25646,435 @@ ____BAH_COMPILER_VAR_2035_ahomeaaloisanijlijchargementsabahasrcaparserbbah->name
 ____BAH_COMPILER_VAR_2035_ahomeaaloisanijlijchargementsabahasrcaparserbbah->type = newType;
 v = ____BAH_COMPILER_VAR_2035_ahomeaaloisanijlijchargementsabahasrcaparserbbah;
 
-#line 3514 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3516 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((isThen==false)) {
 
-#line 3515 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3517 "/home/alois/Téléchargements/bah/src/parser.bah"
 unsigned int ____BAH_COMPILER_VAR_2036_ahomeaaloisanijlijchargementsabahasrcaparserbbah = len(elems->vars);
     __Bah_realocate_arr(elems->vars, ____BAH_COMPILER_VAR_2036_ahomeaaloisanijlijchargementsabahasrcaparserbbah);
     ((struct variable**)elems->vars->data)[____BAH_COMPILER_VAR_2036_ahomeaaloisanijlijchargementsabahasrcaparserbbah] = v;
 
-#line 3516 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3518 "/home/alois/Téléchargements/bah/src/parser.bah"
 
                 struct string keep_ref_____BAH_COMPILER_VAR_2037_ahomeaaloisanijlijchargementsabahasrcaparserbbah = getCType(v->type,elems);
                 char** ____BAH_COMPILER_VAR_2038_ahomeaaloisanijlijchargementsabahasrcaparserbbah = alloca(6 * sizeof(char*));____BAH_COMPILER_VAR_2038_ahomeaaloisanijlijchargementsabahasrcaparserbbah[5] = "\01\0\0\0"";";____BAH_COMPILER_VAR_2038_ahomeaaloisanijlijchargementsabahasrcaparserbbah[4] = valTok.cont;____BAH_COMPILER_VAR_2038_ahomeaaloisanijlijchargementsabahasrcaparserbbah[3] = "\03\0\0\0"" = ";____BAH_COMPILER_VAR_2038_ahomeaaloisanijlijchargementsabahasrcaparserbbah[2] = v->name;____BAH_COMPILER_VAR_2038_ahomeaaloisanijlijchargementsabahasrcaparserbbah[1] = "\01\0\0\0"" ";____BAH_COMPILER_VAR_2038_ahomeaaloisanijlijchargementsabahasrcaparserbbah[0] = string__str(&keep_ref_____BAH_COMPILER_VAR_2037_ahomeaaloisanijlijchargementsabahasrcaparserbbah);char* ____BAH_COMPILER_VAR_2039_ahomeaaloisanijlijchargementsabahasrcaparserbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_2038_ahomeaaloisanijlijchargementsabahasrcaparserbbah, 6);code = ____BAH_COMPILER_VAR_2039_ahomeaaloisanijlijchargementsabahasrcaparserbbah;
 }
 
-#line 3517 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3519 "/home/alois/Téléchargements/bah/src/parser.bah"
 else{
 
-#line 3518 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3520 "/home/alois/Téléchargements/bah/src/parser.bah"
 tmpVar = genCompilerVar();
 
-#line 3519 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3521 "/home/alois/Téléchargements/bah/src/parser.bah"
 
                 struct string keep_ref_____BAH_COMPILER_VAR_2040_ahomeaaloisanijlijchargementsabahasrcaparserbbah = getCType(v->type,elems);
                 char** ____BAH_COMPILER_VAR_2041_ahomeaaloisanijlijchargementsabahasrcaparserbbah = alloca(6 * sizeof(char*));____BAH_COMPILER_VAR_2041_ahomeaaloisanijlijchargementsabahasrcaparserbbah[5] = "\01\0\0\0"";";____BAH_COMPILER_VAR_2041_ahomeaaloisanijlijchargementsabahasrcaparserbbah[4] = valTok.cont;____BAH_COMPILER_VAR_2041_ahomeaaloisanijlijchargementsabahasrcaparserbbah[3] = "\03\0\0\0"" = ";____BAH_COMPILER_VAR_2041_ahomeaaloisanijlijchargementsabahasrcaparserbbah[2] = tmpVar;____BAH_COMPILER_VAR_2041_ahomeaaloisanijlijchargementsabahasrcaparserbbah[1] = "\01\0\0\0"" ";____BAH_COMPILER_VAR_2041_ahomeaaloisanijlijchargementsabahasrcaparserbbah[0] = string__str(&keep_ref_____BAH_COMPILER_VAR_2040_ahomeaaloisanijlijchargementsabahasrcaparserbbah);char* ____BAH_COMPILER_VAR_2042_ahomeaaloisanijlijchargementsabahasrcaparserbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_2041_ahomeaaloisanijlijchargementsabahasrcaparserbbah, 6);code = ____BAH_COMPILER_VAR_2042_ahomeaaloisanijlijchargementsabahasrcaparserbbah;
 }
 }
 
-#line 3521 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3523 "/home/alois/Téléchargements/bah/src/parser.bah"
 else{
 
-#line 3522 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3524 "/home/alois/Téléchargements/bah/src/parser.bah"
 if (__builtin_expect((strcmp(v->type, newType) != 0), 0)) {
 
-#line 3523 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3525 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Tok keep_ref_____BAH_COMPILER_VAR_2043_ahomeaaloisanijlijchargementsabahasrcaparserbbah = varTok;
 char** ____BAH_COMPILER_VAR_2044_ahomeaaloisanijlijchargementsabahasrcaparserbbah = alloca(5 * sizeof(char*));____BAH_COMPILER_VAR_2044_ahomeaaloisanijlijchargementsabahasrcaparserbbah[4] = "\01\0\0\0"".";____BAH_COMPILER_VAR_2044_ahomeaaloisanijlijchargementsabahasrcaparserbbah[3] = newType;____BAH_COMPILER_VAR_2044_ahomeaaloisanijlijchargementsabahasrcaparserbbah[2] = "\05\0\0\0"") as ";____BAH_COMPILER_VAR_2044_ahomeaaloisanijlijchargementsabahasrcaparserbbah[1] = v->type;____BAH_COMPILER_VAR_2044_ahomeaaloisanijlijchargementsabahasrcaparserbbah[0] = "\030\0\0\0""Cannot use var {TOKEN} (";char* ____BAH_COMPILER_VAR_2045_ahomeaaloisanijlijchargementsabahasrcaparserbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_2044_ahomeaaloisanijlijchargementsabahasrcaparserbbah, 5);throwErr(&varTok,____BAH_COMPILER_VAR_2045_ahomeaaloisanijlijchargementsabahasrcaparserbbah);
 }
 }
 
-#line 3527 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3529 "/home/alois/Téléchargements/bah/src/parser.bah"
 v->canBeNull = (isThen==false);
 
-#line 3528 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3530 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Elems* captElems = dupElems(elems);
 
-#line 3529 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3531 "/home/alois/Téléchargements/bah/src/parser.bah"
 char ocib = compilerState.isBranch;
 
-#line 3530 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3532 "/home/alois/Téléchargements/bah/src/parser.bah"
 compilerState.isBranch = true;
 
-#line 3532 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3534 "/home/alois/Téléchargements/bah/src/parser.bah"
 if (isThen) {
 
-#line 3533 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3535 "/home/alois/Téléchargements/bah/src/parser.bah"
 v->declScope = captElems;
 }
 
-#line 3534 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3536 "/home/alois/Téléchargements/bah/src/parser.bah"
 else{
 
-#line 3535 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3537 "/home/alois/Téléchargements/bah/src/parser.bah"
 v->declScope = elems;
 }
 
-#line 3538 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3540 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((isThen==true)) {
 
-#line 3539 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3541 "/home/alois/Téléchargements/bah/src/parser.bah"
 
                 struct string keep_ref_____BAH_COMPILER_VAR_2046_ahomeaaloisanijlijchargementsabahasrcaparserbbah = getCType(v->type,elems);
                 char** ____BAH_COMPILER_VAR_2047_ahomeaaloisanijlijchargementsabahasrcaparserbbah = alloca(9 * sizeof(char*));____BAH_COMPILER_VAR_2047_ahomeaaloisanijlijchargementsabahasrcaparserbbah[8] = "\02\0\0\0"";\n";____BAH_COMPILER_VAR_2047_ahomeaaloisanijlijchargementsabahasrcaparserbbah[7] = tmpVar;____BAH_COMPILER_VAR_2047_ahomeaaloisanijlijchargementsabahasrcaparserbbah[6] = "\03\0\0\0"" = ";____BAH_COMPILER_VAR_2047_ahomeaaloisanijlijchargementsabahasrcaparserbbah[5] = v->name;____BAH_COMPILER_VAR_2047_ahomeaaloisanijlijchargementsabahasrcaparserbbah[4] = "\01\0\0\0"" ";____BAH_COMPILER_VAR_2047_ahomeaaloisanijlijchargementsabahasrcaparserbbah[3] = string__str(&keep_ref_____BAH_COMPILER_VAR_2046_ahomeaaloisanijlijchargementsabahasrcaparserbbah);____BAH_COMPILER_VAR_2047_ahomeaaloisanijlijchargementsabahasrcaparserbbah[2] = "\014\0\0\0"" != null) {\n";____BAH_COMPILER_VAR_2047_ahomeaaloisanijlijchargementsabahasrcaparserbbah[1] = tmpVar;____BAH_COMPILER_VAR_2047_ahomeaaloisanijlijchargementsabahasrcaparserbbah[0] = "\04\0\0\0""if (";char* ____BAH_COMPILER_VAR_2048_ahomeaaloisanijlijchargementsabahasrcaparserbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_2047_ahomeaaloisanijlijchargementsabahasrcaparserbbah, 9);char** ____BAH_COMPILER_VAR_2049_ahomeaaloisanijlijchargementsabahasrcaparserbbah = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_2049_ahomeaaloisanijlijchargementsabahasrcaparserbbah[1] = ____BAH_COMPILER_VAR_2048_ahomeaaloisanijlijchargementsabahasrcaparserbbah;____BAH_COMPILER_VAR_2049_ahomeaaloisanijlijchargementsabahasrcaparserbbah[0] = code;char* ____BAH_COMPILER_VAR_2050_ahomeaaloisanijlijchargementsabahasrcaparserbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_2049_ahomeaaloisanijlijchargementsabahasrcaparserbbah, 2);code = ____BAH_COMPILER_VAR_2050_ahomeaaloisanijlijchargementsabahasrcaparserbbah;
 
-#line 3540 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3542 "/home/alois/Téléchargements/bah/src/parser.bah"
 unsigned int ____BAH_COMPILER_VAR_2051_ahomeaaloisanijlijchargementsabahasrcaparserbbah = len(captElems->vars);
     __Bah_realocate_arr(captElems->vars, ____BAH_COMPILER_VAR_2051_ahomeaaloisanijlijchargementsabahasrcaparserbbah);
     ((struct variable**)captElems->vars->data)[____BAH_COMPILER_VAR_2051_ahomeaaloisanijlijchargementsabahasrcaparserbbah] = v;
 
-#line 3541 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3543 "/home/alois/Téléchargements/bah/src/parser.bah"
 unsigned int ____BAH_COMPILER_VAR_2052_ahomeaaloisanijlijchargementsabahasrcaparserbbah = len(elems->deletedVars);
     __Bah_realocate_arr(elems->deletedVars, ____BAH_COMPILER_VAR_2052_ahomeaaloisanijlijchargementsabahasrcaparserbbah);
     ((struct variable**)elems->deletedVars->data)[____BAH_COMPILER_VAR_2052_ahomeaaloisanijlijchargementsabahasrcaparserbbah] = v;
 }
 
-#line 3542 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3544 "/home/alois/Téléchargements/bah/src/parser.bah"
 else{
 
-#line 3543 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3545 "/home/alois/Téléchargements/bah/src/parser.bah"
 char** ____BAH_COMPILER_VAR_2053_ahomeaaloisanijlijchargementsabahasrcaparserbbah = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_2053_ahomeaaloisanijlijchargementsabahasrcaparserbbah[2] = "\013\0\0\0"" == null) {";____BAH_COMPILER_VAR_2053_ahomeaaloisanijlijchargementsabahasrcaparserbbah[1] = v->name;____BAH_COMPILER_VAR_2053_ahomeaaloisanijlijchargementsabahasrcaparserbbah[0] = "\04\0\0\0""if (";char* ____BAH_COMPILER_VAR_2054_ahomeaaloisanijlijchargementsabahasrcaparserbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_2053_ahomeaaloisanijlijchargementsabahasrcaparserbbah, 3);char** ____BAH_COMPILER_VAR_2055_ahomeaaloisanijlijchargementsabahasrcaparserbbah = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_2055_ahomeaaloisanijlijchargementsabahasrcaparserbbah[1] = ____BAH_COMPILER_VAR_2054_ahomeaaloisanijlijchargementsabahasrcaparserbbah;____BAH_COMPILER_VAR_2055_ahomeaaloisanijlijchargementsabahasrcaparserbbah[0] = code;char* ____BAH_COMPILER_VAR_2056_ahomeaaloisanijlijchargementsabahasrcaparserbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_2055_ahomeaaloisanijlijchargementsabahasrcaparserbbah, 2);code = ____BAH_COMPILER_VAR_2056_ahomeaaloisanijlijchargementsabahasrcaparserbbah;
 }
 
-#line 3546 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3548 "/home/alois/Téléchargements/bah/src/parser.bah"
 OUTPUT = rope__add(OUTPUT, rope(code));
 
-#line 3548 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3550 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Bah_Array_Type* tokens = arraySubstitute(line, 6, len(line)-1);
 
-#line 3550 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3552 "/home/alois/Téléchargements/bah/src/parser.bah"
 parseLines(tokens,captElems);
 
-#line 3551 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3553 "/home/alois/Téléchargements/bah/src/parser.bah"
 RCPendScope(captElems);
 
-#line 3553 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3555 "/home/alois/Téléchargements/bah/src/parser.bah"
 fixMeEndScope(captElems,&((struct Tok*)tokens->data)[len(tokens)-1]);
 
-#line 3554 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3556 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((debug==true)) {
 
-#line 3555 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3557 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Tok lt = ((struct Tok*)line->data)[len(line)-1];
 
-#line 3556 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3558 "/home/alois/Téléchargements/bah/src/parser.bah"
 debugEndScope(lt.line,captElems);
 }
 
-#line 3559 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3561 "/home/alois/Téléchargements/bah/src/parser.bah"
 compilerState.isBranch = ocib;
 
-#line 3562 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3564 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((isThen==true)) {
 
-#line 3563 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3565 "/home/alois/Téléchargements/bah/src/parser.bah"
 v->canBeNull = true;
 
-#line 3564 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3566 "/home/alois/Téléchargements/bah/src/parser.bah"
 OUTPUT = rope__add(OUTPUT, rope("\02\0\0\0""}\n"));
 }
 
-#line 3565 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3567 "/home/alois/Téléchargements/bah/src/parser.bah"
 else{
 
-#line 3566 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3568 "/home/alois/Téléchargements/bah/src/parser.bah"
 if (__builtin_expect((v->canBeNull==true)&&(checkedNotNull(v->name,captElems)==false)&&(captElems->currFlowEnd==false), 0)) {
 
-#line 3567 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3569 "/home/alois/Téléchargements/bah/src/parser.bah"
 char** ____BAH_COMPILER_VAR_2057_ahomeaaloisanijlijchargementsabahasrcaparserbbah = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_2057_ahomeaaloisanijlijchargementsabahasrcaparserbbah[2] = "\113\0\0\0"" could still be null after exiting else block and program is not terminated";____BAH_COMPILER_VAR_2057_ahomeaaloisanijlijchargementsabahasrcaparserbbah[1] = v->name;____BAH_COMPILER_VAR_2057_ahomeaaloisanijlijchargementsabahasrcaparserbbah[0] = "\011\0\0\0""Variable ";char* ____BAH_COMPILER_VAR_2058_ahomeaaloisanijlijchargementsabahasrcaparserbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_2057_ahomeaaloisanijlijchargementsabahasrcaparserbbah, 3);throwErr(&((struct Tok*)line->data)[0],____BAH_COMPILER_VAR_2058_ahomeaaloisanijlijchargementsabahasrcaparserbbah);
 }
 
-#line 3568 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3570 "/home/alois/Téléchargements/bah/src/parser.bah"
 else{
 
-#line 3569 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3571 "/home/alois/Téléchargements/bah/src/parser.bah"
 v->canBeNull = false;
 }
 
-#line 3571 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3573 "/home/alois/Téléchargements/bah/src/parser.bah"
 OUTPUT = rope__add(OUTPUT, rope("\02\0\0\0""}\n"));
 }
 };
 
-#line 3578 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3580 "/home/alois/Téléchargements/bah/src/parser.bah"
 void afterLineCheck(struct Bah_Array_Type* line,lineType ltp,struct Elems* elems){
 
-#line 3581 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3583 "/home/alois/Téléchargements/bah/src/parser.bah"
 if (((prevLine==LINE_TYPE_IF)||(prevLine==LINE_TYPE_ELSE))&&((ltp!=LINE_TYPE_ELSE))&&(compilerState.nbElseIf>0)) {
 
-#line 3584 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3586 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((elems->switchOpt!=null)&&(compilerState.nbElseIf>3)) {
 
-#line 3587 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3589 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Tok* t = ((void **)elems->switchOpt->values->data)[0];
 
-#line 3588 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3590 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Tok* v = elems->switchOpt->var;
 
-#line 3589 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3591 "/home/alois/Téléchargements/bah/src/parser.bah"
 char** ____BAH_COMPILER_VAR_2059_ahomeaaloisanijlijchargementsabahasrcaparserbbah = alloca(5 * sizeof(char*));____BAH_COMPILER_VAR_2059_ahomeaaloisanijlijchargementsabahasrcaparserbbah[4] = "\03\0\0\0"":{\n";____BAH_COMPILER_VAR_2059_ahomeaaloisanijlijchargementsabahasrcaparserbbah[3] = t->cont;____BAH_COMPILER_VAR_2059_ahomeaaloisanijlijchargementsabahasrcaparserbbah[2] = "\010\0\0\0""){\ncase ";____BAH_COMPILER_VAR_2059_ahomeaaloisanijlijchargementsabahasrcaparserbbah[1] = v->cont;____BAH_COMPILER_VAR_2059_ahomeaaloisanijlijchargementsabahasrcaparserbbah[0] = "\07\0\0\0""switch(";char* ____BAH_COMPILER_VAR_2060_ahomeaaloisanijlijchargementsabahasrcaparserbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_2059_ahomeaaloisanijlijchargementsabahasrcaparserbbah, 5);OUTPUT->totalLen = OUTPUT->totalLen+ropeSet(((struct rope**)elems->switchOpt->headerRopes->data)[0],____BAH_COMPILER_VAR_2060_ahomeaaloisanijlijchargementsabahasrcaparserbbah);
 
-#line 3591 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3593 "/home/alois/Téléchargements/bah/src/parser.bah"
 register long long int i = 1;
 
-#line 3591 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3593 "/home/alois/Téléchargements/bah/src/parser.bah"
 for (; (i<len(elems->switchOpt->values)); ++i) {
 
-#line 3592 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3594 "/home/alois/Téléchargements/bah/src/parser.bah"
 t = (struct Tok*)((void **)elems->switchOpt->values->data)[i];
 
-#line 3593 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3595 "/home/alois/Téléchargements/bah/src/parser.bah"
 char** ____BAH_COMPILER_VAR_2062_ahomeaaloisanijlijchargementsabahasrcaparserbbah = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_2062_ahomeaaloisanijlijchargementsabahasrcaparserbbah[2] = "\04\0\0\0"": {\n";____BAH_COMPILER_VAR_2062_ahomeaaloisanijlijchargementsabahasrcaparserbbah[1] = t->cont;____BAH_COMPILER_VAR_2062_ahomeaaloisanijlijchargementsabahasrcaparserbbah[0] = "\05\0\0\0""case ";char* ____BAH_COMPILER_VAR_2063_ahomeaaloisanijlijchargementsabahasrcaparserbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_2062_ahomeaaloisanijlijchargementsabahasrcaparserbbah, 3);OUTPUT->totalLen = OUTPUT->totalLen+ropeSet(((struct rope**)elems->switchOpt->headerRopes->data)[i*2],____BAH_COMPILER_VAR_2063_ahomeaaloisanijlijchargementsabahasrcaparserbbah);
 
-#line 3594 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3596 "/home/alois/Téléchargements/bah/src/parser.bah"
 OUTPUT->totalLen = OUTPUT->totalLen+ropeSet(((struct rope**)elems->switchOpt->headerRopes->data)[(i*2)-1],"\010\0\0\0""}break;\n");
 };
 ____BAH_COMPILER_VAR_2061_ahomeaaloisanijlijchargementsabahasrcaparserbbah: ;
 
-#line 3598 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3600 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((len(elems->switchOpt->headerRopes)%2==0)) {
 
-#line 3599 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3601 "/home/alois/Téléchargements/bah/src/parser.bah"
 OUTPUT->totalLen = OUTPUT->totalLen+ropeSet(((struct rope**)elems->switchOpt->headerRopes->data)[len(elems->switchOpt->headerRopes)-1],"\013\0\0\0""default: {\n");
 
-#line 3600 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3602 "/home/alois/Téléchargements/bah/src/parser.bah"
 i = 0;
 
-#line 3600 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3602 "/home/alois/Téléchargements/bah/src/parser.bah"
 for (; (i<len(elems->switchOpt->footerRopes)-1); ++i) {
 
-#line 3601 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3603 "/home/alois/Téléchargements/bah/src/parser.bah"
 OUTPUT->totalLen = OUTPUT->totalLen+ropeSet(((struct rope**)elems->switchOpt->footerRopes->data)[i],"\0\0\0\0""");
 };
 ____BAH_COMPILER_VAR_2064_ahomeaaloisanijlijchargementsabahasrcaparserbbah: ;
 
-#line 3603 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3605 "/home/alois/Téléchargements/bah/src/parser.bah"
 OUTPUT->totalLen = OUTPUT->totalLen+ropeSet(((struct rope**)elems->switchOpt->footerRopes->data)[len(elems->switchOpt->footerRopes)-1],"\010\0\0\0""}break;\n");
 
-#line 3604 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3606 "/home/alois/Téléchargements/bah/src/parser.bah"
 OUTPUT = rope__add(OUTPUT, rope("\011\0\0\0""}break;}\n"));
 }
 
-#line 3605 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3607 "/home/alois/Téléchargements/bah/src/parser.bah"
 else{
 
-#line 3606 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3608 "/home/alois/Téléchargements/bah/src/parser.bah"
 i = 0;
 
-#line 3606 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3608 "/home/alois/Téléchargements/bah/src/parser.bah"
 for (; (i<len(elems->switchOpt->footerRopes)-1); ++i) {
 
-#line 3607 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3609 "/home/alois/Téléchargements/bah/src/parser.bah"
 OUTPUT->totalLen = OUTPUT->totalLen+ropeSet(((struct rope**)elems->switchOpt->footerRopes->data)[i],"\0\0\0\0""");
 };
 ____BAH_COMPILER_VAR_2065_ahomeaaloisanijlijchargementsabahasrcaparserbbah: ;
 
-#line 3609 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3611 "/home/alois/Téléchargements/bah/src/parser.bah"
 OUTPUT->totalLen = OUTPUT->totalLen+ropeSet(((struct rope**)elems->switchOpt->footerRopes->data)[len(elems->switchOpt->footerRopes)-1],"\012\0\0\0""}break;\n}\n");
 }
 
-#line 3613 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3615 "/home/alois/Téléchargements/bah/src/parser.bah"
 elems->switchOpt = null;
 }
 
-#line 3615 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3617 "/home/alois/Téléchargements/bah/src/parser.bah"
 else{
 
-#line 3616 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3618 "/home/alois/Téléchargements/bah/src/parser.bah"
 register long long int i = 0;
 
-#line 3616 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3618 "/home/alois/Téléchargements/bah/src/parser.bah"
 for (; (i<compilerState.nbElseIf); ++i) {
 
-#line 3617 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3619 "/home/alois/Téléchargements/bah/src/parser.bah"
 OUTPUT = rope__add(OUTPUT, rope("\02\0\0\0""}\n"));
 };
 ____BAH_COMPILER_VAR_2066_ahomeaaloisanijlijchargementsabahasrcaparserbbah: ;
 }
 
-#line 3621 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3623 "/home/alois/Téléchargements/bah/src/parser.bah"
 compilerState.nbElseIf = 0;
 }
 };
 
-#line 3626 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3628 "/home/alois/Téléchargements/bah/src/parser.bah"
 void parseLine(struct Bah_Array_Type* line,struct Elems* elems){
 
-#line 3628 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3630 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((len(line)==0)) {
 
-#line 3629 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3631 "/home/alois/Téléchargements/bah/src/parser.bah"
 return;
 }
 
-#line 3632 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3634 "/home/alois/Téléchargements/bah/src/parser.bah"
 clear(currChecks);
 
-#line 3634 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3636 "/home/alois/Téléchargements/bah/src/parser.bah"
 line = parsePointers(line,elems);
 
-#line 3635 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3637 "/home/alois/Téléchargements/bah/src/parser.bah"
 lineType ltp = getLineType(line);
 
-#line 3637 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3639 "/home/alois/Téléchargements/bah/src/parser.bah"
 currSetVar = null;
 
-#line 3639 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3641 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((ltp==LINE_TYPE_VAR)&&(len(line)>1)) {
 
-#line 3640 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3642 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Tok ft = ((struct Tok*)line->data)[0];
 
-#line 3641 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3643 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Tok st = ((struct Tok*)line->data)[1];
 
-#line 3642 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3644 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((strcmp(st.cont, "\01\0\0\0""=") == 0)) {
 
-#line 3643 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3645 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Tok keep_ref_____BAH_COMPILER_VAR_2067_ahomeaaloisanijlijchargementsabahasrcaparserbbah = ft;
 struct variable* v = searchVirtVarByToken(&ft,elems);
 
-#line 3644 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3646 "/home/alois/Téléchargements/bah/src/parser.bah"
 currSetVar = v;
 }
 }
 
-#line 3648 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3650 "/home/alois/Téléchargements/bah/src/parser.bah"
 afterLineCheck(line,ltp,elems);
 
-#line 3650 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3652 "/home/alois/Téléchargements/bah/src/parser.bah"
 char parsed = false;
 
-#line 3651 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3653 "/home/alois/Téléchargements/bah/src/parser.bah"
 switch(ltp){
 case LINE_TYPE_INCLUDE:{
 
-#line 3652 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3654 "/home/alois/Téléchargements/bah/src/parser.bah"
 parsed = true;
 
-#line 3653 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3655 "/home/alois/Téléchargements/bah/src/parser.bah"
 parseInclude(line,elems);
 
-#line 3654 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3656 "/home/alois/Téléchargements/bah/src/parser.bah"
 }break;
 case LINE_TYPE_IMPORT: {
 
-#line 3655 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3657 "/home/alois/Téléchargements/bah/src/parser.bah"
 parsed = true;
 
-#line 3656 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3658 "/home/alois/Téléchargements/bah/src/parser.bah"
 parseImport(line,elems);
 
-#line 3657 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3659 "/home/alois/Téléchargements/bah/src/parser.bah"
 }break;
 case LINE_TYPE_DEFINE: {
 
-#line 3658 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3660 "/home/alois/Téléchargements/bah/src/parser.bah"
 parsed = true;
 
-#line 3659 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3661 "/home/alois/Téléchargements/bah/src/parser.bah"
 parseDefine(line,elems);
 
-#line 3660 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3662 "/home/alois/Téléchargements/bah/src/parser.bah"
 }break;
 case LINE_TYPE_CLIB: {
 
-#line 3661 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3663 "/home/alois/Téléchargements/bah/src/parser.bah"
 parsed = true;
 
-#line 3662 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3664 "/home/alois/Téléchargements/bah/src/parser.bah"
 parseClib(line);
 
-#line 3663 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3665 "/home/alois/Téléchargements/bah/src/parser.bah"
 }break;
 case LINE_TYPE_PRE_KEYWORD: {
 
-#line 3664 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3666 "/home/alois/Téléchargements/bah/src/parser.bah"
 parsePreKeyword(line,elems);
 
-#line 3665 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3667 "/home/alois/Téléchargements/bah/src/parser.bah"
 parsed = true;
 }break;
 
-#line 3666 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3668 "/home/alois/Téléchargements/bah/src/parser.bah"
 default: {
 
-#line 3667 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3669 "/home/alois/Téléchargements/bah/src/parser.bah"
 char** ____BAH_COMPILER_VAR_2068_ahomeaaloisanijlijchargementsabahasrcaparserbbah = alloca(5 * sizeof(char*));____BAH_COMPILER_VAR_2068_ahomeaaloisanijlijchargementsabahasrcaparserbbah[4] = "\02\0\0\0""\"\n";____BAH_COMPILER_VAR_2068_ahomeaaloisanijlijchargementsabahasrcaparserbbah[3] = compilerState.currentFile;____BAH_COMPILER_VAR_2068_ahomeaaloisanijlijchargementsabahasrcaparserbbah[2] = "\02\0\0\0"" \"";____BAH_COMPILER_VAR_2068_ahomeaaloisanijlijchargementsabahasrcaparserbbah[1] = intToStr(((struct Tok*)line->data)[0].line);____BAH_COMPILER_VAR_2068_ahomeaaloisanijlijchargementsabahasrcaparserbbah[0] = "\07\0\0\0""\n#line ";char* ____BAH_COMPILER_VAR_2069_ahomeaaloisanijlijchargementsabahasrcaparserbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_2068_ahomeaaloisanijlijchargementsabahasrcaparserbbah, 5);OUTPUT = rope__add(OUTPUT, rope(____BAH_COMPILER_VAR_2069_ahomeaaloisanijlijchargementsabahasrcaparserbbah));
 
-#line 3668 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3670 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((ltp==LINE_TYPE_STRUCT)) {
 
-#line 3669 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3671 "/home/alois/Téléchargements/bah/src/parser.bah"
 parsed = true;
 
-#line 3670 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3672 "/home/alois/Téléchargements/bah/src/parser.bah"
 parseStruct(line,elems);
 }
 
-#line 3671 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3673 "/home/alois/Téléchargements/bah/src/parser.bah"
 else{
 if ((ltp==LINE_TYPE_CONST)) {
 
-#line 3672 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3674 "/home/alois/Téléchargements/bah/src/parser.bah"
 parsed = true;
 
-#line 3673 "/home/alois/Téléchargements/bah/src/parser.bah"
-parseConst(line,elems);
-}
-
-#line 3674 "/home/alois/Téléchargements/bah/src/parser.bah"
-else{
-if ((ltp==LINE_TYPE_MACRO)) {
-
 #line 3675 "/home/alois/Téléchargements/bah/src/parser.bah"
-return;
+parseConst(line,elems);
 }
 
 #line 3676 "/home/alois/Téléchargements/bah/src/parser.bah"
 else{
+if ((ltp==LINE_TYPE_MACRO)) {
+
+#line 3677 "/home/alois/Téléchargements/bah/src/parser.bah"
+return;
+}
+
+#line 3678 "/home/alois/Téléchargements/bah/src/parser.bah"
+else{
 if ((ltp!=LINE_TYPE_FN_DECL)) {
 
-#line 3680 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3682 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((ltp==LINE_TYPE_ELSE)) {
 
-#line 3681 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3683 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct chainsToSwitch* oswchopt = elems->switchOpt;
 
-#line 3682 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3684 "/home/alois/Téléchargements/bah/src/parser.bah"
 elems = dupElems(elems);
 
-#line 3683 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3685 "/home/alois/Téléchargements/bah/src/parser.bah"
 elems->switchOpt = oswchopt;
 
-#line 3684 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3686 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct rope* eh = rope("\06\0\0\0""else{\n");
 
-#line 3685 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3687 "/home/alois/Téléchargements/bah/src/parser.bah"
 OUTPUT = rope__add(OUTPUT, eh);
 
-#line 3686 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3688 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((elems->switchOpt!=null)) {
 
-#line 3687 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3689 "/home/alois/Téléchargements/bah/src/parser.bah"
 unsigned int ____BAH_COMPILER_VAR_2070_ahomeaaloisanijlijchargementsabahasrcaparserbbah = len(elems->switchOpt->headerRopes);
     __Bah_realocate_arr(elems->switchOpt->headerRopes, ____BAH_COMPILER_VAR_2070_ahomeaaloisanijlijchargementsabahasrcaparserbbah);
     ((struct rope**)elems->switchOpt->headerRopes->data)[____BAH_COMPILER_VAR_2070_ahomeaaloisanijlijchargementsabahasrcaparserbbah] = eh;
 }
 
-#line 3689 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3691 "/home/alois/Téléchargements/bah/src/parser.bah"
 ++compilerState.nbElseIf;
 }
 
-#line 3692 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3694 "/home/alois/Téléchargements/bah/src/parser.bah"
 line = prePross(line,ltp,elems);
 
-#line 3693 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3695 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((len(line)==0)) {
 
-#line 3694 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3696 "/home/alois/Téléchargements/bah/src/parser.bah"
 return;
 }
 }
@@ -26078,270 +26082,270 @@ return;
 }
 }
 
-#line 3698 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3700 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Tok ft = ((struct Tok*)line->data)[0];
 
-#line 3699 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3701 "/home/alois/Téléchargements/bah/src/parser.bah"
 switch(ltp){
 case LINE_TYPE_VAR:{
 
-#line 3700 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3702 "/home/alois/Téléchargements/bah/src/parser.bah"
 parsed = true;
 
-#line 3701 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3703 "/home/alois/Téléchargements/bah/src/parser.bah"
 parseVar(line,elems);
 
-#line 3702 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3704 "/home/alois/Téléchargements/bah/src/parser.bah"
 }break;
 case LINE_TYPE_FN_CALL: {
 
-#line 3703 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3705 "/home/alois/Téléchargements/bah/src/parser.bah"
 if (__builtin_expect((len(line)>1), 0)) {
 
-#line 3704 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3706 "/home/alois/Téléchargements/bah/src/parser.bah"
 throwErr(&((struct Tok*)line->data)[len(line)-1],"\052\0\0\0""Not expecting {TOKEN} after function call.");
 }
 
-#line 3706 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3708 "/home/alois/Téléchargements/bah/src/parser.bah"
 parsed = true;
 
-#line 3707 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3709 "/home/alois/Téléchargements/bah/src/parser.bah"
 if (RCPavailable()) {
 
-#line 3708 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3710 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Tok keep_ref_____BAH_COMPILER_VAR_2071_ahomeaaloisanijlijchargementsabahasrcaparserbbah = ft;
 struct func* ____BAH_COMPILER_VAR_2072_ahomeaaloisanijlijchargementsabahasrcaparserbbah = searchFuncByToken(&ft,elems);if (____BAH_COMPILER_VAR_2072_ahomeaaloisanijlijchargementsabahasrcaparserbbah != null) {
 struct func* fn = ____BAH_COMPILER_VAR_2072_ahomeaaloisanijlijchargementsabahasrcaparserbbah;
 
-#line 3709 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3711 "/home/alois/Téléchargements/bah/src/parser.bah"
 if (isRCPtype(fn->returns->type,elems)) {
 
-#line 3710 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3712 "/home/alois/Téléchargements/bah/src/parser.bah"
 char** ____BAH_COMPILER_VAR_2073_ahomeaaloisanijlijchargementsabahasrcaparserbbah = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_2073_ahomeaaloisanijlijchargementsabahasrcaparserbbah[2] = "\04\0\0\0"", 0)";____BAH_COMPILER_VAR_2073_ahomeaaloisanijlijchargementsabahasrcaparserbbah[1] = ft.cont;____BAH_COMPILER_VAR_2073_ahomeaaloisanijlijchargementsabahasrcaparserbbah[0] = "\011\0\0\0""RCP_decr(";char* ____BAH_COMPILER_VAR_2074_ahomeaaloisanijlijchargementsabahasrcaparserbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_2073_ahomeaaloisanijlijchargementsabahasrcaparserbbah, 3);ft.cont = ____BAH_COMPILER_VAR_2074_ahomeaaloisanijlijchargementsabahasrcaparserbbah;
 }
 }
 }
 
-#line 3714 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3716 "/home/alois/Téléchargements/bah/src/parser.bah"
 char** ____BAH_COMPILER_VAR_2075_ahomeaaloisanijlijchargementsabahasrcaparserbbah = alloca(2 * sizeof(char*));____BAH_COMPILER_VAR_2075_ahomeaaloisanijlijchargementsabahasrcaparserbbah[1] = "\02\0\0\0"";\n";____BAH_COMPILER_VAR_2075_ahomeaaloisanijlijchargementsabahasrcaparserbbah[0] = ft.cont;char* ____BAH_COMPILER_VAR_2076_ahomeaaloisanijlijchargementsabahasrcaparserbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_2075_ahomeaaloisanijlijchargementsabahasrcaparserbbah, 2);OUTPUT = rope__add(OUTPUT, rope(____BAH_COMPILER_VAR_2076_ahomeaaloisanijlijchargementsabahasrcaparserbbah));
 
-#line 3715 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3717 "/home/alois/Téléchargements/bah/src/parser.bah"
 }break;
 case LINE_TYPE_FN_DECL: {
 
-#line 3716 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3718 "/home/alois/Téléchargements/bah/src/parser.bah"
 parsed = true;
 
-#line 3717 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3719 "/home/alois/Téléchargements/bah/src/parser.bah"
 parseFnDeclare(line,elems);
 
-#line 3718 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3720 "/home/alois/Téléchargements/bah/src/parser.bah"
 }break;
 case LINE_TYPE_RETURN: {
 
-#line 3719 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3721 "/home/alois/Téléchargements/bah/src/parser.bah"
 parsed = true;
 
-#line 3720 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3722 "/home/alois/Téléchargements/bah/src/parser.bah"
 parseReturn(line,elems);
 
-#line 3721 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3723 "/home/alois/Téléchargements/bah/src/parser.bah"
 }break;
 case LINE_TYPE_IF: {
 
-#line 3722 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3724 "/home/alois/Téléchargements/bah/src/parser.bah"
 parsed = true;
 
-#line 3723 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3725 "/home/alois/Téléchargements/bah/src/parser.bah"
 parseIf(line,false,elems);
 
-#line 3724 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3726 "/home/alois/Téléchargements/bah/src/parser.bah"
 }break;
 case LINE_TYPE_ELSE: {
 
-#line 3725 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3727 "/home/alois/Téléchargements/bah/src/parser.bah"
 parsed = true;
 
-#line 3726 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3728 "/home/alois/Téléchargements/bah/src/parser.bah"
 parseElse(line,elems);
 
-#line 3727 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3729 "/home/alois/Téléchargements/bah/src/parser.bah"
 }break;
 case LINE_TYPE_FOR: {
 
-#line 3728 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3730 "/home/alois/Téléchargements/bah/src/parser.bah"
 parsed = true;
 
-#line 3729 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3731 "/home/alois/Téléchargements/bah/src/parser.bah"
 parseFor(line,elems);
 
-#line 3730 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3732 "/home/alois/Téléchargements/bah/src/parser.bah"
 }break;
 case LINE_TYPE_FOR_OPERATOR: {
 
-#line 3731 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3733 "/home/alois/Téléchargements/bah/src/parser.bah"
 parsed = true;
 
-#line 3732 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3734 "/home/alois/Téléchargements/bah/src/parser.bah"
 parseForOp(line,elems);
 
-#line 3733 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3735 "/home/alois/Téléchargements/bah/src/parser.bah"
 }break;
 case LINE_TYPE_ASYNC: {
 
-#line 3734 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3736 "/home/alois/Téléchargements/bah/src/parser.bah"
 parseAsync(line,elems);
 
-#line 3735 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3737 "/home/alois/Téléchargements/bah/src/parser.bah"
 parsed = true;
 
-#line 3736 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3738 "/home/alois/Téléchargements/bah/src/parser.bah"
 }break;
 case LINE_TYPE_LET: {
 
-#line 3737 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3739 "/home/alois/Téléchargements/bah/src/parser.bah"
 parseLet(line,elems);
 
-#line 3738 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3740 "/home/alois/Téléchargements/bah/src/parser.bah"
 parsed = true;
 }break;
 }
 }break;}
 
-#line 3742 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3744 "/home/alois/Téléchargements/bah/src/parser.bah"
 if (__builtin_expect((parsed==false), 0)) {
 
-#line 3743 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3745 "/home/alois/Téléchargements/bah/src/parser.bah"
 throwErr(&((struct Tok*)line->data)[0],"\025\0\0\0""{TOKEN} not expected.");
 }
 
-#line 3746 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3748 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((strlen(NEXT_LINE)>0)) {
 
-#line 3747 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3749 "/home/alois/Téléchargements/bah/src/parser.bah"
 OUTPUT = rope__add(OUTPUT, rope(NEXT_LINE));
 
-#line 3748 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3750 "/home/alois/Téléchargements/bah/src/parser.bah"
 NEXT_LINE = "\0\0\0\0""";
 }
 
-#line 3750 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3752 "/home/alois/Téléchargements/bah/src/parser.bah"
 prevLine = ltp;
 };
 
-#line 3755 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3757 "/home/alois/Téléchargements/bah/src/parser.bah"
 char hasAnyTok(struct Bah_Array_Type* l){
 
-#line 3756 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3758 "/home/alois/Téléchargements/bah/src/parser.bah"
 register long long int i = 0;
 
-#line 3756 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3758 "/home/alois/Téléchargements/bah/src/parser.bah"
 for (; (i<len(l)); ++i) {
 
-#line 3757 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3759 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((((struct Tok*)l->data)[i].type==TOKEN_TYPE_CAST)&&(strcmp(((struct Tok*)l->data)[i].cont, "\05\0\0\0""<any>") == 0)) {
 
-#line 3758 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3760 "/home/alois/Téléchargements/bah/src/parser.bah"
 return true;
 }
 };
 ____BAH_COMPILER_VAR_2077_ahomeaaloisanijlijchargementsabahasrcaparserbbah: ;
 
-#line 3761 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3763 "/home/alois/Téléchargements/bah/src/parser.bah"
 return false;
 };
 
-#line 3765 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3767 "/home/alois/Téléchargements/bah/src/parser.bah"
 void parseLines(struct Bah_Array_Type* tokens,struct Elems* elems){
 
-#line 3766 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3768 "/home/alois/Téléchargements/bah/src/parser.bah"
 long long int oldnbELIF = compilerState.nbElseIf;
 
-#line 3767 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3769 "/home/alois/Téléchargements/bah/src/parser.bah"
 compilerState.nbElseIf = 0;
 
-#line 3769 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3771 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((len(tokens)==0)) {
 
-#line 3770 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3772 "/home/alois/Téléchargements/bah/src/parser.bah"
 return;
 }
 
-#line 3772 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3774 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Bah_Array_Type* line = memoryAlloc(sizeof(struct Bah_Array_Type));
 
 line->length = 0;
 line->elemSize = sizeof(struct Tok);
 
-#line 3773 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3775 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Tok ft = ((struct Tok*)tokens->data)[0];
 
-#line 3774 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3776 "/home/alois/Téléchargements/bah/src/parser.bah"
 unsigned int currentLine = ft.line;
 
-#line 3775 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3777 "/home/alois/Téléchargements/bah/src/parser.bah"
 long long int nbEncl = 0;
 
-#line 3776 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3778 "/home/alois/Téléchargements/bah/src/parser.bah"
 register long long int i = 0;
 
-#line 3776 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3778 "/home/alois/Téléchargements/bah/src/parser.bah"
 while ((i<len(tokens))) {
 
-#line 3777 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3779 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Tok t = ((struct Tok*)tokens->data)[i];
 
-#line 3779 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3781 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((t.type==TOKEN_TYPE_ENCL)) {
 
-#line 3780 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3782 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((t.cont[0+4]==40)||(t.cont[0+4]==123)||(t.cont[0+4]==91)) {
 
-#line 3781 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3783 "/home/alois/Téléchargements/bah/src/parser.bah"
 ++nbEncl;
 
-#line 3783 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3785 "/home/alois/Téléchargements/bah/src/parser.bah"
 if (shouldOnlyDecl&&(nbEncl==1)&&(t.cont[0+4]==123)&&(len(line)>1)&&(((struct Tok*)line->data)[0].type==TOKEN_TYPE_VAR)&&(strcmp(((struct Tok*)line->data)[1].cont, "\01\0\0\0""(") == 0)&&(hasAnyTok(line)==false)) {
 
-#line 3784 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3786 "/home/alois/Téléchargements/bah/src/parser.bah"
 unsigned int ____BAH_COMPILER_VAR_2079_ahomeaaloisanijlijchargementsabahasrcaparserbbah = len(line);
     __Bah_realocate_arr(line, ____BAH_COMPILER_VAR_2079_ahomeaaloisanijlijchargementsabahasrcaparserbbah);
     ((struct Tok*)line->data)[____BAH_COMPILER_VAR_2079_ahomeaaloisanijlijchargementsabahasrcaparserbbah] = t;
 
-#line 3785 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3787 "/home/alois/Téléchargements/bah/src/parser.bah"
 ++i;
 
-#line 3786 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3788 "/home/alois/Téléchargements/bah/src/parser.bah"
 for (; (i<len(tokens)); ++i) {
 
-#line 3787 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3789 "/home/alois/Téléchargements/bah/src/parser.bah"
 t = ((struct Tok*)tokens->data)[i];
 
-#line 3788 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3790 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((t.type!=TOKEN_TYPE_ENCL)) {
 
-#line 3789 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3791 "/home/alois/Téléchargements/bah/src/parser.bah"
 continue;
 }
 
-#line 3791 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3793 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((t.cont[0+4]==40)||(t.cont[0+4]==123)||(t.cont[0+4]==91)) {
 
-#line 3792 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3794 "/home/alois/Téléchargements/bah/src/parser.bah"
 ++nbEncl;
 }
 
-#line 3793 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3795 "/home/alois/Téléchargements/bah/src/parser.bah"
 else{
 if ((t.cont[0+4]==41)||(t.cont[0+4]==125)||(t.cont[0+4]==93)) {
 
-#line 3794 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3796 "/home/alois/Téléchargements/bah/src/parser.bah"
 --nbEncl;
 
-#line 3795 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3797 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((nbEncl==0)) {
 
-#line 3796 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3798 "/home/alois/Téléchargements/bah/src/parser.bah"
 goto ____BAH_COMPILER_VAR_2080_ahomeaaloisanijlijchargementsabahasrcaparserbbah;
 }
 }
@@ -26349,149 +26353,149 @@ goto ____BAH_COMPILER_VAR_2080_ahomeaaloisanijlijchargementsabahasrcaparserbbah;
 };
 ____BAH_COMPILER_VAR_2080_ahomeaaloisanijlijchargementsabahasrcaparserbbah: ;
 
-#line 3800 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3802 "/home/alois/Téléchargements/bah/src/parser.bah"
 t = ((struct Tok*)tokens->data)[i];
 }
 }
 
-#line 3802 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3804 "/home/alois/Téléchargements/bah/src/parser.bah"
 else{
 if ((t.cont[0+4]==41)||(t.cont[0+4]==125)||(t.cont[0+4]==93)) {
 
-#line 3803 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3805 "/home/alois/Téléchargements/bah/src/parser.bah"
 --nbEncl;
 }
 }
 }
 
-#line 3807 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3809 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((t.type==TOKEN_TYPE_STR)&&(t.begLine==currentLine)) {
 
-#line 3808 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3810 "/home/alois/Téléchargements/bah/src/parser.bah"
 currentLine = t.line;
 }
 
-#line 3811 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3813 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((nbEncl==0)) {
 
-#line 3812 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3814 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((t.line!=currentLine)) {
 
-#line 3813 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3815 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((t.type==TOKEN_TYPE_ENCL)) {
 
-#line 3814 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3816 "/home/alois/Téléchargements/bah/src/parser.bah"
 unsigned int ____BAH_COMPILER_VAR_2081_ahomeaaloisanijlijchargementsabahasrcaparserbbah = len(line);
     __Bah_realocate_arr(line, ____BAH_COMPILER_VAR_2081_ahomeaaloisanijlijchargementsabahasrcaparserbbah);
     ((struct Tok*)line->data)[____BAH_COMPILER_VAR_2081_ahomeaaloisanijlijchargementsabahasrcaparserbbah] = t;
 
-#line 3815 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3817 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Tok pt = ((struct Tok*)tokens->data)[i-1];
 
-#line 3816 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3818 "/home/alois/Téléchargements/bah/src/parser.bah"
 currentLine = pt.line;
 }
 
-#line 3817 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3819 "/home/alois/Téléchargements/bah/src/parser.bah"
 else{
 
-#line 3818 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3820 "/home/alois/Téléchargements/bah/src/parser.bah"
 currentLine = t.line;
 }
 
-#line 3820 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3822 "/home/alois/Téléchargements/bah/src/parser.bah"
 parseLine(line,elems);
 
-#line 3821 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3823 "/home/alois/Téléchargements/bah/src/parser.bah"
 clear(line);
 
-#line 3822 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3824 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((t.type==TOKEN_TYPE_ENCL)) {
 
-#line 3823 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3825 "/home/alois/Téléchargements/bah/src/parser.bah"
 ++i;
 
-#line 3824 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3826 "/home/alois/Téléchargements/bah/src/parser.bah"
 continue;
 }
 }
 
-#line 3826 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3828 "/home/alois/Téléchargements/bah/src/parser.bah"
 else{
 if ((strcmp(t.cont, "\01\0\0\0"";") == 0)) {
 
-#line 3827 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3829 "/home/alois/Téléchargements/bah/src/parser.bah"
 currentLine = t.line;
 
-#line 3828 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3830 "/home/alois/Téléchargements/bah/src/parser.bah"
 parseLine(line,elems);
 
-#line 3829 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3831 "/home/alois/Téléchargements/bah/src/parser.bah"
 clear(line);
 
-#line 3830 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3832 "/home/alois/Téléchargements/bah/src/parser.bah"
 ++i;
 
-#line 3831 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3833 "/home/alois/Téléchargements/bah/src/parser.bah"
 continue;
 }
 }
 }
 
-#line 3835 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3837 "/home/alois/Téléchargements/bah/src/parser.bah"
 unsigned int ____BAH_COMPILER_VAR_2082_ahomeaaloisanijlijchargementsabahasrcaparserbbah = len(line);
     __Bah_realocate_arr(line, ____BAH_COMPILER_VAR_2082_ahomeaaloisanijlijchargementsabahasrcaparserbbah);
     ((struct Tok*)line->data)[____BAH_COMPILER_VAR_2082_ahomeaaloisanijlijchargementsabahasrcaparserbbah] = t;
 
-#line 3836 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3838 "/home/alois/Téléchargements/bah/src/parser.bah"
 ++i;
 };
 ____BAH_COMPILER_VAR_2078_ahomeaaloisanijlijchargementsabahasrcaparserbbah: ;
 
-#line 3839 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3841 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((len(line)>0)) {
 
-#line 3840 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3842 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((nbEncl==0)) {
 
-#line 3841 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3843 "/home/alois/Téléchargements/bah/src/parser.bah"
 parseLine(line,elems);
 
-#line 3842 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3844 "/home/alois/Téléchargements/bah/src/parser.bah"
 clear(line);
 }
 
-#line 3843 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3845 "/home/alois/Téléchargements/bah/src/parser.bah"
 else{
 
-#line 3844 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3846 "/home/alois/Téléchargements/bah/src/parser.bah"
 ft = ((struct Tok*)line->data)[len(line)-1];
 
-#line 3845 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3847 "/home/alois/Téléchargements/bah/src/parser.bah"
 struct Tok keep_ref_____BAH_COMPILER_VAR_2083_ahomeaaloisanijlijchargementsabahasrcaparserbbah = ft;
 throwErr(&ft,"\056\0\0\0""Missing closing token, line ending by {TOKEN}.");
 }
 }
 
-#line 3848 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3850 "/home/alois/Téléchargements/bah/src/parser.bah"
 afterLineCheck(line,LINE_TYPE_NONE,elems);
 
-#line 3850 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3852 "/home/alois/Téléchargements/bah/src/parser.bah"
 if ((compilerState.nbElseIf>0)) {
 
-#line 3851 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3853 "/home/alois/Téléchargements/bah/src/parser.bah"
 i = 0;
 
-#line 3851 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3853 "/home/alois/Téléchargements/bah/src/parser.bah"
 for (; (i<compilerState.nbElseIf); ++i) {
 
-#line 3852 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3854 "/home/alois/Téléchargements/bah/src/parser.bah"
 OUTPUT = rope__add(OUTPUT, rope("\02\0\0\0""}\n"));
 };
 ____BAH_COMPILER_VAR_2084_ahomeaaloisanijlijchargementsabahasrcaparserbbah: ;
 }
 
-#line 3856 "/home/alois/Téléchargements/bah/src/parser.bah"
+#line 3858 "/home/alois/Téléchargements/bah/src/parser.bah"
 compilerState.nbElseIf = oldnbELIF;
 };
 

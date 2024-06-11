@@ -304,10 +304,12 @@ includeFile(ccstr str, elems Elems*) bool {
 
 //Compiles an object from an imported file.
 parallelObjCompile(fn str, oName str) {
-    let cf = getCacheFile(fn) else {
-        cf = new cacheFile
-    }
+    cf = getCacheFile(fn)
     scf = cf
+    if scf == null {
+        scf = new cacheFile
+        
+    }
     wrkd = getCurrentPath()
 
     rcp = ""
