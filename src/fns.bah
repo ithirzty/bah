@@ -1,7 +1,5 @@
 #include "./globals.bah"
 
-#define searchVar(name str, t Tok*, elems Elems*) variable*
-
 //This is stupid: are we in the global scope or inside a function.
 isGlobal() bool {
     return currentFn == null
@@ -46,7 +44,7 @@ searchFunc(name str, elems Elems*, inclCurr bool) func* {
     if cvt.hasPrefix("function(") == 0 {
         return null
     }
-    pfn = parseFnType(cvt)
+    pfn = parseFnType(&cvt)
     nf.returns = pfn.returns
     nf.isVar = true
     nf.args = pfn.args
@@ -69,8 +67,9 @@ searchVirtFuncByToken(t Tok*, elems Elems*) func* {
     }
 
     let v = <variable*>t.getRefVar() then {
-        if string(v.type).hasPrefix("function(") {
-            fn = parseFnType(string(v.type))
+        vt = string(v.type)
+        if vt.hasPrefix("function(") {
+            fn = parseFnType(&vt)
             fn.name = v.name
             return fn
         }

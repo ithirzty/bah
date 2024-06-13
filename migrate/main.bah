@@ -7,6 +7,8 @@
 
 #include "../src/lexer.bah"
 
+migratedFiles = []str
+
 getDirFromFile(f str) str {
     l int = len(f)
     i = l-1; for i >= 0 {
@@ -58,7 +60,7 @@ migrateFile(fn str) {
     file = fs.readContent()
     fs.close()
 
-    tokens = lexer(file, len(file))
+    tokens = lexer(file)
 
     lastPos = 0
     r = rope("")
@@ -180,7 +182,7 @@ migrateFile(fn str) {
             }
 
             if composedFA {
-                continue
+                args[0] = "("+args[0]+")"
             }
 
             r += rope(file[lastPos:ogTok.pos] + args[0] + " = ")
@@ -194,6 +196,53 @@ migrateFile(fn str) {
 
 
             logChange(fn, tokens[i].line, "Fn: "+ogTok.cont+" -> [:]")
+        }
+
+        //replacing old 'strCharAt' call
+        if tokens[i].cont == "strCharAt" || tokens[i].cont == "cpstringCharAt" {            
+            args = []str
+            currArg = 0
+            ogTok = &tokens[i]
+            composedFA = false
+
+            nbPar = 1
+            i += 2; for i < len(tokens), i++ {
+                if tokens[i].cont == "()" {
+                    nbPar++
+                } else if tokens[i].cont == ")" {
+                    nbPar--
+                } else if tokens[i].cont == "," {
+                    currArg++
+                    continue
+                }
+
+                if nbPar == 0 {
+                    break
+                }
+
+                if len(args) == currArg {
+                    args[currArg] = tokens[i].ogCont
+                } else {
+                    if currArg == 0 {
+                        composedFA = true
+                    }
+                    args[currArg] += tokens[i].ogCont
+                }
+            }
+            if len(args) != 2 {
+                panic("Malformed str[i]: "+ogTok.ogCont+"("+strJoin(args, ",")+")\n"+compilerState.currentFile+":"+intToStr(tokens[i].line))
+            }
+
+            if composedFA {
+                args[0] = "("+args[0]+")"
+            }
+
+            r += rope(file[lastPos:ogTok.pos] + args[0] + "["+args[1]+"]")
+
+            lastPos = tokens[i].pos + len(tokens[i].ogCont)
+
+
+            logChange(fn, tokens[i].line, "Fn: "+ogTok.cont+" -> []")
         }
 
         //replacing a = a + b
@@ -212,10 +261,6 @@ migrateFile(fn str) {
         }
 
 
-
-
-
-
     }
 
     if lastPos != 0 {
@@ -225,6 +270,7 @@ migrateFile(fn str) {
         fs.open(fn, "w")
         fs.writeFile(r.toStr())
         fs.close()
+        migratedFiles[len(migratedFiles)] = fn
     }
 
 
@@ -237,10 +283,13 @@ main(args []str) int {
 
     migrateFile(absPath(args[1]))
 
-    println("\nSummary: migrated "+intToStr(len(compilerState.includes)+1)+" files:")
-    println("\t "+absPath(args[1]))
+    println("\nSummary: migrated "+uintToStr(len(migratedFiles))+" files:")
     i=0; for i < len(compilerState.includes), i++ {
-        println("\t "+absPath(compilerState.includes[i]))
+        if compilerState.includes[i] in migratedFiles {
+            println("\t [x] "+absPath(compilerState.includes[i]))
+        } else {
+            println("\t [ ] "+absPath(compilerState.includes[i]))
+        }
     }
 
     return 0

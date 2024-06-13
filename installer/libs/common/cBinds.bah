@@ -1,24 +1,13 @@
 #define! fopen(path str, mode str) ptr
-#define! fgets(buff str, len int, handle ptr) str
 #define! fputs(s str, handle ptr)
 #define! fclose(handle ptr)
-#define! fseek(handle ptr, i int, mode int)
-#define! ftell(handle ptr) int
 #define! rewind(handle ptr)
 #define! getc(handle ptr) char
 #define! puts(s str)
-#define! strlen(s str) int
-#define! exit(code int)
-//#define! strdup(s str) str
-//#define! free(p ptr)
-#define! sizeof(v ptr) int
-//#define! malloc(size int) ptr
 #define! strcpy(dest str, source str)
-#define! strcat(dest str, source str)
 #define! sprintf(buff str, format str, v ptr)
 #define! atoi(s str) int
 #define! itoa(i int, s str, base int) str
-#define! sigaction(sig int, str sigaction*, args ptr)
 #define! waitpid(m int, s int*, w int) int
 #define! fork() int
 #define! realpath(path str, buff ptr) ptr

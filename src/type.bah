@@ -217,7 +217,7 @@ getTypeFromToken(t Tok*, strict bool, elems Elems*) str {
 
 //Parses a Bah function type such as 'function(int,str)'.
 //Returns a temporary instance of a func.
-parseFnType(cvt string) func* {
+parseFnType(cvt string*) func* {
     nf = new func
     cvt.trimLeft(9)
     memory = []char
@@ -227,7 +227,7 @@ parseFnType(cvt string) func* {
             break
         }
         arg = new variable
-        arg.name = "arg_"+intToStr(len(nf.args))
+        arg.name = "arg_"+uintToStr(len(nf.args))
         for j < cvt.length, j++ {
             c = cvt.charAt(j)
             if c == ',' || c == ')' {
@@ -334,7 +334,7 @@ getCtypeFromFunc(tmpfn func*, elems Elems*) str {
 
 //Used for getting the C type from a Bah function type.
 getCfunctionType(cfrt string*, elemName str, elems Elems*) str {
-    tmpfn = parseFnType(*cfrt)
+    tmpfn = parseFnType(cfrt)
     tmpfn.name = elemName
     return getCtypeFromFunc(tmpfn, elems)
 }

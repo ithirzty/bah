@@ -21,15 +21,18 @@ struct cacheFile {
 }
 
 cache = []cacheFile*
+cacheMutex = mutex()
 
 //Reads the cache, who could have guessed?
 //Scans the value of the cache inside the global variable called 'cache'.
 readCache()  {
+    cacheMutex.lock()
     fs = fileStream{}
     fs.open(BAH_DIR + "cache/cache.json", "r")
     if fs.isValid() == 0 || fs.getSize() == 0 {
         mkdir(BAH_DIR + "cache", noCheck(S_IRWXU))
         fs.createFile(BAH_DIR + "cache/cache.json")
+        cacheMutex.unlock()
         return
     }
     if fs.getSize() > 0 {
@@ -37,8 +40,7 @@ readCache()  {
         fs.close()
         j.scan(&cache)
     }
-
-
+    cacheMutex.unlock()
 }
 
 //Returns a cacheFile instance from an imported file name.
@@ -46,12 +48,15 @@ getCacheFile(s str) cacheFile* {
     if cache == null {
         return null
     }
+    cacheMutex.lock()
     i=0; for i < len(cache), i++ {
         c = cache[i]
         if c.file == s && c.mem == RCPlevel && c.opti == isOptimized {
+            cacheMutex.unlock()
             return c
         }
     }
+    cacheMutex.unlock()
     return null
 }
 
@@ -91,10 +96,13 @@ makeCacheFile(f str, incls []str) {
         }
     }
 
+    cacheMutex.lock()
     if cache == null {
         cache = []cacheFile*
     }
     cache[len(cache)] = c
+    cacheMutex.unlock()
+
 }
 
 //Used for saving the runtime copy of the cache to the cache file.

@@ -21,16 +21,16 @@ stdinput() str {
         nDataLength = read(<ptr>0,<ptr>buff,1024)
         if nDataLength < 1024 {
             tmp = memoryAllocSTR(nDataLength+1)
-            memcpy(tmp, buff, nDataLength)
+            memcpy(<ptr>(<uint>tmp + strLenSize), <char*>buff, nDataLength)
             response += tmp
         } else {
             for nDataLength > 0 {
                 tmp = memoryAllocSTR(nDataLength+1)
-                memcpy(tmp, buff, nDataLength)
+                memcpy(<ptr>(<uint>tmp + strLenSize), <char*>buff, nDataLength)
                 response += tmp
                 if nDataLength < 1024 {
                     trimAmm = 1024 - nDataLength
-                    strTrimRight(&response, trimAmm)
+                    response = response[:len(response) - trimAmm]
                     break
                 } else {
                     nDataLength = read(<ptr>0,<ptr>buff,1024)
@@ -39,7 +39,7 @@ stdinput() str {
         }
     }
     if response[nDataLength-1] == <char>10 {
-        strTrimRight(&response, 1)
+        response = response[:len(response) - 1]
     }
 
     i=0; for i < nDataLength, i++ {
@@ -61,10 +61,10 @@ println(s str) {
     write(<ptr>1, s+"\n", len(s)+1)
 }
 
-#define! fwrite(w ptr, s int, f int, hndl FILE*)
-#define! fread(w ptr, s int, f int, hndl FILE*) int
+#define! fwrite(w ptr, s uint, f uint, hndl FILE*)
+#define! fread(w ptr, s uint, f uint, hndl FILE*) int
 #define! ftell(hndl FILE*) int
-#define! fseek(hndl FILE*, offset int, from int)
+#define! fseek(hndl FILE*, offset uint, from uint)
 #define! fputc(c char, hndl FILE*)
 
 //A wrapper that makes file manipulation easier.
@@ -167,14 +167,14 @@ struct fileStream {
     //Serialize a pointer and write it to a file.
     //a: the pointer to serialize
     //s: sizeof() the pointer's content
-    writePtr(a ptr, s int) {
+    writePtr(a ptr, s uint) {
         fwrite(a, s, 1, this.handle)
     }
 
     //Read a file and unserialize its content to a pointer.
     //a: the pointer to unserialize
     //s: sizeof() the pointer's content.
-    readPtr(a ptr, s int) int {
+    readPtr(a ptr, s uint) int {
         return fread(a, s, 1, this.handle)
     }
 

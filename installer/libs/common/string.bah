@@ -4,17 +4,14 @@
 
 #include "cBinds.bah"
 
-#define! strncpy(dest str, src str, size int)
-#define! memcpy(dest ptr, src ptr, size int)
 #define! sscanf(str str, format str, dest ptr)
 #define! strtol(str str, endptr ptr, base int) int
 #define! strtod(str str, endptr int) float
-#define! memset(str ptr, w int, s int)
 #define! atol(a str) int
 
 //Used for concatenating two known length strs.
-strCatOffset(dest str, destLen int, src str, srcLen int) {
-    memcpy(noCheck(dest+destLen+strLenSize), src, srcLen)
+strCatOffset(dest str, destLen uint, src str, srcLen uint) {
+    memcpy(noCheck(dest+destLen+strLenSize), <ptr>(<uint>src + strLenSize), srcLen)
 }
 
 //Used for converting a char into a str of length 1.
@@ -121,7 +118,7 @@ struct string {
         }
         sl = len(s)
         nc = memoryAllocSTR(sl + this.length + 1)
-        memcpy(nc, this.content, this.length)
+        memcpy(<ptr>(<uint>nc + strLenSize), <ptr>(<uint>this.content + strLenSize), this.length)
         strCatOffset(nc, this.length, s, sl)
         this.content = nc
         this.length += sl
@@ -229,11 +226,11 @@ struct string {
         }
         for i < nl {
             c = this.charAt(i)
-            sc = strCharAt(need, i)
+            sc = need[i]
             if c != sc {
                 return 0
             }
-            i = i + 1
+            i++
         }
         return 1
     }
@@ -248,12 +245,12 @@ struct string {
         needleIndex = 0
         for i < this.length {
             c = this.charAt(i)
-            sc = strCharAt(need, needleIndex)
+            sc = need[needleIndex]
             if c != sc {
                 return 0
             }
-            needleIndex = needleIndex + 1
-            i = i + 1
+            needleIndex++
+            i++
         }
         
         return 1
@@ -282,7 +279,7 @@ struct string {
     }
 
     //Used to trim a specified number of charcaters from the beginning of the string.
-    trimLeft(s int) {
+    trimLeft(s uint) {
         if s > this.length {
             return
         }
@@ -292,7 +289,7 @@ struct string {
     }
 
     //Used to trim a specified number of charcaters from the end of the string.
-    trimRight(s int) {
+    trimRight(s uint) {
         if s > this.length {
             return
         }
@@ -356,9 +353,9 @@ intToStr(i int) str {
         i = 0-i
     }
 
-    for i != 0, i = i / 10 {
+    for i != 0, i /= 10 {
         conv = i % 10
-        conv = conv + 48
+        conv += 48
         s[ind+1] = <char>conv
         ind++
     }
@@ -389,9 +386,9 @@ uintToStr(i uint) str {
     s = buffer 66
     ind = -1
 
-    for i != 0, i = i / 10 {
+    for i != 0, i /= 10 {
         conv = i % 10
-        conv = conv + 48
+        conv += 48
         s[ind+1] = <char>conv
         ind++
     }
@@ -418,9 +415,9 @@ uintToHex(i uint) str {
     s = buffer 66
     ind = -1
 
-    for i != 0, i = i / 16 {
+    for i != 0, i /= 16 {
         conv = i % 16
-        conv = conv + 48
+        conv += 48
         if conv > 57 {
             conv += 39
         }
@@ -540,7 +537,7 @@ joinString(a []string, sep str) string {
     for i < len(a) {
         e = a[i]
         if e.length == 0 {
-            i = i + 1
+            i++
             continue
         }
         tmpS = string(e.str())
@@ -548,7 +545,7 @@ joinString(a []string, sep str) string {
             tmpS.append(sep)
         }
         s.append(tmpS.str())
-        i = i + 1
+        i++
     }
     return s
 }
@@ -568,7 +565,7 @@ splitStringBefore(s string, sp str) str {
             if sepIndex == 0 {
                 foundIndex = i - 1
             }
-            sepIndex = sepIndex + 1
+            sepIndex++
             if sepIndex == sep.length {
                 max = s.length - foundIndex - 1
                 s.trimRight(max)
@@ -579,7 +576,7 @@ splitStringBefore(s string, sp str) str {
             sepIndex = 0
         }
 
-        i = i + 1
+        i++
     }
 
     return ""
@@ -592,10 +589,10 @@ toLower(s string) string {
     i=0;for i < s.length {
         c = s.charAt(i)
         if isUpper(c) {
-            c = c + <char>32
+            c += <char>32
         }
         ns[len(ns)] = c
-        i = i + 1
+        i++
     }
     return string(arrToStr(ns))
 }
@@ -610,10 +607,10 @@ strHasPrefix(s str, need str) bool {
         return false
     }
     for i < nl { 
-        if strCharAt(s, i) != strCharAt(need, i) {
+        if s[i] != need[i] {
             return false
         }
-        i = i + 1
+        i++
     }
     return true
 }
@@ -627,10 +624,10 @@ strHasSuffix(s str, need str) bool {
         return false
     }
     i=sl-nl; for i < sl {
-        if strCharAt(s, i) != strCharAt(need, i) {
+        if s[i] != need[i] {
             return false
         }
-        i = i + 1
+        i++
     }
     return true
 }
@@ -640,11 +637,11 @@ strHasSuffix(s str, need str) bool {
 strTrim(s str*) {
     l = len(*s)
     i=0; for i < l {
-        c = strCharAt(*s, i)
+        c = (*s)[i]
         if isSpace(c) == false {
             break
         }
-        i = i + 1
+        i++
     }
     *s = noCheck(*s + i)
 

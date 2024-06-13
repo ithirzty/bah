@@ -155,6 +155,7 @@ valueFunc(fn func*, parent variable*, l []Tok, i int, ltp lineType, elems Elems*
         }
     }
     if start < i {
+        
         memory = l[start:i]
     }
     deleteRange(l, tokPos+1, i)
@@ -219,8 +220,8 @@ valueFunc(fn func*, parent variable*, l []Tok, i int, ltp lineType, elems Elems*
         elems.vars[len(elems.vars)] = tmpV
         OUTPUT += rope("
         struct Bah_Array_Type* "+tmpV.name+" = memoryAlloc(sizeof(struct Bah_Array_Type));
-        "+tmpV.name+"->data = memoryAlloc(sizeof(struct reflectElement) * "+intToStr(len(symbols))+");
-        "+tmpV.name+"->length = "+intToStr(len(symbols))+";
+        "+tmpV.name+"->data = memoryAlloc(sizeof(struct reflectElement) * "+uintToStr(len(symbols))+");
+        "+tmpV.name+"->length = "+uintToStr(len(symbols))+";
         "+tmpV.name+"->elemSize = sizeof(struct reflectElement);
         "+decls+"
         ")
@@ -320,6 +321,10 @@ valueFunc(fn func*, parent variable*, l []Tok, i int, ltp lineType, elems Elems*
         arg = fn.args[argIndex]
         tt = getTypeFromToken(&t, true, elems)
         ltt = tt
+
+        if tt == "uint" && arg.type == "int" {
+            throwWarningLine("Passing argument "+t.ogCont+": implicit conversion (uint -> int) in "+fn.name+"() function call.", t.line)
+        }
 
         if isFixMeEnabled && (fn.isImported == true || isInside(BAH_DIR, fn.file)) && t.type == TOKEN_TYPE_VAR {
             fixMeTestVar(&t, ltp, elems)
@@ -681,7 +686,7 @@ valueArr(l []Tok, i int, ltp lineType, elems Elems*) int {
             isFunc = ptt.hasPrefix("function(")
             if isFunc {
                 t.cont = genCompilerVar()
-                tmpFn = parseFnType(ptt)
+                tmpFn = parseFnType(&ptt)
                 tmpFn.name = t.cont
                 t.setRefFn(tmpFn)
                 OUTPUT += rope(getCtypeFromFunc(tmpFn, elems)+" = ((void**)"+pt.cont+"->data)["+index.cont+"];\n")
@@ -819,7 +824,7 @@ valueArr(l []Tok, i int, ltp lineType, elems Elems*) int {
                 throwErr(&index, "Cannot use {TOKEN} as str index (int).")
             }
             checkBounds(&pt, 2, &index, elems)
-            t.cont = pt.cont+"["+index.cont+"+4]"
+            t.cont = pt.cont+"["+index.cont+"+8]"
             r = new variable {
                 name: pt.ogCont+"["+index.ogCont+"]"
                 type: "char"
@@ -847,7 +852,7 @@ valueArr(l []Tok, i int, ltp lineType, elems Elems*) int {
             }
             ind = strToInt(getStaticValue(&index, elems))
             if ind >= len(parts) || ind < 0 {
-                throwErr(&index, "Cannot access index {TOKEN} ("+intToStr(ind)+") of tuple "+pt.ogCont+" ("+ptt.str()+") of length "+intToStr(len(parts))+".")
+                throwErr(&index, "Cannot access index {TOKEN} ("+intToStr(ind)+") of tuple "+pt.ogCont+" ("+ptt.str()+") of length "+uintToStr(len(parts))+".")
             }
         } else {
             throwErr(&index, "Tuple cannot get index {TOKEN} of a tuple. Wanted int, got "+getTypeFromToken(&index, true, elems)+".")
@@ -900,7 +905,7 @@ valueBool(l []Tok, i int, ltp lineType, elems Elems*) int {
     deleteRange(l, tokPos, tokPos+1)
 
     //sets looping variable as register (optimization).
-    if isFixMeEnabled == false && ltp == LINE_TYPE_FOR && ptt == "int" || ptt == "float" {
+    if isFixMeEnabled == false && ltp == LINE_TYPE_FOR && (compTypes(ptt, "int") || compTypes(ptt, "float")) {
         v = getRealVar(pt.cont, elems)
         if v != null {
             v.iterScope = elems
@@ -1015,6 +1020,13 @@ valueBool(l []Tok, i int, ltp lineType, elems Elems*) int {
         if compTypes(ptt, ntt) == false {
             throwErr(&nt, "Cannot compare {TOKEN} ("+ntt+") with type "+ptt+".")
         }
+
+        if ptt == "uint" && t.cont == ">=" && isStaticToken(&nt, elems) && strToInt(getStaticValue(&nt, elems)) <= 0 {
+            throwWarningLine("Comparison will always be true: "+pt.ogCont+" is of type uint and cannot be less than "+nt.ogCont+".", nt.line)
+        } else if ntt == "uint" && t.cont == "<=" && isStaticToken(&pt, elems) && strToInt(getStaticValue(&pt, elems)) <= 0 {
+            throwWarningLine("Comparison will always be true: "+nt.ogCont+" is of type uint and cannot be less than "+pt.ogCont+".", nt.line)
+        }
+
         if ptt == "str" {
             if t.cont == "==" {
                 pt.cont = "(strcmp("+pt.cont+", "+nt.cont+") == 0)"

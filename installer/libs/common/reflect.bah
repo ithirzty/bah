@@ -112,7 +112,7 @@ const __bah_debug_get_sym = __debug_get_sym
 // main(args []str) int {
 //     a = 54
 //     b = "test"
-//     reflectedPrint(a)
-//     reflectedPrint(b)
+//     reflectedPrint(&a)
+//     reflectedPrint(&b)
 //     return 0
 // }

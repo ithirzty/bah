@@ -548,7 +548,7 @@ memoryAlloc(s int) ptr {
 
 //Ask to allocate s bytes for a cpstring of length s-1.
 //This is thread safe.
-memoryAllocSTR(s int) str {
+memoryAllocSTR(s uint) str {
     pthread_mutex_lock(_lgc.mut)
     if _lgc.memUsed >= _lgc.stopInterval { //same as in memoryAlloc()
         envJmp jmp_buf
@@ -559,7 +559,7 @@ memoryAllocSTR(s int) str {
 
     p = _lgc.allocate(s + strLenSize, false, false) //do not track content
     //sets cpstring length
-    l uint32* = p
+    l uint* = p
     *l = s-1
     memset(<ptr>(<uint>p + strLenSize), 0, s)
     pthread_mutex_unlock(_lgc.mut)
@@ -567,7 +567,7 @@ memoryAllocSTR(s int) str {
 }
 
 //Ask to reallocate pointer o to be of length s.
-memoryRealloc(o ptr, s int) ptr {
+memoryRealloc(o ptr, s uint) ptr {
     if o == null { //realloc(null, s) = malloc(s)
         return memoryAlloc(s)
     }

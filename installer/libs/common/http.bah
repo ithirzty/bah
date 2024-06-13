@@ -610,11 +610,11 @@ urlDecode(s str) str {
             hexStr = []char{s[i+1], s[i+2], null}
             c = <char>strtol(cArr(hexStr), null, 16)
             r[len(r)] = c
-            i = i + 2
+            i += 2
         } else {
             r[len(r)] = c
         }
-        i = i + 1
+        i++
     }
 
     return arrToStr(r)
@@ -683,7 +683,7 @@ struct http_transport {
                 header.trimLeft(headerName.length+space)
                 return header.str()
             }
-            i=i+1
+            i++
         }
 
         return ""
@@ -731,7 +731,7 @@ struct http_response extend http_transport {
                 e = this.headers[i]
                 s.append(e.str())
                 s.append("\r\n")
-                i = i + 1
+                i++
             }
             
             s.append("\r\n")
@@ -1039,13 +1039,13 @@ struct http_request extend http_transport {
         message = method +" "+ path + " HTTP/1.0\r\n"
         i=0; for i < len(this.headers) {
             h = this.headers[i]
-            message = message + h.str() + "\r\n"
-            i = i + 1
+            message += h.str() + "\r\n"
+            i++
         }
-        message = message + "\r\n"
+        message += "\r\n"
 
         if this.body != null {
-            message = message + this.body.str()
+            message += this.body.str()
         }
 
         resp response_buffer
@@ -1257,7 +1257,7 @@ struct http_request extend http_transport {
 
                 return urlDecode(f.str())
             }
-            i = i + 1
+            i++
         }
         return ""
     }
@@ -1279,7 +1279,7 @@ struct http_request extend http_transport {
                 return urlDecode(v.str())
             }
 
-            i = i + 1
+            i++
         }
         return ""
     }

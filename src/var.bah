@@ -189,7 +189,7 @@ makeInit() {
     }
 
     evals = ""
-    evalsTMPDecl = "volatile struct __eval_binding __tmp__evals_bindings["+intToStr(len(compilerState.evals))+"] = {"
+    evalsTMPDecl = "volatile struct __eval_binding __tmp__evals_bindings["+uintToStr(len(compilerState.evals))+"] = {"
     i=0; for i < len(compilerState.evals), i++ {
         e = compilerState.evals[i]
         evalsTMPDecl += "{
@@ -204,7 +204,7 @@ makeInit() {
     }
 
     if len(compilerState.evals) != 0 {
-        evals = "__evals_bindings = __tmp__evals_bindings; __evals_length = "+intToStr(len(compilerState.evals))+";"
+        evals = "__evals_bindings = __tmp__evals_bindings; __evals_length = "+uintToStr(len(compilerState.evals))+";"
     } else {
         evalsTMPDecl = ""
     }
@@ -220,7 +220,7 @@ makeInit() {
 
 //Used for removing a C cast from a variable.
 removeCast(s str) str {
-    i = len(s)-1; for i >= 0, i-- {
+    i = <int>len(s)-1; for i >= 0, i-- {
         if s[i] == ')' {
             s = s[i+1:]
             break

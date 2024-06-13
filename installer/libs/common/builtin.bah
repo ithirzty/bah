@@ -38,7 +38,7 @@ struct! Bah_Array_Type {
 
 #define __BAH_panic(e str, l str)
 #define __Bah_safe_string(s str) str
-#define strSubstitute(s str, i int, l int) str
+#define strSubstitute(s str, i uint, l uint) str
 #define __Bah_getVal_boundsChecked(arr []ptr, ind uint32, error str) []ptr
 #define __Bah_check_arr_bounds(arr []ptr, ind uint32) bool
 #define __Bah_realocate_arr(arr []ptr, nLength uint32)
@@ -51,7 +51,7 @@ const null = <ptr>0
 const true = <bool>1
 const false = <bool>0
 
-const strLenSize = 4
+const strLenSize = 8
 
 #define! exit(i int)
 #define! strcmp(a str, b str) int
@@ -70,7 +70,7 @@ __bah_strlenSTR(s ptr) uint32 {
 	if s == null {
 		return 0
 	}
-	i uint32* = s
+	i uint* = s
 	return *i
 }
 
@@ -102,10 +102,9 @@ const strlen = __bah_strlenSTR
 #include "<sys/stat.h>"
 #include "<fcntl.h>"
 
-#define! write(fd int, t str, l int)
+#define! write(fd int, t str, l uint)
 #define! read(fd int, t str, l int) int
-
-#define len(a ptr) uint
+#define! alloca(s uint) ptr
 
 //Prints text to the terminal.
 print(s str) {
@@ -113,7 +112,7 @@ print(s str) {
 }
 
 #unoptimized {
-	#define __BAH_memcpy(dest str, source str, l int)
+	#define __BAH_memcpy(dest char*, source char*, l uint)
 	const memcpy = __BAH_memcpy
 }
 
@@ -126,8 +125,8 @@ print(s str) {
 buffToStr(b char*) str {
 	l = strlen(<ptr>b)
 	s = memoryAllocSTR(l+1)
-	memcpy(s, b, l)
-	ln uint32* = s
+	memcpy(<ptr>(<uint>s + strLenSize), b, l)
+	ln uint* = s
 	*ln = l
 	return s
 }
@@ -149,17 +148,16 @@ cStrToBah(s char*) str {
 	}
 	l = strlen(<ptr>s)
 	nstr = memoryAllocSTR(l+1)
-	ln uint32* = nstr
+	ln uint* = nstr
 	*ln = l
-	memcpy(nstr, s, l)
+	memcpy(<ptr>(<uint>nstr + strLenSize), s, l)
 	return nstr
 } 
 
-#define! alloca(s int) ptr
 __Bah_multiple_concat(b str*, l uint32) str {
-    lens uint32* = alloca(l * sizeof(uint32)) //stack list of lengths
-    tot uint32 = 0 //total length
-    offset int32 = 0 //offset for concatenation
+    lens uint* = alloca(l * sizeof(uint)) //stack list of lengths
+    tot uint = 0 //total length
+    offset uint = 0 //offset for concatenation
 
     //calculate lengths of strs and total length
     i=0; for i < l, i++ {
@@ -177,7 +175,7 @@ __Bah_multiple_concat(b str*, l uint32) str {
         offset += <int>noCheck(lens[i])
     }
 
-	ln uint32* = r
+	ln uint* = r
 	*ln = tot
 
     return r
@@ -187,8 +185,7 @@ __Bah_multiple_concat(b str*, l uint32) str {
 
 #define! signal(sig int, hdl ptr)
 
-#define! strlen(a str) int
-#define! strncpy(a str, b str, l int)
+#define! strncpy(a str, b str, l uint)
 #define! strcat(a str, b str)
 
 //Function used by the compiler when concatenating strs.
@@ -207,8 +204,8 @@ concatstr(a str, b str) str {
 __STR(a str) str {
 	lenA = len(a)
 	r str = memoryAllocSTR(lenA+1)
-	memcpy(r,a,lenA)
-	ln uint32* = r
+	memcpy(<ptr>(<uint>r + strLenSize),<ptr>(<uint>a + strLenSize),lenA)
+	ln uint* = r
 	*ln = lenA
 	return r
 }
@@ -280,9 +277,9 @@ fastExec(s str) str {
 			break
 		}
 		response = memoryRealloc(response, (i+1)*1023)
-		ln uint32* = response
+		ln uint* = response
 		*ln = (i)*1023 + strlen(<ptr>buff)
-		memcpy(<ptr>(<int>response + strLenSize + i*1023), buff, 1024)
+		memcpy(<ptr>(<int>response + strLenSize + i*1023), <char*>buff, 1024)
 	}
 
     pclose(hdl)
@@ -352,7 +349,11 @@ __BAH_panic(e str, line str) {
 		return
 	}
 
-	print("panic ("+line+"): "+e+"\n")
+	print("panic (")
+	print(line)
+	print("): ")
+	print(e)
+	print("\n")
 	
 
 	print("Backtrace:\n")
@@ -480,8 +481,8 @@ __Bah_realocate_arr(arr []ptr, nLength uint32) {
 		indexStr = buffer 65
 		lengthStr = buffer 65
 
-		noCheck(sprintf(indexStr, "%d"+4, nLength))
-		noCheck(sprintf(lengthStr, "%d"+4, arr->length))
+		noCheck(sprintf(indexStr, "%d"+strLenSize, nLength))
+		noCheck(sprintf(lengthStr, "%d"+strLenSize, arr->length))
 
 		panic("builtin: array append out of bounds violation, index = "+cStrToBah(<char*>indexStr)+" and len = "+cStrToBah(<char*>lengthStr)+". Can only append index=length.")
 	}
@@ -500,22 +501,14 @@ __Bah_realocate_arr(arr []ptr, nLength uint32) {
 	return
 }
 
-
-//Used for getting a character by its index inside a str.
-//Used str[i] instead.
-strCharAt(s str, i int) char {
-    c = s[i]
-    return c
-}
-
 //Used by the compiler for operations like str[start:end].
-strSubstitute(s str, i int, l int) str {
+strSubstitute(s str, i uint, l uint) str {
 	size = l - i
 	if i < 0 || size < 0 || size > len(s) {
 		panic("builtin: str substitution out of bounds violation.")
 	}
 	ns = memoryAllocSTR(size+1)
-	memcpy(ns, noCheck(s+i+strLenSize), size)
+	memcpy(<ptr>(<uint>ns + strLenSize), <ptr>(<uint>s + i + strLenSize), size)
 	return ns
 }
 
@@ -561,13 +554,13 @@ struct strBuilder {
 
 	//Used for appending a character to the end of the str.
     append(c char) {
-        ln uint32* = this.buff
+        ln uint* = this.buff
         l = *ln
         if l >= this.length {
             this.length *= 2
             b = memoryRealloc(this.buff, strLenSize + this.length + 1)
             this.buff = b
-			ln = <uint32*>this.buff
+			ln = <uint*>this.buff
         }
         noCheck(this->buff[strLenSize + l] = c)
         *ln = l + 1
@@ -575,7 +568,7 @@ struct strBuilder {
 
 	//Used for getting the resulting str.
     str() str {
-		l = *(<uint32*>this.buff)
+		l = *(<uint*>this.buff)
         return this.buff
     }
 

@@ -21,7 +21,6 @@ signs = []str{"|", "&", "%", "+", "-", "*", "/", "<<", ">>", "^"}
 equalsTokens = []str{"=", "+=", "-=", "*=", "/="}
 
 
-#define parseLines(ts []Tok, elems Elems*)
 #define parseLine(l []Tok, elems Elems*)
 
 //Only for debug purposes.
@@ -259,6 +258,7 @@ includeFile(ccstr str, elems Elems*) bool {
             return false //file cannot be found
         }
     }
+    fs.close()
 
     //store the current directory
     oDir = compilerState.currentDir
@@ -274,8 +274,7 @@ includeFile(ccstr str, elems Elems*) bool {
     compilerState.includes[len(compilerState.includes)] = ccstr
 
     //reads file
-    tokens = lexer(f, fs.getSize())
-    fs.close()
+    tokens = lexer(f)
     if len(tokens) == 0 {
         panic("File '"+ccstr+"' not recognized.")
     }
@@ -412,10 +411,10 @@ importFile(fileName str, strt Tok*, elems Elems*) {
     fs = fileStream{}
     fs.open(fn, "r")
     f = fs.readContent()
+    fs.close()
 
     //read file
-    tokens = lexer(f, fs.getSize())
-    fs.close()
+    tokens = lexer(f)
 
     //sets declarative parsing parameter
     osod = shouldOnlyDecl
@@ -1080,7 +1079,7 @@ parseReflect(t Tok, tt str, elems Elems*, parsedPointer bool, ogName str, offset
         OUTPUT += rope("
         struct Bah_Array_Type * "+structLayout+" = memoryAlloc(sizeof(struct Bah_Array_Type));
         "+structLayout+"->elemSize = sizeof(struct reflectElement);
-        "+structLayout+"->length = "+intToStr(len(ts.members))+";
+        "+structLayout+"->length = "+uintToStr(len(ts.members))+";
         "+structLayout+"->data = memoryAlloc("+structLayout+"->length * "+structLayout+"->elemSize);
         ") + dataLayout
     }
@@ -1126,7 +1125,7 @@ parseReflect(t Tok, tt str, elems Elems*, parsedPointer bool, ogName str, offset
 }
 
 //Parses array declarations such as: 'a = []type'.
-parseArrayDecl(v variable*, l []Tok, i int, max int, elems Elems*) str {
+parseArrayDecl(v variable*, l []Tok, i uint, max uint, elems Elems*) str {
     arrayLength = 0
     arrType = getCType(v.type[2:], elems)
     code = "memoryAlloc(sizeof(struct Bah_Array_Type))"
@@ -2224,10 +2223,15 @@ parseDefine(l []Tok, elems Elems*) {
         fn = new func
         header = parseFnHeader("", l, &i, fn, elems)
         code = header[1] + header[0]
-        fns = elems.fns
+        ofn = searchFunc(fn.name, elems, false)
+        if ofn != null {
+            throwWarningLine("Re-declaration of function "+ofn.name+"."+"\n\tPrevious declaration: "+ofn.file+":"+intToStr(ofn.line), ft.line)
+        }
         fn.isBinding = true
         fn.isCbinding = doesOutput == false
-        fns[len(fns)] = fn
+        fn.file = compilerState.currentFile
+        fn.line = ft.line
+        elems.fns[len(elems.fns)] = fn
         if doesOutput == true {
             OUTPUT += rope(code+";\n")
         }
@@ -2372,9 +2376,6 @@ parseReturn(l []Tok, elems Elems*) {
                 if isUnsafe == false && string(compilerState.currentDir).hasPrefix(BAH_DIR) == false && currentFn.returns.type[len(currentFn.returns.type)-1] != '!' {
                     if tmpV.canBeNull == true || rv == "null" {
                         currentFn.returns.canBeNull = true
-                        if currentFn.returns.type != "ptr" {
-                            throwNoticeLine("Returning '"+tmpV.name+"' that can be null as pointer.\n\tUse maybe values instead.", rvt.line)
-                        }
                     }
                 }
             }
@@ -2794,7 +2795,7 @@ makeEvalFunc(fn func*, elems Elems*) {
     }
 
     OUTPUT += rope("void* __attribute__((optimize(\"O0\"))) "+efn.name+"(struct Bah_Array_Type* fnArgs) {
-        if (fnArgs->length != "+intToStr(len(fn.args))+") {
+        if (fnArgs->length != "+uintToStr(len(fn.args))+") {
             __BAH_panic((char*)"+strLitteralToBahStr("\"eval: calling function "+fn.name+"() with the wrong number of arguments.\"")+", "+strLitteralToBahStr("\"BAH_COMPILER_INTERNAL\"")+");
         }
         "+fnBinding+"

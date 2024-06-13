@@ -41,9 +41,9 @@ struct jsonElement {
                 nk = []char
                 lk = len(elem.key)
                 j=1; for j < lk - 1 {
-                    c = strCharAt(elem.key, j)
+                    c = (elem.key)[j]
                     nk[j-1] = c
-                    j = j + 1
+                    j++
                 }
                 if arrToStr(nk) == key {
                     return elem
@@ -53,7 +53,7 @@ struct jsonElement {
                     return elem
                 }
             }
-            i = i + 1
+            i++
         }
         z = <ptr>0
         return z
@@ -89,7 +89,7 @@ json_scan_inner(thisp ptr, e reflectElement, isMember bool) {
                 if ov != null {
                     json_scan_inner(ov, m, true)
                 }
-                i = i + 1
+                i++
             }
         } else if e.type == "int" {
             ep int* = e.value
@@ -124,7 +124,7 @@ json_scan_inner(thisp ptr, e reflectElement, isMember bool) {
                 i=0; for i < len(this.children) {
                     c = this.children[i]
                     arr[i] = strToInt(c.str())
-                    i = i + 1
+                    i++
                 }
             } else if ae.type == "float" {
                 arr = []float
@@ -137,7 +137,7 @@ json_scan_inner(thisp ptr, e reflectElement, isMember bool) {
                 i=0; for i < len(this.children) {
                     c = this.children[i]
                     arr[i] = strToFloat(c.str())
-                    i = i + 1
+                    i++
                 }
             } else if ae.type == "str" {
                 arr = []str
@@ -151,7 +151,7 @@ json_scan_inner(thisp ptr, e reflectElement, isMember bool) {
                 i=0; for i < len(this.children) {
                     c = this.children[i]
                     arr[i] = c.str()
-                    i = i + 1
+                    i++
                 }
             } else if ae.isStruct == true {
                 arr = []ptr
@@ -171,10 +171,10 @@ json_scan_inner(thisp ptr, e reflectElement, isMember bool) {
                         if ov != null {
                             json_scan_inner(ov, m, true)
                         }
-                        j = j + 1
+                        j++
                     }
                     arr[i] = ne
-                    i = i + 1
+                    i++
                 }
             }
         } else if strHasPrefix(e.type, "map:") {
@@ -207,7 +207,7 @@ json_scan_inner(thisp ptr, e reflectElement, isMember bool) {
 jError = "" //Inner variable containing the last parsing error.
 
 //Internal function called by parseJson().
-parseJson_inner(s str, ip int*, l int) jsonElement* {
+parseJson_inner(s str, ip uint*, l uint) jsonElement* {
     jError = ""
     i = *ip
 
@@ -246,7 +246,7 @@ parseJson_inner(s str, ip int*, l int) jsonElement* {
 
                 if s[i] != ',' {
                     if s[i] != ']' {
-                        jError = "json: expected array separator (got: "+charToString(s[i])+") (pos: "+intToStr(i)+")"
+                        jError = "json: expected array separator (got: "+charToString(s[i])+") (pos: "+uintToStr(i)+")"
                         return null
                     }
                     i++
@@ -280,7 +280,7 @@ parseJson_inner(s str, ip int*, l int) jsonElement* {
                     }
                 }
                 if s[i] != '"' {
-                    jError = "json: expected string as map key (pos: "+intToStr(i)+")"
+                    jError = "json: expected string as map key (pos: "+uintToStr(i)+")"
                     return null
                 }
                 i++
@@ -300,7 +300,7 @@ parseJson_inner(s str, ip int*, l int) jsonElement* {
                 }
 
                 if s[i] != ':' {
-                    jError = "json: expected : between key and value (got: "+intToStr(<int>s[i])+") (pos: "+intToStr(i)+")"
+                    jError = "json: expected : between key and value (got: "+intToStr(<int>s[i])+") (pos: "+uintToStr(i)+")"
                     return null
                 }
 
@@ -321,7 +321,7 @@ parseJson_inner(s str, ip int*, l int) jsonElement* {
 
                 if s[i] != ',' {
                     if s[i] != '}' {
-                        jError = "json: expected map separator (pos: "+intToStr(i)+")"
+                        jError = "json: expected map separator (pos: "+uintToStr(i)+")"
                         return null
                     }
                     i++
@@ -402,7 +402,7 @@ parseJson_inner(s str, ip int*, l int) jsonElement* {
 //This new version of parseJson() uses lazy parsing.
 parseJson(s str) jsonElement* {
     l = len(s)
-    i = 0
+    i = <uint>0
     return parseJson_inner(s, &i, l)
 }
 
@@ -465,30 +465,30 @@ oldToJson__inner(e reflectElement, isMember bool, tabs int) str {
         }
     }
     if e.isStruct == true {
-        tabs = tabs + 1
+        tabs++
         tabsStr = ""
         i=0; for i < tabs {
-            tabsStr = tabsStr + "\t"
-            i = i + 1
+            tabsStr += "\t"
+            i++
         }
         s = "{\n"
         i=0; for i < len(e.structLayout) {
             m = e.structLayout[i]
-            i = i + 1
+            i++
             m.value = m.calculateOffset(e.value)
             if i < len(e.structLayout) {
-                s = s + tabsStr+"\""+m.name+"\": "+oldToJson__inner(m, true, tabs)+",\n"
+                s += tabsStr+"\""+m.name+"\": "+oldToJson__inner(m, true, tabs)+",\n"
             } else {
-                s = s + tabsStr+"\""+m.name+"\": "+oldToJson__inner(m, true, tabs)+"\n"
+                s += tabsStr+"\""+m.name+"\": "+oldToJson__inner(m, true, tabs)+"\n"
             }
         }
-        tabs = tabs - 1
+        tabs--
         tabsStr = ""
         i=0; for i < tabs {
-            tabsStr = tabsStr + "\t"
-            i = i + 1
+            tabsStr += "\t"
+            i++
         }
-        s = s + tabsStr+"}"
+        s += tabsStr+"}"
         return s
     } else if e.type == "int" {
         ip int* = e.value
@@ -522,10 +522,10 @@ oldToJson__inner(e reflectElement, isMember bool, tabs int) str {
             arrPtr ptr* = e.value
             arr = *arrPtr
             i=0; for i < len(arr) {
-                s = s + intToStr(arr[i])
-                i = i + 1
+                s += intToStr(arr[i])
+                i++
                 if i < len(arr) {
-                    s = s + ","
+                    s += ","
                 }
             }
         } else if ae.type == "float" {
@@ -533,24 +533,24 @@ oldToJson__inner(e reflectElement, isMember bool, tabs int) str {
             arrPtr ptr* = e.value
             arr = *arrPtr
             i=0; for i < len(arr) {
-                s = s + floatToStr(arr[i])
-                i = i + 1
+                s += floatToStr(arr[i])
+                i++
                 if i < len(arr) {
-                    s = s + ","
+                    s += ","
                 }
             }
         } else if ae.type == "str" {
             arr = []str
             arrPtr ptr* = e.value
             arr = *arrPtr
-            s = s + "\n"
+            s += "\n"
             i=0; for i < len(arr) {
-                s = s + "\""+jsonEscapeStr(arr[i])+"\""
-                i = i + 1
+                s += "\""+jsonEscapeStr(arr[i])+"\""
+                i++
                 if i < len(arr) {
-                    s = s + ",\n"
+                    s += ",\n"
                 } else {
-                    s = s + "\n"
+                    s += "\n"
                 }
             }
         } else if ae.isStruct == true {
@@ -569,18 +569,18 @@ oldToJson__inner(e reflectElement, isMember bool, tabs int) str {
                     m = ae.structLayout[j]
                     m.value = m.calculateOffset(ae.value)
                     ae.structLayout[j] = m
-                    j = j + 1
+                    j++
                 }
-                s = s + oldToJson__inner(*ae, false, tabs)
-                i = i + 1
+                s += oldToJson__inner(*ae, false, tabs)
+                i++
                 if i < len(arr) {
-                    s = s + ",\n"
+                    s += ",\n"
                 } else {
-                    s = s + "\n"
+                    s += "\n"
                 }
             }
         }
-        s = s + "]"
+        s += "]"
         return s
     }
     return "0"
@@ -690,7 +690,7 @@ toJsonRope(e reflectElement) rope* {
     
     if e.type == "uint*" || e.type == "uint32*" {
         uj uint* = e.value
-        return rope(intToStr(*uj))
+        return rope(uintToStr(*uj))
     }
 
     if e.type == "char*" {

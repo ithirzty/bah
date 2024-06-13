@@ -1,5 +1,5 @@
 //Internal function for hashing map keys. 
-__Bah_map_hash(s str, l int) int {
+__Bah_map_hash(s str, l uint) int {
     hash = 5381
 
     i=0; for i < len(s), i++ {

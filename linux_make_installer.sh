@@ -3,13 +3,13 @@
 cd ./src
 
 echo "Making C source codes"
-bah ./main.bah -target darwin -c -n -o ../installer/darwin.c
-bah ./main.bah -target windows -c -n -o ../installer/windows.c
-bah ./main.bah -target linux -c -n -o ../installer/linux.c
+bah ./main.bah -target darwin -c -o ../installer/darwin.c
+bah ./main.bah -target windows -c -o ../installer/windows.c
+bah ./main.bah -target linux -c -o ../installer/linux.c
 
 echo "Making binaries"
-bah ./main.bah -n -o ../bin/linux_amd64
-bah ./main.bah -CC x86_64-w64-mingw32-gcc -n -target windows -o ../bin/windows.exe
+bah ./main.bah -o ../bin/linux_amd64
+bah ./main.bah -CC x86_64-w64-mingw32-gcc -target windows -o ../bin/windows.exe
 sudo cp ../bin/linux_amd64 /opt/bah/bah
 
 # Copying librairies

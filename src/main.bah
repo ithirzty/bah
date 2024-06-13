@@ -28,7 +28,7 @@
     const BAH_HOST_OS = "windows"
 }
 //////////////////////BUILD SPECIFIC THINGS//////////////////////
-const BAH_VERSION = "v1.5 (build 184)"
+const BAH_VERSION = "v1.5 (build 185)"
 
 debug = false
 verboseRuntime = false
@@ -249,9 +249,9 @@ main(args []str) int {
         println("Could not open file '"+args[1]+"'.")
         exit(1)
     }
-    startTime = getTimeUnix() //for timming compilation time
-    tokens = lexer(f, fs.getSize()) //tokenizing the first file
     fs.close()
+    startTime = getTimeUnix() //for timming compilation time
+    tokens = lexer(f) //tokenizing the first file
 
 
     if len(tokens) == 0 {

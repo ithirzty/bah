@@ -9,10 +9,13 @@
 #define! sqlite3_close(ppDb sqlite3*)
 #define! sqlite3 int
 #define! sqlite3_exec(ppDb sqlite3*, sql str, callback ptr, data ptr, err char**) int
+#define! sqlite3_free(err ptr)
 
 #static {
     #warning "Lib sqlite3 is usually compilled dynamically (-d), may not link."
 }
+
+VERBOSE_SQLITE3 = false
 
 //Scans a row element to a variable.
 dbResponse_scan_inner(e reflectElement, val str) {
@@ -75,13 +78,18 @@ struct dbResponseRow {
 struct dbResponse {
     rows: []dbResponseRow*
 
-    err: char* = null
+    err: str
 
     //If the response contains an error, this will print the error and panic.
     panic() {
-        if <ptr>this.err != null {
-            panic(cStrToBah(this.err))
+        if len(this.err) > 0 {
+            panic(this.err)
         }
+    }
+
+    //Returns a tuple [boolean: is valid, str: error message].
+    isValid() [bool, str] {
+        return [len(this.err) == 0, this.err]
     }
 
     //Scans the response to a variable.
@@ -93,13 +101,23 @@ struct dbResponse {
             ae = e.arrayElem
             if ae.isStruct == true {
                 arr = []ptr; arr = e.value
-                i=0; for i < len(this.rows) {
-                    r = this.rows[i]
-                    ae.value = memoryAlloc(ae.size)
-                    memset(ae.value, 0, ae.size)
-                    r.scan(*ae)
-                    arr[i] = ae.value
-                    i = i + 1
+                barr = <Bah_Array_Type*>arr
+                barr.elemSize = ae.size
+                if strCount(ae.type, "*") || ae.type == "ptr" || ae.type == "str" || strHasPrefix(ae.type, "[]") || strHasPrefix(ae.type, "map:") {
+                    allocateArray(arr, len(this.rows))
+                    i=0; for i < len(this.rows), i++ {
+                        r = this.rows[i]
+                        ae.value = memoryAlloc(ae.size)
+                        r.scan(*ae)
+                        arr[i] = ae.value
+                    }
+                } else {
+                    allocateArray(arr, len(this.rows))
+                    i=0; for i < len(this.rows), i++ {
+                        r = this.rows[i]
+                        ae.value = &arr[i]
+                        r.scan(*ae)
+                    }
                 }
             } else if ae.type == "int" {
                 arr = []int; arr = e.value
@@ -110,7 +128,34 @@ struct dbResponse {
                     arr[i] = v
                     i = i + 1
                 }
-            }  else if ae.type == "float" {
+            } else if ae.type == "uint" {
+                arr = []uint; arr = e.value
+                i=0; for i < len(this.rows) {
+                    r = this.rows[i]
+                    v uint
+                    r.scan(&v)
+                    arr[i] = v
+                    i = i + 1
+                }
+            } else if ae.type == "int32" {
+                arr = []int32; arr = e.value
+                i=0; for i < len(this.rows) {
+                    r = this.rows[i]
+                    v int32
+                    r.scan(&v)
+                    arr[i] = v
+                    i = i + 1
+                }
+            } else if ae.type == "uint32" {
+                arr = []uint32; arr = e.value
+                i=0; for i < len(this.rows) {
+                    r = this.rows[i]
+                    v uint32
+                    r.scan(&v)
+                    arr[i] = v
+                    i = i + 1
+                }
+            } else if ae.type == "float" {
                 arr = []float; arr = e.value
                 i=0; for i < len(this.rows) {
                     r = this.rows[i]
@@ -119,7 +164,16 @@ struct dbResponse {
                     arr[i] = v
                     i = i + 1
                 }
-            }  else if ae.type == "str" {
+            } else if ae.type == "float32" {
+                arr = []float32; arr = e.value
+                i=0; for i < len(this.rows) {
+                    r = this.rows[i]
+                    v float32
+                    r.scan(&v)
+                    arr[i] = v
+                    i = i + 1
+                }
+            } else if ae.type == "str" {
                 arr = []str; arr = e.value
                 i=0; for i < len(this.rows) {
                     r = this.rows[i]
@@ -128,7 +182,7 @@ struct dbResponse {
                     arr[i] = v
                     i = i + 1
                 }
-            }  else if ae.type == "bool" {
+            } else if ae.type == "bool" {
                 arr = []bool; arr = e.value
                 i=0; for i < len(this.rows) {
                     r = this.rows[i]
@@ -182,11 +236,16 @@ struct db {
     //Executes a sql command.
     exec(sql str) dbResponse* {
         resp = new dbResponse
-        sqlite3_exec(this.DB, sql, fillDBresponse, resp, &resp.err)
+        err char* = null
+        sqlite3_exec(this.DB, sql, fillDBresponse, resp, &err)
+        if err != null {
+            resp.err = cStrToBah(err)
+            if VERBOSE_SQLITE3 {
+                println(resp.err)
+            }
+            sqlite3_free(err)
+        }
         return resp
     }
-
-    // //Executes a sql command and executing a callback on each row.
-    // execCallBack()
 
 }

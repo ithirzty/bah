@@ -51,10 +51,10 @@ byteToOctal(b byte) str {
     return escp + r
 }
 
-//Returns a 4 bytes (32 bits) int encoded in C octal notation.
-escapeIntOctal(n int) str {
+//Returns a 8 bytes (64 bits) int encoded in C octal notation.
+escapeIntOctal(n uint) str {
     s char* = &n
-    r = byteToOctal(<byte>noCheck(s[0])) + byteToOctal(<byte>noCheck(s[1])) + byteToOctal(<byte>noCheck(s[2])) + byteToOctal(<byte>noCheck(s[3]))
+    r = byteToOctal(<byte>noCheck(s[0])) + byteToOctal(<byte>noCheck(s[1]))+ byteToOctal(<byte>noCheck(s[2])) + byteToOctal(<byte>noCheck(s[3])) + byteToOctal(<byte>noCheck(s[4])) + byteToOctal(<byte>noCheck(s[5])) + byteToOctal(<byte>noCheck(s[6])) + byteToOctal(<byte>noCheck(s[7]))
     return r
 }
 

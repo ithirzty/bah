@@ -40,10 +40,10 @@ genArrRealloc(v variable*, preVal str, val str, elems Elems*) str {
 //The str passed as 'strs' must be in reverse order.
 genConcat(strs []str, elems Elems*) str {
     buff = genCompilerVar()
-    r = "char** "+buff+" = alloca("+intToStr(len(strs))+" * sizeof(char*));"
+    r = "char** "+buff+" = alloca("+uintToStr(len(strs))+" * sizeof(char*));"
 
     i=0; for i < len(strs), i++ {
-        r += buff + "["+intToStr(len(strs) - i - 1)+"] = " + strs[i] + ";" 
+        r += buff + "["+uintToStr(len(strs) - i - 1)+"] = " + strs[i] + ";" 
     }
 
     if isGlobal() {
@@ -51,7 +51,7 @@ genConcat(strs []str, elems Elems*) str {
     } else {
         OUTPUT += rope(r)
     }
-    rstr = registerRCPvar("str", "__Bah_multiple_concat("+buff+", "+intToStr(len(strs))+")", elems) //result var
+    rstr = registerRCPvar("str", "__Bah_multiple_concat("+buff+", "+uintToStr(len(strs))+")", elems) //result var
 
     return rstr
 }

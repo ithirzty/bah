@@ -35,9 +35,9 @@ len(a ptr) uint {
     return arr.length
 }
 
-#define! memmove(dest ptr, src ptr, size int)
+#define! memmove(dest ptr, src ptr, size uint)
 
-#define! memset(p ptr, v int, s int)
+#define! memset(p ptr, v int, s uint)
 
 #include "BAH_MEM_COLLECTOR"
 
@@ -88,12 +88,11 @@ copy(a ptr, b ptr) {
 }
 
 #windows {
-    #define! CreateFileMapping(ihv ptr, sec int, rw int, mos int, bs int, fn str) ptr
-    #define! MapViewOfFile(f ptr, sec int, mi1 int, mi2 int, bs int) ptr
+    #define! CreateFileMapping(ihv ptr, sec int, rw int, mos int, bs uint, fn str) ptr
+    #define! MapViewOfFile(f ptr, sec int, mi1 int, mi2 int, bs uint) ptr
     #define! CloseHandle(mf ptr)
 
     #define! printf(s str)
-    #define! exit(code int)
 
     const PROT_READ = 2
     const PROT_READWRITE = 4
@@ -102,7 +101,7 @@ copy(a ptr, b ptr) {
 }
 
 #linux {
-    #define! mmap(addr int, ps int, prot int, flags int, fd int, offset int) ptr
+    #define! mmap(addr int, ps uint, prot int, flags int, fd int, offset int) ptr
     const PROT_READ = 1
     const PROT_WRITE = 2
     const PROT_READWRITE = 3
@@ -111,7 +110,7 @@ copy(a ptr, b ptr) {
 }
 
 #darwin {
-    #define! mmap(addr int, ps int, prot int, flags int, fd int, offset int) ptr
+    #define! mmap(addr int, ps uint, prot int, flags int, fd int, offset int) ptr
     const PROT_READ = 1
     const PROT_WRITE = 2
     const PROT_READWRITE = 3
@@ -124,7 +123,7 @@ copy(a ptr, b ptr) {
 //Will allocate a page of shared memory and returns a pointer to it.
 //The size should be an multiple of 4096. A size of 0 will set the page size to the default (4096).
 //Shared memory can be shared between two processes (after the use of fork()).
-sharedMemory(size int) ptr {
+sharedMemory(size uint) ptr {
     if size == 0 {
         size = 4096
     }
@@ -157,7 +156,7 @@ sharedMemory(size int) ptr {
 
 //Used for pre-allocating a number of element to an array.
 //The content of the array is not initialized, it may contain garbage.
-allocateArray(arr ptr, nbElems int) {
+allocateArray(arr ptr, nbElems uint) {
     a Bah_Array_Type* = arr
     a.length = nbElems
     a.realLength = nbElems
@@ -173,11 +172,9 @@ allocateArray(arr ptr, nbElems int) {
 //     strcpy(a, "Hi!")
 // }
 
-#define! memcpy(det ptr, src ptr, s int)
-
 //Used for deleting an element from an array by its index.
 //This will keep the order of the elements.
-delete(a ptr, i int) {
+delete(a ptr, i uint) {
     arr Bah_Array_Type* = a
     length = len(<[]ptr>a)
     if i >= length || i < 0 {
@@ -209,7 +206,7 @@ delete(a ptr, i int) {
 
 //Like delete() but for a range.
 //deleteRange(arr, 1, 3) will delete elements at indexes [1, 2, 3]
-deleteRange(a ptr, from int, to int) {
+deleteRange(a ptr, from uint, to uint) {
     if from == to {
         delete(a, from)
         return
@@ -243,8 +240,8 @@ arrToStr(arr []char) str {
     }
     a Bah_Array_Type* = arr
     str str = memoryAllocSTR(strLen+1)
-    memcpy(str, a.data, strLen)
-    ln uint32* = str
+    memcpy(<ptr>(<uint>str + strLenSize), a.data, strLen)
+    ln uint* = str
     *ln = strLen
     return str
 }
@@ -255,7 +252,7 @@ strToArr(str str) []char {
     arr = []char
     a Bah_Array_Type* = arr
     a.data = memoryAlloc(strLen+1)
-    memcpy(a.data, str, strLen)
+    memcpy(a.data, <ptr>(<uint>str + strLenSize), strLen)
     a.length = strLen
     
     return arr
@@ -263,16 +260,14 @@ strToArr(str str) []char {
 
 //Removed arrAsStr() and strAsArr() because they are too dangerous
 
-#define strSubsitute(s str, i int, l int) str
-
 //Trims i chars at the beginning of a str.
-strTrimLeft(s str*, i int) {
+strTrimLeft(s str*, i uint) {
     rs = *s
     *s = rs[i:]
 }
 
 //Trims i chars at the end of a str.
-strTrimRight(s str*, i int) {
+strTrimRight(s str*, i uint) {
     rs = *s
     *s = rs[:len(rs)-i]
 }

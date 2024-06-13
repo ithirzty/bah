@@ -114,31 +114,31 @@ lexerErr(line int, pos int, msg str) {
 }
 
 //Takes a file as input, outputs an array of tokens.
-lexer(s str, codeLength uint) []Tok {
+lexer(s str) []Tok {
     lexerStart = getTimeUnix()
     tokens = []Tok
 
-    totalSize += codeLength
+    totalSize += len(s)
 
 
     lineNb = 1 //current line number (in source file)
 
-    i=0; for i < codeLength, i++ {
+    i=0; for i < len(s), i++ {
         c = s[i]
         nc char = <char>0
-        if i+1 < codeLength {
+        if i+1 < len(s) {
             nc = s[i+1]
         }
         //testing for comments
         if c == '/' && nc == '/'{
             //ignore the content untill we hit a new line
-            for i < codeLength, i++ {
+            for i < len(s), i++ {
                 if s[i] == <char>10 {
                     break
                 }
             }
             //file end
-            if i == codeLength {
+            if i == len(s) {
                 break
             }
             c = s[i]
@@ -156,7 +156,7 @@ lexer(s str, codeLength uint) []Tok {
             memory = strBuilder{}
             memory.append(c)
             i++
-            for i < codeLength, i++ {
+            for i < len(s), i++ {
                 c = s[i]
                 if c == <char>92 { //back slash
                     memory.append(<char>92)
@@ -191,7 +191,7 @@ lexer(s str, codeLength uint) []Tok {
             i++
             currentType = TOKEN_TYPE_INT
             isHex = false
-            for i < codeLength, i++ {
+            for i < len(s), i++ {
                 c = s[i]
                 if c == <char>46 {
                     currentType = TOKEN_TYPE_FLOAT
@@ -228,7 +228,7 @@ lexer(s str, codeLength uint) []Tok {
         } else if c == <char>35 { //is a hash keyword
             pos = i
             i++
-            for i < codeLength, i++ {
+            for i < len(s), i++ {
                 c = s[i]
                 if isAlphaNumeric(c) == false {
                     break
@@ -242,7 +242,7 @@ lexer(s str, codeLength uint) []Tok {
             pos = i
             i++
             //get full token
-            for i < codeLength, i++ {
+            for i < len(s), i++ {
                 c = s[i]
                 if isAlphaNumeric(c) == false {
                     if c != '_' {
@@ -264,7 +264,7 @@ lexer(s str, codeLength uint) []Tok {
                 pos = i
                 isCast = false
                 i++
-                for i < codeLength, i++ {
+                for i < len(s), i++ {
                     c = s[i]
                     if isSpace(c) {
                         continue
@@ -291,7 +291,7 @@ lexer(s str, codeLength uint) []Tok {
             pos = i
             i++
             fc = c
-            for i < codeLength, i++ {
+            for i < len(s), i++ {
                 c = s[i]
                 if c in syntaxes == false {
                     break

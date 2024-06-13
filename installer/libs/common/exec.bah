@@ -24,9 +24,9 @@ struct command {
     run() str {
         cm = this.command
         if this.error == false {
-            cm = cm + " 2>/dev/null"
+            cm += " 2>/dev/null"
         } else {
-            cm = cm + " 2>&1"
+            cm += " 2>&1"
         }
         this.handle = popen(cm, "w")
         if this.handle == null {
@@ -48,7 +48,7 @@ struct command {
             response = memoryRealloc(response, (i+1)*1023)
             ln int* = response
             *ln = (i+1)*1023
-            memcpy(<ptr>(<int>response + strLenSize + i*1023), buff, 1024)
+            memcpy(<ptr>(<int>response + strLenSize + i*1023), <ptr>(<uint>buff + strLenSize), 1024)
         }
 
 
@@ -62,9 +62,9 @@ struct command {
         arr = []char
         cm = this.command
         if this.error == false {
-            cm = cm + " 2>/dev/null"
+            cm += " 2>/dev/null"
         } else {
-            cm = cm + " 2>&1"
+            cm += " 2>&1"
         }
         this.handle = popen(cm, "r")
         if this.handle == null {
@@ -108,7 +108,7 @@ exec(s str, args []str) int {
     nArgs[0] = cStr(s)
     i=0;for i < len(args) {
         nArgs[i+1] = cStr(args[i])
-        i = i + 1
+        i++
     }
     nArgs[len(nArgs)] = null
     r = execvp(s, cArr(nArgs))

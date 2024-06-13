@@ -12,7 +12,7 @@ struct rope {
     addStr(s str, off int*) {
         if this.left == null && this.right == null {
             o = *off
-            memcpy(noCheck(s+strLenSize+o), this.str, len(this.str))
+            memcpy(<ptr>(<uint>s + o + strLenSize), <ptr>(<uint>this.str + strLenSize), len(this.str))
             *off = o + len(this.str)
             return
         }
@@ -21,7 +21,7 @@ struct rope {
         this.right.addStr(s, off)
     }
 
-    getLen() uint32 {
+    getLen() uint {
         if this.left == null && this.right == null {
             l = len(this.str)
             return l

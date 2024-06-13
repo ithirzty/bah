@@ -3,7 +3,7 @@
 #include "./globals.bah"
 
 #define searchFunc(n str, e Elems*, c bool) func*
-#define parseFnType(n string) func*
+#define parseFnType(n string*) func*
 #define getCType(t str, e Elems*) string
 
 //Returns true if the token content 'n' contains a struct separator (such as '.').
@@ -152,7 +152,8 @@ searchStructMethod(name str, s cStruct*, elems Elems*) func* {
     i=0; for i < len(s.members), i++ {
         // m = s.members[i]
         if s.members[i].name == name {
-            fn = parseFnType(string(s.members[i].type))
+            st = string(s.members[i].type)
+            fn = parseFnType(&st)
             fn.name = name
             fn.isVar = true
             return fn
