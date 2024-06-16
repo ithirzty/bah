@@ -24,19 +24,19 @@ struct mapElem {
 struct mapSearchRes {
     found: bool
     res: ptr
-    l: uint32
+    l: uint
 }
 
 //Represent a single node (value) of the algorithm 1 of the mapWrapper.
 struct mapNode {
     str: str
-    strL: uint32
+    strL: uint
     left: mapNode*  = null
     right: mapNode* = null
     value: ptr = null
 
     //Used for calculating the matching score of the node, given a key.
-    calc(s str, i uint32) int32 {
+    calc(s str, i uint) int {
         for i < this.strL, i++ {
             if s[i] == null || this.str[i] != s[i] {
                 break
@@ -113,7 +113,7 @@ struct mapNode {
     }
 
     //Appends a node to another.
-    append(k str, e ptr, l uint32) {
+    append(k str, e ptr, l uint) {
         ne = new mapNode {
             str: k
             strL: len(k)

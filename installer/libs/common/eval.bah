@@ -34,7 +34,7 @@ evalRaw(code str, syms []reflectElement) ptr {
     args = []ptr
     currArg = []char
     isStr = false
-    i=strlen(fnName)+1; for i < strlen(code), i++ {
+    i=len(fnName)+1; for i < len(code), i++ {
         c = code[i]
         if c == ',' || c == ')' || c == '(' {
             if len(currArg) == 0 {
@@ -43,7 +43,7 @@ evalRaw(code str, syms []reflectElement) ptr {
 
             if c == '(' {
                 nbPar = 0
-                for i < strlen(code), i++ {
+                for i < len(code), i++ {
                     c = code[i]
                     if c == '(' {
                         nbPar++

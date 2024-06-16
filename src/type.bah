@@ -8,11 +8,14 @@
 #define isMissingVar(t Tok*, elems Elems*)
 
 intTypes = []str{
-    "int",
+    "int16",
     "int32",
-    "uint",
+    "int",
+    "uint16",
     "uint32",
-    "bool"
+    "uint",
+    "bool",
+    "byte"
 }
 
 floatTypes = []str{
@@ -85,7 +88,7 @@ getCType(t str, elems Elems*) string {
         unars = ""
         t = "char*"
     } else if t == "int" {
-        t = "long long int"
+        t = "long int"
     } else if t == "int32" {
         t = "int"
     } else if t == "uint32" {
@@ -96,16 +99,16 @@ getCType(t str, elems Elems*) string {
         t = "float"
     } else if t == "float" {
         t = "double"
-    } else if t == "long" {
-        t = "long long"
-    } else if t == "ulong" {
+    }else if t == "ulong" {
         t = "unsigned long long"
     } else if t == "str" {
         t = "char*"
     } else if t == "ptr" {
         t = "void *"
-    } else if t == "ushort" {
+    } else if t == "uint16" {
         t = "unsigned short"
+    } else if t == "int16" {
+        t = "short"
     } else if t == "byte" {
         t = "unsigned char"
     } else if t == "bool" || t == "char" {

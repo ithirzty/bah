@@ -15,7 +15,7 @@
 #include "./optimizations.bah"
 #include "./generics.bah"
 
-comparators = []str{"==", "!=", ">", "<", "<=", ">=", "in"}
+comparators = []str{"==", "!=", ">", "<", "<=", ">="}
 compSep = []str{"||", "&&"}
 signs = []str{"|", "&", "%", "+", "-", "*", "/", "<<", ">>", "^"}
 equalsTokens = []str{"=", "+=", "-=", "*=", "/="}
@@ -500,6 +500,7 @@ parseInclude(l []Tok, elems Elems*) {
     sc.trimRight(1)
     if sc.hasPrefix("<") || sc.hasSuffix(".h") || sc.hasSuffix(".c") { // is a C file
         if isSubObject == false || isSupressed == false {
+            throwWarningLine("Including C header file is deprecated. Please #define proper bindings for "+sc.str()+".", strt.line)
             if sc.hasPrefix("<") == false {
                 sc.set(strt.cont)
             }
@@ -704,7 +705,7 @@ parseStructType(line []Tok, ltp lineType, elems Elems*) []Tok {
         t = line[i]
         if t.type == TOKEN_TYPE_VAR {
             //cannot declare struct type for arrays, leaving it to the arrayType handler
-            if strHasPrefix(t.bahType, "[]") {
+            if strHasPrefix(t.bahType, "[]") || (i-1 >= 0 && line[i-1].cont == "map") {
                 nl[len(nl)] = t
                 i++
                 continue
@@ -788,7 +789,7 @@ parseStructType(line []Tok, ltp lineType, elems Elems*) []Tok {
                     if isHeap == true {
                         nl[len(nl)-1] = t
                     } else {
-                        t.isEqual = true
+                        t.isDeclared = true
                         nl[len(nl)] = t
                     }
                     i++
@@ -1215,8 +1216,16 @@ parseArrayDecl(v variable*, l []Tok, i uint, max uint, elems Elems*) str {
                         allocLength = 50
                     }
                     allocLengthStr = intToStr(allocLength)
-                    NEXT_LINE = v.name + "->data = memoryAlloc(sizeof(" + elemTypeStr + ") * " + allocLengthStr + ");
-                    "+v.name+"->realLength = " + allocLengthStr + ";\n" + NEXT_LINE
+
+                    if isRCPtype(v.type[2:], elems) == false {
+                        NEXT_LINE = v.name + "->data = memoryAllocAtomic(sizeof(" + elemTypeStr + ") * " + allocLengthStr + ");
+                        "+v.name+"->realLength = " + allocLengthStr + ";\n" + NEXT_LINE
+                    } else {
+                        NEXT_LINE = v.name + "->data = memoryAlloc(sizeof(" + elemTypeStr + ") * " + allocLengthStr + ");
+                        "+v.name+"->realLength = " + allocLengthStr + ";\n" + NEXT_LINE
+
+                    }
+
                     break
                 } else {
                     throwErr(&t, "Expected ',' got {TOKEN}.")
@@ -1246,7 +1255,7 @@ parseVar(l []Tok, elems Elems*) {
     ft = l[0]
     if ft.isFunc == true {
         if len(l) > 1 {
-            throwErr(&l[len(l)-1], "Not expecting {TOKEN} after function call.")
+            throwErr(&l[1], "Not expecting {TOKEN} after a read-only statement.")
         }
         ft = l[0]
         parsed = true
@@ -1263,6 +1272,7 @@ parseVar(l []Tok, elems Elems*) {
         OUTPUT += rope(ft.cont + ";\n")
         return
     }
+    parseArrayType(l, elems)
     l = parseStructType(l, <lineType>-1, elems)
     isEqual = false
     equalIndex = 0
@@ -1387,7 +1397,7 @@ parseVar(l []Tok, elems Elems*) {
             currentType += t.cont
         } else {
 
-            if t.isEqual == true && exists == false && isGlobal() == false {
+            if t.isDeclared && exists == false && isGlobal() == false {
                 // needsDefine = true
                 v.canBeNull = false
             }
@@ -1414,9 +1424,71 @@ parseVar(l []Tok, elems Elems*) {
                 v.type = "map:"+nt.cont
                 code = "mapWrapper()"
                 if i+1 != len(l) {
-                    errT = l[i+1]
-                    throwErr(&errT, "{TOKEN} not expected after map declaration.")
+                    if l[i+1].cont != "{" {
+                        throwErr(&l[i+1], "{TOKEN} not expected after map declaration, initialize the map with values '{}' ?")
+                    }
+                    i += 2
+                    nbBraces = 1
+                    start = i
+                    for i < len(l), i++ {
+                        if l[i].type != TOKEN_TYPE_ENCL {
+                            continue
+                        }
+                        if l[i].cont == "{" {
+                            nbBraces++
+                        } else if l[i].cont == "}" {
+                            nbBraces--
+                        }
+
+                        if nbBraces == 0 {
+                            break
+                        }
+                    }
+
+                    if i - start == 0 {
+                        break
+                    }
+
+                    memory = prePross(l[start:i], <lineType>-1, elems)
+                    
+                    j=0; for j < len(memory), j += 4 {
+                        key = memory[j]
+                        if j+2 >= len(memory) {
+                            throwErr(&key, "Invalid syntax for declaring key {TOKEN}, expected 'key: value'.")
+                        }
+                        value = memory[j+2]
+
+                        kt = getTypeFromToken(&key, true, elems)
+                        if kt != "str" {
+                            throwErr(&key, "Cannot use {TOKEN} as map key (str).")
+                        }
+
+                        if memory[j+1].cont != ":" {
+                            throwErr(&memory[j+1], "Expected ':' not {TOKEN}.")
+                        }
+
+                        vlt = getTypeFromToken(&value, true, elems)
+                        if compTypes(vlt, nt.cont) == false {
+                            throwErr(&value, "Cannot use {TOKEN} ("+vlt+") as map value ("+nt.cont+").")
+                        }
+
+                        if j+4 < len(memory) && memory[j+3].cont != "," {
+                            throwErr(&memory[j+1], "Expected ',' between map values not {TOKEN}.")
+                        }
+
+                        if isRCPpointerType(vlt) {
+                            NEXT_LINE += v.name+"->set("+v.name+", "+key.cont+", "+value.cont+");\n"
+                        } else {
+                            pntVarName = registerRCPvar(vlt, value.cont, elems)
+                            NEXT_LINE += "mapWrapper__setAny("+v.name+", "+key.cont+", &"+pntVarName+", sizeof("+getCType(vlt, elems).str()+"));\n"
+                        }
+                        
+                    }
+
+
                 }
+
+
                 break
             } else if t.cont == "buffer" {
                 if i >= len(l) {
@@ -1895,6 +1967,7 @@ parseStruct(l []Tok, elems Elems*) {
                 throwErr(&extdSNameTk, "Struct {TOKEN} does not exist.")
             }
             s.extendedFrom = extdS.name
+            s.hasRCPmemb = extdS.hasRCPmemb
             extdsmbs = extdS.members
             j=0; for j < len(extdsmbs) {
                 em = extdsmbs[j]
@@ -2138,7 +2211,7 @@ parseStruct(l []Tok, elems Elems*) {
                 i--
             }
         }
-        if isRCPpointerType(memb.type) {
+        if isRCPtype(memb.type, elems) {
             s.hasRCPmemb = true
         }
         members[len(members)] = memb
@@ -2147,6 +2220,8 @@ parseStruct(l []Tok, elems Elems*) {
         cmt = string(memb.type)
         if cmt.hasPrefix("function(") == 1 {
             membDeclStr = getCfunctionType(&cmt, memb.name, elems)
+        } else if cmt.hasPrefix("buffer:") {
+            membDeclStr = "char "+memb.name+"["+memb.type[7:]+"]"
         } else {
             membDecl = getCType(memb.type, elems)
             membDecl.append(" " + memb.name)
@@ -3136,6 +3211,7 @@ prePross(line []Tok, ltp lineType, elems Elems*) []Tok {
     i = 0
     sepI = 0
     nbPar = 0
+    flEnd = 0
 
     if ltp != <lineType>-1 {
         for i < len(line), i++ {
@@ -3251,7 +3327,7 @@ prePross(line []Tok, ltp lineType, elems Elems*) []Tok {
             t.cont = "("+cType.str()+")"+t.cont
             fl[i-1] = t
             i -= 2
-        } else if pt.cont in signs && i > 1 {
+        } else if pt.type == TOKEN_TYPE_SYNTAX && pt.cont in signs && i > 1 {
             if t.cont == pt.cont {
                 ppt = fl[i-2]
                 if ppt.type == TOKEN_TYPE_VAR {
@@ -3284,7 +3360,7 @@ prePross(line []Tok, ltp lineType, elems Elems*) []Tok {
                 fl[i-1] = pt
                 i -= 2
             }
-        } else if pt.cont in comparators && isValue(fl, i) {
+        } else if ((pt.type == TOKEN_TYPE_SYNTAX && pt.cont in comparators) || pt.cont == "in") && isValue(fl, i) {
             i = valueBool(fl, i, ltp, elems) - 1
         } else if pt.cont == "<-" && isValue(fl, i) {
             i = valueChan(fl, i, elems) - 1
@@ -3302,7 +3378,7 @@ prePross(line []Tok, ltp lineType, elems Elems*) []Tok {
 
     i=0; for i < len(fl), i++ {
         t = fl[i]
-        if t.cont == "||" || t.cont == "&&" {
+        if t.type == TOKEN_TYPE_SYNTAX && (t.cont == "||" || t.cont == "&&") {
             if i == 0 || i+1 == len(fl) {
                 throwErr(&t, "Cannot use {TOKEN} on nothing.")
             }
@@ -3324,12 +3400,17 @@ prePross(line []Tok, ltp lineType, elems Elems*) []Tok {
         }
     }
 
-    parseArrayType(fl, elems)
-
     if ltp != <lineType>-1 {
-        for sepI < len(line) {
-            fl[len(fl)] = line[sepI]
-            sepI++
+        if sepI == len(fl) {
+            i=0; for i < sepI, i++ {
+                line[i] = fl[i]
+            }
+            fl = line
+        } else {
+            for sepI < len(line) {
+                fl[len(fl)] = line[sepI]
+                sepI++
+            }
         }
     }
 
@@ -3592,7 +3673,7 @@ parseLet(line []Tok, elems Elems*) {
         v.canBeNull = true
         OUTPUT += rope("}\n")
     } else {
-        if v.canBeNull == true && checkedNotNull(v.name, captElems) == false && captElems.currFlowEnd == false {
+        if isUnsafe == false && v.canBeNull == true && checkedNotNull(v.name, captElems) == false && captElems.currFlowEnd == false {
             throwErr(&line[0], "Variable "+v.name+" could still be null after exiting else block and program is not terminated")
         } else {
             v.canBeNull = false

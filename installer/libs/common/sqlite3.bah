@@ -1,15 +1,15 @@
- 
-#include "<sqlite3.h>"
-
 #include "reflect.bah"
 
 #cLib "lsqlite3"
 
-#define! sqlite3_open(filename str, ppDb sqlite3**) int
-#define! sqlite3_close(ppDb sqlite3*)
-#define! sqlite3 int
-#define! sqlite3_exec(ppDb sqlite3*, sql str, callback ptr, data ptr, err char**) int
-#define! sqlite3_free(err ptr)
+struct! sqlite3 {}
+#define sqlite3 sqlite3
+
+#define sqlite3_open(filename char*, ppDb sqlite3**) int32
+#define sqlite3_close(ppDb sqlite3*) int32
+
+#define sqlite3_exec(ppDb sqlite3*, sql char*, callback ptr, data ptr, err char**) int32
+#define sqlite3_free(err ptr)
 
 #static {
     #warning "Lib sqlite3 is usually compilled dynamically (-d), may not link."
@@ -63,9 +63,9 @@ struct dbResponseRow {
                         dbResponse_scan_inner(m, this.argv[i])
                         break
                     }
-                    j = j + 1
+                    j++
                 }
-                i = i + 1
+                i++
             }
         } else {
             dbResponse_scan_inner(e, this.argv[0])
@@ -126,7 +126,7 @@ struct dbResponse {
                     v int
                     r.scan(&v)
                     arr[i] = v
-                    i = i + 1
+                    i++
                 }
             } else if ae.type == "uint" {
                 arr = []uint; arr = e.value
@@ -135,7 +135,7 @@ struct dbResponse {
                     v uint
                     r.scan(&v)
                     arr[i] = v
-                    i = i + 1
+                    i++
                 }
             } else if ae.type == "int32" {
                 arr = []int32; arr = e.value
@@ -144,7 +144,7 @@ struct dbResponse {
                     v int32
                     r.scan(&v)
                     arr[i] = v
-                    i = i + 1
+                    i++
                 }
             } else if ae.type == "uint32" {
                 arr = []uint32; arr = e.value
@@ -153,7 +153,7 @@ struct dbResponse {
                     v uint32
                     r.scan(&v)
                     arr[i] = v
-                    i = i + 1
+                    i++
                 }
             } else if ae.type == "float" {
                 arr = []float; arr = e.value
@@ -162,7 +162,7 @@ struct dbResponse {
                     v float
                     r.scan(&v)
                     arr[i] = v
-                    i = i + 1
+                    i++
                 }
             } else if ae.type == "float32" {
                 arr = []float32; arr = e.value
@@ -171,7 +171,7 @@ struct dbResponse {
                     v float32
                     r.scan(&v)
                     arr[i] = v
-                    i = i + 1
+                    i++
                 }
             } else if ae.type == "str" {
                 arr = []str; arr = e.value
@@ -180,7 +180,7 @@ struct dbResponse {
                     v = ""
                     r.scan(&v)
                     arr[i] = v
-                    i = i + 1
+                    i++
                 }
             } else if ae.type == "bool" {
                 arr = []bool; arr = e.value
@@ -189,7 +189,7 @@ struct dbResponse {
                     v bool
                     r.scan(&v)
                     arr[i] = v
-                    i = i + 1
+                    i++
                 }
             }
         } else {
@@ -213,7 +213,7 @@ fillDBresponse(data ptr, argc int32, argv str*, azColName str*) int32 {
         arg = cStrToBah(noCheck(argv[i]))
         row.cols[i] = col
         row.argv[i] = arg 
-        i = i + 1
+        i++
     }
     dbr.rows[len(dbr.rows)] = row
     return 0

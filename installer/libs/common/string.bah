@@ -1,13 +1,4 @@
-#include "<string.h>"
-#include "<math.h>"
-#include "<stdlib.h>"
-
-#include "cBinds.bah"
-
-#define! sscanf(str str, format str, dest ptr)
-#define! strtol(str str, endptr ptr, base int) int
-#define! strtod(str str, endptr int) float
-#define! atol(a str) int
+const FLOAT_TO_STR_PRECISION = 3
 
 //Used for concatenating two known length strs.
 strCatOffset(dest str, destLen uint, src str, srcLen uint) {
@@ -406,38 +397,6 @@ uintToStr(i uint) str {
     return buffToStr(<char*>s)
 }
 
-//Converts an unsigned int to a hex str.
-uintToHex(i uint) str {
-    if i == 0 {
-        return "0"
-    }
-
-    s = buffer 66
-    ind = -1
-
-    for i != 0, i /= 16 {
-        conv = i % 16
-        conv += 48
-        if conv > 57 {
-            conv += 39
-        }
-        s[ind+1] = <char>conv
-        ind++
-    }
-    
-    ls = ind+1
-    i=0; for i < ls/2, i++ {
-        ii = ls-i-1
-        osi = s[i]
-        s[i] = s[ii]
-        s[ii] = osi
-    }
-
-    s[ind+1] = <char>0
-
-    return buffToStr(<char*>s)
-}
-
 //Used to convert an integer into a string.
 //*It returns a string, not a str*
 intToString(i int) string {
@@ -446,10 +405,46 @@ intToString(i int) string {
 }
 
 //Converts a float to a str.
-floatToStr(f float) str {
-    buff = buffer 50
-    sprintf(<ptr>buff, "%lf", f)
-    return buffToStr(<char*>buff)
+floatToStr(x float) str {
+    s = buffer 32
+    s[31] = null
+    i = 30
+    decimals uint32
+    units int
+
+    if x < 0. {
+        decimals = <uint>(x * -1000.) % 1000
+        units = <int>(-1. * x)
+    } else {
+        decimals = <int>(x * 1000.) % 1000
+        units = <int>x
+    }
+
+    
+    s[i] = <char>(decimals % 10) + '0'
+    decimals /= 10
+    i--
+
+    s[i] = <char>(decimals % 10) + '0'
+    decimals /= 10
+    i--
+
+    s[i] = <char>(decimals % 10) + '0'
+    decimals /= 10
+    i--
+    
+    s[i] = '.'
+
+    for units > 0, units /= 10 {
+        i--
+        s[i] = <char>(units % 10) + '0'
+    }
+
+    if x < 0. {
+        i--
+        s[i] = '-'
+    }
+    return buffToStr(<ptr>(<uint>s + i))
 }
 
 //Used for converting a string to an int.
@@ -623,11 +618,11 @@ strHasSuffix(s str, need str) bool {
     if nl > sl {
         return false
     }
-    i=sl-nl; for i < sl {
-        if s[i] != need[i] {
+    offset = sl - nl
+    i=0; for i < nl, i++ {
+        if s[i + offset] != need[i] {
             return false
         }
-        i++
     }
     return true
 }

@@ -2,8 +2,6 @@
 #include "string.bah"
 #include "rope.bah"
 
-#define! fileno(f FILE*) int
-
 //A wrapper for executting command.
 //This is will return the output of the command.
 //If you dont want stderr, set `.error = false`.
@@ -17,7 +15,7 @@ struct command {
     //Input to feed to the program.
     input: str = null
 
-    handle: FILE*
+    handle: ptr
 
     //To run the command.
     //This returns a str containning the output of the command.
@@ -33,7 +31,7 @@ struct command {
             return ""
         }
         if this.input != null {
-            fputs(this.input, <ptr>this.handle)
+            fputs(this.input, this.handle)
         }
         
         buff = memoryAllocSTR(1024)
@@ -97,8 +95,6 @@ command(s str) command {
     cmd.command = s
     return cmd
 }
-
-#define! execvp(cmd str, args ptr) int
 
 //Exec will execute a binary/command with the specified arguments passed to it.
 //Note that this will take the current proccess.

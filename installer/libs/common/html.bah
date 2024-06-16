@@ -25,7 +25,7 @@ struct htmlElement {
             } else if attr.compare(name) == 1 {
                 return "true"
             }
-            i = i + 1
+            i++
         }
         return ""
     }
@@ -41,7 +41,7 @@ struct htmlElement {
         } else {
             tag = q
         }
-        fc = strCharAt(tag, 0)
+        fc = tag[0]
         if fc == '.' {
             qs.trimLeft(1)
         }
@@ -52,7 +52,7 @@ struct htmlElement {
             } else if fc == '.' {
                 cl = c.attr("class")
                 if strlen(cl) == 0 {
-                    i = i + 1
+                    i++
                     continue
                 }
                 classes = splitString(string(cl), " ")
@@ -61,7 +61,7 @@ struct htmlElement {
                     if class.str() == qs.str() {
                         elems[len(elems)] = c
                     }
-                    j = j + 1
+                    j++
                 }
             } else {
                 if c.name == tag {
@@ -75,7 +75,7 @@ struct htmlElement {
                     qs = oqs
                 }
             }
-            i = i + 1
+            i++
         }
         
         i=0; for i < len(this.children) {
@@ -83,9 +83,9 @@ struct htmlElement {
             es = c.find(q)
             j=0; for j < len(es) {
                 elems[len(elems)] = es[j]
-                j = j + 1
+                j++
             }
-            i = i + 1
+            i++
         }
 
         return elems
@@ -106,7 +106,7 @@ skipHTMLspace(s str, i int) int {
         if isSpace(s[i]) == 0 {
             break
         }
-        i = i + 1
+        i++
     }
     return i
 }
@@ -147,7 +147,7 @@ parseHTMLElements(s str, parent htmlElement*) []htmlElement* {
         if c == '<' {
             elem = new htmlElement
             name = []char
-            i = i + 1
+            i++
             
             //parsing name
             for i < len(s) {
@@ -156,7 +156,7 @@ parseHTMLElements(s str, parent htmlElement*) []htmlElement* {
                     break
                 }
                 name[len(name)] = c
-                i = i + 1
+                i++
             }
             nameS = string(arrToStr(name))
             nameS = toLower(nameS)
@@ -170,15 +170,15 @@ parseHTMLElements(s str, parent htmlElement*) []htmlElement* {
                     
                     //current attribute is a string
                     if len(currentAttr) > 0 && c == <char>34 {
-                        i = i + 1
+                        i++
                         for i < len(s) {
                             c = s[i]
                             if c == <char>34 && s[i-1] != <char>92 {
-                                i = i + 1
+                                i++
                                 break
                             }
                             currentAttr[len(currentAttr)] = c
-                            i = i + 1
+                            i++
                         }
                     }
 
@@ -201,7 +201,7 @@ parseHTMLElements(s str, parent htmlElement*) []htmlElement* {
                     }
 
                     currentAttr[len(currentAttr)] = c
-                    i = i + 1
+                    i++
                 }
             }
             hasContent = true
@@ -210,12 +210,12 @@ parseHTMLElements(s str, parent htmlElement*) []htmlElement* {
                     hasContent = false
                     break
                 }
-                j = j + 1
+                j++
             }
 
             if hasContent == false {
                 elems[len(elems)] = elem
-                i = i + 1
+                i++
                 continue
             }
 
@@ -226,14 +226,14 @@ parseHTMLElements(s str, parent htmlElement*) []htmlElement* {
                     needsParsing = false
                     break
                 }
-                j = j + 1
+                j++
             }
 
             content = strBuilder{}
             text = strBuilder{}
             nbTags = 1
             foundTag = false
-            i = i + 1
+            i++
             if needsParsing == false {
                 
                 for i < len(s) {
@@ -250,7 +250,7 @@ parseHTMLElements(s str, parent htmlElement*) []htmlElement* {
                             for i < len(s) {
                                 buff[len(buff)] = s[i]
                                 if s[i] == name[needleIndex] {
-                                    needleIndex = needleIndex + 1
+                                    needleIndex++
                                     if needleIndex == len(name) {
                                         found = true
                                         break
@@ -258,7 +258,7 @@ parseHTMLElements(s str, parent htmlElement*) []htmlElement* {
                                 } else {
                                     break
                                 }
-                                i = i + 1
+                                i++
                             }
                         }
                         if found == true {
@@ -266,13 +266,13 @@ parseHTMLElements(s str, parent htmlElement*) []htmlElement* {
                         } else {
                             j=0; for j < len(buff) {
                                 content.append(buff[j])
-                                j = j + 1
+                                j++
                             }
                         }
                     } else {
                         content.append(c)
                     }
-                    i = i + 1
+                    i++
                 }
 
 
@@ -287,7 +287,7 @@ parseHTMLElements(s str, parent htmlElement*) []htmlElement* {
                         c = s[i]
                         if i+2 < len(s) {
                             if s[i] == '!' && s[i+1] == '-' && s[i+2] == '-' {
-                                i = i + 3
+                                i += 3
                                 stage = 0
                                 comm = []char
                                 for i < len(s) {
@@ -302,15 +302,15 @@ parseHTMLElements(s str, parent htmlElement*) []htmlElement* {
                                         stage = 0
                                     }
 
-                                    i = i + 1
+                                    i++
                                 }
-                                i = i + 1
+                                i++
                                 continue
                             }
                         }
                         if c == '/' {
                             text.append(' ')
-                            nbTags = nbTags - 1
+                            nbTags--
                         } else {
                             j = skipHTMLspace(s, i)
                             name = []char
@@ -320,7 +320,7 @@ parseHTMLElements(s str, parent htmlElement*) []htmlElement* {
                                     break
                                 }
                                 name[len(name)] = nc
-                                j = j + 1
+                                j++
                             }
                             nameS = string(arrToStr(name))
                             nameS = toLower(nameS)
@@ -328,12 +328,12 @@ parseHTMLElements(s str, parent htmlElement*) []htmlElement* {
                             
                             j=0; for j < len(nonClosingTags) {
                                 if nonClosingTags[j] == nameS.str() {
-                                    nbTags = nbTags - 1
+                                    nbTags--
                                     break
                                 }
-                                j = j + 1
+                                j++
                             }
-                            nbTags = nbTags + 1
+                            nbTags++
                         }
                         if nbTags > 0 {
                             content.append('<')
@@ -350,9 +350,9 @@ parseHTMLElements(s str, parent htmlElement*) []htmlElement* {
                                     if c == <char>34 && s[i-1] != <char>92 {
                                         break
                                     }
-                                    i = i + 1
+                                    i++
                                 }
-                                i = i + 1
+                                i++
                                 continue
                             }
                             if c == '>' { //closing tag
@@ -361,11 +361,11 @@ parseHTMLElements(s str, parent htmlElement*) []htmlElement* {
                             if nbTags > 0 {
                                 content.append(c)
                             }
-                            i = i + 1
+                            i++
                         }
                         if nbTags != 0 {
                             content.append(s[i])
-                            i = i + 1
+                            i++
                             continue
                         }
                     }
@@ -385,7 +385,7 @@ parseHTMLElements(s str, parent htmlElement*) []htmlElement* {
                     } else {
                         text.append(c)
                     }
-                    i = i + 1
+                    i++
                 }
             }
 
@@ -401,7 +401,7 @@ parseHTMLElements(s str, parent htmlElement*) []htmlElement* {
         }
 
 
-        i = i + 1
+        i++
     }
 
     return elems

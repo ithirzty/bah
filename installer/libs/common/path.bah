@@ -1,9 +1,8 @@
-#include "<stdlib.h>"
 #include "iostream.bah"
 #include "string.bah"
 
 #windows {
-    #define! _fullpath(buff str, rel str, l int) str
+    #define _fullpath(buff char*, rel char*, l uint) char*
 }
 
 //Used for getting the absolute path of a file/directory.
@@ -11,22 +10,18 @@
 //Will return null if path does not exist.
 absPath(path str) str {
     #linux {
-        rp = realpath(path, null)
+        rpb = buffer 4096
+        rp = realpath(path, <char*>rpb)
         p = cStrToBah(rp)
-        if rp != null {
-            free(rp)
-        }
     }
     #darwin {
-        rp = realpath(path, null)
+        rpb = buffer 4096
+        rp = realpath(path, <char*>rpb)
         p = cStrToBah(rp)
-        if rp != null {
-            free(rp)
-        }
     }
     #windows {
         buff str = memoryAlloc(4096)
-        p = _fullpath(buff, path, 4095)
+        p = cStrToBah(_fullpath(buff, path, 4095))
         s = string(p)
         s.replace("\\", "/")
         p = s.str()
@@ -53,8 +48,6 @@ isInside(basePath str, subPath str) bool {
     abs2 = absPath(subPath)
     return strHasPrefix(subPath, basePath) == true
 }
-
-#define! chdir(s str)
 
 //To change the current working directory.
 setCurrentPath(s str) {

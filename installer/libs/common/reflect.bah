@@ -1,7 +1,6 @@
 #include "iostream.bah"
 #include "string.bah"
 
-#include "<stddef.h>"
 
 //The reflection of an element (a var).
 //A reflection is a wrapper for informations on the data-type of the element.

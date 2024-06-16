@@ -1,9 +1,44 @@
 #include "string.bah"
-#include "<time.h>"
 
+struct tm {
+    tm_sec: int32
+    tm_min: int32
+    tm_hour: int32
+    tm_mday: int32
+    tm_mon: int32
+    tm_year: int32
+    tm_wday: int32
+    tm_yday: int32
+    tm_isdst: int32
+    tm_gmtoff: int
+    tm_zone: char*
+}
+
+#define time(timer int) int
+#define localtime(timer int*) tm*
+#define strftime(buff char*, len uint, format char*, tp tm*) uint
+
+const TIME_UTC = 1
+
+#linux {
+    #define timespec_get(ts Ctimespec*, base int32) int32
+}
 #darwin {
+    //TODO: remove ulgy .h files...
     #include "<sys/time.h>"
     #include "<mach/clock.h>"
+
+    #define! clock_serv_t ptr
+    #define! mach_timespec_t ptr
+    #define! mach_host_self() ptr
+    #define! mach_task_self() ptr
+    #define! host_get_clock_service(mach ptr, type int, clock clock_serv_t*)
+    #define! clock_get_time(clock clock_serv_t, mts mach_timespec_t*)
+    #define! mach_port_deallocate(mach ptr, clock clock_serv_t)
+}
+
+#windows {
+    #define! clock_gettime(w int, t Ctimespec*) int
 }
 
 //A milisecond in nanoseconds.
@@ -27,7 +62,7 @@ struct time {
     //The format options can be found [here](https://koor.fr/C/ctime/strftime.wp).
     format(a str) str {
         
-        lt int = localtime(&this.timestamp)
+        lt = localtime(&this.timestamp)
 
         buff = buffer 1024
         
@@ -44,36 +79,13 @@ struct time {
     }
 }
 
-struct! timespec {
-    tv_sec: int
-    tv_nsec: int
-}
-
-#linux {
-    #define! timespec_get(ts timespec*, mode int)
-}
-
-#darwin {
-    #define! clock_serv_t ptr
-    #define! mach_timespec_t ptr
-    #define! mach_host_self() ptr
-    #define! mach_task_self() ptr
-    #define! host_get_clock_service(mach ptr, type int, clock clock_serv_t*)
-    #define! clock_get_time(clock clock_serv_t, mts mach_timespec_t*)
-    #define! mach_port_deallocate(mach ptr, clock clock_serv_t)
-}
-
-#windows {
-    #define! clock_gettime(w int, t timespec*) int
-}
-
 
 //Returns the current timestamp in nanoseconds.
 //One nano second looks like this: 0000000000000000001.
 getTimeUnix() int {
-    ts = timespec{}
+    ts = Ctimespec{}
     #linux {
-        timespec_get(&ts, noCheck(TIME_UTC))
+        timespec_get(&ts, TIME_UTC)
     }
     #darwin {
         cclock clock_serv_t
@@ -90,19 +102,6 @@ getTimeUnix() int {
     }
     s = ts.tv_sec * 1000000000 + ts.tv_nsec
     return s
-}
-
-
-struct! tm {
-    tm_sec: int
-    tm_min: int
-    tm_hour: int
-    tm_mday: int
-    tm_mon: int
-    tm_year: int
-    tm_wday: int
-    tm_yday: int
-    tm_isdst: int
 }
 
 //Example

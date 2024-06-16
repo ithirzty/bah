@@ -1,28 +1,7 @@
-#include "cBinds.bah"
-
 #include "iostream.bah"
 #include "string.bah"
 #include "exec.bah"
 #include "thread.bah"
-
-#include "<unistd.h>"
-#include "<signal.h>"
-
-#linux {
-    #include "<sys/types.h>"
-    #include "<sys/socket.h>"
-    #include "<sys/ioctl.h>"
-    #include "<arpa/inet.h>"
-    #include "<netinet/in.h>"
-    #include "<netdb.h>"
-    #include "<openssl/ssl.h>"
-    #include "<openssl/err.h>"
-    #include "<openssl/bio.h>"
-    #include "<sys/select.h>"
-    #include "<sys/time.h>"
-    #include "<poll.h>"
-    #include "<net/if.h>"
-}
 
 #windows {
     #include "<windows.h>"
@@ -35,94 +14,107 @@
 }
 
 
-
-//sockets
-
-#define! socklen_t uint
-
 #windows {
     __httpDNSmutex = mutex()
 }
 
-struct! in_addr {
-    s_addr: char
+const FIONBIO = 21537
+
+const AF_INET		    = 2
+const SOCK_STREAM	    = 1
+const IPPROTO_TCP		= 6
+
+const SOL_SOCKET	  = 0xffff
+
+const SO_ERROR	      = 0x1007
+const SO_REUSEADDR	  = 0x0004
+const SO_KEEPALIVE	  = 0x0008
+const SO_BINDTODEVICE = 25
+
+const SHUT_RDWR = 2
+
+const F_GETFL   = 3
+const F_SETFL   = 4
+
+const FD_CLOEXEC = 1
+
+const POLLOUT = 0x0004
+
+const SSL_FILETYPE_ASN1 = 2
+const SSL_FILETYPE_PEM  = 1
+
+struct in_addr {
+    s_addr: uint32
 }
 
-
-struct! hostent {
-    h_name: str
-    h_aliases: str
-    h_addrtype: int
-    h_length: int
-    h_addr: uint*
-    h_addr_list: str*
+struct hostent {
+    h_name: char*
+    h_aliases: char**
+    h_addrtype: int32
+    h_length: int32
+    h_addr_list: char**
 }
 
-struct! sockaddr_in {
-    sin_family: int
-    sin_port: uint
+struct sockaddr_in {
+    sin_family: uint16
+    sin_port: uint16
     sin_addr: in_addr
+    sin_zero: buffer:8
 }
 
-struct! addrinfo {
-    ai_flags: int
-    ai_family: int
-    ai_socktype: int
-    ai_protocol: int
-    ai_addrlen: int
+struct addrinfo {
+    ai_flags: int32
+    ai_family: int32
+    ai_socktype: int32
+    ai_protocol: int32
+    ai_addrlen: uint32
     ai_addr: sockaddr_in*
-    ai_canonname: str
+    ai_canonname: char*
     ai_next: addrinfo*
 }
 
-struct! timeval {
+struct timeval {
     tv_sec: int
     tv_usec: int
 }
 
-#define! fd_set ptr
-
-#define! inet_ntoa(addr in_addr) str
-#define! inet_addr(a str) in_addr
-
-#define! socket(a int, b int, c int) int
-#define! gethostbyname(h str) hostent*
-#define! htons(p int) uint
-#define! connect(sockfd int, ser_addr sockaddr_in*, s int) int
-#define! send(sockfd int, msg str, msglen int, c int) int
-#define! recv(sockfd int, buff char*, bufflen int, c int) int
-#define! close(sockfd int) int
-#define! htonl(inaddrt int) char
-#define! bind(sockfd int, ser_addr sockaddr_in*, s int) int
-#define! listen(sockfd int, s int) int
-#define! memset(str ptr, w int, s int)
-#define! accept(sockfd int, cliaddr sockaddr_in*, clilen int*) int
-#define! shutdown(fd int, flags int) int
-#define! setsockopt(fd int, w int, flag int, val ptr, flagSize int) int
-#define! getsockopt(fd int, t int, w int, e ptr, el int*) int
-#define! fcntl(fd int, oper int, flag int) int
-#define! FD_ZERO(s ptr)
-#define! FD_SET(sock int, s ptr)
-#define! FD_ISSET(sock int, s ptr) int
-#define! select(sock int, ws ptr, rs ptr, ex ptr, timeout timeval*) int
-#define! ioctl(sock int, f int, v int*) int
-#define! getaddrinfo(host str, port str, hints addrinfo*, addrs addrinfo**) int
-#define! freeaddrinfo(addr addrinfo*)
-
-struct! pollfd {
-    fd: int
-    events: int
-    revents: int
+struct pollfd {
+    fd: int32
+    events: int16
+    revents: int16
 }
 
-#define! poll(fds pollfd*, nfd int, timeout int) int
 
 
-struct! ifreq {
-    ifr_name: str
+struct ifreq {
+    ifr_ifrn: buffer:16
+    ifr_ifru: buffer:16
 }
 
-#define! snprintf(s str, s int, format str)
+#define poll(fds pollfd*, nfds uint, timeout int32) int32
+
+#define inet_ntoa(addr in_addr) char*
+#define inet_addr(a char*) in_addr
+
+#define socket(domain int32, type int32, prot int32) int32
+#define gethostbyname(h char*) hostent*
+#define htons(p uint16) uint
+#define connect(sockfd int32, ser_addr sockaddr_in*, s uint16) int32
+#define send(sockfd int32, msg char*, msglen uint, c int32) int
+#define recv(sockfd int32, buff char*, bufflen uint, c int32) int
+#define htonl(inaddrt int) uint32
+#define bind(sockfd int32, ser_addr sockaddr_in*, s uint16) int32
+#define listen(sockfd int32, s int32) int32
+#define accept(sockfd int32, cliaddr sockaddr_in*, clilen uint32*) int32
+#define shutdown(fd int32, flags int32) int32
+#define setsockopt(fd int32, w int32, flag int32, val ptr, flagSize uint32) int32
+#define getsockopt(fd int32, t int32, w int32, e ptr, el uint32*) int32
+#define fcntl(fd int32, oper int32, flags ptr) int32
+#define ioctl(sock int32, f uint, v ptr) int32
+#define getaddrinfo(host char*, service char*, req addrinfo*, pai addrinfo**) int32
+#define freeaddrinfo(addr addrinfo*)
+#define getpeername(connfd int32, addr sockaddr_in*, s uint32*) int32
+
 
 #windows {
     #define! WSADATA ptr
@@ -150,44 +142,70 @@ struct! ifreq {
 }
 
 
-#define! SSL_library_init() int
-#define! TLSv1_2_client_method() int
-#define! SSL_CTX_new(m int) ptr
-#define! BIO_new_ssl_connect(ctx ptr) ptr
-#define! BIO_set_conn_hostname(bio ptr, h str) int
-#define! BIO_do_connect(bio ptr) int
-#define! BIO_do_handshake(bio ptr) int
-#define! BIO_write(bio ptr, cont str, size int) int
-#define! BIO_should_retry(bio ptr) int
-#define! BIO_read(bio ptr, buff char*, size int) int
-#define! BIO_free_all(bio ptr)
-#define! SSL_CTX_free(ctx ptr)
-#define! SSL_CTX_set_timeout(ctx ptr, t int) int
-#define! BIO_get_ssl(bio ptr, ssl ptr*)
-#define! SSL_set_mode(ssl ptr, mode int)
-#define! SSL_set_tlsext_host_name(ssl ptr, host str) int
-#define! SSL_CTX_set_cipher_list(ctx ptr, l str)
-#define! SSL_CTX_load_verify_locations(ctx ptr, cert str, key str) int
-#define! SSL_CTX_set_default_verify_paths(ctx ptr) int
-#define! SSL_CTX_use_certificate_file(ctx ptr, cert str, ft int) int
-#define! SSL_CTX_set_default_passwd_cb_userdata(ctx ptr, pass str)
-#define! SSL_CTX_use_PrivateKey_file(ctx ptr, key str, ft iny) int
-#define! SSL_CTX_check_private_key(ctx ptr) int
-#define! OpenSSL_add_all_algorithms()
-#define! SSL_new(ctx ptr) ptr
-#define! SSL_set_fd(ssl ptr, sd int)
-#define! SSL_accept(ssl ptr) int
-#define! SSL_read(ssl ptr, buff char*, s int) int
-#define! SSL_write(ssl ptr, buff str, s int) int
-#define! SSL_free(ssl ptr)
-#define! SSL_get_peer_certificate(ssl ptr) ptr
-#define! X509_get_subject_name(cert ptr) char*
-#define! X509_get_issuer_name(cert ptr) char*
-#define! X509_NAME_oneline(s char*, a int, b int) str
-#define! X509_free(cert ptr)
-#define! TLSv1_2_server_method() int
+#define OPENSSL_init_ssl(opts uint, sts ptr) int32
+#define TLS_client_method() ptr
+#define SSL_CTX_new(m ptr) ptr
+#define BIO_new_ssl_connect(ctx ptr) ptr
+#define BIO_ctrl(bio ptr, cmd int32, larg int, parg ptr) int
+#define BIO_test_flags(bio ptr, flag int32) int32
+#define BIO_write(bio ptr, cont char*, size int32) int32
+#define BIO_read(bio ptr, buff char*, size int32) int32
+#define BIO_free_all(bio ptr)
+#define SSL_CTX_free(ctx ptr)
+#define SSL_CTX_set_timeout(ctx ptr, t int) int32
+#define SSL_ctrl(ssl ptr, cmd int32, larg int, parg ptr) int
+#define SSL_CTX_set_cipher_list(ctx ptr, l char*) int32
+#define SSL_CTX_load_verify_locations(ctx ptr, cert char*, key char*) int32
+#define SSL_CTX_set_default_verify_paths(ctx ptr) int32
+#define SSL_CTX_use_certificate_file(ctx ptr, cert char*, ft int32) int32
+#define SSL_CTX_set_default_passwd_cb_userdata(ctx ptr, pass char*)
+#define SSL_CTX_use_PrivateKey_file(ctx ptr, key char*, ft int32) int32
+#define SSL_CTX_check_private_key(ctx ptr) int32
+#define SSL_new(ctx ptr) ptr
+#define SSL_set_fd(ssl ptr, sd int32) int32
+#define SSL_accept(ssl ptr) int32
+#define SSL_read(ssl ptr, buff char*, s int32) int32
+#define SSL_write(ssl ptr, buff str, s int32) int32
+#define SSL_free(ssl ptr)
+#define X509_get_subject_name(cert ptr) char*
+#define X509_get_issuer_name(cert ptr) char*
+#define X509_free(cert ptr)
+#define TLS_server_method() ptr
+#define OPENSSL_init_crypto(opts uint, stgns ptr) int32
 
-__Bah_http_is_ssl_initialized = SSL_library_init()
+OpenSSL_add_all_algorithms() {
+    OPENSSL_init_crypto(0x00000004 | 0x00000008, null)
+}
+
+SSL_set_mode(ssl ptr, mode int) int {
+    return SSL_ctrl(ssl, 33, mode, null)
+}
+
+SSL_set_tlsext_host_name(ssl ptr, host str) int {
+    return SSL_ctrl(ssl, 55, 0, cStr(host))
+}
+
+BIO_set_conn_hostname(bio ptr, h str) int {
+    return BIO_ctrl(bio, 100, 0, cStr(h))
+}
+
+BIO_do_connect(bio ptr) int {
+    return BIO_ctrl(bio, 101, 0, null)
+}
+
+BIO_do_handshake(bio ptr) int {
+    return BIO_ctrl(bio, 101, 0, null)
+}
+
+BIO_should_retry(bio ptr) int32 {
+    return BIO_test_flags(bio, 0x08)
+}
+
+BIO_get_ssl(bio ptr, ssl ptr*) int {
+    return BIO_ctrl(bio, 110, 0, <char*>ssl)
+}
+
+__Bah_http_is_ssl_initialized = OPENSSL_init_ssl(0, null)
 
 //Represents a response buffer for easier i/o reading.
 //You can append to the buffer and read its content.
@@ -243,7 +261,7 @@ struct http_socket {
         this.sockfd = socket(2, 1, 0)
         if this.isOpened() {
             optVal = 1
-            setsockopt(this.sockfd, noCheck(SOL_SOCKET), noCheck(SO_REUSEADDR), &optVal, SIZE_OF_INT)
+            setsockopt(this.sockfd, SOL_SOCKET, SO_REUSEADDR, &optVal, SIZE_OF_INT)
             return true
         }
         return false
@@ -253,9 +271,9 @@ struct http_socket {
     setInterface(s str) bool {
         #linux {
             ifr ifreq
-            memset(&ifr, 0, noCheck(sizeof(ifr)))
-            snprintf(ifr.ifr_name, noCheck(sizeof(ifr.ifr_name)), s)
-            return setsockopt(this.sockfd, noCheck(SOL_SOCKET), noCheck(SO_BINDTODEVICE), &ifr, noCheck(sizeof(ifr))) == 0
+            memset(&ifr, 0, sizeof(ifr))
+            memcpy(ifr.ifr_ifrn, cStr(s), len(s))
+            return setsockopt(this.sockfd, SOL_SOCKET, SO_BINDTODEVICE, &ifr, sizeof(ifr)) == 0
         }
         #windows {
             return false
@@ -265,7 +283,7 @@ struct http_socket {
     //To terminate a socket.
     terminate() bool {
         #linux {
-            return shutdown(this.sockfd, noCheck(SHUT_RDWR)) != -1
+            return shutdown(this.sockfd, SHUT_RDWR) != -1
         }
         #windows {
             return false
@@ -283,11 +301,11 @@ struct http_socket {
         }
 
         #linux {
-            flags = fcntl(this.sockfd, noCheck(F_GETFL), 0)
-            fcntl(this.sockfd, noCheck(F_SETFL), noCheck(flags | FD_CLOEXEC))
+            flags = fcntl(this.sockfd, F_GETFL, 0)
+            fcntl(this.sockfd, F_SETFL, flags | FD_CLOEXEC)
             err = 0
-            errlen = SIZE_OF_INT
-            getsockopt(this.sockfd, noCheck(SOL_SOCKET), noCheck(SO_ERROR), &err, &errlen)
+            errlen uint32 = SIZE_OF_INT
+            getsockopt(this.sockfd, SOL_SOCKET, SO_ERROR, &err, &errlen)
             r = true
             if this.terminate() == false {
                 r = close(this.sockfd) != -1
@@ -311,9 +329,9 @@ struct http_socket {
         #linux {
             addrsup = addrinfo{}
             hints = addrinfo{}
-            hints.ai_family = noCheck(AF_INET)
-            hints.ai_socktype = noCheck(SOCK_STREAM)
-            hints.ai_protocol = noCheck(IPPROTO_TCP)
+            hints.ai_family = AF_INET
+            hints.ai_socktype = SOCK_STREAM
+            hints.ai_protocol = IPPROTO_TCP
 
             addrs = &addrsup
 
@@ -325,17 +343,17 @@ struct http_socket {
             res = -1
             if this.timeout > 0 {
                 iMode = 1
-                ioctl(this.sockfd, noCheck(FIONBIO), &iMode)
+                ioctl(this.sockfd, FIONBIO, &iMode)
                 if connect(this.sockfd, addrs.ai_addr, addrs.ai_addrlen) == 0 {
                     freeaddrinfo(addrs)
                     return false
                 }
                 iMode = 0
-                ioctl(this.sockfd, noCheck(FIONBIO), &iMode)
+                ioctl(this.sockfd, FIONBIO, &iMode)
                 
                 pfd = pollfd{}
                 pfd.fd = this.sockfd
-                pfd.events = noCheck(POLLOUT)
+                pfd.events = POLLOUT
 
 
                 res = poll(&pfd, 1, this.timeout * 1000)
@@ -358,20 +376,20 @@ struct http_socket {
         #windows {
             ip str = memoryAlloc(20)
             server = sockaddr_in{}
-            server.sin_family = noCheck(AF_INET)
+            server.sin_family = AF_INET
             server.sin_port = htons(port)
             __httpDNSmutex.lock()
             he = gethostbyname(host)
             if he == null {
                 __httpDNSmutex.unlock()
-                addr = he.h_addr
-                server.sin_addr.s_addr = <char>*addr
+                addr = *he.h_addr_list
+                server.sin_addr.s_addr = *addr
                 return false
             }
 
             __httpDNSmutex.unlock()
 
-            return connect(this.sockfd, &server, noCheck(sizeof(server))) >= 0
+            return connect(this.sockfd, &server, sizeof(server)) >= 0
         }
         return true
     }
@@ -399,7 +417,7 @@ struct http_socket {
     //To accept a connection after listenning.
     accept() int {
         cliaddr sockaddr_in
-        clilen = 16
+        clilen uint32 = 16
         return  accept(this.sockfd, &cliaddr, &clilen)
     }
 
@@ -433,7 +451,7 @@ struct http_socket {
         nDataLength = 0
         #linux {
             iMode = 0
-            ioctl(this.sockfd, noCheck(FIONBIO), &iMode)
+            ioctl(this.sockfd, FIONBIO, &iMode)
             if this.ssl != null {
                 nDataLength = SSL_read(this.ssl,<char*>buff,1024)
             } else {
@@ -444,7 +462,7 @@ struct http_socket {
             }
             rep.append(<char*>buff, nDataLength)
             iMode = 1
-            ioctl(this.sockfd, noCheck(FIONBIO), &iMode)
+            ioctl(this.sockfd, FIONBIO, &iMode)
         }
 
         for 1 == 1 {
@@ -578,7 +596,6 @@ __HTTP_urlSafeChars = []char{
 //Encoded strings can be used as url parameter without being interpreted as path.
 urlEncode(s str) str {
     r = []char
-    tmps = buffer 10
 
     i=0; for i < len(s), i++ {
         c = s[i]
@@ -586,9 +603,8 @@ urlEncode(s str) str {
             r[len(r)] = c
         } else {
             r[len(r)] = '%'
-            sprintf(<ptr>tmps, "%x", c)
-            l = strlen(<ptr>tmps)
-            j=0; for j < l, j++ {
+            tmps = uintToHex(<uint>c)
+            j=0; for j < len(tmps), j++ {
                 r[len(r)] = tmps[j]
             }
             
@@ -628,7 +644,7 @@ http_broken_pipe(signo int) {
 //To send a str through the specified socket.
 //This is depreacted, use http_socket instead.
 http_send(connfd int, s str) {
-    send(connfd, s, strlen(s), 0)
+    send(connfd, s, len(s), 0)
 }
 
 
@@ -771,7 +787,7 @@ http_response(sock http_socket*) http_response* {
     resp.socket = *sock
 
     iMode = 0
-    ioctl(resp.socket.sockfd, noCheck(FIONBIO), &iMode)
+    ioctl(resp.socket.sockfd, FIONBIO, &iMode)
 
     resp.setHeader("Server", "bah-http-framework")
     resp.setHeader("Connection", "close")
@@ -907,7 +923,7 @@ makeRespFromBody(response response_buffer) http_response* {
 makeRawHttpsRequest(host str, message str, timeout int) response_buffer {
     ssl ptr
 
-    ctx = SSL_CTX_new(TLSv1_2_client_method())
+    ctx = SSL_CTX_new(TLS_client_method())
     if timeout > 0 {
         SSL_CTX_set_timeout(ctx, timeout)
     }
@@ -944,7 +960,7 @@ makeRawHttpsRequest(host str, message str, timeout int) response_buffer {
         println("http: error during ssl handshake with host '"+host+"'.")
     }
 
-    success = BIO_write(bio, message, strlen(message))
+    success = BIO_write(bio, message, len(message))
 
     if success <= 0 {
         if BIO_should_retry(bio) == 0 {
@@ -956,7 +972,7 @@ makeRawHttpsRequest(host str, message str, timeout int) response_buffer {
     }
 
     buff = buffer 1025
-    for true == true {
+    for true {
         size = BIO_read(bio, <char*>buff, 1025)
         if size <= 0 {
             break
@@ -969,7 +985,6 @@ makeRawHttpsRequest(host str, message str, timeout int) response_buffer {
 
 }
 
-#define! getpeername(connfd int, addr sockaddr_in*, s int*) int
 
 struct http_form_file {
     name: str
@@ -1000,7 +1015,7 @@ struct http_request extend http_transport {
             this.socket.timeout = this.timeout
             this.socket.sizeLimit = this.sizeLimit
             if this.url != null {
-                if strlen(this.path) == 0 {
+                if len(this.path) == 0 {
                     this.path = this.url.path.str()
                 }
                 if this.url.proto.compare("https") {
@@ -1027,13 +1042,13 @@ struct http_request extend http_transport {
 
 
         method = this.method
-        if strlen(method) == 0 {
+        if len(method) == 0 {
             method = "GET"
         }
 
 
         path = this.path
-        if strlen(path) == 0 {
+        if len(path) == 0 {
             path = "/"
         }
         message = method +" "+ path + " HTTP/1.0\r\n"
@@ -1287,7 +1302,7 @@ struct http_request extend http_transport {
     //Returns the client IP address.
     getIP() str {
         addr sockaddr_in
-        addrSize int = sizeof(sockaddr_in)
+        addrSize uint32 = sizeof(sockaddr_in)
         getpeername(this.socket.sockfd, &addr, &addrSize)
         return __STR(inet_ntoa(addr.sin_addr))
     }
@@ -1418,8 +1433,8 @@ return http_requestSizeLimited(sock, 0)
 
 #linux {
     sigchld_handler(signo int) {
-        status int
-        pid int
+        status int32
+        pid int32
         pid = waitpid(-1, &status, 1)
         for pid > 0 {
             pid = waitpid(-1, &status, 1)
@@ -1501,7 +1516,7 @@ struct http_server {
 
         this.socket.open()
 
-        if strlen(this.linux_interface) > 0 && this.socket.setInterface(this.linux_interface) == false {
+        if len(this.linux_interface) > 0 && this.socket.setInterface(this.linux_interface) == false {
             panic("http: error setting server's linux interface")
         } 
 
@@ -1533,7 +1548,7 @@ struct http_server {
 
             memset(<ptr>&sa, 0, 152)
             sa.sa_handler = http_broken_pipe
-            sigaction(noCheck(SIGPIPE), &sa, null)
+            sigaction(SIGPIPE, &sa, null)
         }
 
         this.running = true
@@ -1570,7 +1585,7 @@ struct http_server {
 
         //Initialize SSL context
         OpenSSL_add_all_algorithms()        
-        ctx = SSL_CTX_new(TLSv1_2_server_method())
+        ctx = SSL_CTX_new(TLS_server_method())
         if ctx == null {
             this.error = HTTP_SERVER_SSL_INIT_ERROR
             return
@@ -1586,12 +1601,12 @@ struct http_server {
             this.error = HTTP_SERVER_SSL_LOCATION_ERROR
             return
         }
-        if SSL_CTX_use_certificate_file(ctx, certFile, noCheck(SSL_FILETYPE_PEM)) <= 0 {
+        if SSL_CTX_use_certificate_file(ctx, certFile, SSL_FILETYPE_PEM) <= 0 {
             this.error = HTTP_SERVER_SSL_CERT_ERROR
             return
         }
         SSL_CTX_set_default_passwd_cb_userdata(ctx, "__BAH_TODO_pss123567890")
-        if SSL_CTX_use_PrivateKey_file(ctx, keyFile, noCheck(SSL_FILETYPE_PEM)) <= 0 || SSL_CTX_check_private_key(ctx) == 0 {
+        if SSL_CTX_use_PrivateKey_file(ctx, keyFile, SSL_FILETYPE_PEM) <= 0 || SSL_CTX_check_private_key(ctx) == 0 {
             this.error = HTTP_SERVER_SSL_KEY_ERROR
             return
         }
@@ -1600,7 +1615,7 @@ struct http_server {
 
         this.socketTLS.open()
 
-        if strlen(this.linux_interface) > 0 && this.socket.setInterface(this.linux_interface) == false {
+        if len(this.linux_interface) > 0 && this.socket.setInterface(this.linux_interface) == false {
             panic("http: error setting server's linux interface")
         } 
 
@@ -1632,7 +1647,7 @@ struct http_server {
 
             memset(<ptr>&sa, 0, 152)
             sa.sa_handler = http_broken_pipe
-            sigaction(noCheck(SIGPIPE), &sa, null)        
+            sigaction(SIGPIPE, &sa, null)        
         }
 
         this.running = true
@@ -1695,7 +1710,7 @@ isPortAvailable(port int) int {
     cmd = command(cmdS.str())
     cmd.error = false
     s = cmd.run()
-    if strlen(s) > 0 {
+    if len(s) > 0 {
         return 0
     }
     return 1

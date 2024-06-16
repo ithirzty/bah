@@ -350,6 +350,20 @@ valueFunc(fn func*, parent variable*, l []Tok, i int, ltp lineType, elems Elems*
             tts.replace(",", "_COMA_")
             fn.name += "__" + tts.str()
         } else {
+            
+            if tt == "str" && fn.isBinding && arg.type == "char*" {
+                if fn.name != "strlen" {
+                    t.cont = "cStr("+t.cont+")"
+                }
+                tt = "char*"
+            } else if tt == "char*" && t.type == TOKEN_TYPE_FUNC && arg.type == "str" {
+                tfn = searchVirtFuncByToken(&t, elems)
+                if tfn != null && tfn.isBinding {
+                    t.cont = "cStrToBah("+t.cont+")"
+                    tt = "str"
+                }
+            }
+            
             if compTypes(arg.type, tt) == false {
                 throwErr(&t, "Cannot use {TOKEN} ("+tt+") as "+arg.type+" in function call.\n"+getFuncDef(fn))
             }
@@ -560,7 +574,11 @@ valueStruct(l []Tok, i int, ltp lineType, elems Elems*) int {
         if t.type == TOKEN_TYPE_VAR {
             t.parent = searchVarByToken(&t, elems)
         }
-        t.cont += sep + nt.cont
+        if t.isOper {
+            t.cont = "("+t.cont+")" + sep + nt.cont
+        } else {
+            t.cont += sep + nt.cont
+        }
     }
 
     t.ogCont += "."+nt.cont
@@ -976,46 +994,52 @@ valueBool(l []Tok, i int, ltp lineType, elems Elems*) int {
 
     if t.cont == "in" {
         arrT = string(ntt)
-        if arrT.hasPrefix("[]") == 0 {
-            throwErr(&nt, "Cannot use {TOKEN} ("+ntt+") as array.")
-        }
-        arrT.trimLeft(2)
-        if compTypes(ptt, arrT.str()) == false {
-            throwErr(&pt, "Cannot search for {TOKEN} ("+ptt+") in "+ntt+".")
-        }
-        
-        //Generate the C function that will be called to check weither a is inside the array b.
-        comp = ""
-        if ptt == "str" {
-            comp = "((char**)arr->data)[i] != 0 && strcmp(((char**)arr->data)[i], el) == 0"
-        } else {
-            comp = "(("+getCType(arrT.str(), elems).str()+"*)arr->data)[i] == el"
-        }
-        name = genCompilerVar()
-        if arrT.charAt(arrT.length-1) == '*' {
-            nbast = arrT.countChar('*')
-            arrT.trimRight(nbast)
-        }
-        
-        fnTest = "char "+name+"(struct Bah_Array_Type* arr, "+getCType(ptt, elems).str()+" el) {
-        if (__builtin_expect(arr == 0, 0)) {
-            return 0;
-        };
-        for(register int i=arr->length-1; i!=-1;--i) {
-            if ("+comp+") {
-                return 1;
+        if arrT.hasPrefix("[]") {
+            arrT.trimLeft(2)
+            if compTypes(ptt, arrT.str()) == false {
+                throwErr(&pt, "Cannot search for {TOKEN} ("+ptt+") in "+ntt+".")
+            }
+            
+            //Generate the C function that will be called to check weither a is inside the array b.
+            comp = ""
+            if ptt == "str" {
+                comp = "((char**)arr->data)[i] != 0 && strcmp(((char**)arr->data)[i], el) == 0"
+            } else {
+                comp = "(("+getCType(arrT.str(), elems).str()+"*)arr->data)[i] == el"
+            }
+            name = genCompilerVar()
+            if arrT.charAt(arrT.length-1) == '*' {
+                nbast = arrT.countChar('*')
+                arrT.trimRight(nbast)
+            }
+            
+            fnTest = "char "+name+"(struct Bah_Array_Type* arr, "+getCType(ptt, elems).str()+" el) {
+            if (__builtin_expect(arr == 0, 0)) {
+                return 0;
             };
+            for(register int i=arr->length-1; i!=-1;--i) {
+                if ("+comp+") {
+                    return 1;
+                };
+            }
+            return 0;
+            }\n"
+            
+            //Declare the function inside the global scope.
+            postDeclHandle.append(rope(fnTest))
+
+            fnCall = name+"("+nt.cont+", "+pt.cont+")" 
+
+            pt.isExpensive = true
+            pt.cont = fnCall
+        } else if arrT.hasPrefix("map:") {
+            t.isFunc = true
+            pt.isExpensive = true
+            pt.cont = "("+nt.cont+"->get("+nt.cont+", "+pt.cont+") != null)"    
+            println(pt.cont)
+        } else {
+            throwErr(&nt, "Cannot use {TOKEN} ("+ntt+") as array or map.")
         }
-        return 0;
-        }\n"
-        
-        //Declare the function inside the global scope.
-        postDeclHandle.append(rope(fnTest))
-
-        fnCall = name+"("+nt.cont+", "+pt.cont+")" 
-
-        pt.isExpensive = true
-        pt.cont = fnCall
     } else {
         if compTypes(ptt, ntt) == false {
             throwErr(&nt, "Cannot compare {TOKEN} ("+ntt+") with type "+ptt+".")

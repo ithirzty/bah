@@ -1,40 +1,19 @@
-#include "<signal.h>"
-#include "<string.h>"
-#include "<stdlib.h>"
-
-#include "<signal.h>"
-
-#define! sigaction(signum int, act sigaction*, oldact sigaction*)
-#define! sigqueue(pid uint, sig int, val ptr) int
-#define! __builtin_return_address(i uint) ptr
-#define! __builtin_frame_address(i uint) ptr
-#define! stat(path str, s stat*) int
-
-struct! stat {
-    st_size: int
-    st_mtime: int
-    st_ctime: int
-    st_mode: int
-}
-
-struct! sigaction {
-    sa_handler: function(int)
-    sa_sigaction: function(int, ptr, ptr)
-    sa_mask: ptr
-    sa_flags: int
-    sa_restorer: function() 
-}
+//LIB C declarations
+#include "cBinds.bah"
 
 #darwin {
     #include "<mach/mach.h>"
 }
 
-struct! Bah_Array_Type {
+struct Bah_Array_Type {
 	data: ptr
 	length: uint
 	realLength: uint
 	elemSize: uint
 }
+
+#define __BAH_init()
+#define __BAH__main(args Bah_Array_Type*) int
 
 #define __BAH_panic(e str, l str)
 #define __Bah_safe_string(s str) str
@@ -44,7 +23,7 @@ struct! Bah_Array_Type {
 #define __Bah_realocate_arr(arr []ptr, nLength uint32)
 
 //Temporary fix for gcc 14.1
-#cLib "Wno-error=incompatible-pointer-types" "Wno-error=int-conversion"  "Wno-error=implicit-function-declaration"
+#cLib "Wno-error=incompatible-pointer-types" "Wno-error=int-conversion" // "Wno-error=implicit-function-declaration"
 
 const null = <ptr>0
 
@@ -53,10 +32,6 @@ const false = <bool>0
 
 const strLenSize = 8
 
-#define! exit(i int)
-#define! strcmp(a str, b str) int
-#define! strlen(a str) int
-#define! sizeof(p ptr) uint32
 #define len(a ptr) uint
 
 cStr(s str) char* {
@@ -96,29 +71,20 @@ Cstrlen(s char*) int {
 
 const strlen = __bah_strlenSTR
 
-#include "<stdio.h>"
-#include "<unistd.h>"
-#include "<sys/types.h>"
-#include "<sys/stat.h>"
-#include "<fcntl.h>"
-
-#define! write(fd int, t str, l uint)
-#define! read(fd int, t str, l int) int
-#define! alloca(s uint) ptr
-
 //Prints text to the terminal.
 print(s str) {
     write(1, s, len(s))
 }
 
-#unoptimized {
-	#define __BAH_memcpy(dest char*, source char*, l uint)
-	const memcpy = __BAH_memcpy
-}
+// #unoptimized {
+// 	#define memcpy()
+// 	#define __BAH_memcpy(dest char*, source char*, l uint)
+// 	const memcpy = __BAH_memcpy
+// }
 
-#optimized {
-	#import "stdopti.bahstrp"
-}
+// #optimized {
+// 	#import "stdopti.bahstrp"
+// }
 
 #include "memory.bah"
 
@@ -169,6 +135,7 @@ __Bah_multiple_concat(b str*, l uint32) str {
     //allocate return str
     r = memoryAllocSTR(tot + 1)
 
+
     //concatenate all str
     i=0; for i < l, i++ {
         memcpy(<ptr>(<int>r + offset + strLenSize), noCheck(b[i]+strLenSize), noCheck(lens[i]))
@@ -183,21 +150,6 @@ __Bah_multiple_concat(b str*, l uint32) str {
 
 #cLib "lm"
 
-#define! signal(sig int, hdl ptr)
-
-#define! strncpy(a str, b str, l uint)
-#define! strcat(a str, b str)
-
-//Function used by the compiler when concatenating strs.
-//You can use it as a function or do str+str.
-concatstr(a str, b str) str {
-	lenA = len(a)
-	lenB = len(b)
-	r str = memoryAlloc(lenA + lenB + 1)
-	strncpy(r,a,lenA)
-	strcat(r,b)
-	return r
-}
 
 //Funcion used by the compiler to declare a str.
 //It allocates memory for the str.
@@ -255,15 +207,6 @@ __Bah_fnNames_append(fnn __Bah_fnName_mapper) {
 	__Bah_fnNames[len(__Bah_fnNames)] = fnn
 }
 
-#linux {
-	#define backtrace(arr ptr, l int) int
-	#define! readlink(p str, res char*, l int) int
-}
-
-#define! fgets(r char*, l int, f FILE*) char*
-#define! popen(cmd str, type str) ptr
-#define! pclose(hndl FILE*) int
-
 fastExec(s str) str {
     hdl = popen(s, "r")
 
@@ -286,17 +229,49 @@ fastExec(s str) str {
 	return response
 }
 
-#dynamic {
-	#cLib "no-pie" //For the backtrace to work in dynamically linked executables
+// #dynamic {
+// 	#cLib "no-pie" //For the backtrace to work in dynamically linked executables
+// }
+
+//Converts an unsigned int to a hex str.
+uintToHex(i uint) str {
+    if i == 0 {
+        return "0"
+    }
+
+    s = buffer 66
+    ind = -1
+
+    for i != 0, i /= 16 {
+        conv = i % 16
+        conv += 48
+        if conv > 57 {
+            conv += 39
+        }
+        s[ind+1] = <char>conv
+        ind++
+    }
+    
+    ls = ind+1
+    i=0; for i < ls/2, i++ {
+        ii = ls-i-1
+        osi = s[i]
+        s[i] = s[ii]
+        s[ii] = osi
+    }
+
+    s[ind+1] = <char>0
+
+    return buffToStr(<char*>s)
 }
 
 
 __BAH_panic_backtrace_inner(p uint, selfPath buffer:4096, a2l bool) bool {
 	if a2l {
-		buff = buffer 4096
-		memset(buff, 0, 4096)
-		noCheck(sprintf(buff, cStr("addr2line %p -f -i -e %s"), p, selfPath))
-		s = fastExec(buffToStr(<char*>buff))
+
+
+		buff = "addr2line 0x"+uintToHex(p)+" -f -i -e "+buffToStr(<char*>selfPath)
+		s = fastExec(buff)
 		name = ""
 		path = ""
 
@@ -419,7 +394,7 @@ __BAH_panic(e str, line str) {
 onMemoryError function()str = null
 
 //Used by the compiler, called when a memory error occurs.
-__Bah_segfault_handle(sig int) {
+__Bah_segfault_handle(sig int32) {
 	res = ""
 	if onMemoryError != null {
 		res = onMemoryError()
@@ -429,7 +404,7 @@ __Bah_segfault_handle(sig int) {
 
 //Used to register __Bah_segfault_handle().
 __Bah_init_segfaultHandle() bool {
-	signal(noCheck(SIGSEGV), __Bah_segfault_handle)
+	signal(SIGSEGV, __Bah_segfault_handle)
 	return true
 }
 
@@ -481,10 +456,7 @@ __Bah_realocate_arr(arr []ptr, nLength uint32) {
 		indexStr = buffer 65
 		lengthStr = buffer 65
 
-		noCheck(sprintf(indexStr, "%d"+strLenSize, nLength))
-		noCheck(sprintf(lengthStr, "%d"+strLenSize, arr->length))
-
-		panic("builtin: array append out of bounds violation, index = "+cStrToBah(<char*>indexStr)+" and len = "+cStrToBah(<char*>lengthStr)+". Can only append index=length.")
+		panic("builtin: array append out of bounds violation. Can only append index=length.")
 	}
 
 	if nLength >= noCheck(arr->realLength) {
@@ -516,7 +488,7 @@ strSubstitute(s str, i uint, l uint) str {
 arraySubstitute(arr []ptr, i int, l int) ptr {
 	length = l - i
 	if i < 0 || length < 0 || length > len(arr) {
-		panic("builtin: str substitution out of bounds violation.")
+		panic("builtin: array substitution out of bounds violation.")
 	}
 	offset int = i * <int>noCheck(arr->elemSize)
 	na = []ptr

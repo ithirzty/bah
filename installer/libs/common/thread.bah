@@ -1,51 +1,76 @@
-#include "<pthread.h>"
 
 #cLib "lpthread"
 
-#define! pthread_mutex_t int
-#define! pthread_t int
-#define! pthread_cond_t int
+#define pthread_t uint
+
+const PTHREAD_DETACHED            = 0x1
+const PTHREAD_SCOPE_SYSTEM        = 0x2
+const PTHREAD_INHERIT_SCHED       = 0x4
+const PTHREAD_NOFLOAT             = 0x8
+
+const PTHREAD_CREATE_DETACHED     = PTHREAD_DETACHED
+const PTHREAD_CREATE_JOINABLE     = 0
+
+struct pthread_cond_t {
+    size: buffer:48
+}
+
+struct pthread_mutex_t {
+    size: buffer:40
+}
+
+struct pthread_attr_t {
+    size: buffer:56
+}
+
+#define pthread_attr_t pthread_attr_t
+
+#define pthread_mutex_init(lock pthread_mutex_t*, m uint)
+#define pthread_mutex_lock(lock pthread_mutex_t*)
+#define pthread_mutex_unlock(lock pthread_mutex_t*)
+#define pthread_mutex_destroy(lock pthread_mutex_t*)
+#define pthread_cond_init(cond pthread_cond_t*, attr pthread_attr_t*) int32
+#define pthread_cond_signal(cond pthread_cond_t*) int32
+#define pthread_cond_destroy(cond pthread_cond_t*) int32
+#define pthread_cond_wait(cond pthread_cond_t*, mut pthread_mutex_t*) int32
+#define pthread_attr_init(attr pthread_attr_t *) int32
+#define pthread_attr_setstack(attr pthread_attr_t*, stck ptr, size uint) int32
+#define pthread_attr_getstack(attr pthread_attr_t*, stck ptr*, size uint*) int32
+#define pthread_attr_getstacksize(attr pthread_attr_t*, size uint*) int32
+#define pthread_self() pthread_t
+#define pthread_create(id pthread_t*, attr pthread_attr_t*, func ptr, args ptr) int32
+#define pthread_join(id pthread_t, ret ptr) int32
+#define pthread_attr_destroy(attr pthread_attr_t*)
+#define pthread_getattr_np(t pthread_t, attr pthread_attr_t*) int32
+#define pthread_attr_setdetachstate(attr pthread_attr_t*, state int32) int32
+
+#define __thread_create(id pthread_t*, attr pthread_attr_t*, func ptr, args ptr) int32
+#define __thread_join(id pthread_t, ret ptr) int32
 
 #gc {
     #linux {
-        #define! GC_pthread_create(id pthread_t*, attr ptr, func ptr, args ptr)
-        #define! GC_pthread_join(id pthread_t, ret ptr)
+        #define GC_pthread_create(id pthread_t*, attr pthread_attr_t*, func ptr, args ptr) int32
+        #define GC_pthread_join(id pthread_t, ret ptr) int32
         const __thread_create = GC_pthread_create
         const __thread_join = GC_pthread_join
     }
     #darwin {
-        #define! GC_pthread_create(id pthread_t*, attr ptr, func ptr, args ptr)
-        #define! GC_pthread_join(id pthread_t, ret ptr)
+        #define GC_pthread_create(id pthread_t*, attr pthread_attr_t*, func ptr, args ptr) int32
+        #define GC_pthread_join(id pthread_t, ret ptr) int32
         const __thread_create = GC_pthread_create
         const __thread_join = GC_pthread_join
     }
     #windows {
-        #define! pthread_create(id pthread_t*, attr ptr, func ptr, args ptr)
-        #define! pthread_join(id pthread_t, ret ptr)
         const __thread_create = pthread_create
         const __thread_join = pthread_join 
     }
+
 }
 
 #rcp {
-    #define! pthread_create(id pthread_t*, attr ptr, func ptr, args ptr)
-    #define! pthread_join(id pthread_t, ret ptr)
     const __thread_create = pthread_create
     const __thread_join = pthread_join
 }
-
-
-#define! pthread_mutex_init(lock pthread_mutex_t*, m int)
-#define! pthread_mutex_lock(lock pthread_mutex_t*)
-#define! pthread_mutex_unlock(lock pthread_mutex_t*)
-#define! pthread_mutex_destroy(lock pthread_mutex_t*)
-
-#define! pthread_cond_init(cond pthread_cond_t*, attr int) int
-#define! pthread_cond_signal(cond pthread_cond_t*) int
-#define! pthread_cond_destroy(cond pthread_cond_t*) int
-#define! pthread_cond_wait(cond pthread_cond_t*, mut pthread_mutex_t*) int
-
-#define! pthread_self() int
 
 const currentThread = pthread_self
 

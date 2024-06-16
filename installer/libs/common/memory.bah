@@ -1,20 +1,3 @@
-#linux {
-    #include "<sys/mman.h>"
-}
-
-#darwin {
-    #include "<sys/mman.h>"
-}
-
-#windows {
-    #include "<windows.h>"
-    #include "<stdio.h>"
-    #include "<conio.h>"
-    #include "<tchar.h>"
-}
-
-#define! free(a ptr)
-
 #define! void ptr
 
 //Size of an int, use sizeof(int) instead.
@@ -34,10 +17,6 @@ len(a ptr) uint {
     arr Bah_Array_Type* = a
     return arr.length
 }
-
-#define! memmove(dest ptr, src ptr, size uint)
-
-#define! memset(p ptr, v int, s uint)
 
 #include "BAH_MEM_COLLECTOR"
 
@@ -88,37 +67,32 @@ copy(a ptr, b ptr) {
 }
 
 #windows {
-    #define! CreateFileMapping(ihv ptr, sec int, rw int, mos int, bs uint, fn str) ptr
-    #define! MapViewOfFile(f ptr, sec int, mi1 int, mi2 int, bs uint) ptr
-    #define! CloseHandle(mf ptr)
+    #define CreateFileMappingA(ihv ptr, sec int32, rw int32, mos int32, bs uint, fn char*) ptr
+    #define MapViewOfFile(f ptr, sec int32, mi1 int32, mi2 int32, bs uint) ptr
+    #define CloseHandle(mf ptr)
 
-    #define! printf(s str)
+    const SECTION_QUERY                 = 0x0001
+    const SECTION_MAP_WRITE             = 0x0002
+    const SECTION_MAP_READ              = 0x0004
+    const SECTION_MAP_EXECUTE           = 0x0008
+    const SECTION_EXTEND_SIZE           = 0x0010
+    const SECTION_MAP_EXECUTE_EXPLICIT  = 0x0020
 
-    const PROT_READ = 2
-    const PROT_READWRITE = 4
+    const STANDARD_RIGHTS_REQUIRED  = 0x000f0000
+
+    const SECTION_ALL_ACCESS    = 983071
+
+    const PROT_READ             = 2
+    const PROT_READWRITE        = 4
+    const FILE_MAP_WRITE        = SECTION_MAP_WRITE
+    const FILE_MAP_READ         = SECTION_MAP_READ
+    const FILE_MAP_ALL_ACCESS   = SECTION_ALL_ACCESS
+    const FILE_MAP_COPY         = 0x1
+    const FILE_MAP_RESERVE      = 0x80000000
+
 
     GLOBAL_MAPPED_MEMORY_FILE ptr
 }
-
-#linux {
-    #define! mmap(addr int, ps uint, prot int, flags int, fd int, offset int) ptr
-    const PROT_READ = 1
-    const PROT_WRITE = 2
-    const PROT_READWRITE = 3
-    const MAP_SHARED = 1
-    const MAP_ANONYMOUS = 32
-}
-
-#darwin {
-    #define! mmap(addr int, ps uint, prot int, flags int, fd int, offset int) ptr
-    const PROT_READ = 1
-    const PROT_WRITE = 2
-    const PROT_READWRITE = 3
-    const MAP_SHARED = 1
-    const MAP_ANONYMOUS = 32
-}
-
-
 
 //Will allocate a page of shared memory and returns a pointer to it.
 //The size should be an multiple of 4096. A size of 0 will set the page size to the default (4096).
@@ -135,10 +109,10 @@ sharedMemory(size uint) ptr {
     }
     #windows {
         if GLOBAL_MAPPED_MEMORY_FILE == null {
-            GLOBAL_MAPPED_MEMORY_FILE = CreateFileMapping(-1, 0, PROT_READWRITE, 0, size, "Global\\BahFileMap")
+            GLOBAL_MAPPED_MEMORY_FILE = CreateFileMappingA(-1, 0, PROT_READWRITE, 0, size, "Global\\BahFileMap")
         }
         if GLOBAL_MAPPED_MEMORY_FILE == null {
-            printf("sharedMemory: could not make map file.")
+            print("sharedMemory: could not make map file.")
             exit(1)
         }
         r = MapViewOfFile(GLOBAL_MAPPED_MEMORY_FILE, noCheck(FILE_MAP_ALL_ACCESS), 0, 0, size)
@@ -201,7 +175,7 @@ delete(a ptr, i uint) {
 
 
     memmove(dest, src, rightNB * elemSize)
-    arr.length = length - 1
+    arr.length--
 }
 
 //Like delete() but for a range.
@@ -211,9 +185,11 @@ deleteRange(a ptr, from uint, to uint) {
         delete(a, from)
         return
     }
-    arr Bah_Array_Type* = a
-    length = len(<[]ptr>a)
 
+
+    arr Bah_Array_Type* = a
+    length = arr.length
+    
     elemSize int = arr.elemSize
     data char* = arr.data
     size = elemSize * (to - from)
@@ -228,7 +204,7 @@ deleteRange(a ptr, from uint, to uint) {
     }
 
     memmove(dest, src, rightNB * elemSize)
-    arr.length = length - (to - from + 1)
+    arr.length -= (to - from + 1)
 }
 
 

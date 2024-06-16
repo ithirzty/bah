@@ -1,11 +1,3 @@
-#include "<stdlib.h>"
-#include "<stdio.h>"
-#include "<dirent.h>"
-
-#include "cBinds.bah"
-
-#define! FILE ptr
-
 __Bah_iostream_stdinputBuffer = ""
 __Bah_iostream_stdinputBufferLength = 0
 
@@ -61,18 +53,12 @@ println(s str) {
     write(<ptr>1, s+"\n", len(s)+1)
 }
 
-#define! fwrite(w ptr, s uint, f uint, hndl FILE*)
-#define! fread(w ptr, s uint, f uint, hndl FILE*) int
-#define! ftell(hndl FILE*) int
-#define! fseek(hndl FILE*, offset uint, from uint)
-#define! fputc(c char, hndl FILE*)
-
 //A wrapper that makes file manipulation easier.
 //*Note: after openning a file, you will need to close it.*
 //**Warning:** fileStream can be many, many times slower than fileMap.
 //So it is recommended to **use fileMap as much as possible**.
 struct fileStream {
-    handle: FILE*
+    handle: ptr
     name: str
 
     //Checks if the current opened file is valid or not.
@@ -212,16 +198,6 @@ struct fileStream {
 
 }
 
-#define! open(fn str, flags int, mode int) int
-#define! close(fd int) int
-#define! fstat(fd int, fs stat*)
-#linux {
-    #define! munmap(p ptr, l int)
-}
-#darwin {
-    #define! munmap(p ptr, l int)
-}
-
 //A wrapper to make file direct operation, wihtout needing to write file on changes.
 //**This is way faster than the fileStream** but every modification made to the returned string will be directly made to the file.
 struct fileMap {
@@ -233,25 +209,27 @@ struct fileMap {
     //It returns the content of the file as str.
     open(fileName str) []char {
         #linux {
-            this.handle = open(fileName, noCheck(O_RDWR), noCheck(S_IRUSR | S_IWUSR))
+            this.handle = open(fileName, O_RDWR, S_IRUSR | S_IWUSR)
             sb = stat{}
             fstat(this.handle, &sb)
             this.size = sb.st_size
-            this.p = mmap(0, sb.st_size, noCheck(PROT_READ | PROT_WRITE), noCheck(MAP_SHARED), this.handle, 0)
+            this.p = mmap(0, sb.st_size, PROT_READ | PROT_WRITE, MAP_SHARED, this.handle, 0)
             arr = []char
-            noCheck(arr->length = this->size)
-            noCheck(arr->data = this->p)
+            bArr = <Bah_Array_Type*>arr
+            bArr.length = this.size
+            bArr.data = this.p
             return arr
         }
         #darwin {
-            this.handle = open(fileName, noCheck(O_RDWR), noCheck(S_IRUSR | S_IWUSR))
+            this.handle = open(fileName, O_RDWR, S_IRUSR | S_IWUSR)
             sb = stat{}
             fstat(this.handle, &sb)
             this.size = sb.st_size
-            this.p = mmap(0, sb.st_size, noCheck(PROT_READ | PROT_WRITE), noCheck(MAP_SHARED), this.handle, 0)
+            this.p = mmap(0, sb.st_size, PROT_READ | PROT_WRITE, MAP_SHARED, this.handle, 0)
             arr = []char
-            noCheck(arr->length = this->size)
-            noCheck(arr->data = this->p)
+            bArr = <Bah_Array_Type*>arr
+            bArr.length = this.size
+            bArr.data = this.p
             return arr
         }
 
@@ -296,14 +274,6 @@ struct fileMap {
     }
 }
 
-struct! dirent {
-    d_name: char*
-}
-
-#define! opendir(path str) ptr
-#define! closedir(d ptr)
-#define! readdir(d ptr) dirent*
-
 //Returns a list of all files found inside the specified directory.
 listFiles(dir str) []str {
     d = opendir(dir)
@@ -314,7 +284,7 @@ listFiles(dir str) []str {
     file = readdir(d)
     for file != null {
         lf = len(files)
-        name = cStrToBah(file.d_name)
+        name = cStrToBah(<char*>file.d_name)
         if name != "." && name != ".." {
             files[lf] = name
         }
@@ -324,7 +294,6 @@ listFiles(dir str) []str {
     return files
 }
 
-#define! access(fn str, m int) int
 
 //Checks if a file exists.
 fileExists(path str) bool {
@@ -337,13 +306,11 @@ isFolder(path str) bool {
     if stat(path, &s) != 0 {
         return false
     }
-    if s.st_mode & <int>noCheck(S_IFDIR) {
+    if s.st_mode & S_IFDIR {
         return true
     }
     return false
 }
-
-#define! remove(fn str) int
 
 //Removes a file. 'name' should be the file name, returns true if the file was deleted.
 removeFile(name str) bool {
@@ -357,20 +324,28 @@ removeFile(name str) bool {
 getLastModified(name str) int {
     attr stat
     stat(name, &attr)
-    return attr.st_ctime
+    return attr.st_ctim.tv_sec
 }
 
-#define! getenv(s str) str
-#define! mkdir(s str, m int) int
-#define! rename(o str, n str)
 
-
-#windows {
-    __windows_mkdir(s str, m int) int {
-        return noCheck(mkdir(s))
+#linux {
+    makeDir(path str, m uint32) bool {
+        return mkdir(path, m) != -1
     }
-    const mkdir = __windows_mkdir
 }
+#darwin {
+    makeDir(path str, m uint32) bool {
+        return mkdir(path, m) != -1
+    }
+}
+#windows {
+    __windows_mkdir(s str, m int) bool {
+        return mkdir(s) != -1
+    }
+    const makeDir = __windows_mkdir
+}
+
+
 
 //Example
 // #include "iostream.bah"

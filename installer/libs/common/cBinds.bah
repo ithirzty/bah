@@ -1,18 +1,224 @@
-#define! fopen(path str, mode str) ptr
-#define! fputs(s str, handle ptr)
-#define! fclose(handle ptr)
-#define! rewind(handle ptr)
-#define! getc(handle ptr) char
-#define! puts(s str)
-#define! strcpy(dest str, source str)
-#define! sprintf(buff str, format str, v ptr)
-#define! atoi(s str) int
-#define! itoa(i int, s str, base int) str
-#define! waitpid(m int, s int*, w int) int
-#define! fork() int
-#define! realpath(path str, buff ptr) ptr
-#define! getcwd(cwd str, s int)
-#define! time(t int) int
-#define! localtime(t int*) int
-#define! strftime(buff str, len int, format str, t int) int
-#define! sleep(t int)
+//signals
+struct sigset_t {
+	val: buffer:128
+}
+
+const	SIGHUP 		= 1
+const	SIGINT 		= 2
+const	SIGQUIT 	= 3
+const	SIGILL 		= 4
+const	SIGTRAP 	= 5
+const	SIGABRT 	= 6
+const	SIGIOT 		= 6
+const	SIGEMT 		= 7
+const	SIGFPE 		= 8
+const	SIGKILL 	= 9
+const	SIGBUS 		= 10
+const	SIGSEGV 	= 11
+const	SIGSYS 		= 12
+const	SIGPIPE 	= 13
+const	SIGALRM 	= 14
+const	SIGTERM 	= 15
+const	SIGURG 		= 16
+const	SIGSTOP 	= 17
+const	SIGTSTP 	= 18
+const	SIGCONT 	= 19
+const	SIGCHLD 	= 20
+const	SIGTTIN 	= 21
+const	SIGTTOU 	= 22
+const	SIGIO 		= 23
+const	SIGXCPU 	= 24
+const	SIGXFSZ 	= 25
+const	SIGVTALRM 	= 26
+const	SIGPROF 	= 27
+const 	SIGWINCH 	= 28
+const 	SIGINFO 	= 29
+const 	SIGUSR1 	= 30
+const 	SIGUSR2 	= 31
+
+const SA_ONSTACK	= 0x0001
+const SA_RESTART	= 0x0002
+const SA_RESETHAND	= 0x0004
+const SA_NODEFER	= 0x0010
+const SA_NOCLDWAIT	= 0x0020
+const SA_NOCLDSTOP	= 0x0008
+const SA_SIGINFO	= 0x0040
+
+struct sigaction {
+    sa_handler: ptr //also: sa_sigaction (function(ptr) or function(ptr, int))
+    sa_mask: sigset_t
+    sa_flags: int32
+    sa_restorer: function() 
+}
+
+#define sigaction(signum int32, act sigaction*, oldact sigaction*) int32
+#define sigqueue(pid int32, sig int32, val ptr) int
+#define signal(signum int32, hdl function(int32)) function(int32)
+
+//memory
+const PROT_READ = 1
+const PROT_WRITE = 2
+const PROT_READWRITE = 3
+const MAP_SHARED = 1
+const MAP_ANONYMOUS = 32
+
+#define memcpy(dest ptr, src ptr, size uint) ptr
+#define memmove(dest ptr, src ptr, size uint) ptr
+#define memset(p ptr, v int32, s uint) ptr
+#define alloca(s uint) ptr
+
+
+#linux {
+    #define mmap(addr ptr, ps uint, prot int32, flags int32, fd int32, offset int) ptr
+    #define munmap(addr ptr, l uint) int32
+}
+
+#darwin {
+    #define mmap(addr ptr, ps uint, prot int32, flags int32, fd int32, offset int) ptr
+    #define munmap(addr ptr, l uint) int32
+}
+
+
+//strings
+#define strcmp(a char*, b char*) int32
+#define strlen(a char*) uint
+#define strncpy(a char*, b char*, l uint)
+#define strcat(a char*, b char*)
+#define strcpy(dest char*, source char*)
+#define strtol(str str, endptr char**, base int32) int //stdlib.h
+#define strtod(str char*, endptr char**) float32 //stdlib.h
+#define atol(a char*) int32 //stdlib.h
+
+//path
+#define realpath(path char*, buff char*) char*
+
+//compiler macros
+#define! __builtin_return_address(i uint) ptr
+#define! __builtin_frame_address(i uint) ptr
+#define! __builtin_prefetch(p ptr)
+#define! sizeof(p char*) uint32
+#define! __builtin_offsetof(t ptr, m ptr) int
+const offsetof = __builtin_offsetof
+
+//flow
+#define exit(i int32)
+#define sleep(t uint)
+#define waitpid(m int32, s int32*, w int32) int32
+
+//time
+struct Ctimespec { //defined in pthread
+    tv_sec: int
+    tv_nsec: int
+}
+
+//io
+struct stat {
+	st_dev: uint
+	st_ino: uint
+	st_nlink: uint
+	st_mode: uint32
+	st_uid: uint32
+	st_gid: uint32
+	pad0: int32
+	st_rdev: uint
+	st_size: int
+	st_blksize: int
+	st_blocks: int
+	st_atim: Ctimespec
+	st_mtim: Ctimespec
+	st_ctim: Ctimespec
+	_glibc_reserved0: int
+	_glibc_reserved1: int
+	_glibc_reserved2: int
+}
+
+const O_RDONLY	= 0x0000
+const O_WRONLY	= 0x0001
+const O_RDWR	= 0x0002
+const O_ACCMODE	= 0x0003
+
+const S_IRWXU	= 0000700
+const S_IRUSR	= 0000400
+const S_IWUSR	= 0000200
+const S_IXUSR	= 0000100
+
+const PROT_NONE		= 0x00
+const PROT_READ		= 0x01
+const PROT_WRITE	= 0x02
+const PROT_EXEC		= 0x04
+
+const MAP_FILE		= 0x00
+const MAP_SHARED	= 0x01
+const MAP_PRIVATE	= 0x02
+const MAP_ANONYMOUS	= 0x20 
+const MAP_ANON		= MAP_ANONYMOUS
+const MAP_FAILED	= <ptr>-1
+
+const S_IFMT  = 0170000
+const S_IFREG = 0100000
+const S_IFBLK = 0060000
+const S_IFDIR = 0040000
+const S_IFCHR = 0020000
+const S_IFIFO = 0010000
+const S_ISUID = 0004000
+
+struct dirent {
+	d_ino: uint
+	d_off: int
+	d_reclen: uint16
+	d_type: byte
+    d_name: buffer:256
+}
+
+struct! _IO_FILE {} //defined by the compiler
+#define FILE _IO_FILE
+#define popen(cmd char*, type char*) FILE*
+#define pclose(hndl FILE*) int
+#define remove(fn char*) int32
+#define rename(from char*, to char*) int32
+#define fopen(path char*, mode char*) FILE*
+#define fputs(s char*, handle FILE*)
+#define fgets(r char*, l int32, f FILE*) char*
+#define fwrite(w char*, s uint, n uint, hndl FILE*) uint
+#define fread(w char*, s uint, n uint, hndl FILE*) uint
+#define ftell(hndl FILE*) int32
+#define fclose(handle FILE*)
+#define fseek(hndl FILE*, offset int, from int32) int32
+#define rewind(handle FILE*)
+#define getc(handle FILE*) char
+#define fputc(c char, hndl FILE*)
+#define write(fd int32, t char*, l uint) int
+#define read(fd int32, t char*, l uint) int
+#define close(fd int32) int
+#define execvp(cmd char*, args ptr) int32
+#define getcwd(cwd char*, s uint) char*
+#define chdir(s char*) int32
+#define stat(path char*, s stat*) int32
+#define open(fn char*, flags int32, va ptr) int32
+#define fstat(fd int32, fs stat*) int32
+#define opendir(path char*) ptr
+#define closedir(d ptr) int32
+#define readdir(d ptr) dirent*
+
+#linux {
+	#define readlink(p char*, res char*, l uint) int
+	#define mkdir(s char*, m uint32) int32
+}
+#darwin {
+	#define readlink(p char*, res char*, l uint) int
+	#define mkdir(s char*, m uint32) int32
+}
+
+#windows {
+	#define mkdir(s char*) int32
+}
+
+// #define! fileno(f FILE*) int
+// #define! puts(s str)
+// #define! atoi(s str) int
+// #define! itoa(i int, s str, base int) str
+// #define! fork() int
+
+
+// #define! access(fn str, m int) int
+// #define! getenv(s str) str

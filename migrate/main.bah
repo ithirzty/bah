@@ -80,6 +80,20 @@ migrateFile(fn str) {
             logChange(fn, tokens[i].line, "Type: cpstring -> str")
         }
 
+        //replace short type to int16
+        if tokens[i].cont == "short" {
+            r += rope(file[lastPos:tokens[i].pos] + "int16")
+            lastPos = tokens[i].pos + len(tokens[i].ogCont)
+            logChange(fn, tokens[i].line, "Type: short -> int16")
+        }
+
+        //replace ushort type to uint16
+        if tokens[i].cont == "ushort" {
+            r += rope(file[lastPos:tokens[i].pos] + "uint16")
+            lastPos = tokens[i].pos + len(tokens[i].ogCont)
+            logChange(fn, tokens[i].line, "Type: ushort -> uint16")
+        }
+
         //replacing cpstring casts
         if tokens[i].cont == "<cpstring>" {
             r += rope(file[lastPos:tokens[i].pos] + "<str>")
@@ -281,7 +295,13 @@ migrateFile(fn str) {
 
 main(args []str) int {
 
-    migrateFile(absPath(args[1]))
+    i=1; for i < len(args), i++ {
+        if strHasSuffix(args[i], ".bah") == false {
+            println("Skipping: "+args[i])
+            continue
+        }
+        migrateFile(absPath(args[i]))
+    }
 
     println("\nSummary: migrated "+uintToStr(len(migratedFiles))+" files:")
     i=0; for i < len(compilerState.includes), i++ {

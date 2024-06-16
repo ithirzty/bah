@@ -30,7 +30,8 @@ readCache()  {
     fs = fileStream{}
     fs.open(BAH_DIR + "cache/cache.json", "r")
     if fs.isValid() == 0 || fs.getSize() == 0 {
-        mkdir(BAH_DIR + "cache", noCheck(S_IRWXU))
+        
+        makeDir(BAH_DIR + "cache", S_IRWXU)
         fs.createFile(BAH_DIR + "cache/cache.json")
         cacheMutex.unlock()
         return

@@ -36,7 +36,7 @@ struct! XFontStruct {
 #define! XClearArea(d Display*, w Window ,x int, y int, w int, h int, c int)
 #define! DefaultGC(d Display*, s int) GC
 #define! XFillRectangle(d Display*, w Window, gc GC, x int, y int, w int, h int)
-#define! XDrawString(d Display*, w Window, gc GC, x int, y int, s cpstring, l int)
+#define! XDrawString(d Display*, w Window, gc GC, x int, y int, s str, l int)
 #define! XDefaultColormap(d Display*,s int) Colormap
 #define! XAllocColor(d Display*,cmap Colormap,cc XColor*) int
 #define! XSetForeground(d Display*,gc GC,p uint)
@@ -44,14 +44,14 @@ struct! XFontStruct {
 #define! XCreateGC(d Display*,w Window,ma int,mb int) GC
 #define! XFlush(d Display*)
 #define! XGetGeometry(d Display*, w Window, rw int, x int, y int, w int*, h int*, bw int, d int)
-#define! XLoadQueryFont(d Display*, name cpstring) XFontStruct*
+#define! XLoadQueryFont(d Display*, name str) XFontStruct*
 #define! XSetFont(d Display*, gc GC, f Font)
-#define! XTextWidth(f XFontStruct*, s cpstring, l int) int
+#define! XTextWidth(f XFontStruct*, s str, l int) int
 #define! XFreeFont(d Display*, f XFontStruct*)
 #define! XDrawLine(d Display*, w Window, gc GC, x1 int, y1 int, x2 int, y2 int)
 #define! XDrawArc(d Display*, w Window, gc GC, x int, y int, w int, h int, a1 int, a2 int)
 #define! XFillArc(d Display*, w Window, gc GC, x int, y int, w int, h int, a1 int, a2 int)
-#define! XLookupString(evt XEvent*, buff cpstring, len int, key KeySym*, status int)
+#define! XLookupString(evt XEvent*, buff str, len int, key KeySym*, status int)
 keysym KeySym = <KeySym>418
 
 struct winEvent {
@@ -128,7 +128,7 @@ struct color {
 struct style {
     color: color
     thickness: int
-    font: cpstring
+    font: str
 }
 
 NEW_STYLE_STRUCT() style {
@@ -163,12 +163,12 @@ struct graphicElem extend graphicElemStyle {
     hover: graphicElemStyle
 
     type: int
-    content: cpstring = null
+    content: str = null
 
     handle: function(graphicElem* , ptr)
                                     //graphicApp*
 
-    setText(t cpstring) {
+    setText(t str) {
         this.content = memoryAlloc(strlen(t)+1)
         strcpy(this.content, t)
     }
@@ -222,11 +222,11 @@ struct graphicApp {
         XDrawArc(this.d, this.w, this.gc, x, y, w, h, a1 * 64, a2 * 64)
     }
 
-    text(x int, y int, text cpstring) {
+    text(x int, y int, text str) {
         XDrawString(this.d, this.w, this.gc, x, y, text, strlen(text))
     }
 
-    setFont(name cpstring) {
+    setFont(name str) {
 
         if this.currentFont != null {
             XFreeFont(this.d, this.currentFont)
@@ -277,7 +277,7 @@ struct graphicApp {
 
     //ui elems
 
-    button(name cpstring, x int, y int, w int, hdl ptr) graphicElem* {
+    button(name str, x int, y int, w int, hdl ptr) graphicElem* {
         this.currentElemId = this.currentElemId + 1 
         elem = new graphicElem
 
@@ -306,7 +306,7 @@ struct graphicApp {
         return elem
     }
 
-    input(name cpstring, x int, y int, w int, h int, hdl ptr) graphicElem* {
+    input(name str, x int, y int, w int, h int, hdl ptr) graphicElem* {
         this.currentElemId = this.currentElemId + 1 
         elem = new graphicElem
 
@@ -348,7 +348,7 @@ struct graphicApp {
                     padd = 10
                 if textWidth < ptr.width {
                     padd = ptr.width - textWidth
-                    padd = padd / 2
+                    padd /= 2
                 } else {
                     ptr.width = textWidth + 20
                 }
@@ -407,7 +407,7 @@ struct graphicApp {
                 text = string(ptr.content)
                 for textWidth >= ptr.width {
                     text.trimLeft(1)
-                    textWidth = XTextWidth(this.currentFont, text.cpstring(), text.length)
+                    textWidth = XTextWidth(this.currentFont, text.str(), text.length)
                 }
 
                 r int
@@ -455,10 +455,10 @@ struct graphicApp {
                 if ptr == this.focusElem {
                     text.append("|")
                 }
-                this.text(ptr.x+5,ptr.y+ptr.height/2+4,text.cpstring())
+                this.text(ptr.x+5,ptr.y+ptr.height/2+4,text.str())
             }
 
-            i = i + 1
+            i++
         }
     }
 
@@ -481,7 +481,7 @@ struct graphicApp {
                     }
                 }
             }
-            i = i + 1
+            i++
         }
         if found == 0 {
             this.focusElem = <ptr>0
@@ -508,7 +508,7 @@ struct graphicApp {
         } else {
             text.append(charToString(key))
         }
-        this.focusElem.setText(text.cpstring())
+        this.focusElem.setText(text.str())
         this.clear()
     }
 
@@ -541,7 +541,7 @@ struct graphicApp {
             if changed == 1 {
                 this.clear()
             }
-            i = i + 1
+            i++
         }
     }
 
@@ -580,7 +580,7 @@ struct graphicApp {
             } else if evt.type == WIN_EVENT_CLICK {
                 this.clickElems(evt.clickX, evt.clickY)
             } else if evt.type == WIN_EVENT_KEYPRESS {
-                text cpstring = memoryAlloc(10)
+                text str = memoryAlloc(10)
                 key KeySym
                 XLookupString(&e, text, 10, &key, 0)
                 stext = string(text)

@@ -82,7 +82,7 @@ matchToken(tp ptr, c char) int {
                     return 1
                 }
             }
-            i = i + 1
+            i++
         }
     }
     return 0
@@ -102,7 +102,7 @@ struct regex {
         i=0;for i<len(this.tokens) {
             t = this.tokens[i]
             t.match = string("")
-            i = i + 1
+            i++
         }
         s = string(cps)
         maxS = s.length - 1
@@ -120,11 +120,11 @@ struct regex {
                 ga = []regexToken*
                 lg = len(this.groups)
                 this.groups[lg] = ga
-                i=i+1
+                i++
                 continue
             } else if t.type == REGEX_TYPE_GROUP_END {
                 isGroup = 0
-                i=i+1
+                i++
                 continue
             } else if isGroup == 1 {
                 found = 0
@@ -137,7 +137,7 @@ struct regex {
                         found = 1
                         break
                     }
-                    aii = aii + 1
+                    aii++
                 }
                 if found == 0 {
                     lai = len(alreadyInserted)
@@ -149,13 +149,13 @@ struct regex {
                 if si < s.length {
                     return 0
                 }
-                i = i + 1
+                i++
                 continue
             } else if t.type == REGEX_TYPE_START {
                 if si != 0 {
                     return 2
                 }
-                i = i + 1
+                i++
                 continue
             }
 
@@ -165,7 +165,7 @@ struct regex {
                 c = s.charAt(si)
 
                 if matchToken(t, c) {
-                    currentMatch = currentMatch + 1
+                    currentMatch++
                     if t.match.length == 0 {
                         t.match = string("")
 
@@ -177,12 +177,12 @@ struct regex {
 
                 if t.quantifierMax != -1 {
                     if currentMatch == t.quantifierMax {
-                        si = si + 1
+                        si++
                         break
                     }
                 }
 
-                si = si + 1
+                si++
             }
 
             if currentMatch < t.quantifierMin {
@@ -196,10 +196,10 @@ struct regex {
                     }
                     pt = this.tokens[goBackI]
                     if pt.type == REGEX_TYPE_GROUP_START {
-                        goBackI = goBackI - 1
+                        goBackI--
                         continue
                     } else if pt.type == REGEX_TYPE_GROUP_END {
-                        goBackI = goBackI - 1
+                        goBackI--
                         continue
                     }
                     if pt == null {
@@ -210,10 +210,10 @@ struct regex {
                     nm = string("")
                     nbMatches = 0
                     for goBackMatchI >= 0 {
-                        goBackLength = goBackLength + 1
+                        goBackLength++
                         gbc = pt.match.charAt(goBackMatchI)
                         if matchToken(ppt, gbc) {
-                            nbMatches = nbMatches + 1
+                            nbMatches++
                             if ppt.quantifierMax == -1 {
                                 if nbMatches >= ppt.quantifierMin {
                                     canGoBack = 1
@@ -221,12 +221,12 @@ struct regex {
                                     nmI=0;for nmI<maxNm {
                                         nmc = pt.match.charAt(nmI)
                                         nm.append(charToString(nmc))
-                                        nmI = nmI + 1
+                                        nmI++
                                     }
                                     pt.match.set(nm.str())
                                     if maxNm == 0 {
                                         canGoBack = 0
-                                        goBackI = goBackI - 1
+                                        goBackI--
                                         continue
                                     }
                                     
@@ -239,12 +239,12 @@ struct regex {
                                     nmI=0;for nmI<maxNm {
                                         nmc = pt.match.charAt(nmI)
                                         nm.append(charToString(nmc))
-                                        nmI = nmI + 1
+                                        nmI++
                                     }
                                     pt.match.set(nm.str())
                                     if maxNm == 0 {
                                         canGoBack = 0
-                                        goBackI = goBackI - 1
+                                        goBackI--
                                         continue
                                     }
                                     
@@ -252,7 +252,7 @@ struct regex {
                                 }
                             }
                         }
-                        goBackMatchI = goBackMatchI - 1
+                        goBackMatchI--
                     }
 
                     if goBackMatchI < 0 {
@@ -266,7 +266,7 @@ struct regex {
                     return 0
                 }
 
-                si = si - goBackLength
+                si -= goBackLength
                 
 
                 i = goBackI+1
@@ -275,7 +275,7 @@ struct regex {
                 return 0
             }
 
-            i = i + 1
+            i++
         }
 
         //TODO: if string end not reached on END token
@@ -298,7 +298,7 @@ struct regex {
             } else if r == 2 {
                 return 0
             }
-            i = i + 1
+            i++
         }
         return r
     }
@@ -315,7 +315,7 @@ struct regex {
                 a = []str
                 return a
             }
-            i = i + 1
+            i++
         }
         if r == 0 {
             a = []str
@@ -329,11 +329,11 @@ struct regex {
             gi=0;for gi<len(g) {
                 t = g[gi]
                 gs.append(t.match.str())
-                gi = gi + 1
+                gi++
             }
             la = len(a)
             a[la] = gs.str()
-            i = i + 1
+            i++
         }
 
         return a
@@ -355,31 +355,31 @@ compileRegex(cpexpr str) regex* {
             if nc == '^' {
                 tk.type = REGEX_TYPE_TEXT
                 tk.content = nc
-                i = i + 1
+                i++
             } else if nc == '$' {
                 tk.type = REGEX_TYPE_TEXT
                 tk.content = nc
-                i = i + 1
+                i++
             } else if nc == '(' {
                 tk.type = REGEX_TYPE_TEXT
                 tk.content = nc
-                i = i + 1
+                i++
             } else if nc == ')' {
                 tk.type = REGEX_TYPE_TEXT
                 tk.content = nc
-                i = i + 1
+                i++
             } else if nc == '.' {
                 tk.type = REGEX_TYPE_TEXT
                 tk.content = nc
-                i = i + 1
+                i++
             } else if nc == '{' {
                 tk.type = REGEX_TYPE_TEXT
                 tk.content = nc
-                i = i + 1
+                i++
             } else if nc == '}' {
                 tk.type = REGEX_TYPE_TEXT
                 tk.content = nc
-                i = i + 1
+                i++
             }
         } else if c == '^' {
             tk.type = REGEX_TYPE_START
@@ -393,7 +393,7 @@ compileRegex(cpexpr str) regex* {
             tk.type = REGEX_TYPE_ALL
         } else if c == '[' {
             tk.type = REGEX_TYPE_RANGE
-            i = i + 1
+            i++
             for i < expr.length {
                 c = expr.charAt(i)            
                 if c == ']' {
@@ -405,7 +405,7 @@ compileRegex(cpexpr str) regex* {
                 if expr.charAt(i+1) == '-' {
                     range.min = c
                     range.max = expr.charAt(i+2)
-                    i = i + 2
+                    i += 2
                 } else {
                     range.min = c
                     range.max = c
@@ -413,7 +413,7 @@ compileRegex(cpexpr str) regex* {
                 }
                 ltkr = len(tk.range)
                 tk.range[ltkr] = range
-                i = i + 1
+                i++
             }
 
         } else if i == 0 {
@@ -458,7 +458,7 @@ compileRegex(cpexpr str) regex* {
             }
         }
         if tk.type != 0 {
-            i = i + 1
+            i++
                 if i < expr.length {
                     c = expr.charAt(i)
                     if c == '+' {
@@ -471,7 +471,7 @@ compileRegex(cpexpr str) regex* {
                         tk.quantifierMin = 0
                         tk.quantifierMax = 1
                     } else if c == '{' {
-                        i = i + 1
+                        i++
                         min = string("")
                         max = string("")
                         isMin = 1
@@ -493,7 +493,7 @@ compileRegex(cpexpr str) regex* {
                                 max.append(charToString(c))
                             }
 
-                            i = i + 1
+                            i++
                         }
                         if min.length > 0 {
                             tk.quantifierMin = stringToInt(min)
@@ -517,7 +517,7 @@ compileRegex(cpexpr str) regex* {
                         }
 
                     } else {
-                        i = i - 1
+                        i--
                     }
                 }
             lrt = len(regex.tokens)
@@ -525,7 +525,7 @@ compileRegex(cpexpr str) regex* {
             
         }
 
-        i = i + 1
+        i++
     }
     
 

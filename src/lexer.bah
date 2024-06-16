@@ -31,8 +31,7 @@ struct Tok {
     isValue: bool = false
     isFunc: bool = false
     isOper: bool = false
-    isEqual: bool = false
-    pass: bool = false
+    isDeclared: bool = false
     bahRefType: char
     bahRef: ptr
     processedStr: bool = false
@@ -75,11 +74,12 @@ struct Tok {
 enclavers = []char{'(', ')', '{', '}', '[', ']'}
 syntaxes = []char{'!', '=', '|', <char>38, '%', '+', '-', '*', '/', ',', '<', '>', ':', <char>59, '^'}
                                     //&                                                    //;
+
 keywords = []str{"if", "else", "for", "return", "new", "break", "continue", "struct", "const", "extend", "function", "async", "in", "chan", "map", "buffer", "let", "then", "default", "switch", "case", "while", "typedef"}
-                    //  x      x      x        x       x       x          x          x        x         x          x         x       x      x      x       x         x      x        -          -        -       -          -
-                    // x: done
-                    //  : not done
-                    // -: not planned
+            //     x      x      x        x       x       x          x          x        x         x          x         x       x      x      x       x         x      x        -          -        -       -          -
+            // x: done
+            //  : not done
+            // -: not planned
 
 //Generates a token from all of its properties.
 makeToken(pos int, lineNb int, cont str, type tokenType) Tok {
@@ -91,7 +91,6 @@ makeToken(pos int, lineNb int, cont str, type tokenType) Tok {
     }
     t.ogCont = t.cont
 
-    
     if type == TOKEN_TYPE_VAR && t.cont in keywords {
         t.type = TOKEN_TYPE_KEYWORD
     } else if type == TOKEN_TYPE_INT || type == TOKEN_TYPE_STR || type == TOKEN_TYPE_FLOAT || type == TOKEN_TYPE_VAR || type == TOKEN_TYPE_BOOL || type == TOKEN_TYPE_CHAR {
@@ -125,10 +124,17 @@ lexer(s str) []Tok {
 
     i=0; for i < len(s), i++ {
         c = s[i]
+
+        if c == ' ' {
+            continue
+        }
+
         nc char = <char>0
         if i+1 < len(s) {
             nc = s[i+1]
         }
+
+
         //testing for comments
         if c == '/' && nc == '/'{
             //ignore the content untill we hit a new line
@@ -147,6 +153,7 @@ lexer(s str) []Tok {
         //we have it the new line character
         if c == <char>10 {
             lineNb++
+            continue
         }
 
         //token is a string
@@ -182,10 +189,9 @@ lexer(s str) []Tok {
                 }
                 memory.append(c)
             }
-            tokens[len(tokens)] = makeToken(pos, lineNb, memory.str(), TOKEN_TYPE_STR)
-            lt = tokens[len(tokens) - 1]
-            lt.begLine = begLine
-            tokens[len(tokens) - 1] = lt
+            t = makeToken(pos, lineNb, memory.str(), TOKEN_TYPE_STR)
+            t.begLine = begLine
+            tokens[len(tokens)] = t
         } else if isNumber(c) || isMinus(c, nc) { //token is a number
             pos = i
             i++
@@ -217,27 +223,6 @@ lexer(s str) []Tok {
             }
             tokens[len(tokens)] = makeToken(pos, lineNb, s[pos:i], currentType)
             i--
-        } else if c == <char>39 { //is a character
-            i += 2
-            if s[i] != <char>39 {
-                lexerErr(lineNb, i, "Missing closing tag in char declaration.")
-            }
-            t = makeToken(i-2, lineNb, intToStr(<int>nc), TOKEN_TYPE_CHAR)
-            t.ogCont = s[i-2:i+1]
-            tokens[len(tokens)] = t
-        } else if c == <char>35 { //is a hash keyword
-            pos = i
-            i++
-            for i < len(s), i++ {
-                c = s[i]
-                if isAlphaNumeric(c) == false {
-                    break
-                }
-            }
-            tokens[len(tokens)] = makeToken(pos, lineNb, s[pos:i], TOKEN_TYPE_KEYWORD)
-            i--
-        } else if c == '.' { //token is a separator
-            tokens[len(tokens)] = makeToken(i, lineNb, ".", TOKEN_TYPE_SEP)
         } else if isAlphaNumeric(c) || c == '_' { //token is a var / keyword
             pos = i
             i++
@@ -259,6 +244,27 @@ lexer(s str) []Tok {
             currentType = TOKEN_TYPE_VAR
             tokens[len(tokens)] = makeToken(pos, lineNb, s[pos:i], currentType)
             i--
+        } else if c == <char>39 { //is a character
+            i += 2
+            if s[i] != <char>39 {
+                lexerErr(lineNb, i, "Missing closing tag in char declaration.")
+            }
+            t = makeToken(i-2, lineNb, intToStr(<int>nc), TOKEN_TYPE_CHAR)
+            t.ogCont = s[i-2:i+1]
+            tokens[len(tokens)] = t
+        } else if c == <char>35 { //is a hash keyword
+            pos = i
+            i++
+            for i < len(s), i++ {
+                c = s[i]
+                if isAlphaNumeric(c) == false {
+                    break
+                }
+            }
+            tokens[len(tokens)] = makeToken(pos, lineNb, s[pos:i], TOKEN_TYPE_KEYWORD)
+            i--
+        } else if c == '.' { //token is a separator
+            tokens[len(tokens)] = makeToken(i, lineNb, ".", TOKEN_TYPE_SEP)
         } else if c in syntaxes { //token is a syntax element
             if c == '<' {
                 pos = i

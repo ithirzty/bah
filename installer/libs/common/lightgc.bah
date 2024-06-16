@@ -2,43 +2,23 @@
 //Work still in progress, should not leak in any sane program.
 //Could maybe sometime free referenced ptrs? (still work in progress lol).
 
+#define memoryAlloc(s uint) ptr
+
+#include "thread.bah"
+
 #include "nativeMem.bah"
 
 #warning "lightGC is still very experimental! May cause random crashes + slowing down"
 
-// C bindings
-#include "<sys/types.h>"
-#include "<unistd.h>"
-#include "<sys/syscall.h>"
 #include "<setjmp.h>"
-#include "<pthread.h>"
 
-#define! pthread_mutex_t int
-#define! pthread_t int
-#define! pthread_cond_t int
-#define! pthread_attr_t int
-#define! pthread_mutex_init(lock pthread_mutex_t*, m int)
-#define! pthread_mutex_lock(lock pthread_mutex_t*)
-#define! pthread_mutex_unlock(lock pthread_mutex_t*)
-#define! pthread_mutex_destroy(lock pthread_mutex_t*)
-#define! pthread_cond_init(cond pthread_cond_t*, attr pthread_attr_t*) int
-#define! pthread_cond_signal(cond pthread_cond_t*) int
-#define! pthread_cond_destroy(cond pthread_cond_t*) int
-#define! pthread_cond_wait(cond pthread_cond_t*, mut pthread_mutex_t*) int
-#define! pthread_attr_init(attr pthread_attr_t *) int
-#define! pthread_attr_setstack(attr pthread_attr_t*, stck ptr, size int) int
-#define! pthread_attr_getstack(attr pthread_attr_t*, stck ptr*, size uint*) int
-#define! pthread_attr_getstacksize(attr pthread_attr_t*, size uint*) int
-#define! pthread_getattr_np(t pthread_t, attr pthread_attr_t*) int
-#define! pthread_self() pthread_t
-
-#define! qsort(arr ptr, elementCount uint, elementSize uint, fn ptr)
-
-#define! __builtin_frame_address(n int) int
+#define qsort(arr ptr, elementCount uint, elementSize uint, fn ptr)
 
 #define! jmp_buf ptr
 #define! setjmp(e jmp_buf)
 
+const __NR_gettid = 178
+#define syscall(nb int) int
 
 //Returns the end address of the BSS section.
 getBSSend() uint {
@@ -88,7 +68,7 @@ _lgc_sort_lightGCptr(ap ptr, bp ptr) int {
 
 //Returns the tid of the current thread.
 _lgc_tid() uint {
-    return noCheck(syscall(__NR_gettid))
+    return syscall(__NR_gettid)
 }
 
 //The state of the garbage collector, becomes the global variable _lgc.
@@ -274,7 +254,6 @@ struct lightGC {
         }
 
         if this.shouldBlock > 0 {
-            noCheck(printf("blocking %d\n"+4, this->shouldBlock))
             return
         }
 
@@ -284,7 +263,7 @@ struct lightGC {
         
         //signal all threads to stop
         ct = this.threads; for ct != null, ct = ct.next {
-            sigqueue(ct.sysid, noCheck(SIGUSR1), noCheck((union sigval){ .sival_ptr = 0 }))
+            sigqueue(ct.sysid, SIGUSR1, null)
         }
 
         //sort the addresses list (by ptr) in inverted order (higher at the begining, null at the end)
@@ -442,7 +421,7 @@ lightGC_thread_wrapper(args ptr*) {
 }
 
 //Called when trying to launch a thread.
-lightGC_create_thread(id pthread_t*, attr pthread_attr_t*, func ptr, args ptr) int32 {
+__thread_create(id pthread_t*, attr pthread_attr_t*, func ptr, args ptr) int32 {
     //Creating new thread (linked list) element
     t = <lightGCthread*>malloc(sizeof(lightGCthread))
     if id == null {
@@ -480,18 +459,14 @@ lightGC_create_thread(id pthread_t*, attr pthread_attr_t*, func ptr, args ptr) i
 
 
 //not implemented for now (can achieve same result whith channels)
-lightGC_join_thread(id pthread_t, ret ptr) {
+__thread_join(id pthread_t, ret ptr) int32 {
     exit(1)
-    return
+    return -1
 }
-
-//Redirect threading function calls.
-const __thread_create = lightGC_create_thread
-const __thread_join = lightGC_join_thread
 
 //Called before main(), initializes the garbage collector.
 //_lgc variable is not initialized with zeros, every member needs to be filled.
-initiateMemory(args []str) {
+initiateMemory() {
     _lgc.stackStart = __builtin_frame_address(1)
 
     _lgc.bssStart = getBSSbeg()
@@ -507,7 +482,7 @@ initiateMemory(args []str) {
 
 
     _lgc.threads = null
-    _lgc.mainThread = noCheck(syscall(__NR_gettid))
+    _lgc.mainThread = syscall(__NR_gettid)
 
     //register callback for thread signaling (when stoping world)
     action sigaction
@@ -531,7 +506,7 @@ initiateMemory(args []str) {
 
 //Ask to allocate s bytes.
 //This is thread safe.
-memoryAlloc(s int) ptr {
+memoryAlloc(s uint) ptr {
     pthread_mutex_lock(_lgc.mut)
     if _lgc.memUsed >= _lgc.stopInterval { //stop the world when too much memory used
         //dump registers
@@ -541,6 +516,24 @@ memoryAlloc(s int) ptr {
         _lgc.stopWorld()
     }
     p = _lgc.allocate(s, true, false)
+    memset(p, 0, s)
+    pthread_mutex_unlock(_lgc.mut)
+    return p
+}
+
+//This function should be used with care!
+//Allocates memory that CANNOT contain any pointer.
+//Not respecting the last rule would lead to crashes. 
+memoryAllocAtomic(s uint) ptr {
+    pthread_mutex_lock(_lgc.mut)
+    if _lgc.memUsed >= _lgc.stopInterval { //stop the world when too much memory used
+        //dump registers
+        envJmp jmp_buf
+        setjmp(envJmp)
+
+        _lgc.stopWorld()
+    }
+    p = _lgc.allocate(s, false, false)
     memset(p, 0, s)
     pthread_mutex_unlock(_lgc.mut)
     return p
@@ -557,11 +550,11 @@ memoryAllocSTR(s uint) str {
         _lgc.stopWorld()
     }
 
-    p = _lgc.allocate(s + strLenSize, false, false) //do not track content
+    p str = _lgc.allocate(s + strLenSize, false, false) //do not track content
     //sets cpstring length
     l uint* = p
     *l = s-1
-    memset(<ptr>(<uint>p + strLenSize), 0, s)
+    noCheck(p[s - 1 + strLenSize] = 0)
     pthread_mutex_unlock(_lgc.mut)
     return p
 }

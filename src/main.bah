@@ -28,7 +28,7 @@
     const BAH_HOST_OS = "windows"
 }
 //////////////////////BUILD SPECIFIC THINGS//////////////////////
-const BAH_VERSION = "v1.5 (build 185)"
+const BAH_VERSION = "v1.51 (build 186)"
 
 debug = false
 verboseRuntime = false
@@ -178,67 +178,15 @@ main(args []str) int {
     }
 
     INIT = rope("") //C code of the __BAH_init function
+    OUTPUT = rope("#define noCheck(v) v\n")
 
-    //C entry point of the program
-    OUTPUT = rope("
-    void __BAH_init();
-    #define noCheck(v) v
-    struct Bah_Array_Type {
-    void *data;
-    unsigned long long int length;
-    unsigned long long int realLength;
-    unsigned long long int elemSize;
-    };
-    long long int __BAH__main(struct Bah_Array_Type*);
-    ")
+    elems = new Elems //the struct containning the state of the code (vars, funcs...) at every scopes
 
-    if flags.isSet("l") == 0 {
-        if RCPenabled == true {
-            OUTPUT += rope("
-            void RCP_init();
-            void RCP_shutdown();
-            void free(void*);
-            #include <string.h>
-            int main(int argc, char ** argv) {
-            RCP_init();
-            struct Bah_Array_Type* argsToArr(char** a,long long int l);
-            __BAH_init();
-            long long int r =  __BAH__main(argsToArr(argv, argc));;
-            RCP_shutdown();
-            return r;
-            };
-            #define main(v) __BAH__main(v)
-            ")
-
-        } else if nativeMemenabled || lightGCenabled {
-            OUTPUT += rope("
-            #include <string.h>
-            void initiateMemory();
-            int main(int argc, char ** argv) {
-            initiateMemory();
-            struct Bah_Array_Type* argsToArr(char** a,long long int l);
-            __BAH_init();
-            long long int r =  __BAH__main(argsToArr(argv, argc));
-            return r;
-            };
-            #define main(v) __BAH__main(v)
-            ")
-        } else {
-            OUTPUT += rope("
-            #include <gc.h>
-            #include <string.h>
-            struct Bah_Array_Type* argsToArr(char** a,long long int l);
-            int main(int argc, char ** argv) {
-            GC_INIT();
-            __BAH_init();
-            long long int r =  __BAH__main(argsToArr(argv, argc));
-            return r;
-            };
-            #define main(v) __BAH__main(v)
-            ")
-        }
-    }
+    //if the file is an object, we dont want to declare an entry point.
     
+
+    readCache()
+
     //opening the file to compile
     fileName = absPath(args[1])
     compilerState.currentFile = fileName
@@ -253,31 +201,6 @@ main(args []str) int {
     startTime = getTimeUnix() //for timming compilation time
     tokens = lexer(f) //tokenizing the first file
 
-
-    if len(tokens) == 0 {
-        println("File '"+fileName+"' not recognized.")
-        exit(1)
-    }
-
-    elems = new Elems //the struct containning the state of the code (vars, funcs...) at every scopes
-
-    //if the file is an object, we dont want to declare an entry point.
-    if isObject == true {
-        OUTPUT = rope("
-        #define noCheck(v) v
-        struct Bah_Array_Type {
-        void *data;
-        unsigned long long int length;
-        unsigned long long int realLength;
-        unsigned long long int elemSize;
-        };
-        long long int __BAH__main(struct Bah_Array_Type*);
-        ")
-        shouldOnlyDecl = true
-    }
-
-    readCache()
-
     //includes the builtin libraries
     if flags.isSet("nobuiltin") == 0 && string(fileName).hasSuffix(".bahstrp") == false {
         if noImport == false {
@@ -287,6 +210,29 @@ main(args []str) int {
                 panic("Could not find std-libs, please check '"+BAH_DIR+"'")
             }
         }
+    }
+
+    if flags.isSet("l") == 0 {
+        if isObject == true {
+            shouldOnlyDecl = true
+        } else {
+            OUTPUT += rope("
+            struct Bah_Array_Type* argsToArr(char** a,long int l);
+            int main(int argc, char ** argv) {
+            initiateMemory();
+            __BAH_init();
+            long int r =  __BAH__main(argsToArr(argv, argc));
+            return r;
+            };
+            #define main(v) __BAH__main(v)
+            ")
+        }
+    }
+
+
+    if len(tokens) == 0 {
+        println("File '"+fileName+"' not recognized.")
+        exit(1)
     }
 
     if isFixMeEnabled == true {
@@ -459,3 +405,4 @@ main(args []str) int {
     }
     return 0
 }
+
