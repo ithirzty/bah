@@ -51,6 +51,6 @@ cp /opt/bah/lightgc.bah ./libs/common/
 #linux specific libs
 # cp /opt/bah/window.bah ./libs/linux/
 #static libs
-cp -r /opt/bah/libs/linux/* ./libs/linux/libs/
-cp -r /opt/bah/libs/windows/* ./libs/windows/libs/
-cp -r /opt/bah/libs/darwin/* ./libs/darwin/libs/
+# cp -r /opt/bah/libs/linux/* ./libs/linux/libs/
+# cp -r /opt/bah/libs/windows/* ./libs/windows/libs/
+# cp -r /opt/bah/libs/darwin/* ./libs/darwin/libs/
