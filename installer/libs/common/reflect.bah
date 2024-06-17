@@ -63,6 +63,57 @@ struct reflectElement {
     }
 }
 
+//Returns true if the type is a pointer type. This means that the reflectElement.value of this type will always
+//be a pointer to a value.
+//Note that for the str type, not passing a pointer to a str is already a pointer. 
+reflectIsPtrType(type str) bool {
+    return type == "str" || type == "ptr" || strHasPrefix(type, "[]") || type[len(type)-1] == '*' || (type[0] == '[' && type[len(type)-1] == ']') || strHasPrefix(type, "map:") || strHasPrefix(type, "buffer:")
+}
+
+//Unwraps nested pointers.
+//If getPtr == false, returned.value will be either a pointer to a value that is not of type pointer
+//or the pointer directlty if it already is a pointer (used for reading values).
+//If getPtr == true, returned.value will be either a pointer to a value that is not of type pointer
+//or a pointer to a pointer if it already is a pointer (used for setting values).
+reflectUnwrapPtr(e reflectElement, getPtr bool) reflectElement {
+    if e.isArray {
+        return e
+    }
+    nb = 0
+
+    if getPtr == false {
+        if e.type[len(e.type)-1] == '*' {
+            if strHasPrefix(e.type, "str*") {
+                e.value = *(<ptr*>e.value)
+            }
+            nb++
+        }
+        i = len(e.type)-1; for i >= 1, i-- {
+            if e.type[i] == '*' && e.type[i-1] == '*' {
+                e.value = *(<ptr*>e.value)
+                nb++
+            } else {
+                break
+            }
+        }
+        e.type = e.type[:len(e.type)-nb]
+    } else {
+        if e.type[len(e.type)-1] == '*' {
+            nb++
+        }
+        i = len(e.type)-1; for i >= 1, i-- {
+            if e.type[i] == '*' && e.type[i-1] == '*' {
+                e.value = *(<ptr*>e.value)
+                nb++
+            } else {
+                break
+            }
+        }
+        e.type = e.type[:len(e.type)-nb]
+    }
+
+    return e
+}
 
 //Internal function used for generating a reflected element.
 __reflect(v ptr, s int, t str, n str, isArr bool, ae reflectElement*, isStruct bool, sl []reflectElement, offset int) reflectElement {

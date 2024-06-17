@@ -97,6 +97,9 @@ struct dbResponse {
         if len(this.rows) == 0 {
             return
         }
+
+        e = reflectUnwrapPtr(e, true)
+
         if e.isArray == true {
             ae = e.arrayElem
             if ae.isStruct == true {
@@ -120,7 +123,7 @@ struct dbResponse {
                     }
                 }
             } else if ae.type == "int" {
-                arr = <[]int>(*(<ptr*>e.value))
+                arr = <[]int>(e.value)
                 i=0; for i < len(this.rows) {
                     r = this.rows[i]
                     v int
@@ -129,7 +132,7 @@ struct dbResponse {
                     i++
                 }
             } else if ae.type == "uint" {
-                arr = <[]uint>(*(<ptr*>e.value))
+                arr = <[]uint>(e.value)
                 i=0; for i < len(this.rows) {
                     r = this.rows[i]
                     v uint
@@ -138,7 +141,7 @@ struct dbResponse {
                     i++
                 }
             } else if ae.type == "int32" {
-                arr = <[]int32>(*(<ptr*>e.value))
+                arr = <[]int32>(e.value)
                 i=0; for i < len(this.rows) {
                     r = this.rows[i]
                     v int32
@@ -147,7 +150,7 @@ struct dbResponse {
                     i++
                 }
             } else if ae.type == "uint32" {
-                arr = <[]uint32>(*(<ptr*>e.value))
+                arr = <[]uint32>(e.value)
                 i=0; for i < len(this.rows) {
                     r = this.rows[i]
                     v uint32
@@ -156,7 +159,7 @@ struct dbResponse {
                     i++
                 }
             } else if ae.type == "float" {
-                arr = <[]float>(*(<ptr*>e.value))
+                arr = <[]float>(e.value)
                 i=0; for i < len(this.rows) {
                     r = this.rows[i]
                     v float
@@ -165,7 +168,7 @@ struct dbResponse {
                     i++
                 }
             } else if ae.type == "float32" {
-                arr = <[]float32>(*(<ptr*>e.value))
+                arr = <[]float32>(e.value)
                 i=0; for i < len(this.rows) {
                     r = this.rows[i]
                     v float32
@@ -174,7 +177,7 @@ struct dbResponse {
                     i++
                 }
             } else if ae.type == "str" {
-                arr = <[]str>(*(<ptr*>e.value))
+                arr = <[]str>(e.value)
                 i=0; for i < len(this.rows) {
                     r = this.rows[i]
                     v = ""
@@ -183,7 +186,7 @@ struct dbResponse {
                     i++
                 }
             } else if ae.type == "bool" {
-                arr = <[]bool>(*(<ptr*>e.value))
+                arr = <[]bool>(e.value)
                 i=0; for i < len(this.rows) {
                     r = this.rows[i]
                     v bool

@@ -16,9 +16,7 @@ const JSON_TYPE_MAP = 4
 //Returns true if the type is a pointer type. This means that the reflectElement.value of this type will always
 //be a pointer to a value.
 //Note that for the str type, not passing a pointer to a str is already a pointer. 
-jsonIsPtrType(type str) bool {
-    return type == "str" || type == "ptr" || strHasPrefix(type, "[]") || type[len(type)-1] == '*' || (type[0] == '[' && type[len(type)-1] == ']') || strHasPrefix(type, "map:") || strHasPrefix(type, "buffer:")
-}
+const jsonIsPtrType = reflectIsPtrType
 
 //A single element of a json document.
 //This can be a map, an array, an int, a float or a string.

@@ -86,7 +86,7 @@ const MAP_ANONYMOUS = 32
 #define strcat(a char*, b char*)
 #define strcpy(dest char*, source char*)
 #define strtol(str str, endptr char**, base int32) int //stdlib.h
-#define strtod(str char*, endptr char**) float32 //stdlib.h
+#define strtod(str char*, endptr char**) float //stdlib.h
 #define atol(a char*) int32 //stdlib.h
 
 //path
@@ -212,6 +212,12 @@ struct! _IO_FILE {} //defined by the compiler
 #windows {
 	#define mkdir(s char*) int32
 }
+
+//maths
+#define pow(x int, y int) int
+#define sqrt(x int) int
+#define powd(x float, y float) float
+#define sqrtd(x float) float
 
 // #define! fileno(f FILE*) int
 // #define! puts(s str)

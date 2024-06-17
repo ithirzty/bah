@@ -411,32 +411,30 @@ floatToStr(x float) str {
     units int
 
     if x < 0. {
-        decimals = <uint>(x * -1000.) % 1000
+        decimals = <uint>(x * -100000.) % 100000
         units = <int>(-1. * x)
     } else {
-        decimals = <int>(x * 1000.) % 1000
+        decimals = <uint>(x * 100000.) % 100000
         units = <int>x
     }
 
-    
-    s[i] = <char>(decimals % 10) + '0'
-    decimals /= 10
-    i--
-
-    s[i] = <char>(decimals % 10) + '0'
-    decimals /= 10
-    i--
-
-    s[i] = <char>(decimals % 10) + '0'
-    decimals /= 10
-    i--
+    for decimals > 0, decimals /= 10 {
+        s[i] = <char>(decimals % 10) + '0'
+        i--
+    }
     
     s[i] = '.'
 
-    for units > 0, units /= 10 {
+    if units == 0 {
         i--
-        s[i] = <char>(units % 10) + '0'
+        s[i] = '0'
+    } else {
+        for units > 0, units /= 10 {
+            i--
+            s[i] = <char>(units % 10) + '0'
+        }
     }
+
 
     if x < 0. {
         i--
