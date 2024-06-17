@@ -47,6 +47,7 @@ sudo cp -r ./libs/windows/libs/* /opt/bah/libs/windows/
 sudo cp -r ./libs/darwin/libs/* /opt/bah/libs/darwin/
 sudo cp ./libs/common/* /opt/bah/
 sudo chmod 777 /opt/bah/*
+sudo rm /opt/bah/cache/*
 
 # Moving bah exec
 sudo cp ../bin/linux_amd64 /opt/bah/bah

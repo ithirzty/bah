@@ -100,10 +100,10 @@ struct dbResponse {
         if e.isArray == true {
             ae = e.arrayElem
             if ae.isStruct == true {
-                arr = []ptr; arr = e.value
+                arr = <[]ptr>e.value
                 barr = <Bah_Array_Type*>arr
                 barr.elemSize = ae.size
-                if strCount(ae.type, "*") || ae.type == "ptr" || ae.type == "str" || strHasPrefix(ae.type, "[]") || strHasPrefix(ae.type, "map:") {
+                if strCount(ae.type, "*") || ae.type == "ptr" || strHasPrefix(ae.type, "[]") || strHasPrefix(ae.type, "map:") {
                     allocateArray(arr, len(this.rows))
                     i=0; for i < len(this.rows), i++ {
                         r = this.rows[i]
@@ -120,7 +120,7 @@ struct dbResponse {
                     }
                 }
             } else if ae.type == "int" {
-                arr = []int; arr = e.value
+                arr = <[]int>(*(<ptr*>e.value))
                 i=0; for i < len(this.rows) {
                     r = this.rows[i]
                     v int
@@ -129,7 +129,7 @@ struct dbResponse {
                     i++
                 }
             } else if ae.type == "uint" {
-                arr = []uint; arr = e.value
+                arr = <[]uint>(*(<ptr*>e.value))
                 i=0; for i < len(this.rows) {
                     r = this.rows[i]
                     v uint
@@ -138,7 +138,7 @@ struct dbResponse {
                     i++
                 }
             } else if ae.type == "int32" {
-                arr = []int32; arr = e.value
+                arr = <[]int32>(*(<ptr*>e.value))
                 i=0; for i < len(this.rows) {
                     r = this.rows[i]
                     v int32
@@ -147,7 +147,7 @@ struct dbResponse {
                     i++
                 }
             } else if ae.type == "uint32" {
-                arr = []uint32; arr = e.value
+                arr = <[]uint32>(*(<ptr*>e.value))
                 i=0; for i < len(this.rows) {
                     r = this.rows[i]
                     v uint32
@@ -156,7 +156,7 @@ struct dbResponse {
                     i++
                 }
             } else if ae.type == "float" {
-                arr = []float; arr = e.value
+                arr = <[]float>(*(<ptr*>e.value))
                 i=0; for i < len(this.rows) {
                     r = this.rows[i]
                     v float
@@ -165,7 +165,7 @@ struct dbResponse {
                     i++
                 }
             } else if ae.type == "float32" {
-                arr = []float32; arr = e.value
+                arr = <[]float32>(*(<ptr*>e.value))
                 i=0; for i < len(this.rows) {
                     r = this.rows[i]
                     v float32
@@ -174,7 +174,7 @@ struct dbResponse {
                     i++
                 }
             } else if ae.type == "str" {
-                arr = []str; arr = e.value
+                arr = <[]str>(*(<ptr*>e.value))
                 i=0; for i < len(this.rows) {
                     r = this.rows[i]
                     v = ""
@@ -183,7 +183,7 @@ struct dbResponse {
                     i++
                 }
             } else if ae.type == "bool" {
-                arr = []bool; arr = e.value
+                arr = <[]bool>(*(<ptr*>e.value))
                 i=0; for i < len(this.rows) {
                     r = this.rows[i]
                     v bool
@@ -201,7 +201,7 @@ struct dbResponse {
 }
 
 //Inserts new row in the response.
-fillDBresponse(data ptr, argc int32, argv str*, azColName str*) int32 {
+fillDBresponse(data ptr, argc int32, argv str*, azColName char**) int32 {
     dbr dbResponse* = data
     row = new dbResponseRow
     i=0; for i < argc {
@@ -248,4 +248,20 @@ struct db {
         return resp
     }
 
+}
+
+//Returns a safe str in sqlite3 syntax from user input.
+//Passing "i'm a string" will return "'i''m a string'"
+sqlite3Str(s str) str {
+    sb = strBuilder{}
+    sb.append(''')
+    l = len(s)
+    i=0; for i < l, i++ {
+        if s[i] == ''' {
+            sb.append(''')
+        }
+        sb.append(s[i])
+    }
+    sb.append(''')
+    return sb.str()
 }

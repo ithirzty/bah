@@ -11,8 +11,14 @@ const JSON_TYPE_ARRAY = 3
 const JSON_TYPE_MAP = 4
 
 #define toJson(e reflectElement) str
+#define json_scan_inner(this ptr, e reflectElement)
 
-#define json_scan_inner(this ptr, e reflectElement, isMember bool)
+//Returns true if the type is a pointer type. This means that the reflectElement.value of this type will always
+//be a pointer to a value.
+//Note that for the str type, not passing a pointer to a str is already a pointer. 
+jsonIsPtrType(type str) bool {
+    return type == "str" || type == "ptr" || strHasPrefix(type, "[]") || type[len(type)-1] == '*' || (type[0] == '[' && type[len(type)-1] == ']') || strHasPrefix(type, "map:") || strHasPrefix(type, "buffer:")
+}
 
 //A single element of a json document.
 //This can be a map, an array, an int, a float or a string.
@@ -60,6 +66,7 @@ struct jsonElement {
     }
 
     //To get the current element as a str no matter its type.
+    //Use this and never .content because the content is lazy-loaded and is not rarely equal to .str()
     str() str {
         if this.contentFinal == false {
             this.content = this.content[this.from : this.to]
@@ -70,138 +77,171 @@ struct jsonElement {
 
 
     //Used for scanning the JSON element in a var.
+    //Warning: that in the scanned result, values will be allocated and initialized only if they are referenced in json.
+    // when scanning {myArr: []}, elem.myArr will be initialized with a length of zero,
+    //  but scanning {myArr:   }, elem.myArr will be null.
     scan(e reflectElement) {
-        json_scan_inner(this, e, false)
+        //str type is already a pointer. Passing a str will not be converted in a pointer to a str by the compiler.
+        if e.type == "str" {
+            panic("json: cannot scan to str, try scanning to &"+e.name+".")
+        }
+        json_scan_inner(this, e)
     }
 
 }
-//Internal function.
-json_scan_inner(thisp ptr, e reflectElement, isMember bool) {
+//Internal function: scanning a jsonElement in a reflecElement.
+json_scan_inner(thisp ptr, e reflectElement) {
     this jsonElement* = thisp
     if this == null {
         return
     }
-    if e.isStruct == true {
-            i=0; for i < len(e.structLayout) {
-                m = e.structLayout[i]
-                m.value = m.calculateOffset(e.value)
-                ov = this.get(m.name)
-                if ov != null {
-                    json_scan_inner(ov, m, true)
-                }
-                i++
-            }
-        } else if e.type == "int" {
-            ep int* = e.value
-            *ep = strToInt(this.str())
-        } else if e.type == "str" {
-            ep str* = e.value
-            *ep = this.str()
-        } else if e.type == "float" {
-            ep float* = e.value
-            *ep = strToFloat(this.str())
-        } else if e.type == "bool" {
-            ep bool* = e.value
-            if this.str() == "1" || this.str() == "true" {
-                *ep = true
-            } else {
-                *ep = false
-            }
-        } else if e.isArray == true {
-            if len(this.children) == 0 {
-                return
-            }
-            
-            ae = e.arrayElem
-            if ae.type == "int" {
-                arr = []int
-                arrPtr ptr* = e.value
-                if isMember == true {
-                    *arrPtr = arr
-                } else {
-                    arr = *arrPtr
-                }
-                i=0; for i < len(this.children) {
-                    c = this.children[i]
-                    arr[i] = strToInt(c.str())
-                    i++
-                }
-            } else if ae.type == "float" {
-                arr = []float
-                arrPtr ptr* = e.value
-                if isMember == true {
-                    *arrPtr = arr
-                } else {
-                    arr = *arrPtr
-                }
-                i=0; for i < len(this.children) {
-                    c = this.children[i]
-                    arr[i] = strToFloat(c.str())
-                    i++
-                }
-            } else if ae.type == "str" {
-                arr = []str
-                arrPtr ptr* = e.value
-                if isMember == true {
-                    *arrPtr = arr
-                } else {
-                    arr = *arrPtr
-                }
 
-                i=0; for i < len(this.children) {
-                    c = this.children[i]
-                    arr[i] = c.str()
-                    i++
-                }
-            } else if ae.isStruct == true {
-                arr = []ptr
-                arrPtr ptr* = e.value
-                if isMember == true {
-                    *arrPtr = arr
-                } else {
-                    arr = *arrPtr
-                }
-                i=0; for i < len(this.children) {
-                    c = this.children[i]
-                    ne ptr = memoryAlloc(ae.size)
-                    j=0; for j < len(ae.structLayout) {
-                        m = ae.structLayout[j]
-                        m.value = m.calculateOffset(ne)
-                        ov = c.get(m.name)
-                        if ov != null {
-                            json_scan_inner(ov, m, true)
-                        }
-                        j++
-                    }
-                    arr[i] = ne
-                    i++
-                }
-            }
-        } else if strHasPrefix(e.type, "map:") {
-            p mapWrapper** = e.value
-            i=0; for i < len(this.children), i++ {
-                c = this.children[i]
-                ae = e.arrayElem
-                v ptr = memoryAlloc(ae.size)
-                ae.value = &v
-                j=0; for j < len(ae.structLayout), j++ {
-                    m = ae.structLayout[j]
-                    m.value = m.calculateOffset(&v)
-                    ae.structLayout[j] = m
-                }
-                json_scan_inner(c, *ae, true)
-                k = string(c.key)
-                k.trimLeft(1)
-                k.trimRight(1)
-                if strCount(ae.type, "*") || ae.type == "ptr" || ae.type == "str" || strHasPrefix(ae.type, "[]") || strHasPrefix(ae.type, "map:") {
-                    m = *p
-                    m.set(k.str(), v)
-                } else {
-                    m = *p
-                    m.set(k.str(), &v)
-                }
+    //dereferencing the mutable members of the refleElement to prevent undefined behavior.
+    type = e.type
+    value = e.value
+
+    if value == null {
+        return
+    }
+
+    //if there is multiple pointer levels, dereference until the pointer level == 1.
+    nb = 0 //the number of nested pointers
+    if e.isArray == false {
+        if type[len(type)-1] == '*' {
+            nb++
+        }
+        i = len(type)-1; for i >= 1, i-- {
+            if type[i] == '*' && type[i-1] == '*' {
+                value = *(<ptr*>value)
+                nb++
+            } else {
+                break
             }
         }
+        type = type[:len(type)-nb]
+    }
+
+    //trying to scan a value at an address that has not been allocated.
+    if value == null {
+        return
+    }
+
+    //The reflectElement is a structure.
+    //.structLayout contains a template for every member of the structure.
+    if e.isStruct {
+        i=0; for i < len(e.structLayout), i++ {
+            member = e.structLayout[i]
+            jmemb = this.get(member.name)
+            
+            //there is no json member with this name
+            if jmemb == null {
+                continue
+            }
+
+            //If the member is of type pointer, we need to allocated memory and inject
+            //the pointer to the allocated memory as the member's value.
+            if jsonIsPtrType(member.type) && member.type != "str" { //str will not count as a pointer because we dont 
+                member.value = memoryAlloc(member.size)             //want to acces the content of the str (chars) but the address of the chars.
+                json_scan_inner(jmemb, member)
+                p = <ptr*>(<uint>value + member.offset)
+                *p = member.value
+            } else { //Else, we scan directly the value to the member's address
+                member.value = <ptr>(<uint>value + member.offset)
+                json_scan_inner(jmemb, member)
+            }
+        }        
+        return
+    }
+
+    //The reflectElement is an array.
+    //.arrayElement contains a template for every element of the array.
+    if e.isArray {
+        arr Bah_Array_Type* = value //converting the pointer to the internal Bah_Array_Type to access its length and others
+
+        isPtr = e.arrayElem.type != "str" && jsonIsPtrType(e.arrayElem.type) //str will not count as a pointer because we dont want
+        //                                                                     to acces the content of the str (chars) but the address of the chars.
+        if isPtr {
+            arr.elemSize = sizeof(ptr) //if the elements are pointers, reflectElement.size != sizeof(ptr) but to the
+        } else {                       //size of the memory that should be allocated to fit the value of the ptr.
+            arr.elemSize = e.arrayElem.size
+        }
+        allocateArray(arr, len(this.children)) //allocate enough space in the array to fit all the elements.
+        elem = *(e.arrayElem) //dereference .arrayElement to prevent undefined behavior.
+        
+        i=<uint>0; for i < len(this.children), i++ {
+            //If the element is of type pointer, we should allocate memory to scan to and inject the pointer to the allocated
+            //memory as the array's element.
+            if isPtr {
+                elem.value = memoryAlloc(elem.size)
+                elemp = <ptr*>(<uint>arr.data + i * sizeof(ptr))
+                json_scan_inner(this.children[i], elem)
+                *elemp = elem.value
+            } else { //we can scan directly to the array's element address.
+                elem.value = <ptr>(<uint>arr.data + i * arr.elemSize)
+                json_scan_inner(this.children[i], elem)
+            }
+            
+        }
+
+        return
+    }
+
+    //For all primitive types, value will be a pointer, the address to which we need to scan the data.
+
+    if type == "str" {
+        v = <str*>value
+        *v = this.str()
+        return
+    }
+
+    if type == "int" {
+        v = <int*>value
+        *v = strToInt(this.str())
+        return
+    }
+
+    if type == "int32" {
+        v = <int32*>value
+        *v = strToInt(this.str())
+        return
+    }
+
+    if type == "int16" {
+        v = <int16*>value
+        *v = strToInt(this.str())
+        return
+    }
+
+    if type == "uint" {
+        v = <uint*>value
+        *v = strToInt(this.str())
+        return
+    }
+
+    if type == "uint32" {
+        v = <uint32*>value
+        *v = strToInt(this.str())
+        return
+    }
+
+    if type == "uint16" {
+        v = <uint16*>value
+        *v = strToInt(this.str())
+        return
+    }
+
+    if type == "float" {
+        v = <float*>value
+        *v = strToFloat(this.str())
+        return
+    }
+
+    if type == "float32" {
+        v = <float32*>value
+        *v = strToFloat(this.str())
+        return
+    }
+
 }
 
 jError = "" //Inner variable containing the last parsing error.
@@ -449,269 +489,169 @@ jsonEscapeStr(s str) str {
     return r.str()
 }
 
-//Function used by oldToJson() to convert a var to json string.
-//*Note: this is an internal function*
-oldToJson__inner(e reflectElement, isMember bool, tabs int) str {
-    v ptr* = e.value
-    if e.value == null {
-        if e.type == "int" || e.type == "float" {
-            return "0"
-        }
-        if e.type == "bool" {
-            return "false"
-        }
-        if e.type == "ptr" || e.type == "str" || strCount(e.type, "*") != 0 {
-            return "null"
-        }
-    }
-    if e.isStruct == true {
-        tabs++
-        tabsStr = ""
-        i=0; for i < tabs {
-            tabsStr += "\t"
-            i++
-        }
-        s = "{\n"
-        i=0; for i < len(e.structLayout) {
-            m = e.structLayout[i]
-            i++
-            m.value = m.calculateOffset(e.value)
-            if i < len(e.structLayout) {
-                s += tabsStr+"\""+m.name+"\": "+oldToJson__inner(m, true, tabs)+",\n"
-            } else {
-                s += tabsStr+"\""+m.name+"\": "+oldToJson__inner(m, true, tabs)+"\n"
-            }
-        }
-        tabs--
-        tabsStr = ""
-        i=0; for i < tabs {
-            tabsStr += "\t"
-            i++
-        }
-        s += tabsStr+"}"
-        return s
-    } else if e.type == "int" {
-        ip int* = e.value
-        return intToStr(*ip)
-    } else if e.type == "float" {
-        fp float* = e.value
-        return floatToStr(*fp)
-    } else if e.type == "str" {
-        if isMember == false {
-            s = e.value
-            return "\""+jsonEscapeStr(s)+"\""
-        } else {
-            sp str* = e.value
-            s str = *sp
-            return "\""+jsonEscapeStr(s)+"\""
-        }
-    } else if e.type == "bool" {
-        bp bool* = e.value
-        if *bp == true {
-            return "true"
-        }
-        return "false"
-    } else if e.isArray == true {
-        s = "["
-        ae = e.arrayElem
-        if e.value == null {
-            return "null"
-        }
-        if ae.type == "int" {
-            arr = []int
-            arrPtr ptr* = e.value
-            arr = *arrPtr
-            i=0; for i < len(arr) {
-                s += intToStr(arr[i])
-                i++
-                if i < len(arr) {
-                    s += ","
-                }
-            }
-        } else if ae.type == "float" {
-            arr = []float
-            arrPtr ptr* = e.value
-            arr = *arrPtr
-            i=0; for i < len(arr) {
-                s += floatToStr(arr[i])
-                i++
-                if i < len(arr) {
-                    s += ","
-                }
-            }
-        } else if ae.type == "str" {
-            arr = []str
-            arrPtr ptr* = e.value
-            arr = *arrPtr
-            s += "\n"
-            i=0; for i < len(arr) {
-                s += "\""+jsonEscapeStr(arr[i])+"\""
-                i++
-                if i < len(arr) {
-                    s += ",\n"
-                } else {
-                    s += "\n"
-                }
-            }
-        } else if ae.isStruct == true {
-            arr = []ptr
-            if isMember == false {
-                arr = e.value
-            } else {
-                ev ptr* = e.value
-                arr = *ev
-            }
-            
-            i=0; for i < len(arr) {
-                arrElem = arr[i]
-                ae.value = arrElem
-                j=0; for j < len(ae.structLayout) {
-                    m = ae.structLayout[j]
-                    m.value = m.calculateOffset(ae.value)
-                    ae.structLayout[j] = m
-                    j++
-                }
-                s += oldToJson__inner(*ae, false, tabs)
-                i++
-                if i < len(arr) {
-                    s += ",\n"
-                } else {
-                    s += "\n"
-                }
-            }
-        }
-        s += "]"
-        return s
-    }
-    return "0"
-}
 
-//Old algorithm to convert a var into json.
-//This function does things the wrong way.
-oldToJson(e reflectElement) str {
-    return oldToJson__inner(e, false, 0)
-}
-
-//Converting a var into json.
-//Note that you need to pass a pointer to the var that you want to convert to json:
-// s str = "test"
-// toJson(&s)
-// If the type is already a pointer, this step is not needed.
+//Converting a var into json, this is used by toJson() internally.
+//You can pass pretty much anything to this function.
+//Because we dont need a pointer to the value but only the value, you can pass a pointer or directly the value
+//that will be automatically converted to a pointer by the compiler.
+//s = "test"
+// toJson(s)
 toJsonRope(e reflectElement) rope* {
-    l = len(e.type)
+    
+    //dereferencing the mutable members of the refleElement to prevent undefined behavior.
+    type = e.type
+    value = e.value
 
+    if value == null {
+        return rope("null")
+    }
+
+    //Unwrapping nested pointers so "value" is always a pointer, containg the address of the value.
+    //Note that reflectElement.value of an array cannot be a nested pointer and this step
+    //must be skipped for arrays are '*' at the end of an array type is not a nested array
+    //pointer but an array of pointer: if arr = []str, &arr != []str* but &arr[0] == str*.
     if e.isArray == false {
-        ol = l
-        for l >= 2 && e.type[l-1] == '*' && e.type[l-2] == '*', l-- {
-            if e.value == null {
-                return rope("0")
+        nb = 0
+        if type[len(type)-1] == '*' {
+            //As str type is already a pointer to chars, if we encounter a pointer to a str, we need to
+            //dereference it one level further.
+            //Note that .value of int is the same as the .value of int* because the compiler will always
+            //give a pointer as .value.
+            if strHasPrefix(type, "str*") {
+                value = *(<ptr*>value)
             }
-            v ptr* = e.value
-            e.value = *v
+            nb++
         }
-        if l != ol {
-            e.type = e.type[:l]
+        i = len(type)-1; for i >= 1, i-- {
+            if type[i] == '*' && type[i-1] == '*' {
+                value = *(<ptr*>value)
+                nb++
+            } else {
+                break
+            }
         }
+        type = type[:len(type)-nb]
     }
 
-    if e.value == null {
-        return rope("0")
+    if value == null {
+        return rope("null")
     }
 
-    if e.isStruct == true {
-        s = rope("{")
+    //If the reflectElement is a structure, we need to convert all of its members
+    //as described by the .structLayout array.
+    if e.isStruct {
+        r = rope("{")
+
         i=0; for i < len(e.structLayout), i++ {
-            m = e.structLayout[i]
-            v ptr = e.value
-            if m.isArray == true {
-                nae = new reflectElement
-                naep = m.arrayElem
-                *nae = *naep
-                nae.type += "*"
-                m.arrayElem = nae
-            } else if m.type[len(m.type)-1] != '*' {
-                m.type += "*"
+            member = e.structLayout[i]
+
+            //the address of the member is the base address of the structure + the offset ammount
+            //of the member
+            member.value = <ptr>(<uint>value + member.offset)
+
+            //As we cannot access null address, we can skip its conversion.
+            if member.value == null {
+                continue
             }
-            m.value = m.calculateOffset(e.value)
-            s += rope("\""+m.name+"\": ") + toJsonRope(m)
+
+            //If the member is a pointer, its actual value is a pointer to a pointer.
+            //We can either add a '*' to the member.type (would be slower and not work for arrays).
+            //Or, as below, we shall dereference it one level so that the value given to the next
+            //toJsonRope() call has been applied the same conversion as the one done by the compiler.
+            if jsonIsPtrType(member.type) {
+                member.value = *(<ptr*>member.value)
+            }
+            r += rope("\""+jsonEscapeStr(member.name)+"\": ") + toJsonRope(member)
             if i+1 < len(e.structLayout) {
-                s += rope(", ")
+                r += rope(", ")
             }
         }
-        s += rope("}")
-        return s
-    }
-    
-    if e.isArray == true {
-        s = rope("[")
-        arrp ptr* = e.value
-        arr = <[]ptr>*arrp
-        if arr == null {
-            return rope("[]")
-        }
-        base = cArr(arr)
-        l = len(arr)
-        es int = noCheck(arr->elemSize)
-        aep = e.arrayElem
-        ae = *aep
 
-        if ae.type[len(ae.type)-1] != '*' && ae.isArray == false {
-            ae.type += "*"
-        }
-        i=0; for i < l, i++ {
-            m = ae
-            m.value = <ptr>(<int>base + es * i)
-            s += toJsonRope(m)
-            if i+1 < l {
-                s += rope(", ")
+        return r + rope("}")   
+    }
+
+    //If the reflectElement is an array, we need to convert all of its elements
+    ///as described by .arrayElem.
+    if e.isArray {
+        r = rope("[")
+        arr Bah_Array_Type* = value
+        isPtr = jsonIsPtrType(e.arrayElem.type)
+        elem = *(e.arrayElem) //dereferencing .arrayElem to prevent undefined behavior.
+        i=0; for i < arr.length, i++ {
+            elem.value = <ptr>(<uint>arr.data + i * arr.elemSize)
+            if elem.value == null {
+                continue
+            }
+
+            //If the element is a pointer, its actual value is a pointer to a pointer.
+            //We can either add a '*' to the elem.type (would be slower and not work for arrays).
+            //Or, as below, we shall dereference it one level so that the value given to the next
+            //toJsonRope() call has been applied the same conversion as the one done by the compiler.
+            if isPtr {
+                elem.value = *(<ptr*>elem.value)
+            }
+            r += toJsonRope(elem)
+            if i+1 < arr.length {
+                r += rope(", ")
             }
         }
-        s += rope("]")
-        return s
-    }
-    
-    if e.type == "int*" || e.type == "int32*" {
-        j int* = e.value
-        return rope(intToStr(*j))
+
+        return r + rope("]")
     }
 
-    if e.type == "str*" {
-        s str* = e.value
-        if s == null {
-            return rope("\"\"")
-        }
-        return rope("\""+jsonEscapeStr(*s)+"\"")
+    //For all primitive types below, "value" is a pointer containing the address of the value
+    //that we need to convert.
+
+    if type == "str" {
+        return rope("\""+jsonEscapeStr(<str>value)+"\"")
     }
 
-    if e.type == "float*" || e.type == "float32*" {
-        f float* = e.value
-        return rope(floatToStr(*f))
-    }
-    
-    if e.type == "uint*" || e.type == "uint32*" {
-        uj uint* = e.value
-        return rope(uintToStr(*uj))
+    if type == "int" {
+        return rope(intToStr(*(<int*>value)))
     }
 
-    if e.type == "char*" {
-        c char* = e.value
-        return rope("\""+charToString(*c)+"\"")
+    if type == "int32" {
+        return rope(intToStr(*(<int32*>value)))
     }
 
-    if e.type == "bool*" {
-        b bool* = e.value
-        if *b == true {
+    if type == "int16" {
+        return rope(intToStr(*(<int16*>value)))
+    }
+
+    if type == "uint" {
+        return rope(uintToStr(*(<uint*>value)))
+    }
+
+    if type == "uint32" {
+        return rope(uintToStr(*(<uint32*>value)))
+    }
+
+    if type == "uint16" {
+        return rope(uintToStr(*(<uint16*>value)))
+    }
+
+    if type == "float" {
+        return rope(floatToStr(*(<float*>value)))
+    }
+
+    if type == "bool" {
+        v = *(<bool*>value)
+        if v {
             return rope("true")
+            
         }
         return rope("false")
     }
-
+    
     return rope("null")
 }
 
+//Converting a var into json, this uses by toJsonRope() internally.
+//You can pass pretty much anything to this function.
+//Because we dont need a pointer to the value but only the value, you can pass a pointer or directly the value
+//that will be automatically converted to a pointer by the compiler.
+//s = "test"
+// toJson(s)
 toJson(e reflectElement) str {
-    if e.isArray == false && e.type[len(e.type)-1] != '*' {
-        panic("toJson("+e.name+") of type "+e.type+" but a pointer is required, try: toJson(&"+e.name+").")
-    }
     return toJsonRope(e).toStr()
 }

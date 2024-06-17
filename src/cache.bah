@@ -17,7 +17,7 @@ struct cacheFile {
     date: int
     mem: int
     opti: int
-    dependencies: []cacheFileDependency*
+    dependencies: []cacheFileDependency
 }
 
 cache = []cacheFile*
@@ -39,7 +39,7 @@ readCache()  {
     if fs.getSize() > 0 {
         j = parseJson(fs.readContent())
         fs.close()
-        j.scan(&cache)
+        j.scan(cache)
     }
     cacheMutex.unlock()
 }
@@ -68,11 +68,11 @@ updateCacheFile(c cacheFile*, incls []str) {
     c.date = getTimeUnix()
 
     if c.dependencies == null {
-        c.dependencies = []cacheFileDependency*
+        c.dependencies = []cacheFileDependency
     }
 
     i=0; for i < len(incls), i++ {
-        c.dependencies[i] = new cacheFileDependency {
+        c.dependencies[i] = cacheFileDependency {
             path: incls[i]
             last: getLastModified(incls[i])
         }
@@ -91,7 +91,7 @@ makeCacheFile(f str, incls []str) {
     c.last = getLastModified(f)
 
     i=0; for i < len(incls), i++ {
-        c.dependencies[i] = new cacheFileDependency {
+        c.dependencies[i] = cacheFileDependency {
             path: incls[i]
             last: getLastModified(incls[i])
         }
@@ -110,7 +110,7 @@ makeCacheFile(f str, incls []str) {
 writeCache() {
     fs = fileStream{}
     fs.open(BAH_DIR + "cache/cache.json", "w")
-    fs.writeFile(toJson(&cache))
+    fs.writeFile(toJson(cache))
     fs.close()
 }
 

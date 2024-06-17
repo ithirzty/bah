@@ -1,5 +1,3 @@
-const FLOAT_TO_STR_PRECISION = 3
-
 //Used for concatenating two known length strs.
 strCatOffset(dest str, destLen uint, src str, srcLen uint) {
     memcpy(noCheck(dest+destLen+strLenSize), <ptr>(<uint>src + strLenSize), srcLen)

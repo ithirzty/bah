@@ -331,7 +331,7 @@ valueFunc(fn func*, parent variable*, l []Tok, i int, ltp lineType, elems Elems*
         }
 
         if arg.type == "reflectElement" && tt != "reflectElement" {
-            t = parseReflect(t, tt, elems, false, t.cont, "0")
+            t = parseReflect(t, tt, elems, false, t.ogCont, "0")
             tt = "reflectElement"
         }
 

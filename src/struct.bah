@@ -74,12 +74,19 @@ searchStruct(name str, elems Elems*) cStruct* {
         name = name[:len(name)-i]
     }
 
+    let s = structCache[name] then {
+        return s
+    }
+
     i=len(elems.structs)-1; for i != -1, i-- {
         s = elems.structs[i]
         if s.name == name {
+            structCache[s.name] = s
             return s
         }
     }
+
+
     return null
 }
 

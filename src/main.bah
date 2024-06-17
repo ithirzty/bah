@@ -184,8 +184,9 @@ main(args []str) int {
 
     //if the file is an object, we dont want to declare an entry point.
     
-
-    readCache()
+    if noImport == false {
+        readCache()
+    }
 
     //opening the file to compile
     fileName = absPath(args[1])
@@ -304,7 +305,9 @@ main(args []str) int {
         ok = <- doneCompilingChan
     }
 
-    writeCache()
+    if noImport == false {
+        writeCache()
+    }
     setCurrentPath(ogDir)
 
     //setting the output name

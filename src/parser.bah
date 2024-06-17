@@ -344,7 +344,7 @@ parallelObjCompile(fn str, oName str, incls []str) {
             verboseCC = "-verboseCC"
         }
         if debug == false {
-            println("[compiling] "+fn)
+            println(ASCII_GREY+"[compiling] "+ASCII_RESET+fn)
         }
         opti = ""
         if isOptimized == true {
@@ -964,163 +964,97 @@ parseSerialize(e Tok*, elems Elems*) str {
 }
 
 //Makes a reflection structure from a variable.
-parseReflect(t Tok, tt str, elems Elems*, parsedPointer bool, ogName str, offset str) Tok {
+parseReflect(t Tok, tt str, elems Elems*, noPointer bool, ogName str, offset str) Tok {
 
-    if parsedPointer == false {
-        tt = getTypeFromToken(&t, true, elems)
-        if isRCPpointerType(tt) == false {
-            throwErr(&t, "Cannot use {TOKEN} ("+tt+") as pointer. Try using '&"+t.ogCont+"'.")
+    //If it is a template, pointer will be null.
+    if noPointer == false {
+        if t.isOper || (t.type != TOKEN_TYPE_VAR && t.type != TOKEN_TYPE_FUNC) {
+            t.cont = registerRCPvar(tt, t.cont, elems)
         }
+
+        if t.type == TOKEN_TYPE_STR {
+            ogName = "[BAH_STR_LITTERAL]"
+        }
+
+        if isRCPpointerType(tt) == false && t.cont != "null" {
+            t.cont = "(&" + t.cont + ")"        
+        }
+    } else {
+        t.cont = "null"
     }
 
     isArr = "0"
-
-    if t.type != TOKEN_TYPE_VAR || t.type != TOKEN_TYPE_FUNC {
-        cType string
-        if strHasPrefix(tt, "function(") {
-            cType = string("void*")
-        } else {
-            cType = getCType(tt, elems)
-        }
-        v = "keep_ref_"+genCompilerVar()
-        if RCPavailable() {
-            elems.vars[len(elems.vars)] = new variable {
-                name: v
-                type: "ptr"
-                declScope: elems
-            }
-        }
-        if parsedPointer == true {
-            cType.append("*")
-        }
-        OUTPUT += rope(cType.str()+" "+v+" = "+t.cont+";\n")
-        t.cont = v
-        if t.type == TOKEN_TYPE_STR {
-            ogName = "[bah str]"
-        }
-    }
-
-    arrElem = "0"
-    if strHasPrefix(tt, "[]") {
-        isArr = "1"
-        aet = string(tt)
-        aet.trimLeft(2)
-        tmpT = Tok{}
-        tmpT.type = TOKEN_TYPE_VAR
-        tmpT.cont = "0"
-        rt = parseReflect(tmpT, aet.str(), elems, true, "", "0")
-
-        aev = genCompilerVar()
-
-        OUTPUT += rope("
-        struct reflectElement "+aev+" = "+rt.cont+";
-        ")
-
-        arrElem = "&"+aev
-    } else if strHasPrefix(tt, "map:") {
-        aet = string(tt)
-        aet.trimLeft(4)
-        tmpT = Tok{}
-        tmpT.type = TOKEN_TYPE_VAR
-        tmpT.cont = "0"
-        rt = parseReflect(tmpT, aet.str(), elems, true, "", "0")
-        aev = genCompilerVar()
-        OUTPUT += rope("
-        struct reflectElement "+aev+" = "+rt.cont+";
-        ")
-        arrElem = "&"+aev
-    }
-
     isStruct = "0"
-    ts = searchStruct(tt, elems)
-    structLayout = "0"
+    arrElem = "null"
+    structLayout = "null"
+    ctt = tt
 
-    if ts != null {
-        isStruct = "1"
-        structLayout = "keep_ref_"+genCompilerVar()
-
-        if RCPavailable() {
-            elems.vars[len(elems.vars)] = new variable {
-                name: structLayout
-                type: "[]reflectElement"
-                declScope: elems
-            }
+    if strHasPrefix(tt, "[]") {
+        ctt = "Bah_Array_Type"
+        isArr = "1"
+        aeType = tt[2:]
+        tmpT = Tok {
+            type: TOKEN_TYPE_VAR
+            cont: "null"
         }
-
-        slv = new variable
-        slv.name = structLayout
-        slv.type = "[]reflectElement"
-
-        elems.vars[len(elems.vars)] = slv
-
-        dataLayout = rope("")
-
-        i=0; for i < len(ts.members), i++ {
-            m = ts.members[i]
-            if m.type == tt {
-                nm = new structMemb
-                *nm = *m
-                m = nm
-                m.type = "ptr"
-            }
-            tmpT = Tok{}
-            tmpT.type = TOKEN_TYPE_VAR
-            sep = "->"
-            if string(tt).containsChar('*') == false {
-                sep = "."
-            }
-            mCtype = getCType(m.type, elems)
-            offsetTT = string(tt)
-            offsetTT.replace("*", "")
-            tmpT.cont = "("+mCtype.str()+"*)((char*)("+t.cont+") + offsetof(struct "+offsetTT.str()+", "+m.name+"))"
-            rt = parseReflect(tmpT, m.type, elems, true, m.name, "offsetof(struct "+offsetTT.str()+", "+m.name+")")
-            dataLayout += rope("((struct reflectElement*)"+structLayout+"->data)["+intToStr(i)+"] = "+rt.cont+";\n")
-        }
-
-        OUTPUT += rope("
-        struct Bah_Array_Type * "+structLayout+" = memoryAlloc(sizeof(struct Bah_Array_Type));
-        "+structLayout+"->elemSize = sizeof(struct reflectElement);
-        "+structLayout+"->length = "+uintToStr(len(ts.members))+";
-        "+structLayout+"->data = memoryAlloc("+structLayout+"->length * "+structLayout+"->elemSize);
-        ") + dataLayout
-    }
-
-    amp = ""
-    if string(tt).containsChar('*') == false && tt != "str" && tt != "ptr" && parsedPointer == false {
-        amp = "&"
-    }
-
-    name = string(ogName)
-    if hasStructSep(&name) == true {
-        name = splitStructSepAfter(name)
-    }
-
-    cType string
-
-    if strHasPrefix(tt, "function(") {
-        cType = string("void*")
+        arrElem = "&" + registerRCPvar("reflectElement", parseReflect(tmpT, aeType, elems, true, "", "0").cont, elems)
     } else {
-        cType = getCType(tt, elems)
+        let s = searchStruct(tt, elems) then {
+            isStruct = "1"
+            structLayout = registerRCPvar("[]reflectElement", "memoryAlloc(sizeof(struct Bah_Array_Type));", elems)
+            OUTPUT += rope(structLayout + "->elemSize = sizeof(struct reflectElement);
+            "+structLayout + "->length = "+uintToStr(len(s.members))+";
+            "+structLayout + "->realLength = "+uintToStr(len(s.members))+";
+            "+structLayout + "->data = memoryAlloc(sizeof(struct reflectElement) * "+uintToStr(len(s.members))+");")
+            ctt = s.name
+
+            i=0; for i < len(s.members), i++ {
+                m = s.members[i]
+                
+                //prevent inifinte reflection
+                if m.type == tt {
+                    nm = new structMemb
+                    *nm = *m
+                    nm.type = "ptr"
+                    m = nm
+                }
+
+                tmpT = Tok {
+                    type: TOKEN_TYPE_VAR
+                    isOper: true
+                }
+
+                sep = "->"
+
+                mCtype = getCType(m.type, elems).str()
+                offset = "offsetof(struct "+s.name+", "+m.name+")"
+
+                tmpT.cont = "0"
+                tmpT = parseReflect(tmpT, m.type, elems, true, m.name, offset)
+
+
+                OUTPUT += rope("((struct reflectElement*)"+structLayout+"->data)["+intToStr(i)+"] = "+tmpT.cont+";\n")
+            }
+
+            i=0; for i < len(s.members), i++ {
+                m = s.members[i]
+                if m.type != tt {
+                    continue
+                }
+
+                OUTPUT += rope("((struct reflectElement*)"+structLayout+"->data)["+intToStr(i)+"].structLayout = "+structLayout+";\n((struct reflectElement*)"+structLayout+"->data)["+intToStr(i)+"].type = "+strLitteralToBahStr("\""+tt+"\"")+";\n((struct reflectElement*)"+structLayout+"->data)["+intToStr(i)+"].isStruct = true;\n")
+            }
+
+        }
     }
 
-
-    if cType.hasPrefix("struct ") {
-        cType.replace("*", "")
+    if ctt == tt {
+        ctt = strReplace(ctt, "*", "")
     }
 
-    if cType.length == 0 {
-        cType.set("0")
-    }
-
-    rv = new variable
-    rv.name = genCompilerVar()
-    rv.type = "reflectElement"
-
-    elems.vars[len(elems.vars)] = rv
-
-    OUTPUT += rope("struct reflectElement "+rv.name+" = __reflect("+amp+t.cont+", sizeof("+cType.str()+"), "+strLitteralToBahStr("\""+tt+"\"")+", "+strLitteralToBahStr("\""+name.str()+"\"")+", "+isArr+", "+arrElem+", "+isStruct+", "+structLayout+", "+offset+");\n")
-                        //                                                    value                  size             type           name            isArr       arrE        isStruct      structLayout      offset
-    t.cont = rv.name
+    t.cont = registerRCPvar("reflectElement", "__reflect("+t.cont+", sizeof("+getCType(ctt, elems).str()+"),
+    "+strLitteralToBahStr("\""+tt+"\"")+", "+strLitteralToBahStr("\""+ogName+"\"")+", "+isArr+",
+    "+arrElem+", "+isStruct+", "+structLayout+", "+offset+")", elems)
 
     return t
 }
@@ -3298,6 +3232,8 @@ prePross(line []Tok, ltp lineType, elems Elems*) []Tok {
                     t.bahType = getTypeFromToken(&t, true, elems)
                     if t.bahType[0] == '[' && t.bahType[len(t.bahType)-1] == ']' {
                         throwErr(&t, "Cannot get the pointer of a tuple {TOKEN}.")
+                    } else if strHasPrefix(t.bahType, "[]") {
+                        throwErr(&t, "Cannot get the pointer of an array {TOKEN} (it already is). Try casting it to a ptr to proceed.")
                     }
                 }
                 t.bahType += "*"

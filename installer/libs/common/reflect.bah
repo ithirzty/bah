@@ -8,6 +8,37 @@
 //**Usage: **
 //Simply put reflectElement as the type of a function argument.
 //The argument will then be reflected inside the function.
+//Detailed use can be seen inside json.bah.
+
+//Specifications:
+//  .name   The name of the reflected variable / structure member name
+
+//  .size   The size of the data pointed to by .value. If the reflected object is a
+//          pointer, .size if the ammount on memory needed to fit the content of the pointer, not
+//          the size of the pointer itself. .size of struct* == .size of struct.
+
+//  .value  Always a pointer. If the reflected value is already of type pointer (type*, str, array...)
+//          .value will not be a pointer to the pointer but directly the passed pointer. As such,
+//          non pointer primitive types are already converted to pointers even if there types are not:
+//          .value of int == .value of int*
+//          BUT:
+//          .value of str != .value of str*, .value of type* != .value of type**...
+//          Also note that you .value of an array will always be a pointer to Bah_Array_Type and never
+//          nested pointers as you cannot get the pointer of an array in bah. This is because the
+//          trailing '*' at the end of an array type is not a pointer to the array but an array of
+//          pointers: arr = []str, &arr != []str* but &arr[0] == str*.
+
+// .structLayout    An array of reflectElement, templates for the members of a struct. values of the
+//                  members shall be calculated using .calculateOffset(address of the struct).
+
+// .arrayElem   A reflectElement* that is a template of an element of the array. The value of .arrayElem
+//              shall be calculated as <ptr>(<uint>array.data + index * array.elemSize) where array is
+//              the value of the array casted to a Bah_Array_Type*.
+
+// .isArray, .isStruct  Booleans set to true if the reflected value is either an array or a struct. Note that an array
+//                      of struct will have .isArray = true and .isStruct = false because the element is not a struct but
+//                      its .arrayElem is a struct.
+
 struct reflectElement {
     //Var infos
     size: int
@@ -26,11 +57,9 @@ struct reflectElement {
     //Actual element
     value: ptr
 
-    //Calculates the offset pointer from an origin pointer.
-    //This is used to get a pointer to the element when it
+    //Calculates the address of a struct member by its offset to the origin address of the struct.
     calculateOffset(origin ptr) ptr {
-        base str = origin
-        return noCheck(base + this->offset)
+        return <ptr>(<uint>origin + this.offset)
     }
 }
 
@@ -103,7 +132,6 @@ const __bah_debug_get_sym = __debug_get_sym
 //         ip int* = e.value
 //         println(intToStr(*ip))
 //     } else if e.type == "str" {
-//         //WARNING: if the str is the member of a struct, it will return a pointer to the str.
 //         sp str = e.value
 //         println(sp)
 //     }
@@ -111,7 +139,7 @@ const __bah_debug_get_sym = __debug_get_sym
 // main(args []str) int {
 //     a = 54
 //     b = "test"
-//     reflectedPrint(&a)
-//     reflectedPrint(&b)
+//     reflectedPrint(a)
+//     reflectedPrint(b)
 //     return 0
 // }
