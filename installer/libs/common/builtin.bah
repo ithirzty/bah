@@ -55,7 +55,7 @@ __bah_strcmp(a str, b str) int {
 	if <ptr>a == null || <ptr>b == null {
 		return 1
 	}
-    return strcmp(a, b)
+    return strcmp(<char*>(<uint>a + strLenSize), <char*>(<uint>b + strLenSize))
 }
  
 const strcmp = __bah_strcmp

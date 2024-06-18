@@ -1,4 +1,4 @@
-#include "reflect.bah"
+#import "reflect.bah"
 
 //An internal description of a function and its evaluation wrapper.
 struct __eval_binding {

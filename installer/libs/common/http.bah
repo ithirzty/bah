@@ -1,7 +1,7 @@
-#include "iostream.bah"
-#include "string.bah"
-#include "exec.bah"
-#include "thread.bah"
+#import "iostream.bah"
+#import "string.bah"
+#import "exec.bah"
+#import "thread.bah"
 
 #windows {
     #include "<windows.h>"

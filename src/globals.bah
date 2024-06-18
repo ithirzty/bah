@@ -191,5 +191,3 @@ structCache = map cStruct* //caches struct searches
 currentCompiling = 0
 
 doneCompilingChan = chan bool
-
-#cLib "O0" "-debug" //"fsanitize=address"

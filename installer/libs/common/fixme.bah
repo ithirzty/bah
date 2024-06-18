@@ -1,4 +1,4 @@
-#include "string.bah"
+#import "string.bah"
 
 struct fixMeVar {
     name: str

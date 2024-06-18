@@ -1,4 +1,4 @@
-#include "reflect.bah"
+#import "reflect.bah"
 
 #cLib "lsqlite3"
 

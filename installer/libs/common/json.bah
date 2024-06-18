@@ -1,7 +1,7 @@
-#include "string.bah"
-#include "iostream.bah"
-#include "reflect.bah"
-#include "rope.bah"
+#import "string.bah"
+#import "iostream.bah"
+#import "reflect.bah"
+#import "rope.bah"
 
 
 const JSON_TYPE_STRING = 0

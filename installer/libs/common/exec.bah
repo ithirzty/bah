@@ -1,6 +1,6 @@
-#include "iostream.bah"
-#include "string.bah"
-#include "rope.bah"
+#import "iostream.bah"
+#import "string.bah"
+#import "rope.bah"
 
 //A wrapper for executting command.
 //This is will return the output of the command.

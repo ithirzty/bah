@@ -214,6 +214,7 @@ findFilePath(name str) str {
 //Includes a file.
 includeFile(ccstr str, elems Elems*) bool {
 
+
     needDisableRCP = false
 
     //includes the correct memory manager file
@@ -446,9 +447,6 @@ importFile(fileName str, strt Tok*, elems Elems*) {
     currentCompiling++
     async parallelObjCompile(fn, oName, compilerState.importDeps)
 
-    //adds its init function
-    OUTPUT += rope("void __BAH_init"+pathToVarName(fn)+"();\n")
-    INIT += rope("__BAH_init"+pathToVarName(fn)+"();\n")
 
     //restore old file's parameters
     shouldOnlyDecl = osod
@@ -458,6 +456,11 @@ importFile(fileName str, strt Tok*, elems Elems*) {
     isImportedSubObject = oiiso
     compilerState.importDeps = ocsimpDeps
 
+    //adds its init function
+    if isObject == false {
+        OUTPUT += rope("void __BAH_init"+pathToVarName(fn)+"();\n")
+        INIT += rope("__BAH_init"+pathToVarName(fn)+"();\n")
+    }
 }
 
 //Parses file import.

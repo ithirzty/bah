@@ -1,5 +1,5 @@
-#include "iostream.bah"
-#include "string.bah"
+#import "iostream.bah"
+#import "string.bah"
 
 //An internal function iterating over the str s until s[*i] is not a space.
 _markdown_skipSpace(s str, i int*) uint {

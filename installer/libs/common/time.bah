@@ -1,4 +1,4 @@
-#include "string.bah"
+#import "string.bah"
 
 struct tm {
     tm_sec: int32

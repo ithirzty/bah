@@ -75,7 +75,6 @@ rope(a str) rope* {
     return r
 }
 
-
 // Example
 // main(args []str) int {
 //     a = rope("This is a test: ") //Initiates rope a

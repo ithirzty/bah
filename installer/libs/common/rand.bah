@@ -2,8 +2,8 @@
     #include "<wincrypt.h>"
 }
 
-#include "time.bah"
-#include "iostream.bah"
+#import "time.bah"
+#import "iostream.bah"
 
 #define srand(i int32)
 #define rand() int32

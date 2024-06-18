@@ -1,5 +1,5 @@
-#include "iostream.bah"
-#include "string.bah"
+#import "iostream.bah"
+#import "string.bah"
 
 
 //The reflection of an element (a var).

@@ -1,4 +1,4 @@
-#include "iostream.bah"
+#import "iostream.bah"
 
 #define! pipe(fd ptr)
 #define! fcntl(fd ptr, m int, f int) int
