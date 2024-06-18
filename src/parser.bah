@@ -1008,11 +1008,13 @@ parseReflect(t Tok, tt str, elems Elems*, noPointer bool, ogName str, offset str
             "+structLayout + "->data = memoryAlloc(sizeof(struct reflectElement) * "+uintToStr(len(s.members))+");")
             ctt = s.name
 
+            snPtr = s.name+"*"
+
             i=0; for i < len(s.members), i++ {
                 m = s.members[i]
                 
                 //prevent inifinte reflection
-                if m.type == tt {
+                if strHasPrefix(m.type, snPtr) {
                     nm = new structMemb
                     *nm = *m
                     nm.type = "ptr"
@@ -1027,10 +1029,10 @@ parseReflect(t Tok, tt str, elems Elems*, noPointer bool, ogName str, offset str
                 sep = "->"
 
                 mCtype = getCType(m.type, elems).str()
-                offset = "offsetof(struct "+s.name+", "+m.name+")"
+                mOffset = "offsetof(struct "+s.name+", "+m.name+")"
 
                 tmpT.cont = "0"
-                tmpT = parseReflect(tmpT, m.type, elems, true, m.name, offset)
+                tmpT = parseReflect(tmpT, m.type, elems, true, m.name, mOffset)
 
 
                 OUTPUT += rope("((struct reflectElement*)"+structLayout+"->data)["+intToStr(i)+"] = "+tmpT.cont+";\n")
@@ -1038,11 +1040,14 @@ parseReflect(t Tok, tt str, elems Elems*, noPointer bool, ogName str, offset str
 
             i=0; for i < len(s.members), i++ {
                 m = s.members[i]
-                if m.type != tt {
+                if strHasPrefix(m.type, snPtr) == false {
                     continue
                 }
 
-                OUTPUT += rope("((struct reflectElement*)"+structLayout+"->data)["+intToStr(i)+"].structLayout = "+structLayout+";\n((struct reflectElement*)"+structLayout+"->data)["+intToStr(i)+"].type = "+strLitteralToBahStr("\""+tt+"\"")+";\n((struct reflectElement*)"+structLayout+"->data)["+intToStr(i)+"].isStruct = true;\n")
+                OUTPUT += rope("((struct reflectElement*)"+structLayout+"->data)["+intToStr(i)+"].structLayout = "+structLayout+";
+                ((struct reflectElement*)"+structLayout+"->data)["+intToStr(i)+"].type = "+strLitteralToBahStr("\""+m.type+"\"")+";
+                ((struct reflectElement*)"+structLayout+"->data)["+intToStr(i)+"].isStruct = true;
+                ((struct reflectElement*)"+structLayout+"->data)["+intToStr(i)+"].size = sizeof(struct "+s.name+");")
             }
 
         }

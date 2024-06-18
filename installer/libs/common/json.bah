@@ -116,7 +116,9 @@ json_scan_inner(thisp ptr, e reflectElement) {
                 break
             }
         }
-        type = type[:len(type)-nb]
+        if nb > 0 {
+            type = type[:len(type)-nb]
+        }
     }
 
     //trying to scan a value at an address that has not been allocated.
@@ -172,8 +174,8 @@ json_scan_inner(thisp ptr, e reflectElement) {
             if isPtr {
                 elem.value = memoryAlloc(elem.size)
                 elemp = <ptr*>(<uint>arr.data + i * sizeof(ptr))
-                json_scan_inner(this.children[i], elem)
                 *elemp = elem.value
+                json_scan_inner(this.children[i], elem)
             } else { //we can scan directly to the array's element address.
                 elem.value = <ptr>(<uint>arr.data + i * arr.elemSize)
                 json_scan_inner(this.children[i], elem)
@@ -528,7 +530,9 @@ toJsonRope(e reflectElement) rope* {
                 break
             }
         }
-        type = type[:len(type)-nb]
+        if nb > 0 {
+            type = type[:len(type)-nb]
+        }
     }
 
     if value == null {
@@ -547,11 +551,6 @@ toJsonRope(e reflectElement) rope* {
             //of the member
             member.value = <ptr>(<uint>value + member.offset)
 
-            //As we cannot access null address, we can skip its conversion.
-            if member.value == null {
-                continue
-            }
-
             //If the member is a pointer, its actual value is a pointer to a pointer.
             //We can either add a '*' to the member.type (would be slower and not work for arrays).
             //Or, as below, we shall dereference it one level so that the value given to the next
@@ -559,7 +558,17 @@ toJsonRope(e reflectElement) rope* {
             if jsonIsPtrType(member.type) {
                 member.value = *(<ptr*>member.value)
             }
-            r += rope("\""+jsonEscapeStr(member.name)+"\": ") + toJsonRope(member)
+
+            res rope*
+
+            if member.value != null {
+                res = toJsonRope(member)
+            } else {
+                res = rope("null")
+            }
+
+            //As we cannot access null address, we can skip its conversion.
+            r += rope("\""+jsonEscapeStr(member.name)+"\": ") + res
             if i+1 < len(e.structLayout) {
                 r += rope(", ")
             }
@@ -577,9 +586,6 @@ toJsonRope(e reflectElement) rope* {
         elem = *(e.arrayElem) //dereferencing .arrayElem to prevent undefined behavior.
         i=0; for i < arr.length, i++ {
             elem.value = <ptr>(<uint>arr.data + i * arr.elemSize)
-            if elem.value == null {
-                continue
-            }
 
             //If the element is a pointer, its actual value is a pointer to a pointer.
             //We can either add a '*' to the elem.type (would be slower and not work for arrays).
@@ -588,6 +594,7 @@ toJsonRope(e reflectElement) rope* {
             if isPtr {
                 elem.value = *(<ptr*>elem.value)
             }
+
             r += toJsonRope(elem)
             if i+1 < arr.length {
                 r += rope(", ")
