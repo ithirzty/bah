@@ -6781,33 +6781,54 @@ float* v = (float*)value;
 #line 242 "/opt/bah/json.bah"
 return;
 }
-};
+
+#line 245 "/opt/bah/json.bah"
+if ((strcmp(type, "\04\0\0\0\0\0\0\0""bool") == 0)) {
+
+#line 246 "/opt/bah/json.bah"
+char* v = ((char*)value);
 
 #line 247 "/opt/bah/json.bah"
-char* jError;
+if ((strcmp(jsonElement__str(this), "\04\0\0\0\0\0\0\0""true") == 0)||(strToInt(jsonElement__str(this))>0)) {
+
+#line 248 "/opt/bah/json.bah"
+*v = true;
+}
 
 #line 250 "/opt/bah/json.bah"
-struct jsonElement* parseJson_inner(char* s,unsigned long long int* ip,unsigned long long int l){
+else{
 
 #line 251 "/opt/bah/json.bah"
+*v = false;
+}
+}
+};
+
+#line 257 "/opt/bah/json.bah"
+char* jError;
+
+#line 260 "/opt/bah/json.bah"
+struct jsonElement* parseJson_inner(char* s,unsigned long long int* ip,unsigned long long int l){
+
+#line 261 "/opt/bah/json.bah"
 jError = "\0\0\0\0\0\0\0\0""";
 
-#line 252 "/opt/bah/json.bah"
+#line 262 "/opt/bah/json.bah"
 unsigned long long int i = *ip;
 
-#line 254 "/opt/bah/json.bah"
+#line 264 "/opt/bah/json.bah"
 for (; (i<l); ++i) {
 
-#line 255 "/opt/bah/json.bah"
+#line 265 "/opt/bah/json.bah"
 if ((isSpace(s[i+8])==false)) {
 
-#line 256 "/opt/bah/json.bah"
+#line 266 "/opt/bah/json.bah"
 goto ____BAH_COMPILER_VAR_168_aoptabahajsonbbah;
 }
 };
 ____BAH_COMPILER_VAR_168_aoptabahajsonbbah: ;
 
-#line 260 "/opt/bah/json.bah"
+#line 270 "/opt/bah/json.bah"
 struct jsonElement* ____BAH_COMPILER_VAR_169_aoptabahajsonbbah = memoryAlloc(sizeof(struct jsonElement));
 ____BAH_COMPILER_VAR_169_aoptabahajsonbbah->children = memoryAlloc(sizeof(struct Bah_Array_Type));
             ____BAH_COMPILER_VAR_169_aoptabahajsonbbah->children->length = 0;
@@ -6817,87 +6838,87 @@ ____BAH_COMPILER_VAR_169_aoptabahajsonbbah->from = i;
 ____BAH_COMPILER_VAR_169_aoptabahajsonbbah->to = l;
 struct jsonElement* j = ____BAH_COMPILER_VAR_169_aoptabahajsonbbah;
 
-#line 266 "/opt/bah/json.bah"
+#line 276 "/opt/bah/json.bah"
 if ((s[i+8]==91)) {
 
-#line 267 "/opt/bah/json.bah"
+#line 277 "/opt/bah/json.bah"
 j->type = JSON_TYPE_ARRAY;
 
-#line 268 "/opt/bah/json.bah"
+#line 278 "/opt/bah/json.bah"
 ++i;
 
-#line 269 "/opt/bah/json.bah"
+#line 279 "/opt/bah/json.bah"
 for (; (i<l); ++i) {
 
-#line 270 "/opt/bah/json.bah"
+#line 280 "/opt/bah/json.bah"
 if ((isSpace(s[i+8])==false)) {
 
-#line 271 "/opt/bah/json.bah"
+#line 281 "/opt/bah/json.bah"
 goto ____BAH_COMPILER_VAR_170_aoptabahajsonbbah;
 }
 };
 ____BAH_COMPILER_VAR_170_aoptabahajsonbbah: ;
 
-#line 274 "/opt/bah/json.bah"
+#line 284 "/opt/bah/json.bah"
 if ((s[i+8]!=93)) {
 
-#line 275 "/opt/bah/json.bah"
+#line 285 "/opt/bah/json.bah"
 for (; (i<l); ++i) {
 
-#line 276 "/opt/bah/json.bah"
+#line 286 "/opt/bah/json.bah"
 struct jsonElement* child = parseJson_inner(s,&i,l);
 
-#line 277 "/opt/bah/json.bah"
+#line 287 "/opt/bah/json.bah"
 if ((child==null)) {
 
-#line 278 "/opt/bah/json.bah"
+#line 288 "/opt/bah/json.bah"
 return null;
 }
 
-#line 280 "/opt/bah/json.bah"
+#line 290 "/opt/bah/json.bah"
 unsigned int ____BAH_COMPILER_VAR_172_aoptabahajsonbbah = len(j->children);
     __Bah_realocate_arr(j->children, ____BAH_COMPILER_VAR_172_aoptabahajsonbbah);
     ((struct jsonElement**)j->children->data)[____BAH_COMPILER_VAR_172_aoptabahajsonbbah] = child;
 
-#line 281 "/opt/bah/json.bah"
+#line 291 "/opt/bah/json.bah"
 for (; (i<l); ++i) {
 
-#line 282 "/opt/bah/json.bah"
+#line 292 "/opt/bah/json.bah"
 if ((isSpace(s[i+8])==false)) {
 
-#line 283 "/opt/bah/json.bah"
+#line 293 "/opt/bah/json.bah"
 goto ____BAH_COMPILER_VAR_173_aoptabahajsonbbah;
 }
 };
 ____BAH_COMPILER_VAR_173_aoptabahajsonbbah: ;
 
-#line 287 "/opt/bah/json.bah"
+#line 297 "/opt/bah/json.bah"
 if ((s[i+8]!=44)) {
 
-#line 288 "/opt/bah/json.bah"
+#line 298 "/opt/bah/json.bah"
 if ((s[i+8]!=93)) {
 
-#line 289 "/opt/bah/json.bah"
+#line 299 "/opt/bah/json.bah"
 char** ____BAH_COMPILER_VAR_174_aoptabahajsonbbah = alloca(5 * sizeof(char*));____BAH_COMPILER_VAR_174_aoptabahajsonbbah[4] = "\01\0\0\0\0\0\0\0"")";____BAH_COMPILER_VAR_174_aoptabahajsonbbah[3] = uintToStr(i);____BAH_COMPILER_VAR_174_aoptabahajsonbbah[2] = "\010\0\0\0\0\0\0\0"") (pos: ";____BAH_COMPILER_VAR_174_aoptabahajsonbbah[1] = charToString(s[i+8]);____BAH_COMPILER_VAR_174_aoptabahajsonbbah[0] = "\045\0\0\0\0\0\0\0""json: expected array separator (got: ";char* ____BAH_COMPILER_VAR_175_aoptabahajsonbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_174_aoptabahajsonbbah, 5);jError = ____BAH_COMPILER_VAR_175_aoptabahajsonbbah;
 
-#line 290 "/opt/bah/json.bah"
+#line 300 "/opt/bah/json.bah"
 return null;
 }
 
-#line 292 "/opt/bah/json.bah"
+#line 302 "/opt/bah/json.bah"
 ++i;
 
-#line 293 "/opt/bah/json.bah"
+#line 303 "/opt/bah/json.bah"
 goto ____BAH_COMPILER_VAR_171_aoptabahajsonbbah;
 }
 
-#line 296 "/opt/bah/json.bah"
+#line 306 "/opt/bah/json.bah"
 for (; (i<l); ++i) {
 
-#line 297 "/opt/bah/json.bah"
+#line 307 "/opt/bah/json.bah"
 if ((isSpace(s[i+8])==false)) {
 
-#line 298 "/opt/bah/json.bah"
+#line 308 "/opt/bah/json.bah"
 goto ____BAH_COMPILER_VAR_176_aoptabahajsonbbah;
 }
 };
@@ -6906,259 +6927,259 @@ ____BAH_COMPILER_VAR_176_aoptabahajsonbbah: ;
 ____BAH_COMPILER_VAR_171_aoptabahajsonbbah: ;
 }
 
-#line 303 "/opt/bah/json.bah"
+#line 313 "/opt/bah/json.bah"
 else{
 
-#line 304 "/opt/bah/json.bah"
+#line 314 "/opt/bah/json.bah"
 ++i;
 }
 
-#line 306 "/opt/bah/json.bah"
+#line 316 "/opt/bah/json.bah"
 j->to = i;
 }
 
-#line 307 "/opt/bah/json.bah"
+#line 317 "/opt/bah/json.bah"
 else{
 if ((s[i+8]==123)) {
 
-#line 308 "/opt/bah/json.bah"
+#line 318 "/opt/bah/json.bah"
 j->type = JSON_TYPE_MAP;
 
-#line 309 "/opt/bah/json.bah"
+#line 319 "/opt/bah/json.bah"
 ++i;
 
-#line 310 "/opt/bah/json.bah"
+#line 320 "/opt/bah/json.bah"
 for (; (i<l); ++i) {
 
-#line 311 "/opt/bah/json.bah"
+#line 321 "/opt/bah/json.bah"
 if ((isSpace(s[i+8])==false)) {
 
-#line 312 "/opt/bah/json.bah"
+#line 322 "/opt/bah/json.bah"
 goto ____BAH_COMPILER_VAR_177_aoptabahajsonbbah;
 }
 };
 ____BAH_COMPILER_VAR_177_aoptabahajsonbbah: ;
 
-#line 315 "/opt/bah/json.bah"
+#line 325 "/opt/bah/json.bah"
 if ((s[i+8]!=125)) {
 
-#line 316 "/opt/bah/json.bah"
+#line 326 "/opt/bah/json.bah"
 for (; (i<l); ++i) {
 
-#line 317 "/opt/bah/json.bah"
+#line 327 "/opt/bah/json.bah"
 for (; (i<l); ++i) {
 
-#line 318 "/opt/bah/json.bah"
+#line 328 "/opt/bah/json.bah"
 if ((isSpace(s[i+8])==false)) {
 
-#line 319 "/opt/bah/json.bah"
+#line 329 "/opt/bah/json.bah"
 goto ____BAH_COMPILER_VAR_179_aoptabahajsonbbah;
 }
 };
 ____BAH_COMPILER_VAR_179_aoptabahajsonbbah: ;
 
-#line 322 "/opt/bah/json.bah"
+#line 332 "/opt/bah/json.bah"
 if ((s[i+8]!=34)) {
 
-#line 323 "/opt/bah/json.bah"
+#line 333 "/opt/bah/json.bah"
 char** ____BAH_COMPILER_VAR_180_aoptabahajsonbbah = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_180_aoptabahajsonbbah[2] = "\01\0\0\0\0\0\0\0"")";____BAH_COMPILER_VAR_180_aoptabahajsonbbah[1] = uintToStr(i);____BAH_COMPILER_VAR_180_aoptabahajsonbbah[0] = "\047\0\0\0\0\0\0\0""json: expected string as map key (pos: ";char* ____BAH_COMPILER_VAR_181_aoptabahajsonbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_180_aoptabahajsonbbah, 3);jError = ____BAH_COMPILER_VAR_181_aoptabahajsonbbah;
 
-#line 324 "/opt/bah/json.bah"
+#line 334 "/opt/bah/json.bah"
 return null;
 }
 
-#line 326 "/opt/bah/json.bah"
+#line 336 "/opt/bah/json.bah"
 ++i;
 
-#line 327 "/opt/bah/json.bah"
+#line 337 "/opt/bah/json.bah"
 unsigned long long int ns = i;
 
-#line 328 "/opt/bah/json.bah"
+#line 338 "/opt/bah/json.bah"
 for (; (i<l); ++i) {
 
-#line 329 "/opt/bah/json.bah"
+#line 339 "/opt/bah/json.bah"
 if ((s[i+8]==34)&&(s[i-1+8]!=(char)92)) {
 
-#line 330 "/opt/bah/json.bah"
+#line 340 "/opt/bah/json.bah"
 goto ____BAH_COMPILER_VAR_182_aoptabahajsonbbah;
 }
 };
 ____BAH_COMPILER_VAR_182_aoptabahajsonbbah: ;
 
-#line 333 "/opt/bah/json.bah"
+#line 343 "/opt/bah/json.bah"
 char* name = strSubstitute(s, ns, i);
 
-#line 334 "/opt/bah/json.bah"
+#line 344 "/opt/bah/json.bah"
 ++i;
 
-#line 336 "/opt/bah/json.bah"
+#line 346 "/opt/bah/json.bah"
 for (; (i<l); ++i) {
 
-#line 337 "/opt/bah/json.bah"
+#line 347 "/opt/bah/json.bah"
 if ((isSpace(s[i+8])==false)) {
 
-#line 338 "/opt/bah/json.bah"
+#line 348 "/opt/bah/json.bah"
 goto ____BAH_COMPILER_VAR_183_aoptabahajsonbbah;
 }
 };
 ____BAH_COMPILER_VAR_183_aoptabahajsonbbah: ;
 
-#line 342 "/opt/bah/json.bah"
+#line 352 "/opt/bah/json.bah"
 if ((s[i+8]!=58)) {
 
-#line 343 "/opt/bah/json.bah"
+#line 353 "/opt/bah/json.bah"
 char** ____BAH_COMPILER_VAR_184_aoptabahajsonbbah = alloca(5 * sizeof(char*));____BAH_COMPILER_VAR_184_aoptabahajsonbbah[4] = "\01\0\0\0\0\0\0\0"")";____BAH_COMPILER_VAR_184_aoptabahajsonbbah[3] = uintToStr(i);____BAH_COMPILER_VAR_184_aoptabahajsonbbah[2] = "\010\0\0\0\0\0\0\0"") (pos: ";____BAH_COMPILER_VAR_184_aoptabahajsonbbah[1] = intToStr((long int)s[i+8]);____BAH_COMPILER_VAR_184_aoptabahajsonbbah[0] = "\055\0\0\0\0\0\0\0""json: expected : between key and value (got: ";char* ____BAH_COMPILER_VAR_185_aoptabahajsonbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_184_aoptabahajsonbbah, 5);jError = ____BAH_COMPILER_VAR_185_aoptabahajsonbbah;
 
-#line 344 "/opt/bah/json.bah"
+#line 354 "/opt/bah/json.bah"
 return null;
 }
 
-#line 347 "/opt/bah/json.bah"
+#line 357 "/opt/bah/json.bah"
 ++i;
 
-#line 349 "/opt/bah/json.bah"
+#line 359 "/opt/bah/json.bah"
 struct jsonElement* child = parseJson_inner(s,&i,l);
 
-#line 350 "/opt/bah/json.bah"
+#line 360 "/opt/bah/json.bah"
 if ((child==null)) {
 
-#line 351 "/opt/bah/json.bah"
+#line 361 "/opt/bah/json.bah"
 return null;
 }
 
-#line 353 "/opt/bah/json.bah"
+#line 363 "/opt/bah/json.bah"
 child->key = name;
 
-#line 354 "/opt/bah/json.bah"
+#line 364 "/opt/bah/json.bah"
 unsigned int ____BAH_COMPILER_VAR_186_aoptabahajsonbbah = len(j->children);
     __Bah_realocate_arr(j->children, ____BAH_COMPILER_VAR_186_aoptabahajsonbbah);
     ((struct jsonElement**)j->children->data)[____BAH_COMPILER_VAR_186_aoptabahajsonbbah] = child;
 
-#line 356 "/opt/bah/json.bah"
+#line 366 "/opt/bah/json.bah"
 for (; (i<l); ++i) {
 
-#line 357 "/opt/bah/json.bah"
+#line 367 "/opt/bah/json.bah"
 if ((isSpace(s[i+8])==false)) {
 
-#line 358 "/opt/bah/json.bah"
+#line 368 "/opt/bah/json.bah"
 goto ____BAH_COMPILER_VAR_187_aoptabahajsonbbah;
 }
 };
 ____BAH_COMPILER_VAR_187_aoptabahajsonbbah: ;
 
-#line 362 "/opt/bah/json.bah"
+#line 372 "/opt/bah/json.bah"
 if ((s[i+8]!=44)) {
 
-#line 363 "/opt/bah/json.bah"
+#line 373 "/opt/bah/json.bah"
 if ((s[i+8]!=125)) {
 
-#line 364 "/opt/bah/json.bah"
+#line 374 "/opt/bah/json.bah"
 char** ____BAH_COMPILER_VAR_188_aoptabahajsonbbah = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_188_aoptabahajsonbbah[2] = "\01\0\0\0\0\0\0\0"")";____BAH_COMPILER_VAR_188_aoptabahajsonbbah[1] = uintToStr(i);____BAH_COMPILER_VAR_188_aoptabahajsonbbah[0] = "\043\0\0\0\0\0\0\0""json: expected map separator (pos: ";char* ____BAH_COMPILER_VAR_189_aoptabahajsonbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_188_aoptabahajsonbbah, 3);jError = ____BAH_COMPILER_VAR_189_aoptabahajsonbbah;
 
-#line 365 "/opt/bah/json.bah"
+#line 375 "/opt/bah/json.bah"
 return null;
 }
 
-#line 367 "/opt/bah/json.bah"
+#line 377 "/opt/bah/json.bah"
 ++i;
 
-#line 368 "/opt/bah/json.bah"
+#line 378 "/opt/bah/json.bah"
 goto ____BAH_COMPILER_VAR_178_aoptabahajsonbbah;
 }
 };
 ____BAH_COMPILER_VAR_178_aoptabahajsonbbah: ;
 }
 
-#line 371 "/opt/bah/json.bah"
+#line 381 "/opt/bah/json.bah"
 else{
 
-#line 372 "/opt/bah/json.bah"
+#line 382 "/opt/bah/json.bah"
 ++i;
 }
 
-#line 374 "/opt/bah/json.bah"
+#line 384 "/opt/bah/json.bah"
 j->to = i;
 }
 
-#line 375 "/opt/bah/json.bah"
+#line 385 "/opt/bah/json.bah"
 else{
 if ((s[i+8]==34)) {
 
-#line 376 "/opt/bah/json.bah"
+#line 386 "/opt/bah/json.bah"
 j->type = JSON_TYPE_STRING;
 
-#line 377 "/opt/bah/json.bah"
+#line 387 "/opt/bah/json.bah"
 ++i;
 
-#line 378 "/opt/bah/json.bah"
+#line 388 "/opt/bah/json.bah"
 j->from = i;
 
-#line 379 "/opt/bah/json.bah"
+#line 389 "/opt/bah/json.bah"
 struct Bah_Array_Type* mem = memoryAlloc(sizeof(struct Bah_Array_Type));
 
 mem->length = 0;
 mem->elemSize = sizeof(char);
 
-#line 380 "/opt/bah/json.bah"
+#line 390 "/opt/bah/json.bah"
 for (; (i<l); ++i) {
 
-#line 381 "/opt/bah/json.bah"
+#line 391 "/opt/bah/json.bah"
 if ((s[i+8]==34)) {
 
-#line 382 "/opt/bah/json.bah"
+#line 392 "/opt/bah/json.bah"
 goto ____BAH_COMPILER_VAR_190_aoptabahajsonbbah;
 }
 
-#line 384 "/opt/bah/json.bah"
+#line 394 "/opt/bah/json.bah"
 if ((s[i+8]==(char)92)) {
 
-#line 385 "/opt/bah/json.bah"
+#line 395 "/opt/bah/json.bah"
 if ((len(mem)==0)) {
 
-#line 386 "/opt/bah/json.bah"
+#line 396 "/opt/bah/json.bah"
 mem = strToArr(strSubstitute(s, j->from, i));
 }
 
-#line 388 "/opt/bah/json.bah"
+#line 398 "/opt/bah/json.bah"
 if ((s[i+1+8]==114)) {
 
-#line 389 "/opt/bah/json.bah"
+#line 399 "/opt/bah/json.bah"
 unsigned int ____BAH_COMPILER_VAR_191_aoptabahajsonbbah = len(mem);
     __Bah_realocate_arr(mem, ____BAH_COMPILER_VAR_191_aoptabahajsonbbah);
     ((char*)mem->data)[____BAH_COMPILER_VAR_191_aoptabahajsonbbah] = (char)13;
 }
 
-#line 390 "/opt/bah/json.bah"
+#line 400 "/opt/bah/json.bah"
 else{
 if ((s[i+1+8]==110)) {
 
-#line 391 "/opt/bah/json.bah"
+#line 401 "/opt/bah/json.bah"
 unsigned int ____BAH_COMPILER_VAR_192_aoptabahajsonbbah = len(mem);
     __Bah_realocate_arr(mem, ____BAH_COMPILER_VAR_192_aoptabahajsonbbah);
     ((char*)mem->data)[____BAH_COMPILER_VAR_192_aoptabahajsonbbah] = (char)10;
 }
 
-#line 392 "/opt/bah/json.bah"
+#line 402 "/opt/bah/json.bah"
 else{
 
-#line 393 "/opt/bah/json.bah"
+#line 403 "/opt/bah/json.bah"
 unsigned int ____BAH_COMPILER_VAR_193_aoptabahajsonbbah = len(mem);
     __Bah_realocate_arr(mem, ____BAH_COMPILER_VAR_193_aoptabahajsonbbah);
     ((char*)mem->data)[____BAH_COMPILER_VAR_193_aoptabahajsonbbah] = s[i+1+8];
 }
 }
 
-#line 395 "/opt/bah/json.bah"
+#line 405 "/opt/bah/json.bah"
 ++i;
 
-#line 396 "/opt/bah/json.bah"
+#line 406 "/opt/bah/json.bah"
 continue;
 }
 
-#line 398 "/opt/bah/json.bah"
+#line 408 "/opt/bah/json.bah"
 if ((len(mem)!=0)) {
 
-#line 399 "/opt/bah/json.bah"
+#line 409 "/opt/bah/json.bah"
 unsigned int ____BAH_COMPILER_VAR_194_aoptabahajsonbbah = len(mem);
     __Bah_realocate_arr(mem, ____BAH_COMPILER_VAR_194_aoptabahajsonbbah);
     ((char*)mem->data)[____BAH_COMPILER_VAR_194_aoptabahajsonbbah] = s[i+8];
@@ -7166,91 +7187,91 @@ unsigned int ____BAH_COMPILER_VAR_194_aoptabahajsonbbah = len(mem);
 };
 ____BAH_COMPILER_VAR_190_aoptabahajsonbbah: ;
 
-#line 402 "/opt/bah/json.bah"
+#line 412 "/opt/bah/json.bah"
 if ((len(mem)!=0)) {
 
-#line 403 "/opt/bah/json.bah"
+#line 413 "/opt/bah/json.bah"
 j->contentFinal = true;
 
-#line 404 "/opt/bah/json.bah"
+#line 414 "/opt/bah/json.bah"
 j->content = arrToStr(mem);
 }
 
-#line 406 "/opt/bah/json.bah"
+#line 416 "/opt/bah/json.bah"
 j->to = i;
 
-#line 407 "/opt/bah/json.bah"
+#line 417 "/opt/bah/json.bah"
 ++i;
 }
 
-#line 408 "/opt/bah/json.bah"
+#line 418 "/opt/bah/json.bah"
 else{
 if (isNumber(s[i+8])||(s[i+8]==45)) {
 
-#line 409 "/opt/bah/json.bah"
+#line 419 "/opt/bah/json.bah"
 j->type = JSON_TYPE_INT;
 
-#line 410 "/opt/bah/json.bah"
+#line 420 "/opt/bah/json.bah"
 ++i;
 
-#line 411 "/opt/bah/json.bah"
+#line 421 "/opt/bah/json.bah"
 for (; (i<l); ++i) {
 
-#line 412 "/opt/bah/json.bah"
+#line 422 "/opt/bah/json.bah"
 if ((isNumber(s[i+8])==false)) {
 
-#line 413 "/opt/bah/json.bah"
+#line 423 "/opt/bah/json.bah"
 if ((s[i+8]==46)) {
 
-#line 414 "/opt/bah/json.bah"
+#line 424 "/opt/bah/json.bah"
 j->type = JSON_TYPE_FLOAT;
 }
 
-#line 415 "/opt/bah/json.bah"
+#line 425 "/opt/bah/json.bah"
 else{
 
-#line 416 "/opt/bah/json.bah"
+#line 426 "/opt/bah/json.bah"
 goto ____BAH_COMPILER_VAR_195_aoptabahajsonbbah;
 }
 }
 };
 ____BAH_COMPILER_VAR_195_aoptabahajsonbbah: ;
 
-#line 420 "/opt/bah/json.bah"
+#line 430 "/opt/bah/json.bah"
 j->to = i;
 }
 
-#line 421 "/opt/bah/json.bah"
+#line 431 "/opt/bah/json.bah"
 else{
 
-#line 422 "/opt/bah/json.bah"
+#line 432 "/opt/bah/json.bah"
 unsigned long long int si = i;
 
-#line 423 "/opt/bah/json.bah"
+#line 433 "/opt/bah/json.bah"
 for (; (i<l); ++i) {
 
-#line 424 "/opt/bah/json.bah"
+#line 434 "/opt/bah/json.bah"
 if ((isLetter(s[i+8])==false)) {
 
-#line 425 "/opt/bah/json.bah"
+#line 435 "/opt/bah/json.bah"
 goto ____BAH_COMPILER_VAR_196_aoptabahajsonbbah;
 }
 };
 ____BAH_COMPILER_VAR_196_aoptabahajsonbbah: ;
 
-#line 428 "/opt/bah/json.bah"
+#line 438 "/opt/bah/json.bah"
 s = strSubstitute(s, si, i);
 
-#line 429 "/opt/bah/json.bah"
+#line 439 "/opt/bah/json.bah"
 if ((strcmp(s, "\04\0\0\0\0\0\0\0""true") == 0)||(strcmp(s, "\05\0\0\0\0\0\0\0""false") == 0)||(strcmp(s, "\04\0\0\0\0\0\0\0""null") == 0)) {
 
-#line 430 "/opt/bah/json.bah"
+#line 440 "/opt/bah/json.bah"
 j->type = JSON_TYPE_INT;
 
-#line 431 "/opt/bah/json.bah"
+#line 441 "/opt/bah/json.bah"
 j->content = s;
 
-#line 432 "/opt/bah/json.bah"
+#line 442 "/opt/bah/json.bah"
 j->contentFinal = true;
 }
 }
@@ -7258,395 +7279,395 @@ j->contentFinal = true;
 }
 }
 
-#line 436 "/opt/bah/json.bah"
+#line 446 "/opt/bah/json.bah"
 *ip = i;
 
-#line 437 "/opt/bah/json.bah"
+#line 447 "/opt/bah/json.bah"
 return j;
 };
 
-#line 443 "/opt/bah/json.bah"
+#line 453 "/opt/bah/json.bah"
 struct jsonElement* parseJson(char* s){
 
-#line 444 "/opt/bah/json.bah"
+#line 454 "/opt/bah/json.bah"
 unsigned long long int l = strlen(s);
 
-#line 445 "/opt/bah/json.bah"
+#line 455 "/opt/bah/json.bah"
 unsigned long long int i = (unsigned long long int)0;
 
-#line 446 "/opt/bah/json.bah"
+#line 456 "/opt/bah/json.bah"
 return parseJson_inner(s,&i,l);
 };
 
-#line 450 "/opt/bah/json.bah"
+#line 460 "/opt/bah/json.bah"
 char json_isPrintable(unsigned int c){
 
-#line 451 "/opt/bah/json.bah"
+#line 461 "/opt/bah/json.bah"
 if ((c<32)||(c>255)) {
 
-#line 452 "/opt/bah/json.bah"
+#line 462 "/opt/bah/json.bah"
 return false;
 }
 
-#line 454 "/opt/bah/json.bah"
+#line 464 "/opt/bah/json.bah"
 return (c!=127)&&(c!=129)&&(c!=141)&&(c!=143)&&(c!=144)&&(c!=157);
 };
 
-#line 458 "/opt/bah/json.bah"
+#line 468 "/opt/bah/json.bah"
 char* jsonEscapeStr(char* s){
 
-#line 459 "/opt/bah/json.bah"
+#line 469 "/opt/bah/json.bah"
 if ((strcmp(s, null) == 0)) {
 
-#line 460 "/opt/bah/json.bah"
+#line 470 "/opt/bah/json.bah"
 return "\0\0\0\0\0\0\0\0""";
 }
 
-#line 462 "/opt/bah/json.bah"
+#line 472 "/opt/bah/json.bah"
 struct strBuilder ____BAH_COMPILER_VAR_197_aoptabahajsonbbah = {};
 strBuilder___init(&____BAH_COMPILER_VAR_197_aoptabahajsonbbah);
 struct strBuilder r = ____BAH_COMPILER_VAR_197_aoptabahajsonbbah;
 
-#line 463 "/opt/bah/json.bah"
+#line 473 "/opt/bah/json.bah"
 unsigned long long int l = strlen(s);
 
-#line 465 "/opt/bah/json.bah"
+#line 475 "/opt/bah/json.bah"
 register long int i = 0;
 
-#line 465 "/opt/bah/json.bah"
+#line 475 "/opt/bah/json.bah"
 for (; (i<l); ++i) {
 
-#line 466 "/opt/bah/json.bah"
+#line 476 "/opt/bah/json.bah"
 char c = s[i+8];
 
-#line 467 "/opt/bah/json.bah"
+#line 477 "/opt/bah/json.bah"
 if ((c==(char)34)) {
 
-#line 468 "/opt/bah/json.bah"
+#line 478 "/opt/bah/json.bah"
 strBuilder__append(&r,(char)92);
 }
 
-#line 469 "/opt/bah/json.bah"
+#line 479 "/opt/bah/json.bah"
 else{
 if ((c==(char)10)) {
 
-#line 470 "/opt/bah/json.bah"
+#line 480 "/opt/bah/json.bah"
 strBuilder__append(&r,(char)92);
 
-#line 471 "/opt/bah/json.bah"
+#line 481 "/opt/bah/json.bah"
 strBuilder__append(&r,110);
 
-#line 472 "/opt/bah/json.bah"
+#line 482 "/opt/bah/json.bah"
 continue;
 }
 
-#line 473 "/opt/bah/json.bah"
+#line 483 "/opt/bah/json.bah"
 else{
 if ((c==(char)13)) {
 
-#line 474 "/opt/bah/json.bah"
+#line 484 "/opt/bah/json.bah"
 strBuilder__append(&r,(char)92);
 
-#line 475 "/opt/bah/json.bah"
+#line 485 "/opt/bah/json.bah"
 strBuilder__append(&r,114);
 
-#line 476 "/opt/bah/json.bah"
+#line 486 "/opt/bah/json.bah"
 continue;
 }
 }
 }
 
-#line 478 "/opt/bah/json.bah"
+#line 488 "/opt/bah/json.bah"
 if ((json_isPrintable((unsigned int)c)==false)) {
 
-#line 479 "/opt/bah/json.bah"
+#line 489 "/opt/bah/json.bah"
 if (((unsigned char)c==(unsigned char)195)) {
 
-#line 480 "/opt/bah/json.bah"
+#line 490 "/opt/bah/json.bah"
 strBuilder__append(&r,c);
 
-#line 481 "/opt/bah/json.bah"
+#line 491 "/opt/bah/json.bah"
 strBuilder__append(&r,s[i+1+8]);
 
-#line 482 "/opt/bah/json.bah"
+#line 492 "/opt/bah/json.bah"
 ++i;
 }
 
-#line 484 "/opt/bah/json.bah"
+#line 494 "/opt/bah/json.bah"
 continue;
 }
 
-#line 486 "/opt/bah/json.bah"
+#line 496 "/opt/bah/json.bah"
 strBuilder__append(&r,c);
 };
 ____BAH_COMPILER_VAR_198_aoptabahajsonbbah: ;
 
-#line 489 "/opt/bah/json.bah"
+#line 499 "/opt/bah/json.bah"
 return strBuilder__str(&r);
 };
 
-#line 499 "/opt/bah/json.bah"
+#line 509 "/opt/bah/json.bah"
 struct rope* toJsonRope(struct reflectElement e){
 
-#line 502 "/opt/bah/json.bah"
+#line 512 "/opt/bah/json.bah"
 char* type = e.type;
 
-#line 503 "/opt/bah/json.bah"
+#line 513 "/opt/bah/json.bah"
 void * value = e.value;
 
-#line 505 "/opt/bah/json.bah"
+#line 515 "/opt/bah/json.bah"
 if ((value==null)) {
 
-#line 506 "/opt/bah/json.bah"
+#line 516 "/opt/bah/json.bah"
 return rope("\04\0\0\0\0\0\0\0""null");
 }
 
-#line 513 "/opt/bah/json.bah"
+#line 523 "/opt/bah/json.bah"
 if ((e.isArray==false)) {
 
-#line 514 "/opt/bah/json.bah"
+#line 524 "/opt/bah/json.bah"
 long int nb = 0;
 
-#line 515 "/opt/bah/json.bah"
+#line 525 "/opt/bah/json.bah"
 if ((type[strlen(type)-1+8]==42)) {
 
-#line 520 "/opt/bah/json.bah"
+#line 530 "/opt/bah/json.bah"
 if (strHasPrefix(type,"\04\0\0\0\0\0\0\0""str*")) {
 
-#line 521 "/opt/bah/json.bah"
+#line 531 "/opt/bah/json.bah"
 value = *((void **)value);
 }
 
-#line 523 "/opt/bah/json.bah"
+#line 533 "/opt/bah/json.bah"
 ++nb;
 }
 
-#line 525 "/opt/bah/json.bah"
+#line 535 "/opt/bah/json.bah"
 register unsigned long long int i = strlen(type)-1;
 
-#line 525 "/opt/bah/json.bah"
+#line 535 "/opt/bah/json.bah"
 for (; (i>=1); --i) {
 
-#line 526 "/opt/bah/json.bah"
+#line 536 "/opt/bah/json.bah"
 if ((type[i+8]==42)&&(type[i-1+8]==42)) {
 
-#line 527 "/opt/bah/json.bah"
+#line 537 "/opt/bah/json.bah"
 value = *((void **)value);
 
-#line 528 "/opt/bah/json.bah"
+#line 538 "/opt/bah/json.bah"
 ++nb;
 }
 
-#line 529 "/opt/bah/json.bah"
+#line 539 "/opt/bah/json.bah"
 else{
 
-#line 530 "/opt/bah/json.bah"
+#line 540 "/opt/bah/json.bah"
 goto ____BAH_COMPILER_VAR_199_aoptabahajsonbbah;
 }
 };
 ____BAH_COMPILER_VAR_199_aoptabahajsonbbah: ;
 
-#line 533 "/opt/bah/json.bah"
+#line 543 "/opt/bah/json.bah"
 if ((nb>0)) {
 
-#line 534 "/opt/bah/json.bah"
+#line 544 "/opt/bah/json.bah"
 type = strSubstitute(type, 0, strlen(type)-nb);
 }
 }
 
-#line 538 "/opt/bah/json.bah"
+#line 548 "/opt/bah/json.bah"
 if ((value==null)) {
 
-#line 539 "/opt/bah/json.bah"
+#line 549 "/opt/bah/json.bah"
 return rope("\04\0\0\0\0\0\0\0""null");
 }
 
-#line 544 "/opt/bah/json.bah"
+#line 554 "/opt/bah/json.bah"
 if (e.isStruct) {
 
-#line 545 "/opt/bah/json.bah"
+#line 555 "/opt/bah/json.bah"
 struct rope* r = rope("\01\0\0\0\0\0\0\0""{");
 
-#line 547 "/opt/bah/json.bah"
+#line 557 "/opt/bah/json.bah"
 register long int i = 0;
 
-#line 547 "/opt/bah/json.bah"
+#line 557 "/opt/bah/json.bah"
 for (; (i<len(e.structLayout)); ++i) {
 
-#line 548 "/opt/bah/json.bah"
+#line 558 "/opt/bah/json.bah"
 struct reflectElement member = ((struct reflectElement*)e.structLayout->data)[i];
 
-#line 552 "/opt/bah/json.bah"
+#line 562 "/opt/bah/json.bah"
 member.value = (void *)((unsigned long long int)value+member.offset);
 
-#line 558 "/opt/bah/json.bah"
+#line 568 "/opt/bah/json.bah"
 if (jsonIsPtrType(member.type)) {
 
-#line 559 "/opt/bah/json.bah"
+#line 569 "/opt/bah/json.bah"
 member.value = *((void **)member.value);
 }
 
-#line 562 "/opt/bah/json.bah"
+#line 572 "/opt/bah/json.bah"
 struct rope* res= null;
 
-#line 564 "/opt/bah/json.bah"
+#line 574 "/opt/bah/json.bah"
 if ((member.value!=null)) {
 
-#line 565 "/opt/bah/json.bah"
+#line 575 "/opt/bah/json.bah"
 res = toJsonRope(member);
 }
 
-#line 566 "/opt/bah/json.bah"
+#line 576 "/opt/bah/json.bah"
 else{
 
-#line 567 "/opt/bah/json.bah"
+#line 577 "/opt/bah/json.bah"
 res = rope("\04\0\0\0\0\0\0\0""null");
 }
 
-#line 571 "/opt/bah/json.bah"
+#line 581 "/opt/bah/json.bah"
 char** ____BAH_COMPILER_VAR_201_aoptabahajsonbbah = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_201_aoptabahajsonbbah[2] = "\03\0\0\0\0\0\0\0""\": ";____BAH_COMPILER_VAR_201_aoptabahajsonbbah[1] = jsonEscapeStr(member.name);____BAH_COMPILER_VAR_201_aoptabahajsonbbah[0] = "\01\0\0\0\0\0\0\0""\"";char* ____BAH_COMPILER_VAR_202_aoptabahajsonbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_201_aoptabahajsonbbah, 3);r = rope__add(r, (rope__add(rope(____BAH_COMPILER_VAR_202_aoptabahajsonbbah), res)));
 
-#line 572 "/opt/bah/json.bah"
+#line 582 "/opt/bah/json.bah"
 if ((i+1<len(e.structLayout))) {
 
-#line 573 "/opt/bah/json.bah"
+#line 583 "/opt/bah/json.bah"
 r = rope__add(r, rope("\02\0\0\0\0\0\0\0"", "));
 }
 };
 ____BAH_COMPILER_VAR_200_aoptabahajsonbbah: ;
 
-#line 577 "/opt/bah/json.bah"
+#line 587 "/opt/bah/json.bah"
 return rope__add(r, rope("\01\0\0\0\0\0\0\0""}"));
 }
 
-#line 582 "/opt/bah/json.bah"
+#line 592 "/opt/bah/json.bah"
 if (e.isArray) {
 
-#line 583 "/opt/bah/json.bah"
+#line 593 "/opt/bah/json.bah"
 struct rope* r = rope("\01\0\0\0\0\0\0\0""[");
 
-#line 584 "/opt/bah/json.bah"
+#line 594 "/opt/bah/json.bah"
 struct Bah_Array_Type* arr = value;
 
-#line 585 "/opt/bah/json.bah"
+#line 595 "/opt/bah/json.bah"
 char isPtr = jsonIsPtrType(e.arrayElem->type);
 
-#line 586 "/opt/bah/json.bah"
+#line 596 "/opt/bah/json.bah"
 struct reflectElement elem = *(e.arrayElem);
 
-#line 587 "/opt/bah/json.bah"
+#line 597 "/opt/bah/json.bah"
 register long int i = 0;
 
-#line 587 "/opt/bah/json.bah"
+#line 597 "/opt/bah/json.bah"
 for (; (i<arr->length); ++i) {
 
-#line 588 "/opt/bah/json.bah"
+#line 598 "/opt/bah/json.bah"
 elem.value = (void *)((unsigned long long int)arr->data+i*arr->elemSize);
 
-#line 594 "/opt/bah/json.bah"
+#line 604 "/opt/bah/json.bah"
 if (isPtr) {
 
-#line 595 "/opt/bah/json.bah"
+#line 605 "/opt/bah/json.bah"
 elem.value = *((void **)elem.value);
 }
 
-#line 598 "/opt/bah/json.bah"
+#line 608 "/opt/bah/json.bah"
 r = rope__add(r, toJsonRope(elem));
 
-#line 599 "/opt/bah/json.bah"
+#line 609 "/opt/bah/json.bah"
 if ((i+1<arr->length)) {
 
-#line 600 "/opt/bah/json.bah"
+#line 610 "/opt/bah/json.bah"
 r = rope__add(r, rope("\02\0\0\0\0\0\0\0"", "));
 }
 };
 ____BAH_COMPILER_VAR_203_aoptabahajsonbbah: ;
 
-#line 604 "/opt/bah/json.bah"
+#line 614 "/opt/bah/json.bah"
 return rope__add(r, rope("\01\0\0\0\0\0\0\0""]"));
 }
 
-#line 610 "/opt/bah/json.bah"
+#line 620 "/opt/bah/json.bah"
 if ((strcmp(type, "\03\0\0\0\0\0\0\0""str") == 0)) {
 
-#line 611 "/opt/bah/json.bah"
+#line 621 "/opt/bah/json.bah"
 char** ____BAH_COMPILER_VAR_204_aoptabahajsonbbah = alloca(3 * sizeof(char*));____BAH_COMPILER_VAR_204_aoptabahajsonbbah[2] = "\01\0\0\0\0\0\0\0""\"";____BAH_COMPILER_VAR_204_aoptabahajsonbbah[1] = jsonEscapeStr((char*)value);____BAH_COMPILER_VAR_204_aoptabahajsonbbah[0] = "\01\0\0\0\0\0\0\0""\"";char* ____BAH_COMPILER_VAR_205_aoptabahajsonbbah =__Bah_multiple_concat(____BAH_COMPILER_VAR_204_aoptabahajsonbbah, 3);return rope(____BAH_COMPILER_VAR_205_aoptabahajsonbbah);
 }
 
-#line 614 "/opt/bah/json.bah"
+#line 624 "/opt/bah/json.bah"
 if ((strcmp(type, "\03\0\0\0\0\0\0\0""int") == 0)) {
 
-#line 615 "/opt/bah/json.bah"
+#line 625 "/opt/bah/json.bah"
 return rope(intToStr(*((long int*)value)));
 }
 
-#line 618 "/opt/bah/json.bah"
+#line 628 "/opt/bah/json.bah"
 if ((strcmp(type, "\05\0\0\0\0\0\0\0""int32") == 0)) {
 
-#line 619 "/opt/bah/json.bah"
+#line 629 "/opt/bah/json.bah"
 return rope(intToStr(*((int*)value)));
 }
 
-#line 622 "/opt/bah/json.bah"
+#line 632 "/opt/bah/json.bah"
 if ((strcmp(type, "\05\0\0\0\0\0\0\0""int16") == 0)) {
 
-#line 623 "/opt/bah/json.bah"
+#line 633 "/opt/bah/json.bah"
 return rope(intToStr(*((short*)value)));
 }
 
-#line 626 "/opt/bah/json.bah"
+#line 636 "/opt/bah/json.bah"
 if ((strcmp(type, "\04\0\0\0\0\0\0\0""uint") == 0)) {
 
-#line 627 "/opt/bah/json.bah"
+#line 637 "/opt/bah/json.bah"
 return rope(uintToStr(*((unsigned long long int*)value)));
 }
 
-#line 630 "/opt/bah/json.bah"
+#line 640 "/opt/bah/json.bah"
 if ((strcmp(type, "\06\0\0\0\0\0\0\0""uint32") == 0)) {
 
-#line 631 "/opt/bah/json.bah"
+#line 641 "/opt/bah/json.bah"
 return rope(uintToStr(*((unsigned int*)value)));
 }
 
-#line 634 "/opt/bah/json.bah"
+#line 644 "/opt/bah/json.bah"
 if ((strcmp(type, "\06\0\0\0\0\0\0\0""uint16") == 0)) {
 
-#line 635 "/opt/bah/json.bah"
+#line 645 "/opt/bah/json.bah"
 return rope(uintToStr(*((unsigned short*)value)));
 }
 
-#line 638 "/opt/bah/json.bah"
+#line 648 "/opt/bah/json.bah"
 if ((strcmp(type, "\05\0\0\0\0\0\0\0""float") == 0)) {
 
-#line 639 "/opt/bah/json.bah"
+#line 649 "/opt/bah/json.bah"
 return rope(floatToStr(*((double*)value)));
 }
 
-#line 642 "/opt/bah/json.bah"
+#line 652 "/opt/bah/json.bah"
 if ((strcmp(type, "\04\0\0\0\0\0\0\0""bool") == 0)) {
 
-#line 643 "/opt/bah/json.bah"
+#line 653 "/opt/bah/json.bah"
 char v = *((char*)value);
 
-#line 644 "/opt/bah/json.bah"
+#line 654 "/opt/bah/json.bah"
 if (v) {
 
-#line 645 "/opt/bah/json.bah"
+#line 655 "/opt/bah/json.bah"
 return rope("\04\0\0\0\0\0\0\0""true");
 }
 
-#line 648 "/opt/bah/json.bah"
+#line 658 "/opt/bah/json.bah"
 return rope("\05\0\0\0\0\0\0\0""false");
 }
 
-#line 651 "/opt/bah/json.bah"
+#line 661 "/opt/bah/json.bah"
 return rope("\04\0\0\0\0\0\0\0""null");
 };
 
-#line 660 "/opt/bah/json.bah"
+#line 670 "/opt/bah/json.bah"
 char* toJson(struct reflectElement e){
 
-#line 661 "/opt/bah/json.bah"
+#line 671 "/opt/bah/json.bah"
 
                 struct rope* keep_ref_____BAH_COMPILER_VAR_206_aoptabahajsonbbah = toJsonRope(e);
                 return rope__toStr(keep_ref_____BAH_COMPILER_VAR_206_aoptabahajsonbbah);

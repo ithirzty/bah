@@ -242,6 +242,16 @@ json_scan_inner(thisp ptr, e reflectElement) {
         return
     }
 
+    if type == "bool" {
+        v = (<bool*>value)
+        if this.str() == "true" || strToInt(this.str()) > 0 {
+            *v = true
+            
+        } else {
+            *v = false
+        }
+    }
+
 }
 
 jError = "" //Inner variable containing the last parsing error.
