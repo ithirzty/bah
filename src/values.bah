@@ -95,6 +95,14 @@ valueFunc(fn func*, parent variable*, l []Tok, i int, ltp lineType, elems Elems*
                 lambda = new func
                 lambdaCode = parseFnHeader("", l, &i, lambda, true, elems)[0]
                 fnElems = dupElems(elems)
+
+                fnElems.currFlowEnd = false
+                fnElems.nestedElseIfNb = 0
+                fnElems.switchOpt = null
+                fnElems.switchOptCurrLoop = null
+
+
+
                 clear(fnElems.vars)
                 
                 j=0; for j < len(lambda.args), j++ {
@@ -132,12 +140,16 @@ valueFunc(fn func*, parent variable*, l []Tok, i int, ltp lineType, elems Elems*
                 occurfn = currentFn
                 ocurrFnElems = compilerState.currFnElems
                 oislmbda = compilerState.isLambda
+                oislfor = compilerState.isFor
+                oislbrnch = compilerState.isBranch
                 olmbdavars = compilerState.currLambdaVars
 
                 compilerState.currFnElems = fnElems
                 currentFn = lambda
                 compilerState.isLambda = true
                 compilerState.currLambdaVars = []variable*
+                compilerState.isFor = false
+                compilerState.isBranch = false
 
                 
                 parseLines(tokens, fnElems)
@@ -183,6 +195,8 @@ valueFunc(fn func*, parent variable*, l []Tok, i int, ltp lineType, elems Elems*
                 currentFn = occurfn
                 compilerState.isLambda = oislmbda
                 compilerState.currLambdaVars = olmbdavars
+                compilerState.isFor = oislfor
+                compilerState.isBranch = oislbrnch
 
                 deleteRange(l, tokPos+1, j)
 
