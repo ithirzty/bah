@@ -140,6 +140,7 @@ struct compilerStateTag {
     currentDir: str = "./"
     isBranch: bool = false
     isFor: bool = false
+    isLambda: bool = false
     arrTypesDecl: []str
     haveEntryPoint: bool = false
     evals: []str
@@ -147,6 +148,7 @@ struct compilerStateTag {
     currForElems: Elems*
     currFnElems: Elems*
     nbElseIf: int = 0
+    currLambdaVars: []variable*
 }
 
 shouldOnlyDecl = false

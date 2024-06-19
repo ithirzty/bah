@@ -1266,7 +1266,7 @@ parseVar(l []Tok, elems Elems*) {
         t = l[0]
         v = searchVirtVarByToken(&t, elems)
         if v == null {
-            throwErr(&t, "Cannot increase/decrease not declared variable {TOKEN}.")
+            throwErr(&t, "Lost variable {TOKEN}.")
         }
         rv = getRealVar(v.name, elems)
         if rv != null {
@@ -1723,22 +1723,25 @@ parseVar(l []Tok, elems Elems*) {
 
 //Parses function definition header in function declaration.
 //Returns [the fn header in C, delcaration dependencies]
-parseFnHeader(prev str, l []Tok, i int*, fn func*, elems Elems*) [str,str] {
+parseFnHeader(prev str, l []Tok, i int*, fn func*, lambda bool, elems Elems*) [str,str] {
 
-    j = *i
-    ft = l[j]
     tpdf = ""
-    if ft.type != TOKEN_TYPE_VAR {
-        throwErr(&ft, "Cannot use {TOKEN} as function name.")
+    j = *i
+    if lambda == false {
+        ft = l[j]
+        if ft.type != TOKEN_TYPE_VAR {
+            throwErr(&ft, "Cannot use {TOKEN} as function name.")
+        }
+        fn.name = prev + ft.cont
+        j += 2
+    } else {
+        fn.name = "__lambda_"+genCompilerVar()
+        j++
     }
-    fn.name = prev + ft.cont
 
     arguments = []variable*
 
     code = fn.name + "("
-
-
-    j += 2
 
     t = l[j]
     if t.cont != ")" {
@@ -1777,25 +1780,22 @@ parseFnHeader(prev str, l []Tok, i int*, fn func*, elems Elems*) [str,str] {
             j++
             isComa = false
             nbPars = 1
-            for j < len(l) {
+            for j < len(l), j++ {
                 t = l[j]
                 isComa = false
-                if t.cont != "," {
-                    if t.cont == "(" {
-                        nbPars++
-                    } else if t.cont == ")" {
-                        nbPars--
-                    }
-                    if t.cont == ")" && nbPars == 0 {
+                if t.cont == "(" {
+                    nbPars++
+                } else if t.cont == ")" {
+                    nbPars--
+                    if nbPars == 0 {
                         break
-                    } else {
-                        argType += t.cont
                     }
-                } else {
+                } else if t.cont == "," && nbPars == 1 {
                     isComa = true
                     break
                 }
-                j++
+
+                argType += t.cont
             }
 
             argument = new variable
@@ -1831,7 +1831,7 @@ parseFnHeader(prev str, l []Tok, i int*, fn func*, elems Elems*) [str,str] {
     returns.type = ""
     for j < len(l) {
         t = l[j]
-        if t.cont == "{" {
+        if (lambda == false && t.cont == "{") || (lambda == true && t.cont == "=>") {
             break
         }
         returns.type = returns.type + t.cont
@@ -2009,7 +2009,7 @@ parseStruct(l []Tok, elems Elems*) {
 
                 nli = 0
 
-                header = parseFnHeader(fnPrefix, nl, &nli, fn, elems)
+                header = parseFnHeader(fnPrefix, nl, &nli, fn, false, elems)
                 code = rope(header[0])
                 headerDecl = header[1] + code.toStr()
                 i += nli
@@ -2238,7 +2238,7 @@ parseDefine(l []Tok, elems Elems*) {
     if st.cont == "(" {
 
         fn = new func
-        header = parseFnHeader("", l, &i, fn, elems)
+        header = parseFnHeader("", l, &i, fn, false, elems)
         code = header[1] + header[0]
         ofn = searchFunc(fn.name, elems, false)
         if ofn != null {
@@ -2452,7 +2452,6 @@ parseIf(l []Tok, fromElse bool, elems Elems*) {
 
     t = l[2]
     if t.cont != "{" {
-        debugLine(l)
         throwErr(&t, "Expected '{' not {TOKEN} after condtition in if statement.")
     }
     tokens = l[3:len(l)-1]
@@ -3164,7 +3163,7 @@ prePross(line []Tok, ltp lineType, elems Elems*) []Tok {
                     nbPar++
                 } else if t.cont[0] == ')' {
                     nbPar--
-                } else if nbPar == 0 && t.cont[0] == '{' {
+                } else if nbPar == 0 && t.cont[0] == '{' && (i == 0 || line[i-1].cont != "=>") {
                     if line[i+1].line != t.line {
                         break
                     }
@@ -3373,7 +3372,7 @@ parseFnDeclare(l []Tok, elems Elems*) {
     }
 
     ft = l[0]
-    header = parseFnHeader("", l, &i, fn, elems)
+    header = parseFnHeader("", l, &i, fn, false, elems)
     code = header[1] + header[0]
     fn.line = ft.line
     fn.file = compilerState.currentFile

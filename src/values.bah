@@ -63,7 +63,6 @@ valueFunc(fn func*, parent variable*, l []Tok, i int, ltp lineType, elems Elems*
     //only have parenthesis
     if fn == null {
         nbEncls = 1
-        memory = []Tok
         i = tokPos+1
         fnt.ogCont = "("
         for i < len(l), i++ {
@@ -77,10 +76,139 @@ valueFunc(fn func*, parent variable*, l []Tok, i int, ltp lineType, elems Elems*
                     break
                 }
             }
-            memory[len(memory)] = t
         }
+
+        //parsing lambdas
+        if i+1 < len(l) {
+            found = false
+            j=i+1; for j < len(l), j++ {
+                if l[j].cont == "{" {
+                    break
+                }
+                if l[j].cont == "=>" {
+                    found = true
+                    break
+                }
+            }
+            if found {
+                i = tokPos
+                lambda = new func
+                lambdaCode = parseFnHeader("", l, &i, lambda, true, elems)[0]
+                fnElems = dupElems(elems)
+                clear(fnElems.vars)
+                
+                j=0; for j < len(lambda.args), j++ {
+                    a = lambda.args[j]
+                    a.declScope = elems
+                    a.isArg = true
+                    fnElems.vars[j] = a
+                }
+
+                j=0; for j < len(elems.vars), j++ {
+                    if elems.vars[j].isGlobal {
+                        fnElems.vars[len(fnElems.vars)] = elems.vars[j]
+                    }
+                }
+
+                j=i+2
+                nbBraces = 1
+                for j < len(l), j++ {
+                    if l[j].cont == "{" {
+                        nbBraces++
+                    } else if l[j].cont == "}" {
+                        nbBraces--
+                        if nbBraces == 0 {
+                            break
+                        }
+                    }
+                }
+
+                tokens = l[i+2: j]
+
+
+                oOut = OUTPUT
+                OUTPUT = rope("")
+
+                occurfn = currentFn
+                ocurrFnElems = compilerState.currFnElems
+                oislmbda = compilerState.isLambda
+                olmbdavars = compilerState.currLambdaVars
+
+                compilerState.currFnElems = fnElems
+                currentFn = lambda
+                compilerState.isLambda = true
+                compilerState.currLambdaVars = []variable*
+
+                
+                parseLines(tokens, fnElems)
+                OPTI_checkFuncScopeRef(fnElems)
+                RCPendScope(fnElems)
+
+                if lambda.returned == false {
+                    if len(lambda.returns.type) > 0 {
+                        throwErr(&l[j], "Lambda is not returned.")
+                    }
+                    fixMeEndScope(fnElems, &tokens[len(tokens)-1])
+                }
+
+                lambda.code = rope(" {\n") 
+                
+                varSizes = "0"
+                stackVarSaver = rope("")
+                stackSaverName = genCompilerVar()
+                i=0; for i < len(compilerState.currLambdaVars), i++ {
+                    outterV = compilerState.currLambdaVars[i]
+                    ct = getCType(outterV.type, elems).str()
+                    varAddr = "*("+ct+"*)((unsigned long int)"+stackSaverName+" + "+varSizes+")"
+                    lambda.code += rope(ct + " " + outterV.name + " = " + varAddr + ";")
+                    stackVarSaver += rope(varAddr+" = "+outterV.name+";")
+                    varSizes += "+sizeof("+ct+")"
+                }
+
+                lambda.code += OUTPUT
+
+                OUTPUT = oOut
+                lambda.code += rope("};\n")
+
+                OUTPUT += stackVarSaver
+
+                if debug == true {
+                    lt = l[len(l)-1]
+                    debugEndScope(lt.line, fnElems)
+                }
+
+                ropeSet(postDeclHandle, postDeclHandle.toStr() + "char "+stackSaverName+"["+varSizes+"];\n" + lambdaCode + lambda.code.toStr())
+
+                compilerState.currFnElems = ocurrFnElems
+                currentFn = occurfn
+                compilerState.isLambda = oislmbda
+                compilerState.currLambdaVars = olmbdavars
+
+                deleteRange(l, tokPos+1, j)
+
+                elems.fns[len(elems.fns)] = lambda
+
+                l[tokPos] = Tok {
+                    type: TOKEN_TYPE_VAR
+                    cont: lambda.name
+                    isValue: true
+                    ogCont: "lambda"
+                    pos: l[tokPos].pos
+                    line: l[tokPos].line
+                }
+
+                return tokPos
+            }
+
+            
+        }
+
+        memory = l[tokPos+1:i]
+
         deleteRange(l, tokPos+1, i)
-        memort = prePross(memory, <lineType>-1, elems)
+
+
+        memory = prePross(memory, <lineType>-1, elems)
         ft = memory[0]
         fnt.cont = "("
         fnt.isOper = true

@@ -115,6 +115,13 @@ migrateFile(fn str) {
             logChange(fn, tokens[i].line, "Fn: strAsArr -> strToArr")
         }
 
+        //replace charToString
+        if tokens[i].cont == "charToString" && i+1 < len(tokens) && tokens[i+1].cont == "(" {
+            r += rope(file[lastPos:tokens[i].pos] + "charToStr")
+            lastPos = tokens[i].pos + len(tokens[i].ogCont)
+            logChange(fn, tokens[i].line, "Fn: charToString -> charToStr")
+        }
+
         //replacing old 'cpstringSubsitute' call
         if tokens[i].cont == "cpstringSubsitute" || tokens[i].cont == "arraySubstitute" {
             r += rope(file[lastPos:tokens[i].pos])

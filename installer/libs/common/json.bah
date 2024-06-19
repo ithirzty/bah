@@ -296,7 +296,7 @@ parseJson_inner(s str, ip uint*, l uint) jsonElement* {
 
                 if s[i] != ',' {
                     if s[i] != ']' {
-                        jError = "json: expected array separator (got: "+charToString(s[i])+") (pos: "+uintToStr(i)+")"
+                        jError = "json: expected array separator (got: "+charToStr(s[i])+") (pos: "+uintToStr(i)+")"
                         return null
                     }
                     i++

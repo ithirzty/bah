@@ -170,7 +170,7 @@ struct regex {
                         t.match = string("")
 
                     }
-                    t.match.append(charToString(c))
+                    t.match.append(charToStr(c))
                 } else {
                     break
                 }
@@ -220,7 +220,7 @@ struct regex {
                                     maxNm = pt.match.length - goBackLength
                                     nmI=0;for nmI<maxNm {
                                         nmc = pt.match.charAt(nmI)
-                                        nm.append(charToString(nmc))
+                                        nm.append(charToStr(nmc))
                                         nmI++
                                     }
                                     pt.match.set(nm.str())
@@ -238,7 +238,7 @@ struct regex {
                                     maxNm = pt.match.length - goBackLength
                                     nmI=0;for nmI<maxNm {
                                         nmc = pt.match.charAt(nmI)
-                                        nm.append(charToString(nmc))
+                                        nm.append(charToStr(nmc))
                                         nmI++
                                     }
                                     pt.match.set(nm.str())
@@ -485,12 +485,12 @@ compileRegex(cpexpr str) regex* {
                                 if isNumber(c) == 0 {
                                     return null
                                 }
-                                min.append(charToString(c))
+                                min.append(charToStr(c))
                             } else {
                                 if isNumber(c) == 0 {
                                     return null
                                 }
-                                max.append(charToString(c))
+                                max.append(charToStr(c))
                             }
 
                             i++

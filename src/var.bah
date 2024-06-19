@@ -94,6 +94,18 @@ searchVar(name str, t Tok*, elems Elems*) variable* {
         }
     }
 
+    if compilerState.isLambda {
+        if elems.parent == null {
+            return null
+        }
+        v = searchVar(n.str(), t, elems.parent)
+        if v != null {
+            compilerState.currLambdaVars[len(compilerState.currLambdaVars)] = v
+            elems.vars[len(elems.vars)] = v
+        }
+        return v
+    }
+
     return null
 
 }

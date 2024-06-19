@@ -4,7 +4,7 @@ strCatOffset(dest str, destLen uint, src str, srcLen uint) {
 }
 
 //Used for converting a char into a str of length 1.
-charToString(c char) str {
+charToStr(c char) str {
     s str = memoryAllocSTR(2)
     ln uint32* = s
     *ln = 1

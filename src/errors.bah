@@ -81,12 +81,15 @@ throwErr(tp ptr, format str) {
                     }
                     errCont[len(errCont)] = fileSrcStr[i]
                 }
+                errCont[len(errCont)] = null
                 errTk = strToArr("\e[1;31m"+arrToStr(errCont)+"\e[1;37m")
                 ii=0; for ii < len(errTk), ii++ {
                     line[len(line)] = errTk[ii]
                 }
-                i--
-                continue
+                if len(errCont) > 1 {
+                    i--
+                    continue
+                }
             }
             line[len(line)] = c
         }
