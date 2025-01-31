@@ -992,6 +992,12 @@ parseReflect(t Tok, tt str, elems Elems*, noPointer bool, ogName str, offset str
     structLayout = "null"
     ctt = tt
 
+    //needed to solve infinite reflection on a struct member that is an array of the same elem type than the struct 
+    refToProducedReflection = registerRCPvar("reflectElement*", "null", elems) //may not be needed, do not waste an alloc
+    needOfProducedReflection = false
+    producedRedAllocation = rope("") //to emit the allocation before storing the pointer in reflectElement.arrayElem
+    OUTPUT += producedRedAllocation //emit empty for now
+
     if strHasPrefix(tt, "[]") {
         ctt = "Bah_Array_Type"
         isArr = "1"
@@ -1000,7 +1006,11 @@ parseReflect(t Tok, tt str, elems Elems*, noPointer bool, ogName str, offset str
             type: TOKEN_TYPE_VAR
             cont: "null"
         }
-        arrElem = "&" + registerRCPvar("reflectElement", parseReflect(tmpT, aeType, elems, true, "", "0").cont, elems)
+
+        //need to allocate to keep the template of the reflected object in heap not in stack
+        arrElemReflection = parseReflect(tmpT, aeType, elems, true, "", "0").cont //store in stack
+        arrElem = registerRCPvar("reflectElement*", "memoryAlloc(sizeof(struct reflectElement))", elems) //allocate heap
+        OUTPUT += rope("* "+arrElem + " ="+arrElemReflection+";") //copy stack memory un the heap space
     } else {
         let s = searchStruct(tt, elems) then {
             isStruct = "1"
@@ -1021,6 +1031,11 @@ parseReflect(t Tok, tt str, elems Elems*, noPointer bool, ogName str, offset str
                     nm = new structMemb
                     *nm = *m
                     nm.type = "ptr"
+                    m = nm
+                } else if strHasPrefix(m.type, "[]"+snPtr) {
+                    nm = new structMemb
+                    *nm = *m
+                    nm.type = "[]ptr"
                     m = nm
                 }
 
@@ -1043,14 +1058,19 @@ parseReflect(t Tok, tt str, elems Elems*, noPointer bool, ogName str, offset str
 
             i=0; for i < len(s.members), i++ {
                 m = s.members[i]
-                if strHasPrefix(m.type, snPtr) == false {
-                    continue
+                if strHasPrefix(m.type, snPtr) {
+                    OUTPUT += rope("((struct reflectElement*)"+structLayout+"->data)["+intToStr(i)+"].structLayout = "+structLayout+";
+                    ((struct reflectElement*)"+structLayout+"->data)["+intToStr(i)+"].type = "+strLitteralToBahStr("\""+m.type+"\"")+";
+                    ((struct reflectElement*)"+structLayout+"->data)["+intToStr(i)+"].isStruct = true;
+                    ((struct reflectElement*)"+structLayout+"->data)["+intToStr(i)+"].size = sizeof(struct "+s.name+");")
+                } else if strHasPrefix(m.type, "[]"+snPtr) {
+                    needOfProducedReflection = true
+                    OUTPUT += rope("
+                    ((struct reflectElement*)"+structLayout+"->data)["+intToStr(i)+"].type = "+strLitteralToBahStr("\""+m.type+"\"")+";
+                    ((struct reflectElement*)"+structLayout+"->data)["+intToStr(i)+"].isArray = true;
+                    ((struct reflectElement*)"+structLayout+"->data)["+intToStr(i)+"].arrayElem = "+refToProducedReflection+";
+                    ((struct reflectElement*)"+structLayout+"->data)["+intToStr(i)+"].size = sizeof(struct Bah_Array_Type);")
                 }
-
-                OUTPUT += rope("((struct reflectElement*)"+structLayout+"->data)["+intToStr(i)+"].structLayout = "+structLayout+";
-                ((struct reflectElement*)"+structLayout+"->data)["+intToStr(i)+"].type = "+strLitteralToBahStr("\""+m.type+"\"")+";
-                ((struct reflectElement*)"+structLayout+"->data)["+intToStr(i)+"].isStruct = true;
-                ((struct reflectElement*)"+structLayout+"->data)["+intToStr(i)+"].size = sizeof(struct "+s.name+");")
             }
 
         }
@@ -1063,6 +1083,12 @@ parseReflect(t Tok, tt str, elems Elems*, noPointer bool, ogName str, offset str
     t.cont = registerRCPvar("reflectElement", "__reflect("+t.cont+", sizeof("+getCType(ctt, elems).str()+"),
     "+strLitteralToBahStr("\""+tt+"\"")+", "+strLitteralToBahStr("\""+ogName+"\"")+", "+isArr+",
     "+arrElem+", "+isStruct+", "+structLayout+", "+offset+")", elems)
+
+    
+    if needOfProducedReflection {
+        ropeSet(producedRedAllocation, refToProducedReflection+" = memoryAlloc(sizeof(struct reflectElement));")
+        OUTPUT += rope("*"+refToProducedReflection+" = "+t.cont+";")
+    }
 
     return t
 }
