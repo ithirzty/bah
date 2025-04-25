@@ -7,6 +7,22 @@ struct rope {
     left: rope*
     right: rope*
 
+    //Returns true if the current node is concatenating straight :
+    //child on the left and string on the right
+    isStraightConcat() bool {
+        if this.right == null || this.left == null {
+            return false
+        }
+        if this.right.left != null || this.right.right != null {
+            return false
+        }
+        if this.left.left == null || this.left.right == null {
+            return false
+        }
+
+        return true
+    }
+
     //Used to add the content of the node to a specified str.
     //*Note: this is an internal function.*
     addStr(s str, off int*) {
@@ -16,6 +32,26 @@ struct rope {
             *off = o + len(this.str)
             return
         }
+
+        el = this
+        list = []rope*
+        for el.isStraightConcat(), el = el.left {
+            list[len(list)] = el
+        }
+        // println(uintToStr(len(list)))
+
+        if len(list) != 0 {
+            el.addStr(s, off)
+
+            i=len(list)-1; for i != -1, i-- {
+                o = *off
+                memcpy(<ptr>(<uint>s + o + strLenSize), <ptr>(<uint>list[i].right.str + strLenSize), len(list[i].right.str))
+                *off = o + len(list[i].right.str)
+            }
+
+            return
+        }
+
         
         this.left.addStr(s, off)
         this.right.addStr(s, off)
@@ -26,6 +62,17 @@ struct rope {
             l = len(this.str)
             return l
         }
+
+        el = this
+        l = 0
+        for el.isStraightConcat(), el = el.left {
+            l += len(el.right.str)
+        }
+        if el != this {
+            return l + el.getLen()
+        }
+
+
         return this.left.getLen() + this.right.getLen()
     }
 
